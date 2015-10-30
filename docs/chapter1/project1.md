@@ -1,4 +1,4 @@
-## Blinkie, the First Project
+## Blinky, the First Project
 
 ### Objective
 
