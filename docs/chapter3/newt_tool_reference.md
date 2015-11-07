@@ -193,6 +193,8 @@ Available Commands:
     test        Test target
     export      Export target
     import      Import target
+    download    Download image to target
+    debug       Download image to target and start an openocd/gdb session
 
 Flags:
 
@@ -219,8 +221,8 @@ test   | Test an egg on the target named `input1`. The egg is either supplied as
 export |  Exports the configurations of the specified target `input1`. If -a or -export-all flag is used, then all targets are exported and printed out to standard out. You may redirect the output to a file. 
 import | Import one or more target configuration from standard input or a file. Each target starts with `@target=<target-name>` followed by the attributes. The list of targets should end with `@endtargets`.
 size   | Outputs the RAM and flash consumption by the components of the specified target `input1`.
-
-
+download | Downloads the binary executable `<target-name>.elf.bin` to the board.
+debug    | Downloads the binary executable `<target-name>.elf.bin` to the board and starts up the openocd/gdb combination session. gdb takes over the terminal.
 
 
 Command-specific flags
@@ -249,6 +251,8 @@ export  | newt target export my_target | Export only target named 'my_target' an
 import | newt target import ex_tgt_1 < exported_targets.txt | Imports the target configuration for 'ex_tgt_1' in 'exported_targets.txt'.
 import | newt target import -a < in_targets.txt | Imports all the targets specified in the file named `in_targets.txt`. A sample file is shown after this table.
 size   | newt target size blink_nordic | Inspects and lists the RAM and Flash memory use by each component (object files and libraries) of the target.
+download  | newt target -v -lVERBOSE download blinky | Downloads `blinky.elf.bin` to the hardware in verbose mode with logging turned on at VERBOSE level.
+debug | newt target debug blinky  | Downloads `blinky.elf.bin` to the hardware, opens up a gdb session with `blinky.elf` in the terminal, and halts for further input in gdb.
 
 Example content for `in_targets.txt` file used for importing targets `test3` and `test4`.  
 

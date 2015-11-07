@@ -4,7 +4,7 @@ This page introduces the basic terms you will need to find your way around the M
 
 ### Basic components in the ecosystem
 
-* NewtOS is an open-source RTOS (Real Time Operating System) that is not tied to any particular hardware but can be tuned to the hardware component mix of the user's choosing. It has support for multitasking, synchronization of tasks, scheduling and buffering of operations, memory management,file systems, networking, security, power management, and other advanced features. Naturally, it involves several packages such as the Core RTOS, a flash file system, utility functions, a variety of board support packages, packages of microcontrollers etc.
+* NewtOS is an open-source RTOS (Real Time Operating System) that works on a variety of hardware. The goal is to develop a pre-emptive, multitasking OS that is highly modular, making it possible to mix and match components to enable desired features and capabilities on multiple hardware architectures. Examples of components being worked on are the Core RTOS, a flash file system, utility functions, a variety of board support packages, packages of microcontrollers etc.
 
 
 * Network protocol stacks such as Bluetooth Low Energy, and more
@@ -15,23 +15,22 @@ This page introduces the basic terms you will need to find your way around the M
 
 ### Terminology
 
-In the mynewt lifecycle, a project grows in a nest. A nest may house multiple projects. The nest is, therefore, a repository where various component packages for one or more projects reside. Each package is an egg, naturally. However, an egg may consist of other eggs!
+A Mynewt user starts with a project in mind that defines the application or utility that he or she wants to implement on an embedded device. Making an LED blink on an electronics prototyping board is a common starter project. Enabling a BLE (Bluetooth Low Energy) peripheral mode on a development board is a more complex project. Specifying a project requires naming it, at the very least, and then adding the desired properties or attributes. In order to actualize a project, it needs to be applied to a target which is essentially a combination of some specified hardware and the execution environment. 
 
-A nest can be given any name. You will see a nest named "tadpole" in mynewt. It contains all the core libraries of the operating system for distribution. Each of these directories contain one or more eggs where an egg is a basic unit of implementation of any aspect of the RTOS.
+In the mynewt lifecycle, a project grows in a nest. A nest may house multiple projects. The nest is, therefore, a repository where various component packages for one or more projects reside. Each package is an egg (naturally!). However, in the world of Mynewt an egg may consist of other eggs! For example, the starter project Blinky is an egg consisting of several constituent eggs that enable core features. The egg form is suitable for elemental units of code as it explicitly exposes characteristics such as dependencies, versions, capabilities, requirements etc., thus making assembling appropriate components for a project and building an image for it easy to follow, modular, and robust.
 
-* libs/os: The core RTOS which ports to all supported chip platforms.
-* hw/hal: The hardware abstraction layer (HAL) API definitions that all BSP and MCU implementations must support
-* hw/mcu/native: A MCU implementation for the native platform
-* hw/bsp/native: A BSP implementation for the native platform
-* compiler/native: The definition of compiler support for the native platform.
+A nest can be given any name. For example, you will see a nest named "tadpole" in Mynewt ([https://git-wip-us.apache.org/repos/asf?p=incubator-mynewt-tadpole.git](https://git-wip-us.apache.org/repos/asf?p=incubator-mynewt-tadpole.git)). It contains all the core libraries of the operating system for the native platform which currently supports compilation on Mac OS X. The core libraries are contained in the form of eggs where an egg is a basic unit of implementation of any aspect of the RTOS. The eggs are distributed in the following directory structure inside the nest:
 
-Each of the above directories contain one or more eggs where an egg is a basic unit of implementation of any aspect of the RTOS. For example, the libs/os directory holds eggs such as the bootloader, flash file system, the kernel for process/thread/memory management, tools for testing etc. The hw/hal directory holds an egg that provides abstraction for physical hardware components such as GPIO (general purpose input/output), network adapters, timers, and universal asynchronous receiver-transmitters (UARTs). All these physical interfaces are defined in various header files in hw/hal, and are designed to make device driver specification simpler.
+* libs: contains the two eggs `os` and `testutil`
+* hw: contains three eggs - (i) `hal` which has the abstraction layer (HAL) API definitions that all BSP and MCU implementations must support, (ii) `/mcu/native` which in an MCU implementation for the native platform (a simulator, in this case), and (iii) `bsp/native` which is a BSP implementation for the native platform 
+* compiler: contains the `sim` egg which bundles the compiler specifications for the native platform.
 
-You can see another nest in the mynewt ecosystem called the "larva". It was spawned from the "tadpole" nest using the newt tool. Spawning is easy - ` $ newt create nest <your_nest_name> `. "larva" is the developer's test repository containing all sorts of eggs being incubated, including ones to enhance the core operating system which should eventually make their way into the "tadpole" nest. There is a `hatch_tadpole` script to update the "tadpole" nest when the core OS related eggs in "larva" are ready.
+Let's explore this sample nest a bit further. The `libs/os` egg contains code for scheduler, process/thread/memory management, semaphores etc. It is the core RTOS which ports to all supported chip platforms.The `libs/testutil` egg contains code for testing packages on hardware or simulated environment. The `hw/hal` egg contains header files that provide abstraction for physical hardware components such as GPIO (general purpose input/output), network adapters, timers, and UARTs. This `hw/hal` egg is an MCU peripheral abstraction designed to make it easy to port to different MCUs (microcontrollers). The `hw/mcu/native` egg contains code for microcontroller operations on the native platform. The `hw/bsp/native` egg contains the board support package for the native platform. And finally, the sixth egg `sim` contains the compiler specifications such as path and flags. Currently the compilation is supported on Mac OS X.
 
-There is a third nest named "newt" that contains all the eggs needed to support the build and release process of mynewt software.
+You can see another nest in the mynewt ecosystem called the "larva". It was spawned from the skeletal "tadpole" nest using the newt tool. Spawning is easy - ` $ newt create nest <your_nest_name> `. "larva" is the developer's test repository containing all sorts of eggs being written and incubated, including ones to enhance the core operating system which should eventually make their way into the "tadpole" nest. There is a `hatch_tadpole` script to update the "tadpole" nest when the core OS related eggs in "larva" are ready.
 
-There will also be pre-built nests for certain common hardware devices to enable a user to quickly get started with a project.
+There is a third nest named "newt" that contains all the eggs needed to support the build and release process of mynewt software. In the future, there will also be pre-built nests for certain common hardware devices to enable a user to quickly get started with a project.
+
 
 ### A Mynewt contributor
 

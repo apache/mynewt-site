@@ -4,7 +4,7 @@
 
 We will show you how you can use eggs from a nest on Mynewt to make an LED on a target board blink. We will call it ** Project Blinky**. The goals of this tutorial are threefold:
  
-1. First, you will learn how to set up your environment to be ready to use the various eggs that you will download from Mynewt. 
+1. First, you will learn how to set up your environment to be ready to use Mynewt OS and newt tool. 
 2. Second, we will walk you through a download of eggs for building and testing [on a simulated target](#building-test-code-on-simulator) on a non-Windows machine.
 3. Third, you will download eggs and use tools to create a runtime image for a board to [make its LED blink](#making-an-led-blink). 
 
@@ -59,11 +59,11 @@ case, simply skip the corresponding installation step in the instructions under 
     Note that you need to add export statements to ~/.bash_profile to export variables permanently.
         $ vi ~/.bash_profile
 
-* The next step is to set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from github.com into this newly created directory. Check the installation.
+* The next step is to set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the installation.
 
         $ mkdir -p $GOPATH/src/github.com/mynewt  
         $ cd $GOPATH/src/github.com/mynewt
-        $ git clone https://github.com/mynewt/newt.git
+        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
         $ ls
         newt
         $ cd newt
@@ -228,11 +228,11 @@ Note: If you are going to be be modifying the newt tool itself often and wish to
 
         $ go get github.com/tools/godep 
 
-* Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from github.com into this newly created directory. Check the contents of the directory.
+* Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the contents of the directory.
 
         $ mkdir -p $GOPATH/src/github.com/mynewt  
         $ cd $GOPATH/src/github.com/mynewt
-        $ git clone https://github.com/mynewt/newt.git
+        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
         $ ls
         newt
         $ cd newt
@@ -422,11 +422,11 @@ tutorial for a Windows machine assumes the specified folders.
 
         $ go get github.com/tools/godep 
 
-* Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from github.com into this newly created directory. Check the contents of the directory.
+* Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the contents of the directory.
 
         $ mkdir %GOPATH%\src\github.com\mynewt
         $ cd %GOPATH%\src\github.com\mynewt
-        $ git clone https://github.com/mynewt/newt.git
+        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
         $ ls
         newt
         $ cd newt
@@ -506,28 +506,30 @@ tutorial for a Windows machine assumes the specified folders.
 
 #### Proceed to the [Building test code on simulator on Windows machine](#building-test-code-on-simulator) section.
 
-Note: Currently, the simulator cannot be run in the Windows machine. We are working on it. In the meantime proceed to the [Making an LED blink](#making-an-led-blink) on the Olimex hardware directly.
+Note: Currently, the simulator cannot be run in the Windows machine. We are still working on it. So you will go ahead and [make an LED blink](#making-an-led-blink) on the Olimex hardware directly. 
+
+However, before you skip to the hardware target, you still need to build your first nest as outlined in step 1 in the [Building test code on simulator](#building-test-code-on-simulator).
+
 
 ### Building test code on simulator 
 
-Note: Currently, the simulator cannot be run in the Windows machine. We are working on it. If you are on a Windows machine proceed to the [Making an LED blink](#making-an-led-blink) on the Olimex hardware directly.
+Note: Currently, the simulator cannot be run in the Windows machine. We are working on it. If you are on a Windows machine, do step 1 below and then proceed to the [Making an LED blink](#making-an-led-blink) on the Olimex hardware directly.
 
-1.  First, you have to create a repository for the project i.e. build your first nest! Go to ~/dev and clone the larva repository from github. The URL used below is the HTTPS clone URL from the github.com repository for the Newt Operating System. 
+1.  First, you have to create a repository for the project i.e. build your first nest! Go to ~/dev and clone the larva repository from the apache git repository into a local directory named `larva`.
 
     Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows. The newt tool commands do not change.
 
  
         $ cd ~/dev 
-        $ git clone https://github.com/mynewt/larva.git
+        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
         $ ls
         go	larva
         $ cd larva
         $ ls
-        LICENSE			hw			project
-        README.md		libs			repo.yml
-        compiler		pkg			setup-remotes.sh
+        LICENSE		clutch.yml	hw		nest.yml      project
+        README.md	compiler	libs		net	      scripts
 
-2. You will now create a new project using the newt tool. You can either use the compiled binary `newt` or run the newt.go program using `$newt` (assuming you have stored the command in a variable in your .bash_profile or .bashrc). When you do a `newt target show` or `$newt target show` it should list all the projects you have created so far. 
+2. You will now create a new target using the newt tool. You can either use the compiled binary `newt` or run the newt.go program using `$newt` (assuming you have stored the command in a variable in your .bash_profile or .bashrc). When you do a `newt target show` or `$newt target show` it should list all the projects you have created so far. 
 
         $ newt target create sim_test
         Creating target sim_test
@@ -622,7 +624,7 @@ Coming soon.
     Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows. The newt tool commands do not change.
 
 
-2. Again, you first have to create a repository for the project. Go to the ~dev/larva directory and build out a second project inside larva. The project name is "blinky", in keeping with the objective. Starting with the target name, you have to specify the different aspects of the project to build the right package for the board. In this case that means setting the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
+2. You first have to create a repository for the project. Go to the ~dev/larva directory and build out a second project inside larva. The project name is "blinky", in keeping with the objective. Starting with the target name, you have to specify the different aspects of the project to pull the appropriate eggs and build the right package for the board. In this case that means setting the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
 
         $ newt target create blinky
         Creating target blinky
@@ -646,8 +648,14 @@ Coming soon.
 	        name: blinky
 	        arch: cortex_m4
 
-3. Now you have to build the image package. Once built, you can find the executable "blinky.elf" in the project directory at ~/dev/larva/project/blinky/bin/blink. It's a good idea to take a little time to understand the directory structure.
+3. Now you have to build the image. The linker script within the `hw/bsp/olimex_stm32-e407_devboard` egg builds an image for flash memory by default. Therefore, you need to switch that script with `run_from_sram.ld` in order to get the egg to produce an image for SRAM. <font color="red"> We are working on making it easier to specify where the executable will be run from for a particular project and automatically choose the correct linker scripts and generate the appropriate image. It will be specified as a project identity e.g. bootloader, RAM, flash (default) and the target will build accordingly. </font>. 
 
+    Once the target is built, you can find the executable "blinky.elf" in the project directory at ~/dev/larva/project/blinky/bin/blinky. It's a good idea to take a little time to understand the directory structure.
+
+        $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
+        $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
+        $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
+        $ cd ~/dev/larva/project/blinky/bin/blinky
         $ newt target build blinky
         Building target blinky (project = blinky)
         Compiling case.c
@@ -845,7 +853,7 @@ Coming soon.
 
    You will have to reset the board once the image is uploaded to it.
         
-2. By now you know that you have to build a new package. First, the olimex_stm32-e407_devboard.ld linker script which was previously the same as run_from_sram.ld will now need the contents of run_from_flash.ld. Then the target has to be rebuilt. You will simply replace the blinky project contents with the eggs needed to boot from flash instead of creating a new nest.
+2. By now you know that you have to build a new package that will run from flash. First, the olimex_stm32-e407_devboard.ld linker script which was previously made the same as run_from_sram.ld will now need the contents of run_from_flash.ld. Then the target has to be rebuilt. 
 
         $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
         $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
@@ -854,37 +862,23 @@ Coming soon.
         $ newt target build blinky
         
         
-3. Go to the openocd directory under blink and use OpenOCD to open up a session with the board as done while booting from SRAM.
+3. Go to the project directory and download the image to flash ... in a flash! 
 
-        $ cd ~/dev/larva/project/blinky/bin/blinky/openocd
-        $ openocd -f olimex-arm-usb-tiny-h-ftdi.cfg -f ocd-8888.cfg -f stm32f4x.cfg -c "reset halt" 
-        Open On-Chip Debugger 0.8.0 (2015-09-22-18:21)
-        Licensed under GNU GPL v2
-        For bug reports, read
-	        http://openocd.sourceforge.net/doc/doxygen/bugs.html
-        Info : only one transport option; autoselect 'jtag'
-        adapter speed: 1000 kHz
-        adapter_nsrst_assert_width: 500
-        adapter_nsrst_delay: 100
-        jtag_ntrst_delay: 100
-        cortex_m reset_config sysresetreq
-        Info : clock speed 1000 kHz
-        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
-        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
-        Info : stm32f4x.cpu: hardware has 6 breakpoints, 4 watchpoints
-        target state: halted
-        target halted due to debug-request, current mode: Thread 
-        xPSR: 0x01000000 pc: 0x0800408c psp: 0x20003c60
-        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
-        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
-        target state: halted
-        target halted due to debug-request, current mode: Thread 
-        xPSR: 0x01000000 pc: 0x0800053c msp: 0x10010000
+        $ cd ~/dev/larva/project/blinky/bin/blinky
+        $ newt target download blinky
+        Downloading with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh
 
-4. Run the GNU debugger for ARM in a different window. Specifying the script gdb-8888.cfg tells it what image to load. You should now have a (gdb) prompt inside the debugger.
+4. The LED should be blinking!
 
-        $ cd ~/dev/larva/project/blinky/bin/blinky/openocd
-        $ arm-none-eabi-gdb -x gdb-8888.cfg 
+5. But wait...let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor. The debug connection to the JTAG port is now severed. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. 
+
+    The LED light will start blinking again. Success!
+
+    Note #1: If you want to download the image to flash and a gdb session opened up, use `newt target debug blinky` instead of `newt target download blinky`.
+        
+        $ newt target debug blinky
+        Debugging with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_debug.sh blinky
+        Debugging ~/dev/larva/project/blinky/bin/blinky/blinky.elf
         GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
         Copyright (C) 2014 Free Software Foundation, Inc.
         License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -898,57 +892,37 @@ Coming soon.
         Find the GDB manual and other documentation resources online at:
         <http://www.gnu.org/software/gdb/documentation/>.
         For help, type "help".
-        Type "apropos word" to search for commands related to "word".
-         
-        *** Set target charset ASCII
-         
-        *** Connecting to OpenOCD over port #8888 ***
-        0x20000580 in ?? ()
-         
-        *** loading nic.out.elf ***
-        Loading section .text, size 0x65d4 lma 0x20000000
-        Loading section .ARM.extab, size 0x24 lma 0x200065d4
-        Loading section .ARM.exidx, size 0xd8 lma 0x200065f8
-        Loading section .data, size 0x8f8 lma 0x200066d0
-        Start address 0x20000580, load size 28616
-        Transfer rate: 78 KB/sec, 2861 bytes/write.
+        Type "apropos word" to search for commands related to "word"...
+        Reading symbols from /Users/aditihilbert/dev/larva/project/blinky/bin/blinky/blinky.elf...done.
+        Open On-Chip Debugger 0.8.0 (2015-09-22-18:21)
+        Licensed under GNU GPL v2
+        For bug reports, read
+	        http://openocd.sourceforge.net/doc/doxygen/bugs.html
+        Info : only one transport option; autoselect 'jtag'
+        adapter speed: 1000 kHz
+        adapter_nsrst_delay: 100
+        jtag_ntrst_delay: 100
+        Warn : target name is deprecated use: 'cortex_m'
+        DEPRECATED! use 'cortex_m' not 'cortex_m3'
+        cortex_m reset_config sysresetreq
+        Info : clock speed 1000 kHz
+        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
+        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
+        Info : stm32f4x.cpu: hardware has 6 breakpoints, 4 watchpoints
+        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
+        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
+        target state: halted
+        target halted due to debug-request, current mode: Thread 
+        xPSR: 0x01000000 pc: 0x08000250 msp: 0x10010000
+        Info : accepting 'gdb' connection from 3333
+        Info : device id = 0x10036413
+        Info : flash size = 1024kbytes
+        Reset_Handler () at startup_STM32F40x.s:199
+        199	    ldr    r1, =__etext
         (gdb)
-        
-5. From within gdb check the registers. Set the msp register to the value expected. Finally, hit `c` to continue... and your green LED should blink!
- 
-        (gdb) info reg all
-         r0             0x0	0
-         r1             0x0	0
-         r2             0x0	0
-         r3             0x0	0
-         r4             0x0	0
-         r5             0x0	0
-         r6             0x0	0
-         r7             0x0	0
-         r8             0x0	0
-         r9             0x0	0
-         r10            0x0	0
-         r11            0x0	0
-         r12            0x0	0
-         sp             0x10010000	0x10010000
-         lr             0xffffffff	-1
-         pc             0x20000580	0x20000580 <Reset_Handler>
-         xPSR           0x1000000	16777216
-         msp            0x10010000	0x10010000
-         psp            0x0	0x0
-         primask        0x0	0
-         basepri        0x0	0
-         faultmask      0x0	0
-         control        0x0	0
-         (gdb) set $msp=0x10010000
-         (gdb) c
-         Continuing.
-
-6. The LED should be blinking! But wait...let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor. The debug connection to the JTAG port is now severed. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. 
-
-    The LED light will start blinking again. Success!
-
-    Note: If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma' you should therefore see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
+    
+    
+    Note #2: If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase_sector 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma' you should therefore see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
             
         (gdb) monitor flash erase_sector 0 0 4
         erased sectors 0 through 4 on flash bank 0 in 2.296712s
@@ -956,3 +930,5 @@ Coming soon.
         0x8000000 <__isr_vector>:	0xffffffff	0xffffffff 0xffffffff 0xffffffff 
         0x8000010 <__isr_vector+16>:	0xffffffff 0xffffffff 0xffffffff 0xffffffff
         ...
+        
+
