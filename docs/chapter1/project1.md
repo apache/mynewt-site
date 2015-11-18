@@ -6,9 +6,7 @@ We will show you how you can use eggs from a nest on Mynewt to make an LED on a 
  
 1. First, you will learn how to set up your environment to be ready to use Mynewt OS and newt tool. 
 2. Second, we will walk you through a download of eggs for building and testing [on a simulated target](#building-test-code-on-simulator) on a non-Windows machine.
-3. Third, you will download eggs and use tools to create a runtime image for a board to [make its LED blink](#making-an-led-blink). 
-
-If you want to explore even further, you can try to upload the image to the board's flash memory and have it [boot from flash](#using-flash-to-make-led-blink)!
+3. Third, you will download eggs and use tools to create a runtime image for a board to make its LED blink. You have two choices here - you can [download an image to SRAM](#making-an-led-blink-from-sram) or you can [download it to flash](#using-flash-to-make-led-blink).
 
 ### What you need
 
@@ -25,11 +23,16 @@ case, simply skip the corresponding installation step in the instructions under 
 * Windows: Windows 10
 
 
+### Access to the Apache repo
+
+* Get an account on Apache. 
+
+* The latest codebase for the Mynewt OS is on the master branch at  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+
+* The latest codebase for the Newt tool is on the master branch at  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git
+
+
 ### Getting your Mac Ready
-
-#### Getting an account on GitHub
-
-* Get an account on GitHub. Make sure you have joined the "Newt Operating System" organization.
 
 #### Installing Homebrew to ease installs on OS X 
 
@@ -39,7 +42,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
     Alternatively, you can just extract (or `git clone`) Homebrew and install it to `/usr/local`.
 
-#### Creating local repository 
+#### Installing Go 
 
 * The directory structure must be first readied for using Go. Go code must be kept inside a workspace. A workspace is a directory hierarchy with three directories at its root:
 
@@ -59,20 +62,6 @@ case, simply skip the corresponding installation step in the instructions under 
     Note that you need to add export statements to ~/.bash_profile to export variables permanently.
         $ vi ~/.bash_profile
 
-* The next step is to set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the installation.
-
-        $ mkdir -p $GOPATH/src/github.com/mynewt  
-        $ cd $GOPATH/src/github.com/mynewt
-        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
-        $ ls
-        newt
-        $ cd newt
-        $ ls
-        Godeps                  README.md               coding_style.txt        newt.go
-        LICENSE                 cli                     design.txt
-
-#### Installing Go and Godep
-
 * Next you will use brew to install go. The summary message at the end of the installation should indicate that it is installed in the /usr/local/Cellar/go/ directory. You will use the go command 'install' to compile and install packages (called eggs in the Mynewt world) and dependencies. 
     
         $ brew install go
@@ -80,38 +69,50 @@ case, simply skip the corresponding installation step in the instructions under 
         ==> 
         ==> *Summary*
         🍺  /usr/local/Cellar/go/1.5.1: 5330 files, 273M
-        $ cd $GOPATH/src/github.com/mynewt/newt
 
     Alternatively, you can download the go package directly from (https://golang.org/dl/) instead of brewing it. Install it in /usr/local directory.
-
-* Now you will get the godep package. Return to the go directory level and get godep. Check for it in the bin subdirectory. Add the go environment to path. Make sure it is added to your .bash_profile.
+    
+* You will now get the godep package. Make sure you are at the go directory level and get godep. Check for it in the bin subdirectory. Add the go environment to path. Make sure it is added to your .bash_profile.
 
         $ cd $GOPATH
         $ go get github.com/tools/godep
-        $ ls
-        bin     pkg     src
-        $ ls bin
+        $ ls src/github.com/tools/
         godep
         $ export PATH=$PATH:$GOPATH/bin 
 
-* Use the go command 'install' to compile and install packages and dependencies. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. Note that you may have to go to the `~/dev/go/src/github.com/mynewt/newt` directory to successfully run the restore command (e.g. on certain distributions of Linux). You may also have to do a `go get` before the restore to make sure all the necessary packages and dependencies are correct.
+#### Creating local repository
 
-        $ cd ~/dev/go/src/github.com/mynewt/newt
-        $ go get
-        $ ~/dev/go/bin/godep restore
-        $ go install
+* You are ready to download the newt tool repository. You will use "go" to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
+
+        $  go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git
+        $ $ ls
+         bin	pkg	   src
+        $ ls src
+        git-wip-us.apache.org	github.com		gopkg.in
+
+
+* Check that newt is installed.
+
+        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/mkdir -p $GOPATH/src/github.com/mynewt  
+        Godeps			README.md		coding_style.txt    newt.go
+        LICENSE			cli			    design.txt
+
 
 #### Building the Newt tool
 
-* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). Now try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
+* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a reasonable name such as `newt` for the the resulting executable and install the executable along with its dependencies in $GOPATH/bin. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
 
-Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/github.com/mynewt/newt/newt.go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! Here, you use `go run` which runs the compiled binary directly without producing an executable.
+   However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). 
 
-        $ go run %GOPATH%/src/github.com/mynewt/newt/newt.go
-        $ cd ~/dev/go/src/github.com/mynewt/newt
-        $ ls
-        Godeps			README.md		coding_style.txt	newt
-        LICENSE			cli			design.txt		newt.go
+        $ ~/dev/go/bin/godep restore
+        $ go build -o "$GOPATH"/bin/newt
+        $ ls "$GOPATH"/bin/
+        godep		incubator-mynewt-newt.git	  newt
+
+* Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
+
+   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/github.com/mynewt/newt/newt.go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! Here, you use `go run` which runs the compiled binary directly without producing an executable.
+
         $ newt version
         Newt version:  1.0
         $ newt -h
@@ -178,7 +179,7 @@ Note: If you are going to be be modifying the newt tool itself often and wish to
         $ ls -al /usr/local/bin/arm-none-eabi-gdb
         lrwxr-xr-x  1 aditihilbert  admin  69 Sep 22 17:16 /usr/local/bin/arm-none-eabi-gdb -> /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/arm-none-eabi-gdb
 
-    Note: If no version is specified, brew will install the latest version available. StackOS will eventually work with multiple versions available including the latest releases. However, at present we have tested only with this version and recommend it for getting started. 
+    Note: If no version is specified, brew will install the latest version available. MynewtOS will eventually work with multiple versions available including the latest releases. However, at present we have tested only with this version and recommend it for getting started. 
     
 * You have to install OpenOCD (Open On-Chip Debugger) which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board. It lets you program, debug, and test embedded target devices which, in this case, is the Olimex board. Use brew to install it. Brew adds a simlink /usr/local/bin/openocd to the openocd directory in the Cellar.
 
@@ -228,30 +229,20 @@ Note: If you are going to be be modifying the newt tool itself often and wish to
 
         $ go get github.com/tools/godep 
 
-* Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the contents of the directory.
-
-        $ mkdir -p $GOPATH/src/github.com/mynewt  
-        $ cd $GOPATH/src/github.com/mynewt
-        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
-        $ ls
-        newt
-        $ cd newt
-        $ ls
-        Godeps                  README.md               coding_style.txt        newt.go
-        LICENSE                 cli                     design.txt
-
-* Use the go command 'install' to compile and install packages and dependencies. Add go environment to path. Again, to make the export variable permanent, add it to your ~/.bashrc (or equivalent) file.
-
-        $ $GOPATH/bin/godep restore 
-        $ go get 
-        $ go install 
-        $ export PATH=$PATH:$GOPATH/bin
 
 #### Building the newt tool
 
-* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). Now try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
-Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/github.com/mynewt/newt/newt.go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.
+* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a reasonable name such as `newt` for the the resulting executable and install the executable along with its dependencies in $GOPATH/bin. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
+
+        $ ~/dev/go/bin/godep restore
+        $ go build -o "$GOPATH"/bin/newt
+        $ ls "$GOPATH"/bin/
+        godep		incubator-mynewt-newt.git	  newt
+
+* Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
+
+   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/github.com/mynewt/newt/newt.go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.
 
         $ go build %GOPATH%/src/github.com/mynewt/newt/newt.go
         $ cd ~/dev/go/src/github.com/mynewt/newt
@@ -506,7 +497,7 @@ tutorial for a Windows machine assumes the specified folders.
 
 #### Proceed to the [Building test code on simulator on Windows machine](#building-test-code-on-simulator) section.
 
-Note: Currently, the simulator cannot be run in the Windows machine. We are still working on it. So you will go ahead and [make an LED blink](#making-an-led-blink) on the Olimex hardware directly. 
+Note: Currently, the simulator cannot be run in the Windows machine. We are still working on it. So you will go ahead and [make an LED blink](#making-an-led-blink-from-sram) on the Olimex hardware directly. 
 
 However, before you skip to the hardware target, you still need to build your first nest as outlined in step 1 in the [Building test code on simulator](#building-test-code-on-simulator).
 
@@ -615,13 +606,13 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
 
 Coming soon.
 
-### Making an LED blink
+### Making an LED blink from SRAM
 
 #### Preparing the Software
 
 1. Make sure the PATH environment variable includes the $HOME/dev/go/bin directory (or C:\%GOPATH%\bin on Windows machine). 
 
-    Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows. The newt tool commands do not change.
+    Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows (e.g. `cd dev\go` instead of `cd dev/go`). The newt tool commands do not change.
 
 
 2. You first have to create a repository for the project. Go to the ~dev/larva directory and build out a second project inside larva. The project name is "blinky", in keeping with the objective. Starting with the target name, you have to specify the different aspects of the project to pull the appropriate eggs and build the right package for the board. In this case that means setting the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
@@ -648,7 +639,7 @@ Coming soon.
 	        name: blinky
 	        arch: cortex_m4
 
-3. Now you have to build the image. The linker script within the `hw/bsp/olimex_stm32-e407_devboard` egg builds an image for flash memory by default. Therefore, you need to switch that script with `run_from_sram.ld` in order to get the egg to produce an image for SRAM. <font color="red"> We are working on making it easier to specify where the executable will be run from for a particular project and automatically choose the correct linker scripts and generate the appropriate image. It will be specified as a project identity e.g. bootloader, RAM, flash (default) and the target will build accordingly. </font>. 
+3. Now you have to build the image. The linker script within the `hw/bsp/olimex_stm32-e407_devboard` egg builds an image for flash memory by default. Since you want an image for the SRAM, you need to switch that script with `run_from_sram.ld` in order to get the egg to produce an image for SRAM. <font color="red"> We are working on making it easier to specify where the executable will be run from for a particular project and automatically choose the correct linker scripts and generate the appropriate image. It will be specified as a project identity e.g. bootloader, RAM, flash (default) and the target will build accordingly. </font>. 
 
     Once the target is built, you can find the executable "blinky.elf" in the project directory at ~/dev/larva/project/blinky/bin/blinky. It's a good idea to take a little time to understand the directory structure.
 
@@ -679,40 +670,19 @@ Coming soon.
         blinky.elf	blinky.elf.bin	blinky.elf.cmd	blinky.elf.lst	blinky.elf.map
 
 
-4. Check that you have all the scripts needed to get OpenOCD up and talking with the project's specific hardware. Check whether you already have the scripts in your `/usr/share/openocd/scripts/ ` directory as they may have been part of the openocd download. If yes, you are all set and can proceed to preparing the hardware. If not, continue with this step.
+4. Check that you have all the scripts needed to get OpenOCD up and talking with the project's specific hardware. Depending on your system (Ubuntu, Windows) you may already have the scripts in your `/usr/share/openocd/scripts/ ` directory as they may have been part of the openocd download. If yes, you are all set and can proceed to preparing the hardware.
 
-    Currently, the following 5 files are required. They are likely to be packed into a .tar file and made available under mynewt on github.com. Unpack it in the blinky directory using `tar xvfz` command. Go into the openocd directory created and make sure that the gdb-8888.cfg file indicates the correct file ('blinky.elf' in this case) to load and its full path. Specifically, add 'load ~/dev/larva/project/main/bin/blink/main.elf' and 'symbol-file ~/larva/larva/project/main/bin/blink/main.elf' to this file. Alternatively, you could load these files from within the debugger (gdb) as explained later in the project when you connect to the board using openocd.   
+   Otherwise check the `~/dev/larva/hw/bsp/olimex_stm32-e407_devboard` directory for a file named `f407.cfg`. That is the config we will use to talk to this specific hardware using OpenOCD. You are all set if you see it.
+   
+        $ ls ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
+        bin					olimex_stm32-e407_devboard_debug.sh
+        boot-olimex_stm32-e407_devboard.ld	olimex_stm32-e407_devboard_download.sh
+        egg.yml					run_from_flash.ld
+        f407.cfg				run_from_loader.ld
+        include					run_from_sram.ld
+        olimex_stm32-e407_devboard.ld		src
 
-    * ocd-8888.cfg
-    * olimex-arm-usb-tiny-h-ftdi.cfg
-    * arm-gdb.cfg
-    * gdb-dev_test-8888.cfg
-    * stm32f4x.cfg  
-    
-    Check the arm-gdb.cfg file and see whether the executable you created in the previous step is specified as the file to be loaded to the board. You have the choice of specifying the target and load from within the gdb debugger (Section "Let's Go", Step 2) instead.
-    
-        $ cat gdb-8888.cfg
-        echo \n*** Set target charset ASCII\n
-        set target-charset ASCII
-        #set arm fallback-mode arm
-        #echo \n*** set arm fallback-mode arm ***\n
-        echo \n*** Connecting to OpenOCD over port #8888 ***\n
-        target remote localhost:8888
-        echo \n*** loading nic.out.elf ***\n
-        load ~/dev/larva/project/main/bin/blink/main.elf
-        symbol-file ~/dev/larva/project/main/bin/blink/main.elf 
-        #echo *** Set breakpoint and run to main() to sync with gdb ***\n
-        #b main
-        #continue
-        #delete 1
-
-        #set arm fallback-mode thumb
-        #echo \n*** set arm fallback-mode thumb ***\n\n
-
-
-    Note that an OpenOCD configuration script is available from Olimex for the STM32-E407 development board e.g. at [https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/stm32f4x.cfg](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/stm32f4x.cfg), however getting it to work with different versions of OpenOCD and gcc could get tricky. [<span style="color:red">*This will be simplified eventually into a consolidated single action step instead of manual tweaks currently required*</span>]
-
-
+ 
 #### Preparing the hardware to boot from embedded SRAM
 
 1. Locate the boot jumpers on the board.
@@ -723,49 +693,20 @@ Coming soon.
 
 3. Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board). 
 
-4. Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.
+4. The red PWR LED should be lit. 
 
-5. The red PWR LED should be lit. 
+5. Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.
+
+
 
 #### Let's Go!
 
-1. Go into the openocd directory and start an OCD session. You should see some status messages are shown below. Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated below, you will have to manually set it after you open the gdp tool to load the image on it (next step). Note the `-c "reset halt"` flag that tells it to halt after opening the session. It will now require a manual "continue" command from the GNU debugger in step 3. 
-
-        $ cd ~/dev/larva/project/blinky/bin/blinky/openocd
-        $ openocd -f olimex-arm-usb-tiny-h-ftdi.cfg -f ocd-8888.cfg -f stm32f4x.cfg -c "reset halt" 
-        Open On-Chip Debugger 0.8.0 (2015-09-22-18:21)
-        Licensed under GNU GPL v2
-        For bug reports, read
-	        http://openocd.sourceforge.net/doc/doxygen/bugs.html
-        Info : only one transport option; autoselect 'jtag'
-        adapter speed: 1000 kHz
-        adapter_nsrst_assert_width: 500
-        adapter_nsrst_delay: 100
-        jtag_ntrst_delay: 100
-        cortex_m reset_config sysresetreq
-        Info : clock speed 1000 kHz
-        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
-        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
-        Info : stm32f4x.cpu: hardware has 6 breakpoints, 4 watchpoints
-        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
-        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
-        target state: halted
-        target halted due to debug-request, current mode: Thread 
-        xPSR: 0x01000000 pc: 0x2000053c msp: 0x10010000 
-        
-    If your scripts are in `/usr/share/openocd/scripts/ ` directory you may need to provide the full path information in the arguments.
-    
-        $ openocd -f /usr/share/openocd/scripts/interface/ftdi/olimex-arm-usb-tiny-h.cfg -f /usr/share/openocd/scripts/target/stm32f4x.cfg -c "gdb_port 8888; init; reset halt" 
-        
-    If you are on a Windows machine, connect to the board with openocd using the following:
-    
-        $ cd C:\openocd
-        $ bin\openocd-0.8.0.exe -f scripts\interface\ftdi\olimex-arm-usb-tiny-h.cfg -f scripts\target\stm32f4x.cfg -c "gdb_port 8888; init; reset halt"
-
-2. Open a new terminal window and run the GNU debugger for ARM. Specifying the script gdb-8888.cfg tells it what image to load. You should now have a (gdb) prompt inside the debugger.
-
-        $ cd ~/dev/larva/project/blinky/bin/blinky/openocd
-        $ arm-none-eabi-gdb -x gdb-8888.cfg 
+1. Make sure you are in the blinky project directory with the blinky.elf executable. Run the debug command in the newt tool. You should see some status messages are shown below. There is an inbuilt `-c "reset halt"` flag that tells it to halt after opening the session.
+      
+        $ cd dev/larva/project/blinky/bin/blinky
+        $ newt target debug blinky
+        Debugging with /Users/aditihilbert/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_debug.sh blinky
+        Debugging /Users/aditihilbert/dev/larva/project/blinky/bin/blinky/blinky.elf
         GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
         Copyright (C) 2014 Free Software Foundation, Inc.
         License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -779,73 +720,52 @@ Coming soon.
         Find the GDB manual and other documentation resources online at:
         <http://www.gnu.org/software/gdb/documentation/>.
         For help, type "help".
-        Type "apropos word" to search for commands related to "word".
-         
-        *** Set target charset ASCII
-         
-        *** Connecting to OpenOCD over port #8888 ***
-        0x20000580 in ?? ()
-         
-        *** loading image ***
-        Loading section .text, size 0x65d4 lma 0x20000000
-        Loading section .ARM.extab, size 0x24 lma 0x200065dc
-        Loading section .ARM.exidx, size 0xd8 lma 0x20006600
-        Loading section .data, size 0x8f8 lma 0x200066d8
-        Start address 0x2000053c, load size 28624
-        Transfer rate: 78 KB/sec, 2862 bytes/write.
-        (gdb)
-        
-    Instead of the script, you could connect to the openocd process and tell the debugger what image to load from within gdb (which is 'blinky.elf' in this case). Below is an example input/output when doing it on a Windows machine. Note the forward slashes.
-    
-        C:\dev\larva>arm-none-eabi-gdb -q
-        (gdb) target remote localhost:8888
-        Remote debugging using localhost:8888
-        0xb064f054 in ?? ()
-        ...
-        (gdb) load C:/dev/larva/project/blinky/bin/blinky/blinky.elf
-        Loading section .text, size 0x6778 lma 0x20000000
-        Loading section .ARM.extab, size 0x18 lma 0x20006778
-        Loading section .ARM.exidx, size 0xc8 lma 0x20006790
-        Loading section .data, size 0x8f8 lma 0x20006858
-        Start address 0x20000528, load size 29008
-        Transfer rate: 72 KB/sec, 2900 bytes/write.
-        (gdb) symbol-file C:/dev/larva/project/blinky/bin/blinky/blinky.elf
-        Reading symbols from C:/dev/larva/project/blinky/bin/blinky/blinky.elf...done.
-    
+        Type "apropos word" to search for commands related to "word"...
+        Reading symbols from /Users/aditihilbert/dev/larva/project/blinky/bin/        blinky/blinky.elf...done.
+        Open On-Chip Debugger 0.8.0 (2015-09-22-18:21)
+        Licensed under GNU GPL v2
+        For bug reports, read
+	        http://openocd.sourceforge.net/doc/doxygen/bugs.html
+        Info : only one transport option; autoselect 'jtag'
+        adapter speed: 1000 kHz
+        adapter_nsrst_delay: 100
+        jtag_ntrst_delay: 100
+        Warn : target name is deprecated use: 'cortex_m'
+        DEPRECATED! use 'cortex_m' not 'cortex_m3'
+        cortex_m reset_config sysresetreq
+        Info : clock speed 1000 kHz
+        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
+        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
+        Info : stm32f4x.cpu: hardware has 6 breakpoints, 4 watchpoints
+        Info : JTAG tap: stm32f4x.cpu tap/device found: 0x4ba00477 (mfg: 0x23b, part: 0xba00, ver: 0x4)
+        Info : JTAG tap: stm32f4x.bs tap/device found: 0x06413041 (mfg: 0x020, part: 0x6413, ver: 0x0)
+        target state: halted
+        target halted due to debug-request, current mode: Thread 
+        xPSR: 0x01000000 pc: 0x20000250 msp: 0x10010000
+        Info : accepting 'gdb' connection from 3333
+        Info : device id = 0x10036413
+        Info : flash size = 1024kbytes
+        Reset_Handler () at startup_STM32F40x.s:199
+        199	    ldr    r1, =__etext
 
-3. From within gdb check the registers. Set the msp register for the main stack pointer to the expected value as shown here. 
-    
-    Finally, hit `c` to continue... and your green LED should blink!
 
-        (gdb) info reg all
-         r0             0x0	0
-         r1             0x0	0
-         r2             0x0	0
-         r3             0x0	0
-         r4             0x0	0
-         r5             0x0	0
-         r6             0x0	0
-         r7             0x0	0
-         r8             0x0	0
-         r9             0x0	0
-         r10            0x0	0
-         r11            0x0	0
-         r12            0x0	0
-         sp             0x10010000	0x10010000
-         lr             0xffffffff	-1
-         pc             0x20000580	0x20000580 <Reset_Handler>
-         xPSR           0x1000000	16777216
-         msp            0x10010000	0x10010000
-         psp            0x0	0x0
-         primask        0x0	0
-         basepri        0x0	0
-         faultmask      0x0	0
-         control        0x0	0
-         (gdb) set $msp=0x10010000
-         (gdb) c
-         Continuing.
+      Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdp tool and load the image on it. 
+      
+        (gdb) set $msp=0x10010000
+      
+      Now load the image and type "c" or "continue" from the GNU debugger. 
+              
+        (gdb) load ~/dev/larva/project/blinky/bin/blinky/blinky.elf
+        Loading section .text, size 0x4294 lma 0x20000000
+        Loading section .ARM.extab, size 0x24 lma 0x20004294
+        Loading section .ARM.exidx, size 0xd8 lma 0x200042b8
+        Loading section .data, size 0x874 lma 0x20004390
+        Start address 0x20000250, load size 19460
+        Transfer rate: 81 KB/sec, 2432 bytes/write.
+        (gdb) c
+        Continuing.
          
-4. Voilà! The board's LED should be blinking at 1 Hz.
+2. Voilà! The board's LED should be blinking at 1 Hz.
 
 ### Using flash to make LED blink
 
