@@ -1,7 +1,7 @@
 # Mutex
 
 
-Insert synopsis here
+Mutex is short for "mutual exclusion"; a mutex provides mutually exclusive access to a shared resource. A mutex provides *priority inheritance* in order to prevent *priority inversion*. Priority inversion occurs when a higher priority task is waiting on a resource owned by a lower priority task. Using a mutex, the lower priority task will inherit the highest priority of any task waiting on the mutex. 
 
 
 ## Description
