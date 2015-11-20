@@ -8,9 +8,12 @@ We will show you how you can use eggs from a nest on Mynewt to make an LED on a 
 2. Second, we will walk you through a download of eggs for building and testing [on a simulated target](#building-test-code-on-simulator) on a non-Windows machine.
 3. Third, you will download eggs and use tools to create a runtime image for a board to make its LED blink. You have two choices here - you can [download an image to SRAM](#making-an-led-blink-from-sram) or you can [download it to flash](#using-flash-to-make-led-blink).
 
+** Time Requirement**: Allow yourself a couple of hours for this project if you are relatively new to embedded systems and playing with development boards. Those jumpers can be pesky!
+
+
 ### What you need
 
-1. STM32-E407 development board from Olimex.
+1. STM32-E407 development board from Olimex. You can order it from [http://www.mouser.com](http://www.mouser.com/ProductDetail/Olimex-Ltd/STM32-E407/?qs=UN6GZl1KCcit6Ye0xmPO4A%3D%3D), [http://www.digikey.com](http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951), and other places.
 2. ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
 3. USB A-B type cable to connect the debugger to your personal computer
 4. Personal Computer
@@ -59,20 +62,23 @@ case, simply skip the corresponding installation step in the instructions under 
         $ cd dev/go
         $ export GOPATH=`pwd`
 
-    Note that you need to add export statements to ~/.bash_profile to export variables permanently.
+    Note that you need to add export statements to ~/.bash_profile to export variables permanently. Don't forget to source the file for the change to go into effect.
+    
         $ vi ~/.bash_profile
+        $ source ~/.bash_profile
 
-* Next you will use brew to install go. The summary message at the end of the installation should indicate that it is installed in the /usr/local/Cellar/go/ directory. You will use the go command 'install' to compile and install packages (called eggs in the Mynewt world) and dependencies. 
+* Next you will use brew to install Go. The summary message at the end of the installation should indicate that it is installed in the /usr/local/Cellar/go/ directory. You will use the Go command 'install' to compile and install packages (called eggs in the Mynewt world) and dependencies. 
     
         $ brew install go
         ==> 
-        ==> 
+        ...
+        ... 
         ==> *Summary*
         🍺  /usr/local/Cellar/go/1.5.1: 5330 files, 273M
 
-    Alternatively, you can download the go package directly from (https://golang.org/dl/) instead of brewing it. Install it in /usr/local directory.
+    Alternatively, you can download the Go package directly from (https://golang.org/dl/) instead of brewing it. Install it in /usr/local directory.
     
-* You will now get the godep package. Make sure you are at the go directory level and get godep. Check for it in the bin subdirectory. Add the go environment to path. Make sure it is added to your .bash_profile.
+* You will now get the godep package. Make sure you are at the Go directory level and get godep. Check for it in the bin subdirectory. Add the Go environment to path. Make sure it is added to your .bash_profile.
 
         $ cd $GOPATH
         $ go get github.com/tools/godep
@@ -82,7 +88,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
 #### Creating local repository
 
-* You are ready to download the newt tool repository. You will use "go" to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
+* You are ready to download the newt tool repository. You will use Go to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
 
         $  go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git
         $ $ ls
@@ -93,14 +99,16 @@ case, simply skip the corresponding installation step in the instructions under 
 
 * Check that newt is installed.
 
-        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/mkdir -p $GOPATH/src/github.com/mynewt  
+        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git  
         Godeps			README.md		coding_style.txt    newt.go
         LICENSE			cli			    design.txt
 
 
 #### Building the Newt tool
 
-* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a reasonable name such as `newt` for the the resulting executable and install the executable along with its dependencies in $GOPATH/bin. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
+* In preparation for the install, you use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
+
+   You will use Go to run the newt.go program to build the newt tool. The command used is  `go build` which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a name and path of your choice for the executable. We suggest using `newt` and installing the executable along with its dependencies in $GOPATH/bin. 
 
    However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). 
 
@@ -181,7 +189,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
     Note: If no version is specified, brew will install the latest version available. MynewtOS will eventually work with multiple versions available including the latest releases. However, at present we have tested only with this version and recommend it for getting started. 
     
-* You have to install OpenOCD (Open On-Chip Debugger) which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board. It lets you program, debug, and test embedded target devices which, in this case, is the Olimex board. Use brew to install it. Brew adds a simlink /usr/local/bin/openocd to the openocd directory in the Cellar.
+* You have to install OpenOCD (Open On-Chip Debugger) which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board. It lets you program, debug, and test embedded target devices which, in this case, is the Olimex board. Use brew to install it. Brew adds a simlink /usr/local/bin/openocd to the openocd directory in the Cellar. For more on OpenOCD go to [http://openocd.org](http://openocd.org).
 
         $ brew install open-ocd
         $ which openocd
@@ -200,7 +208,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
 #### Installing some prerequisites
 
-* Install git, libcurl, and the go language if you do not have them already.
+* Install git, libcurl, and the Go language if you do not have them already.
 
         $ sudo apt-get install git 
         $ sudo apt-get install libcurl4-gnutls-dev 
@@ -233,7 +241,7 @@ case, simply skip the corresponding installation step in the instructions under 
 #### Building the newt tool
 
 
-* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a reasonable name such as `newt` for the the resulting executable and install the executable along with its dependencies in $GOPATH/bin. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
+* You will now use Go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a reasonable name such as `newt` for the the resulting executable and install the executable along with its dependencies in $GOPATH/bin. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
 
         $ ~/dev/go/bin/godep restore
         $ go build -o "$GOPATH"/bin/newt
@@ -425,7 +433,7 @@ tutorial for a Windows machine assumes the specified folders.
         Godeps                  README.md               coding_style.txt        newt.go
         LICENSE                 cli                     design.txt
 
-* Use the go command 'install' to compile and install packages and dependencies. Add go environment to path. Again, to make the export variable permanent, add it to your ~/.bashrc (or equivalent) file.
+* Use the Go command 'install' to compile and install packages and dependencies. Add Go environment to path. Again, to make the export variable permanent, add it to your ~/.bashrc (or equivalent) file.
 
         $ %GOPATH%\bin\godep restore 
         $ go get 
@@ -433,7 +441,7 @@ tutorial for a Windows machine assumes the specified folders.
 
 #### Building the newt tool
 
-* You will now use go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). Now try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
+* You will now use Go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). Now try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
     Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to define the newt environment variable that allows you to execute the command via `%newt%`. Use `set newt=go run %GOPATH%\src\github.com\mynewt\newt\newt.go` or set it from the GUI. Here, you use `go run` which runs the compiled binary directly without producing an executable.
 
@@ -608,6 +616,8 @@ Coming soon.
 
 ### Making an LED blink from SRAM
 
+You are here because you want to build an image to be run from internal SRAM on the Olimex board.
+
 #### Preparing the Software
 
 1. Make sure the PATH environment variable includes the $HOME/dev/go/bin directory (or C:\%GOPATH%\bin on Windows machine). 
@@ -768,6 +778,8 @@ Coming soon.
 2. Voilà! The board's LED should be blinking at 1 Hz.
 
 ### Using flash to make LED blink
+
+You are here because you want to build an image to be run from flash memory on the Olimex board.
 
 1. Configure the board to boot from flash by moving the two jumpers together to B0_0 and B1_0. 
 

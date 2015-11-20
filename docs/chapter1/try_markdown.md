@@ -19,3 +19,14 @@
 * Click on "Help" in Mou and then on "Markdown Syntax Reference".
 
 * <font color="red"> Substitute a sentence of your own here </font>
+
+
+
+---
+
+> <font color="red"> Note! </font>
+>> You will not be able to see the change immediately by refreshing your browser right after editign the Markdown file. You can only push the change to the Apache repository. So continue with the steps in [how_to_edit_docs.md](how_to_edit_docs.md).
+>>
+>> You can see the change on the website if/when a doc builder on the project team merges your changes to the master branch and generates the pages for the website.
+>>
+>> You do have the option to download MkDocs and preview the change by hosting the pages locally using its built-in web server. The steps are described in [how_to_edit_docs.md](how_to_edit_docs.md).

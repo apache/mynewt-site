@@ -64,17 +64,17 @@ The chapter organization is outlined below. Each chapter will include one or mor
 
 ### Contributing to Documentation
 
-All content on this site is statically generated using [MkDocs](http://www.mkdocs.org) from documents written in Markdown and stored in the `docs` directory on the master branch in the [Documentation repository](https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git). As a documentation contributor you will modify in the desired markdown file or create new ones in the appropriate chapter subdirectory under `docs`. 
+All content on this site is statically generated using [MkDocs](http://www.mkdocs.org) from documents written in Markdown and stored in the `docs` directory on the master branch in the [Documentation repository](https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git). As a documentation contributor you will modify the desired markdown file or create new ones in the appropriate chapter subdirectory under `docs`. 
 
 To edit content in a Markdown file and be able to see how the changes look you may use desktop apps such as:
 
 * [Mou](http://25.io/mou/) for Mac
 * [Something like Mou](http://alternativeto.net/software/mou/?platform=windows) for Windows
 
-Click on [How to edit docs](chapter1/how_to_edit_docs.md) under "Get Started" to learn how to edit a sample file [try_markdown.md](chapter1/try_markdown.md) on Mynewt's documentation git repository.
+Click on the tutorial [How to edit docs](chapter1/how_to_edit_docs.md) under "Get Started" to learn how to edit a sample file [try_markdown.md](chapter1/try_markdown.md) on Mynewt's documentation git repository.
 
 The static html content is generated and maintained in the asf-site branch in the documentation repository. Currently, the static html files are generated manually once a day. This will be automated in the future.
 
-You can preview the changes you have made on your desktop by installing MkDocs and starting up its built-in webserver as described in [MkDocs](http://www.mkdocs.org).
+If you wish, you may preview the changes you have made on your desktop by installing MkDocs and starting up its built-in webserver as described in [MkDocs](http://www.mkdocs.org). This step is optional but described in the tutorial.
 
 
