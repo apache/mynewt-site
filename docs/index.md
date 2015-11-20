@@ -50,9 +50,9 @@ To subscribe to a mailing list, you simply send an email to a special subscripti
 
 The chapter organization is outlined below. Each chapter will include one or more tutorials for hands-on experience with the material in each chapter. 
 
-* [Chapter 1: Getting Started](chapter1/newt_concepts.md) introduces some key terms in this initiative and includes a tutorial for a quick project to show how to work with some of the products.
+* [Chapter 1: Get Started](chapter1/newt_concepts.md) introduces some key terms in this initiative and includes a tutorial for a quick project to show how to work with some of the products.
 
-* [Chapter 2: Getting Acclimated](chapter2/vocabulary.md) delves deeper into the concepts crucial to the software development effort. 
+* [Chapter 2: Get Acclimated](chapter2/vocabulary.md) delves deeper into the concepts crucial to the software development effort. 
 
 * [Chapter 3: Newt Tool Reference](chapter3/newt_ops.md) describes the command structure and details all the available commands to help you with your project. 
 
