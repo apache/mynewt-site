@@ -78,20 +78,13 @@ case, simply skip the corresponding installation step in the instructions under 
 
     Alternatively, you can download the Go package directly from (https://golang.org/dl/) instead of brewing it. Install it in /usr/local directory.
     
-* You will now get the godep package. Make sure you are at the Go directory level and get godep. Check for it in the bin subdirectory. Add the Go environment to path. Make sure it is added to your .bash_profile.
-
-        $ cd $GOPATH
-        $ go get github.com/tools/godep
-        $ ls src/github.com/tools/
-        godep
-        $ export PATH=$PATH:$GOPATH/bin 
 
 #### Creating local repository
 
 * You are ready to download the newt tool repository. You will use Go to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
 
-        $  go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git
-        $ $ ls
+        $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ ls
          bin	pkg	   src
         $ ls src
         git-wip-us.apache.org	github.com		gopkg.in
@@ -106,20 +99,16 @@ case, simply skip the corresponding installation step in the instructions under 
 
 #### Building the Newt tool
 
-* In preparation for the install, you use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
-
-   You will use Go to run the newt.go program to build the newt tool. The command used is  `go build` which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a name and path of your choice for the executable. We suggest using `newt` and installing the executable along with its dependencies in $GOPATH/bin. 
-
-   However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). 
-
-        $ ~/dev/go/bin/godep restore
-        $ go build -o "$GOPATH"/bin/newt
+* You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+   
+        $ cd $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ go install
         $ ls "$GOPATH"/bin/
         godep		incubator-mynewt-newt.git	  newt
 
 * Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
-   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/github.com/mynewt/newt/newt.go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! Here, you use `go run` which runs the compiled binary directly without producing an executable.
+   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt/newt/go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! 
 
         $ newt version
         Newt version:  1.0
@@ -233,30 +222,36 @@ case, simply skip the corresponding installation step in the instructions under 
 
     Note that you need to add export statements to ~/.bashrc (or equivalent) to export variables permanently.
 
-* Next, install godep. Note that the following command produces no output.
+* You are ready to download the newt tool repository. You will use Go to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
 
-        $ go get github.com/tools/godep 
+        $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ ls
+         bin	pkg	   src
+        $ ls src
+        git-wip-us.apache.org	github.com		gopkg.in
 
+
+* Check that newt is installed.
+
+        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git  
+        Godeps			README.md		coding_style.txt    newt.go
+        LICENSE			cli			    design.txt
 
 #### Building the newt tool
 
 
-* You will now use Go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. The `-o` option is used to specify a reasonable name such as `newt` for the the resulting executable and install the executable along with its dependencies in $GOPATH/bin. In preparation for the install, you may use the godep command 'restore' to check out listed dependency versions in $GOPATH and link all the necessary files. 
-
-        $ ~/dev/go/bin/godep restore
-        $ go build -o "$GOPATH"/bin/newt
+* You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+   
+        $ cd $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ go install
         $ ls "$GOPATH"/bin/
         godep		incubator-mynewt-newt.git	  newt
 
 * Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
-   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/github.com/mynewt/newt/newt.go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.
+   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt/newt/go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.   
+  
 
-        $ go build %GOPATH%/src/github.com/mynewt/newt/newt.go
-        $ cd ~/dev/go/src/github.com/mynewt/newt
-        $ ls
-        Godeps			README.md		coding_style.txt	newt
-        LICENSE			cli			design.txt		newt.go
         $ newt version
         Newt version:  1.0
         $ newt -h
@@ -426,10 +421,10 @@ tutorial for a Windows machine assumes the specified folders.
         $ mkdir %GOPATH%\src\github.com\mynewt
         $ cd %GOPATH%\src\github.com\mynewt
         $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
-        $ ls
+        $ dir
         newt
         $ cd newt
-        $ ls
+        $ dir
         Godeps                  README.md               coding_style.txt        newt.go
         LICENSE                 cli                     design.txt
 
@@ -441,15 +436,16 @@ tutorial for a Windows machine assumes the specified folders.
 
 #### Building the newt tool
 
-* You will now use Go to run the newt.go program to build the newt tool. You will have to use `go build` command which compiles and writes the resulting executable to an output file named `newt`. However, it does not install the results along with its dependencies in $GOPATH/bin (for that you will need to use `go install`). Now try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
+* * You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+   
+        $ go install
+        $ ls "$GOPATH"/bin/
+        godep		incubator-mynewt-newt.git	  newt
+
+* Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
     Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to define the newt environment variable that allows you to execute the command via `%newt%`. Use `set newt=go run %GOPATH%\src\github.com\mynewt\newt\newt.go` or set it from the GUI. Here, you use `go run` which runs the compiled binary directly without producing an executable.
 
-        $ go build %GOPATH%\src\github.com\mynewt\newt\newt.go
-        $ cd ~/dev/go/src/github.com/mynewt/newt
-        $ dir
-        Godeps			README.md		coding_style.txt	newt
-        LICENSE			cli			design.txt		newt.go
         $ newt version
         Newt version:  1.0
         $ newt -h
@@ -785,24 +781,94 @@ You are here because you want to build an image to be run from flash memory on t
 
    You will have to reset the board once the image is uploaded to it.
         
-2. By now you know that you have to build a new package that will run from flash. First, the olimex_stm32-e407_devboard.ld linker script which was previously made the same as run_from_sram.ld will now need the contents of run_from_flash.ld. Then the target has to be rebuilt. 
+2. If you skipped the first option for the project [(downloading an image to SRAM)](#making-an-led-blink-from-sram), then skip this step. Otherwise, continue with this step. 
+
+     By default, the linker script (`olimex_stm32-e407_devboard.ld`) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed `olimex_stm32-e407_devboard.ld` to match `run_from_sram.ld`. You will therefore return to defaults with `olimex_stm32-e407_devboard.ld` linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.
 
         $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
         $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-        $ cp run_from_flash.ld olimex_stm32-e407_devboard.ld
+        $ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
+        $ cp run_from_loader.ld olimex_stm32-e407_devboard.ld
         $ cd ~/dev/larva/project/blinky/bin/blinky
+
+3. In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial bring up of the Olimex board and then transfers control to the image stored at a location in flash known to it. The bootloader in turn requires the bin2image tool to check the image header for version information, CRC checks etc. So, we will need to build these two additional targets (bootloader and bin2img).
+
+   Let's first create bin2img:
+   
+        $ newt target create bin2img
+        Creating target bin2img
+        Target bin2img successfully created!
+        $ newt target set bin2img arch=sim
+        Target bin2img successfully set arch to sim
+        $ newt target set bin2img compiler=sim
+        Target bin2img successfully set compiler to sim
+        $ newt target set bin2img project=bin2img
+        Target bin2img successfully set project to bin2img
+        $ newt target set bin2img compiler_def=debug
+        Target bin2img successfully set compiler_def to debug
+        $ newt target set bin2img bsp=hw/bsp/native
+        Target bin2img successfully set bsp to hw/bsp/native
+        $ newt target show bin2image
+        $ newt target show bin2img
+        bin2img
+        	arch: sim
+        	compiler: sim
+        	project: bin2img
+        	compiler_def: debug
+        	bsp: hw/bsp/native
+        	name: bin2img
+
+   And then let's create boot_olimex:
+  
+        $ newt target create boot_olimex
+        Creating target boot_olimex
+        Target boot_olimex successfully created!
+        $ newt target set boot_olimex arch=cortex_m4
+        Target boot_olimex successfully set arch to cortex_m4
+        $ newt target set boot_olimex compiler=arm-none-eabi-m4
+        Target boot_olimex successfully set compiler to arm-none-eabi-m4
+        $ newt target set boot_olimex project=boot
+        Target boot_olimex successfully set project to boot
+        $ newt target set boot_olimex compiler_def=optimized
+        Target boot_olimex successfully set compiler_def to optimized
+        $ newt target set boot_olimex bsp=hw/bsp/olimex_stm32-e407_devboard
+        Target boot_olimex successfully set bsp to hw/bsp/olimex_stm32-e407_devboard
+        $ newt target show boot_olimex
+        boot_olimex
+        	project: boot
+        	compiler_def: optimized
+        	bsp: hw/bsp/olimex_stm32-e407_devboard
+        	name: boot_olimex
+        	arch: cortex_m4
+        	compiler: arm-none-eabi-m4
+
+4. Let's build all the three targets now.
+
+        $ newt target build bin2img
+        Building target bin2img (project = bin2img)
+        Building project bin2img
+        Successfully run!
+        $ newt target build boot_olimex
+        Building target boot_olimex (project = boot)
+        Building project boot
+        Successfully run!
         $ newt target build blinky
-        
-        
-3. Go to the project directory and download the image to flash ... in a flash! 
+        Building target blinky (project = blinky)
+        Building project blinky
+        Successfully run!
+
+
+5. Go to the project directory and download the bootloader and the image to flash ... in a flash! 
 
         $ cd ~/dev/larva/project/blinky/bin/blinky
+        $ newt target download boot_olimex
+        Downloading with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh
         $ newt target download blinky
         Downloading with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh
 
-4. The LED should be blinking!
+6. The LED should be blinking!
 
-5. But wait...let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor. The debug connection to the JTAG port is now severed. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. 
+7. But wait...let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor. The debug connection to the JTAG port is now severed. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. 
 
     The LED light will start blinking again. Success!
 
@@ -858,9 +924,13 @@ You are here because you want to build an image to be run from flash memory on t
             
         (gdb) monitor flash erase_sector 0 0 4
         erased sectors 0 through 4 on flash bank 0 in 2.296712s
-        (gdb) x/32wx 0x8000000 
-        0x8000000 <__isr_vector>:	0xffffffff	0xffffffff 0xffffffff 0xffffffff 
-        0x8000010 <__isr_vector+16>:	0xffffffff 0xffffffff 0xffffffff 0xffffffff
-        ...
+        (gdb) monitor mdw 0x08000000 16
+        0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+        (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+        (0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+        (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff         
+        (gdb) monitor flash info 0
         
+        
+        monitor flash erase_check 0
 
