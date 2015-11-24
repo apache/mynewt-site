@@ -6,7 +6,7 @@ We will show you how you can use eggs from a nest on Mynewt to make an LED on a 
  
 1. First, you will learn how to set up your environment to be ready to use Mynewt OS and newt tool. 
 2. Second, we will walk you through a download of eggs for building and testing [on a simulated target](#building-test-code-on-simulator) on a non-Windows machine.
-3. Third, you will download eggs and use tools to create a runtime image for a board to make its LED blink. You have two choices here - you can [download an image to SRAM](#making-an-led-blink-from-sram) or you can [download it to flash](#using-flash-to-make-led-blink).
+3. Third, you will download eggs and use tools to create a runtime image for a board to make its LED blink. You have two choices here - you can [download an image to SRAM](#using-sram-to-make-led-blink) or you can [download it to flash](#using-flash-to-make-led-blink).
 
 ** Time Requirement**: Allow yourself a couple of hours for this project if you are relatively new to embedded systems and playing with development boards. Those jumpers can be pesky!
 
@@ -28,7 +28,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
 ### Access to the Apache repo
 
-* Get an account on Apache. 
+* Get an account on Apache. You do not need an account to view the website or clone the repository but you need it to push changes to it.
 
 * The latest codebase for the Mynewt OS is on the master branch at  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
 
@@ -55,7 +55,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
     * bin contains executable commands.
 
-    The GOPATH environment variable specifies the location of your workspace. First create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory and then proceed to create the directory for cloning the newt tool repository.
+    The GOPATH environment variable specifies the location of your workspace. First create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory where you will soon clone the newt tool repository.
 
         $ cd $HOME
         $ mkdir -p dev/go  
@@ -67,7 +67,7 @@ case, simply skip the corresponding installation step in the instructions under 
         $ vi ~/.bash_profile
         $ source ~/.bash_profile
 
-* Next you will use brew to install Go. The summary message at the end of the installation should indicate that it is installed in the /usr/local/Cellar/go/ directory. You will use the Go command 'install' to compile and install packages (called eggs in the Mynewt world) and dependencies. 
+* Next you will use Homebrew to install Go. The summary message at the end of the installation should indicate that it is installed in the /usr/local/Cellar/go/ directory. You will use the Go command 'install' to compile and install packages (called eggs in the Mynewt world) and dependencies. 
     
         $ brew install go
         ==> 
@@ -90,16 +90,16 @@ case, simply skip the corresponding installation step in the instructions under 
         git-wip-us.apache.org	github.com		gopkg.in
 
 
-* Check that newt is installed.
+* Check that newt.go is in place.
 
-        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git  
+        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt  
         Godeps			README.md		coding_style.txt    newt.go
         LICENSE			cli			    design.txt
 
 
 #### Building the Newt tool
 
-* You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+* You will use Go to run the newt.go program to build the newt tool. The command used is `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
    
         $ cd $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
         $ go install
@@ -191,9 +191,6 @@ case, simply skip the corresponding installation step in the instructions under 
 
 ### Getting your Ubuntu machine Ready 
 
-#### Getting an account on GitHub
-
-* Get an account on GitHub. Make sure you have joined the "Newt Operating System" organization.
 
 #### Installing some prerequisites
 
@@ -213,7 +210,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
     * bin contains executable commands.
 
-    The GOPATH environment variable specifies the location of your workspace. First create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory and then proceed to create the directory for cloning the newt tool repository.
+    The GOPATH environment variable specifies the location of your workspace. First create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory where you will soon clone the newt tool repository.
 
         $ cd $HOME
         $ mkdir -p dev/go  
@@ -231,9 +228,9 @@ case, simply skip the corresponding installation step in the instructions under 
         git-wip-us.apache.org	github.com		gopkg.in
 
 
-* Check that newt is installed.
+* Check that newt is in place.
 
-        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git  
+        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt 
         Godeps			README.md		coding_style.txt    newt.go
         LICENSE			cli			    design.txt
 
@@ -300,7 +297,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
         $ sudo apt-get install gcc-multilib libc6-i386
         
-* For the LED project on the Olimex hardware, you have to install gcc for AM 4.9.3.  This package can be installed with apt-get as documented [here](https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded).
+* For the LED project on the Olimex hardware, you have to install gcc for AM 4.9.3.  This package can be installed with apt-get as documented below. The steps are explained in depth at [https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded](https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded).
 
         $ sudo apt-get remove binutils-arm-none-eabi gcc-arm-none-eabi 
         $ sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded 
@@ -319,10 +316,7 @@ case, simply skip the corresponding installation step in the instructions under 
 
 ### Getting your Windows machine Ready
 
-
-#### Getting an account on GitHub
-
-* Get an account on GitHub. Make sure you have joined the "Newt Operating System" organization.
+<font color="red"> Note: The instructions for Windows machine are still under review. We are working on providing a Docker container to make the prep work easy. </font>
 
 #### Installing some prerequisites
 
@@ -360,7 +354,7 @@ tutorial for a Windows machine assumes the specified folders.
         
         Download the Windows installer from [https://launchpad.net/gcc-arm-embedded/+download](https://launchpad.net/gcc-arm-embedded/+download) and install at "C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q3".
 
-        - OpenOCD 0.8.0
+        - OpenOCD 0.8.0 
         
         Download OpenOCD 0.8.0 from [http://www.freddiechopin.info/en/download/category/4-openocd](http://www.freddiechopin.info/en/download/category/4-openocd). Unzip to "C:\openocd".
         
@@ -418,9 +412,11 @@ tutorial for a Windows machine assumes the specified folders.
 
 * Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the contents of the directory.
 
-        $ mkdir %GOPATH%\src\github.com\mynewt
-        $ cd %GOPATH%\src\github.com\mynewt
-        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git newt
+        $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ dir 
+         bin	pkg	   src
+        $ dir src
+        git-wip-us.apache.org	github.com		gopkg.in
         $ dir
         newt
         $ cd newt
@@ -428,11 +424,13 @@ tutorial for a Windows machine assumes the specified folders.
         Godeps                  README.md               coding_style.txt        newt.go
         LICENSE                 cli                     design.txt
 
-* Use the Go command 'install' to compile and install packages and dependencies. Add Go environment to path. Again, to make the export variable permanent, add it to your ~/.bashrc (or equivalent) file.
+* Check that newt is in place.
 
-        $ %GOPATH%\bin\godep restore 
-        $ go get 
-        $ go install 
+        $ dir $GOPATH\src\git-wip-us.apache.org\repos\asf\incubator-mynewt-newt.git\newt 
+        Godeps			README.md		coding_style.txt    newt.go
+        LICENSE			cli			    design.txt
+
+
 
 #### Building the newt tool
 
@@ -610,7 +608,7 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
 
 Coming soon.
 
-### Making an LED blink from SRAM
+### Using SRAM to make LED blink
 
 You are here because you want to build an image to be run from internal SRAM on the Olimex board.
 
@@ -777,11 +775,11 @@ You are here because you want to build an image to be run from internal SRAM on 
 
 You are here because you want to build an image to be run from flash memory on the Olimex board.
 
-1. Configure the board to boot from flash by moving the two jumpers together to B0_0 and B1_0. 
+1. Configure the board to boot from flash by moving the two jumpers together to B0_0 and B1_0. Refer to the pictures of the board under the section titled ["Preparing the hardware to boot from embedded SRAM"](#preparing-the-hardware-to-boot-from-embedded-sram).
 
    You will have to reset the board once the image is uploaded to it.
         
-2. If you skipped the first option for the project [(downloading an image to SRAM)](#making-an-led-blink-from-sram), then skip this step. Otherwise, continue with this step. 
+2. If you skipped the first option for the project [(downloading an image to SRAM)](#using-sram-to-make-led-blink), then skip this step. Otherwise, continue with this step. 
 
      By default, the linker script (`olimex_stm32-e407_devboard.ld`) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed `olimex_stm32-e407_devboard.ld` to match `run_from_sram.ld`. You will therefore return to defaults with `olimex_stm32-e407_devboard.ld` linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.
 
