@@ -98,7 +98,9 @@
                 
                     <li><a class="toctree-l4" href="#adding-a-new-page">Adding a new page</a></li>
                 
-                    <li><a class="toctree-l4" href="#pushing-changes-to-remote">Pushing changes to remote</a></li>
+                    <li><a class="toctree-l4" href="#pushing-changes-to-remote-as-a-committer">Pushing changes to remote as a committer</a></li>
+                
+                    <li><a class="toctree-l4" href="#sharing-changes-as-a-non-committer">Sharing changes as a non-committer</a></li>
                 
                     <li><a class="toctree-l4" href="#conversion-to-html">Conversion to HTML</a></li>
                 
@@ -365,11 +367,12 @@
 <p>You do not need to install MkDocs unless you want to actually render your documentation in HTML in order to preview it before pushing your content to the remote repository. Typically, using a Markdown editor such as <a href="http://25.io/mou/">Mou</a> is enough to check how it will look after the document has gone through MkDocs. Go ahead and download <a href="http://25.io/mou/">Mou</a>. If you are on a Windows machine, download the <a href="http://alternativeto.net/software/mou/?platform=windows">editor of your choice</a>.</p>
 <p>Currently someone in the project is designated to use MkDocs to generate the HTML pages periodically after changes have been reviewed and accepted into the master branch.</p>
 <h3 id="access-to-the-apache-repo">Access to the Apache repo<a class="headerlink" href="#access-to-the-apache-repo" title="Permanent link">&para;</a></h3>
-<p>Get an account on Apache. You do not need an account to view the website or clone the repository but you need it to push changes to it.</p>
+<p>Get an account on Apache. You do not need a committer account to view the website or clone the repository but you need it to push changes to it.</p>
+<p>If you are not a committer, you may follow the proposed non-committer workflow to share your work. The direct link to the proposed workflow is <a href="https://git-wip-us.apache.org/docs/workflow.html">https://git-wip-us.apache.org/docs/workflow.html</a>. You will find the steps described in more detail later in this tutorial.</p>
 <h3 id="making-a-local-copy">Making a local copy<a class="headerlink" href="#making-a-local-copy" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
-<p>Copy the document source files into a local directory and look at the contents of the copied directory to get an idea of the directory structure. </p>
+<p>Copy the document source files into a local directory and look at the contents of the copied directory to get an idea of the directory structure. Use http instead of https if you are a non-committer.</p>
 <pre><code>$ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git
 Cloning into 'incubator-mynewt-site'...
 remote: Counting objects: 330, done.
@@ -464,27 +467,32 @@ docs        images      mkdocs.yml
 <p>If you create a new file somewhere in the <code>docs</code> subdirectory to add a new page, you have to add a line in the <code>mkdocs.yml</code> file at the correct level. For example, if you add a new module named "Ethernet" by creating a new file named <code>ethernet.md</code> in the chapter5 subdirectory, you have to insert the following line under <code>Modules:</code> in the <code>mkdocs.yml</code> file.</p>
 <pre><code>    - 'Ethernet': 'chapter5/ethernet.md'
 </code></pre>
-<h3 id="pushing-changes-to-remote">Pushing changes to remote<a class="headerlink" href="#pushing-changes-to-remote" title="Permanent link">&para;</a></h3>
+<h3 id="pushing-changes-to-remote-as-a-committer">Pushing changes to remote as a committer<a class="headerlink" href="#pushing-changes-to-remote-as-a-committer" title="Permanent link">&para;</a></h3>
+<p>If you are not a committer yet, skip this section and proceed to the <a href="#sharing-changes-as-a-non-committer">next section</a>.</p>
 <ul>
 <li>
-<p>Check whether your remote git repository is set up.</p>
+<p>Check whether your remote git repository is set up. If you see the remote location as shown below you can skip the next step.</p>
 <pre><code>$ git remote -v
 origin  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git (fetch)
 origin  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git (push)
 </code></pre>
 </li>
 <li>
-<p>If it is not, set it up. Otherwise, proceed to the next step.</p>
+<p>If, however, you do not see your remote repository, then set it up as follows.</p>
 <pre><code>$ git remote add origin https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git
 </code></pre>
 </li>
 <li>
-<p>Commit and push the changes to the remote repository. Instead of "Green Arrow" type in your username.</p>
-<pre><code>$ git add -A 
-$ git commit -m "Green Arrow's first doc change"
-$ git push -u origin &lt;your-branch-name&gt;
-</code></pre>
+<p>First check the git status. It will show you that the <code>try_markdown.md</code> document has been modified. So you will stage a commit, and then commit the change. Finally, you will push the changes to the remote repository. </p>
 </li>
+</ul>
+<p>During staging below using <code>git add</code>, we use the <code>-A</code> option indicating you want to stage all your modifications. Instead, you can choose to specify only the files that you want to. The commit message (specified after <code>-m</code>) should summarize what your changes are about.</p>
+<pre><code>    $ git status
+    $ git add -A 
+    $ git commit -m "My first doc change as a trial run"
+    $ git push -u origin &lt;your-branch-name&gt;
+</code></pre>
+<ul>
 <li>
 <p>You can see the changed Markdown file if you traverse the tree on the git repository <a href="https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git"> https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git</a>.</p>
 </li>
@@ -492,6 +500,25 @@ $ git push -u origin &lt;your-branch-name&gt;
 <p>A commit notification automatically goes out to the commits@mynewt.incubator.apache.org mailing list. The "upstream" manager pulls the notified changes, reviews it, and merges it to the master branch if all is well. Otherwise you get an email for further changes.</p>
 </li>
 </ul>
+<h3 id="sharing-changes-as-a-non-committer">Sharing changes as a non-committer<a class="headerlink" href="#sharing-changes-as-a-non-committer" title="Permanent link">&para;</a></h3>
+<p>We suggest you follow the proposed non-committer workflow at Apache to share your work. The direct link to the proposed workflow is <a href="https://git-wip-us.apache.org/docs/workflow.html">https://git-wip-us.apache.org/docs/workflow.html</a>. </p>
+<ul>
+<li>
+<p>Assuming you have made changes to the example file, you will first commit your changes.</p>
+<pre><code>$ git add -A 
+$ git commit -m "My first doc change as a trial run"
+</code></pre>
+</li>
+<li>
+<p>Once you're ready to share your changes with the rest of the project team, you can use the git format-patch command to produce a patch file (or a nice set of patches in the future):</p>
+<pre><code>$ git format-patch origin/trunk
+</code></pre>
+</li>
+<li>
+<p>Email the patch file to dev@mynewt.incubator.apache.org. Later on you may attach multiple files in your email to the mailing list as part of an existing thread or a new one. Remember to summarize the issue you have tackled and your work if the commit message is not detailed enough. </p>
+</li>
+</ul>
+<p>If there is a JIRA ticket associated with your work you should post your patch files to the ticket.</p>
 <h3 id="conversion-to-html">Conversion to HTML<a class="headerlink" href="#conversion-to-html" title="Permanent link">&para;</a></h3>
 <p>The conversion of the Markdown files to HTML for the website happens manually and statically using MkDocs. You cannot see automatic and immediate rendering in HTML upon making a change in the Markdown file. You can choose to stop here and proceed to changing other Markdown files in your branch.</p>
 <h3 id="local-preview-of-html-files">Local preview of HTML files<a class="headerlink" href="#local-preview-of-html-files" title="Permanent link">&para;</a></h3>
@@ -508,7 +535,7 @@ $ git push -u origin &lt;your-branch-name&gt;
     $ mkdocs serve
 </code></pre>
 <p>Then go to <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a> to preview your pages and see how they will look on the website! Remember that the Myself website itself will not be updated.</p>
-<p>For more information on MkDocs go to [http://www.mkdocs.org]. </p>
+<p>For more information on MkDocs go to <a href="http://www.mkdocs.org">http://www.mkdocs.org</a>. </p>
               
             </div>
           </div>
