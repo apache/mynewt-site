@@ -15,13 +15,13 @@ Currently someone in the project is designated to use MkDocs to generate the HTM
 
 ### Access to the Apache repo
 
+Get an account on Apache. You do not need a committer account to view the website or clone the repository but you need it to push changes to it.
 
-Get an account on Apache. You do not need an account to view the website or clone the repository but you need it to push changes to it.
-
+If you are not a committer, you may follow the proposed non-committer workflow to share your work. The direct link to the proposed workflow is [https://git-wip-us.apache.org/docs/workflow.html](https://git-wip-us.apache.org/docs/workflow.html). You will find the steps described in more detail later in this tutorial.
 
 ### Making a local copy
 
-* Copy the document source files into a local directory and look at the contents of the copied directory to get an idea of the directory structure. 
+* Copy the document source files into a local directory and look at the contents of the copied directory to get an idea of the directory structure. Use http instead of https if you are a non-committer.
 
         $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git
         Cloning into 'incubator-mynewt-site'...
@@ -116,28 +116,50 @@ If you create a new file somewhere in the `docs` subdirectory to add a new page,
 
         - 'Ethernet': 'chapter5/ethernet.md'
 
-### Pushing changes to remote
+### Pushing changes to remote as a committer
 
-* Check whether your remote git repository is set up.
+If you are not a committer yet, skip this section and proceed to the [next section](#sharing-changes-as-a-non-committer).
+
+* Check whether your remote git repository is set up. If you see the remote location as shown below you can skip the next step.
 
         $ git remote -v
         origin	https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git (fetch)
         origin	https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git (push)
 
-* If it is not, set it up. Otherwise, proceed to the next step.
+* If, however, you do not see your remote repository, then set it up as follows.
 
 
         $ git remote add origin https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git 
        
-* Commit and push the changes to the remote repository. Instead of "Green Arrow" type in your username.
+* First check the git status. It will show you that the `try_markdown.md` document has been modified. So you will stage a commit, and then commit the change. Finally, you will push the changes to the remote repository. 
 
+  During staging below using `git add`, we use the `-A` option indicating you want to stage all your modifications. Instead, you can choose to specify only the files that you want to. The commit message (specified after `-m`) should summarize what your changes are about.
+
+        $ git status
         $ git add -A 
-        $ git commit -m "Green Arrow's first doc change"
+        $ git commit -m "My first doc change as a trial run"
         $ git push -u origin <your-branch-name>
         
 * You can see the changed Markdown file if you traverse the tree on the git repository [ https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git]( https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git).
 
 * A commit notification automatically goes out to the commits@mynewt.incubator.apache.org mailing list. The "upstream" manager pulls the notified changes, reviews it, and merges it to the master branch if all is well. Otherwise you get an email for further changes.
+
+### Sharing changes as a non-committer
+
+We suggest you follow the proposed non-committer workflow at Apache to share your work. The direct link to the proposed workflow is [https://git-wip-us.apache.org/docs/workflow.html](https://git-wip-us.apache.org/docs/workflow.html). 
+
+* Assuming you have made changes to the example file, you will first commit your changes.
+
+        $ git add -A 
+        $ git commit -m "My first doc change as a trial run"
+
+* Once you're ready to share your changes with the rest of the project team, you can use the git format-patch command to produce a patch file (or a nice set of patches in the future):
+
+        $ git format-patch origin/trunk
+        
+* Email the patch file to dev@mynewt.incubator.apache.org. Later on you may attach multiple files in your email to the mailing list as part of an existing thread or a new one. Remember to summarize the issue you have tackled and your work if the commit message is not detailed enough. 
+
+   If there is a JIRA ticket associated with your work you should post your patch files to the ticket.
 
 
 ### Conversion to HTML
@@ -162,4 +184,4 @@ You will then run the built-in webserver from the root of the documentation dire
         
 Then go to [http://127.0.0.1:8000](http://127.0.0.1:8000) to preview your pages and see how they will look on the website! Remember that the Myself website itself will not be updated.
         
-For more information on MkDocs go to [http://www.mkdocs.org]. 
+For more information on MkDocs go to [http://www.mkdocs.org](http://www.mkdocs.org). 

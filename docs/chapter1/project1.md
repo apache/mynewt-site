@@ -28,11 +28,22 @@ case, simply skip the corresponding installation step in the instructions under 
 
 ### Access to the Apache repo
 
-* Get an account on Apache. You do not need an account to view the website or clone the repository but you need it to push changes to it.
+* Get an account on Apache. You do not need a committer account to view the website or clone the repository but you need it to push changes to it.
 
-* The latest codebase for the Mynewt OS is on the master branch at  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+* The latest codebase for the Mynewt OS is on the master branch at https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
 
-* The latest codebase for the Newt tool is on the master branch at  https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git
+* The latest codebase for the Newt tool is on the master branch at https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git
+
+The following shows how to clone a Mynewt OS code repository:
+
+* Non Committers
+
+        $ git clone http://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+
+* Committers
+
+        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+
 
 
 ### Getting your Mac Ready

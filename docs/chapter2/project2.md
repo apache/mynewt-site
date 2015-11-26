@@ -2,7 +2,7 @@
 
 ### Objective
 
-The goal of this tutorial is to download a generic firmware skeleton ("bootstrap image") that applies to any hardware and then throw in additional applicable eggs to generate a build for a specific board. 
+The goal of this tutorial is to download a generic firmware skeleton ("bootstrap image") that applies to any hardware and then throw in additional applicable eggs to generate a build for a specific board. In the process you will be exposed to more Mynewt terms and Newt tool commands.
 
 The following target hardware chips are covered:
 
@@ -20,59 +20,65 @@ The following target hardware chips are covered:
 
 #### Step by Step Instructions to build image
 
-* The first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.
+* The first step is to download the generic skeleton of the project. The eggs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as a nest in a separate repository on Apache. You know it is a nest because there is a nest.yml file. 
 
-        [user:~/foo]$ newt nest create test_project
-        Downloading nest skeleton from https://www.github.com/mynewt/tadpole...   ok!
-        Nest test_project successfully created in ~/foo/test_project
+        [user:~/dev]$ newt nest create test_project
+        Downloading nest skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!
+        Nest test_project successfully created in ~/dev/go/test_project
     
-        [user:~/foo]$ cd test_project/
+        [user:~/dev]$ cd test_project/
+        [user:~/dev/test_project]$ ls
+        README.md	compiler	hw		libs	nest.yml
 
-* Then, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (`clutch.yml`) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.
+
+* Next, the clutch of eggs named larva is added from the nest (also named larva) from another repository on Apache. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (`clutch.yml`) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.
  
-        [user:~/foo/test_project]$ newt nest add-clutch larva https://github.com/mynewt/larva
-        Downloading clutch.yml from https://github.com/mynewt/larva/master... ok!
-        Verifying clutch.yml format... ok!
+        [user:~/dev/test_project]$ newt nest add-clutch larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+        Downloading clutch.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
+        Verifying clutch.yml format...
+        ok!
         Clutch larva successfully installed to Nest.
 
 * The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. 
 
-        [user:~/foo/test_projec]$ newt egg install project/blinky          
-        Downloading larva from https://github.com/mynewt/larva//master... ok!
+<font color="red"> The command should download from apache git repo, not github. </font>
+
+
+        [user:~/dev/test_project]$ newt egg install project/blinky          
+        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
         Installing project/blinky
+        Installing libs/console/full
+        Installing libs/shell
         Installation was a success!
     
-        [user:~/foo/test_project]$ newt egg install hw/bsp/stm32f3discovery
-        Downloading larva from https://github.com/mynewt/larva//master... ok!
+        [user:~/dev/test_project]$ newt egg install hw/bsp/stm32f3discovery
+        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
         Installing hw/bsp/stm32f3discovery
-        Installing hw/mcu/stm/stm32f3xx
-        Installing libs/cmsis-core
-        Installing compiler/arm-none-eabi-m4
         Installation was a success!
 
 
 * It's time to create a target for the project and define the target attributes. 
 
-        [user:~/foo/test_project]$ newt target create blink_f3disc
+        [user:~/dev/test_project]$ newt target create blink_f3disc
         Creating target blink_f3disc
         Target blink_f3disc successfully created!
 
-        [user:~/foo/test_project]$ newt target set blink_f3disc project=blinky
+        [user:~/dev/test_project]$ newt target set blink_f3disc project=blinky
         Target blink_f3disc successfully set project to blinky
 
-        [user:~/foo/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery
+        [user:~/dev/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery
         Target blink_f3disc successfully set bsp to hw/bsp/stm32f3discovery
 
-        [marko@Markos-MacBook-Pro-2:~/foo/test_project]$ newt target set blink_f3disc compiler_def=debug
+        [user:~/dev/test_project]$ newt target set blink_f3disc compiler_def=debug
         Target blink_f3disc successfully set compiler_def to debug
 
-        [user:~/foo/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4
+        [user:~/dev/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4
         Target blink_f3disc successfully set compiler to arm-none-eabi-m4
         
-        [user:~/foo/test_project]$ newt target set blink_f3disc arch=cortex_m4
+        [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4
         Target blink_f3disc successfully set arch to cortex_m4
         
-        [user:~/foo/test_project]$ newt target show blink_f3disc
+        [user:~/dev/test_project]$ newt target show blink_f3disc
         blink_f3disc
 	        arch: cortex_m4
 	        project: blinky
@@ -81,9 +87,12 @@ The following target hardware chips are covered:
 	        compiler: arm-none-eabi-m4
 	        name: blink_f3disc
         
-* Finally, you get to build the target and generate an executable that can now be uploaded to the board via the JTAG port. You can go into the openocd directory and start an OCD session as you did in Project 1.
+* Finally, you get to build the target and generate an executable that can now be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that you will use to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at [http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf](http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf)
+
+* ![STMdiscovery](pics/STM32f3discovery_connector.png)
+
         
-        [user:~/foo/test_project]$ newt target build         blink_f3disc
+        [user:~/foo/test_project]$ newt target build blink_f3disc
         Building target blink_f3disc (project = blinky)
         Compiling case.c
         Compiling suite.c
