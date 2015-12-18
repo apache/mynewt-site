@@ -5,7 +5,7 @@
 We will show you how you can use eggs from a nest on Mynewt to make an LED on a target board blink. We will call it ** Project Blinky**. The goals of this tutorial are threefold:
  
 1. First, you will learn how to set up your environment to be ready to use Mynewt OS and newt tool. 
-2. Second, we will walk you through a download of eggs for building and testing [on a simulated target](#building-test-code-on-simulator) on a non-Windows machine.
+2. Second, we will walk you through a download of eggs for building and testing [on a simulated target](#building-test-code-on-simulator).
 3. Third, you will download eggs and use tools to create a runtime image for a board to make its LED blink. You have two choices here - you can [download an image to SRAM](#using-sram-to-make-led-blink) or you can [download it to flash](#using-flash-to-make-led-blink).
 
 ** Time Requirement**: Allow yourself a couple of hours for this project if you are relatively new to embedded systems and playing with development boards. Those jumpers can be pesky!
@@ -18,8 +18,7 @@ We will show you how you can use eggs from a nest on Mynewt to make an LED on a 
 3. USB A-B type cable to connect the debugger to your personal computer
 4. Personal Computer
 
-The instructions assume the user is using a Bourne-compatible shell (e.g. bash or zsh) on your computer. You may already have some of the required packages on your machine.  In that 
-case, simply skip the corresponding installation step in the instructions under [Getting your Mac Ready](project1.md#getting-your-mac-ready) or [Getting your Ubuntu machine Ready](project1.md#getting-your-ubuntu-machine-ready) or [Getting your Windows machine Ready](#getting-your-windows-machine-ready). While the given instructions should work on other versions, they have been tested for the three specific releases of operating systems noted here:
+The instructions assume the user is using a Bourne-compatible shell (e.g. bash or zsh) on your computer. The given instructions have been tested with the following releases of operating systems:
 
 * Mac: OS X Yosemite Version 10.10.5
 * Linux: Ubuntu 14.10 (Utopic Unicorn)
@@ -325,9 +324,82 @@ The following shows how to clone a Mynewt OS code repository:
 
 * Proceed to the [Building test code on simulator](#building-test-code-on-simulator) section.
 
-### Getting your Windows machine Ready
+### Getting your Windows machine ready for simulated target
 
-<font color="red"> Note: The instructions for Windows machine are still under review. We are working on providing a Docker container to make the prep work easy. </font>
+The `newt` tool is the build software used to build Mynewt OS images or executables for any embedded hardware device/board, including the one for the current tutorial (STM32-E407 development board from Olimex). You can run the `newt` tool natively on a computer running any of the three Operating System machines - OSX, Linux, or Windows.
+
+However, Mynewt OS images for a simulated target are built on the Windows machine by using Linux versions of the build software (newt)in a virtual machine on your Windows box. The Linux VM is set up by installing the Docker Toolbox. Your Windows machine will communicate with the Linux VM via transient ssh connections. You will then download a Docker image (`newtvm.exe`)that allows you to run the newt commands in the Linux Docker instance. The Docker image contains:
+
+   * The newt command-line tool
+   * Go
+   * A multilib-capable native gcc / glibc
+   * An arm-none-eabi gcc
+   * Native gdb
+       
+   The sequence of events when using the Docker image is as follows:
+
+   1. A new docker environment is created in the Linux VM.
+   2. The specified command with the newtvm prefix (`newtvm newt` command) is sent to the docker environment via ssh.
+   3. The Linux command runs.
+   4. The output from the command is sent back to Windows via ssh.
+   5. The output is displayed in the Windows command prompt.
+
+
+#### Install Linux virtual machine
+
+* Download the Docker Toolbox for Windows (version 1.9.0c or later) from [https://www.docker.com/docker-toolbox](https://www.docker.com/docker-toolbox). The Docker toolbox creates a consistently reproducible and self-contained environment in Linux.
+
+* Run the Docker Toolbox installer.  All the default settings are OK.
+
+* You may need to add "C:\Program Files\Git\usr\bin" to your PATH
+environment variable.  To add to the PATH environment variable, right-click on the Start button in the bottom left corner. Choose System -> Advanced system settings -> Environment Variables. Click on the PATH variable under "System variables" and click Edit to check and add it if it is not already there. 
+
+#### Install newtvm tool
+
+* From your base user (home) directory, pull or clone the latest code from the newt repository into the `newt` directory. It includes the executable `newtvm.exe` for the newtvm tool in the `newtvm` directory.
+
+      C:\Users\admin> git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt newt
+
+   The newtvm tool is what allows you to run programs in the Linux docker
+instance.  
+
+* Run the Docker Quickstart Terminal application inside the Docker folder under Programs. You can find it by clicking Start button -> All apps. By default, the Docker Toolbox installer creates a shortcut to this program on your desktop.  Wait until you see an ASCII art whale displayed in the terminal window and the Docker prompt given.  
+
+         
+
+                          ##         .
+                    ## ## ##        ==
+                 ## ## ## ## ##    ===
+             /"""""""""""""""""\___/ ===
+        ~~~ {~~ ~~~~ ~~~ ~~~~ ~~~ ~ /  ===- ~~~
+           \______ o           __/
+             \    \         __/
+              \____\_______/
+              
+         docker is configured to use the default machine with IP 192.168.99.100
+         For help getting started, check out the docs at https://docs.docker.com
+         
+         admin@dev1 MINGW64 ~ (master)
+         $
+
+   The first time you run this, it may take several minutes to complete. You will need to run the Docker Quickstart Terminal once each time you
+restart your computer.
+
+* Open a command prompt (e.g., Windows-R, "cmd", enter). You execute the newt tool commands as though you were running newt in Linux, but you prefix each command with "newtvm".  For example:
+
+        C:\Users\admin\newt\newtvm> newtvm newt help
+
+
+   The newtvm tool will take a long time to run the first time you execute
+it.  The delay is due to the fact that the tool must download the mynewt
+docker instance.
+
+* You are now ready to proceed to [building the image for the simulated target](#building test code on simulator).
+   
+   
+### Getting your Windows machine ready for hardware target
+
+When you want to produce images for actual hardware board on your Windows machine, go through the following setup procedure and then proceed to the [blinky project on the Olimex board](#Using-SRAM-to-make-LED-blink) with this method.
 
 #### Installing some prerequisites
 
@@ -508,18 +580,14 @@ tutorial for a Windows machine assumes the specified folders.
     5. Select the "WinUSB" driver.
     6. Click the "Install Driver" button.
 
-#### Proceed to the [Building test code on simulator on Windows machine](#building-test-code-on-simulator) section.
-
-Note: Currently, the simulator cannot be run in the Windows machine. We are still working on it. So you will go ahead and [make an LED blink](#making-an-led-blink-from-sram) on the Olimex hardware directly. 
-
-However, before you skip to the hardware target, you still need to build your first nest as outlined in step 1 in the [Building test code on simulator](#building-test-code-on-simulator).
+* Proceed to the section on how to [make an LED blink](#making-an-led-blink-from-sram) section.
 
 
 ### Building test code on simulator 
 
-Note: Currently, the simulator cannot be run in the Windows machine. We are working on it. If you are on a Windows machine, do step 1 below and then proceed to the [Making an LED blink](#making-an-led-blink) on the Olimex hardware directly.
+Note: On a Windows computer, the simulator can be run only in a Linux virtual environment. Make sure you have installed the Docker instance as outlined in [an earlier section](#Getting your Windows machine Ready for simulated target). Consequently, all `newt` commands must be prefaced with `newtvm`.
 
-1.  First, you have to create a repository for the project i.e. build your first nest! Go to ~/dev and clone the larva repository from the apache git repository into a local directory named `larva`.
+1.  First, you have to create a repository for the project i.e. build your first nest! Go to ~/dev (or your base user directory on a Windows machine)and clone the larva repository from the apache git repository into a local directory named `larva`.
 
     Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows. The newt tool commands do not change.
 
@@ -533,7 +601,35 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
         LICENSE		clutch.yml	hw		nest.yml      project
         README.md	compiler	libs		net	      scripts
 
-2. You will now create a new target using the newt tool. You can either use the compiled binary `newt` or run the newt.go program using `$newt` (assuming you have stored the command in a variable in your .bash_profile or .bashrc). When you do a `newt target show` or `$newt target show` it should list all the projects you have created so far. 
+      On Windows, open a command prompt (e.g., Windows-R, "cmd", enter) and work from your home directory:
+
+        C:\Users\admin> git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
+        C:\Users\admin> cd larva
+        C:\Users\admin\larva> dir
+        Volume in drive C is Windows
+        Volume Serial Number is 4CBB-0920
+
+        Directory of C:\Users\admin\larva
+
+        <DIR>          .
+        <DIR>          ..
+                    76 .gitignore
+                     0 .gitmodules
+                       .nest
+                 6,133 clutch.yml
+        <DIR>          compiler
+        <DIR>          hw
+        <DIR>          libs
+                11,560 LICENSE
+                    20 nest.yml
+        <DIR>          net
+        <DIR>          project
+                 2,263 README.md
+        <DIR>          scripts
+        6 File(s)         20,052 bytes
+        9 Dir(s)  90,723,442,688 bytes free
+        
+2.  You will now create a new target using the newt tool. You can either use the compiled binary `newt` or run the newt.go program using `$newt` (assuming you have stored the command in a variable in your .bash_profile or .bashrc). When you do a `newt target show` or `$newt target show` it should list all the projects you have created so far. 
 
         $ newt target create sim_test
         Creating target sim_test
@@ -542,6 +638,10 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
         sim_test
 	        name: sim_test
 	        arch: sim
+
+      Remember, on a Windows machine you will have to preface `newt` with `newtvm`!
+  
+        C:\Users\admin\larva>newtvm newt target create sim_test
 
 3. Now continue to populate and build out the sim project.
 
@@ -562,8 +662,13 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
 	        compiler: sim
 	        name: sim_test
 
+      Again remember to preface `newt` with `newtvm`on a Windows machine as shown below. Continue to fill out all the project attributes.
+  
+        C:\Users\admin\larva>newtvm newt target set sim_test project=test
+        Target sim_test successfully set project to test
+        
 4. Configure newt to use the gnu build tools native to OS X or linux. In order for sim to work properly, it needs to be using 32-bit gcc (gcc-5). Replace 
-~/dev/larva/compiler/sim/compiler.yml with the compiler/sim/osx-compiler.yml or linux-compiler.yml file, depending on the system. 
+~/dev/larva/compiler/sim/compiler.yml with the compiler/sim/osx-compiler.yml or linux-compiler.yml file, depending on the system. On a Windows machine follow the instruction for the Linux machine as you are running commands in a Linux VM.
 
     For a Mac OS X environment:
 
@@ -573,9 +678,9 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
         
         $ cp compiler/sim/linux-compiler.yml compiler/sim/compiler.yml
 
-5. Next, create (hatch!) the eggs for this project using the newt tool - basically, build the packages for it. You can specify the VERBOSE option if you want to see the gory details. 
+5. Next, create (hatch!) the eggs for this project using the newt tool - basically, build the packages for it. You can specify the VERBOSE option if you want to see the gory details. Always remember to preface `newt` with `newtvm`on a Windows machine.
 
-        $ $newt target build sim_test
+        $ newt target build sim_test
         Successfully run!
 
     You can specify the VERBOSE option if you want to see the gory details.
@@ -590,7 +695,7 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
 
 6. Try running the test suite executable inside this project and enjoy your first successful hatch.
 
-        $ ./project/test/bin/sim_test/test.elf
+        $ newt ./project/test/bin/sim_test/test.elf
         [pass] os_mempool_test_suite/os_mempool_test_case
         [pass] os_mutex_test_suite/os_mutex_test_basic
         [pass] os_mutex_test_suite/os_mutex_test_case_1
@@ -615,9 +720,6 @@ Note: Currently, the simulator cannot be run in the Windows machine. We are work
         ...
         [pass] boot_test_main/boot_test_vb_ns_11
 
-### Building test code on simulator on Windows machine
-
-Coming soon.
 
 ### Using SRAM to make LED blink
 
@@ -630,7 +732,23 @@ You are here because you want to build an image to be run from internal SRAM on 
     Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows (e.g. `cd dev\go` instead of `cd dev/go`). The newt tool commands do not change.
 
 
-2. You first have to create a repository for the project. Go to the ~dev/larva directory and build out a second project inside larva. The project name is "blinky", in keeping with the objective. Starting with the target name, you have to specify the different aspects of the project to pull the appropriate eggs and build the right package for the board. In this case that means setting the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
+2. If you have cloned the larva repository for the simulator test in the previous section you can skip this step. Otherwise, you have to create a repository for the project i.e. build your first nest! Go to ~/dev and clone the larva repository from the apache git repository into a local directory named `larva`.
+
+    Substitute DOS commands for Unix commands as necessary in the following steps if your machine is running Windows. The newt tool commands do not change.
+ 
+        $ cd ~/dev 
+        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
+        $ ls
+        go	larva
+        $ cd larva
+        $ ls
+        LICENSE		clutch.yml	hw		nest.yml      project
+        README.md	compiler	libs		net	      scripts
+        
+3. You first have to create a repository for the project. Go to the ~dev/larva directory and build out a second project inside larva. The project name is "blinky", in keeping with the objective. Starting with the target name, you have to specify the different aspects of the project to pull the appropriate eggs and build the right package for the board. In this case that means setting the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
+
+Remember to prefix each command with "newtvm" if you are executing the newt command in a Linux virtual machine on your Windows box!
+
 
         $ newt target create blinky
         Creating target blinky
@@ -654,7 +772,7 @@ You are here because you want to build an image to be run from internal SRAM on 
 	        name: blinky
 	        arch: cortex_m4
 
-3. Now you have to build the image. The linker script within the `hw/bsp/olimex_stm32-e407_devboard` egg builds an image for flash memory by default. Since you want an image for the SRAM, you need to switch that script with `run_from_sram.ld` in order to get the egg to produce an image for SRAM. <font color="red"> We are working on making it easier to specify where the executable will be run from for a particular project and automatically choose the correct linker scripts and generate the appropriate image. It will be specified as a project identity e.g. bootloader, RAM, flash (default) and the target will build accordingly. </font>. 
+4. Now you have to build the image. The linker script within the `hw/bsp/olimex_stm32-e407_devboard` egg builds an image for flash memory by default. Since you want an image for the SRAM, you need to switch that script with `run_from_sram.ld` in order to get the egg to produce an image for SRAM. <font color="red"> We are working on making it easier to specify where the executable will be run from for a particular project and automatically choose the correct linker scripts and generate the appropriate image. It will be specified as a project identity e.g. bootloader, RAM, flash (default) and the target will build accordingly. </font>. 
 
     Once the target is built, you can find the executable "blinky.elf" in the project directory at ~/dev/larva/project/blinky/bin/blinky. It's a good idea to take a little time to understand the directory structure.
 
@@ -685,7 +803,7 @@ You are here because you want to build an image to be run from internal SRAM on 
         blinky.elf	blinky.elf.bin	blinky.elf.cmd	blinky.elf.lst	blinky.elf.map
 
 
-4. Check that you have all the scripts needed to get OpenOCD up and talking with the project's specific hardware. Depending on your system (Ubuntu, Windows) you may already have the scripts in your `/usr/share/openocd/scripts/ ` directory as they may have been part of the openocd download. If yes, you are all set and can proceed to preparing the hardware.
+5. Check that you have all the scripts needed to get OpenOCD up and talking with the project's specific hardware. Depending on your system (Ubuntu, Windows) you may already have the scripts in your `/usr/share/openocd/scripts/ ` directory as they may have been part of the openocd download. If yes, you are all set and can proceed to preparing the hardware.
 
    Otherwise check the `~/dev/larva/hw/bsp/olimex_stm32-e407_devboard` directory for a file named `f407.cfg`. That is the config we will use to talk to this specific hardware using OpenOCD. You are all set if you see it.
    
@@ -817,7 +935,6 @@ You are here because you want to build an image to be run from flash memory on t
         Target bin2img successfully set compiler_def to debug
         $ newt target set bin2img bsp=hw/bsp/native
         Target bin2img successfully set bsp to hw/bsp/native
-        $ newt target show bin2image
         $ newt target show bin2img
         bin2img
         	arch: sim
