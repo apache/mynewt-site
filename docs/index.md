@@ -73,7 +73,7 @@ The chapter organization is outlined below. Each chapter will include one or mor
 
 * [Chapter 3: Newt Tool Reference](newt/newt_ops.md) describes the command structure and details all the available commands to help you with your project. 
 
-* [Chapter 4: Newt OS](os/newt_os.md) provides an overview of the features available and how to customize for your hardware and software application.
+* [Chapter 4: Newt OS](os/mynewt_os.md) provides an overview of the features available and how to customize for your hardware and software application.
 
 * [Chapter 5: Modules](modules/console.md) lays out all the available modules such as HAL (Hardware Abstraction Layer), console, file system, networking stacks, and other middleware components.
 
