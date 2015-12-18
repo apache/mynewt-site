@@ -67,17 +67,17 @@ To subscribe to a mailing list, you simply send an email to a special subscripti
 
 The chapter organization is outlined below. Each chapter will include one or more tutorials for hands-on experience with the material in each chapter. 
 
-* [Chapter 1: Get Started](chapter1/newt_concepts.md) introduces some key terms in this initiative and includes a tutorial for a quick project to show how to work with some of the products.
+* [Chapter 1: Get Started](get_started/newt_concepts.md) introduces some key terms in this initiative and includes a tutorial for a quick project to show how to work with some of the products.
 
-* [Chapter 2: Get Acclimated](chapter2/vocabulary.md) delves deeper into the concepts crucial to the software development effort. 
+* [Chapter 2: Get Acclimated](get_acclimated/vocabulary.md) delves deeper into the concepts crucial to the software development effort. 
 
-* [Chapter 3: Newt Tool Reference](chapter3/newt_ops.md) describes the command structure and details all the available commands to help you with your project. 
+* [Chapter 3: Newt Tool Reference](newt/newt_ops.md) describes the command structure and details all the available commands to help you with your project. 
 
-* [Chapter 4: Newt OS](chapter4/mynewt_os.md) provides an overview of the features available and how to customize for your hardware and software application.
+* [Chapter 4: Newt OS](os/newt_os.md) provides an overview of the features available and how to customize for your hardware and software application.
 
-* [Chapter 5: Modules](chapter5/console.md) lays out all the available modules such as HAL (Hardware Abstraction Layer), console, file system, networking stacks, and other middleware components.
+* [Chapter 5: Modules](modules/console.md) lays out all the available modules such as HAL (Hardware Abstraction Layer), console, file system, networking stacks, and other middleware components.
 
-* [Chapter 6: Creating packages for distribution](chapter6/dist.md) delineates the process of creating complete packages to load on your embedded device to get it up, connected, and ready for remote management.
+* [Chapter 6: Creating packages for distribution](packaging/dist.md) delineates the process of creating complete packages to load on your embedded device to get it up, connected, and ready for remote management.
 
 ### Contributing to Documentation
 

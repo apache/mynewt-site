@@ -49,7 +49,7 @@ The file you will edit is [try_markdown.md](./try_markdown.md).
 
 * Open the application Mou.
 
-* Open the file incubator-mynewt-site/docs/chapter1/try_markdown.md in Mou.
+* Open the file incubator-mynewt-site/docs/get_started/try_markdown.md in Mou.
 
 * Edit the last item on the list.
 
@@ -59,7 +59,7 @@ You may want to review the documentation organization back in [Home](../index.md
 
       .
       ├── docs
-      │   ├── chapter1
+      │   ├── get_started 
       │   │   ├── how_to_edit_docs.md
       │   │   ├── newt_concepts.md
       │   │   ├── pics
@@ -67,15 +67,15 @@ You may want to review the documentation organization back in [Home](../index.md
       │   │   │   └── topview.png
       │   │   ├── project1.md
       │   │   └── try_markdown.md
-      │   ├── chapter2
+      │   ├── get_acclimated
       │   │   ├── project2.md
       │   │   ├── project3.md
       │   │   ├── ... (more to be added)
       │   │   └── vocabulary.md
-      │   ├── chapter3
+      │   ├── newt
       │   │   ├── newt_ops.md
       │   │   └── newt_tool_reference.md
-      │   ├── chapter4
+      │   ├── os
       │   │   ├── context_switch.md
       │   │   ├── event_queue.md
       │   │   ├── heap.md
@@ -89,14 +89,14 @@ You may want to review the documentation organization back in [Home](../index.md
       │   │   ├── task.md
       │   │   ├── time.md
       │   │   └── ... (more to be added)
-      │   ├── chapter5
+      │   ├── modules
       │   │   ├── bootloader.md
       │   │   ├── console.md
       │   │   ├── filesystem.md
       │   │   ├── shell.md
       │   │   ├── testutil.md
       │   │   └── ... (more to be added)
-      │   ├── chapter6
+      │   ├── packaging
       │   │   ├── dist.md
       │   │   └── ... (more to be added)
       │   ├── extra.css
@@ -112,9 +112,9 @@ You may want to review the documentation organization back in [Home](../index.md
 
 ### Adding a new page
 
-If you create a new file somewhere in the `docs` subdirectory to add a new page, you have to add a line in the `mkdocs.yml` file at the correct level. For example, if you add a new module named "Ethernet" by creating a new file named `ethernet.md` in the chapter5 subdirectory, you have to insert the following line under `Modules:` in the `mkdocs.yml` file.
+If you create a new file somewhere in the `docs` subdirectory to add a new page, you have to add a line in the `mkdocs.yml` file at the correct level. For example, if you add a new module named "Ethernet" by creating a new file named `ethernet.md` in the `modules` subdirectory, you have to insert the following line under `Modules:` in the `mkdocs.yml` file.
 
-        - 'Ethernet': 'chapter5/ethernet.md'
+        - 'Ethernet': 'modules/ethernet.md'
 
 ### Pushing changes to remote as a committer
 

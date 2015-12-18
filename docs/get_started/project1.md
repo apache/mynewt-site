@@ -394,7 +394,7 @@ restart your computer.
 it.  The delay is due to the fact that the tool must download the mynewt
 docker instance.
 
-* You are now ready to proceed to [building the image for the simulated target](#building test code on simulator).
+* You are now ready to proceed to [building the image for the simulated target](#building-test-code-on-simulator).
    
    
 ### Getting your Windows machine ready for hardware target
@@ -517,7 +517,7 @@ tutorial for a Windows machine assumes the specified folders.
 
 #### Building the newt tool
 
-* * You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+* You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
    
         $ go install
         $ ls "$GOPATH"/bin/
@@ -580,12 +580,12 @@ tutorial for a Windows machine assumes the specified folders.
     5. Select the "WinUSB" driver.
     6. Click the "Install Driver" button.
 
-* Proceed to the section on how to [make an LED blink](#making-an-led-blink-from-sram) section.
+* Proceed to the section on how to [make an LED blink](#using-sram-to-make-led-blink) section.
 
 
 ### Building test code on simulator 
 
-Note: On a Windows computer, the simulator can be run only in a Linux virtual environment. Make sure you have installed the Docker instance as outlined in [an earlier section](#Getting your Windows machine Ready for simulated target). Consequently, all `newt` commands must be prefaced with `newtvm`.
+Note: On a Windows computer, the simulator can be run only in a Linux virtual environment. Make sure you have installed the Docker instance as outlined in [an earlier section](#getting-your-windows-machine-ready-for-simulated-target). Consequently, all `newt` commands must be prefaced with `newtvm`.
 
 1.  First, you have to create a repository for the project i.e. build your first nest! Go to ~/dev (or your base user directory on a Windows machine)and clone the larva repository from the apache git repository into a local directory named `larva`.
 
