@@ -1,4 +1,4 @@
-#![ASF Incubator Project](images/egg-logo.png)
+[ASF Incubator Project](images/egg-logo.png)
 ---
 
 ## Objective of Mynewt 
@@ -88,7 +88,7 @@ To edit content in a Markdown file and be able to see how the changes look you m
 * [Mou](http://25.io/mou/) for Mac
 * [Something like Mou](http://alternativeto.net/software/mou/?platform=windows) for Windows
 
-Click on the tutorial [How to edit docs](chapter1/how_to_edit_docs.md) under "Get Started" to learn how to edit a sample file [try_markdown.md](chapter1/try_markdown.md) on Mynewt's documentation git repository.
+Click on the tutorial [How to edit docs](get_started/how_to_edit_docs.md) under "Get Started" to learn how to edit a sample file [try_markdown.md](get_started/try_markdown.md) on Mynewt's documentation git repository.
 
 The static html content is generated and maintained in the asf-site branch in the documentation repository. Currently, the static html files are generated manually once a day. This will be automated in the future.
 

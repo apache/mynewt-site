@@ -12,7 +12,7 @@ A command may additionally take flags specific to it. For example, the `-b ` fla
 
     newt egg install -b <branchname> <eggname>
 
-In addition to the newt tool [reference](../chapter3/newt_tool_reference.md) in this documentation set, command-line help is available for each command (and child command). Simply use the flag `-h` or `--help` as shown below:
+In addition to the newt tool [reference](../newt/newt_tool_reference.md) in this documentation set, command-line help is available for each command (and child command). Simply use the flag `-h` or `--help` as shown below:
 
     $ newt target export --help
     Export build targets from the current nest, and print them to 

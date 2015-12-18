@@ -19,7 +19,7 @@ larva
                 |- nrf52pdk (Nordic nRF52 series chip)
                         |- egg.yml
                         |- ...
-                |- olimex_stm32-e407_devboard (used in chapter1 project)
+                |- olimex_stm32-e407_devboard (used in Project Blinky)
                         |- egg.yml
                         |- ...
                 |- stm32f3discovery (another board with stm32f3 mcu)
@@ -78,13 +78,13 @@ The newt tool offers the `nest` command to create and manage nests. In general, 
     newt nest [flags]
     newt nest [child-commands] 
 
-A complete list of all the nest commands can be found in the newt tool reference in [Chapter 3](../chapter3/newt_tool_reference.md).
+A complete list of all the nest commands can be found in the newt tool reference in [Newt Tool](../newt/newt_tool_reference.md).
 
 ### Project
 
 Projects represent the individual build configurations of your embedded system and essentially defines your application. The project files are what dictate the resulting binary that is generated. 
 
-Layout-wise, a project is a directory inside a nest and contains eggs required for a certain application. For example, the `blinky` egg sits in `project/blinky` directory of the `larva` nest. This egg is used in the blinky project (application) outlined in [Chapter 1](../chapter1/project1.md). <*Note: This Will Change*>
+Layout-wise, a project is a directory inside a nest and contains eggs required for a certain application. For example, the `blinky` egg sits in `project/blinky` directory of the `larva` nest. This egg is used in the blinky project (application) outlined in [Get Started](../get_started/project1.md). <*Note: This Will Change*>
 
 A project has the following concepts or properties associated with it. You can find them in the `<project-name>.yml` file in the project directory. For example, the `project/blinky` directory has the `blinky.yml` file indicating some or all of the properties below. Only the name of a project is required for the project to exist, however additional properties may need to be specified for the eggs in it to compile properly and produce an executable. 
 
@@ -117,7 +117,7 @@ outputs all the eggs in the current nest where each egg has details on its versi
     path: /Users/aditihilbert/dev/test_project/libs/os
     deps: libs/testutil@none#stable 
 
-A complete list of all the egg commands can be found in the newt tool reference in [Chapter 3](../chapter3/newt_tool_reference.md).
+A complete list of all the egg commands can be found in the newt tool reference in [Newt Tool](../newt/newt_tool_reference.md).
 
 ### Clutch
 
