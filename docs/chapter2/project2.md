@@ -41,21 +41,20 @@ The following target hardware chips are covered:
 
 * The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. 
 
-<font color="red"> The command should download from apache git repo, not github. </font>
-
-
         [user:~/dev/test_project]$ newt egg install project/blinky          
-        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
+        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
         Installing project/blinky
         Installing libs/console/full
         Installing libs/shell
         Installation was a success!
     
         [user:~/dev/test_project]$ newt egg install hw/bsp/stm32f3discovery
-        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
+        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
         Installing hw/bsp/stm32f3discovery
+        Installing hw/mcu/stm/stm32f3xx
+        Installing libs/cmsis-core
+        Installing compiler/arm-none-eabi-m4
         Installation was a success!
-
 
 * It's time to create a target for the project and define the target attributes. 
 
@@ -87,12 +86,12 @@ The following target hardware chips are covered:
 	        compiler: arm-none-eabi-m4
 	        name: blink_f3disc
         
-* Finally, you get to build the target and generate an executable that can now be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that you will use to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at [http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf](http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf)
+* Next, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at [http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf](http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf)
 
 * ![STMdiscovery](pics/STM32f3discovery_connector.png)
 
         
-        [user:~/foo/test_project]$ newt target build blink_f3disc
+        [user:~/dev/test_project]$ newt target build blink_f3disc
         Building target blink_f3disc (project = blinky)
         Compiling case.c
         Compiling suite.c
@@ -129,7 +128,11 @@ The following target hardware chips are covered:
         Building project blinky
         Linking blinky.elf
         Successfully run!
+       
+* Finally, you have to download the image on to the board. You will see a blue light start to blink.
 
+        [user:~/dev/test_project]$ newt target download blink_f3disc
+        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
 
 
 
