@@ -1,7 +1,7 @@
 # Console
 
 
-The console is an operating system window where users interact with system programs of the operating system or a console application by entering text input (typically from a keyboard) and reading text output (typically on the computer terminal). The text written on the console brings some information and is a sequence of characters sent by the OS or programs running on the OS. 
+The console is an operating system window where users interact with system programs of the operating system or a console application by entering text input (typically from a keyboard) and reading text output (typically on the computer terminal or monitor). The text written on the console brings some information and is a sequence of characters sent by the OS or programs running on the OS. 
 
 Support is currently available for console access via the serial port on the hardware board.
 
