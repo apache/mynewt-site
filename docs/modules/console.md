@@ -335,14 +335,14 @@ Insert example
     console_blocking_tx(char ch)
 ```
     
-  Calls the hal function hal_uart_blocking_tx to transmit a byte to the console over UART in a blocking mode until the character has been sent. Hence it must be called with interrupts disabled. It is used when printing diagnostic output from system crash. 
+  Calls the hal function hal_uart_blocking_tx to transmit a byte to the console over UART in a blocking mode until the entire character has been sent. Hence it must be called with interrupts disabled. It is used when printing diagnostic output from system crash. 
 
 #### Arguments
 
 | Arguments | Description |
 |-------------------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| ch |  8 bit character (data) to be transmitted |
+
 
 #### Returned values
 
@@ -357,7 +357,19 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 #### Example
 
-Give at least one example of usage.
+Here is an example of a console output queue being flushed.
+```
+void
+task(void)
+{
+    struct console_tty *ct = &console_tty;
+    uint8_t byte;
+
+    while (ct->ct_tx.cr_head != ct->ct_tx.cr_tail) {
+        byte = console_pull_char(&ct->ct_tx);
+        console_blocking_tx(byte);
+    }
+}
 
 -----------
 
@@ -373,8 +385,8 @@ Give at least one example of usage.
 
 | Arguments | Description |
 |-------------------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| none |  none  |
+
 
 #### Returned values
 
@@ -389,8 +401,23 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 #### Example
 
-Give at least one example of usage.
+Here is an example of calling `console_blocking_mode` and printing crash information from an assert to help debug.
 
+```
+void
+_assert_func(const char *file, int line, const char *func, const char *e)
+{
+    int sr;
+
+    OS_ENTER_CRITICAL(sr);
+    (void)sr;
+    os_die_line = line;
+    os_die_module = file;
+    console_blocking_mode();
+    console_printf("Assert %s; failed in %s:%d\n", e ? e : "", file, line);
+    system_reset();
+}
+```
 
 ### <font color="#2980b9">function console_write </font>
  
@@ -404,8 +431,8 @@ Transmit characters to console display over serial port.
 
 | Arguments | Description |
 |-------------------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| *str |  pointer to the character or packet to be transmitted  |
+| cnt  |  size of the character or packet |
 
 #### Returned values
 
@@ -420,7 +447,23 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 #### Example
 
-Give at least one example of usage.
+Here is an example of the function being used in an echo command with a newline at the end.
+
+```
+static int
+shell_echo_cmd(int argc, char **argv)
+{
+    int i;
+
+    for (i = 1; i < argc; i++) {
+        console_write(argv[i], strlen(argv[i]));
+        console_write(" ", sizeof(" ")-1);
+    }
+    console_write("\n", sizeof("\n")-1);
+
+    return (0);
+}
+```
 
 
 ### <font color="#2980b9"> function console_read </font>
