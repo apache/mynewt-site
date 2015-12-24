@@ -660,7 +660,7 @@ Error codes?</p>
     console_blocking_tx(char ch)
 </code></pre>
 
-<p>Calls the hal function hal_uart_blocking_tx to transmit a byte to the console over UART in a blocking mode until the character has been sent. Hence it must be called with interrupts disabled. It is used when printing diagnostic output from system crash. </p>
+<p>Calls the hal function hal_uart_blocking_tx to transmit a byte to the console over UART in a blocking mode until the entire character has been sent. Hence it must be called with interrupts disabled. It is used when printing diagnostic output from system crash. </p>
 <h4 id="arguments_5">Arguments<a class="headerlink" href="#arguments_5" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -670,10 +670,7 @@ Error codes?</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-</tr>
-<tr>
-<td>yy</td>
+<td>ch</td>
 </tr>
 </tbody>
 </table>
@@ -685,14 +682,213 @@ Error codes?</p>
 Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_5">Example<a class="headerlink" href="#example_5" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
-<hr />
-<h3 id="function-console_blocking_mode"><font color="#2980b9"> function console_blocking_mode </font><a class="headerlink" href="#function-console_blocking_mode" title="Permanent link">&para;</a></h3>
-<pre><code>   void
-   console_blocking_mode(void)
+<p>Here is an example of a console output queue being flushed.</p>
+<pre><code>void
+task(void)
+{
+    struct console_tty *ct = &amp;console_tty;
+    uint8_t byte;
+
+    while (ct-&gt;ct_tx.cr_head != ct-&gt;ct_tx.cr_tail) {
+        byte = console_pull_char(&amp;ct-&gt;ct_tx);
+        console_blocking_tx(byte);
+    }
+}
+
+-----------
+
+### &lt;font color=&quot;#2980b9&quot;&gt; function console_blocking_mode &lt;/font&gt;
+
 </code></pre>
 
-<p>Calls the console_blocking_tx function to flush the buffered console output (transmit) queue. The function OS_ENTER_CRITICAL() is called to disable interrupts and OS_EXIT_CRITICAL() is called to enable interrupts back again once the buffer is flushed.</p>
+<p>void
+   console_blocking_mode(void)</p>
+<pre><code>   Calls the console_blocking_tx function to flush the buffered console output (transmit) queue. The function OS_ENTER_CRITICAL() is called to disable interrupts and OS_EXIT_CRITICAL() is called to enable interrupts back again once the buffer is flushed.
+
+#### Arguments
+
+| Arguments | Description |
+|-------------------------|
+| none |  none  |
+
+
+#### Returned values
+
+List any values returned.
+Error codes?
+
+#### Notes 
+
+Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).
+
+#### Example
+
+Here is an example of calling `console_blocking_mode` and printing crash information from an assert to help debug.
+
+</code></pre>
+
+<p>void
+_assert_func(const char <em>file, int line, const char </em>func, const char *e)
+{
+    int sr;</p>
+<pre><code>OS_ENTER_CRITICAL(sr);
+(void)sr;
+os_die_line = line;
+os_die_module = file;
+console_blocking_mode();
+console_printf("Assert %s; failed in %s:%d\n", e ? e : "", file, line);
+system_reset();
+</code></pre>
+<p>}</p>
+<pre><code>
+### &lt;font color=&quot;#2980b9&quot;&gt;function console_write &lt;/font&gt;
+
+</code></pre>
+
+<p>void
+   console_write(char *str, int cnt)</p>
+<pre><code>Transmit characters to console display over serial port. 
+
+#### Arguments
+
+| Arguments | Description |
+|-------------------------|
+| *str |  pointer to the character or packet to be transmitted  |
+| cnt  |  size of the character or packet |
+
+#### Returned values
+
+List any values returned.
+Error codes?
+
+#### Notes 
+
+Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).
+
+#### Example
+
+Here is an example of the function being used in an echo command with a newline at the end.
+
+</code></pre>
+
+<p>static int
+shell_echo_cmd(int argc, char **argv)
+{
+    int i;</p>
+<pre><code>for (i = 1; i &lt; argc; i++) {
+    console_write(argv[i], strlen(argv[i]));
+    console_write(" ", sizeof(" ")-1);
+}
+console_write("\n", sizeof("\n")-1);
+
+return (0);
+</code></pre>
+<p>}</p>
+<pre><code>
+
+### &lt;font color=&quot;#2980b9&quot;&gt; function console_read &lt;/font&gt;
+
+</code></pre>
+
+<p>int
+  console_read(char *str, int cnt)</p>
+<pre><code>  Calls hal function hal_uart_start_rx to start receiving input from console terminal over serial port.
+
+#### Arguments
+
+| Arguments | Description |
+|-------------------------|
+| xx |  explain argument xx  |
+| yy |  explain argument yy  |
+
+#### Returned values
+
+List any values returned.
+Error codes?
+
+#### Notes 
+
+Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).
+
+#### Example
+
+Give at least one example of usage.
+
+
+### &lt;font color=&quot;#2980b9&quot;&gt; function console_tx_char &lt;/font&gt;
+
+   ```   
+   static int
+   console_tx_char(void *arg)
+   ```
+
+#### Arguments
+
+| Arguments | Description |
+|-------------------------|
+| xx |  explain argument xx  |
+| yy |  explain argument yy  |
+
+#### Returned values
+
+List any values returned.
+Error codes?
+
+#### Notes 
+
+Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).
+
+#### Example
+
+Give at least one example of usage.
+
+
+### &lt;font color=&quot;#2980b9&quot;&gt; function console_rx_char &lt;/font&gt;
+
+</code></pre>
+
+<p>static int
+   console_rx_char(void *arg, uint8_t data)</p>
+<pre><code>
+#### Arguments
+
+| Arguments | Description |
+|-------------------------|
+| xx |  explain argument xx  |
+| yy |  explain argument yy  |
+
+#### Returned values
+
+List any values returned.
+Error codes?
+
+#### Notes 
+
+Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).
+
+#### Example
+
+Give at least one example of usage.
+
+
+### &lt;font color=&quot;#2980b9&quot;&gt; function console_init &lt;/font&gt;
+
+</code></pre>
+
+<p>int
+   console_init(console_rx_cb rx_cb)
+```</p>
+<p>Initializes console receive buffer and calls hal funtions hal_uart_init_cbs and hal_uart_config to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
 <h4 id="arguments_6">Arguments<a class="headerlink" href="#arguments_6" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -717,157 +913,6 @@ Error codes?</p>
 Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_6">Example<a class="headerlink" href="#example_6" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
-<h3 id="function-console_write"><font color="#2980b9">function console_write </font><a class="headerlink" href="#function-console_write" title="Permanent link">&para;</a></h3>
-<pre><code>   void
-   console_write(char *str, int cnt)
-</code></pre>
-
-<p>Transmit characters to console display over serial port. </p>
-<h4 id="arguments_7">Arguments<a class="headerlink" href="#arguments_7" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-</tr>
-<tr>
-<td>yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_7">Returned values<a class="headerlink" href="#returned-values_7" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_7">Notes<a class="headerlink" href="#notes_7" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_7">Example<a class="headerlink" href="#example_7" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
-<h3 id="function-console_read"><font color="#2980b9"> function console_read </font><a class="headerlink" href="#function-console_read" title="Permanent link">&para;</a></h3>
-<pre><code>  int
-  console_read(char *str, int cnt)
-</code></pre>
-
-<p>Calls hal function hal_uart_start_rx to start receiving input from console terminal over serial port.</p>
-<h4 id="arguments_8">Arguments<a class="headerlink" href="#arguments_8" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-</tr>
-<tr>
-<td>yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_8">Returned values<a class="headerlink" href="#returned-values_8" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_8">Notes<a class="headerlink" href="#notes_8" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_8">Example<a class="headerlink" href="#example_8" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
-<h3 id="function-console_tx_char"><font color="#2980b9"> function console_tx_char </font><a class="headerlink" href="#function-console_tx_char" title="Permanent link">&para;</a></h3>
-<p><code>static int
-   console_tx_char(void *arg)</code></p>
-<h4 id="arguments_9">Arguments<a class="headerlink" href="#arguments_9" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-</tr>
-<tr>
-<td>yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_9">Returned values<a class="headerlink" href="#returned-values_9" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_9">Notes<a class="headerlink" href="#notes_9" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_9">Example<a class="headerlink" href="#example_9" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
-<h3 id="function-console_rx_char"><font color="#2980b9"> function console_rx_char </font><a class="headerlink" href="#function-console_rx_char" title="Permanent link">&para;</a></h3>
-<pre><code>   static int
-   console_rx_char(void *arg, uint8_t data)
-</code></pre>
-
-<h4 id="arguments_10">Arguments<a class="headerlink" href="#arguments_10" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-</tr>
-<tr>
-<td>yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_10">Returned values<a class="headerlink" href="#returned-values_10" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_10">Notes<a class="headerlink" href="#notes_10" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_10">Example<a class="headerlink" href="#example_10" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
-<h3 id="function-console_init"><font color="#2980b9"> function console_init </font><a class="headerlink" href="#function-console_init" title="Permanent link">&para;</a></h3>
-<pre><code>   int
-   console_init(console_rx_cb rx_cb)
-</code></pre>
-
-<p>Initializes console receive buffer and calls hal funtions hal_uart_init_cbs and hal_uart_config to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
-<h4 id="arguments_11">Arguments<a class="headerlink" href="#arguments_11" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-</tr>
-<tr>
-<td>yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_11">Returned values<a class="headerlink" href="#returned-values_11" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_11">Notes<a class="headerlink" href="#notes_11" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_11">Example<a class="headerlink" href="#example_11" title="Permanent link">&para;</a></h4>
 <p>Give at least one example of usage.</p>
               
             </div>
