@@ -340,7 +340,7 @@ Insert example
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | ch |  8 bit character (data) to be transmitted |
 
 
@@ -358,6 +358,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 #### Example
 
 Here is an example of a console output queue being flushed.
+
 ```
 void
 task(void)
@@ -370,6 +371,7 @@ task(void)
         console_blocking_tx(byte);
     }
 }
+```
 
 -----------
 
@@ -419,6 +421,8 @@ _assert_func(const char *file, int line, const char *func, const char *e)
 }
 ```
 
+-----------
+
 ### <font color="#2980b9">function console_write </font>
  
 ```
@@ -430,7 +434,7 @@ Transmit characters to console display over serial port.
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | *str |  pointer to the character or packet to be transmitted  |
 | cnt  |  size of the character or packet |
 
@@ -465,6 +469,7 @@ shell_echo_cmd(int argc, char **argv)
 }
 ```
 
+-----------
 
 ### <font color="#2980b9"> function console_read </font>
 
@@ -477,7 +482,7 @@ shell_echo_cmd(int argc, char **argv)
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | xx |  explain argument xx  |
 | yy |  explain argument yy  |
 
@@ -496,18 +501,19 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Give at least one example of usage.
 
+-----------
 
 ### <font color="#2980b9"> function console_tx_char </font>
 
-   ```   
+```   
    static int
    console_tx_char(void *arg)
-   ```
+```
 
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | xx |  explain argument xx  |
 | yy |  explain argument yy  |
 
@@ -526,6 +532,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Give at least one example of usage.
 
+-----------
   
 ### <font color="#2980b9"> function console_rx_char </font>
 
@@ -537,7 +544,7 @@ Give at least one example of usage.
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | xx |  explain argument xx  |
 | yy |  explain argument yy  |
 
@@ -556,6 +563,8 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Give at least one example of usage.
 
+
+-----------
 
 ### <font color="#2980b9"> function console_init </font>
 
@@ -569,7 +578,7 @@ Give at least one example of usage.
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | xx |  explain argument xx  |
 | yy |  explain argument yy  |
 
@@ -587,3 +596,5 @@ Any caveats to be careful about (e.g. high memory requirements).
 #### Example
 
 Give at least one example of usage.
+
+-----------
