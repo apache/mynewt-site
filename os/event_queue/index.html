@@ -162,9 +162,13 @@
                                     
                                         <li class="toctree-l3"><a href="#os_eventq_init"> os_eventq_init</a></li>
                                     
+                                        <li class="toctree-l3"><a href="#os_eventq_put"> os_eventq_put</a></li>
+                                    
                                         <li class="toctree-l3"><a href="#os_eventq_put2"> os_eventq_put2</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#next_one"> next_one </a></li>
+                                        <li class="toctree-l3"><a href="#os_eventq_get"> os_eventq_get</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_eventq_remove"> os_eventq_remove</a></li>
                                     
                                 
                             
@@ -234,18 +238,85 @@
 </div>
                         
                             <h1 id="event-queues">Event Queues<a class="headerlink" href="#event-queues" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+<p>Event queue is a way of serializing events arring to a task. This makes it easy to queue processing to happen inside task's context. This would be done either from an interrupt handler, or from another task.</p>
+<p>Events arrive in a form of a data structure <em>struct os_event</em>.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe scheduler here</p>
+<p>Events are in form of a data structure <em>struct os_event</em>, and they are queued to data structure <em>struct os_eventq</em>.</p>
+<p>Queue must be initialized before trying to add events to it. This is done using <em>os_eventq_init()</em>.</p>
+<p>Common way of using event queues is to have a task loop while calling <em>os_eventq_get()</em>, waiting for work to do.
+Other tasks (or interrupts) then call <em>os_eventq_put()</em> to wake it up. Once event has been queued task waiting on that queue is woken up, and will get a pointer to queued event structure.
+Processing task would then act according to event type.</p>
+<p>When <em>os_event</em> is queued, it should not be freed until processing task is done with it.</p>
+<p>It is assumed that there is only one task consuming events from an event queue. Only one task should be sleeping on a particular <em>os_eventq</em> at a time.</p>
+<p>Note that os_callout subsystem assumes that event queue is used as the wakeup mechanism.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<pre><code class="no-highlight">struct os_event {
+    uint8_t ev_queued;
+    uint8_t ev_type;
+    void *ev_arg;
+    STAILQ_ENTRY(os_event) ev_next;
+};
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ev_queued</td>
+<td>Internal field, which tells whether event is linked into an <em>os_eventq</em> already</td>
+</tr>
+<tr>
+<td>ev_type</td>
+<td>Type of an event. This should be unique, as it should be used by processing task to figure out what the event means</td>
+</tr>
+<tr>
+<td>ev_arg</td>
+<td>Can be used further as input to task processing this event</td>
+</tr>
+<tr>
+<td>ev_next</td>
+<td>Linkage attaching this event to an event queue</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="no-highlight">struct os_eventq {
+    struct os_task *evq_task;
+    STAILQ_HEAD(, os_event) evq_list;
+};
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>evq_task</td>
+<td>Pointer to task if there is task sleeping on <em>os_eventq_get()</em></td>
+</tr>
+<tr>
+<td>evq_list</td>
+<td>Queue head for list of events in this queue</td>
+</tr>
+</tbody>
+</table>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
 <li><a href="#os_eventq_init">os_eventq_init</a></li>
+<li><a href="#os_eventq_put">os_eventq_put</a></li>
 <li><a href="#os_eventq_put2">os_eventq_put2</a></li>
-<li>add the rest</li>
+<li><a href="#os_eventq_get">os_eventq_get</a></li>
+<li><a href="#os_eventq_remove">os_eventq_remove</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
@@ -254,7 +325,7 @@
     os_eventq_init(struct os_eventq *evq)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Initializes <em>struct os_eventq</em>, making it ready for use.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -265,33 +336,38 @@
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>evq</td>
+<td>Pointer to event queue getting initialized</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>None</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Usually done at subsystem init time; before OS has been started, and before interrupts generating events have been enabled.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<p><Add text to set up the context for the example here>
+This initializes event queue used by newtmgr task.</p>
+<pre><code class="c">struct os_eventq g_nmgr_evq;
+
+int
+nmgr_task_init(uint8_t prio, os_stack_t *stack_ptr, uint16_t stack_len)
+{
+    /* variable declarations here */
+
+    os_eventq_init(&amp;g_nmgr_evq);
+
+    /* initialization continues here */
+}
 </code></pre>
 
 <hr />
-<h2 id="os_eventq_put2"><font color="#F2853F" style="font-size:24pt"> os_eventq_put2</font><a class="headerlink" href="#os_eventq_put2" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="os_eventq_put"><font color="#F2853F" style="font-size:24pt"> os_eventq_put</font><a class="headerlink" href="#os_eventq_put" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void
+os_eventq_put(struct os_eventq *evq, struct os_event *ev)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Queues an event to tail of the event queue.</p>
 <h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -302,33 +378,45 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>evq</td>
+<td>Queue where event is being placed</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>ev</td>
+<td>Event which is being queued</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_1">Returned values<a class="headerlink" href="#returned-values_1" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>N/A</p>
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Functionality is of <em>os_eventq_put2()</em>, but this is to be called from a task context only.</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<p><Add text to set up the context for the example here>
+This is used to pass info about an event to a task handling it.</p>
+<pre><code class="no-highlight">    /* Get an event structure off the queue */
+    ev = (struct os_event *)os_memblock_get(&amp;g_hci_os_event_pool);
+    if (!ev) {
+        err = os_memblock_put(&amp;g_hci_cmd_pool, hci_ev);
+        assert(err == OS_OK);
+        return -1;
+    }
+
+    /* Fill out the event and post to Link Layer */
+    ev-&gt;ev_queued = 0;
+    ev-&gt;ev_type = BLE_HOST_HCI_EVENT_CTLR_EVENT;
+    ev-&gt;ev_arg = hci_ev;
+    os_eventq_put(&amp;ble_hs_evq, ev);
+
 </code></pre>
 
 <hr />
-<h2 id="next_one"><font color="#F2853F" style="font-size:24pt"> next_one </font><a class="headerlink" href="#next_one" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="os_eventq_put2"><font color="#F2853F" style="font-size:24pt"> os_eventq_put2</font><a class="headerlink" href="#os_eventq_put2" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void
+os_eventq_put2(struct os_eventq *evq, struct os_event *ev, int isr)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Queues an event to tail of the event queue.</p>
 <h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -339,28 +427,106 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>evq</td>
+<td>Queue where event is being placed</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>ev</td>
+<td>Event which is being queued</td>
+</tr>
+<tr>
+<td>isr</td>
+<td>Tells whether call is being made from within interrupt handler or not</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_2">Returned values<a class="headerlink" href="#returned-values_2" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>N/A</p>
 <h4 id="notes_2">Notes<a class="headerlink" href="#notes_2" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>If the event has already been queued, nothing happens. Including event's relative position within the queue itself.</p>
+<p>This can be called either from interrupt handler (in which case <em>isr</em> should be set to 1), or from another task context (in which case *isr should be set as 0).</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<p>This wakes up the task waiting on task1_evq, which processes console input (console input comes from UART, and is passed in in interrupt context).</p>
+<pre><code class="no-highlight">static void
+my_cons_input(int full_line)
+{
+    os_eventq_put2(&amp;task1_evq, &amp;cons_ev, 1);
+}
 </code></pre>
 
 <hr />
+<h2 id="os_eventq_get"><font color="#F2853F" style="font-size:24pt"> os_eventq_get</font><a class="headerlink" href="#os_eventq_get" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void
+os_eventq_get(struct os_eventq *evq)
+</code></pre>
+
+<p>Fetches the first event from a queue. Task will sleep until something gets queued.</p>
+<h4 id="arguments_3">Arguments<a class="headerlink" href="#arguments_3" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>evq</td>
+<td>Queue to wait on</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values_3">Returned values<a class="headerlink" href="#returned-values_3" title="Permanent link">&para;</a></h4>
+<p>Will return with a pointer to first <em>struct event</em> which is in the queue.</p>
+<h4 id="notes_3">Notes<a class="headerlink" href="#notes_3" title="Permanent link">&para;</a></h4>
+<h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
+<p>Main loop of an example task.</p>
+<pre><code class="no-highlight">    while (1) {
+        ev = os_eventq_get(&amp;task1_evq);
+        assert(ev);
+        if (ev-&gt;ev_type == CONS_EV_TYPE) {
+            /* XXX do stuff */
+        }
+    }
+
+</code></pre>
+
+<hr />
+<h2 id="os_eventq_remove"><font color="#F2853F" style="font-size:24pt"> os_eventq_remove</font><a class="headerlink" href="#os_eventq_remove" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void
+os_eventq_remove(struct os_eventq *evq, struct os_event *ev)
+</code></pre>
+
+<p>Removes an event which has been placed in a queue.</p>
+<h4 id="arguments_4">Arguments<a class="headerlink" href="#arguments_4" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>evq</td>
+<td>Queue where event is being removed from</td>
+</tr>
+<tr>
+<td>ev</td>
+<td>Event which is being removed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values_4">Returned values<a class="headerlink" href="#returned-values_4" title="Permanent link">&para;</a></h4>
+<p>N/A</p>
+<h4 id="notes_4">Notes<a class="headerlink" href="#notes_4" title="Permanent link">&para;</a></h4>
+<h4 id="example_4">Example<a class="headerlink" href="#example_4" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here>
+This is from os_callout_stop(). User wants to stop a callout from getting passed to a task. If the event has already been queued, then remove it before it is seen.</p>
+<pre><code class="no-highlight">    if (c-&gt;c_evq) {
+        os_eventq_remove(c-&gt;c_evq, &amp;c-&gt;c_ev);
+    }
+</code></pre>
                         
                     </div>
                 </div>
