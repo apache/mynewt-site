@@ -23,7 +23,6 @@ Note that os_callout subsystem assumes that event queue is used as the wakeup me
 
 ## Data structures
 
-<code>
 ```no-highlight
 struct os_event {
     uint8_t ev_queued;
@@ -32,7 +31,6 @@ struct os_event {
     STAILQ_ENTRY(os_event) ev_next;
 };
 ```
-</code>
 
 | Element | Description |
 |---------|-------------|
@@ -41,14 +39,14 @@ struct os_event {
 | ev_arg | Can be used further as input to task processing this event |
 | ev_next | Linkage attaching this event to an event queue |
 
-<code>
+
 ```no-highlight
 struct os_eventq {
     struct os_task *evq_task;
     STAILQ_HEAD(, os_event) evq_list;
 };
 ```
-</code>
+
 
 | Element | Description |
 |---------|-------------|
@@ -101,8 +99,8 @@ Usually done at subsystem init time; before OS has been started, and before inte
 <Add text to set up the context for the example here>
 This initializes event queue used by newtmgr task.
 
-<code>
-```no-highlight
+
+```c
 struct os_eventq g_nmgr_evq;
 
 int
@@ -115,7 +113,6 @@ nmgr_task_init(uint8_t prio, os_stack_t *stack_ptr, uint16_t stack_len)
     /* initialization continues here */
 }
 ```
-</code>
 
 ---------------------
 
@@ -237,7 +234,6 @@ Will return with a pointer to first *struct event* which is in the queue.
 
 #### Example
 
-<Add text to set up the context for the example here>
 Main loop of an example task.
 
 ```no-highlight
