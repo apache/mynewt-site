@@ -14,8 +14,8 @@ Semaphores can also be used for task synchronization. A simple example of this w
 The other common use of a counting semaphore is in what is commonly called a "producer/consumer" relationship. The producer adds tokens (by calling *os_sem_release*) and the consumer consumes them by calling *os_sem_pend*. In this relationship, the producer has work for the consumer to do. Each token added to the semaphore will cause the consumer to do whatever work is required. A simple example could be the following: every time a button is pressed there is some work to do (ring a bell). Each button press causes the producer to add a token. Each token consumed rings the bell. There will exactly the same number of bell rings as there are button presses. In other words, each call to *os_sem_pend* subtracts exactly one token and each call to *os_sem_release* adds exactly one token.
 
 ## Data structures
-```
 
+```no-highlight
 struct os_sem
 {
     SLIST_HEAD(, os_task) sem_head;     /* chain of waiting tasks */
@@ -36,21 +36,20 @@ struct os_sem
 
 The functions available in this OS feature are:
 
-* [os_sem_init](#function-os_sem_init)
-* [os_sem_release](#function-os_sem_release)
-* [os_sem_pend](#function-os_sem_pend)
-* [os_sem_delete](#function-os_sem_delete)
+* [os_sem_init](#os_sem_init)
+* [os_sem_release](#os_sem_release)
+* [os_sem_pend](#os_sem_pend)
+* [os_sem_delete](#os_sem_delete)
 
 
 ## Function Reference
 
 ------------------
 
-### <font color="2980b9">function os_sem_init</font>
+## <font color="F2853F" style="font-size:24pt"> os_sem_init</font>
 
-```
-    os_error_t os_sem_init(struct os_sem *sem, uint16_t tokens)    
-
+```no-highlight
+os_error_t os_sem_init(struct os_sem *sem, uint16_t tokens)    
 ```
 
 Initialize a semaphore with a given number of tokens. Should be called before the semaphore is used.
@@ -79,22 +78,20 @@ Any caveats to be careful about (e.g. high memory requirements).>
 
 The following example shows how to initialize a semaphore used for exclusive access.
 
-```
+```no-highlight
 struct os_mutex g_os_sem;
 os_error_t err;
 
 err = os_sem_init(&g_os_sem, 1);
 assert(err == OS_OK);
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function os_sem_release </font>
+## <font color="#F2853F" style="font-size:24pt"> os_sem_release </font>
 
-```
+```no-highlight
 os_error_t os_sem_release(struct os_sem *sem)
-   
 ```
 
 Release a semaphore that you are holding. This adds a token to the semaphore.
@@ -119,7 +116,7 @@ OS_OK: semaphore released successfully.
 
 #### Example
 
-```
+```no-highlight
 struct os_sem g_os_sem;
 os_error_t err;
 
@@ -130,16 +127,14 @@ assert(err == OS_OK);
 
 err = os_sem_release(&g_os_sem);
 assert(err == OS_OK);
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function os_sem_pend </font>
+## <font color="#F2853F" style="font-size:24pt"> os_sem_pend </font>
 
-```
+```no-highlight
 os_error_t os_sem_pend(struct os_sem *sem, uint32_t timeout)
-   
 ```
 
 Wait for a semaphore for a given amount of time.
@@ -167,7 +162,7 @@ If a timeout of 0 is used and the function returns OS_TIMEOUT, the semaphore was
 
 #### Example
 
-```
+```no-highlight
 struct os_sem g_os_sem;
 os_error_t err;
 
@@ -183,11 +178,10 @@ assert(err == OS_OK);
 
 ---------------------
 
-### <font color="#2980b9"> function os_sem_delete </font>
+## <font color="#F2853F" style="font-size:24pt"> os_sem_delete </font>
 
-```
+```no-highlight
 os_error_t os_sem_delete(struct os_sem *sem)
-   
 ```
 
 Delete a semaphore
@@ -212,14 +206,12 @@ Care must be taken when deleting a semaphore as deleting a semaphore used by oth
 
 #### Example
 
-```
+```no-highlight
 struct os_sem g_os_sem;
 os_error_t err;
 
 err = os_sem_delete(&g_os_sem);
 assert(err == OS_OK);
-
-
 ```
 
 ---------------------

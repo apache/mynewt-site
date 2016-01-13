@@ -16,7 +16,7 @@ Note that when multiple tasks are waiting on a mutex owned by another task, once
 
 ## Data structures
 
-```
+```no-highlight
 struct os_mutex
 {
     SLIST_HEAD(, os_task) mu_head;
@@ -25,8 +25,8 @@ struct os_mutex
     uint16_t    mu_level;
     struct os_task *mu_owner;
 };
-
 ```
+
 | Element | Description |
 |-----------|-------------|
 | mu_head |  Queue head for list of tasks waiting on mutex  |
@@ -41,20 +41,19 @@ struct os_mutex
 
 The functions available in this OS feature are:
 
-* [os_mutex_init](#function-os_mutex_init)
-* [os_mutex_release](#function-os_mutex_release)
-* [os_mutex_pend](#function-os_mutex_pend)
-* [os_mutex_delete](#function-os_mutex_delete)
+* [os_mutex_init](#os_mutex_init)
+* [os_mutex_release](#os_mutex_release)
+* [os_mutex_pend](#os_mutex_pend)
+* [os_mutex_delete](#os_mutex_delete)
 
 ## Function Reference
 
 ------------------
 
-### <font color="2980b9">function os_mutex_init</font>
+## <font color="#F2853F" style="font-size:24pt">os_mutex_init</font>
 
-```
+```no-highlight
 os_error_t os_mutex_init(struct os_mutex *mu)
-    
 ```
 
 Initialize the mutex. Must be called before the mutex can be used.
@@ -80,23 +79,20 @@ Any caveats to be careful about (e.g. high memory requirements).>
 #### Example
 
 
-```
+```no-highlight
 struct os_mutex g_mutex1;
 os_error_t err;
 
 err = os_mutex_init(&g_mutex1);
 assert(err == OS_OK);
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function os_mutex_release</font>
+## <font color="#F2853F" style="font-size:24pt">os_mutex_release</font>
 
-```
+```no-highlight
 os_error_t os_mutex_release(struct os_mutex *mu)
-
-   
 ```
 
 Release ownership of a mutex
@@ -121,7 +117,7 @@ OS_NOT_STARTED: Attempt to release a mutex before the os has been started.
 #### Example
 
 
-```
+```no-highlight
 struct os_mutex g_mutex1;
 os_error_t err;
 
@@ -132,16 +128,14 @@ assert(err == OS_OK);
 
 err = os_mutex_release(&g_mutex1);
 assert(err == OS_OK);
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function os_mutex_pend </font>
+## <font color="#F2853F" style="font-size:24pt">os_mutex_pend </font>
 
-```
-os_error_t os_mutex_pend(struct os_mutex *mu, uint32_t timeout)
-   
+```no-highlight
+os_error_t os_mutex_pend(struct os_mutex *mu, uint32_t timeout) 
 ```
 
 Acquire ownership of a mutex.
@@ -173,7 +167,7 @@ If the mutex is owned by another task and the timeout is 0 the function returns 
 
 
 
-```
+```no-highlight
 struct os_mutex g_mutex1;
 os_error_t err;
 
@@ -184,17 +178,14 @@ assert(err == OS_OK);
 
 err = os_mutex_release(&g_mutex1);
 assert(err == OS_OK);
-
-
 ```
 
 ---------------------
 
-### <font color="#2980b9"> function os_mutex_delete </font>
+## <font color="#F2853F" style="font-size:24pt">os_mutex_delete </font>
 
-```
+```no-highlight
 os_error_t os_mutex_pend(struct os_mutex *mu)
-   
 ```
 
 Delete a mutex
@@ -215,14 +206,12 @@ OS_NOT_STARTED: Attempt to release a mutex before the os has been started.
 
 #### Example
 
-```
+```no-highlight
 struct os_mutex g_mutex1;
 os_error_t err;
 
 err = os_mutex_delete(&g_mutex1);
 assert(err == OS_OK);
-
-
 ```
 
 ---------------------

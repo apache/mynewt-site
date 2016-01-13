@@ -9,7 +9,7 @@ A few commands to the console interface are currently available in the shell - `
 
 Create a sim target to check out these commands available in shell.
 
-```
+```no-highlight
 user@~/dev/larva$ newt target create blinky_sim
 Creating target blinky_sim
 Target blinky_sim successfully created!
@@ -53,7 +53,7 @@ uart0 at /dev/ttys005
 
 Open up a new terminal to run minicom, a text-based serial port control and terminal emulation program. Set device name to the serial port of the target. 
 
-```
+```no-highlight
 user@~$ minicom -D /dev/ttys005
 Welcome to minicom 2.7
 
@@ -88,12 +88,12 @@ Replace this with the list of data structures used, why, any neat features
 
 ## List of Functions
 
-<List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.>
+<Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
 The functions available in this OS feature are:
 
-* [shell_cmd_list_lock](#function-shell_cmd_list_lock)
-* [shell_cmd_list_unlock](#function-shell_cmd_list_unlock)
+* [shell_cmd_list_lock](#shell_cmd_list_lock)
+* [shell_cmd_list_unlock](#shell_cmd_list_unlock)
 * add the rest
 
 
@@ -101,9 +101,9 @@ The functions available in this OS feature are:
 
 ------------------
 
-### <font color="2980b9">function shell_cmd_list_lock </font>
+## <font color="F2853F" style="font-size:24pt"> shell_cmd_list_lock </font>
 
-```
+```no-highlight
     static int 
     shell_cmd_list_lock(void)
 ```
@@ -133,19 +133,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function shell_cmd_list_unlock </font>
+## <font color="#F2853F" style="font-size:24pt"> shell_cmd_list_unlock </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -173,19 +170,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function next_one </font>
+## <font color="#F2853F" style="font-size:24pt"> next_one </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -213,10 +207,8 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------

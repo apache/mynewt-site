@@ -14,12 +14,12 @@ Replace this with the list of data structures used, why, any neat features
 
 ## List of Functions
 
-<List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.>
+<Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
 The functions available in this OS feature are:
 
-* [_clear_stack](#function-_clear_stack)
-* [os_task_next_id](#function-os_task_next_id)
+* [_clear_stack](#_clear_stack)
+* [os_task_next_id](#os_task_next_id)
 * add the rest
 
 
@@ -27,12 +27,11 @@ The functions available in this OS feature are:
 
 ------------------
 
-### <font color="2980b9">function _clear_stack </font>
+## <font color="F2853F" style="font-size:24pt"> _clear_stack </font>
 
-```
-    static void
+```no-highlight
+static void
     _clear_stack(os_stack_t *stack_bottom, int size) 
-
 ```
 
 <Insert short description>
@@ -60,19 +59,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function os_task_next_id </font>
+## <font color="#F2853F" style="font-size:24pt"> os_task_next_id </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -100,19 +96,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function next_one </font>
+## <font color="#F2853F" style="font-size:24pt"> next_one </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -140,10 +133,8 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------

@@ -14,7 +14,7 @@ In the Mynewt OS, the console library comes in two versions:
 * stub - containing stubs for the API
 
 If an egg or project requires the full console capability it lists that dependency in its egg.yml file. For example, the shell egg is defined by the following egg.yml file:
-
+```no-highlight
     egg.name: libs/shell 
     egg.vers: 0.1
     egg.deps:
@@ -22,9 +22,9 @@ If an egg or project requires the full console capability it lists that dependen
         - libs/os
     egg.identities:
         - SHELL 
-
+```
 On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub. Another example would be the bootloader project where we want to keep the size of the image small. It includes the `libs/os` egg that can print out messages on a console (e.g. if there is a hard fault) and the `libs/util` egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead and the egg.yml file for the project boot egg looks like the following:
-
+```no-highlight
     project.name: boot
     project.identities: bootloader
     project.eggs:
@@ -33,14 +33,14 @@ On the other hand, a project may not have a physical console (e.g. a UART port t
         - libs/nffs
         - libs/console/stub
         - libs/util 
-
+```
 ## Data structures
 
 
 Console interaction is intrinsically composed of two unidirectional systems. The console implementation uses two ring buffers containing input (receive) and output (transmit) characters, respectively. Read and write operations on the console_ring structure are managed by labeling the read location indicator the `cr_tail` and the write location indicator the `cr_head`. The console ring length is variable and is specified as the `cr_size` member of the data structure. `cr_buf` is the pointer to the actual array of data contained.
 
 
-```
+```no-highlight
 struct console_ring {
   32     uint8_t cr_head;
   33     uint8_t cr_tail;
@@ -51,7 +51,7 @@ struct console_ring {
 ```
 
 
-```
+```no-highlight
 struct console_tty {
   40     struct console_ring ct_tx;
   41     uint8_t ct_tx_buf[CONSOLE_TX_BUF_SZ]; /* must be after console_ring */
@@ -66,27 +66,27 @@ struct console_tty {
 
 The functions available in console are:
 
-* [console_printf](#function-console_printf)
-* [console_add_char](#function-console_add_char)
-* [console_pull_char](#function-console_pull_char)
-* [console_pull_char_head](#function-console_pull_char_head)
-* [console_queue_char](#function-console_queue_char)
-* [console_blocking_tx](#function-console_blocking_tx)
-* [console_blocking_mode](#function-console_blocking_mode)
-* [console_write](#function-console_write)
-* [console_read](#function-console_read)
-* [console_tx_char](#function-console_tx_char)
-* [console_rx_char](#function-console_rx_char)
-* [console_init](#function-console_init)
+* [console_printf](#console_printf)
+* [console_add_char](#console_add_char)
+* [console_pull_char](#console_pull_char)
+* [console_pull_char_head](#console_pull_char_head)
+* [console_queue_char](#console_queue_char)
+* [console_blocking_tx](#console_blocking_tx)
+* [console_blocking_mode](#console_blocking_mode)
+* [console_write](#console_write)
+* [console_read](#console_read)
+* [console_tx_char](#console_tx_char)
+* [console_rx_char](#console_rx_char)
+* [console_init](#console_init)
 
 
 ## Function Reference
 
 ------------------
 
-### <font color="2980b9">function console_printf</font>
+## <font color="F2853F" style="font-size:24pt"> console_printf</font>
 
-```
+```no-highlight
     void 
     console_printf(const char *fmt, ...)
 ```
@@ -112,7 +112,7 @@ While `console_printf`, with its well understood formatting options in C, is mor
 #### Example
 Example #1:
 
-```
+```no-highlight
 char adv_data_buf[32];
     
 void
@@ -126,7 +126,7 @@ task()
 
 Example #2:
 
-```
+```no-highlight
 struct exception_frame {
     uint32_t r0;
     uint32_t r1;
@@ -147,9 +147,9 @@ task(struct trap_frame *tf)
   
 ---------------------
    
-### <font color="#2980b9"> function console_add_char</font>
+## <font color="#F2853F" style="font-size:24pt"> console_add_char</font>
 
-```
+```no-highlight
    static void
    console_add_char(struct console_ring *cr, char ch)
 ```
@@ -177,7 +177,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Add a new line character to the output (transmit) buffer.
 
-```
+```no-highlight
 void
 task()
 {
@@ -189,9 +189,9 @@ task()
 
 -------------------
 
-### <font color="#2980b9"> function console_pull_char </font>
+## <font color="#F2853F" style="font-size:24pt"> console_pull_char </font>
 
-```
+```no-highlight
    static uint8_t
    console_pull_char(struct console_ring *cr)
 ```
@@ -220,7 +220,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Read the characters in the ring buffer into a string.
 
-```
+```no-highlight
 void
 task(struct console_ring *cr, char *str, int cnt)
 {    
@@ -237,9 +237,9 @@ task(struct console_ring *cr, char *str, int cnt)
 
 ---------------
       
-### <font color="#2980b9"> function console_pull_char_head </font>
+## <font color="#F2853F" style="font-size:24pt"> console_pull_char_head </font>
 
-```
+```no-highlight
    static void
    console_pull_char_head(struct console_ring *cr)
 ```
@@ -274,7 +274,7 @@ In order to see a character getting deleted when a user hits backspace while typ
 
 The example below shows console_pull_char_head being used for the last step.
 
-```
+```no-highlight
 void
 task(uint8_t data)
 {
@@ -296,9 +296,9 @@ task(uint8_t data)
 
 -------------
 
-### <font color="#2980b9"> function console_queue_char </font>
+## <font color="#F2853F" style="font-size:24pt"> console_queue_char </font>
 
-``` 
+```no-highlight 
    static void
    console_queue_char(char ch)
 ```
@@ -323,14 +323,14 @@ This function makes sure no interrupts are allowed while the transmit buffer is 
 
 #### Example
 
-```
+```no-highlight
 Insert example
 ``` 
 ------------------
  
-### <font color="#2980b9"> function console_blocking_tx </font>
+## <font color="#F2853F" style="font-size:24pt"> console_blocking_tx </font>
 
-```
+```no-highlight
     static void
     console_blocking_tx(char ch)
 ```
@@ -359,7 +359,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Here is an example of a console output queue being flushed.
 
-```
+```no-highlight
 void
 task(void)
 {
@@ -375,9 +375,9 @@ task(void)
 
 -----------
 
-### <font color="#2980b9"> function console_blocking_mode </font>
+## <font color="#F2853F" style="font-size:24pt"> console_blocking_mode </font>
 
-```
+```no-highlight
    void
    console_blocking_mode(void)
 ```
@@ -405,7 +405,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Here is an example of calling `console_blocking_mode` and printing crash information from an assert to help debug.
 
-```
+```no-highlight
 void
 _assert_func(const char *file, int line, const char *func, const char *e)
 {
@@ -423,9 +423,9 @@ _assert_func(const char *file, int line, const char *func, const char *e)
 
 -----------
 
-### <font color="#2980b9">function console_write </font>
+## <font color="#F2853F" style="font-size:24pt"> console_write </font>
  
-```
+```no-highlight
    void
    console_write(char *str, int cnt)
 ```
@@ -453,7 +453,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 Here is an example of the function being used in an echo command with a newline at the end.
 
-```
+```no-highlight
 static int
 shell_echo_cmd(int argc, char **argv)
 {
@@ -471,9 +471,9 @@ shell_echo_cmd(int argc, char **argv)
 
 -----------
 
-### <font color="#2980b9"> function console_read </font>
+## <font color="#F2853F" style="font-size:24pt"> console_read </font>
 
-```   
+```no-highlight   
   int
   console_read(char *str, int cnt)
 ```
@@ -503,9 +503,9 @@ Give at least one example of usage.
 
 -----------
 
-### <font color="#2980b9"> function console_tx_char </font>
+## <font color="#F2853F" style="font-size:24pt"> console_tx_char </font>
 
-```   
+```no-highlight   
    static int
    console_tx_char(void *arg)
 ```
@@ -534,9 +534,9 @@ Give at least one example of usage.
 
 -----------
   
-### <font color="#2980b9"> function console_rx_char </font>
+## <font color="#F2853F" style="font-size:24pt"> console_rx_char </font>
 
-```
+```no-highlight
    static int
    console_rx_char(void *arg, uint8_t data)
 ```
@@ -566,9 +566,9 @@ Give at least one example of usage.
 
 -----------
 
-### <font color="#2980b9"> function console_init </font>
+## <font color="#F2853F" style="font-size:24pt"> console_init </font>
 
-```
+```no-highlight
    int
    console_init(console_rx_cb rx_cb)
 ```

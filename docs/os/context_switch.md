@@ -14,12 +14,12 @@ Replace this with the list of data structures used, why, any neat features
 
 ## List of Functions
 
-<List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.>
+<Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
 The functions available in the scheduler are:
 
-* [os_sched_insert](#function-os_sched_insert)
-* [os_sched_walk](#function-os_sched_walk)
+* [os_sched_insert](#os_sched_insert)
+* [os_sched_walk](#os_sched_walk)
 * add the rest
 
 
@@ -27,9 +27,9 @@ The functions available in the scheduler are:
 
 ------------------
 
-### <font color="2980b9">function os_sched_insert</font>
+### <font color="#F2853F" style="font-size:24pt"> os_sched_insert</font>
 
-```
+```no-highlight
     os_error_t
     os_sched_insert(struct os_task *t)
 ```
@@ -59,19 +59,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function os_sched_walk</font>
+### <font color="#F2853F" style="font-size:24pt"> os_sched_walk</font>
 
-```
-   <Insert function callout here >
-   
+```no-highlight
+<Insert function callout here >
 ```
 
 <Insert short description>
@@ -99,19 +96,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function next_one </font>
+### <font color="#F2853F" style="font-size:24pt"> next_one </font>
 
-```
-   <Insert function callout here >
-   
+```no-highlight
+<Insert function callout here >
 ```
 
 <Insert short description>
@@ -139,10 +133,8 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------

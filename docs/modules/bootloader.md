@@ -13,12 +13,12 @@ Replace this with the list of data structures used, why, any neat features
 
 ## List of Functions
 
-<List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.>
+<Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
 The functions available in this OS feature are:
 
-* [boot_slot_addr](#function-boot_slot_addr)
-* [boot_find_image_slot](#function-boot_find_image_slot)
+* [boot_slot_addr](#boot_slot_addr)
+* [boot_find_image_slot](#boot_find_image_slot)
 * add the rest
 
 
@@ -26,12 +26,11 @@ The functions available in this OS feature are:
 
 ------------------
 
-### <font color="2980b9">function boot_slot_addr </font>
+## <font color="F2853F" style="font-size:24pt"> boot_slot_addr </font>
 
-```
+```no-highlight
     static void
     boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)
-
 ```
 
 <Insert short description>
@@ -59,19 +58,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function boot_find_image_slot </font>
+## <font color="#F2853F" style="font-size:24pt"> boot_find_image_slot </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -99,19 +95,16 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------
    
-### <font color="#2980b9"> function next_one </font>
+## <font color="#F2853F" style="font-size:24pt"> next_one </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -139,10 +132,8 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------

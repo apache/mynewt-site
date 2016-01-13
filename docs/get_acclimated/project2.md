@@ -22,6 +22,7 @@ The following target hardware chips are covered:
 
 * The first step is to download the generic skeleton of the project. The eggs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as a nest in a separate repository on Apache. You know it is a nest because there is a nest.yml file. 
 
+```no-highlight
         [user:~/dev]$ newt nest create test_project
         Downloading nest skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!
         Nest test_project successfully created in ~/dev/go/test_project
@@ -29,17 +30,20 @@ The following target hardware chips are covered:
         [user:~/dev]$ cd test_project/
         [user:~/dev/test_project]$ ls
         README.md	compiler	hw		libs	nest.yml
-
+```
 
 * Next, the clutch of eggs named larva is added from the nest (also named larva) from another repository on Apache. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (`clutch.yml`) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.
- 
+```no-highlight
         [user:~/dev/test_project]$ newt nest add-clutch larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
         Downloading clutch.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
         Verifying clutch.yml format...
         ok!
         Clutch larva successfully installed to Nest.
+```
 
 * The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. 
+
+```no-highlight
 
         [user:~/dev/test_project]$ newt egg install project/blinky          
         Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
@@ -55,9 +59,10 @@ The following target hardware chips are covered:
         Installing libs/cmsis-core
         Installing compiler/arm-none-eabi-m4
         Installation was a success!
+```
 
 * It's time to create a target for the project and define the target attributes. 
-
+```no-highlight
         [user:~/dev/test_project]$ newt target create blink_f3disc
         Creating target blink_f3disc
         Target blink_f3disc successfully created!
@@ -85,12 +90,12 @@ The following target hardware chips are covered:
 	        compiler_def: debug
 	        compiler: arm-none-eabi-m4
 	        name: blink_f3disc
-        
+```        
 * Next, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at [http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf](http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf)
 
 * ![STMdiscovery](pics/STM32f3discovery_connector.png)
 
-        
+```no-highlight  
         [user:~/dev/test_project]$ newt target build blink_f3disc
         Building target blink_f3disc (project = blinky)
         Compiling case.c
@@ -128,12 +133,13 @@ The following target hardware chips are covered:
         Building project blinky
         Linking blinky.elf
         Successfully run!
-       
-* Finally, you have to download the image on to the board. You will see a blue light start to blink.
+```
 
+* Finally, you have to download the image on to the board. You will see a blue light start to blink.
+```no-highlight
         [user:~/dev/test_project]$ newt target download blink_f3disc
         Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
-
+```
 
 
 ### nRF52 Series
@@ -148,23 +154,23 @@ The following target hardware chips are covered:
 #### Step by Step Instructions to build image
 
 * The first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.
-
+```no-highlight
         []user@~/dev]$ newt nest create nordic_blinky
         Downloading nest skeleton from https://www.github.com/mynewt/tadpole... ok!
         Nest nordic_blinky successfully created in ~dev/nordic_blinky
         
         user@~/dev$ cd nordic_blinky/
-
+```
 
 * Then, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (`clutch.yml`) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.
- 
+```no-highlight
         []user@~/dev/nordic_blinky]$ newt nest add-clutch larva https://github.com/mynewt/larva
         Downloading clutch.yml from https://github.com/mynewt/larva/master... ok!
         Verifying clutch.yml format...ok!
         Clutch larva successfully installed to Nest.
-
+```
 * The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. 
-
+```no-highlight
         [user@~/dev/nordic_blinky]$ newt egg install project/blinky 
         Downloading larva from https://github.com/mynewt/larva//master... ok!
         Installing project/blinky
@@ -178,10 +184,10 @@ The following target hardware chips are covered:
         Installing libs/cmsis-core
         Installing compiler/arm-none-eabi-m4
         Installation was a success!
-
+```
 
 * It's time to create a target for the project and define the target attributes. 
-
+```no-highlight
         [user@~/dev/nordic_blinky]$ newt target create blink_nordic
         Creating target blink_nordic
         Target blink_nordic successfully created!
@@ -203,10 +209,10 @@ The following target hardware chips are covered:
 	    	project: blinky
 	    	bsp: hw/bsp/nrf52pdk
 	    	compiler_def: debug
-
+```
         
 * Finally, you get to build the target and generate an executable that can now be uploaded to the board via the on-board SEGGER J-Link debugger. 
-
+```no-highlight
         [user@~/dev/nordic_blinky]$ newt target build blink_nordic
         Building target blink_nordic (project = blinky)
         Compiling case.c
@@ -246,11 +252,11 @@ The following target hardware chips are covered:
         Building project blinky
         Linking blinky.elf
         Successfully run!
-
+```
 * In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from [https://www.segger.com/jlink-software.html](https://www.segger.com/jlink-software.html). The command line version of the server is used in the steps below. 
 
 * Open a new terminal and start a J-Link session.
-
+```no-highlight
         [user@~/dev/nordic_blinky/project/blinky/bin]$ which JLinkGDBServer
         /usr/local/bin/JLinkGDBServer
         [user@~/dev/nordic_blinky/project/blinky/bin]$ JLinkGDBServer -if SWD
@@ -290,10 +296,10 @@ The following target hardware chips are covered:
         Listening on TCP/IP port 2331
         Connecting to target...Connected to target
         Waiting for GDB connection...Connected to 127.0.0.1
-
+```
 
 * You need a configuration file for the GDB session to be opened correctly and the image ("blinky.elf") you built for this target downloaded to flash. A sample config script is given below. Alternatively, you could choose to type each command at the gdb prompt.
-
+```no-highlight
          [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ cat jlink-gdb.cfg 
          echo ***Setting up the environment for debugging gdb.***\n
          set complaints 1
@@ -313,9 +319,9 @@ The following target hardware chips are covered:
          monitor reset
          echo \n*** Halting target ***\n
          monitor halt
-
+```
 * Start the gdb session and monitor that it loads the image, resets the target, and halts for a command to continue. 
-
+```no-highlight
         [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ arm-none-eabi-gdb -x ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/jlink-gdb.cfg
         
         GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
@@ -361,12 +367,12 @@ The following target hardware chips are covered:
         Resetting target
 
         *** Halting target ***
-
+```
 * Type 'c' to continue. The LED on the board will start to blink. You will also see some activity in the terminal showing the open J-Link GDB server connection. The LED will continue to blink after you quit out of that connection.
-
+```no-highlight
         (gdb) c
         Continuing.
-
+```
 
 
 

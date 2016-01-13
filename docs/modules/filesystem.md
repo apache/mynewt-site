@@ -14,12 +14,12 @@ Replace this with the list of data structures used, why, any neat features
 
 ## List of Functions
 
-<List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.>
+<Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
 The functions available in this OS feature are:
 
-* [nffs_lock](#function-nffs_lock)
-* [nffs_unlock](#function-nffs_unlock)
+* [nffs_lock](#nffs_lock)
+* [nffs_unlock](#nffs_unlock)
 * add the rest
 
 
@@ -27,9 +27,9 @@ The functions available in this OS feature are:
 
 ------------------
 
-### <font color="2980b9">function nffs_lock </font>
+## <font color="F2853F" style="font-size:24pt"> nffs_lock </font>
 
-```
+```no-highlight
     static void
     nffs_lock(void)
 
@@ -60,7 +60,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
+```no-highlight
 
 <Insert the code snippet here>
 
@@ -68,9 +68,9 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 ---------------------
    
-### <font color="#2980b9"> function nffs_unlock </font>
+## <font color="#F2853F" style="font-size:24pt"> nffs_unlock </font>
 
-```
+```no-highlight
    <Insert function callout here >
    
 ```
@@ -100,7 +100,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
+```no-highlight
 
 <Insert the code snippet here>
 
@@ -108,11 +108,10 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 ---------------------
    
-### <font color="#2980b9"> function next_one </font>
+## <font color="#F2853F" style="font-size:24pt"> next_one </font>
 
-```
+```no-highlight
    <Insert function callout here >
-   
 ```
 
 <Insert short description>
@@ -140,10 +139,8 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 <Add text to set up the context for the example here>
 
-```
-
+```no-highlight
 <Insert the code snippet here>
-
 ```
 
 ---------------------

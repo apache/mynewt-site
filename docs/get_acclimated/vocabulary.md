@@ -8,7 +8,7 @@ As the base repository of your source code, the nest has a master branch and sev
 
 For example, a walk through the "larva" nest at [https://github.com/mynewt/larva.git](https://github.com/mynewt/larva.git) shows the following structure. The nest.yml file in the larva directory indicates that it is a nest. An egg will have the egg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is an egg, the API for the hardware abstraction layer is an egg, and so on. 
 
-```
+```no-highlight
 larva
   |- nest.yml 
   |- compiler
@@ -74,10 +74,10 @@ larva
 ```
 
 The newt tool offers the `nest` command to create and manage nests. In general, commands represent actions and flags are modifiers for those actions. A command can have children commands and optionally run an action. A full description of the `nest` command can be found in the newt tool reference in Chapter 3.
-
+```no-highlight
     newt nest [flags]
     newt nest [child-commands] 
-
+```
 A complete list of all the nest commands can be found in the newt tool reference in [Newt Tool](../newt/newt_tool_reference.md).
 
 ### Project
@@ -98,9 +98,9 @@ A project has the following concepts or properties associated with it. You can f
 A project could itself be an egg if it is a distributable package for a specific application. 
 
 The newt tool offers various commands that you can use with a project. For example, if your project is an egg, you can use the following command to install a project from a nest.
-
+```no-highlight
     newt egg install [flags] <project egg name>
-
+```
 ### Egg
 
 An egg is a distributable package of libraries. Just as an egg in nature has various parts each of which serves a certain purpose, the Mynewt egg consists of software parcels or modules that have different functions. However, unlike the egg in nature these software modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this concept is grasped it is easy to see how an egg may consist of other eggs.
@@ -108,15 +108,15 @@ An egg is a distributable package of libraries. Just as an egg in nature has var
 The two main directories in an egg are `/include` and `/src`.
 
 The newt tool offers several egg commands to list, inspect, install, and do other operations on eggs. For example, the following command
-
+```no-highlight
     newt egg list 
-    
+```
 outputs all the eggs in the current nest where each egg has details on its version, path, and dependencies. A sample output for an egg is given below.
-
+```no-highlight
     Egg libs/os, version 0.1.0
     path: /Users/aditihilbert/dev/test_project/libs/os
     deps: libs/testutil@none#stable 
-
+```
 A complete list of all the egg commands can be found in the newt tool reference in [Newt Tool](../newt/newt_tool_reference.md).
 
 ### Clutch
@@ -126,26 +126,26 @@ A clutch is a snapshot of all eggs in a remote nest at any point in time. On any
 You may download multiple clutches into your local nest as long as the names of the clutches are different. This allows you to mix and match various features and functionality coming from different clutches of eggs. You can see all the clutches in the `.nest/clutches` directory in your nest.
 
 The newt tool offers clutch management commands within the `newt nest` command. For example, the following command creates a new clutch using all the eggs in the current directory. It requires that a clutch name be specified and the url for the location of that clutch in the online repository. These two inputs go into the `clutch.yml` file in the nest.
-
+```no-highlight
     newt nest generate-clutch <name> <url>
-
+```
 Note that a clutch merely defines the eggs belonging together and requires the eggs to be installed (hatched) for the source code to be populated in the project. 
 
 ### Eggshell
 
 The term eggshell is used to refer to the eggs of a clutch in a remote repository. They are not useful on your local machine until you actually install them. So they are mere shells of themselves while sitting on the online repository. When you enter the following command outputs the total number of shells in each remote clutch.
-
+```no-highlight
     newt nest list-clutches
-    
+```
 So, if you had two clutches installed, the output could be:
-
+```no-highlight
     Remote clutch larva (eggshells: 19)
     Remote clutch ble_test (eggshells: 15)
-    
+```    
 ### Target
 
 A target is the hardware build or its software equivalent (e.g. test, simulator) set for a project. It tells the newt tool how to build the source code within a given nest. Once a new target is created, its architecture and other details needs to be defined. An example of a defined target named "blink_f3disc" is given below.
- 
+```no-highlight
     blink_f3disc
 	         compiler_def: debug
 	         compiler: arm-none-eabi-m4
@@ -153,12 +153,12 @@ A target is the hardware build or its software equivalent (e.g. test, simulator)
 	         arch: cortex_m4
 	         project: blinky
 	         bsp: hw/bsp/stm32f3discovery
- 
+```
 The newt tool offers commands to create, set up and manipulate targets. For example, the create command below creates an empty target named `my_target1` and the set command sets one detail of its definition, namely the architecture.
-
+```no-highlight
     newt target create my_target1
     newt target set my_target1 arch=cortex_m4
-
+```
 ### Capability
 
 Capability is functionality that is exposed by an egg. A capability is tracked by its name and version. An egg may require capabilities exposed by another egg, thus establishing a dependency tracked through the egg.yml files. 
