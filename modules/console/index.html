@@ -141,19 +141,55 @@
                 
                     <ul class="current-toc">
                         
-                            <li class="toctree-l3"><a href="./">Console</a></li>
+                            <li class="toctree-l2"><a href="./">Console</a></li>
+                            
+                                
+                                    
+                                        <li class="toctree-l3"><a href="#description">Description</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#data-structures">Data structures</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#list-of-functions">List of Functions</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#function-reference">Function Reference</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_printf"> console_printf</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_add_char"> console_add_char</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_pull_char"> console_pull_char </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_pull_char_head"> console_pull_char_head </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_queue_char"> console_queue_char </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_blocking_tx"> console_blocking_tx </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_blocking_mode"> console_blocking_mode </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_write"> console_write </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_read"> console_read </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_tx_char"> console_tx_char </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_rx_char"> console_rx_char </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#console_init"> console_init </a></li>
+                                    
+                                
                             
                         
-                            <li class="toctree-l3"><a href="../shell/">Shell</a></li>
+                            <li class="toctree-l2"><a href="../shell/">Shell</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../bootloader/">Bootloader</a></li>
+                            <li class="toctree-l2"><a href="../bootloader/">Bootloader</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../filesystem/">File System</a></li>
+                            <li class="toctree-l2"><a href="../filesystem/">File System</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../testutil/">Test Utilities</a></li>
+                            <li class="toctree-l2"><a href="../testutil/">Test Utilities</a></li>
                             
                         
                     </ul>
@@ -201,27 +237,29 @@
 <li>stub - containing stubs for the API</li>
 </ul>
 <p>If an egg or project requires the full console capability it lists that dependency in its egg.yml file. For example, the shell egg is defined by the following egg.yml file:</p>
-<pre><code>egg.name: libs/shell 
-egg.vers: 0.1
-egg.deps:
-    - libs/console/full
-    - libs/os
-egg.identities:
-    - SHELL
+<pre><code class="no-highlight">    egg.name: libs/shell 
+    egg.vers: 0.1
+    egg.deps:
+        - libs/console/full
+        - libs/os
+    egg.identities:
+        - SHELL 
 </code></pre>
+
 <p>On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub. Another example would be the bootloader project where we want to keep the size of the image small. It includes the <code>libs/os</code> egg that can print out messages on a console (e.g. if there is a hard fault) and the <code>libs/util</code> egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead and the egg.yml file for the project boot egg looks like the following:</p>
-<pre><code>project.name: boot
-project.identities: bootloader
-project.eggs:
-    - libs/os
-    - libs/bootutil
-    - libs/nffs
-    - libs/console/stub
-    - libs/util
+<pre><code class="no-highlight">    project.name: boot
+    project.identities: bootloader
+    project.eggs:
+        - libs/os
+        - libs/bootutil
+        - libs/nffs
+        - libs/console/stub
+        - libs/util 
 </code></pre>
+
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
 <p>Console interaction is intrinsically composed of two unidirectional systems. The console implementation uses two ring buffers containing input (receive) and output (transmit) characters, respectively. Read and write operations on the console_ring structure are managed by labeling the read location indicator the <code>cr_tail</code> and the write location indicator the <code>cr_head</code>. The console ring length is variable and is specified as the <code>cr_size</code> member of the data structure. <code>cr_buf</code> is the pointer to the actual array of data contained.</p>
-<pre><code>struct console_ring {
+<pre><code class="no-highlight">struct console_ring {
   32     uint8_t cr_head;
   33     uint8_t cr_tail;
   34     uint8_t cr_size;
@@ -230,7 +268,7 @@ project.eggs:
   37 }
 </code></pre>
 
-<pre><code>struct console_tty {
+<pre><code class="no-highlight">struct console_tty {
   40     struct console_ring ct_tx;
   41     uint8_t ct_tx_buf[CONSOLE_TX_BUF_SZ]; /* must be after console_ring */
   42     struct console_ring ct_rx;
@@ -243,23 +281,23 @@ project.eggs:
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p>The functions available in console are:</p>
 <ul>
-<li><a href="#function-console_printf">console_printf</a></li>
-<li><a href="#function-console_add_char">console_add_char</a></li>
-<li><a href="#function-console_pull_char">console_pull_char</a></li>
-<li><a href="#function-console_pull_char_head">console_pull_char_head</a></li>
-<li><a href="#function-console_queue_char">console_queue_char</a></li>
-<li><a href="#function-console_blocking_tx">console_blocking_tx</a></li>
-<li><a href="#function-console_blocking_mode">console_blocking_mode</a></li>
-<li><a href="#function-console_write">console_write</a></li>
-<li><a href="#function-console_read">console_read</a></li>
-<li><a href="#function-console_tx_char">console_tx_char</a></li>
-<li><a href="#function-console_rx_char">console_rx_char</a></li>
-<li><a href="#function-console_init">console_init</a></li>
+<li><a href="#console_printf">console_printf</a></li>
+<li><a href="#console_add_char">console_add_char</a></li>
+<li><a href="#console_pull_char">console_pull_char</a></li>
+<li><a href="#console_pull_char_head">console_pull_char_head</a></li>
+<li><a href="#console_queue_char">console_queue_char</a></li>
+<li><a href="#console_blocking_tx">console_blocking_tx</a></li>
+<li><a href="#console_blocking_mode">console_blocking_mode</a></li>
+<li><a href="#console_write">console_write</a></li>
+<li><a href="#console_read">console_read</a></li>
+<li><a href="#console_tx_char">console_tx_char</a></li>
+<li><a href="#console_rx_char">console_rx_char</a></li>
+<li><a href="#console_init">console_init</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
-<h3 id="function-console_printf"><font color="2980b9">function console_printf</font><a class="headerlink" href="#function-console_printf" title="Permanent link">&para;</a></h3>
-<pre><code>    void 
+<h2 id="console_printf"><font color="F2853F" style="font-size:24pt"> console_printf</font><a class="headerlink" href="#console_printf" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">    void 
     console_printf(const char *fmt, ...)
 </code></pre>
 
@@ -289,7 +327,7 @@ project.eggs:
 <p>While <code>console_printf</code>, with its well understood formatting options in C, is more convenient and easy on the eyes than the raw output of <code>console_write</code>, the associated code size is considerably larger.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p>Example #1:</p>
-<pre><code>char adv_data_buf[32];
+<pre><code class="no-highlight">char adv_data_buf[32];
 
 void
 task()
@@ -301,7 +339,7 @@ task()
 </code></pre>
 
 <p>Example #2:</p>
-<pre><code>struct exception_frame {
+<pre><code class="no-highlight">struct exception_frame {
     uint32_t r0;
     uint32_t r1;
 
@@ -320,8 +358,8 @@ task(struct trap_frame *tf)
 </code></pre>
 
 <hr />
-<h3 id="function-console_add_char"><font color="#2980b9"> function console_add_char</font><a class="headerlink" href="#function-console_add_char" title="Permanent link">&para;</a></h3>
-<pre><code>   static void
+<h2 id="console_add_char"><font color="#F2853F" style="font-size:24pt"> console_add_char</font><a class="headerlink" href="#console_add_char" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static void
    console_add_char(struct console_ring *cr, char ch)
 </code></pre>
 
@@ -353,7 +391,7 @@ Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
 <p>Add a new line character to the output (transmit) buffer.</p>
-<pre><code>void
+<pre><code class="no-highlight">void
 task()
 {
      struct console_ring *tx = &amp;ct-&gt;ct_tx;
@@ -363,8 +401,8 @@ task()
 </code></pre>
 
 <hr />
-<h3 id="function-console_pull_char"><font color="#2980b9"> function console_pull_char </font><a class="headerlink" href="#function-console_pull_char" title="Permanent link">&para;</a></h3>
-<pre><code>   static uint8_t
+<h2 id="console_pull_char"><font color="#F2853F" style="font-size:24pt"> console_pull_char </font><a class="headerlink" href="#console_pull_char" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static uint8_t
    console_pull_char(struct console_ring *cr)
 </code></pre>
 
@@ -392,7 +430,7 @@ Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
 <p>Read the characters in the ring buffer into a string.</p>
-<pre><code>void
+<pre><code class="no-highlight">void
 task(struct console_ring *cr, char *str, int cnt)
 {    
      for (i = 0; i &lt; cnt; i++) {
@@ -407,8 +445,8 @@ task(struct console_ring *cr, char *str, int cnt)
 </code></pre>
 
 <hr />
-<h3 id="function-console_pull_char_head"><font color="#2980b9"> function console_pull_char_head </font><a class="headerlink" href="#function-console_pull_char_head" title="Permanent link">&para;</a></h3>
-<pre><code>   static void
+<h2 id="console_pull_char_head"><font color="#F2853F" style="font-size:24pt"> console_pull_char_head </font><a class="headerlink" href="#console_pull_char_head" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static void
    console_pull_char_head(struct console_ring *cr)
 </code></pre>
 
@@ -443,7 +481,7 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <li>remove the previous character from incoming RX queue</li>
 </ul>
 <p>The example below shows console_pull_char_head being used for the last step.</p>
-<pre><code>void
+<pre><code class="no-highlight">void
 task(uint8_t data)
 {
       struct console_tty *ct = (struct console_tty *)arg;
@@ -463,8 +501,8 @@ task(uint8_t data)
 </code></pre>
 
 <hr />
-<h3 id="function-console_queue_char"><font color="#2980b9"> function console_queue_char </font><a class="headerlink" href="#function-console_queue_char" title="Permanent link">&para;</a></h3>
-<pre><code>   static void
+<h2 id="console_queue_char"><font color="#F2853F" style="font-size:24pt"> console_queue_char </font><a class="headerlink" href="#console_queue_char" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static void
    console_queue_char(char ch)
 </code></pre>
 
@@ -490,12 +528,12 @@ Error codes?</p>
 <h4 id="notes_4">Notes<a class="headerlink" href="#notes_4" title="Permanent link">&para;</a></h4>
 <p>This function makes sure no interrupts are allowed while the transmit buffer is draining and the character is being added.</p>
 <h4 id="example_4">Example<a class="headerlink" href="#example_4" title="Permanent link">&para;</a></h4>
-<pre><code>Insert example
+<pre><code class="no-highlight">Insert example
 </code></pre>
 
 <hr />
-<h3 id="function-console_blocking_tx"><font color="#2980b9"> function console_blocking_tx </font><a class="headerlink" href="#function-console_blocking_tx" title="Permanent link">&para;</a></h3>
-<pre><code>    static void
+<h2 id="console_blocking_tx"><font color="#F2853F" style="font-size:24pt"> console_blocking_tx </font><a class="headerlink" href="#console_blocking_tx" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">    static void
     console_blocking_tx(char ch)
 </code></pre>
 
@@ -524,7 +562,7 @@ Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_5">Example<a class="headerlink" href="#example_5" title="Permanent link">&para;</a></h4>
 <p>Here is an example of a console output queue being flushed.</p>
-<pre><code>void
+<pre><code class="no-highlight">void
 task(void)
 {
     struct console_tty *ct = &amp;console_tty;
@@ -538,8 +576,8 @@ task(void)
 </code></pre>
 
 <hr />
-<h3 id="function-console_blocking_mode"><font color="#2980b9"> function console_blocking_mode </font><a class="headerlink" href="#function-console_blocking_mode" title="Permanent link">&para;</a></h3>
-<pre><code>   void
+<h2 id="console_blocking_mode"><font color="#F2853F" style="font-size:24pt"> console_blocking_mode </font><a class="headerlink" href="#console_blocking_mode" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   void
    console_blocking_mode(void)
 </code></pre>
 
@@ -566,7 +604,7 @@ Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_6">Example<a class="headerlink" href="#example_6" title="Permanent link">&para;</a></h4>
 <p>Here is an example of calling <code>console_blocking_mode</code> and printing crash information from an assert to help debug.</p>
-<pre><code>void
+<pre><code class="no-highlight">void
 _assert_func(const char *file, int line, const char *func, const char *e)
 {
     int sr;
@@ -582,8 +620,8 @@ _assert_func(const char *file, int line, const char *func, const char *e)
 </code></pre>
 
 <hr />
-<h3 id="function-console_write"><font color="#2980b9">function console_write </font><a class="headerlink" href="#function-console_write" title="Permanent link">&para;</a></h3>
-<pre><code>   void
+<h2 id="console_write"><font color="#F2853F" style="font-size:24pt"> console_write </font><a class="headerlink" href="#console_write" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   void
    console_write(char *str, int cnt)
 </code></pre>
 
@@ -616,7 +654,7 @@ Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_7">Example<a class="headerlink" href="#example_7" title="Permanent link">&para;</a></h4>
 <p>Here is an example of the function being used in an echo command with a newline at the end.</p>
-<pre><code>static int
+<pre><code class="no-highlight">static int
 shell_echo_cmd(int argc, char **argv)
 {
     int i;
@@ -632,8 +670,8 @@ shell_echo_cmd(int argc, char **argv)
 </code></pre>
 
 <hr />
-<h3 id="function-console_read"><font color="#2980b9"> function console_read </font><a class="headerlink" href="#function-console_read" title="Permanent link">&para;</a></h3>
-<pre><code>  int
+<h2 id="console_read"><font color="#F2853F" style="font-size:24pt"> console_read </font><a class="headerlink" href="#console_read" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">  int
   console_read(char *str, int cnt)
 </code></pre>
 
@@ -667,8 +705,8 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_8">Example<a class="headerlink" href="#example_8" title="Permanent link">&para;</a></h4>
 <p>Give at least one example of usage.</p>
 <hr />
-<h3 id="function-console_tx_char"><font color="#2980b9"> function console_tx_char </font><a class="headerlink" href="#function-console_tx_char" title="Permanent link">&para;</a></h3>
-<pre><code>   static int
+<h2 id="console_tx_char"><font color="#F2853F" style="font-size:24pt"> console_tx_char </font><a class="headerlink" href="#console_tx_char" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static int
    console_tx_char(void *arg)
 </code></pre>
 
@@ -701,8 +739,8 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_9">Example<a class="headerlink" href="#example_9" title="Permanent link">&para;</a></h4>
 <p>Give at least one example of usage.</p>
 <hr />
-<h3 id="function-console_rx_char"><font color="#2980b9"> function console_rx_char </font><a class="headerlink" href="#function-console_rx_char" title="Permanent link">&para;</a></h3>
-<pre><code>   static int
+<h2 id="console_rx_char"><font color="#F2853F" style="font-size:24pt"> console_rx_char </font><a class="headerlink" href="#console_rx_char" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static int
    console_rx_char(void *arg, uint8_t data)
 </code></pre>
 
@@ -735,8 +773,8 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_10">Example<a class="headerlink" href="#example_10" title="Permanent link">&para;</a></h4>
 <p>Give at least one example of usage.</p>
 <hr />
-<h3 id="function-console_init"><font color="#2980b9"> function console_init </font><a class="headerlink" href="#function-console_init" title="Permanent link">&para;</a></h3>
-<pre><code>   int
+<h2 id="console_init"><font color="#F2853F" style="font-size:24pt"> console_init </font><a class="headerlink" href="#console_init" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   int
    console_init(console_rx_cb rx_cb)
 </code></pre>
 

@@ -136,43 +136,63 @@
                 
                     <ul class="current-toc">
                         
-                            <li class="toctree-l3"><a href="../mynewt_os/">Overview</a></li>
+                            <li class="toctree-l2"><a href="../mynewt_os/">Overview</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../context_switch/">Scheduler/Context Switching</a></li>
+                            <li class="toctree-l2"><a href="../context_switch/">Scheduler/Context Switching</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../time/">Time</a></li>
+                            <li class="toctree-l2"><a href="../time/">Time</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../task/">Tasks</a></li>
+                            <li class="toctree-l2"><a href="../task/">Tasks</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../event_queue/">Event Queues</a></li>
+                            <li class="toctree-l2"><a href="../event_queue/">Event Queues</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../semaphore/">Semaphores</a></li>
+                            <li class="toctree-l2"><a href="../semaphore/">Semaphores</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="./">Mutexes</a></li>
+                            <li class="toctree-l2"><a href="./">Mutexes</a></li>
+                            
+                                
+                                    
+                                        <li class="toctree-l3"><a href="#description">Description</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#data-structures">Data structures</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#list-of-functions">List of Functions</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#function-reference">Function Reference</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_mutex_init">os_mutex_init</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_mutex_release">os_mutex_release</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_mutex_pend">os_mutex_pend </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_mutex_delete">os_mutex_delete </a></li>
+                                    
+                                
                             
                         
-                            <li class="toctree-l3"><a href="../memory_pool/">Memory Pools</a></li>
+                            <li class="toctree-l2"><a href="../memory_pool/">Memory Pools</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../heap/">Heap</a></li>
+                            <li class="toctree-l2"><a href="../heap/">Heap</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../mbufs/">Mbufs</a></li>
+                            <li class="toctree-l2"><a href="../mbufs/">Mbufs</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../sanity/">Sanity</a></li>
+                            <li class="toctree-l2"><a href="../sanity/">Sanity</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../callout/">Callout Functions</a></li>
+                            <li class="toctree-l2"><a href="../callout/">Callout Functions</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../port_os/">Porting to other Platforms</a></li>
+                            <li class="toctree-l2"><a href="../port_os/">Porting to other Platforms</a></li>
                             
                         
                     </ul>
@@ -223,7 +243,7 @@
 <p>The following example will illustrate how priority inheritance works. In this example, the task number is the same as its priority. Remember that the lower the number, the higher the priority (i.e. priority 0 is higher priority than priority 1). Suppose that task 5 gets ownership of a mutex but is preempted by task 4. Task 4 attempts to gain ownership of the mutex but cannot as it is owned by task 5. Task 4 is put to sleep and task 5 is temporarily raised to priority 4. Before task 5 can release the mutex, task 3 runs and attempts to acquire the mutex. At this point, both task 3 and task 4 are waiting on the mutex (sleeping). Task 5 now runs at priority 3 (the highest priority of all the tasks waiting on the mutex). When task 5 finally releases the mutex it will be preempted as two higher priority tasks are waiting for it. </p>
 <p>Note that when multiple tasks are waiting on a mutex owned by another task, once the mutex is released the highest priority task waiting on the mutex is run. </p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<pre><code>struct os_mutex
+<pre><code class="no-highlight">struct os_mutex
 {
     SLIST_HEAD(, os_task) mu_head;
     uint8_t     _pad;
@@ -231,7 +251,6 @@
     uint16_t    mu_level;
     struct os_task *mu_owner;
 };
-
 </code></pre>
 
 <table>
@@ -268,16 +287,15 @@
 <p><List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
-<li><a href="#function-os_mutex_init">os_mutex_init</a></li>
-<li><a href="#function-os_mutex_release">os_mutex_release</a></li>
-<li><a href="#function-os_mutex_pend">os_mutex_pend</a></li>
-<li><a href="#function-os_mutex_delete">os_mutex_delete</a></li>
+<li><a href="#os_mutex_init">os_mutex_init</a></li>
+<li><a href="#os_mutex_release">os_mutex_release</a></li>
+<li><a href="#os_mutex_pend">os_mutex_pend</a></li>
+<li><a href="#os_mutex_delete">os_mutex_delete</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
-<h3 id="function-os_mutex_init"><font color="2980b9">function os_mutex_init</font><a class="headerlink" href="#function-os_mutex_init" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_mutex_init(struct os_mutex *mu)
-
+<h2 id="os_mutex_init"><font color="#F2853F" style="font-size:24pt">os_mutex_init</font><a class="headerlink" href="#os_mutex_init" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_mutex_init(struct os_mutex *mu)
 </code></pre>
 
 <p>Initialize the mutex. Must be called before the mutex can be used.</p>
@@ -304,19 +322,16 @@
 Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).></p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_mutex g_mutex1;
+<pre><code class="no-highlight">struct os_mutex g_mutex1;
 os_error_t err;
 
 err = os_mutex_init(&amp;g_mutex1);
 assert(err == OS_OK);
-
 </code></pre>
 
 <hr />
-<h3 id="function-os_mutex_release"><font color="#2980b9"> function os_mutex_release</font><a class="headerlink" href="#function-os_mutex_release" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_mutex_release(struct os_mutex *mu)
-
-
+<h2 id="os_mutex_release"><font color="#F2853F" style="font-size:24pt">os_mutex_release</font><a class="headerlink" href="#os_mutex_release" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_mutex_release(struct os_mutex *mu)
 </code></pre>
 
 <p>Release ownership of a mutex</p>
@@ -341,7 +356,7 @@ assert(err == OS_OK);
 <p>OS_BAD_MUTEX: The mutex was not owned by the task attempting to release it.</p>
 <p>OS_NOT_STARTED: Attempt to release a mutex before the os has been started.</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_mutex g_mutex1;
+<pre><code class="no-highlight">struct os_mutex g_mutex1;
 os_error_t err;
 
 err = os_mutex_pend(&amp;g_mutex1, 0);
@@ -351,13 +366,11 @@ assert(err == OS_OK);
 
 err = os_mutex_release(&amp;g_mutex1);
 assert(err == OS_OK);
-
 </code></pre>
 
 <hr />
-<h3 id="function-os_mutex_pend"><font color="#2980b9"> function os_mutex_pend </font><a class="headerlink" href="#function-os_mutex_pend" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_mutex_pend(struct os_mutex *mu, uint32_t timeout)
-
+<h2 id="os_mutex_pend"><font color="#F2853F" style="font-size:24pt">os_mutex_pend </font><a class="headerlink" href="#os_mutex_pend" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_mutex_pend(struct os_mutex *mu, uint32_t timeout) 
 </code></pre>
 
 <p>Acquire ownership of a mutex.</p>
@@ -388,7 +401,7 @@ assert(err == OS_OK);
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
 <p>If the mutex is owned by another task and the timeout is 0 the function returns immediately with the error code OS_TIMEOUT. The calling task <em>does not</em> own the mutex when this occurs.</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_mutex g_mutex1;
+<pre><code class="no-highlight">struct os_mutex g_mutex1;
 os_error_t err;
 
 err = os_mutex_pend(&amp;g_mutex1, 0);
@@ -398,14 +411,11 @@ assert(err == OS_OK);
 
 err = os_mutex_release(&amp;g_mutex1);
 assert(err == OS_OK);
-
-
 </code></pre>
 
 <hr />
-<h3 id="function-os_mutex_delete"><font color="#2980b9"> function os_mutex_delete </font><a class="headerlink" href="#function-os_mutex_delete" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_mutex_pend(struct os_mutex *mu)
-
+<h2 id="os_mutex_delete"><font color="#F2853F" style="font-size:24pt">os_mutex_delete </font><a class="headerlink" href="#os_mutex_delete" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_mutex_pend(struct os_mutex *mu)
 </code></pre>
 
 <p>Delete a mutex</p>
@@ -429,13 +439,11 @@ assert(err == OS_OK);
 <p>OS_OK: mutex initialized successfully.</p>
 <p>OS_NOT_STARTED: Attempt to release a mutex before the os has been started.</p>
 <h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_mutex g_mutex1;
+<pre><code class="no-highlight">struct os_mutex g_mutex1;
 os_error_t err;
 
 err = os_mutex_delete(&amp;g_mutex1);
 assert(err == OS_OK);
-
-
 </code></pre>
 
 <hr />

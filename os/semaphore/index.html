@@ -136,43 +136,63 @@
                 
                     <ul class="current-toc">
                         
-                            <li class="toctree-l3"><a href="../mynewt_os/">Overview</a></li>
+                            <li class="toctree-l2"><a href="../mynewt_os/">Overview</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../context_switch/">Scheduler/Context Switching</a></li>
+                            <li class="toctree-l2"><a href="../context_switch/">Scheduler/Context Switching</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../time/">Time</a></li>
+                            <li class="toctree-l2"><a href="../time/">Time</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../task/">Tasks</a></li>
+                            <li class="toctree-l2"><a href="../task/">Tasks</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../event_queue/">Event Queues</a></li>
+                            <li class="toctree-l2"><a href="../event_queue/">Event Queues</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="./">Semaphores</a></li>
+                            <li class="toctree-l2"><a href="./">Semaphores</a></li>
+                            
+                                
+                                    
+                                        <li class="toctree-l3"><a href="#description">Description</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#data-structures">Data structures</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#list-of-functions">List of Functions</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#function-reference">Function Reference</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_sem_init"> os_sem_init</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_sem_release"> os_sem_release </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_sem_pend"> os_sem_pend </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_sem_delete"> os_sem_delete </a></li>
+                                    
+                                
                             
                         
-                            <li class="toctree-l3"><a href="../mutex/">Mutexes</a></li>
+                            <li class="toctree-l2"><a href="../mutex/">Mutexes</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../memory_pool/">Memory Pools</a></li>
+                            <li class="toctree-l2"><a href="../memory_pool/">Memory Pools</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../heap/">Heap</a></li>
+                            <li class="toctree-l2"><a href="../heap/">Heap</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../mbufs/">Mbufs</a></li>
+                            <li class="toctree-l2"><a href="../mbufs/">Mbufs</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../sanity/">Sanity</a></li>
+                            <li class="toctree-l2"><a href="../sanity/">Sanity</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../callout/">Callout Functions</a></li>
+                            <li class="toctree-l2"><a href="../callout/">Callout Functions</a></li>
                             
                         
-                            <li class="toctree-l3"><a href="../port_os/">Porting to other Platforms</a></li>
+                            <li class="toctree-l2"><a href="../port_os/">Porting to other Platforms</a></li>
                             
                         
                     </ul>
@@ -223,8 +243,7 @@
 <p>Semaphores can also be used for task synchronization. A simple example of this would be the following. A task creates a semaphore and initializes it with no tokens. The task then waits on the semaphore, and since there are no tokens, the task is put to sleep. When other tasks want to wake up the sleeping task they simply add a token by calling <em>os_sem_release</em>. This will cause the sleeping task to wake up (instantly if no other higher priority tasks want to run).</p>
 <p>The other common use of a counting semaphore is in what is commonly called a "producer/consumer" relationship. The producer adds tokens (by calling <em>os_sem_release</em>) and the consumer consumes them by calling <em>os_sem_pend</em>. In this relationship, the producer has work for the consumer to do. Each token added to the semaphore will cause the consumer to do whatever work is required. A simple example could be the following: every time a button is pressed there is some work to do (ring a bell). Each button press causes the producer to add a token. Each token consumed rings the bell. There will exactly the same number of bell rings as there are button presses. In other words, each call to <em>os_sem_pend</em> subtracts exactly one token and each call to <em>os_sem_release</em> adds exactly one token.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<pre><code>
-struct os_sem
+<pre><code class="no-highlight">struct os_sem
 {
     SLIST_HEAD(, os_task) sem_head;     /* chain of waiting tasks */
     uint16_t    _pad;
@@ -258,16 +277,15 @@ struct os_sem
 <p><List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
-<li><a href="#function-os_sem_init">os_sem_init</a></li>
-<li><a href="#function-os_sem_release">os_sem_release</a></li>
-<li><a href="#function-os_sem_pend">os_sem_pend</a></li>
-<li><a href="#function-os_sem_delete">os_sem_delete</a></li>
+<li><a href="#os_sem_init">os_sem_init</a></li>
+<li><a href="#os_sem_release">os_sem_release</a></li>
+<li><a href="#os_sem_pend">os_sem_pend</a></li>
+<li><a href="#os_sem_delete">os_sem_delete</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
-<h3 id="function-os_sem_init"><font color="2980b9">function os_sem_init</font><a class="headerlink" href="#function-os_sem_init" title="Permanent link">&para;</a></h3>
-<pre><code>    os_error_t os_sem_init(struct os_sem *sem, uint16_t tokens)    
-
+<h2 id="os_sem_init"><font color="F2853F" style="font-size:24pt"> os_sem_init</font><a class="headerlink" href="#os_sem_init" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_sem_init(struct os_sem *sem, uint16_t tokens)    
 </code></pre>
 
 <p>Initialize a semaphore with a given number of tokens. Should be called before the semaphore is used.</p>
@@ -299,18 +317,16 @@ Does it need to be used with some other specific functions?
 Any caveats to be careful about (e.g. high memory requirements).></p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p>The following example shows how to initialize a semaphore used for exclusive access.</p>
-<pre><code>struct os_mutex g_os_sem;
+<pre><code class="no-highlight">struct os_mutex g_os_sem;
 os_error_t err;
 
 err = os_sem_init(&amp;g_os_sem, 1);
 assert(err == OS_OK);
-
 </code></pre>
 
 <hr />
-<h3 id="function-os_sem_release"><font color="#2980b9"> function os_sem_release </font><a class="headerlink" href="#function-os_sem_release" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_sem_release(struct os_sem *sem)
-
+<h2 id="os_sem_release"><font color="#F2853F" style="font-size:24pt"> os_sem_release </font><a class="headerlink" href="#os_sem_release" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_sem_release(struct os_sem *sem)
 </code></pre>
 
 <p>Release a semaphore that you are holding. This adds a token to the semaphore.</p>
@@ -335,7 +351,7 @@ assert(err == OS_OK);
 <p>OS_OK: semaphore released successfully.</p>
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_sem g_os_sem;
+<pre><code class="no-highlight">struct os_sem g_os_sem;
 os_error_t err;
 
 err = os_sem_pend(&amp;g_os_sem, OS_TIMEOUT_NEVER);
@@ -345,13 +361,11 @@ assert(err == OS_OK);
 
 err = os_sem_release(&amp;g_os_sem);
 assert(err == OS_OK);
-
 </code></pre>
 
 <hr />
-<h3 id="function-os_sem_pend"><font color="#2980b9"> function os_sem_pend </font><a class="headerlink" href="#function-os_sem_pend" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_sem_pend(struct os_sem *sem, uint32_t timeout)
-
+<h2 id="os_sem_pend"><font color="#F2853F" style="font-size:24pt"> os_sem_pend </font><a class="headerlink" href="#os_sem_pend" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_sem_pend(struct os_sem *sem, uint32_t timeout)
 </code></pre>
 
 <p>Wait for a semaphore for a given amount of time.</p>
@@ -382,7 +396,7 @@ assert(err == OS_OK);
 <h4 id="notes_2">Notes<a class="headerlink" href="#notes_2" title="Permanent link">&para;</a></h4>
 <p>If a timeout of 0 is used and the function returns OS_TIMEOUT, the semaphore was not available and was not acquired. No release of the semaphore should occur and the calling task does not own the semaphore.</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_sem g_os_sem;
+<pre><code class="no-highlight">struct os_sem g_os_sem;
 os_error_t err;
 
 err = os_sem_pend(&amp;g_os_sem, OS_TIMEOUT_NEVER);
@@ -396,9 +410,8 @@ assert(err == OS_OK);
 </code></pre>
 
 <hr />
-<h3 id="function-os_sem_delete"><font color="#2980b9"> function os_sem_delete </font><a class="headerlink" href="#function-os_sem_delete" title="Permanent link">&para;</a></h3>
-<pre><code>os_error_t os_sem_delete(struct os_sem *sem)
-
+<h2 id="os_sem_delete"><font color="#F2853F" style="font-size:24pt"> os_sem_delete </font><a class="headerlink" href="#os_sem_delete" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_sem_delete(struct os_sem *sem)
 </code></pre>
 
 <p>Delete a semaphore</p>
@@ -424,13 +437,11 @@ assert(err == OS_OK);
 <h4 id="notes_3">Notes<a class="headerlink" href="#notes_3" title="Permanent link">&para;</a></h4>
 <p>Care must be taken when deleting a semaphore as deleting a semaphore used by other tasks could causes unexpected/unwanted behavior.</p>
 <h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
-<pre><code>struct os_sem g_os_sem;
+<pre><code class="no-highlight">struct os_sem g_os_sem;
 os_error_t err;
 
 err = os_sem_delete(&amp;g_os_sem);
 assert(err == OS_OK);
-
-
 </code></pre>
 
 <hr />
