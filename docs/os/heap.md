@@ -1,16 +1,16 @@
 # Heap
 
 
-Insert synopsis here
+API for doing dynamic memory allocation.
 
 
 ## Description
 
-Describe OS feature  here 
+This provides malloc()/free() functionality with locking.  The shared resource heap needs to be protected from concurrent access when OS has been started. *os_malloc()* function grabs a mutex before calling *malloc()*.
 
 ## Data structures
 
-Replace this with the list of data structures used, why, any neat features
+N/A
 
 ## List of Functions
 
@@ -18,116 +18,111 @@ Replace this with the list of data structures used, why, any neat features
 
 The functions available in this OS feature are:
 
-* [os_malloc_lock](#os_malloc_lock)
-* [os_malloc_unlock](#os_malloc_unlock)
-* add the rest
+* [os_malloc](#os_malloc)
+* [os_free](#os_free)
+* [os_realloc](#os_realloc)
 
 
 ## Function Reference
 
 ------------------
 
-## <font color="F2853F" style="font-size:24pt"> os_malloc_lock</font>
+## <font color="F2853F" style="font-size:24pt"> os_malloc</font>
 
 ```no-highlight
-    static void
-    os_malloc_lock(void)
+void *os_malloc(size_t size)
 ```
 
-<Insert short description>
+Allocates *size* number of bytes from heap and returns a pointer to it.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| size |  Number of bytes to allocate  |
 
 #### Returned values
 
-List any values returned.
-Error codes?
+<ptr>: pointer to memory allocated from heap.
+NULL: not enough memory available.
 
 #### Notes 
 
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
+*os_malloc()* calls *malloc()*, which is provided by C-library. The heap must be set up during platform initialization.
+Depending on which C-library you use, you might have to do the heap setup differently. Most often *malloc()* implementation will maintain a list of allocated and then freed memory blocks. If user asks for memory which cannot be satisfied from free list, they'll call platform's *sbrk()*, which then tries to grow the heap.
 
 #### Example
 
 <Add text to set up the context for the example here>
 
 ```no-highlight
-<Insert the code snippet here>
+    info = (struct os_task_info *) os_malloc(
+            sizeof(struct os_task_info) * tcount);
+    if (!info) {
+        rc = -1;
+        goto err;
+    }
 ```
 
 ---------------------
    
-## <font color="F2853F" style="font-size:24pt"> os_malloc_unlock</font>
+## <font color="F2853F" style="font-size:24pt">os_free</font>
 
 ```no-highlight
-   <Insert function callout here >
+void os_free(void *mem)
 ```
 
-<Insert short description>
+Frees previously allocated memory back to the heap.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| mem |  Pointer to memory being released  |
 
 #### Returned values
 
-List any values returned.
-Error codes?
+N/A
 
 #### Notes 
 
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
+Calls C-library *free()* behind the covers.
 
 #### Example
 
 <Add text to set up the context for the example here>
 
 ```no-highlight
-<Insert the code snippet here>
+   os_free(info);
 ```
 
 ---------------------
    
-## <font color="F2853F" style="font-size:24pt"> next_one </font>
+## <font color="F2853F" style="font-size:24pt">os_realloc</font>
 
 ```no-highlight
-   <Insert function callout here >
+void *os_realloc(void *ptr, size_t size)
 ```
 
-<Insert short description>
-
+Tries to resize previously allocated memory block, and returns pointer to resized memory.
+ptr can be NULL, in which case the call is similar to calling *os_malloc()*.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| ptr |  Pointer to previously allocated memory  |
+| size |  New size to adjust the memory block to  |
 
 #### Returned values
 
-List any values returned.
-Error codes?
+NULL: size adjustment was not successful.
+<ptr>: pointer to new start of memory block
 
 #### Notes 
 
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
 
 #### Example
 
