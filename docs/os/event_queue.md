@@ -100,7 +100,7 @@ Usually done at subsystem init time; before OS has been started, and before inte
 This initializes event queue used by newtmgr task.
 
 
-```c
+```no-highlight
 struct os_eventq g_nmgr_evq;
 
 int
