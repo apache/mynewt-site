@@ -162,16 +162,31 @@
                                     
                                         <li class="toctree-l3"><a href="#function-reference">Function Reference</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#nffs_lock"> nffs_lock </a></li>
+                                        <li class="toctree-l3"><a href="#fs_ls_file"> fs_ls_file </a></li>
                                     
-                                        <li class="toctree-l3"><a href="#nffs_unlock"> nffs_unlock </a></li>
+                                        <li class="toctree-l3"><a href="#fs_ls_dir"> fs_ls_dir </a></li>
                                     
                                         <li class="toctree-l3"><a href="#next_one"> next_one </a></li>
                                     
                                 
                             
                         
+                            <li class="toctree-l2"><a href="../nffs/">Newtron File System</a></li>
+                            
+                        
                             <li class="toctree-l2"><a href="../testutil/">Test Utilities</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="../imgmgr/">Image Manager</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="../baselibc/">Baselibc library</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="../elua/">Embedded Lua</a></li>
+                            
+                        
+                            <li class="toctree-l2"><a href="../json/">JSON</a></li>
                             
                         
                     </ul>
@@ -179,7 +194,12 @@
             
         
             
-                <li class="main"><a href="../../packaging/dist/">Chapter 6 - Packaging it</a></li>
+                <li class="main"><a href="../../newtmgr/overview/">Chapter 6 - Newt Manager</a></li>
+                
+            
+        
+            
+                <li class="main"><a href="../../packaging/dist/">Chapter 7 - Packaging it</a></li>
                 
             
         
@@ -210,24 +230,34 @@
 </div>
                         
                             <h1 id="filesystem">Filesystem<a class="headerlink" href="#filesystem" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+<p>Mynewt provides a Flash File System abstraction layer (fs) to allow you to swap out the default Newtron File System (nffs) with a different file system of your choice. </p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe module here, special features, how pieces fit together etc.</p>
+<p>The default file system used in the Mynewt OS is the Newtron Flash File System (nffs). Hence the <code>nffs</code> egg description lists <code>libs/fs</code> as a dependency. </p>
+<pre><code class="no-highlight">egg.name: libs/nffs
+egg.vers: 0.1
+egg.identities: NFFS
+egg.deps:
+    - libs/os
+    - libs/fs
+    - libs/testutil
+    - hw/hal
+</code></pre>
+
+<p>If the user wishes to use a different flash file system (say, "ownffs"), the directory containing "ownffs" code must include the <code>egg.yml</code> file with the dependency on <code>libs/fs</code> listed as shown above. "ownffs" uses the <code>libs/fs</code> API available in mynewt, thus eliminating the need to change other parts of the projec.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
-<li><a href="#nffs_lock">nffs_lock</a></li>
-<li><a href="#nffs_unlock">nffs_unlock</a></li>
+<li><a href="#fs_ls_file">fs_ls_file</a></li>
+<li><a href="#fs_ls_dir">fs_ls_dir</a></li>
 <li>add the rest</li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
-<h2 id="nffs_lock"><font color="F2853F" style="font-size:24pt"> nffs_lock </font><a class="headerlink" href="#nffs_lock" title="Permanent link">&para;</a></h2>
+<h2 id="fs_ls_file"><font color="F2853F" style="font-size:24pt"> fs_ls_file </font><a class="headerlink" href="#fs_ls_file" title="Permanent link">&para;</a></h2>
 <pre><code class="no-highlight">    static void
-    nffs_lock(void)
+    fs_ls_file(const char *name, struct fs_file *file)
 
 </code></pre>
 
@@ -242,12 +272,12 @@
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>name</td>
+<td>explain argument</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>file</td>
+<td>explain argument</td>
 </tr>
 </tbody>
 </table>
@@ -266,8 +296,9 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </code></pre>
 
 <hr />
-<h2 id="nffs_unlock"><font color="#F2853F" style="font-size:24pt"> nffs_unlock </font><a class="headerlink" href="#nffs_unlock" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="fs_ls_dir"><font color="#F2853F" style="font-size:24pt"> fs_ls_dir </font><a class="headerlink" href="#fs_ls_dir" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   static void
+   fs_ls_dir(const char *name)
 
 </code></pre>
 

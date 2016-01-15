@@ -185,7 +185,11 @@
                                     
                                         <li class="toctree-l3"><a href="#os_callout_func_init"> os_callout_func_init </a></li>
                                     
-                                        <li class="toctree-l3"><a href="#next_one">next_one </a></li>
+                                        <li class="toctree-l3"><a href="#os_callout_stop"> os_callout_stop </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_callout_reset"> os_callout_reset </a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_callout_queued">os_callout_queued</a></li>
                                     
                                 
                             
@@ -203,7 +207,12 @@
             
         
             
-                <li class="main"><a href="../../packaging/dist/">Chapter 6 - Packaging it</a></li>
+                <li class="main"><a href="../../newtmgr/overview/">Chapter 6 - Newt Manager</a></li>
+                
+            
+        
+            
+                <li class="main"><a href="../../packaging/dist/">Chapter 7 - Packaging it</a></li>
                 
             
         
@@ -234,26 +243,95 @@
 </div>
                         
                             <h1 id="callout">Callout<a class="headerlink" href="#callout" title="Permanent link">&para;</a></h1>
+<p>Callouts are MyNewt OS timers.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe OS feature here </p>
+<p>Callout is a way of setting up an OS timer. When the timer fires, it is delivered as an event to task's event queue.</p>
+<p>User would initialize their callout structure using <em>os_callout_init()</em>, or <em>os_callout_func_init()</em> and then arm it with <em>os_callout_reset()</em>.</p>
+<p>If user wants to cancel the timer before it expires, they can either use <em>os_callout_reset()</em> to arm it for later expiry, or stop it altogether by calling <em>os_callout_stop()</em>.</p>
+<p>There are 2 different options for data structure to use. First is <em>struct os_callout</em>, which is a bare-bones version. You would initialize this with <em>os_callout_init()</em>.</p>
+<p>Second option is <em>struct os_callout_func</em>. This you can use if you expect to have multiple different types of timers in your task, running concurrently. The structure contains a function pointer, and you would call that function from your task's event processing loop.</p>
+<p>Time unit when arming the timer is OS ticks. This rate of this ticker depends on the platform this is running on. You should use OS define <em>OS_TICKS_PER_SEC</em> to convert wallclock time to OS  ticks.</p>
+<p>Callout timer fires out just once. For periodic timer type of operation you need to rearm it once it fires.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<pre><code class="no-highlight">struct os_callout {
+    struct os_event c_ev;
+    struct os_eventq *c_evq;
+    uint32_t c_ticks;
+    TAILQ_ENTRY(os_callout) c_next;
+};
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c_ev</td>
+<td>Event structure of this callout</td>
+</tr>
+<tr>
+<td>c_evq</td>
+<td>Event queue where this callout is placed on timer expiry</td>
+</tr>
+<tr>
+<td>c_ticks</td>
+<td>OS tick amount when timer fires</td>
+</tr>
+<tr>
+<td>c_next</td>
+<td>Linkage to other unexpired callouts</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="no-highlight">struct os_callout_func {
+    struct os_callout cf_c;
+    os_callout_func_t cf_func;
+    void *cf_arg;
+};
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cf_c</td>
+<td>struct os_callout. See above</td>
+</tr>
+<tr>
+<td>cf_func</td>
+<td>Function pointer which should be called by event queue processing</td>
+</tr>
+<tr>
+<td>cf_arg</td>
+<td>Generic void * argument to that function</td>
+</tr>
+</tbody>
+</table>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
-<p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
 <li><a href="#os_callout_init">os_callout_init</a></li>
 <li><a href="#os_callout_func_init">os_callout_func_init</a></li>
-<li>add the rest</li>
+<li><a href="#os_callout_stop">os_callout_stop</a></li>
+<li><a href="#os_callout_reset">os_callout_reset</a></li>
+<li><a href="#os_callout_queued">os_callout_queued</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
 <h2 id="os_callout_init"><font color="#F2853F" style="font-size:24pt">os_callout_init </font><a class="headerlink" href="#os_callout_init" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">void
-os_callout_init(struct os_callout *c, struct os_eventq *evq, void *ev_arg)
+<pre><code class="no-highlight">void os_callout_init(struct os_callout *c, struct os_eventq *evq, void *ev_arg)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Initializes <em>struct os_callout</em>. Event type will be set to <em>OS_EVENT_T_TIMER</em>.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -264,33 +342,40 @@ os_callout_init(struct os_callout *c, struct os_eventq *evq, void *ev_arg)
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>c</td>
+<td>Pointer to os_callout to initialize</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>evq</td>
+<td>Event queue where this gets delivered to</td>
+</tr>
+<tr>
+<td>ev_arg</td>
+<td>Generic argument which is filled in for the event</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>N/A</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Be careful not to call this if the callout is armed, because that will mess up the list of pending callouts.
+Or if the timer has already fired, it will mess up the event queue where the callout was delivered to.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">struct os_eventq my_evq;
+struct os_callout my_callouts[8];
+
+    for (i = 0; i &lt; 8; i++) {
+        os_callout_init(&amp;my_callouts[i], &amp;my_evq, (void *)i);
+    }
 </code></pre>
 
 <hr />
 <h2 id="os_callout_func_init"><font color="#F2853F" style="font-size:24pt"> os_callout_func_init </font><a class="headerlink" href="#os_callout_func_init" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<pre><code class="no-highlight">void os_callout_func_init(struct os_callout_func *cf, struct os_eventq *evq, os_callout_func_t timo_func, void *ev_arg)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Initializes the given <em>struct os_callout_func</em>. Data structure is filled in with elements given as argument.</p>
 <h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -301,33 +386,47 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>cf</td>
+<td>Pointer to os_callout_func being initialized</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>evq</td>
+<td>Event queue where this gets delivered to</td>
+</tr>
+<tr>
+<td>timo_func</td>
+<td>Timeout function. Event processing should call this</td>
+</tr>
+<tr>
+<td>ev_arg</td>
+<td>Generic argument for the event</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_1">Returned values<a class="headerlink" href="#returned-values_1" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>N/A</p>
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>The same notes as with <em>os_callout_init()</em>.</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">struct os_callout_func g_native_cputimer;
+struct os_eventq g_native_cputime_evq;
+void native_cputimer_cb(void *arg);
+
+    /* Initialize the callout function */
+    os_callout_func_init(&amp;g_native_cputimer,
+                         &amp;g_native_cputime_evq,
+                         native_cputimer_cb,
+                         NULL);
+
 </code></pre>
 
 <hr />
-<h2 id="next_one"><font color="#F2853F" style="font-size:24pt">next_one </font><a class="headerlink" href="#next_one" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="os_callout_stop"><font color="#F2853F" style="font-size:24pt"> os_callout_stop </font><a class="headerlink" href="#os_callout_stop" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void os_callout_stop(struct os_callout *c)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Disarms a timer.</p>
 <h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -338,23 +437,81 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>c</td>
+<td>Pointer to os_callout being stopped</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_2">Returned values<a class="headerlink" href="#returned-values_2" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>N/A</p>
 <h4 id="notes_2">Notes<a class="headerlink" href="#notes_2" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here></p>
+<pre><code class="no-highlight">struct os_callout_func g_native_cputimer;
+
+     os_callout_stop(&amp;g_native_cputimer.cf_c);
+</code></pre>
+
+<hr />
+<h2 id="os_callout_reset"><font color="#F2853F" style="font-size:24pt"> os_callout_reset </font><a class="headerlink" href="#os_callout_reset" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void os_callout_reset(struct os_callout *c, int32_t timo)
+</code></pre>
+
+<p>Resets the callout to happen <em>timo</em> in OS ticks.</p>
+<h4 id="arguments_3">Arguments<a class="headerlink" href="#arguments_3" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c</td>
+<td>Pointer to os_callout being reset</td>
+</tr>
+<tr>
+<td>timo</td>
+<td>OS ticks the timer is being set to</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values_3">Returned values<a class="headerlink" href="#returned-values_3" title="Permanent link">&para;</a></h4>
+<p>N/A</p>
+<h4 id="notes_3">Notes<a class="headerlink" href="#notes_3" title="Permanent link">&para;</a></h4>
+<h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here></p>
+<pre><code class="no-highlight">    /* Re-start the timer (run every 50 msecs) */
+    os_callout_reset(&amp;g_bletest_timer.cf_c, OS_TICKS_PER_SEC / 20);
+</code></pre>
+
+<hr />
+<h2 id="os_callout_queued"><font color="#F2853F" style="font-size:24pt">os_callout_queued</font><a class="headerlink" href="#os_callout_queued" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int os_callout_queued(struct os_callout *c)
+</code></pre>
+
+<p>Tells whether the callout has been armed or not.</p>
+<h4 id="arguments_4">Arguments<a class="headerlink" href="#arguments_4" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c</td>
+<td>Pointer to callout being checked</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values_4">Returned values<a class="headerlink" href="#returned-values_4" title="Permanent link">&para;</a></h4>
+<p>0: timer is not armed
+non-zero: timer is armed</p>
+<h4 id="notes_4">Notes<a class="headerlink" href="#notes_4" title="Permanent link">&para;</a></h4>
+<h4 id="example_4">Example<a class="headerlink" href="#example_4" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
 <pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
 </code></pre>

@@ -173,7 +173,9 @@
                                     
                                         <li class="toctree-l3"><a href="#os_memblock_get"> os_memblock_get</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#next_one"> next_one </a></li>
+                                        <li class="toctree-l3"><a href="#os_memblock_put">os_memblock_put</a></li>
+                                    
+                                        <li class="toctree-l3"><a href="#os_mempool_bytes">OS_MEMPOOL_BYTES</a></li>
                                     
                                 
                             
@@ -203,7 +205,12 @@
             
         
             
-                <li class="main"><a href="../../packaging/dist/">Chapter 6 - Packaging it</a></li>
+                <li class="main"><a href="../../newtmgr/overview/">Chapter 6 - Newt Manager</a></li>
+                
+            
+        
+            
+                <li class="main"><a href="../../packaging/dist/">Chapter 7 - Packaging it</a></li>
                 
             
         
@@ -234,28 +241,65 @@
 </div>
                         
                             <h1 id="memory-pools">Memory Pools<a class="headerlink" href="#memory-pools" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+<p>Memory can be pre-allocated to a pool of fixed size elements.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe OS feature here </p>
+<p>Sometimes it's useful to have several memory blocks of same size preallocated for specific use. E.g. you want to limit the amount of memory used for it, or you want to make sure that there is memory available when you ask for it.</p>
+<p>This can be done using a memory pool. You allocate memory either statically or from heap, and then designate that memory to be used as storage for fixed size elements.</p>
+<p>Pool will be initialized by calling <em>os_mempool_init()</em>. Element can be allocated from it with <em>os_mempool_get()</em>, and released back with <em>os_mempool_put()</em>.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<pre><code class="no-highlight">struct os_mempool {
+    int mp_block_size;
+    int mp_num_blocks;
+    int mp_num_free;
+    SLIST_HEAD(,os_memblock);
+    char *name;
+};
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mp_block_size</td>
+<td>Size of the memory blocks, in bytes</td>
+</tr>
+<tr>
+<td>mp_num_blocks</td>
+<td>Number of memory blocks in the pool</td>
+</tr>
+<tr>
+<td>mp_num_free</td>
+<td>Number of free blocks left</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Name for the memory block</td>
+</tr>
+</tbody>
+</table>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
 <li><a href="#os_mempool_init">os_mempool_init</a></li>
 <li><a href="#os_memblock_get">os_memblock_get</a></li>
-<li>add the rest</li>
+<li><a href="#os_memblock_put">os_memblock_put</a></li>
+<li><a href="#OS_MEMPOOL_BYTES">OS_MEMPOOL_BYTES</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
 <h2 id="os_mempool_init"><font color="F2853F" style="font-size:24pt"> os_mempool_init</font><a class="headerlink" href="#os_mempool_init" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">    os_error_t
-    os_mempool_init(struct os_mempool *mp, int blocks, 
-                    int block_size, void *membuf, char *name)
+<pre><code class="no-highlight">os_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Initializes the memory pool. Memory pointed by <em>membuf</em> is taken and <em>blocks</em> number of elements of size <em>block_size</em> are added to the pool. <em>name</em> is optional, and names the memory pool.</p>
+<p>It is assumed that the amount of memory pointed by <em>membuf</em> has at least <em>OS_MEMPOOL_BYTES(blocks, block_size)</em> number of bytes.</p>
+<p><em>name</em> is not copied, so caller should make sure that the memory does not get reused.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -266,33 +310,51 @@
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>mp</td>
+<td>Memory pool being initialized</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>blocks</td>
+<td>Number of elements in the pool</td>
+</tr>
+<tr>
+<td>block_size</td>
+<td>Size of an individual element in pool</td>
+</tr>
+<tr>
+<td>membuf</td>
+<td>Backing store for the memory pool elements</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Name of the memory pool</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>OS_OK: operation was successful.
+OS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL.
+OS_MEM_NOT_ALIGNED: membuf has to be aligned to 4 byte boundary.</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Note that os_mempool_init() does not allocate backing storage. <em>membuf</em> has to be allocated by the caller.</p>
+<p>It's recommended that you use <em>OS_MEMPOOL_BYTES()</em> to figure out how much memory to allocate for the pool.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">    rc = os_mempool_init(&amp;nffs_file_pool, nffs_config.nc_num_files,
+                         sizeof (struct nffs_file), nffs_file_mem,
+                         &quot;nffs_file_pool&quot;);
+    if (rc != 0) {
+        return FS_EOS;
+    }
+
 </code></pre>
 
 <hr />
 <h2 id="os_memblock_get"><font color="#F2853F" style="font-size:24pt"> os_memblock_get</font><a class="headerlink" href="#os_memblock_get" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<pre><code class="no-highlight">void *os_memblock_get(struct os_mempool *mp)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Allocate an element from the memory pool. If succesful, you'll get a pointer to allocated element. If there are no elements available, you'll get NULL as response.</p>
 <h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -303,33 +365,32 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>mp</td>
+<td>Pool where element is getting allocated from</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_1">Returned values<a class="headerlink" href="#returned-values_1" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>NULL: no elements available.
+<pointer>: pointer to allocated element.</p>
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">    struct nffs_file *file;
+
+    file = os_memblock_get(&amp;nffs_file_pool);
+    if (file != NULL) {
+        memset(file, 0, sizeof *file);
+    }
+
 </code></pre>
 
 <hr />
-<h2 id="next_one"><font color="#F2853F" style="font-size:24pt"> next_one </font><a class="headerlink" href="#next_one" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="os_memblock_put"><font color="#F2853F" style="font-size:24pt">os_memblock_put</font><a class="headerlink" href="#os_memblock_put" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">os_error_t os_memblock_put(struct os_mempool *mp, void *block_addr)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Releases previously allocated element back to the pool.</p>
 <h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -340,25 +401,67 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>mp</td>
+<td>Pointer to memory pool where element is put</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>block_addr</td>
+<td>Pointer to element getting freed</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_2">Returned values<a class="headerlink" href="#returned-values_2" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>OS_OK: operation was a success:
+OS_INVALID_PARAM: If either mp or block_addr were NULL.</p>
 <h4 id="notes_2">Notes<a class="headerlink" href="#notes_2" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">    if (file != NULL) {
+        rc = os_memblock_put(&amp;nffs_file_pool, file);
+        if (rc != 0) {
+            return FS_EOS;
+        }
+    }
+</code></pre>
+
+<hr />
+<h2 id="os_mempool_bytes"><font color="#F2853F" style="font-size:24pt">OS_MEMPOOL_BYTES</font><a class="headerlink" href="#os_mempool_bytes" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">OS_MEMPOOL_BYTES(n,blksize)
+</code></pre>
+
+<p>Calculates how many bytes of memory is used by <em>n</em> number of elements, when individual element size is <em>blksize</em> bytes.</p>
+<h4 id="arguments_3">Arguments<a class="headerlink" href="#arguments_3" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n</td>
+<td>Number of elements</td>
+</tr>
+<tr>
+<td>blksize</td>
+<td>Size of an element is number of bytes</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values_3">Returned values<a class="headerlink" href="#returned-values_3" title="Permanent link">&para;</a></h4>
+<p>List any values returned.
+Error codes?</p>
+<h4 id="notes_3">Notes<a class="headerlink" href="#notes_3" title="Permanent link">&para;</a></h4>
+<h4 id="example_3">Example<a class="headerlink" href="#example_3" title="Permanent link">&para;</a></h4>
+<p>Here we allocate memory to be used as a pool.</p>
+<pre><code class="no-highlight">void *nffs_file_mem;
+
+nffs_file_mem = malloc(
+        OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));
+    if (nffs_file_mem == NULL) {
+        return FS_ENOMEM;
+    }
 </code></pre>
 
 <hr />

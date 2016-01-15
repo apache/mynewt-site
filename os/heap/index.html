@@ -172,11 +172,11 @@
                                     
                                         <li class="toctree-l3"><a href="#function-reference">Function Reference</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#os_malloc_lock"> os_malloc_lock</a></li>
+                                        <li class="toctree-l3"><a href="#os_malloc"> os_malloc</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#os_malloc_unlock"> os_malloc_unlock</a></li>
+                                        <li class="toctree-l3"><a href="#os_free">os_free</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#next_one"> next_one </a></li>
+                                        <li class="toctree-l3"><a href="#os_realloc">os_realloc</a></li>
                                     
                                 
                             
@@ -203,7 +203,12 @@
             
         
             
-                <li class="main"><a href="../../packaging/dist/">Chapter 6 - Packaging it</a></li>
+                <li class="main"><a href="../../newtmgr/overview/">Chapter 6 - Newt Manager</a></li>
+                
+            
+        
+            
+                <li class="main"><a href="../../packaging/dist/">Chapter 7 - Packaging it</a></li>
                 
             
         
@@ -234,27 +239,26 @@
 </div>
                         
                             <h1 id="heap">Heap<a class="headerlink" href="#heap" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+<p>API for doing dynamic memory allocation.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe OS feature  here </p>
+<p>This provides malloc()/free() functionality with locking.  The shared resource heap needs to be protected from concurrent access when OS has been started. <em>os_malloc()</em> function grabs a mutex before calling <em>malloc()</em>.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<p>N/A</p>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
-<li><a href="#os_malloc_lock">os_malloc_lock</a></li>
-<li><a href="#os_malloc_unlock">os_malloc_unlock</a></li>
-<li>add the rest</li>
+<li><a href="#os_malloc">os_malloc</a></li>
+<li><a href="#os_free">os_free</a></li>
+<li><a href="#os_realloc">os_realloc</a></li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
-<h2 id="os_malloc_lock"><font color="F2853F" style="font-size:24pt"> os_malloc_lock</font><a class="headerlink" href="#os_malloc_lock" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">    static void
-    os_malloc_lock(void)
+<h2 id="os_malloc"><font color="F2853F" style="font-size:24pt"> os_malloc</font><a class="headerlink" href="#os_malloc" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void *os_malloc(size_t size)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Allocates <em>size</em> number of bytes from heap and returns a pointer to it.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -265,33 +269,33 @@
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>size</td>
+<td>Number of bytes to allocate</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p><ptr>: pointer to memory allocated from heap.
+NULL: not enough memory available.</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p><em>os_malloc()</em> calls <em>malloc()</em>, which is provided by C-library. The heap must be set up during platform initialization.
+Depending on which C-library you use, you might have to do the heap setup differently. Most often <em>malloc()</em> implementation will maintain a list of allocated and then freed memory blocks. If user asks for memory which cannot be satisfied from free list, they'll call platform's <em>sbrk()</em>, which then tries to grow the heap.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">    info = (struct os_task_info *) os_malloc(
+            sizeof(struct os_task_info) * tcount);
+    if (!info) {
+        rc = -1;
+        goto err;
+    }
 </code></pre>
 
 <hr />
-<h2 id="os_malloc_unlock"><font color="F2853F" style="font-size:24pt"> os_malloc_unlock</font><a class="headerlink" href="#os_malloc_unlock" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="os_free"><font color="F2853F" style="font-size:24pt">os_free</font><a class="headerlink" href="#os_free" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void os_free(void *mem)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Frees previously allocated memory back to the heap.</p>
 <h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -302,33 +306,27 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>mem</td>
+<td>Pointer to memory being released</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_1">Returned values<a class="headerlink" href="#returned-values_1" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>N/A</p>
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Calls C-library <em>free()</em> behind the covers.</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
+<pre><code class="no-highlight">   os_free(info);
 </code></pre>
 
 <hr />
-<h2 id="next_one"><font color="F2853F" style="font-size:24pt"> next_one </font><a class="headerlink" href="#next_one" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
+<h2 id="os_realloc"><font color="F2853F" style="font-size:24pt">os_realloc</font><a class="headerlink" href="#os_realloc" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void *os_realloc(void *ptr, size_t size)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Tries to resize previously allocated memory block, and returns pointer to resized memory.
+ptr can be NULL, in which case the call is similar to calling <em>os_malloc()</em>.</p>
 <h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -339,22 +337,19 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>ptr</td>
+<td>Pointer to previously allocated memory</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>size</td>
+<td>New size to adjust the memory block to</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values_2">Returned values<a class="headerlink" href="#returned-values_2" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>NULL: size adjustment was not successful. <br>
+ptr: pointer to new start of memory block</p>
 <h4 id="notes_2">Notes<a class="headerlink" href="#notes_2" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
 <pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
