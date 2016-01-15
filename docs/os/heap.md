@@ -118,8 +118,8 @@ ptr can be NULL, in which case the call is similar to calling *os_malloc()*.
 
 #### Returned values
 
-NULL: size adjustment was not successful.
-<ptr>: pointer to new start of memory block
+NULL: size adjustment was not successful. <br>
+ptr: pointer to new start of memory block
 
 #### Notes 
 

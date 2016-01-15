@@ -1,26 +1,15 @@
-# Filesystem
+# Bootloader
 
-Mynewt provides a Flash File System abstraction layer (fs) to allow you to swap out the default Newtron File System (nffs) with a different file system of your choice. 
+Insert synopsis here
+
 
 ## Description
 
-The default file system used in the Mynewt OS is the Newtron Flash File System (nffs). Hence the `nffs` egg description lists `libs/fs` as a dependency. 
-
-```no-highlight
-egg.name: libs/nffs
-egg.vers: 0.1
-egg.identities: NFFS
-egg.deps:
-    - libs/os
-    - libs/fs
-    - libs/testutil
-    - hw/hal
-```
-
-If the user wishes to use a different flash file system (say, "ownffs"), the directory containing "ownffs" code must include the `egg.yml` file with the dependency on `libs/fs` listed as shown above. "ownffs" uses the `libs/fs` API available in mynewt, thus eliminating the need to change other parts of the projec.
+Describe module here, special features, how pieces fit together etc.
 
 ## Data structures
 
+Replace this with the list of data structures used, why, any neat features
 
 ## List of Functions
 
@@ -28,8 +17,8 @@ If the user wishes to use a different flash file system (say, "ownffs"), the dir
 
 The functions available in this OS feature are:
 
-* [fs_ls_file](#fs_ls_file)
-* [fs_ls_dir](#fs_ls_dir)
+* [boot_slot_addr](#boot_slot_addr)
+* [boot_find_image_slot](#boot_find_image_slot)
 * add the rest
 
 
@@ -37,53 +26,11 @@ The functions available in this OS feature are:
 
 ------------------
 
-## <font color="F2853F" style="font-size:24pt"> fs_ls_file </font>
+## <font color="F2853F" style="font-size:24pt"> boot_slot_addr </font>
 
 ```no-highlight
     static void
-    fs_ls_file(const char *name, struct fs_file *file)
-
-```
-
-<Insert short description>
-
-
-#### Arguments
-
-| Arguments | Description |
-|-----------|-------------|
-| name |  explain argument   |
-| file |  explain argument   |
-
-#### Returned values
-
-List any values returned.
-Error codes?
-
-#### Notes 
-
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
-
-#### Example
-
-<Add text to set up the context for the example here>
-
-```no-highlight
-
-<Insert the code snippet here>
-
-```
-
----------------------
-   
-## <font color="#F2853F" style="font-size:24pt"> fs_ls_dir </font>
-
-```no-highlight
-   static void
-   fs_ls_dir(const char *name)
-   
+    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)
 ```
 
 <Insert short description>
@@ -112,9 +59,44 @@ Any caveats to be careful about (e.g. high memory requirements).
 <Add text to set up the context for the example here>
 
 ```no-highlight
-
 <Insert the code snippet here>
+```
 
+---------------------
+   
+## <font color="#F2853F" style="font-size:24pt"> boot_find_image_slot </font>
+
+```no-highlight
+   <Insert function callout here >
+```
+
+<Insert short description>
+
+
+#### Arguments
+
+| Arguments | Description |
+|-----------|-------------|
+| xx |  explain argument xx  |
+| yy |  explain argument yy  |
+
+#### Returned values
+
+List any values returned.
+Error codes?
+
+#### Notes 
+
+Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).
+
+#### Example
+
+<Add text to set up the context for the example here>
+
+```no-highlight
+<Insert the code snippet here>
 ```
 
 ---------------------

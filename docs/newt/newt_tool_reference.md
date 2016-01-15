@@ -3,7 +3,7 @@
 
 ### Available high-level commands
 
-```
+```no-highlight
 version     Display the Newt version number
 help        Help about any command
 nest        Commands to manage nests & clutches (remote egg repositories)
@@ -15,16 +15,18 @@ target      Set and view target information
 
 #### Usage:
 
+```no-highlight
     newt version [flags]
+```
     
 Flags:
-
+```no-highlight
     -h, --help=false: help for version
-
+```
 Global Flags:
-
+```no-highlight
     -h, --help=false: help for newt
-    
+```    
     
 Examples
 
@@ -36,12 +38,12 @@ version       | newt version | Displays the version of newt tool installed
 ### *help*
 
 #### Usage:
-
+```no-highlight
     newt help [input1]
-    
+```    
 Flags:
 
-```
+```no-highlight
 
 -h, --help=false: help for newt
 -l, --loglevel="WARN": Log level, defaults to WARN.
@@ -62,30 +64,30 @@ help       | newt help   | Displays the help text for newt tool
 ### *nest*
 
 #### Usage: 
-
+```no-highlight
     newt nest [command][flags] input1 input2...
-
+```
 Available commands: 
-
+```no-highlight
     create          Create a new nest
     generate-clutch Generate a clutch file from the eggs in the current directory
     add-clutch      Add a remote clutch, and put it in the current nest
     list-clutches   List the clutches installed in the current nest
     show-clutch     Show an individual clutch in the current nest
-
+```
 
 Flags:
-
+```no-highlight
     -h, --help=false: help for nest
-
+```
 Global Flags:
-
+```no-highlight
     -h, --help=false: help for newt
     -l, --loglevel="WARN": Log level, defaults to WARN.
     -q, --quiet=false: Be quiet; only display error output.
     -s, --silent=false: Be silent; don't output anything.
     -v, --verbose=false: Enable verbose output when executing commands.
-
+```
 Description
 
 Sub-command  | Explanation
@@ -117,21 +119,21 @@ show-clutch   | newt nest show-clutch larva | Outputs the details of the clutch 
 ### *egg*
 
 #### Usage: 
-
+```no-highlight
     newt egg [command][flag] input1 input2
-    
+```    
     
 Available Commands: 
- 
+```no-highlight 
     list        List eggs in the current nest
     checkdeps   Check egg dependencies
     hunt        Search for egg from clutches
     show        Show the contents of an egg.
     install     Install an egg
     remove      Remove an egg
-
+```
 Flags:
- 
+```no-highlight 
     -h, --help=false: help for egg
 
 Global Flags:
@@ -140,7 +142,7 @@ Global Flags:
     -q, --quiet=false: Be quiet; only display error output.
     -s, --silent=false: Be silent; don't output anything.
     -v, --verbose=false: Enable verbose output when executing commands.
-
+```
 Description
 
 Sub-command  | Explanation
@@ -179,11 +181,11 @@ remove   | newt egg remove blinky| Removes the egg named blinky from the local n
 #### Usage: 
 
 Usage: 
-
+```no-highlight
     newt target [command] input1 [flag1] [flag2]
-
+```
 Available Commands: 
-
+```no-highlight
     set         Set target configuration variable
     unset       Unset target configuration variable
     delete      Delete target
@@ -195,18 +197,18 @@ Available Commands:
     import      Import target
     download    Download image to target
     debug       Download image to target and start an openocd/gdb session
-
+```
 Flags:
-
+```no-highlight
     -h, --help=false: help for target
-
+```
 Global Flags:
-
+```no-highlight
     -l, --loglevel="WARN": Log level, defaults to WARN.
     -q, --quiet=false: Be quiet; only display error output.
     -s, --silent=false: Be silent; don't output anything.
     -v, --verbose=false: Enable verbose output when executing commands.
-
+```
 Description
 
 Sub-command  | Explanation
