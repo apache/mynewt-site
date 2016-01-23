@@ -1,4 +1,4 @@
-# Newtron Flash Filesystem
+# Newtron Flash Filesystem (nffs)
 
 Mynewt comes with the flash file system called the Newtron Flash File System (nffs) which is designed with two priorities that makes it suitable for embedded use: 
 
