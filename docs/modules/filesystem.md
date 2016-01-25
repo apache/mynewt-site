@@ -105,15 +105,15 @@ Additional file system utilities that bundle some of the basic functions above a
 
 Opens a file at the specified path.  The result of opening a nonexistent file depends on the access flags specified.  All intermediate directories must already exist.
 
-By default (when nffs is the underlying filesystem used) the mode strings passed to fopen() map to nffs_open()'s access flags as follows:
+The mode strings passed to fopen() map to fs_open()'s access flags as follows:
 
 ```no-highlight
-    "r"  -  NFFS_ACCESS_READ
-    "r+" -  NFFS_ACCESS_READ | NFFS_ACCESS_WRITE
-    "w"  -  NFFS_ACCESS_WRITE | NFFS_ACCESS_TRUNCATE
-    "w+" -  NFFS_ACCESS_READ | NFFS_ACCESS_WRITE | NFFS_ACCESS_TRUNCATE
-    "a"  -  NFFS_ACCESS_WRITE | NFFS_ACCESS_APPEND
-    "a+" -  NFFS_ACCESS_READ | NFFS_ACCESS_WRITE | NFFS_ACCESS_APPEND
+    "r"  -  FS_ACCESS_READ
+    "r+" -  FS_ACCESS_READ | FS_ACCESS_WRITE
+    "w"  -  FS_ACCESS_WRITE | FS_ACCESS_TRUNCATE
+    "w+" -  FS_ACCESS_READ | FS_ACCESS_WRITE | FS_ACCESS_TRUNCATE
+    "a"  -  FS_ACCESS_WRITE | FS_ACCESS_APPEND
+    "a+" -  FS_ACCESS_READ | FS_ACCESS_WRITE | FS_ACCESS_APPEND
 ```
 
 #### Arguments
@@ -131,9 +131,7 @@ By default (when nffs is the underlying filesystem used) the mode strings passed
 
 #### Notes 
 
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
+There is no concept of current working directory. Therefore all file names should start with '/'.
 
 #### Example
 
@@ -151,7 +149,7 @@ Any caveats to be careful about (e.g. high memory requirements).
 
 ```no-highlight
    int
-   fs_close(struct fs_file *file);  
+   fs_close(struct fs_file *file)
 ```
 
 Closes the specified file and invalidates the file handle.  If the file has already been unlinked, and this is the last open handle to the file, this operation causes the file to be deleted from disk.
@@ -161,7 +159,7 @@ Closes the specified file and invalidates the file handle.  If the file has alre
 
 | Arguments | Description |
 |-----------|-------------|
-| file|  Pointer to the file to close  |
+| file |  Pointer to the file to close  |
 
 #### Returned values
 
@@ -170,9 +168,7 @@ Closes the specified file and invalidates the file handle.  If the file has alre
 
 #### Notes 
 
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
+Don't use file handle after closing the file.
 
 #### Example
 
@@ -193,7 +189,7 @@ Any caveats to be careful about (e.g. high memory requirements).
    fs_read(struct fs_file *file, uint32_t len, void *out_data, uint32_t *out_len);
 ```
 
-Reads data from the specified file.  If more data is requested than remains in the file, all available data is retrieved.  
+Reads data from the specified file.  If more data is requested than remains in the file, all available data is retrieved. Function returns in `out_len` the actual number of bytes read (less or equal to `len`).
 
 #### Arguments
 
@@ -209,7 +205,7 @@ Reads data from the specified file.  If more data is requested than remains in t
 * 0 on success
 * nonzero on failure
 
-#### Notes 
+#### Notes
 
 This type of short read results in a success return code.
 
@@ -705,7 +701,7 @@ Calls fs_open(), fs_read(), and fs_close() to open a file at the specified path,
 
 #### Notes 
 
-<any notes?>
+This is a convenience function. You can use it if the file is small (caller has enough buffer space to hold all the file contents in memory).
 
 #### Example
 
