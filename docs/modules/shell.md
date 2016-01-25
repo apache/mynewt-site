@@ -5,7 +5,9 @@ The shell is the program which puts up a prompt for a command, processes command
 
 ## Description
 
-A few commands to the console interface are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
+Shell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.
+
+A few commands are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
 
 Create a sim target to check out these commands available in shell.
 
@@ -92,8 +94,7 @@ Replace this with the list of data structures used, why, any neat features
 
 The functions available in this OS feature are:
 
-* [shell_cmd_list_lock](#shell_cmd_list_lock)
-* [shell_cmd_list_unlock](#shell_cmd_list_unlock)
+* [shell_cmd_register](#shell_cmd_register)
 * add the rest
 
 
@@ -101,22 +102,23 @@ The functions available in this OS feature are:
 
 ------------------
 
-## <font color="F2853F" style="font-size:24pt"> shell_cmd_list_lock </font>
+## <font color="F2853F" style="font-size:24pt"> shell_cmd_register </font>
 
 ```no-highlight
-    static int 
-    shell_cmd_list_lock(void)
+    int 
+    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)
 ```
 
-<Insert short description>
+Register a shell command. When shell reads a line of input which starts with `cmd`, it calls the handler `func`. Caller must allocate data structure `sc`. Shell internally links this to it's list of command handlers.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| sc |  Pointer to data structure shell egg uses to store info about the registered command |
+| cmd |  Command getting registered  |
+| func |  Function to call when command is received from console  |
 
 #### Returned values
 
@@ -125,90 +127,35 @@ Error codes?
 
 #### Notes 
 
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
+Shell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.
 
 #### Example
 
-<Add text to set up the context for the example here>
+Here is FS registering command for 'ls'.
 
 ```no-highlight
-<Insert the code snippet here>
+static struct shell_cmd fs_ls_struct;
+
+static int
+fs_ls_cmd(int argc, char **argv)
+{
+    /* XXX do some stuff */
+    console_printf("%d files\n", file_cnt);
+    return 0;
+}
+
+void
+fs_cli_init(void)
+{
+    int rc;
+
+    rc = shell_cmd_register(&fs_ls_struct, "ls", fs_ls_cmd);
+    if (rc != 0) {
+        return;
+    }
+}
+
 ```
 
 ---------------------
-   
-## <font color="#F2853F" style="font-size:24pt"> shell_cmd_list_unlock </font>
 
-```no-highlight
-   <Insert function callout here >
-```
-
-<Insert short description>
-
-
-#### Arguments
-
-| Arguments | Description |
-|-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
-
-#### Returned values
-
-List any values returned.
-Error codes?
-
-#### Notes 
-
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
-
-#### Example
-
-<Add text to set up the context for the example here>
-
-```no-highlight
-<Insert the code snippet here>
-```
-
----------------------
-   
-## <font color="#F2853F" style="font-size:24pt"> next_one </font>
-
-```no-highlight
-   <Insert function callout here >
-```
-
-<Insert short description>
-
-
-#### Arguments
-
-| Arguments | Description |
-|-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
-
-#### Returned values
-
-List any values returned.
-Error codes?
-
-#### Notes 
-
-Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
-
-#### Example
-
-<Add text to set up the context for the example here>
-
-```no-highlight
-<Insert the code snippet here>
-```
-
----------------------
