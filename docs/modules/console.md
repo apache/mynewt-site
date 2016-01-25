@@ -13,16 +13,21 @@ In the Mynewt OS, the console library comes in two versions:
 * full - containing the full implementation
 * stub - containing stubs for the API
 
-If an egg or project requires the full console capability it lists that dependency in its egg.yml file. For example, the shell egg is defined by the following egg.yml file:
+Both of these have `egg.yml` file which states that they provide the `console` API. If an egg uses this API, it should list `console` as a requirement.
+For example, the shell egg is defined by the following egg.yml file:
 ```no-highlight
     egg.name: libs/shell 
     egg.vers: 0.1
     egg.deps:
-        - libs/console/full
         - libs/os
+        - libs/util
+    egg.reqs:
+        - console
     egg.identities:
         - SHELL 
 ```
+The project .yml file decides which version of the console egg should be included. 
+If project requires the full console capability it lists dependency `libs/console/full` in its egg.yml file. 
 On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub. Another example would be the bootloader project where we want to keep the size of the image small. It includes the `libs/os` egg that can print out messages on a console (e.g. if there is a hard fault) and the `libs/util` egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead and the egg.yml file for the project boot egg looks like the following:
 ```no-highlight
     project.name: boot
@@ -34,6 +39,10 @@ On the other hand, a project may not have a physical console (e.g. a UART port t
         - libs/console/stub
         - libs/util 
 ```
+
+Console has 2 modes for transmit; blocking and non-blocking mode. Usually the non-blocking mode is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.
+Blocking mode is used when we don't want TX completion interrupts. This is used when system crashes, and we still want to output info related to that crash.
+
 ## Data structures
 
 
@@ -319,7 +328,9 @@ Error codes?
 
 #### Notes 
 
-This function makes sure no interrupts are allowed while the transmit buffer is draining and the character is being added.
+Function blocks interrupts as a way of protecting against concurrent access to TX buffer.
+
+If TX buffer is full, the function waits for TX buffer to drain. And the way it does it currently is by calling os_time_delay(). Therefore this function should only be called from within a task context, not from an interrupt handler. We might want to change this...
 
 #### Example
 
