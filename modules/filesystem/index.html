@@ -344,13 +344,13 @@ egg.deps:
 </code></pre>
 
 <p>Opens a file at the specified path.  The result of opening a nonexistent file depends on the access flags specified.  All intermediate directories must already exist.</p>
-<p>By default (when nffs is the underlying filesystem used) the mode strings passed to fopen() map to nffs_open()'s access flags as follows:</p>
-<pre><code class="no-highlight">    &quot;r&quot;  -  NFFS_ACCESS_READ
-    &quot;r+&quot; -  NFFS_ACCESS_READ | NFFS_ACCESS_WRITE
-    &quot;w&quot;  -  NFFS_ACCESS_WRITE | NFFS_ACCESS_TRUNCATE
-    &quot;w+&quot; -  NFFS_ACCESS_READ | NFFS_ACCESS_WRITE | NFFS_ACCESS_TRUNCATE
-    &quot;a&quot;  -  NFFS_ACCESS_WRITE | NFFS_ACCESS_APPEND
-    &quot;a+&quot; -  NFFS_ACCESS_READ | NFFS_ACCESS_WRITE | NFFS_ACCESS_APPEND
+<p>The mode strings passed to fopen() map to fs_open()'s access flags as follows:</p>
+<pre><code class="no-highlight">    &quot;r&quot;  -  FS_ACCESS_READ
+    &quot;r+&quot; -  FS_ACCESS_READ | FS_ACCESS_WRITE
+    &quot;w&quot;  -  FS_ACCESS_WRITE | FS_ACCESS_TRUNCATE
+    &quot;w+&quot; -  FS_ACCESS_READ | FS_ACCESS_WRITE | FS_ACCESS_TRUNCATE
+    &quot;a&quot;  -  FS_ACCESS_WRITE | FS_ACCESS_APPEND
+    &quot;a+&quot; -  FS_ACCESS_READ | FS_ACCESS_WRITE | FS_ACCESS_APPEND
 </code></pre>
 
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
@@ -382,9 +382,7 @@ egg.deps:
 <li>nonzero on failure</li>
 </ul>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>There is no concept of current working directory. Therefore all file names should start with '/'.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
 <pre><code class="no-highlight">
@@ -395,7 +393,7 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <hr />
 <h2 id="fs_close"><font color="#F2853F" style="font-size:24pt"> fs_close </font><a class="headerlink" href="#fs_close" title="Permanent link">&para;</a></h2>
 <pre><code class="no-highlight">   int
-   fs_close(struct fs_file *file);  
+   fs_close(struct fs_file *file)
 </code></pre>
 
 <p>Closes the specified file and invalidates the file handle.  If the file has already been unlinked, and this is the last open handle to the file, this operation causes the file to be deleted from disk.</p>
@@ -420,9 +418,7 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <li>nonzero on failure</li>
 </ul>
 <h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Don't use file handle after closing the file.</p>
 <h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
 <pre><code class="no-highlight">
@@ -436,7 +432,7 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
    fs_read(struct fs_file *file, uint32_t len, void *out_data, uint32_t *out_len);
 </code></pre>
 
-<p>Reads data from the specified file.  If more data is requested than remains in the file, all available data is retrieved.  </p>
+<p>Reads data from the specified file.  If more data is requested than remains in the file, all available data is retrieved. Function returns in <code>out_len</code> the actual number of bytes read (less or equal to <code>len</code>).</p>
 <h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -982,7 +978,7 @@ Any caveats to be careful about (e.g. high memory requirements).</p>
 <li>nonzero on failure</li>
 </ul>
 <h4 id="notes_15">Notes<a class="headerlink" href="#notes_15" title="Permanent link">&para;</a></h4>
-<p><any notes?></p>
+<p>This is a convenience function. You can use it if the file is small (caller has enough buffer space to hold all the file contents in memory).</p>
 <h4 id="example_15">Example<a class="headerlink" href="#example_15" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
 <pre><code class="no-highlight">&lt;Insert the code snippet here&gt;

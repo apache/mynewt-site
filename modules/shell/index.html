@@ -156,11 +156,7 @@
                                     
                                         <li class="toctree-l3"><a href="#function-reference">Function Reference</a></li>
                                     
-                                        <li class="toctree-l3"><a href="#shell_cmd_list_lock"> shell_cmd_list_lock </a></li>
-                                    
-                                        <li class="toctree-l3"><a href="#shell_cmd_list_unlock"> shell_cmd_list_unlock </a></li>
-                                    
-                                        <li class="toctree-l3"><a href="#next_one"> next_one </a></li>
+                                        <li class="toctree-l3"><a href="#shell_cmd_register"> shell_cmd_register </a></li>
                                     
                                 
                             
@@ -232,7 +228,8 @@
                             <h1 id="shell">Shell<a class="headerlink" href="#shell" title="Permanent link">&para;</a></h1>
 <p>The shell is the program which puts up a prompt for a command, processes commands, and returns output. Interacting with the console of a device is done using a shell program.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>A few commands to the console interface are currently available in the shell - <code>tasks</code>, <code>log</code>, and <code>stat stat</code>. A $ prompt sign will be coming soon!</p>
+<p>Shell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.</p>
+<p>A few commands are currently available in the shell - <code>tasks</code>, <code>log</code>, and <code>stat stat</code>. A $ prompt sign will be coming soon!</p>
 <p>Create a sim target to check out these commands available in shell.</p>
 <pre><code class="no-highlight">user@~/dev/larva$ newt target create blinky_sim
 Creating target blinky_sim
@@ -309,18 +306,17 @@ stat stat
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
-<li><a href="#shell_cmd_list_lock">shell_cmd_list_lock</a></li>
-<li><a href="#shell_cmd_list_unlock">shell_cmd_list_unlock</a></li>
+<li><a href="#shell_cmd_register">shell_cmd_register</a></li>
 <li>add the rest</li>
 </ul>
 <h2 id="function-reference">Function Reference<a class="headerlink" href="#function-reference" title="Permanent link">&para;</a></h2>
 <hr />
-<h2 id="shell_cmd_list_lock"><font color="F2853F" style="font-size:24pt"> shell_cmd_list_lock </font><a class="headerlink" href="#shell_cmd_list_lock" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">    static int 
-    shell_cmd_list_lock(void)
+<h2 id="shell_cmd_register"><font color="F2853F" style="font-size:24pt"> shell_cmd_register </font><a class="headerlink" href="#shell_cmd_register" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">    int 
+    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)
 </code></pre>
 
-<p><Insert short description></p>
+<p>Register a shell command. When shell reads a line of input which starts with <code>cmd</code>, it calls the handler <code>func</code>. Caller must allocate data structure <code>sc</code>. Shell internally links this to it's list of command handlers.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -331,12 +327,16 @@ stat stat
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
+<td>sc</td>
+<td>Pointer to data structure shell egg uses to store info about the registered command</td>
 </tr>
 <tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>cmd</td>
+<td>Command getting registered</td>
+</tr>
+<tr>
+<td>func</td>
+<td>Function to call when command is received from console</td>
 </tr>
 </tbody>
 </table>
@@ -344,86 +344,30 @@ stat stat
 <p>List any values returned.
 Error codes?</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Shell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
-</code></pre>
+<p>Here is FS registering command for 'ls'.</p>
+<pre><code class="no-highlight">static struct shell_cmd fs_ls_struct;
 
-<hr />
-<h2 id="shell_cmd_list_unlock"><font color="#F2853F" style="font-size:24pt"> shell_cmd_list_unlock </font><a class="headerlink" href="#shell_cmd_list_unlock" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
-</code></pre>
+static int
+fs_ls_cmd(int argc, char **argv)
+{
+    /* XXX do some stuff */
+    console_printf(&quot;%d files\n&quot;, file_cnt);
+    return 0;
+}
 
-<p><Insert short description></p>
-<h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_1">Returned values<a class="headerlink" href="#returned-values_1" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
-</code></pre>
+void
+fs_cli_init(void)
+{
+    int rc;
 
-<hr />
-<h2 id="next_one"><font color="#F2853F" style="font-size:24pt"> next_one </font><a class="headerlink" href="#next_one" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   &lt;Insert function callout here &gt;
-</code></pre>
+    rc = shell_cmd_register(&amp;fs_ls_struct, &quot;ls&quot;, fs_ls_cmd);
+    if (rc != 0) {
+        return;
+    }
+}
 
-<p><Insert short description></p>
-<h4 id="arguments_2">Arguments<a class="headerlink" href="#arguments_2" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_2">Returned values<a class="headerlink" href="#returned-values_2" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes_2">Notes<a class="headerlink" href="#notes_2" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout. 
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
-<h4 id="example_2">Example<a class="headerlink" href="#example_2" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
 </code></pre>
 
 <hr />
