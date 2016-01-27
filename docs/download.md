@@ -6,9 +6,9 @@ To clone the Mynewt OS development repository:
 
 **Non Committers**
 ```no-highlight
-    $ git clone http://git/wip/us.apache.org/repos/asf/incubator-mynewt-larva.git
+    $ git clone http://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
 ```
 **Committers**
 ```no-highlight
-    $ git clone https://git/wip/us.apache.org/repos/asf/incubator-mynewt-larva.git
+    $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
 ```
