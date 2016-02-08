@@ -23,8 +23,6 @@ user@~/dev/larva$ newt target set blinky_sim project=blinky
 Target blinky_sim successfully set project to blinky
 user@~/dev/larva$ newt target set blinky_sim bsp=hw/bsp/native
 Target blinky_sim successfully set bsp to hw/bsp/native
-user@~/dev/larva$ newt target set blinky_sim compiler_def=sim
-Target blinky_sim successfully set compiler_def to sim
 user@~/dev/larva$ newt target set blinky_sim compiler_def=debug
 Target blinky_sim successfully set compiler_def to debug
 user@~/dev/larva$ newt target set blinky_sim compiler=sim
