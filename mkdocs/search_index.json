@@ -2326,164 +2326,369 @@
             "title": "Example"
         }, 
         {
-            "location": "/modules/shell/", 
-            "text": "Shell\n\n\nThe shell is the program which puts up a prompt for a command, processes commands, and returns output. Interacting with the console of a device is done using a shell program.\n\n\nDescription\n\n\nShell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.\n\n\nA few commands are currently available in the shell - \ntasks\n, \nlog\n, and \nstat stat\n. A $ prompt sign will be coming soon!\n\n\nCreate a sim target to check out these commands available in shell.\n\n\nuser@~/dev/larva$ newt target create blinky_sim\nCreating target blinky_sim\nTarget blinky_sim successfully created!\nuser@~/dev/larva$ newt target set blinky_sim name=blinky_sim\nTarget blinky_sim successfully set name to blinky_sim\nuser@~/dev/larva$ newt target set blinky_sim arch=sim\nTarget blinky_sim successfully set arch to sim\nuser@~/dev/larva$ newt target set blinky_sim project=blinky\nTarget blinky_sim successfully set project to blinky\nuser@~/dev/larva$ newt target set blinky_sim bsp=hw/bsp/native\nTarget blinky_sim successfully set bsp to hw/bsp/native\nuser@~/dev/larva$ newt target set blinky_sim compiler_def=debug\nTarget blinky_sim successfully set compiler_def to debug\nuser@~/dev/larva$ newt target set blinky_sim compiler=sim\nTarget blinky_sim successfully set compiler to sim\nuser@~/dev/larva$ newt target show\nblinky_sim\n    arch: sim\n    bsp: hw/bsp/native\n    compiler: sim\n    compiler_def: debug\n    name: blinky_sim\n    project: blinky\nuser@~/dev/larva$ newt target build blinky_sim\nBuilding target blinky_sim (project = blinky)\nCompiling case.c\nCompiling suite.c\nCompiling testutil.c\n..\n..\nBuilding project blinky\nLinking blinky.elf\nSuccessfully run!\n\nuser@~/dev/larva$ ./project/blinky/bin/blinky_sim/blinky.elf\nuart0 at /dev/ttys005\n\n\n\n\n\nOpen up a new terminal to run minicom, a text-based serial port control and terminal emulation program. Set device name to the serial port of the target. \n\n\nuser@~$ minicom -D /dev/ttys005\nWelcome to minicom 2.7\n\nOPTIONS: \nCompiled on Nov 24 2015, 16:14:21.\nPort /dev/ttys005, 11:32:17\n\nPress Meta-Z for help on special keys\n\nlog \n174578:[0] bla\n174578:[0] bab\n\ntasks\n217809:6 tasks: \n217809:  shell (prio: 3, nw: 0, flags: 0x0, ssize: 0, cswcnt: 59, tot_run_time: 0ms)\n217840:  idle (prio: 255, nw: 0, flags: 0x0, ssize: 0, cswcnt: 18763, tot_run_time: 217809ms)\n217878:  uart_poller (prio: 0, nw: 217819, flags: 0x0, ssize: 0, cswcnt: 18667, tot_run_time: 0ms)\n217923:  task1 (prio: 1, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n217953:  os_sanity (prio: 254, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n218010:  task2 (prio: 2, nw: 217709, flags: 0x3, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n\nstat stat\n229881:s0: 1\n\n\n\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\nshell_cmd_register\n\n\nadd the rest\n\n\n\n\nFunction Reference\n\n\n\n\n shell_cmd_register \n\n\n    int \n    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)\n\n\n\n\nRegister a shell command. When shell reads a line of input which starts with \ncmd\n, it calls the handler \nfunc\n. Caller must allocate data structure \nsc\n. Shell internally links this to it's list of command handlers.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nsc\n\n\nPointer to data structure shell egg uses to store info about the registered command\n\n\n\n\n\n\ncmd\n\n\nCommand getting registered\n\n\n\n\n\n\nfunc\n\n\nFunction to call when command is received from console\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nShell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.\n\n\nExample\n\n\nHere is FS registering command for 'ls'.\n\n\nstatic struct shell_cmd fs_ls_struct;\n\nstatic int\nfs_ls_cmd(int argc, char **argv)\n{\n    /* XXX do some stuff */\n    console_printf(\n%d files\\n\n, file_cnt);\n    return 0;\n}\n\nvoid\nfs_cli_init(void)\n{\n    int rc;\n\n    rc = shell_cmd_register(\nfs_ls_struct, \nls\n, fs_ls_cmd);\n    if (rc != 0) {\n        return;\n    }\n}", 
-            "title": "Shell"
+            "location": "/modules/shell/shell/", 
+            "text": "Shell\n\n\nThe shell is the program which puts up a prompt for a command, processes commands, and returns output. Interacting with the console of a device is done using a shell program.\n\n\nDescription\n\n\nShell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.\n\n\nA few commands are currently available in the shell - \ntasks\n, \nlog\n, and \nstat stat\n. A $ prompt sign will be coming soon!\n\n\nCreate a sim target to check out these commands available in shell.\n\n\nuser@~/dev/larva$ newt target create blinky_sim\nCreating target blinky_sim\nTarget blinky_sim successfully created!\nuser@~/dev/larva$ newt target set blinky_sim name=blinky_sim\nTarget blinky_sim successfully set name to blinky_sim\nuser@~/dev/larva$ newt target set blinky_sim arch=sim\nTarget blinky_sim successfully set arch to sim\nuser@~/dev/larva$ newt target set blinky_sim project=blinky\nTarget blinky_sim successfully set project to blinky\nuser@~/dev/larva$ newt target set blinky_sim bsp=hw/bsp/native\nTarget blinky_sim successfully set bsp to hw/bsp/native\nuser@~/dev/larva$ newt target set blinky_sim compiler_def=debug\nTarget blinky_sim successfully set compiler_def to debug\nuser@~/dev/larva$ newt target set blinky_sim compiler=sim\nTarget blinky_sim successfully set compiler to sim\nuser@~/dev/larva$ newt target show\nblinky_sim\n    arch: sim\n    bsp: hw/bsp/native\n    compiler: sim\n    compiler_def: debug\n    name: blinky_sim\n    project: blinky\nuser@~/dev/larva$ newt target build blinky_sim\nBuilding target blinky_sim (project = blinky)\nCompiling case.c\nCompiling suite.c\nCompiling testutil.c\n..\n..\nBuilding project blinky\nLinking blinky.elf\nSuccessfully run!\n\nuser@~/dev/larva$ ./project/blinky/bin/blinky_sim/blinky.elf\nuart0 at /dev/ttys005\n\n\n\n\n\nOpen up a new terminal to run minicom, a text-based serial port control and terminal emulation program. Set device name to the serial port of the target. \n\n\nuser@~$ minicom -D /dev/ttys005\nWelcome to minicom 2.7\n\nOPTIONS: \nCompiled on Nov 24 2015, 16:14:21.\nPort /dev/ttys005, 11:32:17\n\nPress Meta-Z for help on special keys\n\nlog \n174578:[0] bla\n174578:[0] bab\n\ntasks\n217809:6 tasks: \n217809:  shell (prio: 3, nw: 0, flags: 0x0, ssize: 0, cswcnt: 59, tot_run_time: 0ms)\n217840:  idle (prio: 255, nw: 0, flags: 0x0, ssize: 0, cswcnt: 18763, tot_run_time: 217809ms)\n217878:  uart_poller (prio: 0, nw: 217819, flags: 0x0, ssize: 0, cswcnt: 18667, tot_run_time: 0ms)\n217923:  task1 (prio: 1, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n217953:  os_sanity (prio: 254, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n218010:  task2 (prio: 2, nw: 217709, flags: 0x3, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n\nstat stat\n229881:s0: 1\n\n\n\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\nshell_cmd\n\n\nshell_cmd_list_lock\n\n\nshell_cmd_list_unlock\n\n\nshell_cmd_register\n\n\nshell_console_rx_cb\n\n\nshell_echo_cmd\n\n\nshell_help_cmd\n\n\nshell_nlip_input_register\n\n\nshell_nlip_mqueue_process\n\n\nshell_nlip_mtx\n\n\nshell_nlip_output\n\n\nshell_nlip_process\n\n\nshell_os_mpool_display_cmd\n\n\nshell_os_tasks_display_cmd\n\n\nshell_process_command\n\n\nshell_read_console\n\n\nshell_task_func\n\n\nshell_task_init", 
+            "title": "shell overview"
         }, 
         {
-            "location": "/modules/shell/#shell", 
+            "location": "/modules/shell/shell/#shell", 
             "text": "The shell is the program which puts up a prompt for a command, processes commands, and returns output. Interacting with the console of a device is done using a shell program.", 
             "title": "Shell"
         }, 
         {
-            "location": "/modules/shell/#description", 
+            "location": "/modules/shell/shell/#description", 
             "text": "Shell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.  A few commands are currently available in the shell -  tasks ,  log , and  stat stat . A $ prompt sign will be coming soon!  Create a sim target to check out these commands available in shell.  user@~/dev/larva$ newt target create blinky_sim\nCreating target blinky_sim\nTarget blinky_sim successfully created!\nuser@~/dev/larva$ newt target set blinky_sim name=blinky_sim\nTarget blinky_sim successfully set name to blinky_sim\nuser@~/dev/larva$ newt target set blinky_sim arch=sim\nTarget blinky_sim successfully set arch to sim\nuser@~/dev/larva$ newt target set blinky_sim project=blinky\nTarget blinky_sim successfully set project to blinky\nuser@~/dev/larva$ newt target set blinky_sim bsp=hw/bsp/native\nTarget blinky_sim successfully set bsp to hw/bsp/native\nuser@~/dev/larva$ newt target set blinky_sim compiler_def=debug\nTarget blinky_sim successfully set compiler_def to debug\nuser@~/dev/larva$ newt target set blinky_sim compiler=sim\nTarget blinky_sim successfully set compiler to sim\nuser@~/dev/larva$ newt target show\nblinky_sim\n    arch: sim\n    bsp: hw/bsp/native\n    compiler: sim\n    compiler_def: debug\n    name: blinky_sim\n    project: blinky\nuser@~/dev/larva$ newt target build blinky_sim\nBuilding target blinky_sim (project = blinky)\nCompiling case.c\nCompiling suite.c\nCompiling testutil.c\n..\n..\nBuilding project blinky\nLinking blinky.elf\nSuccessfully run!\n\nuser@~/dev/larva$ ./project/blinky/bin/blinky_sim/blinky.elf\nuart0 at /dev/ttys005  Open up a new terminal to run minicom, a text-based serial port control and terminal emulation program. Set device name to the serial port of the target.   user@~$ minicom -D /dev/ttys005\nWelcome to minicom 2.7\n\nOPTIONS: \nCompiled on Nov 24 2015, 16:14:21.\nPort /dev/ttys005, 11:32:17\n\nPress Meta-Z for help on special keys\n\nlog \n174578:[0] bla\n174578:[0] bab\n\ntasks\n217809:6 tasks: \n217809:  shell (prio: 3, nw: 0, flags: 0x0, ssize: 0, cswcnt: 59, tot_run_time: 0ms)\n217840:  idle (prio: 255, nw: 0, flags: 0x0, ssize: 0, cswcnt: 18763, tot_run_time: 217809ms)\n217878:  uart_poller (prio: 0, nw: 217819, flags: 0x0, ssize: 0, cswcnt: 18667, tot_run_time: 0ms)\n217923:  task1 (prio: 1, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n217953:  os_sanity (prio: 254, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n218010:  task2 (prio: 2, nw: 217709, flags: 0x3, ssize: 0, cswcnt: 218, tot_run_time: 0ms)\n\nstat stat\n229881:s0: 1", 
             "title": "Description"
         }, 
         {
-            "location": "/modules/shell/#data-structures", 
+            "location": "/modules/shell/shell/#data-structures", 
             "text": "Replace this with the list of data structures used, why, any neat features", 
             "title": "Data structures"
         }, 
         {
-            "location": "/modules/shell/#list-of-functions", 
-            "text": "The functions available in this OS feature are:   shell_cmd_register  add the rest", 
+            "location": "/modules/shell/shell/#list-of-functions", 
+            "text": "The functions available in this OS feature are:   shell_cmd  shell_cmd_list_lock  shell_cmd_list_unlock  shell_cmd_register  shell_console_rx_cb  shell_echo_cmd  shell_help_cmd  shell_nlip_input_register  shell_nlip_mqueue_process  shell_nlip_mtx  shell_nlip_output  shell_nlip_process  shell_os_mpool_display_cmd  shell_os_tasks_display_cmd  shell_process_command  shell_read_console  shell_task_func  shell_task_init", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/modules/shell/#function-reference", 
-            "text": "", 
-            "title": "Function Reference"
+            "location": "/modules/shell/shell_cmd/", 
+            "text": "shell_cmd \n\n\n    static int \n    shell_cmd(char *cmd, char **argv, int argc)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\narg1\n\n\ndescription\n\n\n\n\n\n\narg2\n\n\ndescription\n\n\n\n\n\n\narg3\n\n\ndescription\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nWhat to look out for, special cases, things to consider\n\n\nExample\n\n\n\n   give an example", 
+            "title": "shell_cmd"
         }, 
         {
-            "location": "/modules/shell/#shell_cmd_register", 
-            "text": "int \n    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)  Register a shell command. When shell reads a line of input which starts with  cmd , it calls the handler  func . Caller must allocate data structure  sc . Shell internally links this to it's list of command handlers.", 
-            "title": " shell_cmd_register "
+            "location": "/modules/shell/shell_cmd/#shell_cmd", 
+            "text": "static int \n    shell_cmd(char *cmd, char **argv, int argc)", 
+            "title": " shell_cmd "
         }, 
         {
-            "location": "/modules/shell/#arguments", 
+            "location": "/modules/shell/shell_cmd/#arguments", 
+            "text": "Arguments  Description      arg1  description    arg2  description    arg3  description", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd/#returned-values", 
+            "text": "List any values returned.\nError codes?", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd/#notes", 
+            "text": "What to look out for, special cases, things to consider", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd/#example", 
+            "text": "give an example", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_lock/", 
+            "text": "shell_cmd_list_lock \n\n\n    static int \n    shell_cmd_list_lock(void)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\narg1\n\n\ndescription\n\n\n\n\n\n\narg2\n\n\ndescription\n\n\n\n\n\n\narg3\n\n\ndescription\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nWhat to look out for, special cases, things to consider\n\n\nExample\n\n\n\n    give an example", 
+            "title": "shell_cmd_list_lock"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_lock/#shell_cmd_list_lock", 
+            "text": "static int \n    shell_cmd_list_lock(void)", 
+            "title": " shell_cmd_list_lock "
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_lock/#arguments", 
+            "text": "Arguments  Description      arg1  description    arg2  description    arg3  description", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_lock/#returned-values", 
+            "text": "List any values returned.\nError codes?", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_lock/#notes", 
+            "text": "What to look out for, special cases, things to consider", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_lock/#example", 
+            "text": "give an example", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_unlock/", 
+            "text": "shell_cmd_list_unlock \n\n\n    static int \n    shell_cmd_list_unlock(void)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\narg1\n\n\ndescription\n\n\n\n\n\n\narg2\n\n\ndescription\n\n\n\n\n\n\narg3\n\n\ndescription\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nWhat to look out for, special cases, things to consider\n\n\nExample\n\n\n\n    give an example", 
+            "title": "shell_cmd_list_unlock"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_unlock/#shell_cmd_list_unlock", 
+            "text": "static int \n    shell_cmd_list_unlock(void)", 
+            "title": " shell_cmd_list_unlock "
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_unlock/#arguments", 
+            "text": "Arguments  Description      arg1  description    arg2  description    arg3  description", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_unlock/#returned-values", 
+            "text": "List any values returned.\nError codes?", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_unlock/#notes", 
+            "text": "What to look out for, special cases, things to consider", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_list_unlock/#example", 
+            "text": "give an example", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_register/", 
+            "text": "int \n    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)\n\n\n\n\nRegister a shell command. When shell reads a line of input which starts with \ncmd\n, it calls the handler \nfunc\n. Caller must allocate data structure \nsc\n. Shell internally links this to it's list of command handlers.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nsc\n\n\nPointer to data structure shell egg uses to store info about the registered command\n\n\n\n\n\n\ncmd\n\n\nCommand getting registered\n\n\n\n\n\n\nfunc\n\n\nFunction to call when command is received from console\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nShell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.\n\n\nExample\n\n\nHere is FS registering command for 'ls'.\n\n\nstatic struct shell_cmd fs_ls_struct;\n\nvoid\nfs_cli_init(void)\n{\n    int rc;\n\n    rc = shell_cmd_register(\nfs_ls_struct, \nls\n, fs_ls_cmd);\n    if (rc != 0) {\n        return;\n    }\n}", 
+            "title": "shell_cmd_register"
+        }, 
+        {
+            "location": "/modules/shell/shell_cmd_register/#arguments", 
             "text": "Arguments  Description      sc  Pointer to data structure shell egg uses to store info about the registered command    cmd  Command getting registered    func  Function to call when command is received from console", 
             "title": "Arguments"
         }, 
         {
-            "location": "/modules/shell/#returned-values", 
+            "location": "/modules/shell/shell_cmd_register/#returned-values", 
             "text": "List any values returned.\nError codes?", 
             "title": "Returned values"
         }, 
         {
-            "location": "/modules/shell/#notes", 
+            "location": "/modules/shell/shell_cmd_register/#notes", 
             "text": "Shell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.", 
             "title": "Notes"
         }, 
         {
-            "location": "/modules/shell/#example", 
-            "text": "Here is FS registering command for 'ls'.  static struct shell_cmd fs_ls_struct;\n\nstatic int\nfs_ls_cmd(int argc, char **argv)\n{\n    /* XXX do some stuff */\n    console_printf( %d files\\n , file_cnt);\n    return 0;\n}\n\nvoid\nfs_cli_init(void)\n{\n    int rc;\n\n    rc = shell_cmd_register( fs_ls_struct,  ls , fs_ls_cmd);\n    if (rc != 0) {\n        return;\n    }\n}", 
+            "location": "/modules/shell/shell_cmd_register/#example", 
+            "text": "Here is FS registering command for 'ls'.  static struct shell_cmd fs_ls_struct;\n\nvoid\nfs_cli_init(void)\n{\n    int rc;\n\n    rc = shell_cmd_register( fs_ls_struct,  ls , fs_ls_cmd);\n    if (rc != 0) {\n        return;\n    }\n}", 
             "title": "Example"
         }, 
         {
-            "location": "/modules/bootloader/", 
-            "text": "Bootloader\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\nboot_slot_addr\n\n\nboot_find_image_slot\n\n\nadd the rest\n\n\n\n\nFunction Reference\n\n\n\n\n boot_slot_addr \n\n\n    static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n boot_find_image_slot \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n next_one \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here", 
-            "title": "Bootloader"
+            "location": "/modules/shell/shell_console_rx_cb/", 
+            "text": "", 
+            "title": "shell_console_rx_cb"
         }, 
         {
-            "location": "/modules/bootloader/#bootloader", 
+            "location": "/modules/shell/shell_echo_cmd/", 
+            "text": "", 
+            "title": "shell_echo_cmd"
+        }, 
+        {
+            "location": "/modules/shell/shell_help_cmd/", 
+            "text": "", 
+            "title": "shell_help_cmd"
+        }, 
+        {
+            "location": "/modules/shell/shell_nlip_input_register/", 
+            "text": "", 
+            "title": "shell_nlip_input_register"
+        }, 
+        {
+            "location": "/modules/shell/shell_nlip_mqueue_process/", 
+            "text": "", 
+            "title": "shell_nlip_mqueue_process"
+        }, 
+        {
+            "location": "/modules/shell/shell_nlip_mtx/", 
+            "text": "", 
+            "title": "shell_nlip_mtx"
+        }, 
+        {
+            "location": "/modules/shell/shell_nlip_output/", 
+            "text": "", 
+            "title": "shell_nlip_output"
+        }, 
+        {
+            "location": "/modules/shell/shell_nlip_process/", 
+            "text": "", 
+            "title": "shell_nlip_process"
+        }, 
+        {
+            "location": "/modules/shell/shell_os_mpool_display_cmd/", 
+            "text": "", 
+            "title": "shell_os_mpool_display_cmd"
+        }, 
+        {
+            "location": "/modules/shell/shell_os_tasks_display_cmd/", 
+            "text": "", 
+            "title": "shell_os_tasks_display_cmd"
+        }, 
+        {
+            "location": "/modules/shell/shell_process_command/", 
+            "text": "", 
+            "title": "shell_process_command"
+        }, 
+        {
+            "location": "/modules/shell/shell_read_console/", 
+            "text": "", 
+            "title": "shell_read_console"
+        }, 
+        {
+            "location": "/modules/shell/shell_task_func/", 
+            "text": "", 
+            "title": "shell_task_func"
+        }, 
+        {
+            "location": "/modules/shell/shell_task_init/", 
+            "text": "", 
+            "title": "shell_task_init"
+        }, 
+        {
+            "location": "/modules/bootloader/bootloader/", 
+            "text": "Bootloader\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in bootloader are:\n\n\n\n\nboot_build_status\n\n\nboot_build_status_one\n\n\nboot_clear_status\n\n\nboot_copy_area\n\n\nboot_copy_image\n\n\nboot_erase_area\n\n\nboot_fill_slot\n\n\nboot_find_image_area_idx\n\n\nboot_find_image_part\n\n\nboot_find_image_slot\n\n\nboot_go\n\n\nboot_init_flash\n\n\nboot_move_area\n\n\nboot_read_image_header\n\n\nboot_read_image_headers\n\n\nboot_read_status\n\n\nboot_select_image_slot\n\n\nboot_slot_addr\n\n\nboot_slot_to_area_idx\n\n\nboot_swap_areas\n\n\nboot_vect_delete_main\n\n\nboot_vect_delete_test\n\n\nboot_vect_read_main\n\n\nboot_vect_read_one\n\n\nboot_vect_read_test\n\n\nboot_write_status", 
+            "title": "bootloader overview"
+        }, 
+        {
+            "location": "/modules/bootloader/bootloader/#bootloader", 
             "text": "Insert synopsis here", 
             "title": "Bootloader"
         }, 
         {
-            "location": "/modules/bootloader/#description", 
+            "location": "/modules/bootloader/bootloader/#description", 
             "text": "Describe module here, special features, how pieces fit together etc.", 
             "title": "Description"
         }, 
         {
-            "location": "/modules/bootloader/#data-structures", 
+            "location": "/modules/bootloader/bootloader/#data-structures", 
             "text": "Replace this with the list of data structures used, why, any neat features", 
             "title": "Data structures"
         }, 
         {
-            "location": "/modules/bootloader/#list-of-functions", 
-            "text": "The functions available in this OS feature are:   boot_slot_addr  boot_find_image_slot  add the rest", 
+            "location": "/modules/bootloader/bootloader/#list-of-functions", 
+            "text": "The functions available in bootloader are:   boot_build_status  boot_build_status_one  boot_clear_status  boot_copy_area  boot_copy_image  boot_erase_area  boot_fill_slot  boot_find_image_area_idx  boot_find_image_part  boot_find_image_slot  boot_go  boot_init_flash  boot_move_area  boot_read_image_header  boot_read_image_headers  boot_read_status  boot_select_image_slot  boot_slot_addr  boot_slot_to_area_idx  boot_swap_areas  boot_vect_delete_main  boot_vect_delete_test  boot_vect_read_main  boot_vect_read_one  boot_vect_read_test  boot_write_status", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/modules/bootloader/#function-reference", 
+            "location": "/modules/bootloader/boot_build_status/", 
             "text": "", 
-            "title": "Function Reference"
+            "title": "boot_build_status"
         }, 
         {
-            "location": "/modules/bootloader/#boot_slot_addr", 
-            "text": "static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)", 
-            "title": " boot_slot_addr "
+            "location": "/modules/bootloader/boot_build_status_one/", 
+            "text": "", 
+            "title": "boot_build_status_one"
         }, 
         {
-            "location": "/modules/bootloader/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/bootloader/boot_clear_status/", 
+            "text": "", 
+            "title": "boot_clear_status"
         }, 
         {
-            "location": "/modules/bootloader/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/bootloader/boot_copy_area/", 
+            "text": "", 
+            "title": "boot_copy_area"
         }, 
         {
-            "location": "/modules/bootloader/#notes", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/bootloader/boot_copy_image/", 
+            "text": "", 
+            "title": "boot_copy_image"
         }, 
         {
-            "location": "/modules/bootloader/#example", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/bootloader/boot_erase_area/", 
+            "text": "", 
+            "title": "boot_erase_area"
         }, 
         {
-            "location": "/modules/bootloader/#boot_find_image_slot", 
-            "text": "Insert function callout here", 
-            "title": " boot_find_image_slot "
+            "location": "/modules/bootloader/boot_fill_slot/", 
+            "text": "", 
+            "title": "boot_fill_slot"
         }, 
         {
-            "location": "/modules/bootloader/#arguments_1", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/bootloader/boot_find_image_area_idx/", 
+            "text": "", 
+            "title": "boot_find_image_area_idx"
         }, 
         {
-            "location": "/modules/bootloader/#returned-values_1", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/bootloader/boot_find_image_part/", 
+            "text": "", 
+            "title": "boot_find_image_part"
         }, 
         {
-            "location": "/modules/bootloader/#notes_1", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/bootloader/boot_find_image_slot/", 
+            "text": "", 
+            "title": "boot_find_image_slot"
         }, 
         {
-            "location": "/modules/bootloader/#example_1", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/bootloader/boot_go/", 
+            "text": "", 
+            "title": "boot_go"
         }, 
         {
-            "location": "/modules/bootloader/#next_one", 
-            "text": "Insert function callout here", 
-            "title": " next_one "
+            "location": "/modules/bootloader/boot_init_flash/", 
+            "text": "", 
+            "title": "boot_init_flash"
         }, 
         {
-            "location": "/modules/bootloader/#arguments_2", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/bootloader/boot_move_area/", 
+            "text": "", 
+            "title": "boot_move_area"
         }, 
         {
-            "location": "/modules/bootloader/#returned-values_2", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/bootloader/boot_read_image_header/", 
+            "text": "", 
+            "title": "boot_read_image_header"
         }, 
         {
-            "location": "/modules/bootloader/#notes_2", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/bootloader/boot_read_image_headers/", 
+            "text": "", 
+            "title": "boot_read_image_headers"
         }, 
         {
-            "location": "/modules/bootloader/#example_2", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/bootloader/boot_read_status/", 
+            "text": "", 
+            "title": "boot_read_status"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_select_image_slot/", 
+            "text": "", 
+            "title": "boot_select_image_slot"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_slot_addr/", 
+            "text": "", 
+            "title": "boot_slot_addr"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_slot_to_area_idx/", 
+            "text": "", 
+            "title": "boot_slot_to_area_idx"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_swap_areas/", 
+            "text": "", 
+            "title": "boot_swap_areas"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_vect_delete_main/", 
+            "text": "", 
+            "title": "boot_vect_delete_main"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_vect_delete_test/", 
+            "text": "", 
+            "title": "boot_vect_delete_test"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_vect_read_main/", 
+            "text": "", 
+            "title": "boot_vect_read_main"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_vect_read_one/", 
+            "text": "", 
+            "title": "boot_vect_read_one"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_vect_read_test/", 
+            "text": "", 
+            "title": "boot_vect_read_test"
+        }, 
+        {
+            "location": "/modules/bootloader/boot_write_status/", 
+            "text": "", 
+            "title": "boot_write_status"
         }, 
         {
             "location": "/modules/filesystem/", 
@@ -3041,214 +3246,224 @@
             "title": "Future enhancements"
         }, 
         {
-            "location": "/modules/testutil/", 
-            "text": "testutil\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\ntu_init\n\n\ntu_restart\n\n\nadd the rest\n\n\n\n\nFunction Reference\n\n\n\n\n tu_init \n\n\n    int\n    tu_init(void)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n tu_restart \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n next_one \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here", 
-            "title": "Test Utilities"
+            "location": "/modules/testutil/testutil/", 
+            "text": "testutil\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in testutil are:\n\n\n\n\ntu_case_abort\n\n\ntu_case_append_assert_msg\n\n\ntu_case_append_buf\n\n\ntu_case_append_file_info\n\n\ntu_case_append_manual_pass_msg\n\n\ntu_case_complete\n\n\ntu_case_fail_assert\n\n\ntu_case_init\n\n\ntu_case_pass_manual\n\n\ntu_case_set_name\n\n\ntu_case_vappend_buf\n\n\ntu_case_write_fail_buf\n\n\ntu_case_write_pass_auto\n\n\ntu_case_write_pass_buf\n\n\ntu_init\n\n\ntu_restart\n\n\ntu_suite_init\n\n\ntu_suite_set_name", 
+            "title": "testutil overview"
         }, 
         {
-            "location": "/modules/testutil/#testutil", 
+            "location": "/modules/testutil/testutil/#testutil", 
             "text": "Insert synopsis here", 
             "title": "testutil"
         }, 
         {
-            "location": "/modules/testutil/#description", 
+            "location": "/modules/testutil/testutil/#description", 
             "text": "Describe module here, special features, how pieces fit together etc.", 
             "title": "Description"
         }, 
         {
-            "location": "/modules/testutil/#data-structures", 
+            "location": "/modules/testutil/testutil/#data-structures", 
             "text": "Replace this with the list of data structures used, why, any neat features", 
             "title": "Data structures"
         }, 
         {
-            "location": "/modules/testutil/#list-of-functions", 
-            "text": "The functions available in this OS feature are:   tu_init  tu_restart  add the rest", 
+            "location": "/modules/testutil/testutil/#list-of-functions", 
+            "text": "The functions available in testutil are:   tu_case_abort  tu_case_append_assert_msg  tu_case_append_buf  tu_case_append_file_info  tu_case_append_manual_pass_msg  tu_case_complete  tu_case_fail_assert  tu_case_init  tu_case_pass_manual  tu_case_set_name  tu_case_vappend_buf  tu_case_write_fail_buf  tu_case_write_pass_auto  tu_case_write_pass_buf  tu_init  tu_restart  tu_suite_init  tu_suite_set_name", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/modules/testutil/#function-reference", 
+            "location": "/modules/testutil/tu_case_abort/", 
             "text": "", 
-            "title": "Function Reference"
+            "title": "tu_case_abort"
         }, 
         {
-            "location": "/modules/testutil/#tu_init", 
-            "text": "int\n    tu_init(void)", 
-            "title": " tu_init "
+            "location": "/modules/testutil/tu_case_append_assert_msg/", 
+            "text": "", 
+            "title": "tu_case_append_assert_msg"
         }, 
         {
-            "location": "/modules/testutil/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/testutil/tu_case_append_buf/", 
+            "text": "", 
+            "title": "tu_case_append_buf"
         }, 
         {
-            "location": "/modules/testutil/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/testutil/tu_case_append_file_info/", 
+            "text": "", 
+            "title": "tu_case_append_file_info"
         }, 
         {
-            "location": "/modules/testutil/#notes", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/testutil/tu_case_append_manual_pass_msg/", 
+            "text": "", 
+            "title": "tu_case_append_manual_pass_msg"
         }, 
         {
-            "location": "/modules/testutil/#example", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/testutil/tu_case_complete/", 
+            "text": "", 
+            "title": "tu_case_complete"
         }, 
         {
-            "location": "/modules/testutil/#tu_restart", 
-            "text": "Insert function callout here", 
-            "title": " tu_restart "
+            "location": "/modules/testutil/tu_case_fail_assert/", 
+            "text": "", 
+            "title": "tu_case_fail_assert"
         }, 
         {
-            "location": "/modules/testutil/#arguments_1", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/testutil/tu_case_init/", 
+            "text": "", 
+            "title": "tu_case_init"
         }, 
         {
-            "location": "/modules/testutil/#returned-values_1", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/testutil/tu_case_pass_manual/", 
+            "text": "", 
+            "title": "tu_case_pass_manual"
         }, 
         {
-            "location": "/modules/testutil/#notes_1", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/testutil/tu_case_set_name/", 
+            "text": "", 
+            "title": "tu_case_set_name"
         }, 
         {
-            "location": "/modules/testutil/#example_1", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/testutil/tu_case_vappend_buf/", 
+            "text": "", 
+            "title": "tu_case_vappend_buf"
         }, 
         {
-            "location": "/modules/testutil/#next_one", 
-            "text": "Insert function callout here", 
-            "title": " next_one "
+            "location": "/modules/testutil/tu_case_write_fail_buf/", 
+            "text": "", 
+            "title": "tu_case_write_fail_buf"
         }, 
         {
-            "location": "/modules/testutil/#arguments_2", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/testutil/tu_case_write_pass_auto/", 
+            "text": "", 
+            "title": "tu_case_write_pass_auto"
         }, 
         {
-            "location": "/modules/testutil/#returned-values_2", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/testutil/tu_case_write_pass_buf/", 
+            "text": "", 
+            "title": "tu_case_write_pass_buf"
         }, 
         {
-            "location": "/modules/testutil/#notes_2", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/testutil/tu_init/", 
+            "text": "", 
+            "title": "tu_init"
         }, 
         {
-            "location": "/modules/testutil/#example_2", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/testutil/tu_restart/", 
+            "text": "", 
+            "title": "tu_restart"
         }, 
         {
-            "location": "/modules/imgmgr/", 
-            "text": "Bootloader\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\nboot_slot_addr\n\n\nboot_find_image_slot\n\n\nadd the rest\n\n\n\n\nFunction Reference\n\n\n\n\n boot_slot_addr \n\n\n    static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n boot_find_image_slot \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n next_one \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here", 
+            "location": "/modules/testutil/tu_suite_init/", 
+            "text": "", 
+            "title": "tu_suite_init"
+        }, 
+        {
+            "location": "/modules/testutil/tu_suite_set_name/", 
+            "text": "", 
+            "title": "tu_suite_set_name"
+        }, 
+        {
+            "location": "/modules/imgmgr/imgmgr/", 
+            "text": "Image Manager\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in imgmgr are:\n\n\n\n\nimgmgr_module_init\n\n\nimgr_boot_read\n\n\nimgr_boot_write\n\n\nimgr_file_download\n\n\nimgr_file_upload\n\n\nimgr_list\n\n\nimgr_noop\n\n\nimgr_read_file\n\n\nimgr_read_main\n\n\nimgr_read_test\n\n\nimgr_read_ver\n\n\nimgr_upload\n\n\nimgr_ver_jsonstr\n\n\nimgr_ver_parse\n\n\nimgr_ver_str\n\n\nimgr_write_file", 
+            "title": "imgmgr overview"
+        }, 
+        {
+            "location": "/modules/imgmgr/imgmgr/#image-manager", 
+            "text": "Insert synopsis here", 
             "title": "Image Manager"
         }, 
         {
-            "location": "/modules/imgmgr/#bootloader", 
-            "text": "Insert synopsis here", 
-            "title": "Bootloader"
-        }, 
-        {
-            "location": "/modules/imgmgr/#description", 
+            "location": "/modules/imgmgr/imgmgr/#description", 
             "text": "Describe module here, special features, how pieces fit together etc.", 
             "title": "Description"
         }, 
         {
-            "location": "/modules/imgmgr/#data-structures", 
+            "location": "/modules/imgmgr/imgmgr/#data-structures", 
             "text": "Replace this with the list of data structures used, why, any neat features", 
             "title": "Data structures"
         }, 
         {
-            "location": "/modules/imgmgr/#list-of-functions", 
-            "text": "The functions available in this OS feature are:   boot_slot_addr  boot_find_image_slot  add the rest", 
+            "location": "/modules/imgmgr/imgmgr/#list-of-functions", 
+            "text": "The functions available in imgmgr are:   imgmgr_module_init  imgr_boot_read  imgr_boot_write  imgr_file_download  imgr_file_upload  imgr_list  imgr_noop  imgr_read_file  imgr_read_main  imgr_read_test  imgr_read_ver  imgr_upload  imgr_ver_jsonstr  imgr_ver_parse  imgr_ver_str  imgr_write_file", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/modules/imgmgr/#function-reference", 
+            "location": "/modules/imgmgr/imgmgr_module_init/", 
             "text": "", 
-            "title": "Function Reference"
+            "title": "imgmgr_module_init"
         }, 
         {
-            "location": "/modules/imgmgr/#boot_slot_addr", 
-            "text": "static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)", 
-            "title": " boot_slot_addr "
+            "location": "/modules/imgmgr/imgr_boot_read/", 
+            "text": "", 
+            "title": "imgr_boot_read"
         }, 
         {
-            "location": "/modules/imgmgr/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/imgmgr/imgr_boot_write/", 
+            "text": "", 
+            "title": "imgr_boot_write"
         }, 
         {
-            "location": "/modules/imgmgr/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/imgmgr/imgr_file_download/", 
+            "text": "", 
+            "title": "imgr_file_download"
         }, 
         {
-            "location": "/modules/imgmgr/#notes", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/imgmgr/imgr_file_upload/", 
+            "text": "", 
+            "title": "imgr_file_upload"
         }, 
         {
-            "location": "/modules/imgmgr/#example", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/imgmgr/imgr_list/", 
+            "text": "", 
+            "title": "imgr_list"
         }, 
         {
-            "location": "/modules/imgmgr/#boot_find_image_slot", 
-            "text": "Insert function callout here", 
-            "title": " boot_find_image_slot "
+            "location": "/modules/imgmgr/imgr_noop/", 
+            "text": "", 
+            "title": "imgr_noop"
         }, 
         {
-            "location": "/modules/imgmgr/#arguments_1", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/imgmgr/imgr_read_file/", 
+            "text": "", 
+            "title": "imgr_read_file"
         }, 
         {
-            "location": "/modules/imgmgr/#returned-values_1", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/imgmgr/imgr_read_main/", 
+            "text": "", 
+            "title": "imgr_read_main"
         }, 
         {
-            "location": "/modules/imgmgr/#notes_1", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/imgmgr/imgr_read_test/", 
+            "text": "", 
+            "title": "imgr_read_test"
         }, 
         {
-            "location": "/modules/imgmgr/#example_1", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/imgmgr/imgr_read_ver/", 
+            "text": "", 
+            "title": "imgr_read_ver"
         }, 
         {
-            "location": "/modules/imgmgr/#next_one", 
-            "text": "Insert function callout here", 
-            "title": " next_one "
+            "location": "/modules/imgmgr/imgr_upload/", 
+            "text": "", 
+            "title": "imgr_upload"
         }, 
         {
-            "location": "/modules/imgmgr/#arguments_2", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/imgmgr/imgr_ver_jsonstr/", 
+            "text": "", 
+            "title": "imgr_ver_jsonstr"
         }, 
         {
-            "location": "/modules/imgmgr/#returned-values_2", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/imgmgr/imgr_ver_parse/", 
+            "text": "", 
+            "title": "imgr_ver_parse"
         }, 
         {
-            "location": "/modules/imgmgr/#notes_2", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/imgmgr/imgr_ver_str/", 
+            "text": "", 
+            "title": "imgr_ver_str"
         }, 
         {
-            "location": "/modules/imgmgr/#example_2", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/imgmgr/imgr_write_file/", 
+            "text": "", 
+            "title": "imgr_write_file"
         }, 
         {
             "location": "/modules/baselibc/", 
@@ -3317,13 +3532,13 @@
         }, 
         {
             "location": "/modules/elua/", 
-            "text": "Bootloader\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\nboot_slot_addr\n\n\nboot_find_image_slot\n\n\nadd the rest\n\n\n\n\nFunction Reference\n\n\n\n\n boot_slot_addr \n\n\n    static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n boot_find_image_slot \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n next_one \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here", 
+            "text": "elua\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions", 
             "title": "Embedded Lua"
         }, 
         {
-            "location": "/modules/elua/#bootloader", 
+            "location": "/modules/elua/#elua", 
             "text": "Insert synopsis here", 
-            "title": "Bootloader"
+            "title": "elua"
         }, 
         {
             "location": "/modules/elua/#description", 
@@ -3337,193 +3552,78 @@
         }, 
         {
             "location": "/modules/elua/#list-of-functions", 
-            "text": "The functions available in this OS feature are:   boot_slot_addr  boot_find_image_slot  add the rest", 
+            "text": "", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/modules/elua/#function-reference", 
-            "text": "", 
-            "title": "Function Reference"
+            "location": "/modules/json/json/", 
+            "text": "JSON\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in json are:\n\n\n\n\njson_encode_object_entry\n\n\njson_encode_object_finish\n\n\njson_encode_object_key\n\n\njson_encode_object_start\n\n\njson_encode_value\n\n\njson_internal_read_object\n\n\njson_read_array\n\n\njson_read_object\n\n\njson_target_address", 
+            "title": "JSON overview"
         }, 
         {
-            "location": "/modules/elua/#boot_slot_addr", 
-            "text": "static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)", 
-            "title": " boot_slot_addr "
-        }, 
-        {
-            "location": "/modules/elua/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
-        }, 
-        {
-            "location": "/modules/elua/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
-        }, 
-        {
-            "location": "/modules/elua/#notes", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
-            "location": "/modules/elua/#example", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
-        }, 
-        {
-            "location": "/modules/elua/#boot_find_image_slot", 
-            "text": "Insert function callout here", 
-            "title": " boot_find_image_slot "
-        }, 
-        {
-            "location": "/modules/elua/#arguments_1", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
-        }, 
-        {
-            "location": "/modules/elua/#returned-values_1", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
-        }, 
-        {
-            "location": "/modules/elua/#notes_1", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
-            "location": "/modules/elua/#example_1", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
-        }, 
-        {
-            "location": "/modules/elua/#next_one", 
-            "text": "Insert function callout here", 
-            "title": " next_one "
-        }, 
-        {
-            "location": "/modules/elua/#arguments_2", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
-        }, 
-        {
-            "location": "/modules/elua/#returned-values_2", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
-        }, 
-        {
-            "location": "/modules/elua/#notes_2", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
-            "location": "/modules/elua/#example_2", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
-        }, 
-        {
-            "location": "/modules/json/", 
-            "text": "Bootloader\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in this OS feature are:\n\n\n\n\nboot_slot_addr\n\n\nboot_find_image_slot\n\n\nadd the rest\n\n\n\n\nFunction Reference\n\n\n\n\n boot_slot_addr \n\n\n    static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n boot_find_image_slot \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here\n\n\n\n\n\n\n\n next_one \n\n\n   \nInsert function callout here \n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\n\n\nInsert the code snippet here", 
+            "location": "/modules/json/json/#json", 
+            "text": "Insert synopsis here", 
             "title": "JSON"
         }, 
         {
-            "location": "/modules/json/#bootloader", 
-            "text": "Insert synopsis here", 
-            "title": "Bootloader"
-        }, 
-        {
-            "location": "/modules/json/#description", 
+            "location": "/modules/json/json/#description", 
             "text": "Describe module here, special features, how pieces fit together etc.", 
             "title": "Description"
         }, 
         {
-            "location": "/modules/json/#data-structures", 
+            "location": "/modules/json/json/#data-structures", 
             "text": "Replace this with the list of data structures used, why, any neat features", 
             "title": "Data structures"
         }, 
         {
-            "location": "/modules/json/#list-of-functions", 
-            "text": "The functions available in this OS feature are:   boot_slot_addr  boot_find_image_slot  add the rest", 
+            "location": "/modules/json/json/#list-of-functions", 
+            "text": "The functions available in json are:   json_encode_object_entry  json_encode_object_finish  json_encode_object_key  json_encode_object_start  json_encode_value  json_internal_read_object  json_read_array  json_read_object  json_target_address", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/modules/json/#function-reference", 
+            "location": "/modules/json/json_encode_object_entry/", 
             "text": "", 
-            "title": "Function Reference"
+            "title": "json_encode_object_entry"
         }, 
         {
-            "location": "/modules/json/#boot_slot_addr", 
-            "text": "static void\n    boot_slot_addr(int slot_num, uint8_t *flash_id, uint32_t *address)", 
-            "title": " boot_slot_addr "
+            "location": "/modules/json/json_encode_object_finish/", 
+            "text": "", 
+            "title": "json_encode_object_finish"
         }, 
         {
-            "location": "/modules/json/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/json/json_encode_object_key/", 
+            "text": "", 
+            "title": "json_encode_object_key"
         }, 
         {
-            "location": "/modules/json/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
+            "location": "/modules/json/json_encode_object_start/", 
+            "text": "", 
+            "title": "json_encode_object_start"
         }, 
         {
-            "location": "/modules/json/#notes", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
+            "location": "/modules/json/json_encode_value/", 
+            "text": "", 
+            "title": "json_encode_value"
         }, 
         {
-            "location": "/modules/json/#example", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/json/json_internal_read_object/", 
+            "text": "", 
+            "title": "json_internal_read_object"
         }, 
         {
-            "location": "/modules/json/#boot_find_image_slot", 
-            "text": "Insert function callout here", 
-            "title": " boot_find_image_slot "
+            "location": "/modules/json/json_read_array/", 
+            "text": "", 
+            "title": "json_read_array"
         }, 
         {
-            "location": "/modules/json/#arguments_1", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
+            "location": "/modules/json/json_read_object/", 
+            "text": "", 
+            "title": "json_read_object"
         }, 
         {
-            "location": "/modules/json/#returned-values_1", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
-        }, 
-        {
-            "location": "/modules/json/#notes_1", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
-            "location": "/modules/json/#example_1", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
-        }, 
-        {
-            "location": "/modules/json/#next_one", 
-            "text": "Insert function callout here", 
-            "title": " next_one "
-        }, 
-        {
-            "location": "/modules/json/#arguments_2", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
-            "title": "Arguments"
-        }, 
-        {
-            "location": "/modules/json/#returned-values_2", 
-            "text": "List any values returned.\nError codes?", 
-            "title": "Returned values"
-        }, 
-        {
-            "location": "/modules/json/#notes_2", 
-            "text": "Any special feature/special benefit that we want to tout. \nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
-            "location": "/modules/json/#example_2", 
-            "text": "Insert the code snippet here", 
-            "title": "Example"
+            "location": "/modules/json/json_target_address/", 
+            "text": "", 
+            "title": "json_target_address"
         }, 
         {
             "location": "/newtmgr/overview/", 
