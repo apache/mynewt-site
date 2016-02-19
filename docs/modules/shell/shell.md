@@ -92,68 +92,24 @@ Replace this with the list of data structures used, why, any neat features
 
 The functions available in this OS feature are:
 
-* [shell_cmd_register](#shell_cmd_register)
-* add the rest
+* [shell_cmd](shell_cmd.md)
+* [shell_cmd_list_lock](shell_cmd_list_lock.md)
+* [shell_cmd_list_unlock](shell_cmd_list_unlock.md)
+* [shell_cmd_register](shell_cmd_register.md)
+* [shell_console_rx_cb](shell_console_rx_cb.md)
+* [shell_echo_cmd](shell_echo_cmd.md)
+* [shell_help_cmd](shell_help_cmd.md)
+* [shell_nlip_input_register](shell_nlip_input_register.md)
+* [shell_nlip_mqueue_process](shell_nlip_mqueue_process.md)
+* [shell_nlip_mtx](shell_nlip_mtx.md)
+* [shell_nlip_output](shell_nlip_output.md)
+* [shell_nlip_process](shell_nlip_process.md)
+* [shell_os_mpool_display_cmd](shell_os_mpool_display_cmd.md)
+* [shell_os_tasks_display_cmd](shell_os_tasks_display_cmd.md)
+* [shell_process_command](shell_process_command.md)
+* [shell_read_console](shell_read_console.md)
+* [shell_task_func](shell_task_func.md)
+* [shell_task_init](shell_task_init.md)
 
 
-## Function Reference
-
-------------------
-
-## <font color="F2853F" style="font-size:24pt"> shell_cmd_register </font>
-
-```no-highlight
-    int 
-    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)
-```
-
-Register a shell command. When shell reads a line of input which starts with `cmd`, it calls the handler `func`. Caller must allocate data structure `sc`. Shell internally links this to it's list of command handlers.
-
-
-#### Arguments
-
-| Arguments | Description |
-|-----------|-------------|
-| sc |  Pointer to data structure shell egg uses to store info about the registered command |
-| cmd |  Command getting registered  |
-| func |  Function to call when command is received from console  |
-
-#### Returned values
-
-List any values returned.
-Error codes?
-
-#### Notes 
-
-Shell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.
-
-#### Example
-
-Here is FS registering command for 'ls'.
-
-```no-highlight
-static struct shell_cmd fs_ls_struct;
-
-static int
-fs_ls_cmd(int argc, char **argv)
-{
-    /* XXX do some stuff */
-    console_printf("%d files\n", file_cnt);
-    return 0;
-}
-
-void
-fs_cli_init(void)
-{
-    int rc;
-
-    rc = shell_cmd_register(&fs_ls_struct, "ls", fs_ls_cmd);
-    if (rc != 0) {
-        return;
-    }
-}
-
-```
-
----------------------
 
