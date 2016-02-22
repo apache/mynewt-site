@@ -1,4 +1,4 @@
-## Newt Concepts
+## Introduction
 
 This page introduces the basic terms you will need to find your way around the Mynewt ecosystem.
 
