@@ -1,15 +1,25 @@
 # Image Manager
 
-Insert synopsis here
+
 
 
 ## Description
 
-Describe module here, special features, how pieces fit together etc.
+This library accepts incoming image management commands from newtmgr and acts on them.
+
+Images can be uploaded, present images listed, and system can be told to switch to another image.
+
+Currently the package assumes that there are 2 image slots, one active one and another one in standby. When new image is uploaded, it replaces the one in standby slot. This is the model for scenario when MCU has internal flash only, it executes the code from that flash, and there is enough space to store 2 full images.
+
+Image manager interacts with bootloader by telling it to boot to a specific image. At the moment this has to be done by writing a file which contains a version number of the image to boot. Note that image manager itself does not replace the active image.
+
+Image manager also can upload files to filesystem as well as download them.
+
+Note that commands accessing filesystems (next boot target, file upload/download) will not be available unless project includes filesystem implementation.
 
 ## Data structures
 
-Replace this with the list of data structures used, why, any neat features
+N/A.
 
 ## List of Functions
 
@@ -18,18 +28,5 @@ Replace this with the list of data structures used, why, any neat features
 The functions available in imgmgr are:
 
 * [imgmgr_module_init](imgmgr_module_init.md)
-* [imgr_boot_read](imgr_boot_read.md)
-* [imgr_boot_write](imgr_boot_write.md)
-* [imgr_file_download](imgr_file_download.md)
-* [imgr_file_upload](imgr_file_upload.md)
-* [imgr_list](imgr_list.md)
-* [imgr_noop](imgr_noop.md)
-* [imgr_read_file](imgr_read_file.md)
-* [imgr_read_main](imgr_read_main.md)
-* [imgr_read_test](imgr_read_test.md)
-* [imgr_read_ver](imgr_read_ver.md)
-* [imgr_upload](imgr_upload.md)
-* [imgr_ver_jsonstr](imgr_ver_jsonstr.md)
 * [imgr_ver_parse](imgr_ver_parse.md)
 * [imgr_ver_str](imgr_ver_str.md)
-* [imgr_write_file](imgr_write_file.md)
