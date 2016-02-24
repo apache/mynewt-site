@@ -1,4 +1,4 @@
-## <font color="#F2853F" style="font-size:24pt"> console_init </font>
+## <font color="#F2853F" style="font-size:24pt"> imgmgr_module_init </font>
 
 ```no-highlight
    int

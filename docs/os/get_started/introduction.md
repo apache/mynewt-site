@@ -1,113 +1,100 @@
 ## Introduction
 
-### What is Apache Mynewt?
+### Welcome to Apache Mynewt
 
-Apache Mynewt is an Operating System for Microcontrollers (MCUs.) 
+Apache Mynewt is an Operating System that makes it easy to develop
+applications for Microcontroller environments where power and cost 
+are driving factors.  Examples of these devices are connected locks, 
+lights, and wearables.
 
-Apache Mynewt is very well suited for developing constrained IoT 
-devices.  Typical use cases for Apache Mynewt include:
+Microcontroller environments have a number of characteristics that 
+makes the operating system requirements for them unique: 
 
-* Lights 
-* Locks
-* Wearables
+* Low memory footprint: memory on these systems is anywhere from 
+8-16KB on the low end to 16MB on the high end.
+
+* Reduced code size: code often runs out of flash, and total 
+available code size ranges from 64-128KB up to 16-32MB.
+
+* Low processing speed: processor speeds are anywhere from 10-12MHz
+up to 160-200MHz.  
+
+* Low power operation: due to battery requirements, devices have to 
+operate in mostly sleeping mode in order to achieve battery 
+requirements.
+
+However, with more and more devices getting connected, the complexity
+of these systems is increasing.  Typically, products built around 
+these microcontrollers have to deal with a number of tasks: 
+
+* Networking Stacks: Bluetooth Low Energy and Thread
+
+* Peripherals: PWM to drive motors, ADCs to measure sensor data, RTCs
+to keep time.
+
+* Scheduled Processing: actions must happen on a calendared or 
+periodic basis.
+
+Apache Mynewt makes it easy to accomplish this, by providing a complete
+Operating System for constrained devices, including:
+
+* A fully open-source Bluetooth Low Energy stack with both Host and 
+Controller implementations. 
+
+* A pre-emptive, multi-tasking Real Time operating system kernel
+
+* A Hardware Abstraction Layer (HAL) that abstracts the MCU's 
+peripheral functions, allowing developers to easily write cross-platform
+code.
 
 
-### Basic components in the ecosystem
+In order to provide all this functionality, and operate in an extremely 
+low resource environment, Mynewt provides a very fine-grained source 
+package management and build system, called Newt.
 
-* NewtOS is an open-source RTOS (Real Time Operating System) that
-works on a variety of hardware. The goal is to develop a pre-emptive,
-multitasking OS that is highly modular, making it possible to mix
-and match components to enable desired features and capabilities
-on multiple hardware architectures. Examples of components being
-worked on are the Core RTOS, a flash file system, utility functions,
-a variety of board support packages, packages of microcontrollers
-etc.
+When you start your Mynewt application, you first create a new 
+application with the newt tool: 
 
+```no-highlight
+$ newt new my_app
+Downloading application skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!
+Application my_app successfully created in /Users/mynewt/dev/my_app
+$ 
+```
 
-* Network protocol stacks such as Bluetooth Low Energy, and more
+This new application contains the core of the operating system, 
+and the HW abstraction layer.  All of this fits into less than 5KB 
+of compiled code size.
 
+Once the application is created, you can then install the packages
+you need, and Mynewt will automatically download them, and their 
+dependencies into your application.
 
-* Newt Tool helps you mix the specific packages for the combination
-of hardware and low-level embedded architecture features of the
-user's choice and generate the corresponding run-time image based
-on the NewtOS. It provides the infrastructure to manage and build
-for different CPU architectures, memory units, board support packages
-etc., allowing a user to formulate the contents according to the
-low-level features needed by his or her project.
+As an example, let's install a file system into the "my\_app" application.
+First, we'll search for file system packages: 
 
+```no-highlight
+$ newt pkg search fs
+Package list larva has package fs/nffs@0.8.0
+Package list larva has package fs/fs@0.0.0
+Package list larva has package project/ffs2native@0.0.0
+```
 
-### Terminology
+We can then install the nffs package (Newtron Flash File System), using
+newt: 
 
-A Mynewt user starts with a project in mind that defines the
-application or utility that he or she wants to implement on an
-embedded device. Making an LED blink on an electronics prototyping
-board is a common starter project. Enabling a BLE (Bluetooth Low
-Energy) peripheral mode on a development board is a more complex
-project. Specifying a project requires naming it, at the very least,
-and then adding the desired properties or attributes. In order to
-actualize a project, it needs to be applied to a target which is
-essentially a combination of some specified hardware and the execution
-environment.
+```no-highlight
+$ newt pkg install fs/nffs
+Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
+Installing fs/nffs
+Installing fs/fs
+Installation was a success!
+```
 
-In the mynewt lifecycle, a project grows in a nest. A nest may house
-multiple projects. The nest is, therefore, a repository where various
-component packages for one or more projects reside. Each package
-is an egg (naturally!). However, in the world of Mynewt an egg may
-consist of other eggs! For example, the starter project Blinky is
-an egg consisting of several constituent eggs that enable core
-features. The egg form is suitable for elemental units of code as
-it explicitly exposes characteristics such as dependencies, versions,
-capabilities, requirements etc., thus making assembling appropriate
-components for a project and building an image for it easy to follow,
-modular, and robust.
+And it's that simple!  Mynewt contains all the packages and reusable
+software components you need to develop a device using a 32-bit 
+Microcontroller.  And by providing a robust package management and 
+build system, Mynewt allows you to scale from 5KB of code size, all 
+the way to MBs of compiled code size.
 
-A nest can be given any name. For example, you will see a nest named
-"tadpole" in Mynewt
-([https://git-wip-us.apache.org/repos/asf?p=incubator-mynewt-tadpole.git](https://git-wip-us.apache.org/repos/asf?p=incubator-mynewt-tadpole.git)).
-It contains all the core libraries of the operating system for the
-native platform which currently supports compilation on Mac OS X.
-The core libraries are contained in the form of eggs where an egg
-is a basic unit of implementation of any aspect of the RTOS. The
-eggs are distributed in the following directory structure inside
-the nest:
-
-* libs: contains the two eggs `os` and `testutil` * hw: contains
-three eggs - (i) `hal` which has the abstraction layer (HAL) API
-definitions that all BSP and MCU implementations must support, (ii)
-`/mcu/native` which in an MCU implementation for the native platform
-(a simulator, in this case), and (iii) `bsp/native` which is a BSP
-implementation for the native platform * compiler: contains the
-`sim` egg which bundles the compiler specifications for the native
-platform.
-
-Let's explore this sample nest a bit further. The `libs/os` egg
-contains code for scheduler, process/thread/memory management,
-semaphores etc. It is the core RTOS which ports to all supported
-chip platforms.The `libs/testutil` egg contains code for testing
-packages on hardware or simulated environment. The `hw/hal` egg
-contains header files that provide abstraction for physical hardware
-components such as GPIO (general purpose input/output), network
-adapters, timers, and UARTs. This `hw/hal` egg is an MCU peripheral
-abstraction designed to make it easy to port to different MCUs
-(microcontrollers). The `hw/mcu/native` egg contains code for
-microcontroller operations on the native platform. The `hw/bsp/native`
-egg contains the board support package for the native platform. And
-finally, the sixth egg `sim` contains the compiler specifications
-such as path and flags. Currently the compilation is supported on
-Mac OS X.
-
-You can see another nest in the mynewt ecosystem called the "larva".
-It was spawned from the skeletal "tadpole" nest using the newt tool.
-Spawning is easy - ` $ newt create nest <your_nest_name> `. "larva"
-is the developer's test repository containing all sorts of eggs
-being written and incubated, including ones to enhance the core
-operating system which should eventually make their way into the
-"tadpole" nest. There is a `hatch_tadpole` script to update the
-"tadpole" nest when the core OS related eggs in "larva" are ready.
-
-There is a third nest named "newt" that contains all the eggs needed
-to support the build and release process of mynewt software. In the
-future, there will also be pre-built nests for certain common
-hardware devices to enable a user to quickly get started with a
-project.
 
