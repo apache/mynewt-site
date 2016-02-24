@@ -1,10 +1,12 @@
 ## Understanding Newt Terms
 
-### Nest
+### Application repository or app
 
-The nest is the base directory of your embedded software. It is meant to be the workspace containing a logical collection of the source code for one or more of your projects. A nest can contain multiple projects, and reflect multiple end products. 
+The application repository (app) is the base directory of your embedded software. It is meant to be the workspace containing a logical collection of the source code for one or more of your projects. An app can contain multiple projects, and reflect multiple end products. 
 
-As the base repository of your source code, the nest has a master branch and several other branches off it. You may choose any branch to nest on. Each project in your nest will typically consist of several [eggs](#egg). A project could be an egg itself as well. In addition to eggs, a local nest will contain additional items such as [target](#target) or build definitions, clutch description files, scripts etc.
+As the base repository of your source code, the app has a master branch and several other branches off it. The `master` is typically what developers commit to. When it is time to get the code ready for a release, a code freeze occurs on the `master` branch. A temporary `develop` branch is opened up for contributors to continue committing their code to. After the release is tagged off the `master`, the `develop` branch is merged into `master`. Developers can thereafter go back to commiting changes to `master`. The `develop` branch is subsequently deleted. You may also choose to create your own branch and work there.
+
+You can have several [projects](#project) in your app repository since an application can be used in several projects. Each project in your app will, in turn, consist of several [packages](#package-or-pkg). A project could be a package itself as well. In addition to packages, your app repository will contain additional items such as [target](#target) or build definitions, [package list](#package-list-or-pkg-list) description files, scripts etc.
 
 For example, a walk through the "larva" nest at [https://github.com/mynewt/larva.git](https://github.com/mynewt/larva.git) shows the following structure. The nest.yml file in the larva directory indicates that it is a nest. An egg will have the egg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is an egg, the API for the hardware abstraction layer is an egg, and so on. 
 
@@ -84,7 +86,7 @@ A complete list of all the nest commands can be found in the newt tool reference
 
 Projects represent the individual build configurations of your embedded system and essentially defines your application. The project files are what dictate the resulting binary that is generated. 
 
-Layout-wise, a project is a directory inside a nest and contains eggs required for a certain application. For example, the `blinky` egg sits in `project/blinky` directory of the `larva` nest. This egg is used in the blinky project (application) outlined in [Get Started](../get_started/project1.md). <*Note: This Will Change*>
+Layout-wise, a project is a directory inside an app and contains packages required for a certain application. For example, the `blinky` egg sits in `project/blinky` directory of the `larva` nest. This egg is used in the blinky project (application) outlined in [Get Started](../get_started/project1.md). <*Note: This Will Change*>
 
 A project has the following concepts or properties associated with it. You can find them in the `<project-name>.yml` file in the project directory. For example, the `project/blinky` directory has the `blinky.yml` file indicating some or all of the properties below. Only the name of a project is required for the project to exist, however additional properties may need to be specified for the eggs in it to compile properly and produce an executable. 
 
@@ -101,9 +103,9 @@ The newt tool offers various commands that you can use with a project. For examp
 ```no-highlight
     newt egg install [flags] <project egg name>
 ```
-### Egg
+### Package or pkg
 
-An egg is a distributable package of libraries. Just as an egg in nature has various parts each of which serves a certain purpose, the Mynewt egg consists of software parcels or modules that have different functions. However, unlike the egg in nature these software modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this concept is grasped it is easy to see how an egg may consist of other eggs.
+A package (pkg) is a distributable bundle of libraries. Just as an egg in nature has various parts each of which serves a certain purpose, the Mynewt egg consists of software parcels or modules that have different functions. However, unlike the egg in nature these software modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this concept is grasped it is easy to see how an egg may consist of other eggs.
 
 The two main directories in an egg are `/include` and `/src`.
 
@@ -119,7 +121,7 @@ outputs all the eggs in the current nest where each egg has details on its versi
 ```
 A complete list of all the egg commands can be found in the newt tool reference in [Newt Tool](../../newt/newt_tool_reference.md).
 
-### Clutch
+### Package list or pkg-list
 
 A clutch is a snapshot of all eggs in a remote nest at any point in time. On any given github branch, a nest with a clutch of eggs will contain a `clutch.yml` file that specifies the version number, dependencies, and hash value for each constituent egg as well as the name of the entire clutch and the github url for it. [Note: Currently ]
 
