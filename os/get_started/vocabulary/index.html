@@ -200,7 +200,7 @@
   
   ../../../newt/newt_ops/
 
-">Manual for Newt Tool</a>
+">Newt Tool Manual</a>
     
   </li>
 
@@ -211,7 +211,7 @@
   
   <li><a href="
   ../../../newtmgr/overview/
-">Manual for Newt Manager</a>
+">Newt Manager Manual</a>
     
   </li>
 
@@ -248,9 +248,10 @@
 </div>
                         
                             <h2 id="understanding-newt-terms">Understanding Newt Terms<a class="headerlink" href="#understanding-newt-terms" title="Permanent link">&para;</a></h2>
-<h3 id="nest">Nest<a class="headerlink" href="#nest" title="Permanent link">&para;</a></h3>
-<p>The nest is the base directory of your embedded software. It is meant to be the workspace containing a logical collection of the source code for one or more of your projects. A nest can contain multiple projects, and reflect multiple end products. </p>
-<p>As the base repository of your source code, the nest has a master branch and several other branches off it. You may choose any branch to nest on. Each project in your nest will typically consist of several <a href="#egg">eggs</a>. A project could be an egg itself as well. In addition to eggs, a local nest will contain additional items such as <a href="#target">target</a> or build definitions, clutch description files, scripts etc.</p>
+<h3 id="application-repository-or-app">Application repository or app<a class="headerlink" href="#application-repository-or-app" title="Permanent link">&para;</a></h3>
+<p>The application repository (app) is the base directory of your embedded software. It is meant to be the workspace containing a logical collection of the source code for one or more of your projects. An app can contain multiple projects, and reflect multiple end products. </p>
+<p>As the base repository of your source code, the app has a master branch and several other branches off it. The <code>master</code> is typically what developers commit to. When it is time to get the code ready for a release, a code freeze occurs on the <code>master</code> branch. A temporary <code>develop</code> branch is opened up for contributors to continue committing their code to. After the release is tagged off the <code>master</code>, the <code>develop</code> branch is merged into <code>master</code>. Developers can thereafter go back to commiting changes to <code>master</code>. The <code>develop</code> branch is subsequently deleted. You may also choose to create your own branch and work there.</p>
+<p>You can have several <a href="#project">projects</a> in your app repository since an application can be used in several projects. Each project in your app will, in turn, consist of several <a href="#package-or-pkg">packages</a>. A project could be a package itself as well. In addition to packages, your app repository will contain additional items such as <a href="#target">target</a> or build definitions, <a href="#package-list-or-pkg-list">package list</a> description files, scripts etc.</p>
 <p>For example, a walk through the "larva" nest at <a href="https://github.com/mynewt/larva.git">https://github.com/mynewt/larva.git</a> shows the following structure. The nest.yml file in the larva directory indicates that it is a nest. An egg will have the egg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is an egg, the API for the hardware abstraction layer is an egg, and so on. </p>
 <pre><code class="no-highlight">larva
   |- nest.yml 
@@ -324,7 +325,7 @@
 <p>A complete list of all the nest commands can be found in the newt tool reference in <a href="../../../newt/newt_tool_reference/">Newt Tool</a>.</p>
 <h3 id="project">Project<a class="headerlink" href="#project" title="Permanent link">&para;</a></h3>
 <p>Projects represent the individual build configurations of your embedded system and essentially defines your application. The project files are what dictate the resulting binary that is generated. </p>
-<p>Layout-wise, a project is a directory inside a nest and contains eggs required for a certain application. For example, the <code>blinky</code> egg sits in <code>project/blinky</code> directory of the <code>larva</code> nest. This egg is used in the blinky project (application) outlined in <a href="../project1/">Get Started</a>. &lt;<em>Note: This Will Change</em>&gt;</p>
+<p>Layout-wise, a project is a directory inside an app and contains packages required for a certain application. For example, the <code>blinky</code> egg sits in <code>project/blinky</code> directory of the <code>larva</code> nest. This egg is used in the blinky project (application) outlined in <a href="../project1/">Get Started</a>. &lt;<em>Note: This Will Change</em>&gt;</p>
 <p>A project has the following concepts or properties associated with it. You can find them in the <code>&lt;project-name&gt;.yml</code> file in the project directory. For example, the <code>project/blinky</code> directory has the <code>blinky.yml</code> file indicating some or all of the properties below. Only the name of a project is required for the project to exist, however additional properties may need to be specified for the eggs in it to compile properly and produce an executable. </p>
 <ul>
 <li>Project name</li>
@@ -339,8 +340,8 @@
 <pre><code class="no-highlight">    newt egg install [flags] &lt;project egg name&gt;
 </code></pre>
 
-<h3 id="egg">Egg<a class="headerlink" href="#egg" title="Permanent link">&para;</a></h3>
-<p>An egg is a distributable package of libraries. Just as an egg in nature has various parts each of which serves a certain purpose, the Mynewt egg consists of software parcels or modules that have different functions. However, unlike the egg in nature these software modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this concept is grasped it is easy to see how an egg may consist of other eggs.</p>
+<h3 id="package-or-pkg">Package or pkg<a class="headerlink" href="#package-or-pkg" title="Permanent link">&para;</a></h3>
+<p>A package (pkg) is a distributable bundle of libraries. Just as an egg in nature has various parts each of which serves a certain purpose, the Mynewt egg consists of software parcels or modules that have different functions. However, unlike the egg in nature these software modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this concept is grasped it is easy to see how an egg may consist of other eggs.</p>
 <p>The two main directories in an egg are <code>/include</code> and <code>/src</code>.</p>
 <p>The newt tool offers several egg commands to list, inspect, install, and do other operations on eggs. For example, the following command</p>
 <pre><code class="no-highlight">    newt egg list 
@@ -353,7 +354,7 @@
 </code></pre>
 
 <p>A complete list of all the egg commands can be found in the newt tool reference in <a href="../../../newt/newt_tool_reference/">Newt Tool</a>.</p>
-<h3 id="clutch">Clutch<a class="headerlink" href="#clutch" title="Permanent link">&para;</a></h3>
+<h3 id="package-list-or-pkg-list">Package list or pkg-list<a class="headerlink" href="#package-list-or-pkg-list" title="Permanent link">&para;</a></h3>
 <p>A clutch is a snapshot of all eggs in a remote nest at any point in time. On any given github branch, a nest with a clutch of eggs will contain a <code>clutch.yml</code> file that specifies the version number, dependencies, and hash value for each constituent egg as well as the name of the entire clutch and the github url for it. [Note: Currently ]</p>
 <p>You may download multiple clutches into your local nest as long as the names of the clutches are different. This allows you to mix and match various features and functionality coming from different clutches of eggs. You can see all the clutches in the <code>.nest/clutches</code> directory in your nest.</p>
 <p>The newt tool offers clutch management commands within the <code>newt nest</code> command. For example, the following command creates a new clutch using all the eggs in the current directory. It requires that a clutch name be specified and the url for the location of that clutch in the online repository. These two inputs go into the <code>clutch.yml</code> file in the nest.</p>
