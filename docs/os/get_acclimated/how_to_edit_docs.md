@@ -2,7 +2,7 @@
 
 ### Objective
 
-We will go through the process of downloading existing doccumentation and adding some content to a test document.
+Learn the process of editing docs by adding some content to a test document.
 
 ### Markdown, MkDocs, Mou
 
@@ -43,72 +43,17 @@ If you are not a committer, you may follow the proposed non-committer workflow t
 
 ### File to be edited
 
-The file you will edit is [try_markdown.md](./try_markdown.md).
+The file you will edit is named try_markdown.md. It is in the incubator-mynewt-site/docs/os/get_acclimated/ directory.
 
 ### Editing an existing page 
 
 * Open the application Mou.
 
-* Open the file incubator-mynewt-site/docs/get_started/try_markdown.md in Mou.
+* Open the file incubator-mynewt-site/docs/os/get_acclimated/try_markdown.md in Mou.
 
 * Edit the last item on the list.
 
 * Save and quit the application.
-
-You may want to review the documentation organization back in [Home](../../index.md) to remind you how to locate files easily. The corresponding directory tree structure is shown below.
-```no-highlight
-      .
-      ├── docs
-      │   ├── get_started 
-      │   │   ├── how_to_edit_docs.md
-      │   │   ├── newt_concepts.md
-      │   │   ├── pics
-      │   │   │   ├── bottomview.png
-      │   │   │   └── topview.png
-      │   │   ├── project1.md
-      │   │   └── try_markdown.md
-      │   ├── get_acclimated
-      │   │   ├── project2.md
-      │   │   ├── project3.md
-      │   │   ├── ... (more to be added)
-      │   │   └── vocabulary.md
-      │   ├── newt
-      │   │   ├── newt_ops.md
-      │   │   └── newt_tool_reference.md
-      │   ├── os
-      │   │   ├── context_switch.md
-      │   │   ├── event_queue.md
-      │   │   ├── heap.md
-      │   │   ├── mbufs.md
-      │   │   ├── memory_pool.md
-      │   │   ├── mutex.md
-      │   │   ├── mynewt_os.md
-      │   │   ├── port_os.md
-      │   │   ├── sanity.md
-      │   │   ├── semaphore.md
-      │   │   ├── task.md
-      │   │   ├── time.md
-      │   │   └── ... (more to be added)
-      │   ├── modules
-      │   │   ├── bootloader.md
-      │   │   ├── console.md
-      │   │   ├── filesystem.md
-      │   │   ├── shell.md
-      │   │   ├── testutil.md
-      │   │   └── ... (more to be added)
-      │   ├── packaging
-      │   │   ├── dist.md
-      │   │   └── ... (more to be added)
-      │   ├── extra.css
-      │   ├── images
-      │   │   └── egg-logo.png
-      │   └── index.md
-      ├── images
-      │   ├── asf_logo_wide.gif
-      │   ├── content-bg.png
-      │   └── egg-logo.png
-      ├── mkdocs.yml
-```
 
 ### Adding a new page
 
@@ -153,13 +98,15 @@ We suggest you follow the proposed non-committer workflow at Apache to share you
         $ git add -A 
         $ git commit -m "My first doc change as a trial run"
 ```
-* Once you're ready to share your changes with the rest of the project team, you can use the git format-patch command to produce a patch file (or a nice set of patches in the future):
+* Once you're ready to share your changes with the rest of the project team, you can use the git format-patch command to produce a patch file (or a nice set of patches in the future) and email the patch file to dev@mynewt.incubator.apache.org. Later on you may attach multiple files in your email to the mailing list as part of an existing thread or a new one. Remember to summarize the issue you have tackled and your work if the commit message is not detailed enough.
+
+   If there is a JIRA ticket associated with your work you should post your patch files to the ticket.
+
 ```no-highlight
         $ git format-patch origin/trunk
 ```  
-* Email the patch file to dev@mynewt.incubator.apache.org. Later on you may attach multiple files in your email to the mailing list as part of an existing thread or a new one. Remember to summarize the issue you have tackled and your work if the commit message is not detailed enough. 
 
-   If there is a JIRA ticket associated with your work you should post your patch files to the ticket.
+* Alternatively, you can use the mirror on github.com to submit a pull request. The mirror is located at [https://github.com/apache/incubator-mynewt-site](https://github.com/apache/incubator-mynewt-site). It is up to you to decide whether to create a fork or a branch to work in and submit pull requests from. Your pull request will be reviewed by a committer for docs and merged into the master branch when the changes are understood and accepted. 
 
 
 ### Conversion to HTML
