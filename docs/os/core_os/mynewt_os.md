@@ -36,9 +36,7 @@ Insert introduction here
 
 The functions available at the OS level are:
 
-* [os_idle_task](os_idle_task.md)
 * [os_init](os_init.md)
-* [os_init_idle_task](os_init_idle_task.md)
 * [os_start](os_start.md)
 * [os_started](os_started.md)
 
