@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.incubator.apache.org/os/core_os/memory_pool/memory_pool/">
+        <link rel="canonical" href="http://mynewt.incubator.apache.org/os/core_os/memory_pool/OS_MEMPOOL_SIZE/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>Overview - Apache Mynewt</title>
+	<title>OS_MEMPOOL_SIZE - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="Overview">
+    <body class="OS_MEMPOOL_SIZE">
 
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -242,15 +242,15 @@
               
   
   <li><a href="
-  ./
+  ../memory_pool/
 ">Memory Pools</a>
     
       <ul class="current-toc">
           
               
   
-    <li class="active">
-      Overview
+    <li>
+      <a href="../memory_pool/">Overview</a>
     </li>
   
 
@@ -260,6 +260,50 @@
   <li><a href="
   ../os_memblock_get/
 ">Functions</a>
+    
+      <ul class="current-toc">
+          
+              
+  
+    <li>
+      <a href="../os_memblock_get/">os_memblock_get</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../os_mempool_init/">os_mempool_init</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../os_memblock_put/">os_memblock_put</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MEMPOOL_BYTES/">OS_MEMPOOL_BYTES</a>
+    </li>
+  
+
+          
+              
+  
+    <li class="active">
+      OS_MEMPOOL_SIZE
+    </li>
+  
+
+          
+      </ul>
     
   </li>
 
@@ -452,15 +496,15 @@
     
       
         
-          <li>OS Core &raquo;</li>
-        
-      
-        
           <li>Memory Pools &raquo;</li>
         
       
+        
+          <li>Functions &raquo;</li>
+        
+      
     
-    <li>Overview</li>
+    <li>OS_MEMPOOL_SIZE</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -468,92 +512,48 @@
   <hr/>
 </div>
                         
-                            <h1 id="memory-pools">Memory Pools<a class="headerlink" href="#memory-pools" title="Permanent link">&para;</a></h1>
-<p>A memory pool is a collection of fixed sized elements called memory blocks. Generally, memory pools are used when the developer wants to allocate a certain amount of memory to a given feature. Unlike the heap, where a code module is at the mercy of other code modules to insure there is sufficient memory, memory pools can insure sufficient memory allocation.</p>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>In order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).</p>
-<pre><code class="no-highlight">struct os_mempool my_pool;
+                            <h2 id="os_mempool_size"><font color="#F2853F" style="font-size:24pt">OS_MEMPOOL_SIZE</font><a class="headerlink" href="#os_mempool_size" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">OS_MEMPOOL_SIZE(n,blksize)
 </code></pre>
 
-<p><br>
-The next order of business is to allocate the memory used by the memory pool. This memory can either be statically allocated (i.e. a global variable) or dynamically allocated (i.e. from the heap). When determining the amount of memory required for the memory pool, simply multiplying the number of blocks by the size of each block is not sufficient as the OS may have alignment requirements. The alignment size definition is named <code>OS_ALIGNMENT</code> and can be found in os_arch.h as it is architecture specific. The memory block alignment is usually for efficiency but may be due to other reasons. Generally, blocks are aligned on 32-bit boundaries. Note that memory blocks must also be of sufficient size to hold a list pointer as this is needed to chain memory blocks on the free list.</p>
-<p>In order to simplify this for the user two macros have been provided: <code>OS_MEMPOOL_BYTES(n, blksize)</code> and <code>OS_MEMPOOL_SIZE(n, blksize)</code>. The first macro returns the number of bytes needed for the memory pool while the second returns the number of <code>os_membuf_t</code> elements required by the memory pool. The <code>os_membuf_t</code> type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary. </p>
-<p>Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).</p>
-<pre><code class="no-highlight">void *my_memory_buffer;
-my_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));
-</code></pre>
-
-<pre><code class="no-highlight">os_membuf_t my_memory_buffer[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)];
-</code></pre>
-
-<p><br>
-Now that the memory pool has been defined as well as the memory required for the memory blocks which make up the pool the user needs to initialize the memory pool by calling <code>os_mempool_init</code>.</p>
-<pre><code class="no-highlight">os_mempool_init(&amp;my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
-                         &quot;MyPool&quot;);
-</code></pre>
-
-<p><br>
-Once the memory pool has been initialized the developer can allocate memory blocks from the pool by calling <code>os_memblock_get</code>. When the memory block is no longer needed the memory can be freed by calling <code>os_memblock_put</code>. </p>
-<h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">struct os_mempool {
-    int mp_block_size;
-    int mp_num_blocks;
-    int mp_num_free;
-    uint32_t mp_membuf_addr;
-    STAILQ_ENTRY(os_mempool) mp_list;    
-    SLIST_HEAD(,os_memblock);
-    char *name;
-};
-</code></pre>
-
+<p>Calculates the number of os_membuf_t elements used by <em>n</em> blocks of size <em>blksize</em> bytes.</p>
+<p>Note that os_membuf_t is used so that memory blocks are aligned on OS_ALIGNMENT boundaries.</p>
+<p>The <em>blksize</em> variable is the minimum number of bytes required for each block; the actual block size is padded so that each block is aligned on OS_ALIGNMENT boundaries.  </p>
 <p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
-<th><strong>Element</strong></th>
-<th><strong>Description</strong></th>
+<th>Arguments</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>mp_block_size</td>
-<td>Size of the memory blocks, in bytes. This is not the actual  number of bytes used by each block; it is the requested size of each block. The actual memory block size will be aligned to OS_ALIGNMENT bytes</td>
+<td>n</td>
+<td>Number of elements</td>
 </tr>
 <tr>
-<td>mp_num_blocks</td>
-<td>Number of memory blocks in the pool</td>
-</tr>
-<tr>
-<td>mp_num_free</td>
-<td>Number of free blocks left</td>
-</tr>
-<tr>
-<td>mp_membuf_addr</td>
-<td>The address of the memory block. This is used to check that a valid memory block is being freed.</td>
-</tr>
-<tr>
-<td>mp_list</td>
-<td>List pointer to chain memory pools so they can be displayed by newt tools</td>
-</tr>
-<tr>
-<td>SLIST_HEAD(,os_memblock)</td>
-<td>List pointer to chain free memory blocks</td>
-</tr>
-<tr>
-<td>name</td>
-<td>Name for the memory block</td>
+<td>blksize</td>
+<td>Size of an element is number of bytes</td>
 </tr>
 </tbody>
 </table>
-<h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
-<p>The functions available in mem_pool are:</p>
-<ul>
-<li><a href="../os_memblock_get">os_memblock_get</a></li>
-<li><a href="../os_mempool_init">os_mempool_init</a></li>
-<li><a href="../os_memblock_put">os_memblock_put</a></li>
-<li><a href="../OS_MEMPOOL_BYTES">OS_MEMPOOL_BYTES</a></li>
-<li><a href="../OS_MEMPOOL_SIZE">OS_MEMPOOL_SIZE</a></li>
-</ul>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>The number of os_membuf_t elements used by the memory pool. Note that os_membuf_t is defined to be a unsigned, 32-bit integer when OS_ALIGNMENT is 4 and an unsigned, 64-bit integer when OS_ALIGNMENT is 8.</p>
+<p><br></p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p>OS_MEMPOOL_SIZE is a macro and not a function.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<p>Here we define a memory buffer to be used by a memory pool using OS_MEMPOOL_SIZE</p>
+<pre><code class="no-highlight">#define NUM_BLOCKS      (16)
+#define BLOCK_SIZE      (32)
+
+os_membuf_t my_pool_memory[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)]
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

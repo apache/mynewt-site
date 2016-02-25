@@ -867,27 +867,27 @@
         }, 
         {
             "location": "/os/core_os/memory_pool/memory_pool/", 
-            "text": "Memory Pools\n\n\nMemory can be pre-allocated to a pool of fixed size elements.\n\n\nDescription\n\n\nSometimes it's useful to have several memory blocks of same size preallocated for specific use. E.g. you want to limit the amount of memory used for it, or you want to make sure that there is memory available when you ask for it.\n\n\nThis can be done using a memory pool. You allocate memory either statically or from heap, and then designate that memory to be used as storage for fixed size elements.\n\n\nPool will be initialized by calling \nos_mempool_init()\n. Element can be allocated from it with \nos_mempool_get()\n, and released back with \nos_mempool_put()\n.\n\n\nData structures\n\n\nstruct os_mempool {\n    int mp_block_size;\n    int mp_num_blocks;\n    int mp_num_free;\n    SLIST_HEAD(,os_memblock);\n    char *name;\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp_block_size\n\n\nSize of the memory blocks, in bytes\n\n\n\n\n\n\nmp_num_blocks\n\n\nNumber of memory blocks in the pool\n\n\n\n\n\n\nmp_num_free\n\n\nNumber of free blocks left\n\n\n\n\n\n\nname\n\n\nName for the memory block\n\n\n\n\n\n\n\n\nList of Functions\n\n\nThe functions available in mem_pool are:\n\n\n\n\nos_memblock_get\n\n\nos_mempool_init\n\n\nos_memblock_put\n\n\nOS_MEMPOOL_BYTES", 
+            "text": "Memory Pools\n\n\nA memory pool is a collection of fixed sized elements called memory blocks. Generally, memory pools are used when the developer wants to allocate a certain amount of memory to a given feature. Unlike the heap, where a code module is at the mercy of other code modules to insure there is sufficient memory, memory pools can insure sufficient memory allocation.\n\n\nDescription\n\n\nIn order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).\n\n\nstruct os_mempool my_pool;\n\n\n\n\n\nThe next order of business is to allocate the memory used by the memory pool. This memory can either be statically allocated (i.e. a global variable) or dynamically allocated (i.e. from the heap). When determining the amount of memory required for the memory pool, simply multiplying the number of blocks by the size of each block is not sufficient as the OS may have alignment requirements. The alignment size definition is named \nOS_ALIGNMENT\n and can be found in os_arch.h as it is architecture specific. The memory block alignment is usually for efficiency but may be due to other reasons. Generally, blocks are aligned on 32-bit boundaries. Note that memory blocks must also be of sufficient size to hold a list pointer as this is needed to chain memory blocks on the free list.\n\n\nIn order to simplify this for the user two macros have been provided: \nOS_MEMPOOL_BYTES(n, blksize)\n and \nOS_MEMPOOL_SIZE(n, blksize)\n. The first macro returns the number of bytes needed for the memory pool while the second returns the number of \nos_membuf_t\n elements required by the memory pool. The \nos_membuf_t\n type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary. \n\n\nHere are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).\n\n\nvoid *my_memory_buffer;\nmy_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));\n\n\n\n\nos_membuf_t my_memory_buffer[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)];\n\n\n\n\n\nNow that the memory pool has been defined as well as the memory required for the memory blocks which make up the pool the user needs to initialize the memory pool by calling \nos_mempool_init\n.\n\n\nos_mempool_init(\nmy_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,\n                         \nMyPool\n);\n\n\n\n\n\nOnce the memory pool has been initialized the developer can allocate memory blocks from the pool by calling \nos_memblock_get\n. When the memory block is no longer needed the memory can be freed by calling \nos_memblock_put\n. \n\n\nData structures\n\n\nstruct os_mempool {\n    int mp_block_size;\n    int mp_num_blocks;\n    int mp_num_free;\n    uint32_t mp_membuf_addr;\n    STAILQ_ENTRY(os_mempool) mp_list;    \n    SLIST_HEAD(,os_memblock);\n    char *name;\n};\n\n\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp_block_size\n\n\nSize of the memory blocks, in bytes. This is not the actual  number of bytes used by each block; it is the requested size of each block. The actual memory block size will be aligned to OS_ALIGNMENT bytes\n\n\n\n\n\n\nmp_num_blocks\n\n\nNumber of memory blocks in the pool\n\n\n\n\n\n\nmp_num_free\n\n\nNumber of free blocks left\n\n\n\n\n\n\nmp_membuf_addr\n\n\nThe address of the memory block. This is used to check that a valid memory block is being freed.\n\n\n\n\n\n\nmp_list\n\n\nList pointer to chain memory pools so they can be displayed by newt tools\n\n\n\n\n\n\nSLIST_HEAD(,os_memblock)\n\n\nList pointer to chain free memory blocks\n\n\n\n\n\n\nname\n\n\nName for the memory block\n\n\n\n\n\n\n\n\nList of Functions\n\n\nThe functions available in mem_pool are:\n\n\n\n\nos_memblock_get\n\n\nos_mempool_init\n\n\nos_memblock_put\n\n\nOS_MEMPOOL_BYTES\n\n\nOS_MEMPOOL_SIZE", 
             "title": "Overview"
         }, 
         {
             "location": "/os/core_os/memory_pool/memory_pool/#memory-pools", 
-            "text": "Memory can be pre-allocated to a pool of fixed size elements.", 
+            "text": "A memory pool is a collection of fixed sized elements called memory blocks. Generally, memory pools are used when the developer wants to allocate a certain amount of memory to a given feature. Unlike the heap, where a code module is at the mercy of other code modules to insure there is sufficient memory, memory pools can insure sufficient memory allocation.", 
             "title": "Memory Pools"
         }, 
         {
             "location": "/os/core_os/memory_pool/memory_pool/#description", 
-            "text": "Sometimes it's useful to have several memory blocks of same size preallocated for specific use. E.g. you want to limit the amount of memory used for it, or you want to make sure that there is memory available when you ask for it.  This can be done using a memory pool. You allocate memory either statically or from heap, and then designate that memory to be used as storage for fixed size elements.  Pool will be initialized by calling  os_mempool_init() . Element can be allocated from it with  os_mempool_get() , and released back with  os_mempool_put() .", 
+            "text": "In order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).  struct os_mempool my_pool;  \nThe next order of business is to allocate the memory used by the memory pool. This memory can either be statically allocated (i.e. a global variable) or dynamically allocated (i.e. from the heap). When determining the amount of memory required for the memory pool, simply multiplying the number of blocks by the size of each block is not sufficient as the OS may have alignment requirements. The alignment size definition is named  OS_ALIGNMENT  and can be found in os_arch.h as it is architecture specific. The memory block alignment is usually for efficiency but may be due to other reasons. Generally, blocks are aligned on 32-bit boundaries. Note that memory blocks must also be of sufficient size to hold a list pointer as this is needed to chain memory blocks on the free list.  In order to simplify this for the user two macros have been provided:  OS_MEMPOOL_BYTES(n, blksize)  and  OS_MEMPOOL_SIZE(n, blksize) . The first macro returns the number of bytes needed for the memory pool while the second returns the number of  os_membuf_t  elements required by the memory pool. The  os_membuf_t  type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary.   Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).  void *my_memory_buffer;\nmy_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));  os_membuf_t my_memory_buffer[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)];  \nNow that the memory pool has been defined as well as the memory required for the memory blocks which make up the pool the user needs to initialize the memory pool by calling  os_mempool_init .  os_mempool_init( my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,\n                          MyPool );  \nOnce the memory pool has been initialized the developer can allocate memory blocks from the pool by calling  os_memblock_get . When the memory block is no longer needed the memory can be freed by calling  os_memblock_put .", 
             "title": "Description"
         }, 
         {
             "location": "/os/core_os/memory_pool/memory_pool/#data-structures", 
-            "text": "struct os_mempool {\n    int mp_block_size;\n    int mp_num_blocks;\n    int mp_num_free;\n    SLIST_HEAD(,os_memblock);\n    char *name;\n};     Element  Description      mp_block_size  Size of the memory blocks, in bytes    mp_num_blocks  Number of memory blocks in the pool    mp_num_free  Number of free blocks left    name  Name for the memory block", 
+            "text": "struct os_mempool {\n    int mp_block_size;\n    int mp_num_blocks;\n    int mp_num_free;\n    uint32_t mp_membuf_addr;\n    STAILQ_ENTRY(os_mempool) mp_list;    \n    SLIST_HEAD(,os_memblock);\n    char *name;\n};      Element  Description      mp_block_size  Size of the memory blocks, in bytes. This is not the actual  number of bytes used by each block; it is the requested size of each block. The actual memory block size will be aligned to OS_ALIGNMENT bytes    mp_num_blocks  Number of memory blocks in the pool    mp_num_free  Number of free blocks left    mp_membuf_addr  The address of the memory block. This is used to check that a valid memory block is being freed.    mp_list  List pointer to chain memory pools so they can be displayed by newt tools    SLIST_HEAD(,os_memblock)  List pointer to chain free memory blocks    name  Name for the memory block", 
             "title": "Data structures"
         }, 
         {
             "location": "/os/core_os/memory_pool/memory_pool/#list-of-functions", 
-            "text": "The functions available in mem_pool are:   os_memblock_get  os_mempool_init  os_memblock_put  OS_MEMPOOL_BYTES", 
+            "text": "The functions available in mem_pool are:   os_memblock_get  os_mempool_init  os_memblock_put  OS_MEMPOOL_BYTES  OS_MEMPOOL_SIZE", 
             "title": "List of Functions"
         }, 
         {
@@ -922,37 +922,37 @@
         }, 
         {
             "location": "/os/core_os/memory_pool/os_mempool_init/", 
-            "text": "os_mempool_init\n\n\nos_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)\n\n\n\n\nInitializes the memory pool. Memory pointed by \nmembuf\n is taken and \nblocks\n number of elements of size \nblock_size\n are added to the pool. \nname\n is optional, and names the memory pool.\n\n\nIt is assumed that the amount of memory pointed by \nmembuf\n has at least \nOS_MEMPOOL_BYTES(blocks, block_size)\n number of bytes.\n\n\nname\n is not copied, so caller should make sure that the memory does not get reused.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp\n\n\nMemory pool being initialized\n\n\n\n\n\n\nblocks\n\n\nNumber of elements in the pool\n\n\n\n\n\n\nblock_size\n\n\nSize of an individual element in pool\n\n\n\n\n\n\nmembuf\n\n\nBacking store for the memory pool elements\n\n\n\n\n\n\nname\n\n\nName of the memory pool\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK: operation was successful.\nOS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL.\nOS_MEM_NOT_ALIGNED: membuf has to be aligned to 4 byte boundary.\n\n\nNotes\n\n\nNote that os_mempool_init() does not allocate backing storage. \nmembuf\n has to be allocated by the caller.\n\n\nIt's recommended that you use \nOS_MEMPOOL_BYTES()\n to figure out how much memory to allocate for the pool.\n\n\nExample\n\n\n\n\n    rc = os_mempool_init(\nnffs_file_pool, nffs_config.nc_num_files,\n                         sizeof (struct nffs_file), nffs_file_mem,\n                         \nnffs_file_pool\n);\n    if (rc != 0) {\n        return FS_EOS;\n    }", 
+            "text": "os_mempool_init\n\n\nos_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)\n\n\n\n\nInitializes the memory pool. Memory pointed to by \nmembuf\n is divided into \nblocks\n number of elements of size OS_ALIGN(\nblock_size\n). The \nname\n is optional, and names the memory pool.\n\n\nIt is assumed that the amount of memory pointed by \nmembuf\n has at least \nOS_MEMPOOL_BYTES(blocks, block_size)\n number of bytes.\n\n\nname\n is not copied, so caller should make sure that the memory does not get reused.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp\n\n\nMemory pool being initialized\n\n\n\n\n\n\nblocks\n\n\nNumber of elements in the pool\n\n\n\n\n\n\nblock_size\n\n\nMinimum size of an individual element in pool\n\n\n\n\n\n\nmembuf\n\n\nBacking store for the memory pool elements\n\n\n\n\n\n\nname\n\n\nName of the memory pool\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK: operation was successful.\n\nOS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL.\n\nOS_MEM_NOT_ALIGNED: membuf was not aligned on correct byte boundary.\n\n\nNotes\n\n\nNote that os_mempool_init() does not allocate backing storage; \nmembuf\n has to be allocated by the caller.\n\n\nIt's recommended that you use \nOS_MEMPOOL_BYTES()\n or \nOS_MEMPOOL_SIZE()\n to figure out how much memory to allocate for the pool.\n\n\nExample\n\n\n\n\n    void *nffs_file_mem;\n\n    nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));\n\n    rc = os_mempool_init(\nnffs_file_pool, nffs_config.nc_num_files,\n                         sizeof (struct nffs_file), nffs_file_mem,\n                         \nnffs_file_pool\n);\n    if (rc != 0) {\n        /* Memory pool initialization failure */\n    }", 
             "title": "os_mempool_init"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_mempool_init/#os_mempool_init", 
-            "text": "os_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)  Initializes the memory pool. Memory pointed by  membuf  is taken and  blocks  number of elements of size  block_size  are added to the pool.  name  is optional, and names the memory pool.  It is assumed that the amount of memory pointed by  membuf  has at least  OS_MEMPOOL_BYTES(blocks, block_size)  number of bytes.  name  is not copied, so caller should make sure that the memory does not get reused.", 
+            "text": "os_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)  Initializes the memory pool. Memory pointed to by  membuf  is divided into  blocks  number of elements of size OS_ALIGN( block_size ). The  name  is optional, and names the memory pool.  It is assumed that the amount of memory pointed by  membuf  has at least  OS_MEMPOOL_BYTES(blocks, block_size)  number of bytes.  name  is not copied, so caller should make sure that the memory does not get reused.", 
             "title": " os_mempool_init"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_mempool_init/#arguments", 
-            "text": "Arguments  Description      mp  Memory pool being initialized    blocks  Number of elements in the pool    block_size  Size of an individual element in pool    membuf  Backing store for the memory pool elements    name  Name of the memory pool", 
+            "text": "Arguments  Description      mp  Memory pool being initialized    blocks  Number of elements in the pool    block_size  Minimum size of an individual element in pool    membuf  Backing store for the memory pool elements    name  Name of the memory pool", 
             "title": "Arguments"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_mempool_init/#returned-values", 
-            "text": "OS_OK: operation was successful.\nOS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL.\nOS_MEM_NOT_ALIGNED: membuf has to be aligned to 4 byte boundary.", 
+            "text": "OS_OK: operation was successful. \nOS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL. \nOS_MEM_NOT_ALIGNED: membuf was not aligned on correct byte boundary.", 
             "title": "Returned values"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_mempool_init/#notes", 
-            "text": "Note that os_mempool_init() does not allocate backing storage.  membuf  has to be allocated by the caller.  It's recommended that you use  OS_MEMPOOL_BYTES()  to figure out how much memory to allocate for the pool.", 
+            "text": "Note that os_mempool_init() does not allocate backing storage;  membuf  has to be allocated by the caller.  It's recommended that you use  OS_MEMPOOL_BYTES()  or  OS_MEMPOOL_SIZE()  to figure out how much memory to allocate for the pool.", 
             "title": "Notes"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_mempool_init/#example", 
-            "text": "rc = os_mempool_init( nffs_file_pool, nffs_config.nc_num_files,\n                         sizeof (struct nffs_file), nffs_file_mem,\n                          nffs_file_pool );\n    if (rc != 0) {\n        return FS_EOS;\n    }", 
+            "text": "void *nffs_file_mem;\n\n    nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));\n\n    rc = os_mempool_init( nffs_file_pool, nffs_config.nc_num_files,\n                         sizeof (struct nffs_file), nffs_file_mem,\n                          nffs_file_pool );\n    if (rc != 0) {\n        /* Memory pool initialization failure */\n    }", 
             "title": "Example"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_memblock_put/", 
-            "text": "os_memblock_put\n\n\nos_error_t os_memblock_put(struct os_mempool *mp, void *block_addr)\n\n\n\n\nReleases previously allocated element back to the pool.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp\n\n\nPointer to memory pool where element is put\n\n\n\n\n\n\nblock_addr\n\n\nPointer to element getting freed\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK: operation was a success:\nOS_INVALID_PARAM: If either mp or block_addr were NULL.\n\n\nNotes\n\n\nExample\n\n\n\n\n    if (file != NULL) {\n        rc = os_memblock_put(\nnffs_file_pool, file);\n        if (rc != 0) {\n            return FS_EOS;\n        }\n    }", 
+            "text": "os_memblock_put\n\n\nos_error_t os_memblock_put(struct os_mempool *mp, void *block_addr)\n\n\n\n\nReleases previously allocated element back to the pool.  \n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp\n\n\nPointer to memory pool from which block was allocated\n\n\n\n\n\n\nblock_addr\n\n\nPointer to element getting freed\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK: operation was a success:\n\nOS_INVALID_PARAM: If either mp or block_addr were NULL, or the block being freed was outside the range of the memory buffer or not on a true block size boundary.\n\n\n\n\nExample\n\n\n\n\n    if (file != NULL) {\n        rc = os_memblock_put(\nnffs_file_pool, file);\n        if (rc != 0) {\n            /* Error freeing memory block */\n        }\n    }", 
             "title": "os_memblock_put"
         }, 
         {
@@ -962,27 +962,22 @@
         }, 
         {
             "location": "/os/core_os/memory_pool/os_memblock_put/#arguments", 
-            "text": "Arguments  Description      mp  Pointer to memory pool where element is put    block_addr  Pointer to element getting freed", 
+            "text": "Arguments  Description      mp  Pointer to memory pool from which block was allocated    block_addr  Pointer to element getting freed", 
             "title": "Arguments"
         }, 
         {
             "location": "/os/core_os/memory_pool/os_memblock_put/#returned-values", 
-            "text": "OS_OK: operation was a success:\nOS_INVALID_PARAM: If either mp or block_addr were NULL.", 
+            "text": "OS_OK: operation was a success: \nOS_INVALID_PARAM: If either mp or block_addr were NULL, or the block being freed was outside the range of the memory buffer or not on a true block size boundary.", 
             "title": "Returned values"
         }, 
         {
-            "location": "/os/core_os/memory_pool/os_memblock_put/#notes", 
-            "text": "", 
-            "title": "Notes"
-        }, 
-        {
             "location": "/os/core_os/memory_pool/os_memblock_put/#example", 
-            "text": "if (file != NULL) {\n        rc = os_memblock_put( nffs_file_pool, file);\n        if (rc != 0) {\n            return FS_EOS;\n        }\n    }", 
+            "text": "if (file != NULL) {\n        rc = os_memblock_put( nffs_file_pool, file);\n        if (rc != 0) {\n            /* Error freeing memory block */\n        }\n    }", 
             "title": "Example"
         }, 
         {
             "location": "/os/core_os/memory_pool/OS_MEMPOOL_BYTES/", 
-            "text": "OS_MEMPOOL_BYTES\n\n\nOS_MEMPOOL_BYTES(n,blksize)\n\n\n\n\nCalculates how many bytes of memory is used by \nn\n number of elements, when individual element size is \nblksize\n bytes.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nn\n\n\nNumber of elements\n\n\n\n\n\n\nblksize\n\n\nSize of an element is number of bytes\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nExample\n\n\nHere we allocate memory to be used as a pool.\n\n\nvoid *nffs_file_mem;\n\nnffs_file_mem = malloc(\n        OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));\n    if (nffs_file_mem == NULL) {\n        return FS_ENOMEM;\n    }", 
+            "text": "OS_MEMPOOL_BYTES\n\n\nOS_MEMPOOL_BYTES(n,blksize)\n\n\n\n\nCalculates how many bytes of memory is used by \nn\n number of elements, when individual element size is \nblksize\n bytes.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nn\n\n\nNumber of elements\n\n\n\n\n\n\nblksize\n\n\nSize of an element is number of bytes\n\n\n\n\n\n\n\n\nReturned values\n\n\nThe number of bytes used by the memory pool.\n\n\n\n\nNotes\n\n\nOS_MEMPOOL_BYTES is a macro and not a function.\n\n\n\n\nExample\n\n\nHere we allocate memory to be used as a pool.\n\n\n    void *nffs_file_mem;\n\n    nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));\n    if (nffs_file_mem == NULL) {\n        return FS_ENOMEM;\n    }", 
             "title": "OS_MEMPOOL_BYTES"
         }, 
         {
@@ -997,17 +992,47 @@
         }, 
         {
             "location": "/os/core_os/memory_pool/OS_MEMPOOL_BYTES/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
+            "text": "The number of bytes used by the memory pool.", 
             "title": "Returned values"
         }, 
         {
             "location": "/os/core_os/memory_pool/OS_MEMPOOL_BYTES/#notes", 
-            "text": "", 
+            "text": "OS_MEMPOOL_BYTES is a macro and not a function.", 
             "title": "Notes"
         }, 
         {
             "location": "/os/core_os/memory_pool/OS_MEMPOOL_BYTES/#example", 
-            "text": "Here we allocate memory to be used as a pool.  void *nffs_file_mem;\n\nnffs_file_mem = malloc(\n        OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));\n    if (nffs_file_mem == NULL) {\n        return FS_ENOMEM;\n    }", 
+            "text": "Here we allocate memory to be used as a pool.      void *nffs_file_mem;\n\n    nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));\n    if (nffs_file_mem == NULL) {\n        return FS_ENOMEM;\n    }", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/memory_pool/OS_MEMPOOL_SIZE/", 
+            "text": "OS_MEMPOOL_SIZE\n\n\nOS_MEMPOOL_SIZE(n,blksize)\n\n\n\n\nCalculates the number of os_membuf_t elements used by \nn\n blocks of size \nblksize\n bytes.\n\n\nNote that os_membuf_t is used so that memory blocks are aligned on OS_ALIGNMENT boundaries.\n\n\nThe \nblksize\n variable is the minimum number of bytes required for each block; the actual block size is padded so that each block is aligned on OS_ALIGNMENT boundaries.  \n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nn\n\n\nNumber of elements\n\n\n\n\n\n\nblksize\n\n\nSize of an element is number of bytes\n\n\n\n\n\n\n\n\nReturned values\n\n\nThe number of os_membuf_t elements used by the memory pool. Note that os_membuf_t is defined to be a unsigned, 32-bit integer when OS_ALIGNMENT is 4 and an unsigned, 64-bit integer when OS_ALIGNMENT is 8.\n\n\n\n\nNotes\n\n\nOS_MEMPOOL_SIZE is a macro and not a function.\n\n\n\n\nExample\n\n\nHere we define a memory buffer to be used by a memory pool using OS_MEMPOOL_SIZE\n\n\n#define NUM_BLOCKS      (16)\n#define BLOCK_SIZE      (32)\n\nos_membuf_t my_pool_memory[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)]", 
+            "title": "OS_MEMPOOL_SIZE"
+        }, 
+        {
+            "location": "/os/core_os/memory_pool/OS_MEMPOOL_SIZE/#os_mempool_size", 
+            "text": "OS_MEMPOOL_SIZE(n,blksize)  Calculates the number of os_membuf_t elements used by  n  blocks of size  blksize  bytes.  Note that os_membuf_t is used so that memory blocks are aligned on OS_ALIGNMENT boundaries.  The  blksize  variable is the minimum number of bytes required for each block; the actual block size is padded so that each block is aligned on OS_ALIGNMENT boundaries.", 
+            "title": "OS_MEMPOOL_SIZE"
+        }, 
+        {
+            "location": "/os/core_os/memory_pool/OS_MEMPOOL_SIZE/#arguments", 
+            "text": "Arguments  Description      n  Number of elements    blksize  Size of an element is number of bytes", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/memory_pool/OS_MEMPOOL_SIZE/#returned-values", 
+            "text": "The number of os_membuf_t elements used by the memory pool. Note that os_membuf_t is defined to be a unsigned, 32-bit integer when OS_ALIGNMENT is 4 and an unsigned, 64-bit integer when OS_ALIGNMENT is 8.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/memory_pool/OS_MEMPOOL_SIZE/#notes", 
+            "text": "OS_MEMPOOL_SIZE is a macro and not a function.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/memory_pool/OS_MEMPOOL_SIZE/#example", 
+            "text": "Here we define a memory buffer to be used by a memory pool using OS_MEMPOOL_SIZE  #define NUM_BLOCKS      (16)\n#define BLOCK_SIZE      (32)\n\nos_membuf_t my_pool_memory[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)]", 
             "title": "Example"
         }, 
         {

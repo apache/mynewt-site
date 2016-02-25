@@ -295,6 +295,14 @@
   
 
           
+              
+  
+    <li>
+      <a href="../OS_MEMPOOL_SIZE/">OS_MEMPOOL_SIZE</a>
+    </li>
+  
+
+          
       </ul>
     
   </li>
@@ -508,7 +516,7 @@
 <pre><code class="no-highlight">os_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)
 </code></pre>
 
-<p>Initializes the memory pool. Memory pointed by <em>membuf</em> is taken and <em>blocks</em> number of elements of size <em>block_size</em> are added to the pool. <em>name</em> is optional, and names the memory pool.</p>
+<p>Initializes the memory pool. Memory pointed to by <em>membuf</em> is divided into <em>blocks</em> number of elements of size OS_ALIGN(<em>block_size</em>). The <em>name</em> is optional, and names the memory pool.</p>
 <p>It is assumed that the amount of memory pointed by <em>membuf</em> has at least <em>OS_MEMPOOL_BYTES(blocks, block_size)</em> number of bytes.</p>
 <p><em>name</em> is not copied, so caller should make sure that the memory does not get reused.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
@@ -530,7 +538,7 @@
 </tr>
 <tr>
 <td>block_size</td>
-<td>Size of an individual element in pool</td>
+<td>Minimum size of an individual element in pool</td>
 </tr>
 <tr>
 <td>membuf</td>
@@ -543,19 +551,23 @@
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>OS_OK: operation was successful.
-OS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL.
-OS_MEM_NOT_ALIGNED: membuf has to be aligned to 4 byte boundary.</p>
+<p>OS_OK: operation was successful.<br />
+OS_INVALID_PARAM: invalid parameters. Block count or block size was negative, or membuf or mp was NULL.<br />
+OS_MEM_NOT_ALIGNED: membuf was not aligned on correct byte boundary.</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Note that os_mempool_init() does not allocate backing storage. <em>membuf</em> has to be allocated by the caller.</p>
-<p>It's recommended that you use <em>OS_MEMPOOL_BYTES()</em> to figure out how much memory to allocate for the pool.</p>
+<p>Note that os_mempool_init() does not allocate backing storage; <em>membuf</em> has to be allocated by the caller.</p>
+<p>It's recommended that you use <em>OS_MEMPOOL_BYTES()</em> or <em>OS_MEMPOOL_SIZE()</em> to figure out how much memory to allocate for the pool.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">    rc = os_mempool_init(&amp;nffs_file_pool, nffs_config.nc_num_files,
+<pre><code class="no-highlight">    void *nffs_file_mem;
+
+    nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));
+
+    rc = os_mempool_init(&amp;nffs_file_pool, nffs_config.nc_num_files,
                          sizeof (struct nffs_file), nffs_file_mem,
                          &quot;nffs_file_pool&quot;);
     if (rc != 0) {
-        return FS_EOS;
+        /* Memory pool initialization failure */
     }
 
 </code></pre>
