@@ -6,7 +6,7 @@ OS_MEMPOOL_BYTES(n,blksize)
 
 Calculates how many bytes of memory is used by *n* number of elements, when individual element size is *blksize* bytes.
 
-
+<br>
 #### Arguments
 
 | Arguments | Description |
@@ -15,22 +15,21 @@ Calculates how many bytes of memory is used by *n* number of elements, when indi
 | blksize |  Size of an element is number of bytes  |
 
 #### Returned values
+The number of bytes used by the memory pool.
 
-List any values returned.
-Error codes?
-
+<br>
 #### Notes
+OS_MEMPOOL_BYTES is a macro and not a function.
 
-
+<br>
 #### Example
 
 Here we allocate memory to be used as a pool.
 
 ```no-highlight
-void *nffs_file_mem;
+    void *nffs_file_mem;
 
-nffs_file_mem = malloc(
-        OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));
+    nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));
     if (nffs_file_mem == NULL) {
         return FS_ENOMEM;
     }
