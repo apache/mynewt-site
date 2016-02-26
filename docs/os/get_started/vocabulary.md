@@ -1,4 +1,4 @@
-## Understanding Newt Terms
+## Glossary
 
 ### Application repository or app
 
