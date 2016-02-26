@@ -106,7 +106,7 @@ We suggest you follow the proposed non-committer workflow at Apache to share you
         $ git format-patch origin/trunk
 ```  
 
-* Alternatively, you can use the mirror on github.com to submit a pull request. The mirror is located at [https://github.com/apache/incubator-mynewt-site](https://github.com/apache/incubator-mynewt-site). It is up to you to decide whether to create a fork or a branch to work in and submit pull requests from. Your pull request will be reviewed by a committer for docs and merged into the master branch when the changes are understood and accepted. 
+* Alternatively, you can use the mirror on github.com to submit a pull request. The mirror is located at [https://github.com/apache/incubator-mynewt-site](https://github.com/apache/incubator-mynewt-site). It is up to you to decide whether to create a fork or a branch to work in and submit pull requests from. Remember you cannot push changes to the master on the github mirror, so you have to create a fork or a branch first. Your pull request will be reviewed by a committer for docs and merged into the master branch when the changes are understood and accepted. 
 
 
 ### Conversion to HTML
