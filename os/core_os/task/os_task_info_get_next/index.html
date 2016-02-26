@@ -222,18 +222,10 @@
               
   
   <li><a href="
-  ../_clear_stack/
+  ../os_task_count/
 ">Functions</a>
     
       <ul class="current-toc">
-          
-              
-  
-    <li>
-      <a href="../_clear_stack/">_clear_stack</a>
-    </li>
-  
-
           
               
   
@@ -255,14 +247,6 @@
   
     <li>
       <a href="../os_task_init/">os_task_init</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_task_next_id/">os_task_next_id</a>
     </li>
   
 
@@ -520,7 +504,72 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_task_info_get_next"><font color="F2853F" style="font-size:24pt"> os_task_info_get_next</font><a class="headerlink" href="#os_task_info_get_next" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">struct os_task *os_task_info_get_next(const struct os_task *prev, struct os_task_info *oti);
+</code></pre>
+
+<p>Populates the os task info structure pointed to by <em>oti</em> with task information. 
+The task populating the <em>oti</em> structure is either the first task on the task 
+list if <em>prev</em> is NULL, or the next task in the task list (the next pointer of 
+<em>prev</em>).</p>
+<p>If there are no tasks initialized, NULL is returned. Otherwise, the task 
+structure used to populate <em>oti</em> is returned.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>prev</td>
+<td>Pointer to previous task in task list. If NULL, use first task on list</td>
+</tr>
+<tr>
+<td>oti</td>
+<td>Pointer to <code>os_task_info</code> structure where task information will be stored</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>Returns a pointer to the os task structure that was used to populate the task 
+information structure. NULL means that no tasks were created.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">
+void 
+get_task_info(void)
+{
+    struct os_task *prev_task; 
+    struct os_task_info oti; 
+
+    console_printf(&quot;Tasks: \n&quot;);
+    prev_task = NULL;
+    while (1) {
+        prev_task = os_task_info_get_next(prev_task, &amp;oti);
+        if (prev_task == NULL) {
+            break;
+        }
+
+        console_printf(&quot;  %s (prio: %u, tid: %u, lcheck: %lu, ncheck: %lu, &quot;
+                &quot;flags: 0x%x, ssize: %u, susage: %u, cswcnt: %lu, &quot;
+                &quot;tot_run_time: %lums)\n&quot;,
+                oti.oti_name, oti.oti_prio, oti.oti_taskid, 
+                (unsigned long)oti.oti_last_checkin,
+                (unsigned long)oti.oti_next_checkin, oti.oti_flags,
+                oti.oti_stksize, oti.oti_stkusage, (unsigned long)oti.oti_cswcnt,
+                (unsigned long)oti.oti_runtime);
+
+    }
+}
+
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

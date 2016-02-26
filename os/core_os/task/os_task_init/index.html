@@ -222,18 +222,10 @@
               
   
   <li><a href="
-  ../_clear_stack/
+  ../os_task_count/
 ">Functions</a>
     
       <ul class="current-toc">
-          
-              
-  
-    <li>
-      <a href="../_clear_stack/">_clear_stack</a>
-    </li>
-  
-
           
               
   
@@ -255,14 +247,6 @@
   
     <li class="active">
       os_task_init
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_task_next_id/">os_task_next_id</a>
     </li>
   
 
@@ -520,7 +504,76 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_task_init"><font color="F2853F" style="font-size:24pt"> os_task_init</font><a class="headerlink" href="#os_task_init" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int os_task_init(struct os_task *t, char *name, os_task_func_t func, void *arg, 
+                 uint8_t prio, os_time_t sanity_itvl, os_stack_t *stack_bottom, 
+                 uint16_t stack_size)
+</code></pre>
+
+<p>Called to create a task. This adds the task object to the list of ready to run 
+tasks.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>Pointer to task</td>
+</tr>
+<tr>
+<td>name</td>
+<td>Task name</td>
+</tr>
+<tr>
+<td>func</td>
+<td>Task function</td>
+</tr>
+<tr>
+<td>arg</td>
+<td>Generic argument to pass to task</td>
+</tr>
+<tr>
+<td>prio</td>
+<td>Priority of task</td>
+</tr>
+<tr>
+<td>sanity_itvl</td>
+<td>The interval at which the sanity task will check to see if this task is sill alive</td>
+</tr>
+<tr>
+<td>stack_bottom</td>
+<td>Pointer to bottom of stack.</td>
+</tr>
+<tr>
+<td>stack_size</td>
+<td>The size of the stack. NOTE: this is not in bytes! It is the number of <code>os_stack_t</code> elements allocated (generally 32-bits each)</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>OS_OK: task initialization successful.</p>
+<p>All other error codes indicate an internal error.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">
+    /* Create the task */ 
+    int rc;
+
+    os_stack_t my_task_stack[MY_STACK_SIZE];
+
+    rc = os_task_init(&amp;my_task, &quot;my_task&quot;, my_task_func, NULL, MY_TASK_PRIO, 
+                      OS_WAIT_FOREVER, my_task_stack, MY_STACK_SIZE);
+    assert(rc == OS_OK);
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>
