@@ -109,13 +109,9 @@ The following shows how to clone a Mynewt OS code repository:
 
 * Proceed to the [Building test code on simulator](#building-test-code-on-simulator) section.
 
-### Download newt tool
+### Installing newt tool
 
-If you are working on a Mac you can download the newt tool executable `apache-newt-osx-0.8.0-b1-incubating.zip`[here](https://github.com/runtimeinc/binary-releases/tree/master/mynewt-0.8.0-b1-incubation). Open it in the `~/dev/go/bin/` directory.
-
-If you are working on a Linux machine you can download the newt tool executable `apache-newt-linux-0.8.0-b1-incubating.zip` [here](https://github.com/runtimeinc/binary-releases/tree/master/mynewt-0.8.0-b1-incubation). Open it in the `~/dev/go/bin/` directory.
-
-Alternatively, you can choose to set up the environment on your computer, install the Go language, and build the newt tool from source as explained in the tutorials in the Newt Tool Manual. See [Install newt from source on Mac](../../newt/newt_mac.md) if you have a Mac and [Install newt from source on Linux](../../newt/newt_linux.md) if you have a Linux machine.
+You can set up the environment on your computer, install the Go language, and build the newt tool from source as explained in the tutorials in the Newt Tool Manual. See [Install newt from source on Mac](../../newt/newt_mac.md) if you have a Mac and [Install newt from source on Linux](../../newt/newt_linux.md) if you have a Linux machine.
 
 ### Try building test code on simulator 
 
