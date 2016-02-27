@@ -101,16 +101,87 @@ task1(void *arg)
 
 ### Registering a Custom Sanity Check
 
-
 If a particular task wants to further hook into the sanity framework, to 
 perform other checks during the sanity task's operation, it can do so by
 registering a `struct os_sanity_check` using the `os_sanity_check_register`
 function.
 
+```no-highlight
+static int 
+mymodule_perform_sanity_check(struct os_sanity_check *sc, void *arg)
+{
+    /* Perform your checking here.  In this case, we check if there 
+     * are available buffers in mymodule, and return 0 (all good)
+     * if true, and -1 (error) if not.
+     */
+    if (mymodule_has_buffers()) {
+        return (0);
+    } else {
+        return (-1);
+    }
+}
+
+static int 
+mymodule_register_sanity_check(void)
+{
+    struct os_sanity_check sc;
+
+    os_sanity_check_init(&sc);
+    /* Only assert() if mymodule_perform_sanity_check() fails 50 
+     * times.  SANITY_TASK_INTERVAL is defined by the user, and 
+     * is the frequency at which the sanity_task runs in seconds.
+     */
+    OS_SANITY_CHECK_SETFUNC(&sc, mymodule_perform_sanity_check, NULL, 
+        50 * SANITY_TASK_INTERVAL);
+
+    rc = os_sanity_check_register(&sc);
+    if (rc != 0) {
+        goto err;
+    } 
+
+    return (0);
+err:
+    return (rc);
+}
+```
+
+In the above example, every time the custom sanity check 
+`mymodule_perform_sanity_check` returns successfully (0), 
+the sanity check is reset.  In the `OS_SANITY_CEHCK_SETFUNC` macro,
+the sanity checkin interval is specified as 50 * SANITY_TASK_INTERVAL 
+(which is the interval at which the sanity task runs.)  This means 
+that the `mymodule_perform_sanity_check()` function needs to fail
+50 times consecutively before the sanity task will crash the system.
+
+**TIP:**  When checking things like memory buffers, which can be temporarily 
+be exhausted, its a good idea to have the sanity check fail multiple 
+consecutive times before crashing the system.  This will avoid crashing
+for temporary failures.
 
 ## Data structures
 
-Replace this with the list of data structures used, why, any neat features
+### OS Sanity Check 
+
+```no-highlight
+struct os_sanity_check {
+    os_time_t sc_checkin_last;
+    os_time_t sc_checkin_itvl;
+    os_sanity_check_func_t sc_func;
+    void *sc_arg; 
+
+    SLIST_ENTRY(os_sanity_check) sc_next;
+};
+```
+
+
+| **Element** | **Description** |
+|-----------|-------------|
+| `sc_checkin_last` | The last time this sanity check, checked in with the sanity task in OS time ticks. |
+| `sc_checkin_itvl` | How frequently the sanity check is supposed to check in with the sanity task, in OS time ticks. |
+| `sc_func` | If not `NULL`, call this function when running the sanity task.  If the function returns 0, reset the sanity check. |
+| `sc_arg` | Argument to pass to `sc_func` when calling it. |
+| `sc_next` | Sanity checks are chained in the sanity task when `os_sanity_check_register()` is called. |
+
 
 ## List of Functions
 

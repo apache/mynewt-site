@@ -224,4 +224,3 @@ The functions available in task are:
 * [os_task_init](os_task_init.md)
 * [os_task_count](os_task_count.md)
 * [os_task_info_get_next](os_task_info_get_next.md)
-* [os_task_sanity_checkin](os_task_sanity_checkin.md)

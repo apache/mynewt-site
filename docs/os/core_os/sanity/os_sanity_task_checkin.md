@@ -11,12 +11,12 @@ Used by a task to check in to the sanity task. This informs the sanity task that
 
 | Arguments | Description | 
 |-----------|-------------| 
-| t | Pointer to task | 
+| `t` | Pointer to task | 
 
 <br>
 #### Returned values
 
-OS_OK: sanity check-in successful
+`OS_OK`: sanity check-in successful
 
 All other error codes indicate an error.
 
