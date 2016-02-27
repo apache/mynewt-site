@@ -1,7 +1,7 @@
-## <font color="F2853F" style="font-size:24pt"> os_task_sanity_checkin</font>
+## <font color="F2853F" style="font-size:24pt"> os_sanity_task_checkin</font>
 
 ```no-highlight
-int os_task_sanity_checkin(struct os_task *t)
+int os_sanity_task_checkin(struct os_task *t)
 ```
 Used by a task to check in to the sanity task. This informs the sanity task that 
 *task* is still alive and working normally.
@@ -26,7 +26,7 @@ All other error codes indicate an error.
 ```no-highlight
     int rc;
 
-    rc = os_task_sanity_checkin(&my_task); 
+    rc = os_sanity_task_checkin(&my_task); 
     assert(rc == OS_OK);
 
 ```
