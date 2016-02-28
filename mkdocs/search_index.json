@@ -547,7 +547,7 @@
         }, 
         {
             "location": "/os/core_os/task/task/", 
-            "text": "Task\n\n\nA task, along with the scheduler, forms the basis of the Mynewt OS. A task \nconsists of two basic elements: a task stack and a task function. The task \nfunction is basically a forever loop, waiting for some \"event\" to wake it up. \nThere are two methods used to signal a task that it has work to do: event queues \nand semaphores (see the appropriate manual sections for descriptions of these \nfeatures).\n\n\nThe Mynewt OS is a multi-tasking, preemptive OS. Every task is assigned a task \npriority (from 0 to 255), with 0 being the highest priority task. If a higher \npriority task than the current task wants to run, the scheduler preempts the \ncurrently running task and switches context to the higher priority task. This is \njust a fancy way of saying that the processor stack pointer now points to the \nstack of the higher priority task and the task resumes execution where it left \noff.\n\n\nTasks run to completion unless they are preempted by a higher priority task. The \ndeveloper must insure that tasks eventually \"sleep\"; otherwise lower priority \ntasks will never get a chance to run (actually, any task lower in priority than \nthe task that never sleeps). A task will be put to sleep in the following cases: \nit puts itself to sleep using \nos_time_delay()\n, it waits on an event queue \nwhich is empty or attempts to obtain a mutex or a semaphore that is currently \nowned by another task.\n\n\nNote that other sections of the manual describe these OS features in more \ndetail.\n\n\nDescription\n\n\nIn order to create a task two data structures need to be defined: the task \nobject (struct os_task) and its associated stack. Determining the stack size can \nbe a bit tricky; generally developers should not declare large local variables \non the stack so that task stacks can be of limited size. However, all \napplications are different and the developer must choose the stack size \naccordingly. NOTE: be careful when declaring your stack! The stack is in units \nof \nos_stack_t\n sized elements (generally 32-bits). Looking at the example given \nbelow and assuming \nos_stack_t\n is defined to be a 32-bit unsigned value, \n\"my_task_stack\" will use 256 bytes. \n\n\nA task must also have an associated \"task function\". This is the function that \nwill be called when the task is first run. This task function should never \nreturn!\n\n\nIn order to inform the Mynewt OS of the new task and to have it added to the \nscheduler, the \nos_task_init()\n function is called. Once \nos_task_init()\n is \ncalled, the task is made ready to run and is added to the active task list. Note \nthat a task can be initialized (started) before or after the os has started \n(i.e. before \nos_start()\n is called) but must be initialized after the os has \nbeen initialized (i.e. 'os_init' has been called). In most of the examples and \ncurrent Mynewt projects, the os is initialized, tasks are initialized, and the \nthe os is started. Once the os has started, the highest priority task will be \nthe first task set to run.\n\n\nInformation about a task can be obtained using the \nos_task_info_get_next()\n \nAPI. Developers can walk the list of tasks to obtain information on all created \ntasks. This information is of type \nos_task_info\n and is described below.\n\n\nThe following is a very simple example showing a single application task. This \ntask simply toggles an LED at a one second interval.\n\n\n/* Create a simple \nproject\n with a task that blinks a LED every second */\n\n/* Define task stack and task object */\n#define MY_TASK_PRI         (OS_TASK_PRI_HIGHEST) \n#define MY_STACK_SIZE       (64) \nstruct os_task my_task; \nos_stack_t my_task_stack[MY_STACK_SIZE]; \n\n/* This is the task function */\nvoid my_task_func(void *arg) {\n    /* Set the led pin as an output */\n    hal_gpio_init_out(LED_BLINK_PIN, 1);\n\n    /* The task is a forever loop that does not return */\n    while (1) {\n        /* Wait one second */ \n        os_time_delay(1000);\n\n        /* Toggle the LED */ \n        hal_gpio_toggle(LED_BLINK_PIN);\n    }\n}\n\n/* This is the main function for the project */\nint main(void) {\n    int rc;\n\n    /* Initialize OS */\n    os_init();\n\n    /* Initialize the task */\n    os_task_init(\nmy_task, \nmy_task\n, my_task_func, NULL, MY_TASK_PRIO, \n                 OS_WAIT_FOREVER, my_task_stack, MY_STACK_SIZE);\n\n    /* Start the OS */\n    os_start();\n\n    /* os start should never return. If it does, this should be an error */\n    assert(0);\n\n    return rc;\n}\n\n\n\n\nData structures\n\n\n/* The highest and lowest task priorities */\n#define OS_TASK_PRI_HIGHEST         (0)\n#define OS_TASK_PRI_LOWEST          (0xff)\n\n/* Task states */\ntypedef enum os_task_state {\n    OS_TASK_READY = 1, \n    OS_TASK_SLEEP = 2\n} os_task_state_t;\n\n/* Task flags */\n#define OS_TASK_FLAG_NO_TIMEOUT     (0x0001U)\n#define OS_TASK_FLAG_SEM_WAIT       (0x0002U)\n#define OS_TASK_FLAG_MUTEX_WAIT     (0x0004U)\n\ntypedef void (*os_task_func_t)(void *);\n\n#define OS_TASK_MAX_NAME_LEN (32)\n\n\n\n\n\n\nstruct os_task {\n    os_stack_t *t_stackptr;\n    os_stack_t *t_stacktop;\n\n    uint16_t t_stacksize;\n    uint16_t t_flags;\n\n    uint8_t t_taskid;\n    uint8_t t_prio;\n    uint8_t t_state;\n    uint8_t t_pad;\n\n    char *t_name;\n    os_task_func_t t_func;\n    void *t_arg;\n\n    void *t_obj;\n\n    struct os_sanity_check t_sanity_check; \n\n    os_time_t t_next_wakeup;\n    os_time_t t_run_time;\n    uint32_t t_ctx_sw_cnt;\n\n    /* Global list of all tasks, irrespective of run or sleep lists */\n    STAILQ_ENTRY(os_task) t_os_task_list;\n\n    /* Used to chain task to either the run or sleep list */ \n    TAILQ_ENTRY(os_task) t_os_list;\n\n    /* Used to chain task to an object such as a semaphore or mutex */\n    SLIST_ENTRY(os_task) t_obj_list;\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt_stackptr\n\n\nCurrent stack pointer\n\n\n\n\n\n\nt_stacktop\n\n\nThe address of the top of the task stack. The stack grows downward\n\n\n\n\n\n\nt_stacksize\n\n\nThe size of the stack, in units of os_stack_t (not bytes!)\n\n\n\n\n\n\nt_flags\n\n\nTask flags (see flag definitions)\n\n\n\n\n\n\nt_taskid\n\n\nA numeric id assigned to each task\n\n\n\n\n\n\nt_prio\n\n\nThe priority of the task. The lower the number, the higher the priority\n\n\n\n\n\n\nt_state\n\n\nThe task state (see state definitions)\n\n\n\n\n\n\nt_pad\n\n\npadding (for alignment)\n\n\n\n\n\n\nt_name\n\n\nName of task\n\n\n\n\n\n\nt_func\n\n\nPointer to task function\n\n\n\n\n\n\nt_obj\n\n\nGeneric object used by mutexes and semaphores when the task is waiting on a mutex or semaphore\n\n\n\n\n\n\nt_sanity_check\n\n\nSanity task data structure\n\n\n\n\n\n\nt_next_wakeup\n\n\nOS time when task is next scheduled to wake up\n\n\n\n\n\n\nt_run_time\n\n\nThe amount of os time ticks this task has been running\n\n\n\n\n\n\nt_ctx_sw_cnt\n\n\nThe number of times that this task has been run\n\n\n\n\n\n\nt_os_task_list\n\n\nList pointer for global task list. All tasks are placed on this list\n\n\n\n\n\n\nt_os_list\n\n\nList pointer used by either the active task list or the sleeping task list\n\n\n\n\n\n\nt_obj_list\n\n\nList pointer for tasks waiting on a semaphore or mutex\n\n\n\n\n\n\n\n\n\n\nstruct os_task_info {\n    uint8_t oti_prio;\n    uint8_t oti_taskid;\n    uint8_t oti_state;\n    uint8_t oti_flags;\n    uint16_t oti_stkusage;\n    uint16_t oti_stksize;\n    uint32_t oti_cswcnt;\n    uint32_t oti_runtime;\n    os_time_t oti_last_checkin;\n    os_time_t oti_next_checkin;\n\n    char oti_name[OS_TASK_MAX_NAME_LEN];\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\noti_prio\n\n\nTask priority\n\n\n\n\n\n\noti_taskid\n\n\nTask id\n\n\n\n\n\n\noti_state\n\n\nTask state\n\n\n\n\n\n\noti_flags\n\n\nTask flags\n\n\n\n\n\n\noti_stkusage\n\n\nAmount of stack used by the task (in os_stack_t units)\n\n\n\n\n\n\noti_stksize\n\n\nThe size of the stack (in os_stack_t units)\n\n\n\n\n\n\noti_cswcnt\n\n\nThe context switch count\n\n\n\n\n\n\noti_runtime\n\n\nThe amount of time that the task has run (in os time ticks)\n\n\n\n\n\n\noti_last_checkin\n\n\nThe time (os time) at which this task last checked in to the sanity task\n\n\n\n\n\n\noti_next_checkin\n\n\nThe time (os time) at which this task last checked in to the sanity task\n\n\n\n\n\n\noti_name\n\n\nName of the task\n\n\n\n\n\n\n\n\n\n\nList of Functions\n\n\nThe functions available in task are:\n\n\n\n\nos_task_init\n\n\nos_task_count\n\n\nos_task_info_get_next\n\n\nos_task_sanity_checkin", 
+            "text": "Task\n\n\nA task, along with the scheduler, forms the basis of the Mynewt OS. A task \nconsists of two basic elements: a task stack and a task function. The task \nfunction is basically a forever loop, waiting for some \"event\" to wake it up. \nThere are two methods used to signal a task that it has work to do: event queues \nand semaphores (see the appropriate manual sections for descriptions of these \nfeatures).\n\n\nThe Mynewt OS is a multi-tasking, preemptive OS. Every task is assigned a task \npriority (from 0 to 255), with 0 being the highest priority task. If a higher \npriority task than the current task wants to run, the scheduler preempts the \ncurrently running task and switches context to the higher priority task. This is \njust a fancy way of saying that the processor stack pointer now points to the \nstack of the higher priority task and the task resumes execution where it left \noff.\n\n\nTasks run to completion unless they are preempted by a higher priority task. The \ndeveloper must insure that tasks eventually \"sleep\"; otherwise lower priority \ntasks will never get a chance to run (actually, any task lower in priority than \nthe task that never sleeps). A task will be put to sleep in the following cases: \nit puts itself to sleep using \nos_time_delay()\n, it waits on an event queue \nwhich is empty or attempts to obtain a mutex or a semaphore that is currently \nowned by another task.\n\n\nNote that other sections of the manual describe these OS features in more \ndetail.\n\n\nDescription\n\n\nIn order to create a task two data structures need to be defined: the task \nobject (struct os_task) and its associated stack. Determining the stack size can \nbe a bit tricky; generally developers should not declare large local variables \non the stack so that task stacks can be of limited size. However, all \napplications are different and the developer must choose the stack size \naccordingly. NOTE: be careful when declaring your stack! The stack is in units \nof \nos_stack_t\n sized elements (generally 32-bits). Looking at the example given \nbelow and assuming \nos_stack_t\n is defined to be a 32-bit unsigned value, \n\"my_task_stack\" will use 256 bytes. \n\n\nA task must also have an associated \"task function\". This is the function that \nwill be called when the task is first run. This task function should never \nreturn!\n\n\nIn order to inform the Mynewt OS of the new task and to have it added to the \nscheduler, the \nos_task_init()\n function is called. Once \nos_task_init()\n is \ncalled, the task is made ready to run and is added to the active task list. Note \nthat a task can be initialized (started) before or after the os has started \n(i.e. before \nos_start()\n is called) but must be initialized after the os has \nbeen initialized (i.e. 'os_init' has been called). In most of the examples and \ncurrent Mynewt projects, the os is initialized, tasks are initialized, and the \nthe os is started. Once the os has started, the highest priority task will be \nthe first task set to run.\n\n\nInformation about a task can be obtained using the \nos_task_info_get_next()\n \nAPI. Developers can walk the list of tasks to obtain information on all created \ntasks. This information is of type \nos_task_info\n and is described below.\n\n\nThe following is a very simple example showing a single application task. This \ntask simply toggles an LED at a one second interval.\n\n\n/* Create a simple \nproject\n with a task that blinks a LED every second */\n\n/* Define task stack and task object */\n#define MY_TASK_PRI         (OS_TASK_PRI_HIGHEST) \n#define MY_STACK_SIZE       (64) \nstruct os_task my_task; \nos_stack_t my_task_stack[MY_STACK_SIZE]; \n\n/* This is the task function */\nvoid my_task_func(void *arg) {\n    /* Set the led pin as an output */\n    hal_gpio_init_out(LED_BLINK_PIN, 1);\n\n    /* The task is a forever loop that does not return */\n    while (1) {\n        /* Wait one second */ \n        os_time_delay(1000);\n\n        /* Toggle the LED */ \n        hal_gpio_toggle(LED_BLINK_PIN);\n    }\n}\n\n/* This is the main function for the project */\nint main(void) {\n    int rc;\n\n    /* Initialize OS */\n    os_init();\n\n    /* Initialize the task */\n    os_task_init(\nmy_task, \nmy_task\n, my_task_func, NULL, MY_TASK_PRIO, \n                 OS_WAIT_FOREVER, my_task_stack, MY_STACK_SIZE);\n\n    /* Start the OS */\n    os_start();\n\n    /* os start should never return. If it does, this should be an error */\n    assert(0);\n\n    return rc;\n}\n\n\n\n\nData structures\n\n\n/* The highest and lowest task priorities */\n#define OS_TASK_PRI_HIGHEST         (0)\n#define OS_TASK_PRI_LOWEST          (0xff)\n\n/* Task states */\ntypedef enum os_task_state {\n    OS_TASK_READY = 1, \n    OS_TASK_SLEEP = 2\n} os_task_state_t;\n\n/* Task flags */\n#define OS_TASK_FLAG_NO_TIMEOUT     (0x0001U)\n#define OS_TASK_FLAG_SEM_WAIT       (0x0002U)\n#define OS_TASK_FLAG_MUTEX_WAIT     (0x0004U)\n\ntypedef void (*os_task_func_t)(void *);\n\n#define OS_TASK_MAX_NAME_LEN (32)\n\n\n\n\n\n\nstruct os_task {\n    os_stack_t *t_stackptr;\n    os_stack_t *t_stacktop;\n\n    uint16_t t_stacksize;\n    uint16_t t_flags;\n\n    uint8_t t_taskid;\n    uint8_t t_prio;\n    uint8_t t_state;\n    uint8_t t_pad;\n\n    char *t_name;\n    os_task_func_t t_func;\n    void *t_arg;\n\n    void *t_obj;\n\n    struct os_sanity_check t_sanity_check; \n\n    os_time_t t_next_wakeup;\n    os_time_t t_run_time;\n    uint32_t t_ctx_sw_cnt;\n\n    /* Global list of all tasks, irrespective of run or sleep lists */\n    STAILQ_ENTRY(os_task) t_os_task_list;\n\n    /* Used to chain task to either the run or sleep list */ \n    TAILQ_ENTRY(os_task) t_os_list;\n\n    /* Used to chain task to an object such as a semaphore or mutex */\n    SLIST_ENTRY(os_task) t_obj_list;\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt_stackptr\n\n\nCurrent stack pointer\n\n\n\n\n\n\nt_stacktop\n\n\nThe address of the top of the task stack. The stack grows downward\n\n\n\n\n\n\nt_stacksize\n\n\nThe size of the stack, in units of os_stack_t (not bytes!)\n\n\n\n\n\n\nt_flags\n\n\nTask flags (see flag definitions)\n\n\n\n\n\n\nt_taskid\n\n\nA numeric id assigned to each task\n\n\n\n\n\n\nt_prio\n\n\nThe priority of the task. The lower the number, the higher the priority\n\n\n\n\n\n\nt_state\n\n\nThe task state (see state definitions)\n\n\n\n\n\n\nt_pad\n\n\npadding (for alignment)\n\n\n\n\n\n\nt_name\n\n\nName of task\n\n\n\n\n\n\nt_func\n\n\nPointer to task function\n\n\n\n\n\n\nt_obj\n\n\nGeneric object used by mutexes and semaphores when the task is waiting on a mutex or semaphore\n\n\n\n\n\n\nt_sanity_check\n\n\nSanity task data structure\n\n\n\n\n\n\nt_next_wakeup\n\n\nOS time when task is next scheduled to wake up\n\n\n\n\n\n\nt_run_time\n\n\nThe amount of os time ticks this task has been running\n\n\n\n\n\n\nt_ctx_sw_cnt\n\n\nThe number of times that this task has been run\n\n\n\n\n\n\nt_os_task_list\n\n\nList pointer for global task list. All tasks are placed on this list\n\n\n\n\n\n\nt_os_list\n\n\nList pointer used by either the active task list or the sleeping task list\n\n\n\n\n\n\nt_obj_list\n\n\nList pointer for tasks waiting on a semaphore or mutex\n\n\n\n\n\n\n\n\n\n\nstruct os_task_info {\n    uint8_t oti_prio;\n    uint8_t oti_taskid;\n    uint8_t oti_state;\n    uint8_t oti_flags;\n    uint16_t oti_stkusage;\n    uint16_t oti_stksize;\n    uint32_t oti_cswcnt;\n    uint32_t oti_runtime;\n    os_time_t oti_last_checkin;\n    os_time_t oti_next_checkin;\n\n    char oti_name[OS_TASK_MAX_NAME_LEN];\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\noti_prio\n\n\nTask priority\n\n\n\n\n\n\noti_taskid\n\n\nTask id\n\n\n\n\n\n\noti_state\n\n\nTask state\n\n\n\n\n\n\noti_flags\n\n\nTask flags\n\n\n\n\n\n\noti_stkusage\n\n\nAmount of stack used by the task (in os_stack_t units)\n\n\n\n\n\n\noti_stksize\n\n\nThe size of the stack (in os_stack_t units)\n\n\n\n\n\n\noti_cswcnt\n\n\nThe context switch count\n\n\n\n\n\n\noti_runtime\n\n\nThe amount of time that the task has run (in os time ticks)\n\n\n\n\n\n\noti_last_checkin\n\n\nThe time (os time) at which this task last checked in to the sanity task\n\n\n\n\n\n\noti_next_checkin\n\n\nThe time (os time) at which this task last checked in to the sanity task\n\n\n\n\n\n\noti_name\n\n\nName of the task\n\n\n\n\n\n\n\n\n\n\nList of Functions\n\n\nThe functions available in task are:\n\n\n\n\nos_task_init\n\n\nos_task_count\n\n\nos_task_info_get_next", 
             "title": "Overview"
         }, 
         {
@@ -567,7 +567,7 @@
         }, 
         {
             "location": "/os/core_os/task/task/#list-of-functions", 
-            "text": "The functions available in task are:   os_task_init  os_task_count  os_task_info_get_next  os_task_sanity_checkin", 
+            "text": "The functions available in task are:   os_task_init  os_task_count  os_task_info_get_next", 
             "title": "List of Functions"
         }, 
         {
@@ -643,31 +643,6 @@
         {
             "location": "/os/core_os/task/os_task_init/#example", 
             "text": "/* Create the task */ \n    int rc;\n\n    os_stack_t my_task_stack[MY_STACK_SIZE];\n\n    rc = os_task_init( my_task,  my_task , my_task_func, NULL, MY_TASK_PRIO, \n                      OS_WAIT_FOREVER, my_task_stack, MY_STACK_SIZE);\n    assert(rc == OS_OK);", 
-            "title": "Example"
-        }, 
-        {
-            "location": "/os/core_os/task/os_task_sanity_checkin/", 
-            "text": "os_task_sanity_checkin\n\n\nint os_task_sanity_checkin(struct os_task *t)\n\n\n\n\nUsed by a task to check in to the sanity task. This informs the sanity task that \n\ntask\n is still alive and working normally.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to task\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK: sanity check-in successful\n\n\nAll other error codes indicate an error.\n\n\n\n\nExample\n\n\n    int rc;\n\n    rc = os_task_sanity_checkin(\nmy_task); \n    assert(rc == OS_OK);", 
-            "title": "os_task_sanity_checkin"
-        }, 
-        {
-            "location": "/os/core_os/task/os_task_sanity_checkin/#os_task_sanity_checkin", 
-            "text": "int os_task_sanity_checkin(struct os_task *t)  Used by a task to check in to the sanity task. This informs the sanity task that  task  is still alive and working normally.", 
-            "title": " os_task_sanity_checkin"
-        }, 
-        {
-            "location": "/os/core_os/task/os_task_sanity_checkin/#arguments", 
-            "text": "Arguments  Description      t  Pointer to task", 
-            "title": "Arguments"
-        }, 
-        {
-            "location": "/os/core_os/task/os_task_sanity_checkin/#returned-values", 
-            "text": "OS_OK: sanity check-in successful  All other error codes indicate an error.", 
-            "title": "Returned values"
-        }, 
-        {
-            "location": "/os/core_os/task/os_task_sanity_checkin/#example", 
-            "text": "int rc;\n\n    rc = os_task_sanity_checkin( my_task); \n    assert(rc == OS_OK);", 
             "title": "Example"
         }, 
         {
@@ -1532,58 +1507,173 @@
         }, 
         {
             "location": "/os/core_os/sanity/sanity/", 
-            "text": "Sanity\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe OS feature here \n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\nThe functions available in sanity are:\n\n\n\n\nos_sanity_check_init\n\n\nos_sanity_check_list_lock\n\n\nos_sanity_check_list_unlock\n\n\nos_sanity_check_register\n\n\nos_sanity_check_reset\n\n\nos_sanity_task_init\n\n\nos_sanity_task_loop", 
+            "text": "Sanity\n\n\nThe Sanity task is a software watchdog task, which runs periodically to check\nsystem state, and ensure that everything is still operating properly.\n\n\nIn a typical system design, there are multiple stages of watchdog: \n\n\n\n\n\n\nInternal Watchdog\n\n\n\n\n\n\nExternal Watchdog \n\n\n\n\n\n\nSanity Watchdog \n\n\n\n\n\n\nThe \nInternal Watchdog\n is typically an MCU watchdog, which is tickled in \nthe core of the OS.  The internal watchdog is tickled frequently, and is \nmeant to be an indicator the OS is running.\n\n\nThe \nExternal Watchdog\n is a watchdog that's typically run slower.  The \npurpose of an external watchdog is to provide the system with a hard reset\nwhen it has lost its mind.  \n\n\nThe \nSanity Watchdog\n is the least frequently run watchdog, and is meant as \nan application watchdog.  \n\n\nThis document is about the operation of the Mynewt Sanity Watchdog.\n\n\nDescription\n\n\nInitializing the Sanity Task\n\n\nThe Sanity Watchdog is a task in the Mynewt OS, which when enabled, runs \nevery \nsanity_seconds\n.  In order to enable the Sanity Watchdog task, \ncall the \nos_sanity_task_init()\n function.\n\n\nint os_sanity_task_init(int sanity_seconds);\n\n\n\n\nBy default, every operating system task provides the frequency it will \ncheck in with the sanity task, with the \nsanity_itvl\n parameter in the \n\nos_task_init()\n function:\n\n\nint os_task_init(struct os_task *t, char *name, os_task_func_t func, \n    void *arg, uint8_t prio, os_time_t sanity_itvl, os_stack_t *bottom,\n    uint16_t stack_size);\n\n\n\n\nsanity_itvl\n is the time in OS time ticks that the task being created \nmust register in with the sanity task.  \n\n\nChecking in with Sanity Task\n\n\nThe task must then register in with the sanity task every \nsanity_itvl\n \nseconds.  In order to do that, the task should call the \nos_sanity_task_checkin\n\nfunction, which will reset the sanity check associated with this task.\nHere is an example of a task that uses a callout to checkin with the \nsanity task every 50 seconds:\n\n\n#define TASK1_SANITY_CHECKIN_ITVL (50 * OS_TICKS_PER_SEC) \nstruct os_eventq task1_evq;\n\nstatic void\ntask1(void *arg)\n{\n    struct os_task *t;\n    struct os_event *ev;\n    struct os_callout c;\n\n    /* Get current OS task */\n    t = os_sched_get_current_task();\n\n    /* Initialize the event queue. */\n    os_eventq_init(\ntask1_evq);\n\n    /* Initialize the callout */\n    os_callout_init(\nc, \ntask1_evq, NULL);\n\n    /* reset the callout to checkin with the sanity task \n     * in 50 seconds to kick off timing.\n     */\n    os_callout_reset(\nc, TASK1_SANITY_CHECKIN_ITVL);\n\n    while (1) {\n        ev = os_eventq_get(\ntask1_evq);\n\n        /* The sanity timer has reset */\n        if (ev-\nev_arg == \nc) {\n            os_sanity_task_checkin(t);\n        } else {\n            /* not expecting any other events */\n            assert(0);\n        }\n    }\n\n    /* Should never reach */\n    assert(0);\n}\n\n\n\n\nRegistering a Custom Sanity Check\n\n\nIf a particular task wants to further hook into the sanity framework to \nperform other checks during the sanity task's operation, it can do so by\nregistering a \nstruct os_sanity_check\n using the \nos_sanity_check_register\n\nfunction.\n\n\nstatic int \nmymodule_perform_sanity_check(struct os_sanity_check *sc, void *arg)\n{\n    /* Perform your checking here.  In this case, we check if there \n     * are available buffers in mymodule, and return 0 (all good)\n     * if true, and -1 (error) if not.\n     */\n    if (mymodule_has_buffers()) {\n        return (0);\n    } else {\n        return (-1);\n    }\n}\n\nstatic int \nmymodule_register_sanity_check(void)\n{\n    struct os_sanity_check sc;\n\n    os_sanity_check_init(\nsc);\n    /* Only assert() if mymodule_perform_sanity_check() fails 50 \n     * times.  SANITY_TASK_INTERVAL is defined by the user, and \n     * is the frequency at which the sanity_task runs in seconds.\n     */\n    OS_SANITY_CHECK_SETFUNC(\nsc, mymodule_perform_sanity_check, NULL, \n        50 * SANITY_TASK_INTERVAL);\n\n    rc = os_sanity_check_register(\nsc);\n    if (rc != 0) {\n        goto err;\n    } \n\n    return (0);\nerr:\n    return (rc);\n}\n\n\n\n\nIn the above example, every time the custom sanity check \n\nmymodule_perform_sanity_check\n returns successfully (0), \nthe sanity check is reset.  In the \nOS_SANITY_CHECK_SETFUNC\n macro,\nthe sanity checkin interval is specified as 50 * SANITY_TASK_INTERVAL \n(which is the interval at which the sanity task runs.)  This means \nthat the \nmymodule_perform_sanity_check()\n function needs to fail\n50 times consecutively before the sanity task will crash the system.\n\n\nTIP:\n  When checking things like memory buffers, which can be temporarily \nbe exhausted, it's a good idea to have the sanity check fail multiple \nconsecutive times before crashing the system.  This will avoid crashing\nfor temporary failures.\n\n\nData structures\n\n\nOS Sanity Check\n\n\nstruct os_sanity_check {\n    os_time_t sc_checkin_last;\n    os_time_t sc_checkin_itvl;\n    os_sanity_check_func_t sc_func;\n    void *sc_arg; \n\n    SLIST_ENTRY(os_sanity_check) sc_next;\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nsc_checkin_last\n\n\nThe last time this sanity check checked in with the sanity task, in OS time ticks.\n\n\n\n\n\n\nsc_checkin_itvl\n\n\nHow frequently the sanity check is supposed to check in with the sanity task, in OS time ticks.\n\n\n\n\n\n\nsc_func\n\n\nIf not \nNULL\n, call this function when running the sanity task.  If the function returns 0, reset the sanity check.\n\n\n\n\n\n\nsc_arg\n\n\nArgument to pass to \nsc_func\n when calling it.\n\n\n\n\n\n\nsc_next\n\n\nSanity checks are chained in the sanity task when \nos_sanity_check_register()\n is called.\n\n\n\n\n\n\n\n\nList of Functions\n\n\nThe functions available in sanity are:\n\n\n\n\nos_sanity_check_init\n\n\nos_sanity_check_register\n\n\nos_sanity_check_reset\n\n\nos_sanity_task_checkin\n\n\nos_sanity_task_init", 
             "title": "Overview"
         }, 
         {
             "location": "/os/core_os/sanity/sanity/#sanity", 
-            "text": "Insert synopsis here", 
+            "text": "The Sanity task is a software watchdog task, which runs periodically to check\nsystem state, and ensure that everything is still operating properly.  In a typical system design, there are multiple stages of watchdog:     Internal Watchdog    External Watchdog     Sanity Watchdog     The  Internal Watchdog  is typically an MCU watchdog, which is tickled in \nthe core of the OS.  The internal watchdog is tickled frequently, and is \nmeant to be an indicator the OS is running.  The  External Watchdog  is a watchdog that's typically run slower.  The \npurpose of an external watchdog is to provide the system with a hard reset\nwhen it has lost its mind.    The  Sanity Watchdog  is the least frequently run watchdog, and is meant as \nan application watchdog.    This document is about the operation of the Mynewt Sanity Watchdog.", 
             "title": "Sanity"
         }, 
         {
             "location": "/os/core_os/sanity/sanity/#description", 
-            "text": "Describe OS feature here", 
+            "text": "", 
             "title": "Description"
         }, 
         {
+            "location": "/os/core_os/sanity/sanity/#initializing-the-sanity-task", 
+            "text": "The Sanity Watchdog is a task in the Mynewt OS, which when enabled, runs \nevery  sanity_seconds .  In order to enable the Sanity Watchdog task, \ncall the  os_sanity_task_init()  function.  int os_sanity_task_init(int sanity_seconds);  By default, every operating system task provides the frequency it will \ncheck in with the sanity task, with the  sanity_itvl  parameter in the  os_task_init()  function:  int os_task_init(struct os_task *t, char *name, os_task_func_t func, \n    void *arg, uint8_t prio, os_time_t sanity_itvl, os_stack_t *bottom,\n    uint16_t stack_size);  sanity_itvl  is the time in OS time ticks that the task being created \nmust register in with the sanity task.", 
+            "title": "Initializing the Sanity Task"
+        }, 
+        {
+            "location": "/os/core_os/sanity/sanity/#checking-in-with-sanity-task", 
+            "text": "The task must then register in with the sanity task every  sanity_itvl  \nseconds.  In order to do that, the task should call the  os_sanity_task_checkin \nfunction, which will reset the sanity check associated with this task.\nHere is an example of a task that uses a callout to checkin with the \nsanity task every 50 seconds:  #define TASK1_SANITY_CHECKIN_ITVL (50 * OS_TICKS_PER_SEC) \nstruct os_eventq task1_evq;\n\nstatic void\ntask1(void *arg)\n{\n    struct os_task *t;\n    struct os_event *ev;\n    struct os_callout c;\n\n    /* Get current OS task */\n    t = os_sched_get_current_task();\n\n    /* Initialize the event queue. */\n    os_eventq_init( task1_evq);\n\n    /* Initialize the callout */\n    os_callout_init( c,  task1_evq, NULL);\n\n    /* reset the callout to checkin with the sanity task \n     * in 50 seconds to kick off timing.\n     */\n    os_callout_reset( c, TASK1_SANITY_CHECKIN_ITVL);\n\n    while (1) {\n        ev = os_eventq_get( task1_evq);\n\n        /* The sanity timer has reset */\n        if (ev- ev_arg ==  c) {\n            os_sanity_task_checkin(t);\n        } else {\n            /* not expecting any other events */\n            assert(0);\n        }\n    }\n\n    /* Should never reach */\n    assert(0);\n}", 
+            "title": "Checking in with Sanity Task"
+        }, 
+        {
+            "location": "/os/core_os/sanity/sanity/#registering-a-custom-sanity-check", 
+            "text": "If a particular task wants to further hook into the sanity framework to \nperform other checks during the sanity task's operation, it can do so by\nregistering a  struct os_sanity_check  using the  os_sanity_check_register \nfunction.  static int \nmymodule_perform_sanity_check(struct os_sanity_check *sc, void *arg)\n{\n    /* Perform your checking here.  In this case, we check if there \n     * are available buffers in mymodule, and return 0 (all good)\n     * if true, and -1 (error) if not.\n     */\n    if (mymodule_has_buffers()) {\n        return (0);\n    } else {\n        return (-1);\n    }\n}\n\nstatic int \nmymodule_register_sanity_check(void)\n{\n    struct os_sanity_check sc;\n\n    os_sanity_check_init( sc);\n    /* Only assert() if mymodule_perform_sanity_check() fails 50 \n     * times.  SANITY_TASK_INTERVAL is defined by the user, and \n     * is the frequency at which the sanity_task runs in seconds.\n     */\n    OS_SANITY_CHECK_SETFUNC( sc, mymodule_perform_sanity_check, NULL, \n        50 * SANITY_TASK_INTERVAL);\n\n    rc = os_sanity_check_register( sc);\n    if (rc != 0) {\n        goto err;\n    } \n\n    return (0);\nerr:\n    return (rc);\n}  In the above example, every time the custom sanity check  mymodule_perform_sanity_check  returns successfully (0), \nthe sanity check is reset.  In the  OS_SANITY_CHECK_SETFUNC  macro,\nthe sanity checkin interval is specified as 50 * SANITY_TASK_INTERVAL \n(which is the interval at which the sanity task runs.)  This means \nthat the  mymodule_perform_sanity_check()  function needs to fail\n50 times consecutively before the sanity task will crash the system.  TIP:   When checking things like memory buffers, which can be temporarily \nbe exhausted, it's a good idea to have the sanity check fail multiple \nconsecutive times before crashing the system.  This will avoid crashing\nfor temporary failures.", 
+            "title": "Registering a Custom Sanity Check"
+        }, 
+        {
             "location": "/os/core_os/sanity/sanity/#data-structures", 
-            "text": "Replace this with the list of data structures used, why, any neat features", 
+            "text": "", 
             "title": "Data structures"
         }, 
         {
+            "location": "/os/core_os/sanity/sanity/#os-sanity-check", 
+            "text": "struct os_sanity_check {\n    os_time_t sc_checkin_last;\n    os_time_t sc_checkin_itvl;\n    os_sanity_check_func_t sc_func;\n    void *sc_arg; \n\n    SLIST_ENTRY(os_sanity_check) sc_next;\n};     Element  Description      sc_checkin_last  The last time this sanity check checked in with the sanity task, in OS time ticks.    sc_checkin_itvl  How frequently the sanity check is supposed to check in with the sanity task, in OS time ticks.    sc_func  If not  NULL , call this function when running the sanity task.  If the function returns 0, reset the sanity check.    sc_arg  Argument to pass to  sc_func  when calling it.    sc_next  Sanity checks are chained in the sanity task when  os_sanity_check_register()  is called.", 
+            "title": "OS Sanity Check"
+        }, 
+        {
             "location": "/os/core_os/sanity/sanity/#list-of-functions", 
-            "text": "The functions available in sanity are:   os_sanity_check_init  os_sanity_check_list_lock  os_sanity_check_list_unlock  os_sanity_check_register  os_sanity_check_reset  os_sanity_task_init  os_sanity_task_loop", 
+            "text": "The functions available in sanity are:   os_sanity_check_init  os_sanity_check_register  os_sanity_check_reset  os_sanity_task_checkin  os_sanity_task_init", 
             "title": "List of Functions"
         }, 
         {
             "location": "/os/core_os/sanity/os_sanity_check_init/", 
-            "text": "", 
+            "text": "os_sanity_check_init\n\n\nint os_sanity_check_init(struct os_sanity_check *sc)\n\n\n\n\nInitialize the sanity check pointed to by \nsc\n.  Sets default values, and ensures\nmemory is cleared out.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nsc\n\n\nPointer to sanity check\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK\n: sanity check initialization is successful \n\n\nAll other error codes indicate an error.\n\n\n\n\nExample\n\n\n    int rc;\n\n    rc = os_sanity_task_check_init(\nmy_sanity_check); \n    assert(rc == OS_OK);", 
             "title": "os_sanity_check_init"
         }, 
         {
-            "location": "/os/core_os/sanity/os_sanity_check_list_lock/", 
-            "text": "", 
-            "title": "os_sanity_check_list_lock"
+            "location": "/os/core_os/sanity/os_sanity_check_init/#os_sanity_check_init", 
+            "text": "int os_sanity_check_init(struct os_sanity_check *sc)  Initialize the sanity check pointed to by  sc .  Sets default values, and ensures\nmemory is cleared out.", 
+            "title": " os_sanity_check_init"
         }, 
         {
-            "location": "/os/core_os/sanity/os_sanity_check_list_unlock/", 
-            "text": "", 
-            "title": "os_sanity_check_list_unlock"
+            "location": "/os/core_os/sanity/os_sanity_check_init/#arguments", 
+            "text": "Arguments  Description      sc  Pointer to sanity check", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_init/#returned-values", 
+            "text": "OS_OK : sanity check initialization is successful   All other error codes indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_init/#example", 
+            "text": "int rc;\n\n    rc = os_sanity_task_check_init( my_sanity_check); \n    assert(rc == OS_OK);", 
+            "title": "Example"
         }, 
         {
             "location": "/os/core_os/sanity/os_sanity_check_register/", 
-            "text": "", 
+            "text": "os_sanity_check_register\n\n\nint os_sanity_check_register(struct os_sanity_check *sc)\n\n\n\n\nRegister the sanity check pointed to by \nsc\n with the sanity task.  After registration\nthe sanity task will check this sanity check with every run of the sanity task.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nsc\n\n\nPointer to sanity check\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK\n: sanity check successfully registered\n\n\nAll other error codes indicate an error.\n\n\n\n\nExample\n\n\n    int rc;\n\n    rc = os_sanity_check_register(\nmy_sc); \n    assert(rc == OS_OK);", 
             "title": "os_sanity_check_register"
         }, 
         {
+            "location": "/os/core_os/sanity/os_sanity_check_register/#os_sanity_check_register", 
+            "text": "int os_sanity_check_register(struct os_sanity_check *sc)  Register the sanity check pointed to by  sc  with the sanity task.  After registration\nthe sanity task will check this sanity check with every run of the sanity task.", 
+            "title": " os_sanity_check_register"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_register/#arguments", 
+            "text": "Arguments  Description      sc  Pointer to sanity check", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_register/#returned-values", 
+            "text": "OS_OK : sanity check successfully registered  All other error codes indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_register/#example", 
+            "text": "int rc;\n\n    rc = os_sanity_check_register( my_sc); \n    assert(rc == OS_OK);", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/sanity/os_sanity_check_reset/", 
-            "text": "", 
+            "text": "os_sanity_check_reset\n\n\nint os_sanity_check_reset(struct os_sanity_check *sc)\n\n\n\n\nReset the sanity check pointed to by sc.  This tells the sanity task that \nthis sanity check is considered valid for another \nsc_checkin_itvl\n time \nticks.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nsc\n\n\nPointer to sanity check\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK\n: sanity check reset successful\n\n\nAll other error codes indicate an error.\n\n\n\n\nExample\n\n\n    int rc;\n\n    rc = os_sanity_check_reset(\nmy_sc); \n    assert(rc == OS_OK);", 
             "title": "os_sanity_check_reset"
         }, 
         {
+            "location": "/os/core_os/sanity/os_sanity_check_reset/#os_sanity_check_reset", 
+            "text": "int os_sanity_check_reset(struct os_sanity_check *sc)  Reset the sanity check pointed to by sc.  This tells the sanity task that \nthis sanity check is considered valid for another  sc_checkin_itvl  time \nticks.", 
+            "title": " os_sanity_check_reset"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_reset/#arguments", 
+            "text": "Arguments  Description      sc  Pointer to sanity check", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_reset/#returned-values", 
+            "text": "OS_OK : sanity check reset successful  All other error codes indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_check_reset/#example", 
+            "text": "int rc;\n\n    rc = os_sanity_check_reset( my_sc); \n    assert(rc == OS_OK);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_checkin/", 
+            "text": "os_sanity_task_checkin\n\n\nint os_sanity_task_checkin(struct os_task *t)\n\n\n\n\nUsed by a task to check in to the sanity task. This informs the sanity task that \n\ntask\n is still alive and working normally.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to task\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK\n: sanity check-in successful\n\n\nAll other error codes indicate an error.\n\n\n\n\nExample\n\n\n    int rc;\n\n    rc = os_sanity_task_checkin(\nmy_task); \n    assert(rc == OS_OK);", 
+            "title": "os_sanity_task_checkin"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_checkin/#os_sanity_task_checkin", 
+            "text": "int os_sanity_task_checkin(struct os_task *t)  Used by a task to check in to the sanity task. This informs the sanity task that  task  is still alive and working normally.", 
+            "title": " os_sanity_task_checkin"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_checkin/#arguments", 
+            "text": "Arguments  Description      t  Pointer to task", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_checkin/#returned-values", 
+            "text": "OS_OK : sanity check-in successful  All other error codes indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_checkin/#example", 
+            "text": "int rc;\n\n    rc = os_sanity_task_checkin( my_task); \n    assert(rc == OS_OK);", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/sanity/os_sanity_task_init/", 
-            "text": "", 
+            "text": "os_sanity_task_init\n\n\nint os_sanity_task_init(int num_secs);\n\n\n\n\nInitialize the os sanity task.  \nnum_secs\n is the number of seconds to wait\nin between runs of the sanity task.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nnum_secs\n\n\nNumber of seconds to wait in between running sanity checks.\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nOS_OK\n: Sanity task was successfully created.\n\n\nAll other error codes indicate an error.\n\n\n\n\nExample\n\n\n/* Run sanity checks every 50 seconds */\n\n#define SANITY_TASK_INTERVAL (50)\n    int rc;\n\n    rc = os_sanity_task_init(SANITY_TASK_INTERVAL); \n    assert(rc == OS_OK);", 
             "title": "os_sanity_task_init"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_init/#os_sanity_task_init", 
+            "text": "int os_sanity_task_init(int num_secs);  Initialize the os sanity task.   num_secs  is the number of seconds to wait\nin between runs of the sanity task.", 
+            "title": " os_sanity_task_init"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_init/#arguments", 
+            "text": "Arguments  Description      num_secs  Number of seconds to wait in between running sanity checks.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_init/#returned-values", 
+            "text": "OS_OK : Sanity task was successfully created.  All other error codes indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/sanity/os_sanity_task_init/#example", 
+            "text": "/* Run sanity checks every 50 seconds */\n\n#define SANITY_TASK_INTERVAL (50)\n    int rc;\n\n    rc = os_sanity_task_init(SANITY_TASK_INTERVAL); \n    assert(rc == OS_OK);", 
+            "title": "Example"
         }, 
         {
             "location": "/os/core_os/callout/callout/", 
