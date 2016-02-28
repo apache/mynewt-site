@@ -11,13 +11,13 @@ In a typical system design, there are multiple stages of watchdog:
 
 * Sanity Watchdog 
 
-The _Internal Watchdog_ is a typically a MCU watchdog, which is tickled in 
+The _Internal Watchdog_ is typically an MCU watchdog, which is tickled in 
 the core of the OS.  The internal watchdog is tickled frequently, and is 
 meant to be an indicator the OS is running.
 
 The _External Watchdog_ is a watchdog that's typically run slower.  The 
 purpose of an external watchdog is to provide the system with a hard reset
-when it has lost it's mind.  
+when it has lost its mind.  
 
 The _Sanity Watchdog_ is the least frequently run watchdog, and is meant as 
 an application watchdog.  
@@ -101,7 +101,7 @@ task1(void *arg)
 
 ### Registering a Custom Sanity Check
 
-If a particular task wants to further hook into the sanity framework, to 
+If a particular task wants to further hook into the sanity framework to 
 perform other checks during the sanity task's operation, it can do so by
 registering a `struct os_sanity_check` using the `os_sanity_check_register`
 function.
@@ -147,14 +147,14 @@ err:
 
 In the above example, every time the custom sanity check 
 `mymodule_perform_sanity_check` returns successfully (0), 
-the sanity check is reset.  In the `OS_SANITY_CEHCK_SETFUNC` macro,
+the sanity check is reset.  In the `OS_SANITY_CHECK_SETFUNC` macro,
 the sanity checkin interval is specified as 50 * SANITY_TASK_INTERVAL 
 (which is the interval at which the sanity task runs.)  This means 
 that the `mymodule_perform_sanity_check()` function needs to fail
 50 times consecutively before the sanity task will crash the system.
 
 **TIP:**  When checking things like memory buffers, which can be temporarily 
-be exhausted, its a good idea to have the sanity check fail multiple 
+be exhausted, it's a good idea to have the sanity check fail multiple 
 consecutive times before crashing the system.  This will avoid crashing
 for temporary failures.
 
@@ -176,7 +176,7 @@ struct os_sanity_check {
 
 | **Element** | **Description** |
 |-----------|-------------|
-| `sc_checkin_last` | The last time this sanity check, checked in with the sanity task in OS time ticks. |
+| `sc_checkin_last` | The last time this sanity check checked in with the sanity task, in OS time ticks. |
 | `sc_checkin_itvl` | How frequently the sanity check is supposed to check in with the sanity task, in OS time ticks. |
 | `sc_func` | If not `NULL`, call this function when running the sanity task.  If the function returns 0, reset the sanity check. |
 | `sc_arg` | Argument to pass to `sc_func` when calling it. |
