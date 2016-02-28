@@ -4,7 +4,7 @@
 void os_time_tick(void) 
 ```
 
-Increments the OS time tick for the system.  Typically, this is called in one place by the architecture specific OS code (`libs/os/arch`) `timer_handler` which is in turn called by the BSP specific code assgined to drive the OS timer tick. See [Porting Mynewt OS](../port_os) for details.
+Increments the OS time tick for the system.  Typically, this is called in one place by the architecture specific OS code (`libs/os/arch`) `timer_handler` which is in turn called by the BSP specific code assigned to drive the OS timer tick. See [Porting Mynewt OS](../port_os) for details.
 
 #### Arguments
 

@@ -1,7 +1,7 @@
 # Porting Mynewt OS
 
 
-This chapter describes how to adapt Newt OS to different processors. 
+This chapter describes how to adapt the Mynewt OS to different processors. 
 
 
 ## Description
