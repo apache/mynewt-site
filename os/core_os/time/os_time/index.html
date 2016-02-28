@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/time/time/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/time/os_time/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
 	<title>Overview - Apache Mynewt</title>
@@ -468,12 +468,13 @@
   <hr/>
 </div>
                         
-                            <h1 id="time">Time<a class="headerlink" href="#time" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+                            <h1 id="os_time">OS_Time<a class="headerlink" href="#os_time" title="Permanent link">&para;</a></h1>
+<p>The system time for ther Mynewt OS.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe OS feature here </p>
-<h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<p>The Mynewt OS contains an incrementing time that drives the OS scheduler and time delays. The time is a fixed size (e.g. 32 bits) and will eventually wrap back to zero. The time to wrap from zero back to zero is called the <strong>OS time epoch</strong>. </p>
+<p>The frequency of the OS time tick is specified in the architecture-specific OS code <code>os_arch.h</code> and is named <code>OS_TICKS_PER_SEC</code>.</p>
+<h2 id="data-structures">Data Structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
+<p>Time is stored in Mynewt as an <code>os_time_t</code> value. </p>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p>The functions available in time are:</p>
 <ul>
@@ -481,6 +482,19 @@
 <li><a href="../os_time_get/">os_time_get</a></li>
 <li><a href="../os_time_tick/">os_time_tick</a></li>
 </ul>
+<h2 id="list-of-macros">List of Macros<a class="headerlink" href="#list-of-macros" title="Permanent link">&para;</a></h2>
+<p>Several macros help with the evalution of times with respect to each other.</p>
+<ul>
+<li><code>OS_TIME_TICK_LT(t1,t2)</code> -- evaluates to true if t1 is before t2 in time.</li>
+<li><code>OS_TIME_TICK_GT(t1,t2)</code> -- evaluates to true if t1 is after t2 in time </li>
+<li><code>OS_TIME_TICK_GEQ(t1,t2)</code> -- evaluates to true if t1 is on or after t2 in time.</li>
+</ul>
+<p>NOTE:  For all of these macros the calculations are done modulo 'os_time_t'.  </p>
+<p>Ensure that comparison of OS time always uses the macros above (to compensate for the possible wrap of OS time)</p>
+<h2 id="special-notes">Special Notes<a class="headerlink" href="#special-notes" title="Permanent link">&para;</a></h2>
+<p>Its important to understand how quickly the time wraps especially when doing time comparison using the macros above (or by any other means). </p>
+<p>For example, if a tick is 1 millisecond and <code>os_time_t</code> is 32-bits the OS time will wrap back to zero in about 49.7 days or stated another way, the OS time epoch is 49.7 days.</p>
+<p>If two times are more than 1/2 the OS time epoch apart, any time comparison will be incorrect.  Ensure at design time that comparisons will not occur between times that are more than half the OS time epoch.</p>
                         
                     </div>
                 </div>

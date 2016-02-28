@@ -421,44 +421,129 @@
             "title": "os_sched_wakeup"
         }, 
         {
-            "location": "/os/core_os/time/time/", 
-            "text": "Time\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe OS feature here \n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\nThe functions available in time are:\n\n\n\n\nos_time_delay\n\n\nos_time_get\n\n\nos_time_tick", 
+            "location": "/os/core_os/time/os_time/", 
+            "text": "OS_Time\n\n\nThe system time for ther Mynewt OS.\n\n\nDescription\n\n\nThe Mynewt OS contains an incrementing time that drives the OS scheduler and time delays. The time is a fixed size (e.g. 32 bits) and will eventually wrap back to zero. The time to wrap from zero back to zero is called the \nOS time epoch\n. \n\n\nThe frequency of the OS time tick is specified in the architecture-specific OS code \nos_arch.h\n and is named \nOS_TICKS_PER_SEC\n.\n\n\nData Structures\n\n\nTime is stored in Mynewt as an \nos_time_t\n value. \n\n\nList of Functions\n\n\nThe functions available in time are:\n\n\n\n\nos_time_delay\n\n\nos_time_get\n\n\nos_time_tick\n\n\n\n\nList of Macros\n\n\nSeveral macros help with the evalution of times with respect to each other.\n\n\n\n\nOS_TIME_TICK_LT(t1,t2)\n -- evaluates to true if t1 is before t2 in time.\n\n\nOS_TIME_TICK_GT(t1,t2)\n -- evaluates to true if t1 is after t2 in time \n\n\nOS_TIME_TICK_GEQ(t1,t2)\n -- evaluates to true if t1 is on or after t2 in time.\n\n\n\n\nNOTE:  For all of these macros the calculations are done modulo 'os_time_t'.  \n\n\nEnsure that comparison of OS time always uses the macros above (to compensate for the possible wrap of OS time)\n\n\nSpecial Notes\n\n\nIts important to understand how quickly the time wraps especially when doing time comparison using the macros above (or by any other means). \n\n\nFor example, if a tick is 1 millisecond and \nos_time_t\n is 32-bits the OS time will wrap back to zero in about 49.7 days or stated another way, the OS time epoch is 49.7 days.\n\n\nIf two times are more than 1/2 the OS time epoch apart, any time comparison will be incorrect.  Ensure at design time that comparisons will not occur between times that are more than half the OS time epoch.", 
             "title": "Overview"
         }, 
         {
-            "location": "/os/core_os/time/time/#time", 
-            "text": "Insert synopsis here", 
-            "title": "Time"
+            "location": "/os/core_os/time/os_time/#os_time", 
+            "text": "The system time for ther Mynewt OS.", 
+            "title": "OS_Time"
         }, 
         {
-            "location": "/os/core_os/time/time/#description", 
-            "text": "Describe OS feature here", 
+            "location": "/os/core_os/time/os_time/#description", 
+            "text": "The Mynewt OS contains an incrementing time that drives the OS scheduler and time delays. The time is a fixed size (e.g. 32 bits) and will eventually wrap back to zero. The time to wrap from zero back to zero is called the  OS time epoch .   The frequency of the OS time tick is specified in the architecture-specific OS code  os_arch.h  and is named  OS_TICKS_PER_SEC .", 
             "title": "Description"
         }, 
         {
-            "location": "/os/core_os/time/time/#data-structures", 
-            "text": "Replace this with the list of data structures used, why, any neat features", 
-            "title": "Data structures"
+            "location": "/os/core_os/time/os_time/#data-structures", 
+            "text": "Time is stored in Mynewt as an  os_time_t  value.", 
+            "title": "Data Structures"
         }, 
         {
-            "location": "/os/core_os/time/time/#list-of-functions", 
+            "location": "/os/core_os/time/os_time/#list-of-functions", 
             "text": "The functions available in time are:   os_time_delay  os_time_get  os_time_tick", 
             "title": "List of Functions"
         }, 
         {
+            "location": "/os/core_os/time/os_time/#list-of-macros", 
+            "text": "Several macros help with the evalution of times with respect to each other.   OS_TIME_TICK_LT(t1,t2)  -- evaluates to true if t1 is before t2 in time.  OS_TIME_TICK_GT(t1,t2)  -- evaluates to true if t1 is after t2 in time   OS_TIME_TICK_GEQ(t1,t2)  -- evaluates to true if t1 is on or after t2 in time.   NOTE:  For all of these macros the calculations are done modulo 'os_time_t'.    Ensure that comparison of OS time always uses the macros above (to compensate for the possible wrap of OS time)", 
+            "title": "List of Macros"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time/#special-notes", 
+            "text": "Its important to understand how quickly the time wraps especially when doing time comparison using the macros above (or by any other means).   For example, if a tick is 1 millisecond and  os_time_t  is 32-bits the OS time will wrap back to zero in about 49.7 days or stated another way, the OS time epoch is 49.7 days.  If two times are more than 1/2 the OS time epoch apart, any time comparison will be incorrect.  Ensure at design time that comparisons will not occur between times that are more than half the OS time epoch.", 
+            "title": "Special Notes"
+        }, 
+        {
             "location": "/os/core_os/time/os_time_delay/", 
-            "text": "", 
+            "text": "os_time_delay\n\n\nvoid os_time_delay(int32_t ticks) \n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nticks\n\n\nNumber of ticks to delay. Less than or equal to zero means no delay\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nPassing \nOS_TIMEOUT_NEVER\n to this function will not block indefinitely but will return immediately.  Passing delays larger than 1/2 the OS time epoch should be avoided; behavior is unpredictable.\n\n\nExample\n\n\n\n\n    /* delay 3 seconds */\n    int32_t delay = OS_TICKS_PER_SEC * 3;\n    os_time_delay(delay);", 
             "title": "os_time_delay"
         }, 
         {
+            "location": "/os/core_os/time/os_time_delay/#os_time_delay", 
+            "text": "void os_time_delay(int32_t ticks)", 
+            "title": "os_time_delay"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_delay/#arguments", 
+            "text": "Arguments  Description      ticks  Number of ticks to delay. Less than or equal to zero means no delay", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_delay/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_delay/#notes", 
+            "text": "Passing  OS_TIMEOUT_NEVER  to this function will not block indefinitely but will return immediately.  Passing delays larger than 1/2 the OS time epoch should be avoided; behavior is unpredictable.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_delay/#example", 
+            "text": "/* delay 3 seconds */\n    int32_t delay = OS_TICKS_PER_SEC * 3;\n    os_time_delay(delay);", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/time/os_time_get/", 
-            "text": "", 
+            "text": "os_time_get\n\n\nos_time_t os_time_get(void) \n\n\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nThe current value of the OS time\n\n\nNotes\n\n\nSee the \nSpecial Notes\n on OS time epoch and comparison\n\n\nExample\n\n\n\n\n   os_time_t now = os_time_get();", 
             "title": "os_time_get"
         }, 
         {
+            "location": "/os/core_os/time/os_time_get/#os_time_get", 
+            "text": "os_time_t os_time_get(void)", 
+            "title": "os_time_get"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_get/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_get/#returned-values", 
+            "text": "The current value of the OS time", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_get/#notes", 
+            "text": "See the  Special Notes  on OS time epoch and comparison", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_get/#example", 
+            "text": "os_time_t now = os_time_get();", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/time/os_time_tick/", 
-            "text": "", 
+            "text": "os_time_tick\n\n\nvoid os_time_tick(void) \n\n\n\n\nIncrements the OS time tick for the system.  Typically, this is called in one place by the architecture specific OS code (\nlibs/os/arch\n) \ntimer_handler\n which is in turn called by the BSP specific code assigned to drive the OS timer tick. See \nPorting Mynewt OS\n for details.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nCalled for every single tick by the architecture specific functions.\n\n\nExample\n\n\n\n\n   os_time_tick();", 
             "title": "os_time_tick"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_tick/#os_time_tick", 
+            "text": "void os_time_tick(void)   Increments the OS time tick for the system.  Typically, this is called in one place by the architecture specific OS code ( libs/os/arch )  timer_handler  which is in turn called by the BSP specific code assigned to drive the OS timer tick. See  Porting Mynewt OS  for details.", 
+            "title": "os_time_tick"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_tick/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_tick/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_tick/#notes", 
+            "text": "Called for every single tick by the architecture specific functions.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/time/os_time_tick/#example", 
+            "text": "os_time_tick();", 
+            "title": "Example"
         }, 
         {
             "location": "/os/core_os/task/task/", 
@@ -1677,12 +1762,12 @@
         }, 
         {
             "location": "/os/core_os/port_os/", 
-            "text": "Porting Mynewt OS\n\n\nThis chapter describes how to adapt Newt OS to different processors. \n\n\nDescription\n\n\nInsert sections as you wish", 
+            "text": "Porting Mynewt OS\n\n\nThis chapter describes how to adapt the Mynewt OS to different processors. \n\n\nDescription\n\n\nInsert sections as you wish", 
             "title": "Porting to other Platforms"
         }, 
         {
             "location": "/os/core_os/port_os/#porting-mynewt-os", 
-            "text": "This chapter describes how to adapt Newt OS to different processors.", 
+            "text": "This chapter describes how to adapt the Mynewt OS to different processors.", 
             "title": "Porting Mynewt OS"
         }, 
         {
