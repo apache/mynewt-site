@@ -357,78 +357,373 @@
         }, 
         {
             "location": "/os/core_os/context_switch/context_switch/", 
-            "text": "Scheduler/Context Switching\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe scheduler here\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\nThe functions available in context_switch are:\n\n\n\n\nos_sched\n\n\nos_sched_ctx_sw_hook\n\n\nos_sched_get_current_task\n\n\nos_sched_insert\n\n\nos_sched_next_task\n\n\nos_sched_os_timer_exp\n\n\nos_sched_resort\n\n\nos_sched_set_current_task\n\n\nos_sched_sleep\n\n\nos_sched_wakeup", 
+            "text": "Scheduler/Context Switching\n\n\nScheduler's job is to maintain the list of tasks and decide which one should be running next.\n\n\nDescription\n\n\nTask states can be \nrunning\n, \nready to run\n or \nsleeping\n.\n\n\nWhen task is \nrunning\n, CPU is executing in that task's context. The program counter (PC) is pointing to instructions task wants to execute and stack pointer (SP) is pointing to task's stack.\n\n\nTask which is \nready to run\n wants to get on the CPU to do its work.\n\n\nTask which is \nsleeping\n has no more work to do. It's waiting for someone else to wake it up.\n\n\nScheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's t_prio field), and make its state \nrunning\n.\n\n\nTasks which are either \nrunning\n or \nready to run\n are kept in linked list \ng_os_run_list\n. This list is ordered by priority.\n\n\nTasks which are \nsleeping\n are kept in linked list \ng_os_sleep_list\n.\n\n\nScheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be \nrunning\n. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently \nrunning\n task is stored and the new task is swapped in.\n\n\nData structures\n\n\nList of Functions\n\n\nThe functions available in context_switch are:\n\n\n\n\nos_sched\n\n\nos_arch_ctx_sw\n\n\nos_arch_ctx_sw_isr\n\n\nos_sched_ctx_sw_hook\n\n\nos_sched_get_current_task\n\n\nos_sched_insert\n\n\nos_sched_next_task\n\n\nos_sched_os_timer_exp\n\n\nos_sched_resort\n\n\nos_sched_set_current_task\n\n\nos_sched_sleep\n\n\nos_sched_wakeup", 
             "title": "Overview"
         }, 
         {
             "location": "/os/core_os/context_switch/context_switch/#schedulercontext-switching", 
-            "text": "Insert synopsis here", 
+            "text": "Scheduler's job is to maintain the list of tasks and decide which one should be running next.", 
             "title": "Scheduler/Context Switching"
         }, 
         {
             "location": "/os/core_os/context_switch/context_switch/#description", 
-            "text": "Describe scheduler here", 
+            "text": "Task states can be  running ,  ready to run  or  sleeping .  When task is  running , CPU is executing in that task's context. The program counter (PC) is pointing to instructions task wants to execute and stack pointer (SP) is pointing to task's stack.  Task which is  ready to run  wants to get on the CPU to do its work.  Task which is  sleeping  has no more work to do. It's waiting for someone else to wake it up.  Scheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's t_prio field), and make its state  running .  Tasks which are either  running  or  ready to run  are kept in linked list  g_os_run_list . This list is ordered by priority.  Tasks which are  sleeping  are kept in linked list  g_os_sleep_list .  Scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be  running . This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently  running  task is stored and the new task is swapped in.", 
             "title": "Description"
         }, 
         {
             "location": "/os/core_os/context_switch/context_switch/#data-structures", 
-            "text": "Replace this with the list of data structures used, why, any neat features", 
+            "text": "", 
             "title": "Data structures"
         }, 
         {
             "location": "/os/core_os/context_switch/context_switch/#list-of-functions", 
-            "text": "The functions available in context_switch are:   os_sched  os_sched_ctx_sw_hook  os_sched_get_current_task  os_sched_insert  os_sched_next_task  os_sched_os_timer_exp  os_sched_resort  os_sched_set_current_task  os_sched_sleep  os_sched_wakeup", 
+            "text": "The functions available in context_switch are:   os_sched  os_arch_ctx_sw  os_arch_ctx_sw_isr  os_sched_ctx_sw_hook  os_sched_get_current_task  os_sched_insert  os_sched_next_task  os_sched_os_timer_exp  os_sched_resort  os_sched_set_current_task  os_sched_sleep  os_sched_wakeup", 
             "title": "List of Functions"
         }, 
         {
             "location": "/os/core_os/context_switch/os_sched/", 
-            "text": "", 
+            "text": "os_sched \n\n\nvoid os_sched(struct os_task *next_t, int isr)\n\n\n\n\nPerforms context switch if needed. If \nnext_t\n is set, that task will be made \nrunning\n. If \nnext_t\n is NULL, highest priority \nready to run\n is swapped in. This function can be called when new tasks were made \nready to run\n or if the current task is moved to \nsleeping\n state.\n\n\nThis function will call the architecture specific routine to swap in the new task.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nnext_t\n\n\nPointer to task which must run next (optional)\n\n\n\n\n\n\nisr\n\n\nFlag indicating whether function is called from interrupt handler or not\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nInterrupts must be disabled when calling this.\n\n\nExample\n\n\n\n\nos_error_t\nos_mutex_release(struct os_mutex *mu)\n{\n    ...\n    OS_EXIT_CRITICAL(sr);\n\n    /* Re-schedule if needed */\n    if (resched) {\n        os_sched(rdy, 0);\n    }\n\n    return OS_OK;\n\n}", 
             "title": "os_sched"
         }, 
         {
+            "location": "/os/core_os/context_switch/os_sched/#os_sched", 
+            "text": "void os_sched(struct os_task *next_t, int isr)  Performs context switch if needed. If  next_t  is set, that task will be made  running . If  next_t  is NULL, highest priority  ready to run  is swapped in. This function can be called when new tasks were made  ready to run  or if the current task is moved to  sleeping  state.  This function will call the architecture specific routine to swap in the new task.", 
+            "title": " os_sched "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched/#arguments", 
+            "text": "Arguments  Description      next_t  Pointer to task which must run next (optional)    isr  Flag indicating whether function is called from interrupt handler or not", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched/#notes", 
+            "text": "Interrupts must be disabled when calling this.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched/#example", 
+            "text": "os_error_t\nos_mutex_release(struct os_mutex *mu)\n{\n    ...\n    OS_EXIT_CRITICAL(sr);\n\n    /* Re-schedule if needed */\n    if (resched) {\n        os_sched(rdy, 0);\n    }\n\n    return OS_OK;\n\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw/", 
+            "text": "os_arch_ctx_sw \n\n\nvoid os_arch_ctx_sw(struct os_task *next_t)\n\n\n\n\nChange the state of task pointed by \nnext_t\n to be \nrunning\n.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nnext_t\n\n\nPointer to task which must run next\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nThis would get called from another task's context.\n\n\nExample\n\n\n\n\nvoid\nos_sched(struct os_task *next_t, int isr) \n{\n    os_sr_t sr;\n\n    OS_ENTER_CRITICAL(sr);\n\n    if (!next_t) {\n        next_t = os_sched_next_task();\n    }\n\n    if (next_t != g_current_task) {\n        OS_EXIT_CRITICAL(sr);\n        if (isr) {\n            os_arch_ctx_sw_isr(next_t);\n        } else {\n            os_arch_ctx_sw(next_t);\n        }\n\n    } else {\n        OS_EXIT_CRITICAL(sr);\n    }\n}", 
+            "title": "os_arch_ctx_sw"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw/#os_arch_ctx_sw", 
+            "text": "void os_arch_ctx_sw(struct os_task *next_t)  Change the state of task pointed by  next_t  to be  running .", 
+            "title": " os_arch_ctx_sw "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw/#arguments", 
+            "text": "Arguments  Description      next_t  Pointer to task which must run next", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw/#notes", 
+            "text": "This would get called from another task's context.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw/#example", 
+            "text": "void\nos_sched(struct os_task *next_t, int isr) \n{\n    os_sr_t sr;\n\n    OS_ENTER_CRITICAL(sr);\n\n    if (!next_t) {\n        next_t = os_sched_next_task();\n    }\n\n    if (next_t != g_current_task) {\n        OS_EXIT_CRITICAL(sr);\n        if (isr) {\n            os_arch_ctx_sw_isr(next_t);\n        } else {\n            os_arch_ctx_sw(next_t);\n        }\n\n    } else {\n        OS_EXIT_CRITICAL(sr);\n    }\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw_isr/", 
+            "text": "os_arch_ctx_sw_isr \n\n\nvoid os_arch_ctx_sw_isr(struct os_task *next_t)\n\n\n\n\nChange the state of task pointed by \nnext_t\n to be \nrunning\n.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nnext_t\n\n\nPointer to task which must run next\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nThis would get called from interrupt context.\n\n\nExample\n\n\n\n\nvoid\nos_sched(struct os_task *next_t, int isr) \n{\n    os_sr_t sr;\n\n    OS_ENTER_CRITICAL(sr);\n\n    if (!next_t) {\n        next_t = os_sched_next_task();\n    }\n\n    if (next_t != g_current_task) {\n        OS_EXIT_CRITICAL(sr);\n        if (isr) {\n            os_arch_ctx_sw_isr(next_t);\n        } else {\n            os_arch_ctx_sw(next_t);\n        }\n\n    } else {\n        OS_EXIT_CRITICAL(sr);\n    }\n}", 
+            "title": "os_arch_ctx_sw_isr"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw_isr/#os_arch_ctx_sw_isr", 
+            "text": "void os_arch_ctx_sw_isr(struct os_task *next_t)  Change the state of task pointed by  next_t  to be  running .", 
+            "title": " os_arch_ctx_sw_isr "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw_isr/#arguments", 
+            "text": "Arguments  Description      next_t  Pointer to task which must run next", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw_isr/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw_isr/#notes", 
+            "text": "This would get called from interrupt context.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_arch_ctx_sw_isr/#example", 
+            "text": "void\nos_sched(struct os_task *next_t, int isr) \n{\n    os_sr_t sr;\n\n    OS_ENTER_CRITICAL(sr);\n\n    if (!next_t) {\n        next_t = os_sched_next_task();\n    }\n\n    if (next_t != g_current_task) {\n        OS_EXIT_CRITICAL(sr);\n        if (isr) {\n            os_arch_ctx_sw_isr(next_t);\n        } else {\n            os_arch_ctx_sw(next_t);\n        }\n\n    } else {\n        OS_EXIT_CRITICAL(sr);\n    }\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/context_switch/os_sched_ctx_sw_hook/", 
-            "text": "", 
+            "text": "os_sched_ctx_sw_hook \n\n\nvoid os_sched_ctx_sw_hook(struct os_task *next_t)\n\n\n\n\nPerforms task accounting when context switching.\n\n\nThis function must be called from the architecture specific context switching routines \nos_arch_ctx_sw_isr()\n and \nos_arch_ctx_sw()\n before they resume execution of the \nrunning\n task.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nExample\n\n\n\n\nvoid\nos_arch_ctx_sw(struct os_task *t)\n{\n    os_sched_ctx_sw_hook(t);\n\n    /* Set PendSV interrupt pending bit to force context switch */\n    SCB-\nICSR = SCB_ICSR_PENDSVSET_Msk;\n}", 
             "title": "os_sched_ctx_sw_hook"
         }, 
         {
-            "location": "/os/core_os/context_switch/os_sched_get_current_task/", 
+            "location": "/os/core_os/context_switch/os_sched_ctx_sw_hook/#os_sched_ctx_sw_hook", 
+            "text": "void os_sched_ctx_sw_hook(struct os_task *next_t)  Performs task accounting when context switching.  This function must be called from the architecture specific context switching routines  os_arch_ctx_sw_isr()  and  os_arch_ctx_sw()  before they resume execution of the  running  task.", 
+            "title": " os_sched_ctx_sw_hook "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_ctx_sw_hook/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_ctx_sw_hook/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_ctx_sw_hook/#notes", 
             "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_ctx_sw_hook/#example", 
+            "text": "void\nos_arch_ctx_sw(struct os_task *t)\n{\n    os_sched_ctx_sw_hook(t);\n\n    /* Set PendSV interrupt pending bit to force context switch */\n    SCB- ICSR = SCB_ICSR_PENDSVSET_Msk;\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_get_current_task/", 
+            "text": "os_sched_get_current_task \n\n\nstruct os_task *os_sched_get_current_task(void)\n\n\n\n\nReturns the pointer to task which is currently \nrunning\n.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nSee description.\n\n\nNotes\n\n\nExample\n\n\n\n\nvoid\nos_time_delay(int32_t osticks)\n{\n    os_sr_t sr;\n\n    if (osticks \n 0) {\n        OS_ENTER_CRITICAL(sr);\n        os_sched_sleep(os_sched_get_current_task(), (os_time_t)osticks);\n        OS_EXIT_CRITICAL(sr);\n        os_sched(NULL, 0);\n    }\n}", 
             "title": "os_sched_get_current_task"
         }, 
         {
-            "location": "/os/core_os/context_switch/os_sched_insert/", 
+            "location": "/os/core_os/context_switch/os_sched_get_current_task/#os_sched_get_current_task", 
+            "text": "struct os_task *os_sched_get_current_task(void)  Returns the pointer to task which is currently  running .", 
+            "title": " os_sched_get_current_task "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_get_current_task/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_get_current_task/#returned-values", 
+            "text": "See description.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_get_current_task/#notes", 
             "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_get_current_task/#example", 
+            "text": "void\nos_time_delay(int32_t osticks)\n{\n    os_sr_t sr;\n\n    if (osticks   0) {\n        OS_ENTER_CRITICAL(sr);\n        os_sched_sleep(os_sched_get_current_task(), (os_time_t)osticks);\n        OS_EXIT_CRITICAL(sr);\n        os_sched(NULL, 0);\n    }\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_insert/", 
+            "text": "os_sched_insert \n\n\nos_error_t\nos_sched_insert(struct os_task *t)\n\n\n\n\nInsert task into scheduler's \nready to run\n list.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to task\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns OS_EINVAL if task state is not \nREADY\n.\nReturns 0 on success.\n\n\nNotes\n\n\nYou probably don't need to call this.", 
             "title": "os_sched_insert"
         }, 
         {
+            "location": "/os/core_os/context_switch/os_sched_insert/#os_sched_insert", 
+            "text": "os_error_t\nos_sched_insert(struct os_task *t)  Insert task into scheduler's  ready to run  list.", 
+            "title": " os_sched_insert "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_insert/#arguments", 
+            "text": "Arguments  Description      t  Pointer to task", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_insert/#returned-values", 
+            "text": "Returns OS_EINVAL if task state is not  READY .\nReturns 0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_insert/#notes", 
+            "text": "You probably don't need to call this.", 
+            "title": "Notes"
+        }, 
+        {
             "location": "/os/core_os/context_switch/os_sched_next_task/", 
-            "text": "", 
+            "text": "os_sched_next_task \n\n\nstruct os_task *os_sched_next_task(void)\n\n\n\n\nReturns the pointer to highest priority task from the list which are \nready to run\n.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nSee description.\n\n\nNotes\n\n\nShould be called with interrupts disabled.", 
             "title": "os_sched_next_task"
         }, 
         {
+            "location": "/os/core_os/context_switch/os_sched_next_task/#os_sched_next_task", 
+            "text": "struct os_task *os_sched_next_task(void)  Returns the pointer to highest priority task from the list which are  ready to run .", 
+            "title": " os_sched_next_task "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_next_task/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_next_task/#returned-values", 
+            "text": "See description.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_next_task/#notes", 
+            "text": "Should be called with interrupts disabled.", 
+            "title": "Notes"
+        }, 
+        {
             "location": "/os/core_os/context_switch/os_sched_os_timer_exp/", 
-            "text": "", 
+            "text": "os_sched_os_timer_exp \n\n\nvoid os_sched_os_timer_exp(void)\n\n\n\n\nInform scheduler that OS time has moved forward, and it should inspect tasks which are \nsleeping\n to check whether they should be moved to \ng_run_list\n or not.\n\n\nThis function should be called from code which handles moving OS time forward. After calling it, the highest priority task which is \nready to run\n might've changed, so call to \nos_sched()\n should be done.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nExample\n\n\n\n\nvoid\ntimer_handler(void)\n{\n    os_time_tick();\n    os_callout_tick();\n    os_sched_os_timer_exp();\n    os_sched(NULL, 1);\n}", 
             "title": "os_sched_os_timer_exp"
         }, 
         {
-            "location": "/os/core_os/context_switch/os_sched_resort/", 
+            "location": "/os/core_os/context_switch/os_sched_os_timer_exp/#os_sched_os_timer_exp", 
+            "text": "void os_sched_os_timer_exp(void)  Inform scheduler that OS time has moved forward, and it should inspect tasks which are  sleeping  to check whether they should be moved to  g_run_list  or not.  This function should be called from code which handles moving OS time forward. After calling it, the highest priority task which is  ready to run  might've changed, so call to  os_sched()  should be done.", 
+            "title": " os_sched_os_timer_exp "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_os_timer_exp/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_os_timer_exp/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_os_timer_exp/#notes", 
             "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_os_timer_exp/#example", 
+            "text": "void\ntimer_handler(void)\n{\n    os_time_tick();\n    os_callout_tick();\n    os_sched_os_timer_exp();\n    os_sched(NULL, 1);\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_resort/", 
+            "text": "os_sched_resort \n\n\nvoid os_sched_resort(struct os_task *t)\n\n\n\n\nInform scheduler that the priority of the task \nt\n has changed (e.g. in order to avoid priority inversion), and the \nready to run\n list should be re-sorted.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to a task whose priority has changed\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nt\n must be \nready to run\n before calling this.\n\n\nExample\n\n\n\n\nos_error_t\nos_mutex_pend(struct os_mutex *mu, uint32_t timeout)\n{\n    ....\n        /* Change priority of owner if needed */\n    if (mu-\nmu_owner-\nt_prio \n current-\nt_prio) {\n        mu-\nmu_owner-\nt_prio = current-\nt_prio;\n        os_sched_resort(mu-\nmu_owner);\n    }\n    ....\n}", 
             "title": "os_sched_resort"
         }, 
         {
+            "location": "/os/core_os/context_switch/os_sched_resort/#os_sched_resort", 
+            "text": "void os_sched_resort(struct os_task *t)  Inform scheduler that the priority of the task  t  has changed (e.g. in order to avoid priority inversion), and the  ready to run  list should be re-sorted.", 
+            "title": " os_sched_resort "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_resort/#arguments", 
+            "text": "Arguments  Description      t  Pointer to a task whose priority has changed", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_resort/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_resort/#notes", 
+            "text": "t  must be  ready to run  before calling this.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_resort/#example", 
+            "text": "os_error_t\nos_mutex_pend(struct os_mutex *mu, uint32_t timeout)\n{\n    ....\n        /* Change priority of owner if needed */\n    if (mu- mu_owner- t_prio   current- t_prio) {\n        mu- mu_owner- t_prio = current- t_prio;\n        os_sched_resort(mu- mu_owner);\n    }\n    ....\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/context_switch/os_sched_set_current_task/", 
-            "text": "", 
+            "text": "os_sched_set_current_task \n\n\nvoid \nos_sched_set_current_task(struct os_task *t)\n\n\n\n\nSets the currently running task to 't'.\n\n\nThis is called from architecture specific context switching code to update scheduler state. Call is made when state of the task 't' is made \nrunning\n.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to a task\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nNotes\n\n\nThis function simply sets the global variable holding the currently running task. It does not perform a context switch or change the os run or sleep list.", 
             "title": "os_sched_set_current_task"
         }, 
         {
+            "location": "/os/core_os/context_switch/os_sched_set_current_task/#os_sched_set_current_task", 
+            "text": "void \nos_sched_set_current_task(struct os_task *t)  Sets the currently running task to 't'.  This is called from architecture specific context switching code to update scheduler state. Call is made when state of the task 't' is made  running .", 
+            "title": " os_sched_set_current_task "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_set_current_task/#arguments", 
+            "text": "Arguments  Description      t  Pointer to a task", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_set_current_task/#returned-values", 
+            "text": "N/A", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_set_current_task/#notes", 
+            "text": "This function simply sets the global variable holding the currently running task. It does not perform a context switch or change the os run or sleep list.", 
+            "title": "Notes"
+        }, 
+        {
             "location": "/os/core_os/context_switch/os_sched_sleep/", 
-            "text": "", 
+            "text": "os_sched_sleep \n\n\nint\nos_sched_sleep(struct os_task *t, os_time_t nticks)\n\n\n\n\nTask 't' state is changed from \nready to run\n to \nsleeping\n. Sleep time will be specified in \nnticks\n.\n\n\nTask will be woken up after sleep timer expires, unless there are other signals causing  it to wake up.\n\n\nIf \nnticks\n is set to \nOS_TIMEOUT_NEVER\n, task never wakes up with a sleep timer.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to task\n\n\n\n\n\n\nnticks\n\n\nNumber of ticks to sleep in OS ticks\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success.\n\n\nNotes\n\n\nMust be called with interrupts disabled.\n\n\nExample\n\n\n\n\nstruct os_event *\nos_eventq_get(struct os_eventq *evq)\n{\n    struct os_event *ev;\n    os_sr_t sr;\n\n    OS_ENTER_CRITICAL(sr);\npull_one:\n    ev = STAILQ_FIRST(\nevq-\nevq_list);\n    if (ev) {\n        STAILQ_REMOVE(\nevq-\nevq_list, ev, os_event, ev_next);\n        ev-\nev_queued = 0;\n    } else {\n        evq-\nevq_task = os_sched_get_current_task();\n        os_sched_sleep(evq-\nevq_task, OS_TIMEOUT_NEVER);\n        OS_EXIT_CRITICAL(sr);\n\n        os_sched(NULL, 0);\n\n        OS_ENTER_CRITICAL(sr);\n        evq-\nevq_task = NULL;\n        goto pull_one;\n    }\n    OS_EXIT_CRITICAL(sr);\n\n    return (ev);\n}", 
             "title": "os_sched_sleep"
         }, 
         {
+            "location": "/os/core_os/context_switch/os_sched_sleep/#os_sched_sleep", 
+            "text": "int\nos_sched_sleep(struct os_task *t, os_time_t nticks)  Task 't' state is changed from  ready to run  to  sleeping . Sleep time will be specified in  nticks .  Task will be woken up after sleep timer expires, unless there are other signals causing  it to wake up.  If  nticks  is set to  OS_TIMEOUT_NEVER , task never wakes up with a sleep timer.", 
+            "title": " os_sched_sleep "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_sleep/#arguments", 
+            "text": "Arguments  Description      t  Pointer to task    nticks  Number of ticks to sleep in OS ticks", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_sleep/#returned-values", 
+            "text": "Returns 0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_sleep/#notes", 
+            "text": "Must be called with interrupts disabled.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_sleep/#example", 
+            "text": "struct os_event *\nos_eventq_get(struct os_eventq *evq)\n{\n    struct os_event *ev;\n    os_sr_t sr;\n\n    OS_ENTER_CRITICAL(sr);\npull_one:\n    ev = STAILQ_FIRST( evq- evq_list);\n    if (ev) {\n        STAILQ_REMOVE( evq- evq_list, ev, os_event, ev_next);\n        ev- ev_queued = 0;\n    } else {\n        evq- evq_task = os_sched_get_current_task();\n        os_sched_sleep(evq- evq_task, OS_TIMEOUT_NEVER);\n        OS_EXIT_CRITICAL(sr);\n\n        os_sched(NULL, 0);\n\n        OS_ENTER_CRITICAL(sr);\n        evq- evq_task = NULL;\n        goto pull_one;\n    }\n    OS_EXIT_CRITICAL(sr);\n\n    return (ev);\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/context_switch/os_sched_wakeup/", 
-            "text": "", 
+            "text": "os_sched_wakeup \n\n\nint\nos_sched_wakeup(struct os_task *t)\n\n\n\n\nCalled to make task \nready to run\n. If task is \nsleeping\n, it is woken up.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nt\n\n\nPointer to task\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success.\n\n\nNotes\n\n\nExample\n\n\n\n\nvoid\nos_eventq_put2(struct os_eventq *evq, struct os_event *ev, int isr)\n{\n    ....\n        /* If task waiting on event, wake it up. */\n    resched = 0;\n    if (evq-\nevq_task) {\n        os_sched_wakeup(evq-\nevq_task);\n        evq-\nevq_task = NULL;\n        resched = 1;\n    }\n    ....\n}", 
             "title": "os_sched_wakeup"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_wakeup/#os_sched_wakeup", 
+            "text": "int\nos_sched_wakeup(struct os_task *t)  Called to make task  ready to run . If task is  sleeping , it is woken up.", 
+            "title": " os_sched_wakeup "
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_wakeup/#arguments", 
+            "text": "Arguments  Description      t  Pointer to task", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_wakeup/#returned-values", 
+            "text": "Returns 0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_wakeup/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/context_switch/os_sched_wakeup/#example", 
+            "text": "void\nos_eventq_put2(struct os_eventq *evq, struct os_event *ev, int isr)\n{\n    ....\n        /* If task waiting on event, wake it up. */\n    resched = 0;\n    if (evq- evq_task) {\n        os_sched_wakeup(evq- evq_task);\n        evq- evq_task = NULL;\n        resched = 1;\n    }\n    ....\n}", 
+            "title": "Example"
         }, 
         {
             "location": "/os/core_os/time/os_time/", 

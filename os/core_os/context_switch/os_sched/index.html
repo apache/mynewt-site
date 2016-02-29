@@ -220,6 +220,22 @@
               
   
     <li>
+      <a href="../os_arch_ctx_sw/">os_arch_ctx_sw</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../os_arch_ctx_sw_isr/">os_arch_ctx_sw_isr</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
       <a href="../os_sched_ctx_sw_hook/">os_sched_ctx_sw_hook</a>
     </li>
   
@@ -552,7 +568,54 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_sched"><font color="#F2853F" style="font-size:24pt"> os_sched </font><a class="headerlink" href="#os_sched" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void os_sched(struct os_task *next_t, int isr)
+</code></pre>
+
+<p>Performs context switch if needed. If <em>next_t</em> is set, that task will be made <em>running</em>. If <em>next_t</em> is NULL, highest priority <em>ready to run</em> is swapped in. This function can be called when new tasks were made <em>ready to run</em> or if the current task is moved to <em>sleeping</em> state.</p>
+<p>This function will call the architecture specific routine to swap in the new task.</p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>next_t</td>
+<td>Pointer to task which must run next (optional)</td>
+</tr>
+<tr>
+<td>isr</td>
+<td>Flag indicating whether function is called from interrupt handler or not</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>N/A</p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p>Interrupts must be disabled when calling this.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here></p>
+<pre><code class="no-highlight">os_error_t
+os_mutex_release(struct os_mutex *mu)
+{
+    ...
+    OS_EXIT_CRITICAL(sr);
+
+    /* Re-schedule if needed */
+    if (resched) {
+        os_sched(rdy, 0);
+    }
+
+    return OS_OK;
+
+}
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

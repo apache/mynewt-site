@@ -220,6 +220,22 @@
               
   
     <li>
+      <a href="../os_arch_ctx_sw/">os_arch_ctx_sw</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../os_arch_ctx_sw_isr/">os_arch_ctx_sw_isr</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
       <a href="../os_sched_ctx_sw_hook/">os_sched_ctx_sw_hook</a>
     </li>
   
@@ -552,7 +568,69 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_sched_sleep"><font color="#F2853F" style="font-size:24pt"> os_sched_sleep </font><a class="headerlink" href="#os_sched_sleep" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int
+os_sched_sleep(struct os_task *t, os_time_t nticks)
+</code></pre>
+
+<p>Task 't' state is changed from <em>ready to run</em> to <em>sleeping</em>. Sleep time will be specified in <em>nticks</em>.</p>
+<p>Task will be woken up after sleep timer expires, unless there are other signals causing  it to wake up.</p>
+<p>If <em>nticks</em> is set to <em>OS_TIMEOUT_NEVER</em>, task never wakes up with a sleep timer.</p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>Pointer to task</td>
+</tr>
+<tr>
+<td>nticks</td>
+<td>Number of ticks to sleep in OS ticks</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>Returns 0 on success.</p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p>Must be called with interrupts disabled.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here></p>
+<pre><code class="no-highlight">struct os_event *
+os_eventq_get(struct os_eventq *evq)
+{
+    struct os_event *ev;
+    os_sr_t sr;
+
+    OS_ENTER_CRITICAL(sr);
+pull_one:
+    ev = STAILQ_FIRST(&amp;evq-&gt;evq_list);
+    if (ev) {
+        STAILQ_REMOVE(&amp;evq-&gt;evq_list, ev, os_event, ev_next);
+        ev-&gt;ev_queued = 0;
+    } else {
+        evq-&gt;evq_task = os_sched_get_current_task();
+        os_sched_sleep(evq-&gt;evq_task, OS_TIMEOUT_NEVER);
+        OS_EXIT_CRITICAL(sr);
+
+        os_sched(NULL, 0);
+
+        OS_ENTER_CRITICAL(sr);
+        evq-&gt;evq_task = NULL;
+        goto pull_one;
+    }
+    OS_EXIT_CRITICAL(sr);
+
+    return (ev);
+}
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

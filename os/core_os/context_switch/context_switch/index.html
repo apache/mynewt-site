@@ -469,15 +469,23 @@
 </div>
                         
                             <h1 id="schedulercontext-switching">Scheduler/Context Switching<a class="headerlink" href="#schedulercontext-switching" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+<p>Scheduler's job is to maintain the list of tasks and decide which one should be running next.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe scheduler here</p>
+<p>Task states can be <em>running</em>, <em>ready to run</em> or <em>sleeping</em>.</p>
+<p>When task is <em>running</em>, CPU is executing in that task's context. The program counter (PC) is pointing to instructions task wants to execute and stack pointer (SP) is pointing to task's stack.</p>
+<p>Task which is <em>ready to run</em> wants to get on the CPU to do its work.</p>
+<p>Task which is <em>sleeping</em> has no more work to do. It's waiting for someone else to wake it up.</p>
+<p>Scheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's t_prio field), and make its state <em>running</em>.</p>
+<p>Tasks which are either <em>running</em> or <em>ready to run</em> are kept in linked list <code>g_os_run_list</code>. This list is ordered by priority.</p>
+<p>Tasks which are <em>sleeping</em> are kept in linked list <code>g_os_sleep_list</code>.</p>
+<p>Scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be <em>running</em>. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently <em>running</em> task is stored and the new task is swapped in.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p>The functions available in context_switch are:</p>
 <ul>
 <li><a href="../os_sched/">os_sched</a></li>
+<li><a href="../os_arch_ctx_sw/">os_arch_ctx_sw</a></li>
+<li><a href="../os_arch_ctx_sw_isr/">os_arch_ctx_sw_isr</a></li>
 <li><a href="../os_sched_ctx_sw_hook/">os_sched_ctx_sw_hook</a></li>
 <li><a href="../os_sched_get_current_task/">os_sched_get_current_task</a></li>
 <li><a href="../os_sched_insert/">os_sched_insert</a></li>

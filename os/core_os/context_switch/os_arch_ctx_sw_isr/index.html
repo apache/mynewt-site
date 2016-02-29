@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/context_switch/os_sched_next_task/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/context_switch/os_arch_ctx_sw_isr/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>os_sched_next_task - Apache Mynewt</title>
+	<title>os_arch_ctx_sw_isr - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="os_sched_next_task">
+    <body class="os_arch_ctx_sw_isr">
 
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -227,8 +227,8 @@
           
               
   
-    <li>
-      <a href="../os_arch_ctx_sw_isr/">os_arch_ctx_sw_isr</a>
+    <li class="active">
+      os_arch_ctx_sw_isr
     </li>
   
 
@@ -259,8 +259,8 @@
           
               
   
-    <li class="active">
-      os_sched_next_task
+    <li>
+      <a href="../os_sched_next_task/">os_sched_next_task</a>
     </li>
   
 
@@ -560,7 +560,7 @@
         
       
     
-    <li>os_sched_next_task</li>
+    <li>os_arch_ctx_sw_isr</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -568,17 +568,57 @@
   <hr/>
 </div>
                         
-                            <h2 id="os_sched_next_task"><font color="#F2853F" style="font-size:24pt"> os_sched_next_task </font><a class="headerlink" href="#os_sched_next_task" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">struct os_task *os_sched_next_task(void)
+                            <h2 id="os_arch_ctx_sw_isr"><font color="#F2853F" style="font-size:24pt"> os_arch_ctx_sw_isr </font><a class="headerlink" href="#os_arch_ctx_sw_isr" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void os_arch_ctx_sw_isr(struct os_task *next_t)
 </code></pre>
 
-<p>Returns the pointer to highest priority task from the list which are <em>ready to run</em>.</p>
+<p>Change the state of task pointed by <em>next_t</em> to be <em>running</em>.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
-<p>N/A</p>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>next_t</td>
+<td>Pointer to task which must run next</td>
+</tr>
+</tbody>
+</table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>See description.</p>
+<p>N/A</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Should be called with interrupts disabled.</p>
+<p>This would get called from interrupt context.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here></p>
+<pre><code class="no-highlight">void
+os_sched(struct os_task *next_t, int isr) 
+{
+    os_sr_t sr;
+
+    OS_ENTER_CRITICAL(sr);
+
+    if (!next_t) {
+        next_t = os_sched_next_task();
+    }
+
+    if (next_t != g_current_task) {
+        OS_EXIT_CRITICAL(sr);
+        if (isr) {
+            os_arch_ctx_sw_isr(next_t);
+        } else {
+            os_arch_ctx_sw(next_t);
+        }
+
+    } else {
+        OS_EXIT_CRITICAL(sr);
+    }
+}
+</code></pre>
+
 <hr />
                         
                     </div>

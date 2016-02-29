@@ -220,6 +220,22 @@
               
   
     <li>
+      <a href="../os_arch_ctx_sw/">os_arch_ctx_sw</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../os_arch_ctx_sw_isr/">os_arch_ctx_sw_isr</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
       <a href="../os_sched_ctx_sw_hook/">os_sched_ctx_sw_hook</a>
     </li>
   
@@ -552,7 +568,46 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_sched_resort"><font color="#F2853F" style="font-size:24pt"> os_sched_resort </font><a class="headerlink" href="#os_sched_resort" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">void os_sched_resort(struct os_task *t)
+</code></pre>
+
+<p>Inform scheduler that the priority of the task <em>t</em> has changed (e.g. in order to avoid priority inversion), and the <em>ready to run</em> list should be re-sorted.</p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>t</td>
+<td>Pointer to a task whose priority has changed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>N/A</p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p><em>t</em> must be <em>ready to run</em> before calling this.</p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<p><Add text to set up the context for the example here></p>
+<pre><code class="no-highlight">os_error_t
+os_mutex_pend(struct os_mutex *mu, uint32_t timeout)
+{
+    ....
+        /* Change priority of owner if needed */
+    if (mu-&gt;mu_owner-&gt;t_prio &gt; current-&gt;t_prio) {
+        mu-&gt;mu_owner-&gt;t_prio = current-&gt;t_prio;
+        os_sched_resort(mu-&gt;mu_owner);
+    }
+    ....
+}
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>
