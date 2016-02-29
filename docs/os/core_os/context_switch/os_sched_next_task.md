@@ -18,14 +18,5 @@ See description.
 
 Should be called interrupts disabled.
 
-#### Example
-
-<Add text to set up the context for the example here>
-
-```no-highlight
-
-}
-```
-
 ---------------------
 

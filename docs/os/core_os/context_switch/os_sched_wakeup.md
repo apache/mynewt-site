@@ -24,6 +24,20 @@ Returns 0 on success.
 #### Example
 
 <Add text to set up the context for the example here>
-
+```no-highlight
+void
+os_eventq_put2(struct os_eventq *evq, struct os_event *ev, int isr)
+{
+    ....
+        /* If task waiting on event, wake it up. */
+    resched = 0;
+    if (evq->evq_task) {
+        os_sched_wakeup(evq->evq_task);
+        evq->evq_task = NULL;
+        resched = 1;
+    }
+    ....
+}
+```
 ---------------------
 

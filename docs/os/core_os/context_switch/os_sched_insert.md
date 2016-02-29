@@ -21,10 +21,7 @@ Returns 0 on success.
 
 #### Notes
 
-
-#### Example
-
-<Add text to set up the context for the example here>
+You probably don't need to call this.
 
 ---------------------
 

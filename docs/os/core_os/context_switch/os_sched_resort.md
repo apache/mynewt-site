@@ -23,6 +23,18 @@ N/A
 #### Example
 
 <Add text to set up the context for the example here>
-
+```no-highlight
+os_error_t
+os_mutex_pend(struct os_mutex *mu, uint32_t timeout)
+{
+    ....
+        /* Change priority of owner if needed */
+    if (mu->mu_owner->t_prio > current->t_prio) {
+        mu->mu_owner->t_prio = current->t_prio;
+        os_sched_resort(mu->mu_owner);
+    }
+    ....
+}
+```
 
 ---------------------

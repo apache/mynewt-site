@@ -23,13 +23,6 @@ N/A
 
  This function simply sets the global variable holding the currently running task. It does not perform a context switch or change the os run or sleep list.
 
-#### Example
-
-<Add text to set up the context for the example here>
-
-```no-highlight
-
-```
 
 ---------------------
 

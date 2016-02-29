@@ -23,6 +23,30 @@ This would get called from another task's context.
 #### Example
 
 <Add text to set up the context for the example here>
+```no-highlight
+void
+os_sched(struct os_task *next_t, int isr) 
+{
+    os_sr_t sr;
 
+    OS_ENTER_CRITICAL(sr);
+
+    if (!next_t) {
+        next_t = os_sched_next_task();
+    }
+
+    if (next_t != g_current_task) {
+        OS_EXIT_CRITICAL(sr);
+        if (isr) {
+            os_arch_ctx_sw_isr(next_t);
+        } else {
+            os_arch_ctx_sw(next_t);
+        }
+
+    } else {
+        OS_EXIT_CRITICAL(sr);
+    }
+}
+```
 
 ---------------------
