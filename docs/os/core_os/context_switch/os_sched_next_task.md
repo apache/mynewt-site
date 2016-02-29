@@ -16,7 +16,7 @@ See description.
 
 #### Notes
 
-Should be called interrupts disabled.
+Should be called with interrupts disabled.
 
 ---------------------
 
