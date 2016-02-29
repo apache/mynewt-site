@@ -20,7 +20,7 @@ makes the operating system requirements for them unique:
 * Low power operation: devices operate in mostly sleeping mode, in order to conserve
 battery power and maximize power usage.
 
-As more and more devices get connected, these interconnected devies perfrom complex tasks. To
+As more and more devices get connected, these interconnected devies perform complex tasks. To
 perform these tasks, you need low-level operational functionality built into the operating system.
 Typically, connected devices built with these microcontrollers perform a myriad of low-level tasks: 
 
@@ -50,7 +50,7 @@ package management and build system tool, called *newt*.
 
 You can install and build *newt* for [Linux](http://mynewt.apache.org/newt/newt_linux/) or [Mac](http://mynewt.apache.org/newt/newt_mac/). 
 
-### Build Your First Mynewt App with Newt ###
+### Build your first Mynewt App with Newt ###
 
 Before you start your first Mynewt application, you must first create a new Mynewt
 application with the *newt* tool: 
