@@ -1,4 +1,4 @@
-i## <font color="#F2853F" style="font-size:24pt"> console_read </font>
+## <font color="#F2853F" style="font-size:24pt"> console_read </font>
 
 ```no-highlight
   int
@@ -19,7 +19,6 @@ Copies up to *cnt* bytes of received data to buffer pointed by *str*. Function t
 Returns the number of characters copied. 0 if there was no data
 available, or if the first received character was '\n'.
 
-#### Notes
 
 #### Example
 

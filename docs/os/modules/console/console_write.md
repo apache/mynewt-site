@@ -17,8 +17,6 @@ Queues characters to console display over serial port.
 
 N/A
 
-#### Notes
-
 
 #### Example
 
