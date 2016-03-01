@@ -7,26 +7,35 @@
 
   Initializes console receive buffer and calls hal funtions hal_uart_init_cbs and hal_uart_config to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)
 
+Caller registers a function pointer of type void (*console_rx_cb)(int full_line). This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.
+
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| xx |  explain argument xx  |
-| yy |  explain argument yy  |
+| rx_cb | Function pointer, which gets called input is received.  |
 
 #### Returned values
 
-List any values returned.
-Error codes?
+Returns 0 on success.
+Non-zero if HAL UART function calls fail.
 
 #### Notes
 
-Any special feature/special benefit that we want to tout.
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
 
 #### Example
 
-Give at least one example of usage.
+```no-highlight
+int
+main(int argc, char **argv)
+{
+    ....
 
+    /* Init tasks */
+    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,
+                         SHELL_MAX_INPUT_LEN);
+    console_init(shell_console_rx_cb);
 
+    ....
+}
+```
