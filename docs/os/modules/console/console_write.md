@@ -4,25 +4,21 @@
    void
    console_write(char *str, int cnt)
 ```
-Transmit characters to console display over serial port.
+Queues characters to console display over serial port.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
 | *str |  pointer to the character or packet to be transmitted  |
-| cnt  |  size of the character or packet |
+| cnt  |  number of characters in *str* |
 
 #### Returned values
 
-List any values returned.
-Error codes?
+N/A
 
 #### Notes
 
-Any special feature/special benefit that we want to tout.
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).
 
 #### Example
 

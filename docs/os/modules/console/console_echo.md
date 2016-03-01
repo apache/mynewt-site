@@ -9,7 +9,7 @@ Controls whether echoing is on or off for the console. When echoing is on, all c
 #### Arguments
 
 | Arguments | Description |
-|-------------------------|
+|-----------|-------------|
 | on |  1 turns on echoing, 0 turns it off  |
 
 
