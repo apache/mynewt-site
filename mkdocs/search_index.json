@@ -3477,118 +3477,188 @@
         }, 
         {
             "location": "/os/modules/testutil/testutil/", 
-            "text": "testutil\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in testutil are:\n\n\n\n\ntu_case_abort\n\n\ntu_case_append_assert_msg\n\n\ntu_case_append_buf\n\n\ntu_case_append_file_info\n\n\ntu_case_append_manual_pass_msg\n\n\ntu_case_complete\n\n\ntu_case_fail_assert\n\n\ntu_case_init\n\n\ntu_case_pass_manual\n\n\ntu_case_set_name\n\n\ntu_case_vappend_buf\n\n\ntu_case_write_fail_buf\n\n\ntu_case_write_pass_auto\n\n\ntu_case_write_pass_buf\n\n\ntu_init\n\n\ntu_restart\n\n\ntu_suite_init\n\n\ntu_suite_set_name", 
+            "text": "testutil\n\n\nThe testutil package is a test framework that provides facilities for specifying test cases and recording test results.\n\n\nYou would use it to build regression tests for your library.\n\n\nDescription\n\n\nA package may optionally contain a set of test cases.  Test cases are not normally compiled and linked when a package is built; they are only included\nwhen the \"test\" identity is specified.  All of a package's test code goes in its \nsrc/test\n directory.  For example, the nffs package's test code is located in the following directory:\n\n\n    * fs/nffs/src/test/\n\n\n\n\nThis directory contains the source and header files that implement the nffs test code.\n\n\nThe test code has access to all the header files in the following directories:\n\n\n    * src\n    * src/arch/\ntarget-arch\n\n    * include\n    * src/test\n    * src/test/arch/\ntarget-arch\n\n    * include directories of all package dependencies\n\n\n\n\nPackage test code typically depends on the testutil package, described later in this document.  If a package's test code uses testutil, then the package itself needs to have testutil in its dependency list.\n\n\nSome test cases or test initialization code may be platform-specific.  In such cases, the platform-specific function definitions are placed in arch subdirectories within the package test directory.\n\n\nWhile building the test code (i.e., when the \ntest\n identity is specified), the newt tool defines the \nTEST\n macro.  This macro is defined during compilation of all C source files in all projects and packages.\n\n\nTests are structured according to the following hierarchy:\n\n\n                [test]\n               /      \\\n        [suite]        [suite]\n       /       \\      /       \\\n     [case] [case]  [case] [case]\n\n\n\n\nI.e., a test consists of test suites, and a test suite consists of test cases.\n\n\nThe test code uses testutil to define test suites and test cases.\n\n\nRegression test can then be executed using 'newt target test' command, or by including a call to your test suite from \nproject/test/src/test.c\n.\n\n\nExample\n\n\nThe following example demonstrates how to create a simple test suite.\n\n\n    TEST_CASE(test_addition)\n    {\n        int sum;\n\n        sum = 5 + 10;\n        TEST_ASSERT(sum == 15, \nactual value: %d\n, sum);\n    }\n\n    TEST_CASE(test_times_0)\n    {\n        TEST_ASSERT(3 * 0 == 0);\n        TEST_ASSERT(4 * 0 == 0);\n        TEST_ASSERT(712 * 0 == 0);\n    }\n\n    TEST_SUITE(test_suite_arithmetic)\n    {\n        test_addition();\n        test_times_0();\n    }\n\n\n\n\nThe test suite would then be executed via a call to \ntest_suite_arithmetic()\n.\n\n\nData structures\n\n\nstruct tu_config {\n    int tc_print_results;\n    int tc_system_assert;\n\n    tu_case_init_fn_t *tc_case_init_cb;\n    void *tc_case_init_arg;\n\n    tu_case_report_fn_t *tc_case_fail_cb;\n    void *tc_case_fail_arg;\n\n    tu_case_report_fn_t *tc_case_pass_cb;\n    void *tc_case_pass_arg;\n\n    tu_suite_init_fn_t *tc_suite_init_cb;\n    void *tc_suite_init_arg;\n\n    tu_restart_fn_t *tc_restart_cb;\n    void *tc_restart_arg;\n};\nextern struct tu_config tu_config;\n\n\n\n\nThe global \ntu_config\n struct contains all the testutil package's settings.\nThis should be populated before \ntu_init()\n is called.\n\n\nList of Functions\n\n\n\n\nThe functions, and macros available in testutil are:\n\n\n\n\ntu_init\n\n\nTEST_ASSERT\n\n\nTEST_PASS\n\n\nTEST_SUITE\n\n\nTEST_CASE\n\n\ntu_restart", 
             "title": "Overview"
         }, 
         {
             "location": "/os/modules/testutil/testutil/#testutil", 
-            "text": "Insert synopsis here", 
+            "text": "The testutil package is a test framework that provides facilities for specifying test cases and recording test results.  You would use it to build regression tests for your library.", 
             "title": "testutil"
         }, 
         {
             "location": "/os/modules/testutil/testutil/#description", 
-            "text": "Describe module here, special features, how pieces fit together etc.", 
+            "text": "A package may optionally contain a set of test cases.  Test cases are not normally compiled and linked when a package is built; they are only included\nwhen the \"test\" identity is specified.  All of a package's test code goes in its  src/test  directory.  For example, the nffs package's test code is located in the following directory:      * fs/nffs/src/test/  This directory contains the source and header files that implement the nffs test code.  The test code has access to all the header files in the following directories:      * src\n    * src/arch/ target-arch \n    * include\n    * src/test\n    * src/test/arch/ target-arch \n    * include directories of all package dependencies  Package test code typically depends on the testutil package, described later in this document.  If a package's test code uses testutil, then the package itself needs to have testutil in its dependency list.  Some test cases or test initialization code may be platform-specific.  In such cases, the platform-specific function definitions are placed in arch subdirectories within the package test directory.  While building the test code (i.e., when the  test  identity is specified), the newt tool defines the  TEST  macro.  This macro is defined during compilation of all C source files in all projects and packages.  Tests are structured according to the following hierarchy:                  [test]\n               /      \\\n        [suite]        [suite]\n       /       \\      /       \\\n     [case] [case]  [case] [case]  I.e., a test consists of test suites, and a test suite consists of test cases.  The test code uses testutil to define test suites and test cases.  Regression test can then be executed using 'newt target test' command, or by including a call to your test suite from  project/test/src/test.c .", 
             "title": "Description"
         }, 
         {
+            "location": "/os/modules/testutil/testutil/#example", 
+            "text": "The following example demonstrates how to create a simple test suite.      TEST_CASE(test_addition)\n    {\n        int sum;\n\n        sum = 5 + 10;\n        TEST_ASSERT(sum == 15,  actual value: %d , sum);\n    }\n\n    TEST_CASE(test_times_0)\n    {\n        TEST_ASSERT(3 * 0 == 0);\n        TEST_ASSERT(4 * 0 == 0);\n        TEST_ASSERT(712 * 0 == 0);\n    }\n\n    TEST_SUITE(test_suite_arithmetic)\n    {\n        test_addition();\n        test_times_0();\n    }  The test suite would then be executed via a call to  test_suite_arithmetic() .", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/modules/testutil/testutil/#data-structures", 
-            "text": "Replace this with the list of data structures used, why, any neat features", 
+            "text": "struct tu_config {\n    int tc_print_results;\n    int tc_system_assert;\n\n    tu_case_init_fn_t *tc_case_init_cb;\n    void *tc_case_init_arg;\n\n    tu_case_report_fn_t *tc_case_fail_cb;\n    void *tc_case_fail_arg;\n\n    tu_case_report_fn_t *tc_case_pass_cb;\n    void *tc_case_pass_arg;\n\n    tu_suite_init_fn_t *tc_suite_init_cb;\n    void *tc_suite_init_arg;\n\n    tu_restart_fn_t *tc_restart_cb;\n    void *tc_restart_arg;\n};\nextern struct tu_config tu_config;  The global  tu_config  struct contains all the testutil package's settings.\nThis should be populated before  tu_init()  is called.", 
             "title": "Data structures"
         }, 
         {
             "location": "/os/modules/testutil/testutil/#list-of-functions", 
-            "text": "The functions available in testutil are:   tu_case_abort  tu_case_append_assert_msg  tu_case_append_buf  tu_case_append_file_info  tu_case_append_manual_pass_msg  tu_case_complete  tu_case_fail_assert  tu_case_init  tu_case_pass_manual  tu_case_set_name  tu_case_vappend_buf  tu_case_write_fail_buf  tu_case_write_pass_auto  tu_case_write_pass_buf  tu_init  tu_restart  tu_suite_init  tu_suite_set_name", 
+            "text": "The functions, and macros available in testutil are:   tu_init  TEST_ASSERT  TEST_PASS  TEST_SUITE  TEST_CASE  tu_restart", 
             "title": "List of Functions"
         }, 
         {
-            "location": "/os/modules/testutil/tu_case_abort/", 
-            "text": "", 
-            "title": "tu_case_abort"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_append_assert_msg/", 
-            "text": "", 
-            "title": "tu_case_append_assert_msg"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_append_buf/", 
-            "text": "", 
-            "title": "tu_case_append_buf"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_append_file_info/", 
-            "text": "", 
-            "title": "tu_case_append_file_info"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_append_manual_pass_msg/", 
-            "text": "", 
-            "title": "tu_case_append_manual_pass_msg"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_complete/", 
-            "text": "", 
-            "title": "tu_case_complete"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_fail_assert/", 
-            "text": "", 
-            "title": "tu_case_fail_assert"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_init/", 
-            "text": "", 
-            "title": "tu_case_init"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_pass_manual/", 
-            "text": "", 
-            "title": "tu_case_pass_manual"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_set_name/", 
-            "text": "", 
-            "title": "tu_case_set_name"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_vappend_buf/", 
-            "text": "", 
-            "title": "tu_case_vappend_buf"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_write_fail_buf/", 
-            "text": "", 
-            "title": "tu_case_write_fail_buf"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_write_pass_auto/", 
-            "text": "", 
-            "title": "tu_case_write_pass_auto"
-        }, 
-        {
-            "location": "/os/modules/testutil/tu_case_write_pass_buf/", 
-            "text": "", 
-            "title": "tu_case_write_pass_buf"
-        }, 
-        {
             "location": "/os/modules/testutil/tu_init/", 
-            "text": "", 
+            "text": "tu_init\n\n\nint tu_init(void)\n\n\n\n\nInitializes the test framework according to the contents of the \ntu_config\n struct. This function must be called before any tests are run.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nExample\n\n\nHere's an example of stand-alone code which allows the user to execute regression tests for sys/config package only.\n\n\n#ifdef PKG_TEST\n\nint\nmain(int argc, char **argv)\n{\n    tu_config.tc_print_results = 1;\n    tu_init();\n\n    conf_init();\n    config_test_all();\n\n    return tu_any_failed;\n}\n\n#endif", 
             "title": "tu_init"
         }, 
         {
+            "location": "/os/modules/testutil/tu_init/#tu_init", 
+            "text": "int tu_init(void)  Initializes the test framework according to the contents of the  tu_config  struct. This function must be called before any tests are run.", 
+            "title": " tu_init"
+        }, 
+        {
+            "location": "/os/modules/testutil/tu_init/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/testutil/tu_init/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/testutil/tu_init/#example", 
+            "text": "Here's an example of stand-alone code which allows the user to execute regression tests for sys/config package only.  #ifdef PKG_TEST\n\nint\nmain(int argc, char **argv)\n{\n    tu_config.tc_print_results = 1;\n    tu_init();\n\n    conf_init();\n    config_test_all();\n\n    return tu_any_failed;\n}\n\n#endif", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_assert/", 
+            "text": "TEST_ASSERT\n\n\nTEST_ASSERT(expression, fail_msg, ...)\n\n\n\n\nTEST_ASSERT_FATAL(expression, fail_msg, ...)\n\n\n\n\nAsserts that the specified condition is true.  If the expression is true, nothing gets reported. \nfail_msg\n will be printed out if the expression is false. The expression argument is mandatory; the rest are optional.  The fail_msg argument is a printf format string which specifies how the remaining arguments are parsed.\n\n\nTEST_ASSERT_FATAL()\n causes the current test case to be aborted, if expression fails.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nexpression\n\n\nCondition being tested. If it fails, test is considered a failure, and a message is printed out.\n\n\n\n\n\n\nfail_msg\n\n\nPointer to C string that contains a format string that follows the same specifications as format in printf.\n\n\n\n\n\n\n...\n\n\nDepending on the format string, the function may expect either a sequence of additional arguments to be used to replace a format specifier in the format string or a variable arguments list. va_list is a special type defined in \n in stdarg.h.\n\n\n\n\n\n\n\n\nReturned values\n\n\nNone\n\n\nNotes\n\n\nWhile \nconsole_printf\n, with its well understood formatting options in C, is more convenient and easy on the eyes than the raw output of \nconsole_write\n, the associated code size is considerably larger.\n\n\nExample\n\n\nExample #1:\n\n\nTEST_CASE(config_test_insert)\n{\n    int rc;\n\n    rc = conf_register(\nconfig_test_handler);\n    TEST_ASSERT(rc == 0);\n}\n\n\n\n\nExample #2:\n\n\nTEST_CASE(nffs_test_unlink)\n{\n    int rc;\n\n    ....\n\n    rc = nffs_format(nffs_area_descs);\n    TEST_ASSERT_FATAL(rc == 0);\n\n    ....\n}\n\n\n\n\nExample #3:\n\n\n\nstatic int \ncbmem_test_case_1_walk(struct cbmem *cbmem, struct cbmem_entry_hdr *hdr, \n        void *arg)\n{\n    ....\n\n    rc = cbmem_read(cbmem, hdr, \nactual, 0, sizeof(actual));\n    TEST_ASSERT_FATAL(rc == 1, \nCouldn't read 1 byte from cbmem\n);\n    TEST_ASSERT_FATAL(actual == expected, \n            \nActual doesn't equal expected (%d = %d)\n, actual, expected);\n\n    ....\n}", 
+            "title": "TEST_ASSERT"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_assert/#test_assert", 
+            "text": "TEST_ASSERT(expression, fail_msg, ...)  TEST_ASSERT_FATAL(expression, fail_msg, ...)  Asserts that the specified condition is true.  If the expression is true, nothing gets reported.  fail_msg  will be printed out if the expression is false. The expression argument is mandatory; the rest are optional.  The fail_msg argument is a printf format string which specifies how the remaining arguments are parsed.  TEST_ASSERT_FATAL()  causes the current test case to be aborted, if expression fails.", 
+            "title": " TEST_ASSERT"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_assert/#arguments", 
+            "text": "Arguments  Description      expression  Condition being tested. If it fails, test is considered a failure, and a message is printed out.    fail_msg  Pointer to C string that contains a format string that follows the same specifications as format in printf.    ...  Depending on the format string, the function may expect either a sequence of additional arguments to be used to replace a format specifier in the format string or a variable arguments list. va_list is a special type defined in   in stdarg.h.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_assert/#returned-values", 
+            "text": "None", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_assert/#notes", 
+            "text": "While  console_printf , with its well understood formatting options in C, is more convenient and easy on the eyes than the raw output of  console_write , the associated code size is considerably larger.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_assert/#example", 
+            "text": "Example #1:  TEST_CASE(config_test_insert)\n{\n    int rc;\n\n    rc = conf_register( config_test_handler);\n    TEST_ASSERT(rc == 0);\n}  Example #2:  TEST_CASE(nffs_test_unlink)\n{\n    int rc;\n\n    ....\n\n    rc = nffs_format(nffs_area_descs);\n    TEST_ASSERT_FATAL(rc == 0);\n\n    ....\n}  Example #3:  \nstatic int \ncbmem_test_case_1_walk(struct cbmem *cbmem, struct cbmem_entry_hdr *hdr, \n        void *arg)\n{\n    ....\n\n    rc = cbmem_read(cbmem, hdr,  actual, 0, sizeof(actual));\n    TEST_ASSERT_FATAL(rc == 1,  Couldn't read 1 byte from cbmem );\n    TEST_ASSERT_FATAL(actual == expected, \n             Actual doesn't equal expected (%d = %d) , actual, expected);\n\n    ....\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_pass/", 
+            "text": "TEST_PASS \n\n\nTEST_PASS(msg, ...)\n\n\n\n\nReports a success result for the current test.  This function is not normally needed, as all successful tests automatically write an empty pass result at completion. It is only needed when the success result report should contain text.  The msg argument is a printf format string\n    which specifies how the remaining arguments are parsed.  The result file\n    produced by this function contains the following text:\n\n\n        |\nfile\n:\nline-number\n| manual pass\n        \nmsg\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmsg\n\n\nThis is a printf format string which specifies how the remaining arguments are parsed\n\n\n\n\n\n\n...\n\n\nDepending on the format string, the function may expect either a sequence of additional arguments to be used to replace a format specifier in the format string or a variable arguments list. va_list is a special type defined in \n in stdarg.h.\n\n\n\n\n\n\n\n\nReturned values\n\n\nNone\n\n\nNotes\n\n\nAfter this function is called, the remainder of the test case is not executed.", 
+            "title": "TEST_PASS"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_pass/#test_pass", 
+            "text": "TEST_PASS(msg, ...)  Reports a success result for the current test.  This function is not normally needed, as all successful tests automatically write an empty pass result at completion. It is only needed when the success result report should contain text.  The msg argument is a printf format string\n    which specifies how the remaining arguments are parsed.  The result file\n    produced by this function contains the following text:          | file : line-number | manual pass\n         msg", 
+            "title": " TEST_PASS "
+        }, 
+        {
+            "location": "/os/modules/testutil/test_pass/#arguments", 
+            "text": "Arguments  Description      msg  This is a printf format string which specifies how the remaining arguments are parsed    ...  Depending on the format string, the function may expect either a sequence of additional arguments to be used to replace a format specifier in the format string or a variable arguments list. va_list is a special type defined in   in stdarg.h.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_pass/#returned-values", 
+            "text": "None", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_pass/#notes", 
+            "text": "After this function is called, the remainder of the test case is not executed.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_suite/", 
+            "text": "TEST_SUITE \n\n\nTEST_SUITE(test_suite_name)\n\n\n\n\nDeclares a test suite function with the following type \nint test_suite_name(void)\n. This can then be called from either \nproject/test\n, or from main routine for package specific regression test.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\ntest_suite_name\n\n\nUsed as the function name for this test suite.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturn value is 0 if the test suite passed; nonzero if it failed. Generally, the return code is not used. It is expected that the individual test cases will pass/fail with tests done using \nTEST_ASSERT()\n.\n\n\nExample\n\n\nTEST_SUITE(os_sem_test_suite)\n{\n    os_sem_test_basic();\n    os_sem_test_case_1();\n    os_sem_test_case_2();\n    os_sem_test_case_3();\n    os_sem_test_case_4();\n}", 
+            "title": "TEST_SUITE"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_suite/#test_suite", 
+            "text": "TEST_SUITE(test_suite_name)  Declares a test suite function with the following type  int test_suite_name(void) . This can then be called from either  project/test , or from main routine for package specific regression test.", 
+            "title": " TEST_SUITE "
+        }, 
+        {
+            "location": "/os/modules/testutil/test_suite/#arguments", 
+            "text": "Arguments  Description      test_suite_name  Used as the function name for this test suite.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_suite/#returned-values", 
+            "text": "Return value is 0 if the test suite passed; nonzero if it failed. Generally, the return code is not used. It is expected that the individual test cases will pass/fail with tests done using  TEST_ASSERT() .", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_suite/#example", 
+            "text": "TEST_SUITE(os_sem_test_suite)\n{\n    os_sem_test_basic();\n    os_sem_test_case_1();\n    os_sem_test_case_2();\n    os_sem_test_case_3();\n    os_sem_test_case_4();\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_case/", 
+            "text": "TEST_CASE \n\n\nTEST_CASE(test_case_name)\n\n\n\n\nDeclares a test case function with the following type \nint test_case_name(void)\n. This can then be called from regression test's \nTEST_SUITE()\n function.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\ntest_case_name\n\n\nUsed as the function name for this test case.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturn value is 0 if the test case passed; nonzero if it failed. Generally, the return code is not used. It is expected that the case will pass/fail with tests done using \nTEST_ASSERT()\n.\n\n\nExample\n\n\nTEST_CASE(config_test_insert)\n{\n     ....\n}", 
+            "title": "TEST_CASE"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_case/#test_case", 
+            "text": "TEST_CASE(test_case_name)  Declares a test case function with the following type  int test_case_name(void) . This can then be called from regression test's  TEST_SUITE()  function.", 
+            "title": " TEST_CASE "
+        }, 
+        {
+            "location": "/os/modules/testutil/test_case/#arguments", 
+            "text": "Arguments  Description      test_case_name  Used as the function name for this test case.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_case/#returned-values", 
+            "text": "Return value is 0 if the test case passed; nonzero if it failed. Generally, the return code is not used. It is expected that the case will pass/fail with tests done using  TEST_ASSERT() .", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/testutil/test_case/#example", 
+            "text": "TEST_CASE(config_test_insert)\n{\n     ....\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/modules/testutil/tu_restart/", 
-            "text": "", 
+            "text": "tu_restart \n\n\nvoid tu_restart(void)\n\n\n\n\nThis function is used when a system reset is necessary to proceed with testing.  For example, the OS is designed to run forever once started, so a test which creates several OS tasks and then starts the OS has no means of completing. This function, when called from such a test, gracefully ends the current test case and proceeds to the next test case.\n\n\nThe particulars of this function depend on whether it is called from a simulated environment.  In a simulated environment, this function uses a \nlongjmp()\n call to break out of the current test case.\n\n\nArguments\n\n\nN/A\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nExample\n\n\nvoid\nos_test_restart(void)\n{\n    ....\n\n    tu_restart();\n}\n#endif", 
             "title": "tu_restart"
         }, 
         {
-            "location": "/os/modules/testutil/tu_suite_init/", 
-            "text": "", 
-            "title": "tu_suite_init"
+            "location": "/os/modules/testutil/tu_restart/#tu_restart", 
+            "text": "void tu_restart(void)  This function is used when a system reset is necessary to proceed with testing.  For example, the OS is designed to run forever once started, so a test which creates several OS tasks and then starts the OS has no means of completing. This function, when called from such a test, gracefully ends the current test case and proceeds to the next test case.  The particulars of this function depend on whether it is called from a simulated environment.  In a simulated environment, this function uses a  longjmp()  call to break out of the current test case.", 
+            "title": " tu_restart "
         }, 
         {
-            "location": "/os/modules/testutil/tu_suite_set_name/", 
-            "text": "", 
-            "title": "tu_suite_set_name"
+            "location": "/os/modules/testutil/tu_restart/#arguments", 
+            "text": "N/A", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/testutil/tu_restart/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/testutil/tu_restart/#example", 
+            "text": "void\nos_test_restart(void)\n{\n    ....\n\n    tu_restart();\n}\n#endif", 
+            "title": "Example"
         }, 
         {
             "location": "/os/modules/imgmgr/imgmgr/", 

@@ -239,8 +239,8 @@
               
   
   <li><a href="
-  ../tu_case_abort/
-">Functions</a>
+  ../tu_init/
+">Functions/Macros</a>
     
   </li>
 
@@ -349,33 +349,98 @@
 </div>
                         
                             <h1 id="testutil">testutil<a class="headerlink" href="#testutil" title="Permanent link">&para;</a></h1>
-<p>Insert synopsis here</p>
+<p>The testutil package is a test framework that provides facilities for specifying test cases and recording test results.</p>
+<p>You would use it to build regression tests for your library.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Describe module here, special features, how pieces fit together etc.</p>
+<p>A package may optionally contain a set of test cases.  Test cases are not normally compiled and linked when a package is built; they are only included
+when the "test" identity is specified.  All of a package's test code goes in its <code>src/test</code> directory.  For example, the nffs package's test code is located in the following directory:</p>
+<pre><code class="no-highlight">    * fs/nffs/src/test/
+</code></pre>
+
+<p>This directory contains the source and header files that implement the nffs test code.</p>
+<p>The test code has access to all the header files in the following directories:</p>
+<pre><code class="no-highlight">    * src
+    * src/arch/&lt;target-arch&gt;
+    * include
+    * src/test
+    * src/test/arch/&lt;target-arch&gt;
+    * include directories of all package dependencies
+</code></pre>
+
+<p>Package test code typically depends on the testutil package, described later in this document.  If a package's test code uses testutil, then the package itself needs to have testutil in its dependency list.</p>
+<p>Some test cases or test initialization code may be platform-specific.  In such cases, the platform-specific function definitions are placed in arch subdirectories within the package test directory.</p>
+<p>While building the test code (i.e., when the <code>test</code> identity is specified), the newt tool defines the <code>TEST</code> macro.  This macro is defined during compilation of all C source files in all projects and packages.</p>
+<p>Tests are structured according to the following hierarchy:</p>
+<pre><code class="no-highlight">                [test]
+               /      \
+        [suite]        [suite]
+       /       \      /       \
+     [case] [case]  [case] [case]
+</code></pre>
+
+<p>I.e., a test consists of test suites, and a test suite consists of test cases.</p>
+<p>The test code uses testutil to define test suites and test cases.</p>
+<p>Regression test can then be executed using 'newt target test' command, or by including a call to your test suite from <code>project/test/src/test.c</code>.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>The following example demonstrates how to create a simple test suite.</p>
+<pre><code class="no-highlight">    TEST_CASE(test_addition)
+    {
+        int sum;
+
+        sum = 5 + 10;
+        TEST_ASSERT(sum == 15, &quot;actual value: %d&quot;, sum);
+    }
+
+    TEST_CASE(test_times_0)
+    {
+        TEST_ASSERT(3 * 0 == 0);
+        TEST_ASSERT(4 * 0 == 0);
+        TEST_ASSERT(712 * 0 == 0);
+    }
+
+    TEST_SUITE(test_suite_arithmetic)
+    {
+        test_addition();
+        test_times_0();
+    }
+</code></pre>
+
+<p>The test suite would then be executed via a call to <code>test_suite_arithmetic()</code>.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<pre><code class="no-highlight">struct tu_config {
+    int tc_print_results;
+    int tc_system_assert;
+
+    tu_case_init_fn_t *tc_case_init_cb;
+    void *tc_case_init_arg;
+
+    tu_case_report_fn_t *tc_case_fail_cb;
+    void *tc_case_fail_arg;
+
+    tu_case_report_fn_t *tc_case_pass_cb;
+    void *tc_case_pass_arg;
+
+    tu_suite_init_fn_t *tc_suite_init_cb;
+    void *tc_suite_init_arg;
+
+    tu_restart_fn_t *tc_restart_cb;
+    void *tc_restart_arg;
+};
+extern struct tu_config tu_config;
+</code></pre>
+
+<p>The global <code>tu_config</code> struct contains all the testutil package's settings.
+This should be populated before <code>tu_init()</code> is called.</p>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
-<p>The functions available in testutil are:</p>
+<p>The functions, and macros available in testutil are:</p>
 <ul>
-<li><a href="../tu_case_abort/">tu_case_abort</a></li>
-<li><a href="../tu_case_append_assert_msg/">tu_case_append_assert_msg</a></li>
-<li><a href="../tu_case_append_buf/">tu_case_append_buf</a></li>
-<li><a href="../tu_case_append_file_info/">tu_case_append_file_info</a></li>
-<li><a href="../tu_case_append_manual_pass_msg/">tu_case_append_manual_pass_msg</a></li>
-<li><a href="../tu_case_complete/">tu_case_complete</a></li>
-<li><a href="../tu_case_fail_assert/">tu_case_fail_assert</a></li>
-<li><a href="../tu_case_init/">tu_case_init</a></li>
-<li><a href="../tu_case_pass_manual/">tu_case_pass_manual</a></li>
-<li><a href="../tu_case_set_name/">tu_case_set_name</a></li>
-<li><a href="../tu_case_vappend_buf/">tu_case_vappend_buf</a></li>
-<li><a href="../tu_case_write_fail_buf/">tu_case_write_fail_buf</a></li>
-<li><a href="../tu_case_write_pass_auto/">tu_case_write_pass_auto</a></li>
-<li><a href="../tu_case_write_pass_buf/">tu_case_write_pass_buf</a></li>
 <li><a href="../tu_init/">tu_init</a></li>
+<li><a href="../test_assert/">TEST_ASSERT</a></li>
+<li><a href="../test_pass/">TEST_PASS</a></li>
+<li><a href="../test_suite/">TEST_SUITE</a></li>
+<li><a href="../test_case/">TEST_CASE</a></li>
 <li><a href="../tu_restart/">tu_restart</a></li>
-<li><a href="../tu_suite_init/">tu_suite_init</a></li>
-<li><a href="../tu_suite_set_name/">tu_suite_set_name</a></li>
 </ul>
                         
                     </div>
