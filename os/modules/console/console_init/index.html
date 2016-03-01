@@ -413,7 +413,8 @@
    console_init(console_rx_cb rx_cb)
 </code></pre>
 
-<p>Initializes console receive buffer and calls hal funtions hal_uart_init_cbs and hal_uart_config to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
+<p>Initializes console receive buffer and calls hal funtions <code>hal_uart_init_cbs</code> and <code>hal_uart_config</code> to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
+<p>Caller registers a function pointer of <code>type void (*console_rx_cb)(int full_line)</code>. This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -424,24 +425,28 @@
 </thead>
 <tbody>
 <tr>
-<td>xx</td>
-<td>explain argument xx</td>
-</tr>
-<tr>
-<td>yy</td>
-<td>explain argument yy</td>
+<td>rx_cb</td>
+<td>Function pointer, which gets called input is received.</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout.
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
+<p>Returns 0 on success.
+Non-zero if HAL UART function calls fail.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<p>Give at least one example of usage.</p>
+<pre><code class="no-highlight">int
+main(int argc, char **argv)
+{
+    ....
+
+    /* Init tasks */
+    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,
+                         SHELL_MAX_INPUT_LEN);
+    console_init(shell_console_rx_cb);
+
+    ....
+}
+</code></pre>
                         
                     </div>
                 </div>

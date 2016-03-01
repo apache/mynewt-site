@@ -2177,7 +2177,7 @@
         }, 
         {
             "location": "/os/modules/console/console/", 
-            "text": "Console\n\n\nThe console is an operating system window where users interact with system programs of the operating system or a console application by entering text input (typically from a keyboard) and reading text output (typically on the computer terminal or monitor). The text written on the console brings some information and is a sequence of characters sent by the OS or programs running on the OS. \n\n\nSupport is currently available for console access via the serial port on the hardware board.\n\n\nDescription\n\n\nIn the Mynewt OS, the console library comes in two versions:\n\n\n\n\nfull - containing the full implementation\n\n\nstub - containing stubs for the API\n\n\n\n\nBoth of these have \negg.yml\n file which states that they provide the \nconsole\n API. If an egg uses this API, it should list \nconsole\n as a requirement.\nFor example, the shell egg is defined by the following egg.yml file:\n\n\n    egg.name: libs/shell \n    egg.vers: 0.1\n    egg.deps:\n        - libs/os\n        - libs/util\n    egg.reqs:\n        - console\n    egg.identities:\n        - SHELL \n\n\n\n\nThe project .yml file decides which version of the console egg should be included. \nIf project requires the full console capability it lists dependency \nlibs/console/full\n in its egg.yml file. \nOn the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub. Another example would be the bootloader project where we want to keep the size of the image small. It includes the \nlibs/os\n egg that can print out messages on a console (e.g. if there is a hard fault) and the \nlibs/util\n egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead and the egg.yml file for the project boot egg looks like the following:\n\n\n    project.name: boot\n    project.identities: bootloader\n    project.eggs:\n        - libs/os\n        - libs/bootutil\n        - libs/nffs\n        - libs/console/stub\n        - libs/util \n\n\n\n\nConsole has 2 modes for transmit; blocking and non-blocking mode. Usually the non-blocking mode is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.\nBlocking mode is used when we don't want TX completion interrupts. This is used when system crashes, and we still want to output info related to that crash.\n\n\nConsole, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.\n\n\nData structures\n\n\nN/A\n\n\nList of Functions\n\n\nThe functions available in console are:\n\n\n\n\nconsole_blocking_mode\n\n\nconsole_echo\n\n\nconsole_init\n\n\nconsole_is_init\n\n\nconsole_printf\n\n\nconsole_read\n\n\nconsole_write", 
+            "text": "Console\n\n\nThe console is an operating system window where users interact with system programs of the operating system or a console application by entering text input (typically from a keyboard) and reading text output (typically on the computer terminal or monitor). The text written on the console brings some information and is a sequence of characters sent by the OS or programs running on the OS. \n\n\nSupport is currently available for console access via the serial port on the hardware board.\n\n\nDescription\n\n\nIn the Mynewt OS, the console library comes in two versions:\n\n\n\n\nfull - containing the full implementation\n\n\nstub - containing stubs for the API\n\n\n\n\nBoth of these have \negg.yml\n file which states that they provide the \nconsole\n API. If an egg uses this API, it should list \nconsole\n as a requirement.\nFor example, the shell egg is defined by the following egg.yml file:\n\n\n    egg.name: libs/shell \n    egg.vers: 0.1\n    egg.deps:\n        - libs/os\n        - libs/util\n    egg.reqs:\n        - console\n    egg.identities:\n        - SHELL \n\n\n\n\nThe project .yml file decides which version of the console egg should be included. \nIf project requires the full console capability it lists dependency \nlibs/console/full\n in its egg.yml file. On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub. \n\n\nAnother example would be the bootloader project where we want to keep the size of the image small. It includes the \nlibs/os\n egg that can print out messages on a console (e.g. if there is a hard fault) and the \nlibs/util\n egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead, and the egg.yml file for the project boot egg looks like the following:\n\n\n    project.name: boot\n    project.identities: bootloader\n    project.eggs:\n        - libs/os\n        - libs/bootutil\n        - libs/nffs\n        - libs/console/stub\n        - libs/util \n\n\n\n\nConsole has 2 modes for transmit; \nblocking mode\n and \nnon-blocking mode\n. Usually the \nnon-blocking mode\n is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.\n\nBlocking mode\n is used when we don't want TX completion interrupts. It is used when system crashes, and we still want to output info related to that crash.\n\n\nConsole, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.\n\n\nData structures\n\n\nN/A\n\n\nList of Functions\n\n\nThe functions available in console are:\n\n\n\n\nconsole_blocking_mode\n\n\nconsole_echo\n\n\nconsole_init\n\n\nconsole_is_init\n\n\nconsole_printf\n\n\nconsole_read\n\n\nconsole_write", 
             "title": "Overview"
         }, 
         {
@@ -2187,7 +2187,7 @@
         }, 
         {
             "location": "/os/modules/console/console/#description", 
-            "text": "In the Mynewt OS, the console library comes in two versions:   full - containing the full implementation  stub - containing stubs for the API   Both of these have  egg.yml  file which states that they provide the  console  API. If an egg uses this API, it should list  console  as a requirement.\nFor example, the shell egg is defined by the following egg.yml file:      egg.name: libs/shell \n    egg.vers: 0.1\n    egg.deps:\n        - libs/os\n        - libs/util\n    egg.reqs:\n        - console\n    egg.identities:\n        - SHELL   The project .yml file decides which version of the console egg should be included. \nIf project requires the full console capability it lists dependency  libs/console/full  in its egg.yml file. \nOn the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub. Another example would be the bootloader project where we want to keep the size of the image small. It includes the  libs/os  egg that can print out messages on a console (e.g. if there is a hard fault) and the  libs/util  egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead and the egg.yml file for the project boot egg looks like the following:      project.name: boot\n    project.identities: bootloader\n    project.eggs:\n        - libs/os\n        - libs/bootutil\n        - libs/nffs\n        - libs/console/stub\n        - libs/util   Console has 2 modes for transmit; blocking and non-blocking mode. Usually the non-blocking mode is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.\nBlocking mode is used when we don't want TX completion interrupts. This is used when system crashes, and we still want to output info related to that crash.  Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.", 
+            "text": "In the Mynewt OS, the console library comes in two versions:   full - containing the full implementation  stub - containing stubs for the API   Both of these have  egg.yml  file which states that they provide the  console  API. If an egg uses this API, it should list  console  as a requirement.\nFor example, the shell egg is defined by the following egg.yml file:      egg.name: libs/shell \n    egg.vers: 0.1\n    egg.deps:\n        - libs/os\n        - libs/util\n    egg.reqs:\n        - console\n    egg.identities:\n        - SHELL   The project .yml file decides which version of the console egg should be included. \nIf project requires the full console capability it lists dependency  libs/console/full  in its egg.yml file. On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on an egg that has console capability. In that case you would use a console stub.   Another example would be the bootloader project where we want to keep the size of the image small. It includes the  libs/os  egg that can print out messages on a console (e.g. if there is a hard fault) and the  libs/util  egg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead, and the egg.yml file for the project boot egg looks like the following:      project.name: boot\n    project.identities: bootloader\n    project.eggs:\n        - libs/os\n        - libs/bootutil\n        - libs/nffs\n        - libs/console/stub\n        - libs/util   Console has 2 modes for transmit;  blocking mode  and  non-blocking mode . Usually the  non-blocking mode  is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts. Blocking mode  is used when we don't want TX completion interrupts. It is used when system crashes, and we still want to output info related to that crash.  Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.", 
             "title": "Description"
         }, 
         {
@@ -2202,28 +2202,23 @@
         }, 
         {
             "location": "/os/modules/console/console_blocking_mode/", 
-            "text": "console_blocking_mode \n\n\n   void\n   console_blocking_mode(void)\n\n\n\n\nCalls the console_blocking_tx function to flush the buffered console output (transmit) queue. The function OS_ENTER_CRITICAL() is called to disable interrupts and OS_EXIT_CRITICAL() is called to enable interrupts back again once the buffer is flushed.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\n\n\nnone\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\nHere is an example of calling \nconsole_blocking_mode\n and printing crash information from an assert to help debug.\n\n\nvoid\n_assert_func(const char *file, int line, const char *func, const char *e)\n{\n    int sr;\n\n    OS_ENTER_CRITICAL(sr);\n    (void)sr;\n    os_die_line = line;\n    os_die_module = file;\n    console_blocking_mode();\n    console_printf(\nAssert %s; failed in %s:%d\\n\n, e ? e : \n, file, line);\n    system_reset();\n}", 
+            "text": "console_blocking_mode \n\n\n   void\n   console_blocking_mode(void)\n\n\n\n\nCalls the \nconsole_blocking_tx\n function to flush the buffered console output (transmit) queue. The function \nOS_ENTER_CRITICAL()\n is called to disable interrupts and \nOS_EXIT_CRITICAL()\n is called to enable interrupts back again once the buffer is flushed.\n\n\nArguments\n\n\nNone\n\n\nReturned values\n\n\nN/A\n\n\nExample\n\n\nHere is an example of calling \nconsole_blocking_mode\n and printing crash information from an assert to help debug.\n\n\nvoid\n_assert_func(const char *file, int line, const char *func, const char *e)\n{\n    int sr;\n\n    OS_ENTER_CRITICAL(sr);\n    (void)sr;\n    os_die_line = line;\n    os_die_module = file;\n    console_blocking_mode();\n    console_printf(\nAssert %s; failed in %s:%d\\n\n, e ? e : \n, file, line);\n    system_reset();\n}", 
             "title": "console_blocking_mode"
         }, 
         {
             "location": "/os/modules/console/console_blocking_mode/#console_blocking_mode", 
-            "text": "void\n   console_blocking_mode(void)  Calls the console_blocking_tx function to flush the buffered console output (transmit) queue. The function OS_ENTER_CRITICAL() is called to disable interrupts and OS_EXIT_CRITICAL() is called to enable interrupts back again once the buffer is flushed.", 
+            "text": "void\n   console_blocking_mode(void)  Calls the  console_blocking_tx  function to flush the buffered console output (transmit) queue. The function  OS_ENTER_CRITICAL()  is called to disable interrupts and  OS_EXIT_CRITICAL()  is called to enable interrupts back again once the buffer is flushed.", 
             "title": " console_blocking_mode "
         }, 
         {
             "location": "/os/modules/console/console_blocking_mode/#arguments", 
-            "text": "Arguments      none", 
+            "text": "None", 
             "title": "Arguments"
         }, 
         {
             "location": "/os/modules/console/console_blocking_mode/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
+            "text": "N/A", 
             "title": "Returned values"
-        }, 
-        {
-            "location": "/os/modules/console/console_blocking_mode/#notes", 
-            "text": "Any special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
         }, 
         {
             "location": "/os/modules/console/console_blocking_mode/#example", 
@@ -2232,7 +2227,7 @@
         }, 
         {
             "location": "/os/modules/console/console_echo/", 
-            "text": "console_echo \n\n\n   void console_echo(int on)\n\n\n\n\nControls whether echoing is on or off for the console. When echoing is on, all characters received are transmitted back.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\n\n\non\n\n\n\n\n\n\n\n\nReturned values\n\n\nNone\n\n\nNotes\n\n\nExample\n\n\nHere is an example where newtmgr protocol handler is controlling whether echoing is on or off. Newtmgr, the tool, turns echoing off when it's transmitting large chunks of data to target board.\n\n\nstatic int\nnmgr_def_console_echo(struct nmgr_jbuf *njb)\n{\n    int echo_on = 1;\n    int rc;\n    struct json_attr_t attrs[3] = {\n        [0] = {\n            .attribute = \necho\n,\n            .type = t_integer,\n            .addr.integer = \necho_on,\n            .nodefault = 1\n        },\n        [1] = {\n            .attribute = NULL\n        }\n    };\n\n    rc = json_read_object(\nnjb-\nnjb_buf, attrs);\n    if (rc) {\n        return OS_EINVAL;\n    }\n\n    if (echo_on) {\n        console_echo(1);\n    } else {\n        console_echo(0);\n    }\n    return (0);\n}", 
+            "text": "console_echo \n\n\n   void console_echo(int on)\n\n\n\n\nControls whether echoing is on or off for the console. When echoing is on, all characters received are transmitted back.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\non\n\n\n1 turns on echoing, 0 turns it off\n\n\n\n\n\n\n\n\nReturned values\n\n\nNone\n\n\nNotes\n\n\nExample\n\n\nHere is an example where newtmgr protocol handler is controlling whether echoing is on or off. Newtmgr, the tool, turns echoing off when it's transmitting large chunks of data to target board.\n\n\nstatic int\nnmgr_def_console_echo(struct nmgr_jbuf *njb)\n{\n    int echo_on = 1;\n    int rc;\n    struct json_attr_t attrs[3] = {\n        [0] = {\n            .attribute = \necho\n,\n            .type = t_integer,\n            .addr.integer = \necho_on,\n            .nodefault = 1\n        },\n        [1] = {\n            .attribute = NULL\n        }\n    };\n\n    rc = json_read_object(\nnjb-\nnjb_buf, attrs);\n    if (rc) {\n        return OS_EINVAL;\n    }\n\n    if (echo_on) {\n        console_echo(1);\n    } else {\n        console_echo(0);\n    }\n    return (0);\n}", 
             "title": "console_echo"
         }, 
         {
@@ -2242,7 +2237,7 @@
         }, 
         {
             "location": "/os/modules/console/console_echo/#arguments", 
-            "text": "Arguments      on", 
+            "text": "Arguments  Description      on  1 turns on echoing, 0 turns it off", 
             "title": "Arguments"
         }, 
         {
@@ -2262,37 +2257,32 @@
         }, 
         {
             "location": "/os/modules/console/console_init/", 
-            "text": "console_init \n\n\n   int\n   console_init(console_rx_cb rx_cb)\n\n\n\n\nInitializes console receive buffer and calls hal funtions hal_uart_init_cbs and hal_uart_config to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\nGive at least one example of usage.", 
+            "text": "console_init \n\n\n   int\n   console_init(console_rx_cb rx_cb)\n\n\n\n\nInitializes console receive buffer and calls hal funtions \nhal_uart_init_cbs\n and \nhal_uart_config\n to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)\n\n\nCaller registers a function pointer of \ntype void (*console_rx_cb)(int full_line)\n. This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nrx_cb\n\n\nFunction pointer, which gets called input is received.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success.\nNon-zero if HAL UART function calls fail.\n\n\nExample\n\n\nint\nmain(int argc, char **argv)\n{\n    ....\n\n    /* Init tasks */\n    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,\n                         SHELL_MAX_INPUT_LEN);\n    console_init(shell_console_rx_cb);\n\n    ....\n}", 
             "title": "console_init"
         }, 
         {
             "location": "/os/modules/console/console_init/#console_init", 
-            "text": "int\n   console_init(console_rx_cb rx_cb)  Initializes console receive buffer and calls hal funtions hal_uart_init_cbs and hal_uart_config to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)", 
+            "text": "int\n   console_init(console_rx_cb rx_cb)  Initializes console receive buffer and calls hal funtions  hal_uart_init_cbs  and  hal_uart_config  to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)  Caller registers a function pointer of  type void (*console_rx_cb)(int full_line) . This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.", 
             "title": " console_init "
         }, 
         {
             "location": "/os/modules/console/console_init/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
+            "text": "Arguments  Description      rx_cb  Function pointer, which gets called input is received.", 
             "title": "Arguments"
         }, 
         {
             "location": "/os/modules/console/console_init/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
+            "text": "Returns 0 on success.\nNon-zero if HAL UART function calls fail.", 
             "title": "Returned values"
         }, 
         {
-            "location": "/os/modules/console/console_init/#notes", 
-            "text": "Any special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
             "location": "/os/modules/console/console_init/#example", 
-            "text": "Give at least one example of usage.", 
+            "text": "int\nmain(int argc, char **argv)\n{\n    ....\n\n    /* Init tasks */\n    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,\n                         SHELL_MAX_INPUT_LEN);\n    console_init(shell_console_rx_cb);\n\n    ....\n}", 
             "title": "Example"
         }, 
         {
             "location": "/os/modules/console/console_is_init/", 
-            "text": "console_is_init \n\n\n   int console_is_init(void)\n\n\n\n\nReturns whether console has been initialized or not. I.e. whether \nconsole_init()\n has been called yet.\n\n\nArguments\n\n\nNone\n\n\nReturned values\n\n\nReturns 1 if console has been initialized. 0 if not.\n\n\nNotes\n\n\nExample\n\n\nstatic int\nlog_console_append(struct log *log, void *buf, int len)\n{\n    ....\n\n    if (!console_is_init()) {\n        return (0);\n    }\n\n    /* print log entry to console */\n    ....\n}", 
+            "text": "console_is_init \n\n\n   int console_is_init(void)\n\n\n\n\nReturns whether console has been initialized or not. I.e. whether \nconsole_init()\n has been called yet.\n\n\nArguments\n\n\nNone\n\n\nReturned values\n\n\nReturns 1 if console has been initialized. 0 if not.\n\n\nExample\n\n\nstatic int\nlog_console_append(struct log *log, void *buf, int len)\n{\n    ....\n\n    if (!console_is_init()) {\n        return (0);\n    }\n\n    /* print log entry to console */\n    ....\n}", 
             "title": "console_is_init"
         }, 
         {
@@ -2309,11 +2299,6 @@
             "location": "/os/modules/console/console_is_init/#returned-values", 
             "text": "Returns 1 if console has been initialized. 0 if not.", 
             "title": "Returned values"
-        }, 
-        {
-            "location": "/os/modules/console/console_is_init/#notes", 
-            "text": "", 
-            "title": "Notes"
         }, 
         {
             "location": "/os/modules/console/console_is_init/#example", 
@@ -2352,53 +2337,48 @@
         }, 
         {
             "location": "/os/modules/console/console_read/", 
-            "text": "i## \n console_read \n\n\n  int\n  console_read(char *str, int cnt)\n\n\n\n\nCalls hal function hal_uart_start_rx to start receiving input from console terminal over serial port.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nxx\n\n\nexplain argument xx\n\n\n\n\n\n\nyy\n\n\nexplain argument yy\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\nGive at least one example of usage.", 
+            "text": "console_read \n\n\n  int\n  console_read(char *str, int cnt)\n\n\n\n\nCopies up to \ncnt\n bytes of received data to buffer pointed by \nstr\n. Function tries to break the input into separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nstr\n\n\nBuffer where data is copied to.\n\n\n\n\n\n\ncnt\n\n\nMaximum number of characters to copy.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns the number of characters copied. 0 if there was no data\navailable, or if the first received character was '\\n'.\n\n\nExample\n\n\nvoid\ntask1_loop(void *arg)\n{\n    struct os_event *ev;\n    char rx_msg[128];\n    int rx_len;\n\n    while (1) {\n        ev = os_eventq_get(\ntask1_evq);\n        assert(ev);\n        if (ev-\nev_type == CONS_EV_TYPE) {\n            rx_len = console_read(rx_msg, sizeof(rx_msg));\n            if (rx_len) {\n                    if (!strncmp(rx_msg, \nreset\n, rx_len)) {\n                            assert(0);\n                    }", 
             "title": "console_read"
         }, 
         {
+            "location": "/os/modules/console/console_read/#console_read", 
+            "text": "int\n  console_read(char *str, int cnt)  Copies up to  cnt  bytes of received data to buffer pointed by  str . Function tries to break the input into separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.", 
+            "title": " console_read "
+        }, 
+        {
             "location": "/os/modules/console/console_read/#arguments", 
-            "text": "Arguments  Description      xx  explain argument xx    yy  explain argument yy", 
+            "text": "Arguments  Description      str  Buffer where data is copied to.    cnt  Maximum number of characters to copy.", 
             "title": "Arguments"
         }, 
         {
             "location": "/os/modules/console/console_read/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
+            "text": "Returns the number of characters copied. 0 if there was no data\navailable, or if the first received character was '\\n'.", 
             "title": "Returned values"
         }, 
         {
-            "location": "/os/modules/console/console_read/#notes", 
-            "text": "Any special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
-        }, 
-        {
             "location": "/os/modules/console/console_read/#example", 
-            "text": "Give at least one example of usage.", 
+            "text": "void\ntask1_loop(void *arg)\n{\n    struct os_event *ev;\n    char rx_msg[128];\n    int rx_len;\n\n    while (1) {\n        ev = os_eventq_get( task1_evq);\n        assert(ev);\n        if (ev- ev_type == CONS_EV_TYPE) {\n            rx_len = console_read(rx_msg, sizeof(rx_msg));\n            if (rx_len) {\n                    if (!strncmp(rx_msg,  reset , rx_len)) {\n                            assert(0);\n                    }", 
             "title": "Example"
         }, 
         {
             "location": "/os/modules/console/console_write/", 
-            "text": "console_write \n\n\n   void\n   console_write(char *str, int cnt)\n\n\n\n\nTransmit characters to console display over serial port.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n*str\n\n\npointer to the character or packet to be transmitted\n\n\n\n\n\n\ncnt\n\n\nsize of the character or packet\n\n\n\n\n\n\n\n\nReturned values\n\n\nList any values returned.\nError codes?\n\n\nNotes\n\n\nAny special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).\n\n\nExample\n\n\nHere is an example of the function being used in an echo command with a newline at the end.\n\n\nstatic int\nshell_echo_cmd(int argc, char **argv)\n{\n    int i;\n\n    for (i = 1; i \n argc; i++) {\n        console_write(argv[i], strlen(argv[i]));\n        console_write(\n \n, sizeof(\n \n)-1);\n    }\n    console_write(\n\\n\n, sizeof(\n\\n\n)-1);\n\n    return (0);\n}", 
+            "text": "console_write \n\n\n   void\n   console_write(char *str, int cnt)\n\n\n\n\nQueues characters to console display over serial port.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n*str\n\n\npointer to the character or packet to be transmitted\n\n\n\n\n\n\ncnt\n\n\nnumber of characters in \nstr\n\n\n\n\n\n\n\n\nReturned values\n\n\nN/A\n\n\nExample\n\n\nHere is an example of the function being used in an echo command with a newline at the end.\n\n\nstatic int\nshell_echo_cmd(int argc, char **argv)\n{\n    int i;\n\n    for (i = 1; i \n argc; i++) {\n        console_write(argv[i], strlen(argv[i]));\n        console_write(\n \n, sizeof(\n \n)-1);\n    }\n    console_write(\n\\n\n, sizeof(\n\\n\n)-1);\n\n    return (0);\n}", 
             "title": "console_write"
         }, 
         {
             "location": "/os/modules/console/console_write/#console_write", 
-            "text": "void\n   console_write(char *str, int cnt)  Transmit characters to console display over serial port.", 
+            "text": "void\n   console_write(char *str, int cnt)  Queues characters to console display over serial port.", 
             "title": " console_write "
         }, 
         {
             "location": "/os/modules/console/console_write/#arguments", 
-            "text": "Arguments  Description      *str  pointer to the character or packet to be transmitted    cnt  size of the character or packet", 
+            "text": "Arguments  Description      *str  pointer to the character or packet to be transmitted    cnt  number of characters in  str", 
             "title": "Arguments"
         }, 
         {
             "location": "/os/modules/console/console_write/#returned-values", 
-            "text": "List any values returned.\nError codes?", 
+            "text": "N/A", 
             "title": "Returned values"
-        }, 
-        {
-            "location": "/os/modules/console/console_write/#notes", 
-            "text": "Any special feature/special benefit that we want to tout.\nDoes it need to be used with some other specific functions?\nAny caveats to be careful about (e.g. high memory requirements).", 
-            "title": "Notes"
         }, 
         {
             "location": "/os/modules/console/console_write/#example", 
