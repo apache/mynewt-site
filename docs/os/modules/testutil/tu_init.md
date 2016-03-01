@@ -1,10 +1,10 @@
-## <font color="F2853F" style="font-size:24pt"> console_printf</font>
+## <font color="F2853F" style="font-size:24pt"> tu_init</font>
 
 ```no-highlight
 int tu_init(void)
 ```
 
-Initializes the test framework according to the contents of the tu_config struct. This function must be called before any tests are run.
+Initializes the test framework according to the contents of the `tu_config` struct. This function must be called before any tests are run.
 
 #### Arguments
 
@@ -13,8 +13,6 @@ N/A
 #### Returned values
 
 Returns 0 on success; nonzero on failure.
-
-#### Notes
 
 #### Example
 
