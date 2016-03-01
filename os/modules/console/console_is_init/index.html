@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_add_char/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_is_init/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>console_add_char - Apache Mynewt</title>
+	<title>console_is_init - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="console_add_char">
+    <body class="console_is_init">
 
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -196,18 +196,10 @@
               
   
   <li><a href="
-  ./
+  ../console_blocking_mode/
 ">Functions</a>
     
       <ul class="current-toc">
-          
-              
-  
-    <li class="active">
-      console_add_char
-    </li>
-  
-
           
               
   
@@ -220,7 +212,7 @@
               
   
     <li>
-      <a href="../console_blocking_tx/">console_blocking_tx</a>
+      <a href="../console_echo/">console_echo</a>
     </li>
   
 
@@ -229,6 +221,14 @@
   
     <li>
       <a href="../console_init/">console_init</a>
+    </li>
+  
+
+          
+              
+  
+    <li class="active">
+      console_is_init
     </li>
   
 
@@ -244,47 +244,7 @@
               
   
     <li>
-      <a href="../console_pull_char/">console_pull_char</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_pull_char_head/">console_pull_char_head</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_queue_char/">console_queue_char</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../console_read/">console_read</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_rx_char/">console_rx_char</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_tx_char/">console_tx_char</a>
     </li>
   
 
@@ -440,7 +400,7 @@
         
       
     
-    <li>console_add_char</li>
+    <li>console_is_init</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -448,45 +408,28 @@
   <hr/>
 </div>
                         
-                            <h2 id="console_add_char"><font color="#F2853F" style="font-size:24pt"> console_add_char</font><a class="headerlink" href="#console_add_char" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   static void
-   console_add_char(struct console_ring *cr, char ch)
+                            <h2 id="console_is_init"><font color="#F2853F" style="font-size:24pt"> console_is_init </font><a class="headerlink" href="#console_is_init" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   int console_is_init(void)
 </code></pre>
 
-<p>Adds a character to the console ring buffer. When you store an item in the buffer you store it at the head location, and the head advances to the next location.</p>
+<p>Returns whether console has been initialized or not. I.e. whether <em>console_init()</em> has been called yet.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>*cr</td>
-<td>Pointer to a console ring data structure whose <code>cr_head</code> variable is to be set to the second argument in this function call</td>
-</tr>
-<tr>
-<td>ch</td>
-<td>Character to be inserted to the ring</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
 <p>None</p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>Returns 1 if console has been initialized. 0 if not.</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Any special feature/special benefit that we want to tout.
-Does it need to be used with some other specific functions?
-Any caveats to be careful about (e.g. high memory requirements).</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<p>Add a new line character to the output (transmit) buffer.</p>
-<pre><code class="no-highlight">void
-task()
+<pre><code class="no-highlight">static int
+log_console_append(struct log *log, void *buf, int len)
 {
-     struct console_ring *tx = &amp;ct-&gt;ct_tx;
+    ....
 
-     console_add_char(tx, '\n');
+    if (!console_is_init()) {
+        return (0);
+    }
+
+    /* print log entry to console */
+    ....
 }
 </code></pre>
                         

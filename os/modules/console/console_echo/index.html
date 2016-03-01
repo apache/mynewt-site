@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_queue_char/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_echo/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>console_queue_char - Apache Mynewt</title>
+	<title>console_echo - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="console_queue_char">
+    <body class="console_echo">
 
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -196,18 +196,10 @@
               
   
   <li><a href="
-  ../console_add_char/
+  ../console_blocking_mode/
 ">Functions</a>
     
       <ul class="current-toc">
-          
-              
-  
-    <li>
-      <a href="../console_add_char/">console_add_char</a>
-    </li>
-  
-
           
               
   
@@ -219,8 +211,8 @@
           
               
   
-    <li>
-      <a href="../console_blocking_tx/">console_blocking_tx</a>
+    <li class="active">
+      console_echo
     </li>
   
 
@@ -236,6 +228,14 @@
               
   
     <li>
+      <a href="../console_is_init/">console_is_init</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
       <a href="../console_printf/">console_printf</a>
     </li>
   
@@ -244,47 +244,7 @@
               
   
     <li>
-      <a href="../console_pull_char/">console_pull_char</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_pull_char_head/">console_pull_char_head</a>
-    </li>
-  
-
-          
-              
-  
-    <li class="active">
-      console_queue_char
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../console_read/">console_read</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_rx_char/">console_rx_char</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../console_tx_char/">console_tx_char</a>
     </li>
   
 
@@ -440,7 +400,7 @@
         
       
     
-    <li>console_queue_char</li>
+    <li>console_echo</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -448,35 +408,58 @@
   <hr/>
 </div>
                         
-                            <h2 id="console_queue_char"><font color="#F2853F" style="font-size:24pt"> console_queue_char </font><a class="headerlink" href="#console_queue_char" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   static void
-   console_queue_char(char ch)
+                            <h2 id="console_echo"><font color="#F2853F" style="font-size:24pt"> console_echo </font><a class="headerlink" href="#console_echo" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">   void console_echo(int on)
 </code></pre>
 
-<p>Manage the buffer queue before inserting a character into it. If the head of the output (transmit) console ring is right up to its tail, the queue needs to be drained first before any data can be added. Then it uses console_add_char function to add the character.</p>
+<p>Controls whether echoing is on or off for the console. When echoing is on, all characters received are transmitted back.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
 <tr>
 <th>Arguments</th>
-<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>ch</td>
-<td>Character to be inserted to the queue</td>
+<td>on</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
+<p>None</p>
 <h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Function blocks interrupts as a way of protecting against concurrent access to TX buffer.</p>
-<p>If TX buffer is full, the function waits for TX buffer to drain. And the way it does it currently is by calling os_time_delay(). Therefore this function should only be called from within a task context, not from an interrupt handler. We might want to change this...</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<pre><code class="no-highlight">Insert example
+<p>Here is an example where newtmgr protocol handler is controlling whether echoing is on or off. Newtmgr, the tool, turns echoing off when it's transmitting large chunks of data to target board.</p>
+<pre><code class="no-highlight">static int
+nmgr_def_console_echo(struct nmgr_jbuf *njb)
+{
+    int echo_on = 1;
+    int rc;
+    struct json_attr_t attrs[3] = {
+        [0] = {
+            .attribute = &quot;echo&quot;,
+            .type = t_integer,
+            .addr.integer = &amp;echo_on,
+            .nodefault = 1
+        },
+        [1] = {
+            .attribute = NULL
+        }
+    };
+
+    rc = json_read_object(&amp;njb-&gt;njb_buf, attrs);
+    if (rc) {
+        return OS_EINVAL;
+    }
+
+    if (echo_on) {
+        console_echo(1);
+    } else {
+        console_echo(0);
+    }
+    return (0);
+}
 </code></pre>
                         
                     </div>

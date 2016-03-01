@@ -196,7 +196,7 @@
               
   
   <li><a href="
-  ../console_add_char/
+  ../console_blocking_mode/
 ">Functions</a>
     
   </li>
@@ -385,41 +385,18 @@ On the other hand, a project may not have a physical console (e.g. a UART port t
 
 <p>Console has 2 modes for transmit; blocking and non-blocking mode. Usually the non-blocking mode is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.
 Blocking mode is used when we don't want TX completion interrupts. This is used when system crashes, and we still want to output info related to that crash.</p>
+<p>Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.</p>
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Console interaction is intrinsically composed of two unidirectional systems. The console implementation uses two ring buffers containing input (receive) and output (transmit) characters, respectively. Read and write operations on the console_ring structure are managed by labeling the read location indicator the <code>cr_tail</code> and the write location indicator the <code>cr_head</code>. The console ring length is variable and is specified as the <code>cr_size</code> member of the data structure. <code>cr_buf</code> is the pointer to the actual array of data contained.</p>
-<pre><code class="no-highlight">struct console_ring {
-  32     uint8_t cr_head;
-  33     uint8_t cr_tail;
-  34     uint8_t cr_size;
-  35     uint8_t _pad;
-  36     uint8_t *cr_buf;
-  37 }
-</code></pre>
-
-<pre><code class="no-highlight">struct console_tty {
-  40     struct console_ring ct_tx;
-  41     uint8_t ct_tx_buf[CONSOLE_TX_BUF_SZ]; /* must be after console_ring */
-  42     struct console_ring ct_rx;
-  43     uint8_t ct_rx_buf[CONSOLE_RX_BUF_SZ]; /* must be after console_ring */
-  44     console_rx_cb ct_rx_cb;     /* callback that input is ready */
-  45     console_write_char ct_write_char;
-  46 } console_tty
-</code></pre>
-
+<p>N/A</p>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p>The functions available in console are:</p>
 <ul>
-<li><a href="../console_add_char/">console_add_char</a></li>
 <li><a href="../console_blocking_mode/">console_blocking_mode</a></li>
-<li><a href="../console_blocking_tx/">console_blocking_tx</a></li>
+<li><a href="../console_echo/">console_echo</a></li>
 <li><a href="../console_init/">console_init</a></li>
+<li><a href="../console_is_init/">console_is_init</a></li>
 <li><a href="../console_printf/">console_printf</a></li>
-<li><a href="../console_pull_char/">console_pull_char</a></li>
-<li><a href="../console_pull_char_head/">console_pull_char_head</a></li>
-<li><a href="../console_queue_char/">console_queue_char</a></li>
 <li><a href="../console_read/">console_read</a></li>
-<li><a href="../console_rx_char/">console_rx_char</a></li>
-<li><a href="../console_tx_char/">console_tx_char</a></li>
 <li><a href="../console_write/">console_write</a></li>
 </ul>
                         
