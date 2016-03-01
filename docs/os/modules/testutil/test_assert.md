@@ -9,7 +9,7 @@ TEST_ASSERT_FATAL(expression, fail_msg, ...)
 
 Asserts that the specified condition is true.  If the expression is true, nothing gets reported. *fail_msg* will be printed out if the expression is false. The expression argument is mandatory; the rest are optional.  The fail_msg argument is a printf format string which specifies how the remaining arguments are parsed.
 
-TEST_ASSERT_FATAL() causes the current test case to be aborted, if expression fails.
+`TEST_ASSERT_FATAL()` causes the current test case to be aborted, if expression fails.
 
 #### Arguments
 

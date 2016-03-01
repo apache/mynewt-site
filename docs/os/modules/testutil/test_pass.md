@@ -7,12 +7,10 @@ TEST_PASS(msg, ...)
 Reports a success result for the current test.  This function is not normally needed, as all successful tests automatically write an empty pass result at completion. It is only needed when the success result report should contain text.  The msg argument is a printf format string
     which specifies how the remaining arguments are parsed.  The result file
     produced by this function contains the following text:
-
+```no-highlight
         |<file>:<line-number>| manual pass
         <msg>
-
-
-TEST_ASSERT_FATAL() causes the current test case to be aborted, if expression fails.
+```
 
 #### Arguments
 
