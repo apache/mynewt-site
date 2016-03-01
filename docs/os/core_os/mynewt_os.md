@@ -30,7 +30,7 @@ Insert introduction here
 * [Mbufs](mbuf/mbuf.md)
 * [Sanity](sanity/sanity.md)
 * [Callouts](callout/callout.md)
-* [Porting OS to other platforms](port_os.md)
+* [Porting OS to other platforms](porting/port_os.md)
 
 ## OS Functions
 
