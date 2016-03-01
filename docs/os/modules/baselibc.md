@@ -8,9 +8,7 @@ Baselibc comes from https://github.com/PetteriAimonen/Baselibc.git
 
 ## Description
 
-Mynewt OS can utilize libc which comes with compiler (e.g. newlib bundled with some binary distributions of arm-none-eabi-gcc). However, you may choose to replace libc functions with baselibc ones for a reduced image size.
-
-Baselibc optimizes for size rather than performance, which is usually a more important goal in embedded environments.
+Mynewt OS can utilize libc which comes with compiler (e.g. newlib bundled with some binary distributions of arm-none-eabi-gcc). However, you may choose to replace the libc with baselibc for a reduced image size. Baselibc optimizes for size rather than performance, which is usually a more important goal in embedded environments.
 
 ## How to switch to baselibc
 
@@ -34,6 +32,6 @@ The functions available in this OS feature are listed below. Documentation is av
 
 baselibc supports most libc functionality; malloc(), printf-family, string handling and conversion routines.
 
-There is some functionality which is not available at the moment, e.g. support for floating point, and long long.
+There is some functionality which is not available, e.g. support for floating point numbers, and limited support for 'long long'.
 
 ---------------------
