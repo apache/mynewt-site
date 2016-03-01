@@ -43,49 +43,22 @@ On the other hand, a project may not have a physical console (e.g. a UART port t
 Console has 2 modes for transmit; blocking and non-blocking mode. Usually the non-blocking mode is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.
 Blocking mode is used when we don't want TX completion interrupts. This is used when system crashes, and we still want to output info related to that crash.
 
+Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.
+
 ## Data structures
 
-
-Console interaction is intrinsically composed of two unidirectional systems. The console implementation uses two ring buffers containing input (receive) and output (transmit) characters, respectively. Read and write operations on the console_ring structure are managed by labeling the read location indicator the `cr_tail` and the write location indicator the `cr_head`. The console ring length is variable and is specified as the `cr_size` member of the data structure. `cr_buf` is the pointer to the actual array of data contained.
-
-
-```no-highlight
-struct console_ring {
-  32     uint8_t cr_head;
-  33     uint8_t cr_tail;
-  34     uint8_t cr_size;
-  35     uint8_t _pad;
-  36     uint8_t *cr_buf;
-  37 }
-```
-
-
-```no-highlight
-struct console_tty {
-  40     struct console_ring ct_tx;
-  41     uint8_t ct_tx_buf[CONSOLE_TX_BUF_SZ]; /* must be after console_ring */
-  42     struct console_ring ct_rx;
-  43     uint8_t ct_rx_buf[CONSOLE_RX_BUF_SZ]; /* must be after console_ring */
-  44     console_rx_cb ct_rx_cb;     /* callback that input is ready */
-  45     console_write_char ct_write_char;
-  46 } console_tty
-```
+N/A
 
 ## List of Functions
 
 The functions available in console are:
 
-* [console_add_char](console_add_char.md)
 * [console_blocking_mode](console_blocking_mode.md)
-* [console_blocking_tx](console_blocking_tx.md)
+* [console_echo](console_echo.md)
 * [console_init](console_init.md)
+* [console_is_init](console_is_init.md)
 * [console_printf](console_printf.md)
-* [console_pull_char](console_pull_char.md)
-* [console_pull_char_head](console_pull_char_head.md)
-* [console_queue_char](console_queue_char.md)
 * [console_read](console_read.md)
-* [console_rx_char](console_rx_char.md)
-* [console_tx_char](console_tx_char.md)
 * [console_write](console_write.md)
 
 
