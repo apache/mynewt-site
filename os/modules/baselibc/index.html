@@ -340,180 +340,27 @@
 </div>
                         
                             <h1 id="baselibc">Baselibc<a class="headerlink" href="#baselibc" title="Permanent link">&para;</a></h1>
-<p>baselibc is a very simple libc for embedded systems geared primarily for 32-bit microcontrollers in the 10-100kB memory range. The library of basic system calls and facilities compiles to less than 5kB total on Cortex-M3, and much less if some functions aren't used.</p>
+<p>Baselibc is a very simple libc for embedded systems geared primarily for 32-bit microcontrollers in the 10-100kB memory range. The library of basic system calls and facilities compiles to less than 5kB total on Cortex-M3, and much less if some functions aren't used.</p>
 <p>The code is based on klibc and tinyprintf modules, and licensed under the BSD license.</p>
+<p>Baselibc comes from https://github.com/PetteriAimonen/Baselibc.git</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Mynewt Os comes bundled with libc (the standard C library). However, you may choose to replace libc functions with baselibc ones for a reduced image size.</p>
+<p>Mynewt OS can utilize libc which comes with compiler (e.g. newlib bundled with some binary distributions of arm-none-eabi-gcc). However, you may choose to replace the libc with baselibc for a reduced image size. Baselibc optimizes for size rather than performance, which is usually a more important goal in embedded environments.</p>
 <h2 id="how-to-switch-to-baselibc">How to switch to baselibc<a class="headerlink" href="#how-to-switch-to-baselibc" title="Permanent link">&para;</a></h2>
-<p>In order to switch from using libc to using baselibc you have to add the baselibc egg as dependency in the project egg. Specifying this dependency ensures that the linker first looks for the functions in baselibc before falling back to libc while creating the executable. For example, project <code>boot</code> uses baselibc. Its project description file <code>boot.yml</code> looks like the following:</p>
-<pre><code class="no-highlight">   project.name: boot
+<p>In order to switch from using libc to using baselibc you have to add the baselibc pkg as a dependency in the project pkg. Specifying this dependency ensures that the linker first looks for the functions in baselibc before falling back to libc while creating the executable. For example, project <code>boot</code> uses baselibc. Its project description file <code>boot.yml</code> looks like the following:</p>
+<p><code>no-highlight
+   project.name: boot
    project.identities: bootloader
-   project.eggs:
+   project.pkgs:
        - libs/os
        - libs/bootutil
        - libs/nffs
        - libs/console/stub
        - libs/util
-       - libs/baselibc
- ```
-
-## List of Functions
-
-The functions available in this OS feature are listed below. Documentation is available in the form of  on-line manual pages or at [https://www.freebsd.org/cgi/man.cgi](#https://www.freebsd.org/cgi/man.cgi).  `mynewt.c` adds two new functions listed in the Function reference section.
-
-* asprintf.c    
-* atoi.c    
-* atol.c
-* atoll.c   
-* bsearch.c 
-* bzero.c   
-* calloc.c  
-* fgets.c    
-* inline.c  
-* jrand48.c 
-* lrand48.c 
-* malloc.c  
-* malloc.h  
-* memccpy.c 
-* memchr.c  
-* memcmp.c  
-* memcpy.c  
-* memfile.c 
-* memmem.c  
-* memmove.c 
-* memrchr.c 
-* memset.c  
-* memswap.c 
-* mrand48.c 
-* mynewt.c  
-* nrand48.c 
-* qsort.c   
-* realloc.c 
-* sprintf.c 
-* srand48.c 
-* sscanf.c  
-* strcasecmp.c  
-* strcat.c  
-* strchr.c  
-* strcmp.c  
-* strcpy.c  
-* strcspn.c 
-* strdup.c  
-* strlcat.c 
-* strlcpy.c 
-* strlen.c  
-* strncasecmp.c 
-* strncat.c 
-* strncmp.c 
-* strncpy.c 
-* strndup.c 
-* strnlen.c 
-* strntoimax.c  
-* strntoumax.c  
-* strpbrk.c 
-* strrchr.c 
-* strsep.c  
-* strspn.c  
-* strstr.c  
-* strtoimax.c   
-* strtok.c  
-* strtok_r.c    
-* strtol.c  
-* strtoll.c 
-* strtoul.c 
-* strtoull.c    
-* strtoumax.c   
-* templates 
-* test  
-* tinyprintf.c  
-* vasprintf.c   
-* vprintf.c 
-* vsprintf.c    
-* vsscanf.c 
-
-## Function Reference
-
-------------------
-
-## &lt;font color=&quot;F2853F&quot; style=&quot;font-size:24pt&quot;&gt; stdin_read &lt;/font&gt;
-
-```no-highlight
-    static size_t
-    stdin_read(FILE *fp, char *bp, size_t n)
-</code></pre>
-
-<p>Read from a file.</p>
-<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>fp</td>
-<td>pointer to the input file</td>
-</tr>
-<tr>
-<td>bp</td>
-<td>pointer to the string to be read</td>
-</tr>
-<tr>
-<td>n</td>
-<td>size of buffer (number of characters) to be read</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>N/A</p>
-<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>N/A</p>
-<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
-</code></pre>
-
-<hr />
-<h2 id="stdout_write"><font color="#F2853F" style="font-size:24pt"> stdout_write </font><a class="headerlink" href="#stdout_write" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">   static size_t
-   stdout_write(FILE *fp, const char *bp, size_t n)
-</code></pre>
-
-<p>Write to a file or console. </p>
-<h4 id="arguments_1">Arguments<a class="headerlink" href="#arguments_1" title="Permanent link">&para;</a></h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>fp</td>
-<td>pointer to the output file</td>
-</tr>
-<tr>
-<td>bp</td>
-<td>pointer to the string to be written</td>
-</tr>
-<tr>
-<td>n</td>
-<td>size of buffer (number of characters) to be output</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returned-values_1">Returned values<a class="headerlink" href="#returned-values_1" title="Permanent link">&para;</a></h4>
-<p>N/A</p>
-<h4 id="notes_1">Notes<a class="headerlink" href="#notes_1" title="Permanent link">&para;</a></h4>
-<p>N/A</p>
-<h4 id="example_1">Example<a class="headerlink" href="#example_1" title="Permanent link">&para;</a></h4>
-<p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">&lt;Insert the code snippet here&gt;
-</code></pre>
-
+       - libs/baselibc</code></p>
+<h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
+<p>Documentation for libc functions is available from multiple places. One example are the on-line manual pages at <a href="#https://www.freebsd.org/cgi/man.cgi">https://www.freebsd.org/cgi/man.cgi</a>.</p>
+<p>baselibc supports most libc functionality; malloc(), printf-family, string handling, and conversion routines.</p>
+<p>There is some functionality which is not available, e.g. support for floating point numbers, and limited support for 'long long'.</p>
 <hr />
                         
                     </div>
