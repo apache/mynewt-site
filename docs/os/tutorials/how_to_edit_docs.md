@@ -43,13 +43,13 @@ If you are not a committer, you may follow the proposed non-committer workflow t
 
 ### File to be edited
 
-The file you will edit is named try_markdown.md. It is in the incubator-mynewt-site/docs/os/get_acclimated/ directory.
+The file you will edit is named try_markdown.md. It is in the incubator-mynewt-site/docs/os/tutorials/ directory.
 
 ### Editing an existing page 
 
 * Open the application Mou.
 
-* Open the file incubator-mynewt-site/docs/os/get_acclimated/try_markdown.md in Mou.
+* Open the file incubator-mynewt-site/docs/os/tutorials/try_markdown.md in Mou.
 
 * Edit the last item on the list.
 
