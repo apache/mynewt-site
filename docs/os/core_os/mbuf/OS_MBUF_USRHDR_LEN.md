@@ -1,0 +1,32 @@
+## <font color="#F2853F" style="font-size:24pt">OS_MBUF_USRHDR_LEN</font>
+
+```no-highlight
+OS_MBUF_USRHDR_LEN(__om)
+```
+
+Macro used to retrieve the length of the user packet header in a mbuf.
+
+<br>
+
+
+#### Arguments
+
+| Arguments | Description |
+|-----------|-------------|
+| __om |  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf) |
+
+
+<br>
+
+#### Example
+
+```no-highlight
+    uint16_t user_length;
+    struct os_mbuf *om
+    struct user_header *hdr;
+
+    user_length  = OS_MBUF_USRHDR_LEN(om);
+```
+
+---------------------
+
