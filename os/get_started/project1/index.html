@@ -244,15 +244,16 @@
   <hr/>
 </div>
                         
-                            <h2 id="blinky-the-first-project">Blinky, the First Project<a class="headerlink" href="#blinky-the-first-project" title="Permanent link">&para;</a></h2>
+                            <h2 id="blinky-your-hello-world">Blinky, Your Hello World!<a class="headerlink" href="#blinky-your-hello-world" title="Permanent link">&para;</a></h2>
 <h3 id="objective">Objective<a class="headerlink" href="#objective" title="Permanent link">&para;</a></h3>
-<p>To use available packages from the default application repository for Mynewt to make an LED on a target board blink. We call it <em>Project Blinky</em>. The goals of this tutorial are threefold:</p>
+<p>Learn how to use packages from a default application repository of Mynewt to build your first <em>Hello World</em> application (Blinky) on a target board. Once built using <em>newt</em> tool, this application will blink the LED lights on the target board. Fun stuff!</p>
+<p>This tutorial will guide to achieve the following: </p>
 <ol>
 <li>Set up the environment on your computer to use Mynewt OS and newt tool. </li>
-<li>Download packages for building and testing the project <a href="#building-test-code-on-simulator">on a simulated target</a>.</li>
+<li>Download packages for building and testing the project <a href="#build-test-code-on-simulator">on a simulated target</a>.</li>
 <li>Download packages and use tools to create a runtime image for a board to make its LED blink. You have two choices here:<ul>
-<li><a href="#using-sram-to-make-led-blink">Download an image to SRAM</a>, or </li>
-<li><a href="#using-flash-to-make-led-blink">Download it to flash</a>.</li>
+<li><a href="#use-sram-to-make-led-blink">Download an image to SRAM</a>, or </li>
+<li><a href="#use-flash-to-make-led-blink">Download it to flash</a>.</li>
 </ul>
 </li>
 </ol>
@@ -262,41 +263,14 @@
 <li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/ProductDetail/Olimex-Ltd/STM32-E407/?qs=UN6GZl1KCcit6Ye0xmPO4A%3D%3D">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
 <li>ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)</li>
 <li>USB A-B type cable to connect the debugger to your personal computer</li>
-<li>Personal Computer</li>
+<li>Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)</li>
+<li>An account on Github repository and <em>git</em> installed on your computer.</li>
 </ol>
-<p>The instructions assume the user is using a Bourne-compatible shell (e.g. bash or zsh) on your computer. The given instructions have been tested with the following releases of operating systems:</p>
+<p>Also, we assume that you're familiar with UNIX shells.</p>
+<p>Let's gets started!</p>
+<h3 id="set-up-toolchain-for-mac">Set up toolchain for Mac<a class="headerlink" href="#set-up-toolchain-for-mac" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Mac: OS X Yosemite Version 10.10.5</li>
-<li>Linux: Ubuntu 14.10 (Utopic Unicorn)</li>
-</ul>
-<h3 id="access-to-the-apache-repo">Access to the Apache repo<a class="headerlink" href="#access-to-the-apache-repo" title="Permanent link">&para;</a></h3>
-<ul>
-<li>
-<p>Get an account on Apache. You do not need a committer account to view the website or clone the repository. You only need a committer account to push changes to it.</p>
-</li>
-<li>
-<p>The latest codebase for the Mynewt OS is on the master branch at https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git</p>
-</li>
-<li>
-<p>The latest codebase for the Newt tool is on the master branch at https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git . You do not need to download source code and build the newt tool for this project. You will simply use the available executable instead.</p>
-</li>
-</ul>
-<p>The following shows how to clone a Mynewt OS code repository:</p>
-<ul>
-<li>Non Committers</li>
-</ul>
-<pre><code class="no-highlight">        $ git clone http://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
-</code></pre>
-
-<ul>
-<li>Committers</li>
-</ul>
-<pre><code class="no-highlight">        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
-</code></pre>
-
-<h3 id="setting-up-toolchain-if-you-have-a-mac">Setting up toolchain if you have a Mac<a class="headerlink" href="#setting-up-toolchain-if-you-have-a-mac" title="Permanent link">&para;</a></h3>
-<ul>
-<li>You have to install gcc/libc that can produce 32-bit executables. Use homebrew to install gcc.</li>
+<li>Install gcc/libc that will produce 32-bit executables, using <em>brew</em>. </li>
 </ul>
 <pre><code class="no-highlight">        $ brew install gcc
         ...
@@ -306,7 +280,7 @@
 </code></pre>
 
 <ul>
-<li>ARM maintains a pre-built GNU toolchain with a GCC source branch targeted at Embedded ARM Processors namely Cortex-R/Cortex-M processor families. Install the PX4 Toolchain and check the version installed. Make sure that the symbolic link installed by Homebrew points to the correct version of the debugger. If not, you can either change the symbolic link using the "ln -f -s" command or just go ahead and try with the version it points to!</li>
+<li>Install the PX4 Toolchain and check the version installed. ARM maintains a pre-built GNU toolchain with a GCC source branch targeted at Embedded ARM Processors, namely Cortex-R/Cortex-M processor families. After installing, ensure that the symbolic link installed by Homebrew points to the correct version of the debugger. If not, you can either change the symbolic link using the "ln -f -s" command or just go ahead and try with the version it points to!</li>
 </ul>
 <pre><code class="no-highlight">        $ brew tap PX4/homebrew-px4
         $ brew update
@@ -320,9 +294,9 @@
         lrwxr-xr-x  1 aditihilbert  admin  69 Sep 22 17:16 /usr/local/bin/arm-none-eabi-gdb -&gt; /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/arm-none-eabi-gdb
 </code></pre>
 
-<p>Note: If no version is specified, brew will install the latest version available. MynewtOS will eventually work with multiple versions available including the latest releases. However, at present we have tested only with this version and recommend it for getting started. </p>
+<p>Note: If no version is specified, brew will install the latest version available. Mynewt OS will eventually work with multiple versions available, including the latest releases. However, at present we have tested only with this version and recommend it for getting started. </p>
 <ul>
-<li>You have to install OpenOCD (Open On-Chip Debugger) which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board. It lets you program, debug, and test embedded target devices which, in this case, is the Olimex board. Use brew to install it. Brew adds a simlink /usr/local/bin/openocd to the openocd directory in the Cellar. For more on OpenOCD go to <a href="http://openocd.org">http://openocd.org</a>.</li>
+<li>Install OpenOCD (Open On-Chip Debugger), which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board, debug, and test embedded target devices, including the Olimex board. For more on OpenOCD go to <a href="http://openocd.org">http://openocd.org</a>.</li>
 </ul>
 <pre><code class="no-highlight">        $ brew install open-ocd
         $ which openocd
@@ -331,18 +305,17 @@
         lrwxr-xr-x  1 &lt;user&gt;  admin  36 Sep 17 16:22 /usr/local/bin/openocd -&gt; ../Cellar/open-ocd/0.9.0/bin/openocd
 </code></pre>
 
+<p>At this point you have installed all the necessary software to build and test code on a simluator for the Mac OS.
+* Proceed to the <a href="#build-test-code-on-simulator">Build test code on simulator</a> section.</p>
+<h3 id="set-up-toolchain-for-linux">Set up toolchain for Linux<a class="headerlink" href="#set-up-toolchain-for-linux" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Proceed to the <a href="#building-test-code-on-simulator">Building test code on simulator</a> section.</li>
-</ul>
-<h3 id="setting-up-toolchain-if-you-have-linux">Setting up toolchain if you have Linux<a class="headerlink" href="#setting-up-toolchain-if-you-have-linux" title="Permanent link">&para;</a></h3>
-<ul>
-<li>You have to install gcc / libc that can produce 32-bit executables. You can install these as follows: </li>
+<li>Install gcc/ ibc that will produce 32-bit executables: </li>
 </ul>
 <pre><code class="no-highlight">        $ sudo apt-get install gcc-multilib libc6-i386
 </code></pre>
 
 <ul>
-<li>For the LED project on the Olimex hardware, you have to install gcc for AM 4.9.3.  This package can be installed with apt-get as documented below. The steps are explained in depth at <a href="https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded">https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded</a>.</li>
+<li>For the LED project on the Olimex hardware, you should install gcc for AM 4.9.3.  This package can be installed with apt-get as documented below. The steps are explained in depth at <a href="https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded">https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded</a>.</li>
 </ul>
 <pre><code class="no-highlight">        $ sudo apt-get remove binutils-arm-none-eabi gcc-arm-none-eabi 
         $ sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded 
@@ -352,33 +325,36 @@
 
 <ul>
 <li>
-<p>And finally, you have to install OpenOCD (Open On-Chip Debugger) which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board. It lets you program, debug, and test embedded target devices which, in this case, is the Olimex board. You have to acquire OpenOCD 0.8.0. </p>
+<p>And finally, install OpenOCD (Open On-Chip Debugger), which is an open-source software that will allow you to interface with the JTAG debug connector/adaptor for the Olimex board, debug your program and test embedded target devices which, including the Olimex board.</p>
 <p>If you are running Ubuntu 15.x, then you are in luck and you can simply run: </p>
 </li>
 </ul>
 <pre><code class="no-highlight">        $ sudo apt-get install openocd 
 </code></pre>
 
-<p>Other versions of Ubuntu may not have the correct version of openocd available.  In this case, you should download the openocd 0.8.0 package from <a href="https://launchpad.net/ubuntu/vivid/+source/openocd">https://launchpad.net/ubuntu/vivid/+source/openocd</a>. The direct link to the amd64 build is <a href="http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb">http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb</a>. </p>
+<p>For this project, you should download the openocd 0.8.0 package from <a href="https://launchpad.net/ubuntu/vivid/+source/openocd">https://launchpad.net/ubuntu/vivid/+source/openocd</a>. The direct link to the amd64 build is <a href="http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb">http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb</a>. </p>
 <ul>
-<li>Proceed to the <a href="#building-test-code-on-simulator">Building test code on simulator</a> section.</li>
+<li>At this point you have installed all the necessary software to build and test code on a simluator for Linux. Proceed to the <a href="#build-test-code-on-simulator">Build test code on simulator</a> section.</li>
 </ul>
-<h3 id="installing-newt-tool">Installing newt tool<a class="headerlink" href="#installing-newt-tool" title="Permanent link">&para;</a></h3>
-<p>You can set up the environment on your computer, install the Go language, and build the newt tool from source as explained in the tutorials in the Newt Tool Manual. See <a href="../../../newt/newt_mac/">Install newt from source on Mac</a> if you have a Mac and <a href="../../../newt/newt_linux/">Install newt from source on Linux</a> if you have a Linux machine.</p>
-<h3 id="try-building-test-code-on-simulator">Try building test code on simulator<a class="headerlink" href="#try-building-test-code-on-simulator" title="Permanent link">&para;</a></h3>
-<ol>
-<li>Clone the larva repository from the Apache git repository into a local directory named <code>larva</code>.</li>
-</ol>
+<h3 id="install-newt-tool">Install newt tool<a class="headerlink" href="#install-newt-tool" title="Permanent link">&para;</a></h3>
+<p>There are two ways to install the <em>newt</em> tool on your computer. The easy way (and the recommeded way for this project) is to download the respective <em>newt</em> binaries from the links below:
+<em> Mac OS 
+</em> Linux</p>
+<p>Include the <em>newt</em> in your $PATH.</p>
+<p>Or if you're an adventurer then you can set up the environment on your computer, install the Go language, and build the <em>newt</em> tool from source as explained in the tutorials in the Newt Tool Manual. See <a href="../../../newt/newt_mac/">Install newt from source on Mac</a> and <a href="../../../newt/newt_linux/">Install newt from source on Linux</a>.</p>
+<h3 id="build-test-code-on-simulator">Build test code on simulator<a class="headerlink" href="#build-test-code-on-simulator" title="Permanent link">&para;</a></h3>
+<p>1. Clone the larva repository from the Apache git repository into a local directory named <code>larva</code>.</p>
 <pre><code class="no-highlight">        $ cd ~/dev 
         $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
         $ ls
+
         go  larva
         $ ls larva
         DISCLAIMER  NOTICE      app.yml     compiler    hw      net     project     sys
         LICENSE     README.md   autotargets fs  libs    pkg-list.yml    scripts
 </code></pre>
 
-<p>2.  Create a target using the newt tool. </p>
+<p>2. Create a target using the newt tool. </p>
 <pre><code class="no-highlight">        $ cd larva
         $ newt target create sim_test
         Creating target sim_test
@@ -408,8 +384,7 @@
             project=test
 </code></pre>
 
-<p>4. Configure newt to use the gnu build tools native to OS X or linux. In order for sim to work properly, it needs to be using 32-bit gcc (gcc-5). Replace 
-~/dev/larva/compiler/sim/compiler.yml with the compiler/sim/osx-compiler.yml or linux-compiler.yml file, depending on the system. On a Windows machine follow the instruction for the Linux machine as you are running commands in a Linux VM.</p>
+<p>4. Configure <em>newt</em> to use the gnu build tools native to OS X or Linux. In order for sim to work properly, it needs the 32-bit gcc (gcc-5). Replace <em>~/dev/larva/compiler/sim/compiler.yml</em> with the <em>compiler/sim/osx-compiler.yml</em> or <em>linux-compiler.yml</em> file, depending on the system. On a Windows machine, follow the instruction for the Linux machine as you are running commands in a Linux VM.</p>
 <p>For a Mac OS X environment:</p>
 <pre><code class="no-highlight">        $ cp compiler/sim/osx-compiler.yml compiler/sim/compiler.yml 
 </code></pre>
@@ -418,7 +393,7 @@
 <pre><code class="no-highlight">        $ cp compiler/sim/linux-compiler.yml compiler/sim/compiler.yml
 </code></pre>
 
-<p>5. Next, build the packages for the sim project using the newt tool. You can specify the VERBOSE option if you want to see the gory details. </p>
+<p>5. Next, build the packages for the sim project using the <em>newt</em> tool. For extra details, specify the VERBOSE option.</p>
 <pre><code class="no-highlight">        $ newt target build sim_test
         Building target sim_test (project = test)
         ...
@@ -436,7 +411,7 @@
         Successfully run!
 </code></pre>
 
-<p>6. Try running the test suite executable inside this project and enjoy your first successful test!</p>
+<p>6. Run the test suite executable inside this project and enjoy your first successful test!</p>
 <pre><code class="no-highlight">        $ project/test/bin/sim_test/test.elf
         [pass] os_mempool_test_suite/os_mempool_test_case
         [pass] os_mutex_test_suite/os_mutex_test_basic
@@ -446,20 +421,21 @@
         [pass] cbmem_test_suite/cbmem_test_case_3
 </code></pre>
 
-<h3 id="using-sram-to-make-led-blink">Using SRAM to make LED blink<a class="headerlink" href="#using-sram-to-make-led-blink" title="Permanent link">&para;</a></h3>
-<p>You are here because you want to build an image to be run from internal SRAM on the Olimex board.</p>
+<h3 id="use-sram-to-make-led-blink">Use SRAM to make LED blink<a class="headerlink" href="#use-sram-to-make-led-blink" title="Permanent link">&para;</a></h3>
+<p>If you wish to build the image to run from the onboard SRAM on Olimex board, follow the steps below:</p>
 <h4 id="preparing-the-software">Preparing the Software<a class="headerlink" href="#preparing-the-software" title="Permanent link">&para;</a></h4>
 <ul>
 <li>
 <p>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. </p>
 </li>
 <li>
-<p>If you have cloned the larva repository for the simulator test in the previous section you can skip this step. Otherwise, you have to create a repository for the project. Go to ~/dev and clone the larva repository from the apache git repository into a local directory named <code>larva</code>.</p>
+<p>If you have cloned the larva repository for the simulator test in the previous section, you can skip this step. Otherwise, you have to create a repository for the project. Go to ~/dev and clone the larva repository from the apache git repository into a local directory named <code>larva</code>.</p>
 </li>
 </ul>
 <pre><code class="no-highlight">        $ cd ~/dev 
         $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
         $ ls
+
         go  larva
         $ ls larva
         DISCLAIMER  NOTICE      app.yml     compiler    hw      net     project     sys
@@ -468,8 +444,8 @@
 
 <ul>
 <li>
-<p>You now have to go to the ~dev/larva directory and build out a second project inside larva (the first one being the sim project). The project name is "blinky", in keeping with the objective. Starting with the target name, you have to specify the different aspects of the project to pull the appropriate packages and build the right bundle or list for the board. In this case that means setting the architecture (arch), compiler, board support package (bsp), project, and compiler mode.</p>
-<p>Remember to prefix each command with "newtvm" if you are executing the newt command in a Linux virtual machine on your Windows box!</p>
+<p>Change directory to ~dev/larva directory and build the <em>blinky</em> project inside larva, using the <em>newt</em> tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the architecture (arch), compiler, board support package (bsp), project, and compiler mode.</p>
+<p>(Remember to prefix each command with "newtvm" if you are executing the newt command in a Linux virtual machine on your Windows box!)</p>
 </li>
 </ul>
 <pre><code class="no-highlight">        $ newt target create blinky
@@ -496,11 +472,12 @@
 </code></pre>
 
 <ul>
-<li>
-<p>Now you have to build the image. The linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory by default. Since you want an image for the SRAM, you need to switch that script with <code>run_from_sram.ld</code> in order to get the package to produce an image for SRAM. <font color="red"> We are working on making it easier to specify where the executable will be run from for a particular project and automatically choose the correct linker scripts and generate the appropriate image. It will be specified as a project identity e.g. bootloader, RAM, flash (default) and the target will build accordingly. </font>. </p>
-<p>Once the target is built, you can find the executable "blinky.elf" in the project directory at ~/dev/larva/project/blinky/bin/blinky. It's a good idea to take a little time to understand the directory structure.</p>
-</li>
+<li>Next, let's build the image with the above values assigned. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>. </li>
 </ul>
+<p><font color="red">
+(We are working to simplify this scheme whereby an executable for a project will correctly elect the linker scripts and generate the relevant image. For example, the scheme will key on project identity such as bootloader, RAM, Flash (default) and build accordingly. </font>.)</p>
+<pre><code>Afer you build the target, you can find the executable *blinky.elf* in the project directory *~/dev/larva/project/blinky/bin/blinky.*
+</code></pre>
 <pre><code class="no-highlight">        $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
         $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
         (some diff will be displayed)
@@ -517,18 +494,16 @@
 </code></pre>
 
 <ul>
-<li>
-<p>Check that you have all the scripts needed to get OpenOCD up and talking with the project's specific hardware. Depending on your system (Ubuntu, Windows) you may already have the scripts in your <code>/usr/share/openocd/scripts/</code> directory as they may have been part of the openocd download. If yes, you are all set and can proceed to preparing the hardware.</p>
-<p>Otherwise check the <code>~/dev/larva/hw/bsp/olimex_stm32-e407_devboard</code> directory for a file named <code>f407.cfg</code>. That is the config we will use to talk to this specific hardware using OpenOCD. You are all set if you see it.</p>
-</li>
+<li>Check if you have all the scripts needed to launch OpenOCD and interact with the project's specific hardware. Depending on your system (Ubuntu or Windows) you may already have the scripts in your <em>/usr/share/openocd/scripts/</em> directory, as they may have been part of the openocd download. If they exist, you are all set and can proceed to prepare the hardware. Otherwise check the <em>~/dev/larva/hw/bsp/olimex_stm32-e407_devboard</em> directory for a file named <em>f407.cfg</em>. Used by OpenOCD, this config enables us to interact with this specific hardware. </li>
 </ul>
+<p>You are all set if you see the file.</p>
 <pre><code class="no-highlight">        $ ls ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
         bin     include     olimex_stm32-e407_devboard_download.sh  run_from_loader.ld
         boot-olimex_stm32-e407_devboard.ld  olimex_stm32-e407_devboard.ld   pkg.yml     run_from_sram.ld
         f407.cfg        olimex_stm32-e407_devboard_debug.sh run_from_flash.ld           src
 </code></pre>
 
-<h4 id="preparing-the-hardware-to-boot-from-embedded-sram">Preparing the hardware to boot from embedded SRAM<a class="headerlink" href="#preparing-the-hardware-to-boot-from-embedded-sram" title="Permanent link">&para;</a></h4>
+<h4 id="prepare-the-hardware-to-boot-from-embedded-sram">Prepare the hardware to boot from embedded SRAM<a class="headerlink" href="#prepare-the-hardware-to-boot-from-embedded-sram" title="Permanent link">&para;</a></h4>
 <ul>
 <li>
 <p>Locate the boot jumpers on the board.
@@ -536,7 +511,8 @@
 <img alt="Alt Layout - Bottom View" src="../pics/bottomview.png" /></p>
 </li>
 <li>
-<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers which can be moved relatively easy. Note that the markings on the board may not always be accurate. Always refer to the manual for the correct positioning of jumpers in case of doubt. The two jumpers must always be moved together – they are responsible for the boot mode if bootloader is present. The board can search for bootloader on three places – User Flash Memory, System Memory or the Embedded SRAM. We will configure it to boot from SRAM by jumpering B0_1 and B1_1.</p>
+<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present. 
+To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering <strong>B0_1</strong> and <strong>B1_1</strong>.</p>
 </li>
 <li>
 <p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board). </p>
@@ -550,7 +526,7 @@
 </ul>
 <h4 id="lets-go">Let's Go!<a class="headerlink" href="#lets-go" title="Permanent link">&para;</a></h4>
 <ul>
-<li>Make sure you are in the blinky project directory with the blinky.elf executable. Run the debug command in the newt tool. You should see some status messages are shown below. There is an inbuilt <code>-c "reset halt"</code> flag that tells it to halt after opening the session.</li>
+<li>Ensure that you are in the blinky project directory with the <em>blinky.elf</em> executable. Run the debug command in the <em>newt</em> tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an <code>-c "reset halt"</code> command.</li>
 </ul>
 <pre><code class="no-highlight">        $ cd ~/dev/larva/project/blinky/bin/blinky
         $ newt target debug blinky
@@ -572,7 +548,7 @@
         199     ldr    r1, =__etext
 </code></pre>
 
-<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdp tool and load the image on it. </p>
+<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdp tool and load the image on it. For example, </p>
 <pre><code class="no-highlight">        (gdb) set $msp=0x10010000
 </code></pre>
 
@@ -589,18 +565,18 @@
 </code></pre>
 
 <ul>
-<li>Voilà! The board's LED should be blinking at 1 Hz.</li>
+<li>Voilà! The board's LED should be blinking at 1 Hz. Success!</li>
 </ul>
-<h3 id="using-flash-to-make-led-blink">Using flash to make LED blink<a class="headerlink" href="#using-flash-to-make-led-blink" title="Permanent link">&para;</a></h3>
-<p>You are here because you want to build an image to be run from flash memory on the Olimex board.</p>
+<h3 id="use-flash-to-make-led-blink">Use flash to make LED blink<a class="headerlink" href="#use-flash-to-make-led-blink" title="Permanent link">&para;</a></h3>
+<p>If you wish to build the image to run from the onboard flash memory on Olimex board, follow the steps below:</p>
 <ul>
-<li>Configure the board to boot from flash by moving the two jumpers together to B0_0 and B1_0. Refer to the pictures of the board under the section titled <a href="#preparing-the-hardware-to-boot-from-embedded-sram">"Preparing the hardware to boot from embedded SRAM"</a>.</li>
+<li>Configure the board to boot from flash by moving the two jumpers together to <strong>B0_0</strong> and <strong>B1_0</strong>. Refer to the pictures of the board under the section titled <a href="#prepare-the-hardware-to-boot-from-embedded-sram">"Prepare the hardware to boot from embedded SRAM"</a>.</li>
 </ul>
 <p>You will have to reset the board once the image is uploaded to it.</p>
 <ul>
-<li>If you skipped the first option for the project <a href="#using-sram-to-make-led-blink">(downloading an image to SRAM)</a>, then skip this step. Otherwise, continue with this step. </li>
+<li>If you skipped the first option for the project <a href="#use-sram-to-make-led-blink">(downloading an image to SRAM)</a>, then skip this step. Otherwise, continue with this step. </li>
 </ul>
-<p>By default, the linker script (<code>olimex_stm32-e407_devboard.ld</code>) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed <code>olimex_stm32-e407_devboard.ld</code> to match <code>run_from_sram.ld</code>. You will therefore return to defaults with <code>olimex_stm32-e407_devboard.ld</code> linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.</p>
+<p>By default, the linker script (<code>olimex_stm32-e407_devboard.ld</code>) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed <code>olimex_stm32-e407_devboard.ld</code> to match <code>run_from_sram.ld</code>. You will, therefore, return to defaults with <code>olimex_stm32-e407_devboard.ld</code> linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.</p>
 <pre><code class="no-highlight">        $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
         $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
         $ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
@@ -610,7 +586,7 @@
 </code></pre>
 
 <ul>
-<li>In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial bring up of the Olimex board and then transfers control to the image stored at a location in flash known to it. The bootloader in turn requires the bin2image tool to check the image header for version information, CRC checks etc. So, we will need to build these two additional targets (bootloader and bin2img).</li>
+<li>In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial set up of the Olimex board and then transfers control to the image stored at a location in flash known to it. The bootloader in turn requires the <em>bin2image</em> tool to check the image header for version information, CRC checks etc. So, we will need to build these two additional targets (bootloader and bin2img).</li>
 </ul>
 <p>Let's first create bin2img:</p>
 <pre><code class="no-highlight">        $ newt target create bin2img
@@ -661,7 +637,7 @@
 </code></pre>
 
 <ul>
-<li>Let's build all the three targets now.</li>
+<li>Now let's build all the three targets now.</li>
 </ul>
 <pre><code class="no-highlight">        $ newt target build bin2img
         Building target bin2img (project = bin2img)
@@ -691,10 +667,10 @@
 
 <ul>
 <li>
-<p>The LED should be blinking!</p>
+<p>Voilà! The LED should be blinking! Success!</p>
 </li>
 <li>
-<p>But wait...let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor. The debug connection to the JTAG port is now severed. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. </p>
+<p>But wait...not so fast. let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor, severing the debug connection to the JTAG port. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. </p>
 </li>
 </ul>
 <p>The LED light will start blinking again. Success!</p>
@@ -719,7 +695,7 @@
         (gdb)
 </code></pre>
 
-<p>Note #2: If you want to erase the flash and load the image again you may use the following commands from within gdb. <code>flash erase_sector 0 0 x</code> tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma' you should therefore see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.</p>
+<p>Note #2: If you want to erase the flash and load the image again you may use the following commands from within gdb. <code>flash erase_sector 0 0 x</code> tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma,' you should see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.</p>
 <pre><code class="no-highlight">        (gdb) monitor flash erase_sector 0 0 4
         erased sectors 0 through 4 on flash bank 0 in 2.296712s
         (gdb) monitor mdw 0x08000000 16
@@ -729,6 +705,12 @@
         (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff         
         (gdb) monitor flash info 0
 </code></pre>
+
+<h3 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h3>
+<p>In summation, you achieved and learned a fair amount in this hands-on tutorial. If this is your first time to embedded systems, this must feel like the best hands-on and low-level "Hello World" progam ever. </p>
+<p>Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like <a href="../../get_acclimated/project2/">Tutorials</a>.</p>
+<p>If you see anything missing or want to send us feeback, please do so by signing up for appropriate mailing lists on our <a href="../../../community/">Community Page</a></p>
+<p>Keep on hacking and blinking!</p>
                         
                     </div>
                 </div>
