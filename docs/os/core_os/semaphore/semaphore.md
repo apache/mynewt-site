@@ -35,7 +35,6 @@ struct os_sem
 
 The functions available in semaphore are:
 
-* [os_sem_delete](os_sem_delete)
 * [os_sem_init](os_sem_init)
 * [os_sem_pend](os_sem_pend)
 * [os_sem_release](os_sem_release)

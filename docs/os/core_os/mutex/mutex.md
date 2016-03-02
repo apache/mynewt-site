@@ -41,7 +41,6 @@ struct os_mutex
 
 The functions available in this OS feature are:
 
-* [os_mutex_delete](os_mutex_delete)
 * [os_mutex_init](os_mutex_init)
 * [os_mutex_pend](os_mutex_pend)
 * [os_mutex_release](os_mutex_release)
