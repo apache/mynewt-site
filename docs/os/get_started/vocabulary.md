@@ -1,37 +1,39 @@
-## Glossary
+## Concepts
 
 ### Application repository or app
 
-The application repository (app) is the base directory of your embedded software. It is meant to be the workspace containing a logical collection of the source code for one or more of your projects. An app can contain multiple projects, and reflect multiple end products. 
+The application repository (app) is the base directory of your embedded software. It is a workspace containing a logical collection of the source code for one or more of your [projects](#project). An app can contain multiple projects, and reflects multiple end products. 
 
-As the base repository of your source code, the app has a master branch and several other branches off it. The `master` is typically what developers commit to. When it is time to get the code ready for a release, a code freeze occurs on the `master` branch. A temporary `develop` branch is opened up for contributors to continue committing their code to. After the release is tagged off the `master`, the `develop` branch is merged into `master`. Developers can thereafter go back to commiting changes to `master`. The `develop` branch is subsequently deleted. You may also choose to create your own branch and work there.
+As the base repository of your source code, the app has a master branch and several other branches off it. The `master` is typically what developers commit to. Just before your code is ready for a release, a code freeze should prevent all commits to the `master` branch. However, a temporary `develop` branch is opened up for contributors to continue committing their code. When the release is tagged off the `master`, the `develop` branch is merged into `master`. And after the `develop` merge to the `master`, developers may resume commiting changes to `master`, and the `develop` branch is subsequently deleted.
 
-You can have several [projects](#project) in your app repository since an application can be used in several projects. Each project in your app will, in turn, consist of several [packages](#package-or-pkg). A project could be a package itself as well. In addition to packages, your app repository will contain additional items such as [target](#target) or build definitions, [package list](#package-list-or-pkg-list) description files, scripts etc.
+Alternatively, you may choose to create your own branch, specific to an individual developer, and work there.
 
-For example, a walk through the "larva" nest at [https://github.com/mynewt/larva.git](https://github.com/mynewt/larva.git) shows the following structure. The nest.yml file in the larva directory indicates that it is a nest. An egg will have the egg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is an egg, the API for the hardware abstraction layer is an egg, and so on. 
+You can have several [projects](#project) in your app repository, since an application can be used in several projects. Each project in your app will, in turn, consist of several [packages](#package-or-pkg). A project could be a package itself as well. In addition to packages, your app repository will contain additional items such as [target](#target) or build definitions, [package list](#package-list-or-pkg-list) description files, scripts etc.
+
+For example, a walk through the "larva" app at [https://github.com/mynewt/larva.git](https://github.com/mynewt/larva.git) shows the structure sketched below. The app.yml file in the larva directory indicates that it is an app. A pkg will have the pkg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is pkg; for instance, the API for the hardware abstraction layer is a pkg, and so on. 
 
 ```no-highlight
 larva
-  |- nest.yml 
+  |- app.yml 
   |- compiler
         |- arm-none-eabi-m4
         |- sim
   |- hw (hardware)
         |- bsp (board support package)
                 |- nrf52pdk (Nordic nRF52 series chip)
-                        |- egg.yml
+                        |- pkg.yml
                         |- ...
                 |- olimex_stm32-e407_devboard (used in Project Blinky)
-                        |- egg.yml
+                        |- pkg.yml
                         |- ...
                 |- stm32f3discovery (another board with stm32f3 mcu)
-                        |- egg.yml
+                        |- pkg.yml
                         |- ...
                 |- yet another board
-                        |- egg.yml
+                        |- pkg.yml
                         |- ...
         |- hal (hardware abstraction layer APIs)
-                |- egg.yml
+                |- pkg.yml
                 |- include
                         |- hal_cputime.h
                         |- hal_flash.h
@@ -40,14 +42,14 @@ larva
         |- mcu (microcontroller)
                 |- stm (STMicro family)
                     |- stm32f3xx (STM32f3 series, 32-bit ARM Cortex-M4  core)
-                        |- egg.yml
+                        |- pkg.yml
                         |- src
                             |- hal_gpio.c (specific to the STM32f3 mcu)
                             |- hal_cputime.c
                             |- ... (code for other peripherals)
                 |- nordic (Nordic Semiconductor family)
                     |- nrf52xxx (nRF52 Series SoC, Cortex-M4F core)
-                        |- egg.yml
+                        |- pkg.yml
                         |- src
                             |- hal_gpio.c (specific to the nRF52 mcu )
                             |- hal_cputime.c
@@ -56,17 +58,17 @@ larva
                     |- ...
   |- libs
         |- bootutil (hw architecture independent boot loader library)
-                |- egg.yml
+                |- pkg.yml
                 |- src
                     |- loader.c
                     |- ... (related source code files)
         |- nffs (hw architecture independent Newtron Flash File System)
-                |- egg.yml
+                |- pkg.yml
                 |- src
                     |- nffs.c
                     |- ... (related source code files)
         |- another library 
-                |- egg.yml
+                |- pkg.yml
                 |- src
                     |- ... (related source code files)
   |- project
@@ -75,78 +77,76 @@ larva
 
 ```
 
-The newt tool offers the `nest` command to create and manage nests. In general, commands represent actions and flags are modifiers for those actions. A command can have children commands and optionally run an action. A full description of the `nest` command can be found in the newt tool reference in Chapter 3.
+The *newt* tool offers the `app` sub command to create and manage apps. In general, commands represent actions, and flags act as modifiers for specfied actions. A *newt* command can have subcommands and it can optionally run an action. A full description of the `app` command can be found in the *newt* tool reference in Chapter 3.
 ```no-highlight
-    newt nest [flags]
-    newt nest [child-commands] 
+    newt app [flags]
+    newt app [child-commands] 
 ```
-A complete list of all the nest commands can be found in the newt tool reference in [Newt Tool](../../newt/newt_tool_reference.md).
+A complete list of all the app subcommands can be found in the *newt* tool reference in [Newt Tool](http://mynewt.apache.org/newt/command_list/newt_app/).
 
 ### Project
 
-Projects represent the individual build configurations of your embedded system and essentially defines your application. The project files are what dictate the resulting binary that is generated. 
+Projects represent individual build configurations of your embedded system and (individually or collectively) comprise your application. The project files dictate the generated binary. 
 
-Layout-wise, a project is a directory inside an app and contains packages required for a certain application. For example, the `blinky` egg sits in `project/blinky` directory of the `larva` nest. This egg is used in the blinky project (application) outlined in [Get Started](../get_started/project1.md). <*Note: This Will Change*>
+A project is laid out as a directory inside an app and contains required packages for an application. For example, the `blinky` pkg sits in `project/blinky` directory of the `larva` app. This pkg is used in the blinky project (an application) outlined in [Get Started](../get_started/project1.md).
 
-A project has the following concepts or properties associated with it. You can find them in the `<project-name>.yml` file in the project directory. For example, the `project/blinky` directory has the `blinky.yml` file indicating some or all of the properties below. Only the name of a project is required for the project to exist, however additional properties may need to be specified for the eggs in it to compile properly and produce an executable. 
+Associated with each project are properties. These properties are defined in the`<project-name>.yml` file in the project directory. For example, the `project/blinky` directory has the `blinky.yml` file indicating some or all of the properties disscused below. Only the name of a project is required for the project to exist; however, additional properties may be specified for the pkgs within it to produce an executable. 
 
 * Project name
-* Base path of the project (nest/project/project-name by default)
-* Eggs belonging to the project
+* Base path of the project (app/project/project-name by default)
+* Pkgs belonging to the project
 * [Capabilities](#capabilities) that are required for the project or target 
 * [Identity](#identity) to classify the type of project or target
-* Compiler flags to call out any specific compiler requirement
+* Compiler flags to call out any specific compiler requirements
 
-A project could itself be an egg if it is a distributable package for a specific application. 
+Also, a project itself could be a pkg if it is a distributable package for a specific application. That is, the pkg can be resued in other apps as a bundle of libraries.
 
-The newt tool offers various commands that you can use with a project. For example, if your project is an egg, you can use the following command to install a project from a nest.
+To work with pkgs, the *newt* tool offers management commands that you can use with your project. For example, if your project is a pkg, you can use the following command to install a project from an app.
 ```no-highlight
-    newt egg install [flags] <project egg name>
+    newt pkg install [flags] <project pkg name>
+```
+Other commands assocated with pkg are:
+```no-highlight
+  newt pkg list
+  newt pkg checkdeps
+  newt pkg search <pkg-name>
+  newt pkg show [<pkg-list> ] <pkg-name>
+  newt pkg install [<pkg-list> ] <pkg-name>
+  newt pkg remove [<pkg-list> ] <pkg-name>
 ```
 ### Package or pkg
 
-A package (pkg) is a distributable bundle of libraries. Just as an egg in nature has various parts each of which serves a certain purpose, the Mynewt egg consists of software parcels or modules that have different functions. However, unlike the egg in nature these software modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this concept is grasped it is easy to see how an egg may consist of other eggs.
+A package (pkg) is a distributable bundle of libraries. Just as an egg in nature has various parts, each serving a certain purpose, a Mynewt app consists of software modules that have different functions. However, unlike the egg in nature these modules can exist by itself and may be distributed; therefore, they too are essentially eggs. Once this analogy is grasped it is easy to see how a pkg may consist of other pkgs.
 
-The two main directories in an egg are `/include` and `/src`.
+The two main directories in a pkg are `/include` and `/src`.
 
-The newt tool offers several egg commands to list, inspect, install, and do other operations on eggs. For example, the following command
+The *newt* tool offers several pkg commands as shown above. For example, you can list all the pkgs
 ```no-highlight
-    newt egg list 
+    newt pkg list 
 ```
-outputs all the eggs in the current nest where each egg has details on its version, path, and dependencies. A sample output for an egg is given below.
+It lists all the pkgs in the current app where each pkg has details, such as version, path, and dependencies. A sample output for a pkg is given below:
 ```no-highlight
-    Egg libs/os, version 0.1.0
+    Package: libs/os, version 0.1.0
     path: /Users/aditihilbert/dev/test_project/libs/os
     deps: libs/testutil@none#stable 
 ```
-A complete list of all the egg commands can be found in the newt tool reference in [Newt Tool](../../newt/newt_tool_reference.md).
+For a comphrehensive list of all pkg commands, consult the *newt* tool reference in [Newt Tool](../../newt/newt_tool_reference.md).
 
 ### Package list or pkg-list
 
-A clutch is a snapshot of all eggs in a remote nest at any point in time. On any given github branch, a nest with a clutch of eggs will contain a `clutch.yml` file that specifies the version number, dependencies, and hash value for each constituent egg as well as the name of the entire clutch and the github url for it. [Note: Currently ]
+A pkg-list is a snapshot of all pkgs in a remote app at any point in time. On any given github branch, an app with a pkg-list of pkgs will contain a `pkg-list.yml` file that specifies the version number, dependencies, and hash value for each constituent pkg as well as the name of the entire pkg-list and the github url for it. [Note: Currently ]
 
-You may download multiple clutches into your local nest as long as the names of the clutches are different. This allows you to mix and match various features and functionality coming from different clutches of eggs. You can see all the clutches in the `.nest/clutches` directory in your nest.
+You may download multiple pkg-lists into your local app as long as the names of the pkg-lists are different. This allows you to mix and match various features and functionality coming from different pkg-lists of pkgs. You can see all the pkg-lists in the `.app/pkg-lists` directory in your app.
 
-The newt tool offers clutch management commands within the `newt nest` command. For example, the following command creates a new clutch using all the eggs in the current directory. It requires that a clutch name be specified and the url for the location of that clutch in the online repository. These two inputs go into the `clutch.yml` file in the nest.
+As with pkgs, the *newt* tool offers pkg-list management commands within the `newt app` command. For example, the following command creates a new pkg-list using all the pkgs in the current directory. It requires that a pkg-list name be specified and the url for the location of that pkg-list in the remote repository. These two inputs go into the `pkg-list.yml` file in an app.
 ```no-highlight
-    newt nest generate-clutch <name> <url>
+    newt app generate-pkg-list <pkg-list-name> <pkg-list-url>
 ```
-Note that a clutch merely defines the eggs belonging together and requires the eggs to be installed (hatched) for the source code to be populated in the project. 
+**Note**: A pkg-list for a project stipulates all pkgs that belong together that must be installed as project's source code.
 
-### Eggshell
-
-The term eggshell is used to refer to the eggs of a clutch in a remote repository. They are not useful on your local machine until you actually install them. So they are mere shells of themselves while sitting on the online repository. When you enter the following command outputs the total number of shells in each remote clutch.
-```no-highlight
-    newt nest list-clutches
-```
-So, if you had two clutches installed, the output could be:
-```no-highlight
-    Remote clutch larva (eggshells: 19)
-    Remote clutch ble_test (eggshells: 15)
-```    
 ### Target
 
-A target is the hardware build or its software equivalent (e.g. test, simulator) set for a project. It tells the newt tool how to build the source code within a given nest. Once a new target is created, its architecture and other details needs to be defined. An example of a defined target named "blink_f3disc" is given below.
+A target is the hardware build or its software equivalent (e.g. test, simulator) set for a project. Targets instruct the *newt* tool how to build the source code within a given app. Once a new target is created, its architecture and other details can be set manually. An example of a defined target named "blink_f3disc" is given below.
 ```no-highlight
     blink_f3disc
 	         compiler_def: debug
@@ -156,17 +156,17 @@ A target is the hardware build or its software equivalent (e.g. test, simulator)
 	         project: blinky
 	         bsp: hw/bsp/stm32f3discovery
 ```
-The newt tool offers commands to create, set up and manipulate targets. For example, the create command below creates an empty target named `my_target1` and the set command sets one detail of its definition, namely the architecture.
+To that end, *newt* tool offers commands to create, set and manipulate targets. For example, the create command below creates an empty target named `my_target1` and the set command sets one attribute of its definition, namely the architecture.
 ```no-highlight
     newt target create my_target1
     newt target set my_target1 arch=cortex_m4
 ```
 ### Capability
 
-Capability is functionality that is exposed by an egg. A capability is tracked by its name and version. An egg may require capabilities exposed by another egg, thus establishing a dependency tracked through the egg.yml files. 
+Capability, as the name suggests, is functionality that is exposed by a pkg. A capability is tracked by its name and version. In some cases, a pkg may require capabilities exposed by another pkg, thus establishing a dependency, which is tracked through the pkg.yml files. 
 
-The newt tool can ascertain a map of all the egg capabilities and use it to check dependencies and make sure all the necessary eggs are in a project for a particular target.
+With *newt* tool you can ascertain a map of pkgs' capabilities, use it to check dependencies, and ensure all the necessary pkgs in a project belong to its target.
 
 ### Identity
 
-Identity is a property of a target or project in the newt world. A target may inherit it from a project or vice versa. It may be used to determine what eggs to include or how an egg code should behave in a build or which linkerscripts to use. For example, the identity of a lock is different from the identity of a wearable monitor. Even if they were to be built on the same hardware target, different features and behavior are required. Their different identities result in differing sets of eggs in the projects and/or the same egg behaving differently depending on the identity.
+Identity is a property of a target or project in the *newt* world. A target may inherit its identify from a project or vice versa. It may be used to determine what pkgs to include or how a pkg code should behave in a build or which linkerscripts to use. For example, the identity of a lock device is different from the identity of a wearable monitor. Even if they were built on the same hardware target, different features and behaviors are required. Because of this distinction, a distinct sets of pkgs in the projects and/or the same pkg will behave differently, depending on its identity.
