@@ -1,6 +1,6 @@
 # Shell
 
-The shell is package sitting on top of console, handling 2 jobs. Processing console input and implementing newtmgr line protocol over serial. Shell runs on it's own task.
+The shell is package sitting on top of console, handling 2 jobs; processing console input and implementing newtmgr line protocol over serial line. Shell runs on it's own task.
 
 ## Description
 
@@ -86,6 +86,8 @@ stat stat
 
 
 ## Data structures
+
+This data structure is used in holding information about registered command handlers.
 
 ```no-highlight
 struct shell_cmd {
