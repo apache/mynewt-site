@@ -225,7 +225,6 @@ The functions/macros available in mbuf are:
 * [os_mbuf_copyinto](os_mbuf_copyinto.md)
 * [os_mbuf_dup](os_mbuf_dup.md)
 * [os_mbuf_extend](os_mbuf_extend.md)
-* [os_mbuf_free](os_mbuf_free.md)
 * [os_mbuf_free_chain](os_mbuf_free_chain.md)
 * [os_mbuf_get](os_mbuf_get.md)
 * [os_mbuf_get_pkthdr](os_mbuf_get_pkthdr.md)
