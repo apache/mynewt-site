@@ -60,7 +60,7 @@ If you want to build the newt tool from its source code you need to install
         git-wip-us.apache.org	github.com		gopkg.in
 ```
 
-If you run into an `unrecognized import path` issue, go to the `~/dev/go/src/git-wip-us.apache.org/repos/asf` directory and create a symbolic link
+If you run into an `unrecognized import path` issue, go to the `~/dev/go/src/git-wip-us.apache.org/repos/asf` directory and create a symbolic link. Then run the `go get` command above again to install all packages correctly.
 
 ```no-highlight
         $ ln -s incubator-mynewt-newt.git incubator-mynewt-newt

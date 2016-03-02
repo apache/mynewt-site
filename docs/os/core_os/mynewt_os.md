@@ -20,7 +20,7 @@ Insert introduction here
 <Insert basic feature descriptions, how the various pieces fit together etc., what's special in Mynewt OS>
 
 * [Scheduler/context switching](context_switch/context_switch.md)
-* [Time](time/time.md)
+* [Time](time/os_time.md)
 * [Tasks](task/task.md)
 * [Event queues/callouts](event_queue/event_queue.md)
 * [Semaphores](semaphore/semaphore.md)
@@ -29,6 +29,7 @@ Insert introduction here
 * [Heap](heap/heap.md)
 * [Mbufs](mbuf/mbuf.md)
 * [Sanity](sanity/sanity.md)
+* [Callouts](callout/callout.md)
 * [Porting OS to other platforms](port_os.md)
 
 ## OS Functions
