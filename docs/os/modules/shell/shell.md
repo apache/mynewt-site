@@ -1,13 +1,16 @@
 # Shell
 
-The shell is the program which puts up a prompt for a command, processes commands, and returns output. Interacting with the console of a device is done using a shell program.
-
+The shell is package sitting on top of console, handling 2 jobs. Processing console input and implementing newtmgr line protocol over serial. Shell runs on it's own task.
 
 ## Description
 
-Shell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.
+First job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then shell looks for the subsystem to handle this command based on the first token of input.
+
+Subsystems register their command handlers using *shell_cmd_register()*. When shell calls the command handler, it passes the other tokens as arguments.
 
 A few commands are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
+
+Second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using *shell_nlip_input_register()*, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using *shell_nlip_output()*.
 
 Create a sim target to check out these commands available in shell.
 
@@ -84,7 +87,19 @@ stat stat
 
 ## Data structures
 
-Replace this with the list of data structures used, why, any neat features
+```no-highlight
+struct shell_cmd {
+    char *sc_cmd;
+    shell_cmd_func_t sc_cmd_func;
+    STAILQ_ENTRY(shell_cmd) sc_next;
+};
+```
+
+| Element | Description |
+|---------|-------------|
+| sc_cmd | Character string of the command |
+| sc_cmd_func | Pointer to the command handler |
+| sc_next | Bookkeeping linkage internal for shell |
 
 ## List of Functions
 
@@ -92,24 +107,7 @@ Replace this with the list of data structures used, why, any neat features
 
 The functions available in this OS feature are:
 
-* [shell_cmd](shell_cmd.md)
-* [shell_cmd_list_lock](shell_cmd_list_lock.md)
-* [shell_cmd_list_unlock](shell_cmd_list_unlock.md)
-* [shell_cmd_register](shell_cmd_register.md)
-* [shell_console_rx_cb](shell_console_rx_cb.md)
-* [shell_echo_cmd](shell_echo_cmd.md)
-* [shell_help_cmd](shell_help_cmd.md)
-* [shell_nlip_input_register](shell_nlip_input_register.md)
-* [shell_nlip_mqueue_process](shell_nlip_mqueue_process.md)
-* [shell_nlip_mtx](shell_nlip_mtx.md)
-* [shell_nlip_output](shell_nlip_output.md)
-* [shell_nlip_process](shell_nlip_process.md)
-* [shell_os_mpool_display_cmd](shell_os_mpool_display_cmd.md)
-* [shell_os_tasks_display_cmd](shell_os_tasks_display_cmd.md)
-* [shell_process_command](shell_process_command.md)
-* [shell_read_console](shell_read_console.md)
-* [shell_task_func](shell_task_func.md)
 * [shell_task_init](shell_task_init.md)
-
-
-
+* [shell_cmd_register](shell_cmd_register.md)
+* [shell_nlip_input_register](shell_nlip_input_register.md)
+* [shell_nlip_output](shell_nlip_output.md)
