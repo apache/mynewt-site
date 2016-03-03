@@ -240,13 +240,13 @@ the specific MCU within your BSP. Below lists some sample defines.
 
 | **Undefined Variable** | **Description** |
 |-----------|-------------|
-| CONSOLE_UART_PORT | Which comm port on your target runs the console |
+| CONSOLE_UART_PORT | Which communications port on your target runs the console |
 | LED_BLINK_PIN |   which pin on your target runs the blinky LED |
 
 The set of missing functionality depends upon the libraries and dependencies
 you have included in the project.  That's why its best to keep your first
 project pretty simple then add incrementally.  For example, if you include
-Newtron, you will need to define a filesystem map for your BSP.
+Newtron, you will need to define a file system map for your BSP.
 
 Missing functionality may take the form of `#define` items required to 
 compile, or they may take the form of missing functions.  
