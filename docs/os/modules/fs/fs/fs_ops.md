@@ -31,7 +31,7 @@ struct fs_ops {
 
 This data structure consists of a set of function pointers.  Each function pointer corresponds to a file system operation.  When registering a file system with the abstraction layer, each function pointer must be pointed at the corresponding routine in the custom file system package.
 
-The required behavior of each corresponding function is documented in the [file system abstraction layer API](fs/fs.md#api).
+The required behavior of each corresponding function is documented in the [file system abstraction layer API](fs.md#api).
 
 #### Header file
 
