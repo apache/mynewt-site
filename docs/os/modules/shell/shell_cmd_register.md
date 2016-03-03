@@ -1,46 +1,38 @@
+## <font color="#F2853F" style="font-size:24pt"> shell_cmd_register </font>
+
 ```no-highlight
-    int 
-    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)
+int shell_cmd_register(struct shell_cmd *sc)
 ```
 
-Register a shell command. When shell reads a line of input which starts with `cmd`, it calls the handler `func`. Caller must allocate data structure `sc`. Shell internally links this to it's list of command handlers.
+Registers a handler for incoming console commands. Within the structure there is the command string, and the handler for those commands. Caller must allocate the memory for this structure, and keep it around, as shell links this to it's own internal data structures.
 
+Command handler is of type 'int (*shell_cmd_func_t)(int argc, char **argv)'. Command line arguments are passed to it as an array of character pointers.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| sc |  Pointer to data structure shell egg uses to store info about the registered command |
-| cmd |  Command getting registered  |
-| func |  Function to call when command is received from console  |
+| sc | Structure containing info about the command.  |
 
 #### Returned values
 
-List any values returned.
-Error codes?
-
-#### Notes 
-
-Shell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.
+Returns 0 on success.
+Non-zero on failure.
 
 #### Example
 
-Here is FS registering command for 'ls'.
-
 ```no-highlight
-static struct shell_cmd fs_ls_struct;
+static int fs_ls_cmd(int argc, char **argv);
+
+static struct shell_cmd fs_ls_struct = {
+    .sc_cmd = "ls",
+    .sc_cmd_func = fs_ls_cmd
+};
 
 void
 fs_cli_init(void)
 {
-    int rc;
-
-    rc = shell_cmd_register(&fs_ls_struct, "ls", fs_ls_cmd);
-    if (rc != 0) {
-        return;
-    }
+    shell_cmd_register(&fs_ls_struct);
+    ....
 }
-
 ```
-
----------------------
