@@ -83,7 +83,7 @@ on or off-chip MCU peripherals, with examples including GPIO, UARTs, flash
 memory etc.  Even if your MCU is supported for the core OS, you may find 
 that you need to implement the HAL functionality for a new peripheral.   
 For a description of the HAL abstraction and implementation information,
-see the [Hal API](hal.md)
+see the [Hal API](../../modules/hal/hal.md)
 
 ###CPU Core Dependency 
 
