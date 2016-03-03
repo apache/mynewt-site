@@ -4,7 +4,7 @@
 int os_msys_register(struct os_mbuf_pool *new_pool) 
 ```
 
-Register a mbuf pool for use as a system mbuf pool. The pool should be initialized prior to registration.
+Register an mbuf pool for use as a system mbuf pool. The pool should be initialized prior to registration.
 
 <br>
 

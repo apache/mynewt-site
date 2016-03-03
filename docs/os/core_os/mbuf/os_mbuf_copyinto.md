@@ -26,9 +26,6 @@ All other values indicate an error.
 
 <br>
 
-#### Notes
-
-<br>
 
 #### Example
 

@@ -4,7 +4,7 @@
 int os_mbuf_append(struct os_mbuf *om, const void *data,  uint16_t len)
 ```
 
-Appends a data buffer of length *len* to the end of a mbuf chain, adjusting packet length if *om* is a packet header mbuf. If not enough trailing space exists at the end of the mbuf chain, mbufs are allocated to hold the data.
+Appends a data buffer of length *len* to the end of an mbuf chain, adjusting packet length if *om* is a packet header mbuf. If not enough trailing space exists at the end of the mbuf chain, mbufs are allocated to hold the data.
 
 <br>
 

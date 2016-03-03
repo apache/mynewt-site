@@ -4,7 +4,7 @@
 OS_MBUF_USRHDR_LEN(__om)
 ```
 
-Macro used to retrieve the length of the user packet header in a mbuf.
+Macro used to retrieve the length of the user packet header in an mbuf.
 
 <br>
 

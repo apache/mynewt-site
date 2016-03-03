@@ -2,15 +2,28 @@
 
 The mbuf (short for memory buffer) is a common concept in networking stacks. The mbuf is used to hold packet data as it traverses the stack. The mbuf also generally stores header information or other networking stack information that is carried around with the packet. The mbuf and its associated library of functions were developed to make common networking stack operations (like stripping and adding protocol headers) efficient and as copy-free as possible.
 
-In its simplest form, a mbuf is a memory block with some space reserved for internal information and a pointer which is used to "chain" memory blocks together in order to create a "packet". This is a very important aspect of the mbuf: the ability to chain mbufs together to create larger "packets" (chains of mbufs).
+In its simplest form, an mbuf is a memory block with some space reserved for internal information and a pointer which is used to "chain" memory blocks together in order to create a "packet". This is a very important aspect of the mbuf: the ability to chain mbufs together to create larger "packets" (chains of mbufs).
 
-Why use mbufs? The main reason is to conserve memory. Consider a networking protocol that generally sends small packets but occasionally sends large ones (The Bluetooth Low Energy (BLE) protocol, is one such example). A flat buffer would need to be sized so that the maximum packet size could be contained by the buffer. With the mbuf, a number of mbufs can be chained together so that the occasional large packet can be handled while leaving more packet buffers available to the networking stack for smaller packets.
+## Why use mbufs? 
 
-Not all mbufs are created equal. The first mbuf in a chain of mbufs is a special mbuf called a "packet header mbuf". The reason that this mbuf is special is that it contains the length of all the data contained by the chain of mbufs (the packet length, if you will). The packet header mbuf may also contain a user defined structure (called a "user header") so that networking protocol specific information can be conveyed to various layers of the networking stack. Any mbufs that are part of the packet (i.e. in the mbuf chain but not the first one) are "normal" (i.e. non-packet header) mbufs. A normal mbuf does not have any packet header or user packet header structures in them; they only contain the basic mbuf header (`struct os_mbuf`). Figure 1 illustrates these two types of mbufs. Note that the numbers/text in parentheses denote the size of the structures/elements (in bytes) and that MBLEN is the memory block length of the memory pool used by the mbuf pool.
+The main reason is to conserve memory. Consider a networking protocol that generally sends small packets but occasionally sends large ones. The Bluetooth Low Energy (BLE) protocol is one such example. A flat buffer would need to be sized so that the maximum packet size could be contained by the buffer. With the mbuf, a number of mbufs can be chained together so that the occasional large packet can be handled while leaving more packet buffers available to the networking stack for smaller packets.
+
+## Packet Header mbuf
+
+Not all mbufs are created equal. The first mbuf in a chain of mbufs is a special mbuf called a "packet header mbuf". The reason that this mbuf is special is that it contains the length of all the data contained by the chain of mbufs (the packet length, in other words). The packet header mbuf may also contain a user defined structure (called a "user header") so that networking protocol specific information can be conveyed to various layers of the networking stack. Any mbufs that are part of the packet (i.e. in the mbuf chain but not the first one) are "normal" (i.e. non-packet header) mbufs. A normal mbuf does not have any packet header or user packet header structures in them; they only contain the basic mbuf header (`struct os_mbuf`). Figure 1 illustrates these two types of mbufs. Note that the numbers/text in parentheses denote the size of the structures/elements (in bytes) and that MBLEN is the memory block length of the memory pool used by the mbuf pool.
 
 ![Packet header mbuf](pics/mbuf_fig1.png)
 
-Now let's take a deeper dive into the mbuf structure. Figure 2 illustrates a normal mbuf and breaks out the various fields in the `os_mbuf` structure. The *om_data* field is a pointer to where the data starts inside the data buffer. Typically, mbufs that are allocated from the mbuf pool (discussed later) have their om_data pointer set to the start of the data buffer but there are cases where this may not be desirable (added a protocol header to a packet, for example). The *om_flags* field is a set of flags used internally by the mbuf library. Currently, no flags have been defined. The *om_pkthdr_len* field is the total length of all packet headers in the mbuf. For normal mbufs this is set to 0 as there is no packet or user packet headers. For packet header mbufs, this would be set to the length of the packet header structure (16) plus the size of the user packet header (if any). Note that it is this field which differentiates packet header mbufs from normal mbufs (i.e. if *om_pkthdr_len* is zero, this is a normal mbuf; otherwise it is a packet header mbuf). The *om_len* field contains the amount of user data in the data buffer. When initially allocated, this field is 0 as there is no user data in the mbuf. The *omp_pool* field is a pointer to the pool from which this mbuf has been allocated. This is used internally by the mbuf library. The *omp_next* field is a linked list element which is used to chain mbufs.
+## Normal mbuf 
+
+Now let's take a deeper dive into the mbuf structure. Figure 2 illustrates a normal mbuf and breaks out the various fields in the `os_mbuf` structure. 
+
+* The *om_data* field is a pointer to where the data starts inside the data buffer. Typically, mbufs that are allocated from the mbuf pool (discussed later) have their om_data pointer set to the start of the data buffer but there are cases where this may not be desirable (added a protocol header to a packet, for example). 
+* The *om_flags* field is a set of flags used internally by the mbuf library. Currently, no flags have been defined. 
+* The *om_pkthdr_len* field is the total length of all packet headers in the mbuf. For normal mbufs this is set to 0 as there is no packet or user packet headers. For packet header mbufs, this would be set to the length of the packet header structure (16) plus the size of the user packet header (if any). Note that it is this field which differentiates packet header mbufs from normal mbufs (i.e. if *om_pkthdr_len* is zero, this is a normal mbuf; otherwise it is a packet header mbuf). 
+* The *om_len* field contains the amount of user data in the data buffer. When initially allocated, this field is 0 as there is no user data in the mbuf. 
+* The *omp_pool* field is a pointer to the pool from which this mbuf has been allocated. This is used internally by the mbuf library. 
+* The *omp_next* field is a linked list element which is used to chain mbufs.
 
 Figure 2 also shows a normal mbuf with actual values in the `os_mbuf` structure. This mbuf starts at address 0x1000 and is 256 bytes in total length. In this example, the user has copied 33 bytes into the data buffer starting at address 0x1010 (this is where om_data points). Note that the packet header length in this mbuf is 0 as it is not a packet header mbuf.
 
@@ -20,11 +33,13 @@ Figure 3 illustrates the packet header mbuf along with some chained mbufs (i.e a
 
 ![Packet](pics/mbuf_fig3.png)
 
+## Mbuf pools
+
 Mbufs are collected into "mbuf pools" much like memory blocks. The mbuf pool itself contains a pointer to a memory pool. The memory blocks in this memory pool are the actual mbufs; both normal and packet header mbufs. Thus, the memory block (and corresponding memory pool) must be sized correctly. In other words, the memory blocks which make up the memory pool used by the mbuf pool must be at least: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_defined_header) + desired minimum data buffer length. For example, if the developer wants mbufs to contain at least 64 bytes of user data and they have a user header of 12 bytes, the size of the memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes, this is a fair amount of overhead. However, the flexibility provided by the mbuf library usually outweighs overhead concerns.
 
-## Description
+## Create mbuf pool
 
-Creating a mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we dont show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro *MBUF_PKTHDR_OVERHEAD* to denote the amount of packet header overhead per mbuf and *MBUF_MEMBLOCK_OVERHEAD* to denote the total amount of overhead required per memory block. The macro *MBUF_BUF_SIZE* is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro *MBUF_MEMBLOCK_OVERHEAD*.
+Creating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro *MBUF_PKTHDR_OVERHEAD* to denote the amount of packet header overhead per mbuf and *MBUF_MEMBLOCK_OVERHEAD* to denote the total amount of overhead required per memory block. The macro *MBUF_BUF_SIZE* is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro *MBUF_MEMBLOCK_OVERHEAD*.
 
 
 ```no-highlight  
@@ -57,18 +72,11 @@ create_mbuf_pool(void)
 }
 
 ```
+## Using mbufs
 
-The following example illustrates typical mbuf usage. There are two basic mbuf allocation API: `os_mbuf_get()` and `os_mbuf_get_pkthdr()`. The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use `os_mbuf_get_pkthdr()` and rarely, if ever, need to call `os_mbuf_get()` as the other mbuf API typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs (for reasons which are hopefully apparent to the reader).
+The following examples illustrate typical mbuf usage. There are two basic mbuf allocation API: `os_mbuf_get()` and `os_mbuf_get_pkthdr()`. The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use `os_mbuf_get_pkthdr()` and rarely, if ever, need to call `os_mbuf_get()` as the rest of the mbuf API (e.g. `os_mbuf_append()`, `os_mbuf_copyinto()`, etc.) typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs.
 
-In example 1, the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the "pullup" api (another very common mbuf api).
-
-In example 2 we show use of the pullup api as this illustrates some of the typical pitfalls developers encounter when using mbufs. The first pitfall is one of alignment/padding. Depending on the processor and/or compiler, the sizeof() a structure may vary. Thus, the size of *my_protocol_header* may be different inside the packet data of the mbuf than the size of the structure on the stack or as a global variable, for instance. While some networking protcols may align protocol information on convenient processor boundaries many others try to conserve bytes "on the air" (i.e inside the packet data). Typical methods used to deal with this are "packing" the structure (i.e. force compiler to not pad) or creating protocol headers that do not require padding. Example 2 assumes that one of these methods was used when defining the *my_protocol_header* strcture.
-
-Example 2 also demonstrates (albeit a bit opaquely) the endianness pitfall. A network protocol may be little endian or big endian; it all depends on the protocol specification. Processors also have an endianness; this means that the developer has to be careful that the processor endianness and the protocol endianness are handled correctly. In example 2, some common networking functions are used: `ntohs()` and `ntohl()`. These are shorthand for "network order to host order, short" and "network order to host order, long". Basically, these functions convert data of a certain size (i.e. 16 bits, 32 bits, etc) to the endianness of the host. Network byte order is big-endian (most significant byte first), so these functions convert big-endian byte order to host order (thus, the implementation of these functions is host dependent). Note that the BLE networking stack "on the air" format is least signigicant byte first (i.e. little endian), so a "bletoh" function would have to take little endian format and convert to host format.
-
-A long story short: the developer must take care when copying structure data to/from mbufs and flat buffers!
-
-A final note: these examples assume the same mbuf struture and definitions used in the previous example. 
+In `example1`, the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the "pullup" api (another very common mbuf api).
 
 ```no-highlight
 
@@ -96,7 +104,17 @@ mbuf_usage_example1(uint8_t *mydata, int mydata_length)
 		send_pkt(om);
 	}
 }
+```
 
+In `example2` we show use of the pullup api as this illustrates some of the typical pitfalls developers encounter when using mbufs. The first pitfall is one of alignment/padding. Depending on the processor and/or compiler, the sizeof() a structure may vary. Thus, the size of *my_protocol_header* may be different inside the packet data of the mbuf than the size of the structure on the stack or as a global variable, for instance. While some networking protcols may align protocol information on convenient processor boundaries many others try to conserve bytes "on the air" (i.e inside the packet data). Typical methods used to deal with this are "packing" the structure (i.e. force compiler to not pad) or creating protocol headers that do not require padding. `example2` assumes that one of these methods was used when defining the *my_protocol_header* structure.
+
+Another common pitfall occurs around endianness. A network protocol may be little endian or big endian; it all depends on the protocol specification. Processors also have an endianness; this means that the developer has to be careful that the processor endianness and the protocol endianness are handled correctly. In `example2`, some common networking functions are used: `ntohs()` and `ntohl()`. These are shorthand for "network order to host order, short" and "network order to host order, long". Basically, these functions convert data of a certain size (i.e. 16 bits, 32 bits, etc) to the endianness of the host. Network byte order is big-endian (most significant byte first), so these functions convert big-endian byte order to host order (thus, the implementation of these functions is host dependent). Note that the BLE networking stack "on the air" format is least signigicant byte first (i.e. little endian), so a "bletoh" function would have to take little endian format and convert to host format.
+
+A long story short: the developer must take care when copying structure data to/from mbufs and flat buffers!
+
+A final note: these examples assume the same mbuf struture and definitions used in the first example. 
+
+```no-highlight
 void
 mbuf_usage_example2(struct mbuf *rxpkt)
 {
@@ -138,13 +156,15 @@ mbuf_usage_example2(struct mbuf *rxpkt)
 
 <br>
 
-# MSYS
+# Msys
 
-MSYS stands for "system mbufs" and is set of API built on top of the mbuf code. The basic idea behind msys is the following. The developer can create different size mbuf pools and register them with msys. The application then allocates mbufs using the msys API (as opposed to the mbuf API). The msys code will choose the mbuf pool with the smallest mbufs that can accommodate the requested size. For example, the user registers three mbuf pools with msys: one with 32 byte mbufs, one with 256 and one with 2048. If the user requests a mbuf with 10 bytes, the 32-byte mbuf pool is used. If the request is for 33 bytes the 256 byte mbuf pool is used. If a mbuf data size is requested that is larger than any of the pools (say, 4000 bytes) the largest pool is used. While this behaviour may not be optimal in all cases that is the currently implemented behaviour. All this means is that the user is not guaranteed that a single mbuf cannot hold the requested data.
+msys stands for "system mbufs" and is set of API built on top of the mbuf code. The basic idea behind msys is the following. The developer can create different size mbuf pools and register them with msys. The application then allocates mbufs using the msys API (as opposed to the mbuf API). The msys code will choose the mbuf pool with the smallest mbufs that can accommodate the requested size. 
 
-Another msys note: the msys code will not allocate a mbuf from a larger pool if the chosen mbuf pool is empty. Similarly, the msys code will not chain together a number of smaller mbufs to accommodate the requested size. While this behaviour may change in future implementation the current code will simply return NULL. Using the above example, say the user request 250 bytes. The msys code chooses the appropriate pool (i.e. the 256 byte mbuf pool) and attempts to allocate a mbuf from that pool. If that pool is empty, NULL is returned even though the 32 and 2048 byte pools are not empty.
+Let us walk through an example where the user registers three mbuf pools with msys: one with 32 byte mbufs, one with 256 and one with 2048. If the user requests an mbuf with 10 bytes, the 32-byte mbuf pool is used. If the request is for 33 bytes the 256 byte mbuf pool is used. If an mbuf data size is requested that is larger than any of the pools (say, 4000 bytes) the largest pool is used. While this behaviour may not be optimal in all cases that is the currently implemented behaviour. All this means is that the user is not guaranteed that a single mbuf can hold the requested data.
 
-Note that no added description on how to use the msys API are presented here (other than in the API descriptions themselves) as the msys API are used in exactly the same manner as the mbuf API. The only difference is that mbuf pools are added to msys by calling `os_msys_register().`
+The msys code will not allocate an mbuf from a larger pool if the chosen mbuf pool is empty. Similarly, the msys code will not chain together a number of smaller mbufs to accommodate the requested size. While this behaviour may change in future implementations the current code will simply return NULL. Using the above example, say the user requests 250 bytes. The msys code chooses the appropriate pool (i.e. the 256 byte mbuf pool) and attempts to allocate an mbuf from that pool. If that pool is empty, NULL is returned even though the 32 and 2048 byte pools are not empty.
+
+Note that no added descriptions on how to use the msys API are presented here (other than in the API descriptions themselves) as the msys API is used in exactly the same manner as the mbuf API. The only difference is that mbuf pools are added to msys by calling `os_msys_register().`
 
 <br>  
 

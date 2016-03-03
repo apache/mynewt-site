@@ -22,9 +22,6 @@ Pointer to the duplicated chain or NULL if not enough mbufs were available to du
 
 <br>
 
-#### Notes
-
-<br>
 
 #### Example
 

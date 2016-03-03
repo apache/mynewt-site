@@ -4,7 +4,7 @@
 OS_MBUF_PKTHDR(__om)
 ```
 
-Macro used to get a pointer to the os mbuf packet header of a mbuf.
+Macro used to get a pointer to the os mbuf packet header of an mbuf.
 
 
 <br>

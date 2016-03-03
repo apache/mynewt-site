@@ -33,7 +33,7 @@ In most typical applications, the application developer does not need to call `o
 ```no-highlight
 	struct os_mbuf *om;
 
-    /* Get a mbuf */
+    /* Get an mbuf */
     om = os_mbuf_get(&g_mbuf_pool, 0);
     if (om) {
         /* we have allocated an mbuf from the pool */

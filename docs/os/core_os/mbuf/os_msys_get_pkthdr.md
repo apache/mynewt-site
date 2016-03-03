@@ -1,4 +1,4 @@
-## <font color="#F2853F" style="font-size:24pt">os_msys_get</font>
+## <font color="#F2853F" style="font-size:24pt">os_msys_get_pkthdr</font>
 
 ```no-highlight
 struct os_mbuf *os_msys_get_pkthdr(uint16_t dsize, uint16_t user_hdr_len)
@@ -34,7 +34,7 @@ The same notes apply to this API as to `os_msys_get()`.
     struct my_user_hdr_struct my_usr_hdr;
 
     /*
-     * Allocate a mbuf with hopefully at least 100 bytes in its user data buffer
+     * Allocate an mbuf with hopefully at least 100 bytes in its user data buffer
      * and that has a user header of size sizeof(struct my_user_hdr_struct)
      */
     om = os_msys_get_pkthdr(100, sizeof(struct my_user_hdr_struct));

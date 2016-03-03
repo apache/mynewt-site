@@ -4,7 +4,7 @@
 OS_MBUF_USRHDR(__om)
 ```
 
-Macro used to get a pointer to the user packet header of a mbuf.
+Macro used to get a pointer to the user packet header of an mbuf.
 
 <br>
 

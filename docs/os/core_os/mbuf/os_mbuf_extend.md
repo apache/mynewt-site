@@ -24,9 +24,7 @@ Pointer to start of extended data. Caller is guaranteed that there are at least 
 Returns NULL if extension fails due to insufficient mbufs or *len* too large.
 <br>
 
-#### Notes
 
-<br>
 
 #### Example
 

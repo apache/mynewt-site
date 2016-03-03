@@ -5,7 +5,7 @@ int os_mbuf_pool_init(struct os_mbuf_pool *omp, struct os_mempool *mp, uint16_t 
                       uint16_t nbufs)
 ```
 
-Initialize a mbuf pool
+Initialize an mbuf pool
 
 <br>
 
