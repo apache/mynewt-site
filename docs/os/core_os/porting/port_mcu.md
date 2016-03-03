@@ -1,19 +1,31 @@
-# Mynewt OS 
+# Porting Mynewt to a new MCU
 
-Insert introduction here  
+Porting Mynew to a new MCU is not a difficult task if the
+core CPU architectures is already supported.
 
-## Real-Time Kernel <Modify as you Wish>
+The depth of work depends on the amount of hal support you need and 
+provide in your port.
 
- Description
+To get started:
 
-## Real-Time OS <Modify as you Wish>
+* create a `hw/mcu/mymcu` directory where mymcu is the MCU you are porting to.
+Replace the name `mymcu` with a description of the MCU you are using.
+* create a `hw/mcu/mymcu/variant` director where the variant is the specific
+variant of the part you are usuing.  Many MCU parts have variants with different
+capabilityes (RAM, FLASH etc) or different pinouts.  Replace `variant` with 
+a description of the variant of the part you are using.
+* create a `hw/mcu/mymcu/variant/pkg.yml` file.  Copy from another mcu and fill 
+out the relevant information
+* create  `hw/mcu/mymcu/variant/include`,
+`hw/mcu/mymcu/variant/include/mcu`, and 
+a `hw/mcu/mymcu/variant/src` directories to contain the code for your mcu.
 
- Description
 
+At this point there are two main tasks to complete.
 
-## Insert topic of your choice
+* Implement any os specific code required by the OS
+* Implement the hal functionality that you are looking for
 
- Description
-
-## Features
+Please contact the Mynewt development list for help and advice porting
+to new MCU.
 
