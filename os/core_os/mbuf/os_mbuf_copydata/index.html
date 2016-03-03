@@ -145,7 +145,7 @@
               
   
   <li><a href="
-  ../../../tutorials/project2/
+  ../../../tutorials/STM32F303/
 ">Tutorials</a>
     
   </li>
@@ -276,15 +276,15 @@
               
   
   <li><a href="
-  ../_os_mbuf_copypkthdr/
-">Functions</a>
+  ../OS_MBUF_PKTHDR/
+">Functions/Macros</a>
     
       <ul class="current-toc">
           
               
   
     <li>
-      <a href="../_os_mbuf_copypkthdr/">_os_mbuf_copypkthdr</a>
+      <a href="../OS_MBUF_PKTHDR/">OS_MBUF_PKTHDR</a>
     </li>
   
 
@@ -292,7 +292,55 @@
               
   
     <li>
-      <a href="../_os_msys_find_pool/">_os_msys_find_pool.md</a>
+      <a href="../OS_MBUF_PKTHDR_TO_MBUF/">OS_MBUF_PKTHDR_TO_MBUF</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_PKTLEN/">OS_MBUF_PKTLEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_DATA/">OS_MBUF_DATA</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR/">OS_MBUF_USRHDR</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR_LEN/">OS_MBUF_USRHDR_LEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_LEADINGSPACE/">OS_MBUF_LEADINGSPACE</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_TRAILINGSPACE/">OS_MBUF_TRAILINGSPACE</a>
     </li>
   
 
@@ -349,14 +397,6 @@
   
     <li>
       <a href="../os_mbuf_extend/">os_mbuf_extend</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mbuf_free/">os_mbuf_free</a>
     </li>
   
 
@@ -428,30 +468,6 @@
               
   
     <li>
-      <a href="../os_mqueue_get/">os_mqueue_get</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_init/">os_mqueue_init</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_put/">os_mqueue_put</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../os_msys_get/">os_msys_get</a>
     </li>
   
@@ -487,6 +503,15 @@
 
           
       </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../mqueue/mqueue/
+">MQueue</a>
     
   </li>
 
@@ -672,7 +697,7 @@
         
       
         
-          <li>Functions &raquo;</li>
+          <li>Functions/Macros &raquo;</li>
         
       
     
@@ -684,7 +709,66 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_mbuf_copydata"><font color="#F2853F" style="font-size:24pt"> os_mbuf_copydata</font><a class="headerlink" href="#os_mbuf_copydata" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst)
+</code></pre>
+
+<p>Copy data from an mbuf chain starting <em>off</em> bytes from the beginning, continuing for <em>len</em> bytes, into the indicated buffer.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>m</td>
+<td>Pointer to mbuf chain</td>
+</tr>
+<tr>
+<td>off</td>
+<td>Start copy offset, in bytes, from beginning of mbuf chain</td>
+</tr>
+<tr>
+<td>len</td>
+<td>Number of bytes to copy</td>
+</tr>
+<tr>
+<td>dst</td>
+<td>Data buffer to copy into</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>0: success.<br />
+-1: The mbuf does not contain enough data</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">    int rc;
+    struct os_mbuf *om;
+    struct my_hdr_1 my_hdr1;    
+    struct my_hdr_2 my_hdr2;    
+
+    /* Header 1 and Header 2 are contiguous in packet at start. Retrieve them from the mbuf chain */    
+    rc = os_mbuf_copydata(om, 0, sizeof(struct my_hdr_1), &amp;my_hdr1);
+    if (rc) {
+        /* error! */
+        return -1;
+    }
+
+    rc = os_mbuf_copydata(om, sizeof(struct my_hdr_1), sizeof(struct my_hdr_2), &amp;my_hdr2);
+    if (rc) {
+        /* error! */
+        return -1;
+    }
+
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

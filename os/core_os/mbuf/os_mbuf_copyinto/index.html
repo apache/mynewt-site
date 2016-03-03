@@ -145,7 +145,7 @@
               
   
   <li><a href="
-  ../../../tutorials/project2/
+  ../../../tutorials/STM32F303/
 ">Tutorials</a>
     
   </li>
@@ -276,15 +276,15 @@
               
   
   <li><a href="
-  ../_os_mbuf_copypkthdr/
-">Functions</a>
+  ../OS_MBUF_PKTHDR/
+">Functions/Macros</a>
     
       <ul class="current-toc">
           
               
   
     <li>
-      <a href="../_os_mbuf_copypkthdr/">_os_mbuf_copypkthdr</a>
+      <a href="../OS_MBUF_PKTHDR/">OS_MBUF_PKTHDR</a>
     </li>
   
 
@@ -292,7 +292,55 @@
               
   
     <li>
-      <a href="../_os_msys_find_pool/">_os_msys_find_pool.md</a>
+      <a href="../OS_MBUF_PKTHDR_TO_MBUF/">OS_MBUF_PKTHDR_TO_MBUF</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_PKTLEN/">OS_MBUF_PKTLEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_DATA/">OS_MBUF_DATA</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR/">OS_MBUF_USRHDR</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR_LEN/">OS_MBUF_USRHDR_LEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_LEADINGSPACE/">OS_MBUF_LEADINGSPACE</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_TRAILINGSPACE/">OS_MBUF_TRAILINGSPACE</a>
     </li>
   
 
@@ -349,14 +397,6 @@
   
     <li>
       <a href="../os_mbuf_extend/">os_mbuf_extend</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mbuf_free/">os_mbuf_free</a>
     </li>
   
 
@@ -428,30 +468,6 @@
               
   
     <li>
-      <a href="../os_mqueue_get/">os_mqueue_get</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_init/">os_mqueue_init</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_put/">os_mqueue_put</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../os_msys_get/">os_msys_get</a>
     </li>
   
@@ -487,6 +503,15 @@
 
           
       </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../mqueue/mqueue/
+">MQueue</a>
     
   </li>
 
@@ -672,7 +697,7 @@
         
       
         
-          <li>Functions &raquo;</li>
+          <li>Functions/Macros &raquo;</li>
         
       
     
@@ -684,7 +709,66 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_mbuf_copyinto"><font color="#F2853F" style="font-size:24pt"> os_mbuf_copyinto</font><a class="headerlink" href="#os_mbuf_copyinto" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int os_mbuf_copyinto(struct os_mbuf *om, int off, const void *src, int len);
+</code></pre>
+
+<p>Copies the contents of a flat buffer into an mbuf chain, starting at the specified destination offset.  If the mbuf is too small for the source data, it is extended as necessary.  If the destination mbuf contains a packet header, the header length is updated.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>om</td>
+<td>Pointer to mbuf chain</td>
+</tr>
+<tr>
+<td>off</td>
+<td>Start copy offset, in bytes, from beginning of mbuf chain</td>
+</tr>
+<tr>
+<td>src</td>
+<td>Address from which bytes are copied</td>
+</tr>
+<tr>
+<td>len</td>
+<td>Number of bytes to copy from src</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>0: success.<br />
+All other values indicate an error.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">    int rc;
+    uint16_t pktlen;
+    struct os_mbuf *om;
+    struct my_data_struct my_data;  
+
+    /* Get initial packet length */
+    pktlen = OS_MBUF_PKTLEN(om);
+
+    /* Copy &quot;my_data&quot; into mbuf */
+    rc = os_mbuf_copyinto(om, 0, &amp;my_data, sizeof(struct my_data_struct));
+    if (rc) {
+        os_mbuf_free_chain(om);
+        return;
+    }
+
+    /* Packet length should have increased by size of &quot;my_data&quot; */
+    pktlen += sizeof(struct my_data_struct);
+    assert(pktlen == OS_MBUF_PKTLEN(om));
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

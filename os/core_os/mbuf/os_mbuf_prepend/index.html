@@ -145,7 +145,7 @@
               
   
   <li><a href="
-  ../../../tutorials/project2/
+  ../../../tutorials/STM32F303/
 ">Tutorials</a>
     
   </li>
@@ -276,15 +276,15 @@
               
   
   <li><a href="
-  ../_os_mbuf_copypkthdr/
-">Functions</a>
+  ../OS_MBUF_PKTHDR/
+">Functions/Macros</a>
     
       <ul class="current-toc">
           
               
   
     <li>
-      <a href="../_os_mbuf_copypkthdr/">_os_mbuf_copypkthdr</a>
+      <a href="../OS_MBUF_PKTHDR/">OS_MBUF_PKTHDR</a>
     </li>
   
 
@@ -292,7 +292,55 @@
               
   
     <li>
-      <a href="../_os_msys_find_pool/">_os_msys_find_pool.md</a>
+      <a href="../OS_MBUF_PKTHDR_TO_MBUF/">OS_MBUF_PKTHDR_TO_MBUF</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_PKTLEN/">OS_MBUF_PKTLEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_DATA/">OS_MBUF_DATA</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR/">OS_MBUF_USRHDR</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR_LEN/">OS_MBUF_USRHDR_LEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_LEADINGSPACE/">OS_MBUF_LEADINGSPACE</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_TRAILINGSPACE/">OS_MBUF_TRAILINGSPACE</a>
     </li>
   
 
@@ -349,14 +397,6 @@
   
     <li>
       <a href="../os_mbuf_extend/">os_mbuf_extend</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mbuf_free/">os_mbuf_free</a>
     </li>
   
 
@@ -428,30 +468,6 @@
               
   
     <li>
-      <a href="../os_mqueue_get/">os_mqueue_get</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_init/">os_mqueue_init</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_put/">os_mqueue_put</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../os_msys_get/">os_msys_get</a>
     </li>
   
@@ -487,6 +503,15 @@
 
           
       </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../mqueue/mqueue/
+">MQueue</a>
     
   </li>
 
@@ -672,7 +697,7 @@
         
       
         
-          <li>Functions &raquo;</li>
+          <li>Functions/Macros &raquo;</li>
         
       
     
@@ -684,7 +709,57 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_mbuf_prepend"><font color="#F2853F" style="font-size:24pt">os_mbuf_prepend</font><a class="headerlink" href="#os_mbuf_prepend" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">struct os_mbuf *os_mbuf_prepend(struct os_mbuf *om, int len)
+</code></pre>
+
+<p>Increases the length of an mbuf chain by adding data to the front.  If there is insufficient room in the leading mbuf, additional mbufs are allocated and prepended as necessary.  If this function fails to allocate an mbuf, the entire chain is freed.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>om</td>
+<td>Pointer to mbuf</td>
+</tr>
+<tr>
+<td>len</td>
+<td>Length, in bytes, to prepend</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>Pointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate <em>len</em>.</p>
+<p><br></p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p>If <em>om</em> is a packet header mbuf, the total length of the packet is adjusted by <em>len</em>. Note that the returned mbuf may not point to <em>om</em> if insufficient leading space was available in <em>om</em>.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">    uint16_t pktlen;
+    struct os_mbuf *om;
+    struct os_mbuf *tmp;
+
+    /* Get initial packet length before prepend */
+    pktlen = OS_MBUF_PKTLEN(om);
+
+    tmp = os_mbuf_prepend(om, 32);
+    if (!tmp) {
+        /* Not able to prepend. The chain pointed to by *om has been freed */
+        return -1;
+    }
+
+    /* The packet length should equal the original length plus what we prepended */
+    assert((pktlen + 32) == OS_MBUF_PKTLEN(tmp));
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

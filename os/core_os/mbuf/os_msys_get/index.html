@@ -145,7 +145,7 @@
               
   
   <li><a href="
-  ../../../tutorials/project2/
+  ../../../tutorials/STM32F303/
 ">Tutorials</a>
     
   </li>
@@ -276,15 +276,15 @@
               
   
   <li><a href="
-  ../_os_mbuf_copypkthdr/
-">Functions</a>
+  ../OS_MBUF_PKTHDR/
+">Functions/Macros</a>
     
       <ul class="current-toc">
           
               
   
     <li>
-      <a href="../_os_mbuf_copypkthdr/">_os_mbuf_copypkthdr</a>
+      <a href="../OS_MBUF_PKTHDR/">OS_MBUF_PKTHDR</a>
     </li>
   
 
@@ -292,7 +292,55 @@
               
   
     <li>
-      <a href="../_os_msys_find_pool/">_os_msys_find_pool.md</a>
+      <a href="../OS_MBUF_PKTHDR_TO_MBUF/">OS_MBUF_PKTHDR_TO_MBUF</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_PKTLEN/">OS_MBUF_PKTLEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_DATA/">OS_MBUF_DATA</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR/">OS_MBUF_USRHDR</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR_LEN/">OS_MBUF_USRHDR_LEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_LEADINGSPACE/">OS_MBUF_LEADINGSPACE</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_TRAILINGSPACE/">OS_MBUF_TRAILINGSPACE</a>
     </li>
   
 
@@ -349,14 +397,6 @@
   
     <li>
       <a href="../os_mbuf_extend/">os_mbuf_extend</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mbuf_free/">os_mbuf_free</a>
     </li>
   
 
@@ -427,30 +467,6 @@
           
               
   
-    <li>
-      <a href="../os_mqueue_get/">os_mqueue_get</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_init/">os_mqueue_init</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_put/">os_mqueue_put</a>
-    </li>
-  
-
-          
-              
-  
     <li class="active">
       os_msys_get
     </li>
@@ -487,6 +503,15 @@
 
           
       </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../mqueue/mqueue/
+">MQueue</a>
     
   </li>
 
@@ -672,7 +697,7 @@
         
       
         
-          <li>Functions &raquo;</li>
+          <li>Functions/Macros &raquo;</li>
         
       
     
@@ -684,7 +709,52 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_msys_get"><font color="#F2853F" style="font-size:24pt">os_msys_get</font><a class="headerlink" href="#os_msys_get" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">struct os_mbuf *os_msys_get(uint16_t dsize, uint16_t leadingspace)
+</code></pre>
+
+<p>Retrieve an mbuf from the system mbuf pools with <em>leadingspace</em> bytes available in the mbuf.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dsize</td>
+<td>Minimum requested size of mbuf. Actual mbuf allocated may not accommodate <em>dsize</em></td>
+</tr>
+<tr>
+<td>leadingspace</td>
+<td>Number of bytes for leading space in mbuf (space at start of mbuf)</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>Pointer to mbuf or NULL if no mbufs were available.</p>
+<p><br></p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p>As described in the overview section, <code>os_msys_get()</code> may return an mbuf that is smaller than dsize, meaning that the mbuf user data buffer does not have enough contiguous space to hold <em>dsize</em> bytes.</p>
+<p>This API will not return an mbuf from a larger mbuf pool if the appropriate msys mbuf pool is empty. See the overview for more information.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">    struct os_mbuf *om;
+
+    /* Allocate an mbuf with hopefully at least 100 bytes in its user data buffer */
+    om = os_msys_get(100, 0);
+    if (!om) {
+        /* No mbufs available. */
+        return -1;
+    }
+}
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>

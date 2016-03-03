@@ -181,57 +181,67 @@
             "title": "Identity"
         }, 
         {
-            "location": "/os/tutorials/project2/", 
-            "text": "Project 2 - Blinky on additional boards\n\n\nObjective\n\n\nThe goal of this tutorial is to download a generic firmware skeleton (\"bootstrap image\") that applies to any hardware and then throw in additional applicable eggs to generate a build for a specific board. In the process you will be exposed to more Mynewt terms and Newt tool commands.\n\n\nThe following target hardware chips are covered:\n\n\n\n\nSTM32F303VC MCU\n from STMicroelectronics\n\n\nnRF52 Series\n from Nordic Semiconductors \n\n\n\n\nSTM32F303VC MCU\n\n\nHardware needed\n\n\n\n\nDiscovery kit with STM32F303VC MCU\n\n\nLaptop running Mac OS\n\n\n\n\nStep by Step Instructions to build image\n\n\n\n\nThe first step is to download the generic skeleton of the project. The eggs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as a nest in a separate repository on Apache. You know it is a nest because there is a nest.yml file. \n\n\n\n\n        [user:~/dev]$ newt nest create test_project\n        Downloading nest skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!\n        Nest test_project successfully created in ~/dev/go/test_project\n\n        [user:~/dev]$ cd test_project/\n        [user:~/dev/test_project]$ ls\n        README.md   compiler    hw      libs    nest.yml\n\n\n\n\n\n\nNext, the clutch of eggs named larva is added from the nest (also named larva) from another repository on Apache. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (\nclutch.yml\n) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.\n\n\n\n\n        [user:~/dev/test_project]$ newt nest add-clutch larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git\n        Downloading clutch.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!\n        Verifying clutch.yml format...\n        ok!\n        Clutch larva successfully installed to Nest.\n\n\n\n\n\n\nThe next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. \n\n\n\n\n\n        [user:~/dev/test_project]$ newt egg install project/blinky          \n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing project/blinky\n        Installing libs/console/full\n        Installing libs/shell\n        Installation was a success!\n\n        [user:~/dev/test_project]$ newt egg install hw/bsp/stm32f3discovery\n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing hw/bsp/stm32f3discovery\n        Installing hw/mcu/stm/stm32f3xx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!\n\n\n\n\n\n\nIt's time to create a target for the project and define the target attributes. \n\n\n\n\n        [user:~/dev/test_project]$ newt target create blink_f3disc\n        Creating target blink_f3disc\n        Target blink_f3disc successfully created!\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc project=blinky\n        Target blink_f3disc successfully set project to blinky\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery\n        Target blink_f3disc successfully set bsp to hw/bsp/stm32f3discovery\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler_def=debug\n        Target blink_f3disc successfully set compiler_def to debug\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4\n        Target blink_f3disc successfully set compiler to arm-none-eabi-m4\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4\n        Target blink_f3disc successfully set arch to cortex_m4\n\n        [user:~/dev/test_project]$ newt target show blink_f3disc\n        blink_f3disc\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/stm32f3discovery\n            compiler_def: debug\n            compiler: arm-none-eabi-m4\n            name: blink_f3disc\n\n\n\n\n\n\n\n\nNext, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at \nhttp://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf\n\n\n\n\n\n\n\n\n\n\n\n\n        [user:~/dev/test_project]$ newt target build blink_f3disc\n        Building target blink_f3disc (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_gpio.c\n        Compiling stm32f3xx_hal_gpio.c\n        Archiving libstm32f3xx.a\n        Compiling cmsis_nvic.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_stm32f3xx.c\n        Assembling startup_stm32f303xc.s\n        Archiving libstm32f3discovery.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!\n\n\n\n\n\n\nFinally, you have to download the image on to the board. You will see a blue light start to blink.\n\n\n\n\n        [user:~/dev/test_project]$ newt target download blink_f3disc\n        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh\n\n\n\n\nnRF52 Series\n\n\nHardware needed\n\n\n\n\nnRF52 Development Kit\n\n\nLaptop running Mac OS\n\n\n\n\nStep by Step Instructions to build image\n\n\n\n\nThe first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.\n\n\n\n\n        []user@~/dev]$ newt nest create nordic_blinky\n        Downloading nest skeleton from https://www.github.com/mynewt/tadpole... ok!\n        Nest nordic_blinky successfully created in ~dev/nordic_blinky\n\n        user@~/dev$ cd nordic_blinky/\n\n\n\n\n\n\nThen, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (\nclutch.yml\n) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.\n\n\n\n\n        []user@~/dev/nordic_blinky]$ newt nest add-clutch larva https://github.com/mynewt/larva\n        Downloading clutch.yml from https://github.com/mynewt/larva/master... ok!\n        Verifying clutch.yml format...ok!\n        Clutch larva successfully installed to Nest.\n\n\n\n\n\n\nThe next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. \n\n\n\n\n        [user@~/dev/nordic_blinky]$ newt egg install project/blinky \n        Downloading larva from https://github.com/mynewt/larva//master... ok!\n        Installing project/blinky\n        Installation was a success!\n\n\n        [user@~/dev/nordic_blinky]$ newt egg install hw/bsp/nrf52pdk\n        Downloading larva from https://github.com/mynewt/larva//master... ok!\n        Installing hw/bsp/nrf52pdk\n        Installing hw/mcu/nordic/nrf52xxx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!\n\n\n\n\n\n\nIt's time to create a target for the project and define the target attributes. \n\n\n\n\n        [user@~/dev/nordic_blinky]$ newt target create blink_nordic\n        Creating target blink_nordic\n        Target blink_nordic successfully created!\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic project=blinky\n        Target blink_nordic successfully set project to blinky\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic bsp=hw/bsp/nrf52pdk\n        Target blink_nordic successfully set bsp to hw/bsp/nrf52pdk\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic compiler_def=debug\n        Target blink_nordic successfully set compiler_def to debug\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic compiler=arm-none-eabi-m4\n        Target blink_nordic successfully set compiler to arm-none-eabi-m4\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic arch=cortex_m4\n        Target blink_nordic successfully set arch to cortex_m4\n        [user@~/dev/nordic_blinky]$ newt target show\n        blink_nordic\n            compiler: arm-none-eabi-m4\n            name: blink_nordic\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/nrf52pdk\n            compiler_def: debug\n\n\n\n\n\n\nFinally, you get to build the target and generate an executable that can now be uploaded to the board via the on-board SEGGER J-Link debugger. \n\n\n\n\n        [user@~/dev/nordic_blinky]$ newt target build blink_nordic\n        Building target blink_nordic (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_cputime.c\n        Compiling hal_gpio.c\n        Compiling hal_uart.c\n        Archiving libnrf52xxx.a\n        Compiling cmsis_nvic.c\n        Compiling hal_bsp.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_nrf52.c\n        Assembling gcc_startup_nrf52.s\n        Archiving libnrf52pdk.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!\n\n\n\n\n\n\n\n\nIn order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the \"Software and documentation pack for Mac OS X\" from \nhttps://www.segger.com/jlink-software.html\n. The command line version of the server is used in the steps below. \n\n\n\n\n\n\nOpen a new terminal and start a J-Link session.\n\n\n\n\n\n\n        [user@~/dev/nordic_blinky/project/blinky/bin]$ which JLinkGDBServer\n        /usr/local/bin/JLinkGDBServer\n        [user@~/dev/nordic_blinky/project/blinky/bin]$ JLinkGDBServer -if SWD\n        SEGGER J-Link GDB Server V5.02f Command Line Version\n\n        JLinkARM.dll V5.02f (DLL compiled Oct  2 2015 20:55:03)\n\n        -----GDB Server start settings-----\n        GDBInit file:                  none\n        GDB Server Listening port:     2331\n        SWO raw output listening port: 2332\n        Terminal I/O port:             2333\n        Accept remote connection:      yes\n        Generate logfile:              off\n        Verify download:               off\n        Init regs on start:            off\n        Silent mode:                   off\n        Single run mode:               off\n        Target connection timeout:     0 ms\n        ------J-Link related settings------\n        J-Link Host interface:         USB\n        J-Link script:                 none\n        J-Link settings file:          none\n        ------Target related settings------\n        Target device:                 unspecified\n        Target interface:              SWD\n        Target interface speed:        1000kHz\n        Target endian:                 little\n\n        Connecting to J-Link...\n        J-Link is connected.\n        Firmware: J-Link OB-SAM3U128-V2-NordicSemi compiled Aug 28 2015 19:26:24\n        Hardware: V1.00\n        S/N: 682371959\n        Checking target voltage...\n        Target voltage: 3.30 V\n        Listening on TCP/IP port 2331\n        Connecting to target...Connected to target\n        Waiting for GDB connection...Connected to 127.0.0.1\n\n\n\n\n\n\nYou need a configuration file for the GDB session to be opened correctly and the image (\"blinky.elf\") you built for this target downloaded to flash. A sample config script is given below. Alternatively, you could choose to type each command at the gdb prompt.\n\n\n\n\n         [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ cat jlink-gdb.cfg \n         echo ***Setting up the environment for debugging gdb.***\\n\n         set complaints 1\n         set prompt (gdb) \n         set endian little\n         echo \\n*** Set target charset ASCII\\n\n         set target-charset ASCII\n         echo \\n*** Connecting over port #2331 ***\\n\n         target remote localhost:2331\n         echo \\n*** Enable flash write and set device to nrf52 ***\\n\n         monitor flash download=1\n         monitor flash device=nRF52\n         echo \\n*** loading blinky.elf ***\\n\n         load ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf \n         symbol-file ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf\n         echo \\n*** Resetting target ***\\n\n         monitor reset\n         echo \\n*** Halting target ***\\n\n         monitor halt\n\n\n\n\n\n\nStart the gdb session and monitor that it loads the image, resets the target, and halts for a command to continue. \n\n\n\n\n        [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ arm-none-eabi-gdb -x ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/jlink-gdb.cfg\n\n        GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs\n        Copyright (C) 2014 Free Software Foundation, Inc.\n        License GPLv3+: GNU GPL version 3 or later \nhttp://gnu.org/licenses/gpl.html\n\n        This is free software: you are free to change and redistribute it.\n        There is NO WARRANTY, to the extent permitted by law.  Type \nshow copying\n\n        and \nshow warranty\n for details.\n        This GDB was configured as \n--host=x86_64-apple-darwin10 --target=arm-none-eabi\n.\n        Type \nshow configuration\n for configuration details.\n        For bug reporting instructions, please see:\n        \nhttp://www.gnu.org/software/gdb/bugs/\n.\n        Find the GDB manual and other documentation resources online at:\n        \nhttp://www.gnu.org/software/gdb/documentation/\n.\n        For help, type \nhelp\n.\n        Type \napropos word\n to search for commands related to \nword\n.\n\n        ***Setting up the environment for debugging gdb.***\n        The target is assumed to be little endian\n\n        *** Set target charset ASCII\n\n        *** Connecting over port #2331 ***\n        0x00003c34 in ?? ()\n\n        *** Enable flash write and set device to nrf52 ***\n        Flash download enabled\n        Selecting device: nRF52\n\n        *** loading blinky.elf ***\n        Loading section .text, size 0x5c84 lma 0x0\n        Loading section .ARM.extab, size 0x24 lma 0x5c84\n        Loading section .ARM.exidx, size 0xd8 lma 0x5ca8\n        Loading section .data, size 0x8f8 lma 0x5d80\n        Start address 0x48c, load size 26232\n        Transfer rate: 12808 KB/sec, 2914 bytes/write.\n        During symbol reading, unexpected overlap between:\n         (A) section `.text' from `~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf' [0x0, 0x5c84)\n         (B) section `*COM*' from `~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf' [0x0, 0x0).\n        Will ignore section B.\n\n        *** Resetting target ***\n        Resetting target\n\n        *** Halting target ***\n\n\n\n\n\n\nType 'c' to continue. The LED on the board will start to blink. You will also see some activity in the terminal showing the open J-Link GDB server connection. The LED will continue to blink after you quit out of that connection.\n\n\n\n\n        (gdb) c\n        Continuing.", 
-            "title": "Blinky on More Boards"
+            "location": "/os/tutorials/STM32F303/", 
+            "text": "Blinky on STM32F303 board\n\n\nObjective\n\n\nDownload a generic firmware skeleton (\"bootstrap image\") that applies to any hardware and then throw in additional applicable pkgs to generate a build for a specific board, namely the STM32F303VC MCU from STMicroelectronics.\n\n\nHardware needed\n\n\n\n\nDiscovery kit with STM32F303VC MCU\n\n\nLaptop running Mac OS\n\n\n\n\nStep by Step Instructions to build image\n\n\n\n\nThe first step is to download the generic skeleton of the project. The pkgs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as an app in a separate repository on Apache. You know it is an app because there is an app.yml file. \n\n\n\n\n        [user:~/dev]$ newt app create test_project\n        Downloading app skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!\n        app test_project successfully created in ~/dev/go/test_project\n\n        [user:~/dev]$ cd test_project/\n        [user:~/dev/test_project]$ ls\n        README.md   compiler    hw      libs    app.yml\n\n\n\n\n\n\nNext, the pkg-list named larva is added from the app (also named larva) from another repository on Apache. This step simply downloads the pkg-list description file and does not actually install the pkgs that constitute the pkg-list. The pkg-list description file (\npkg-list.yml\n) will be used to check dependencies during the pkg install to ensure completeness. It serves as a reference for all the pkgs in the pkg-list that one can choose from and install.\n\n\n\n\n        [user:~/dev/test_project]$ newt app add-pkg-list larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git\n        Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!\n        Verifying pkg-list.yml format...\n        ok!\n        pkg-list larva successfully installed to app.\n\n\n\n\n\n\nThe next step is to install relevant pkgs from the larvan app on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. \n\n\n\n\n\n        [user:~/dev/test_project]$ newt pkg install project/blinky          \n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing project/blinky\n        Installing libs/console/full\n        Installing libs/shell\n        Installation was a success!\n\n        [user:~/dev/test_project]$ newt pkg install hw/bsp/stm32f3discovery\n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing hw/bsp/stm32f3discovery\n        Installing hw/mcu/stm/stm32f3xx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!\n\n\n\n\n\n\nIt's time to create a target for the project and define the target attributes. \n\n\n\n\n        [user:~/dev/test_project]$ newt target create blink_f3disc\n        Creating target blink_f3disc\n        Target blink_f3disc successfully created!\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc project=blinky\n        Target blink_f3disc successfully set project to blinky\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery\n        Target blink_f3disc successfully set bsp to hw/bsp/stm32f3discovery\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler_def=debug\n        Target blink_f3disc successfully set compiler_def to debug\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4\n        Target blink_f3disc successfully set compiler to arm-none-eabi-m4\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4\n        Target blink_f3disc successfully set arch to cortex_m4\n\n        [user:~/dev/test_project]$ newt target show blink_f3disc\n        blink_f3disc\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/stm32f3discovery\n            compiler_def: debug\n            compiler: arm-none-eabi-m4\n            name: blink_f3disc\n\n\n\n\n\n\n\n\nNext, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at \nhttp://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf\n\n\n\n\n\n\n\n\n\n\n\n\n        [user:~/dev/test_project]$ newt target build blink_f3disc\n        Building target blink_f3disc (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_gpio.c\n        Compiling stm32f3xx_hal_gpio.c\n        Archiving libstm32f3xx.a\n        Compiling cmsis_nvic.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_stm32f3xx.c\n        Assembling startup_stm32f303xc.s\n        Archiving libstm32f3discovery.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!\n\n\n\n\n\n\nFinally, you have to download the image on to the board. You will see a blue light start to blink.\n\n\n\n\n        [user:~/dev/test_project]$ newt target download blink_f3disc\n        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh", 
+            "title": "Blinky on STM32F303"
         }, 
         {
-            "location": "/os/tutorials/project2/#project-2-blinky-on-additional-boards", 
+            "location": "/os/tutorials/STM32F303/#blinky-on-stm32f303-board", 
             "text": "", 
-            "title": "Project 2 - Blinky on additional boards"
+            "title": "Blinky on STM32F303 board"
         }, 
         {
-            "location": "/os/tutorials/project2/#objective", 
-            "text": "The goal of this tutorial is to download a generic firmware skeleton (\"bootstrap image\") that applies to any hardware and then throw in additional applicable eggs to generate a build for a specific board. In the process you will be exposed to more Mynewt terms and Newt tool commands.  The following target hardware chips are covered:   STM32F303VC MCU  from STMicroelectronics  nRF52 Series  from Nordic Semiconductors", 
+            "location": "/os/tutorials/STM32F303/#objective", 
+            "text": "Download a generic firmware skeleton (\"bootstrap image\") that applies to any hardware and then throw in additional applicable pkgs to generate a build for a specific board, namely the STM32F303VC MCU from STMicroelectronics.", 
             "title": "Objective"
         }, 
         {
-            "location": "/os/tutorials/project2/#stm32f303vc-mcu", 
-            "text": "", 
-            "title": "STM32F303VC MCU"
-        }, 
-        {
-            "location": "/os/tutorials/project2/#hardware-needed", 
+            "location": "/os/tutorials/STM32F303/#hardware-needed", 
             "text": "Discovery kit with STM32F303VC MCU  Laptop running Mac OS", 
             "title": "Hardware needed"
         }, 
         {
-            "location": "/os/tutorials/project2/#step-by-step-instructions-to-build-image", 
-            "text": "The first step is to download the generic skeleton of the project. The eggs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as a nest in a separate repository on Apache. You know it is a nest because there is a nest.yml file.            [user:~/dev]$ newt nest create test_project\n        Downloading nest skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!\n        Nest test_project successfully created in ~/dev/go/test_project\n\n        [user:~/dev]$ cd test_project/\n        [user:~/dev/test_project]$ ls\n        README.md   compiler    hw      libs    nest.yml   Next, the clutch of eggs named larva is added from the nest (also named larva) from another repository on Apache. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file ( clutch.yml ) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.           [user:~/dev/test_project]$ newt nest add-clutch larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git\n        Downloading clutch.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!\n        Verifying clutch.yml format...\n        ok!\n        Clutch larva successfully installed to Nest.   The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need.    \n        [user:~/dev/test_project]$ newt egg install project/blinky          \n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing project/blinky\n        Installing libs/console/full\n        Installing libs/shell\n        Installation was a success!\n\n        [user:~/dev/test_project]$ newt egg install hw/bsp/stm32f3discovery\n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing hw/bsp/stm32f3discovery\n        Installing hw/mcu/stm/stm32f3xx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!   It's time to create a target for the project and define the target attributes.            [user:~/dev/test_project]$ newt target create blink_f3disc\n        Creating target blink_f3disc\n        Target blink_f3disc successfully created!\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc project=blinky\n        Target blink_f3disc successfully set project to blinky\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery\n        Target blink_f3disc successfully set bsp to hw/bsp/stm32f3discovery\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler_def=debug\n        Target blink_f3disc successfully set compiler_def to debug\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4\n        Target blink_f3disc successfully set compiler to arm-none-eabi-m4\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4\n        Target blink_f3disc successfully set arch to cortex_m4\n\n        [user:~/dev/test_project]$ newt target show blink_f3disc\n        blink_f3disc\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/stm32f3discovery\n            compiler_def: debug\n            compiler: arm-none-eabi-m4\n            name: blink_f3disc    Next, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at  http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf               [user:~/dev/test_project]$ newt target build blink_f3disc\n        Building target blink_f3disc (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_gpio.c\n        Compiling stm32f3xx_hal_gpio.c\n        Archiving libstm32f3xx.a\n        Compiling cmsis_nvic.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_stm32f3xx.c\n        Assembling startup_stm32f303xc.s\n        Archiving libstm32f3discovery.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!   Finally, you have to download the image on to the board. You will see a blue light start to blink.           [user:~/dev/test_project]$ newt target download blink_f3disc\n        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh", 
+            "location": "/os/tutorials/STM32F303/#step-by-step-instructions-to-build-image", 
+            "text": "The first step is to download the generic skeleton of the project. The pkgs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as an app in a separate repository on Apache. You know it is an app because there is an app.yml file.            [user:~/dev]$ newt app create test_project\n        Downloading app skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!\n        app test_project successfully created in ~/dev/go/test_project\n\n        [user:~/dev]$ cd test_project/\n        [user:~/dev/test_project]$ ls\n        README.md   compiler    hw      libs    app.yml   Next, the pkg-list named larva is added from the app (also named larva) from another repository on Apache. This step simply downloads the pkg-list description file and does not actually install the pkgs that constitute the pkg-list. The pkg-list description file ( pkg-list.yml ) will be used to check dependencies during the pkg install to ensure completeness. It serves as a reference for all the pkgs in the pkg-list that one can choose from and install.           [user:~/dev/test_project]$ newt app add-pkg-list larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git\n        Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!\n        Verifying pkg-list.yml format...\n        ok!\n        pkg-list larva successfully installed to app.   The next step is to install relevant pkgs from the larvan app on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need.    \n        [user:~/dev/test_project]$ newt pkg install project/blinky          \n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing project/blinky\n        Installing libs/console/full\n        Installing libs/shell\n        Installation was a success!\n\n        [user:~/dev/test_project]$ newt pkg install hw/bsp/stm32f3discovery\n        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!\n        Installing hw/bsp/stm32f3discovery\n        Installing hw/mcu/stm/stm32f3xx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!   It's time to create a target for the project and define the target attributes.            [user:~/dev/test_project]$ newt target create blink_f3disc\n        Creating target blink_f3disc\n        Target blink_f3disc successfully created!\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc project=blinky\n        Target blink_f3disc successfully set project to blinky\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery\n        Target blink_f3disc successfully set bsp to hw/bsp/stm32f3discovery\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler_def=debug\n        Target blink_f3disc successfully set compiler_def to debug\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4\n        Target blink_f3disc successfully set compiler to arm-none-eabi-m4\n\n        [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4\n        Target blink_f3disc successfully set arch to cortex_m4\n\n        [user:~/dev/test_project]$ newt target show blink_f3disc\n        blink_f3disc\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/stm32f3discovery\n            compiler_def: debug\n            compiler: arm-none-eabi-m4\n            name: blink_f3disc    Next, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at  http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf               [user:~/dev/test_project]$ newt target build blink_f3disc\n        Building target blink_f3disc (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_gpio.c\n        Compiling stm32f3xx_hal_gpio.c\n        Archiving libstm32f3xx.a\n        Compiling cmsis_nvic.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_stm32f3xx.c\n        Assembling startup_stm32f303xc.s\n        Archiving libstm32f3discovery.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!   Finally, you have to download the image on to the board. You will see a blue light start to blink.           [user:~/dev/test_project]$ newt target download blink_f3disc\n        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh", 
             "title": "Step by Step Instructions to build image"
         }, 
         {
-            "location": "/os/tutorials/project2/#nrf52-series", 
-            "text": "", 
-            "title": "nRF52 Series"
+            "location": "/os/tutorials/nRF52/", 
+            "text": "Blinky on nRF52 board\n\n\nObjective\n\n\nDownload a generic firmware skeleton (\"bootstrap image\") that applies to any hardware and then throw in additional applicable pkgs to generate a build for a specific board, namely the\nnRF52 Series chip from Nordic Semiconductors.\n\n\nHardware needed\n\n\n\n\nnRF52 Development Kit\n\n\nLaptop running Mac OS\n\n\n\n\nStep by Step Instructions to build image\n\n\n\n\nThe first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.\n\n\n\n\n        []user@~/dev]$ newt nest create nordic_blinky\n        Downloading nest skeleton from https://www.github.com/mynewt/tadpole... ok!\n        Nest nordic_blinky successfully created in ~dev/nordic_blinky\n\n        user@~/dev$ cd nordic_blinky/\n\n\n\n\n\n\nThen, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (\nclutch.yml\n) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.\n\n\n\n\n        []user@~/dev/nordic_blinky]$ newt nest add-clutch larva https://github.com/mynewt/larva\n        Downloading clutch.yml from https://github.com/mynewt/larva/master... ok!\n        Verifying clutch.yml format...ok!\n        Clutch larva successfully installed to Nest.\n\n\n\n\n\n\nThe next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. \n\n\n\n\n        [user@~/dev/nordic_blinky]$ newt egg install project/blinky \n        Downloading larva from https://github.com/mynewt/larva//master... ok!\n        Installing project/blinky\n        Installation was a success!\n\n\n        [user@~/dev/nordic_blinky]$ newt egg install hw/bsp/nrf52pdk\n        Downloading larva from https://github.com/mynewt/larva//master... ok!\n        Installing hw/bsp/nrf52pdk\n        Installing hw/mcu/nordic/nrf52xxx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!\n\n\n\n\n\n\nIt's time to create a target for the project and define the target attributes. \n\n\n\n\n        [user@~/dev/nordic_blinky]$ newt target create blink_nordic\n        Creating target blink_nordic\n        Target blink_nordic successfully created!\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic project=blinky\n        Target blink_nordic successfully set project to blinky\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic bsp=hw/bsp/nrf52pdk\n        Target blink_nordic successfully set bsp to hw/bsp/nrf52pdk\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic compiler_def=debug\n        Target blink_nordic successfully set compiler_def to debug\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic compiler=arm-none-eabi-m4\n        Target blink_nordic successfully set compiler to arm-none-eabi-m4\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic arch=cortex_m4\n        Target blink_nordic successfully set arch to cortex_m4\n        [user@~/dev/nordic_blinky]$ newt target show\n        blink_nordic\n            compiler: arm-none-eabi-m4\n            name: blink_nordic\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/nrf52pdk\n            compiler_def: debug\n\n\n\n\n\n\nFinally, you get to build the target and generate an executable that can now be uploaded to the board via the on-board SEGGER J-Link debugger. \n\n\n\n\n        [user@~/dev/nordic_blinky]$ newt target build blink_nordic\n        Building target blink_nordic (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_cputime.c\n        Compiling hal_gpio.c\n        Compiling hal_uart.c\n        Archiving libnrf52xxx.a\n        Compiling cmsis_nvic.c\n        Compiling hal_bsp.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_nrf52.c\n        Assembling gcc_startup_nrf52.s\n        Archiving libnrf52pdk.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!\n\n\n\n\n\n\n\n\nIn order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the \"Software and documentation pack for Mac OS X\" from \nhttps://www.segger.com/jlink-software.html\n. The command line version of the server is used in the steps below. \n\n\n\n\n\n\nOpen a new terminal and start a J-Link session.\n\n\n\n\n\n\n        [user@~/dev/nordic_blinky/project/blinky/bin]$ which JLinkGDBServer\n        /usr/local/bin/JLinkGDBServer\n        [user@~/dev/nordic_blinky/project/blinky/bin]$ JLinkGDBServer -if SWD\n        SEGGER J-Link GDB Server V5.02f Command Line Version\n\n        JLinkARM.dll V5.02f (DLL compiled Oct  2 2015 20:55:03)\n\n        -----GDB Server start settings-----\n        GDBInit file:                  none\n        GDB Server Listening port:     2331\n        SWO raw output listening port: 2332\n        Terminal I/O port:             2333\n        Accept remote connection:      yes\n        Generate logfile:              off\n        Verify download:               off\n        Init regs on start:            off\n        Silent mode:                   off\n        Single run mode:               off\n        Target connection timeout:     0 ms\n        ------J-Link related settings------\n        J-Link Host interface:         USB\n        J-Link script:                 none\n        J-Link settings file:          none\n        ------Target related settings------\n        Target device:                 unspecified\n        Target interface:              SWD\n        Target interface speed:        1000kHz\n        Target endian:                 little\n\n        Connecting to J-Link...\n        J-Link is connected.\n        Firmware: J-Link OB-SAM3U128-V2-NordicSemi compiled Aug 28 2015 19:26:24\n        Hardware: V1.00\n        S/N: 682371959\n        Checking target voltage...\n        Target voltage: 3.30 V\n        Listening on TCP/IP port 2331\n        Connecting to target...Connected to target\n        Waiting for GDB connection...Connected to 127.0.0.1\n\n\n\n\n\n\nYou need a configuration file for the GDB session to be opened correctly and the image (\"blinky.elf\") you built for this target downloaded to flash. A sample config script is given below. Alternatively, you could choose to type each command at the gdb prompt.\n\n\n\n\n         [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ cat jlink-gdb.cfg \n         echo ***Setting up the environment for debugging gdb.***\\n\n         set complaints 1\n         set prompt (gdb) \n         set endian little\n         echo \\n*** Set target charset ASCII\\n\n         set target-charset ASCII\n         echo \\n*** Connecting over port #2331 ***\\n\n         target remote localhost:2331\n         echo \\n*** Enable flash write and set device to nrf52 ***\\n\n         monitor flash download=1\n         monitor flash device=nRF52\n         echo \\n*** loading blinky.elf ***\\n\n         load ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf \n         symbol-file ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf\n         echo \\n*** Resetting target ***\\n\n         monitor reset\n         echo \\n*** Halting target ***\\n\n         monitor halt\n\n\n\n\n\n\nStart the gdb session and monitor that it loads the image, resets the target, and halts for a command to continue. \n\n\n\n\n        [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ arm-none-eabi-gdb -x ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/jlink-gdb.cfg\n\n        GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs\n        Copyright (C) 2014 Free Software Foundation, Inc.\n        License GPLv3+: GNU GPL version 3 or later \nhttp://gnu.org/licenses/gpl.html\n\n        This is free software: you are free to change and redistribute it.\n        There is NO WARRANTY, to the extent permitted by law.  Type \nshow copying\n\n        and \nshow warranty\n for details.\n        This GDB was configured as \n--host=x86_64-apple-darwin10 --target=arm-none-eabi\n.\n        Type \nshow configuration\n for configuration details.\n        For bug reporting instructions, please see:\n        \nhttp://www.gnu.org/software/gdb/bugs/\n.\n        Find the GDB manual and other documentation resources online at:\n        \nhttp://www.gnu.org/software/gdb/documentation/\n.\n        For help, type \nhelp\n.\n        Type \napropos word\n to search for commands related to \nword\n.\n\n        ***Setting up the environment for debugging gdb.***\n        The target is assumed to be little endian\n\n        *** Set target charset ASCII\n\n        *** Connecting over port #2331 ***\n        0x00003c34 in ?? ()\n\n        *** Enable flash write and set device to nrf52 ***\n        Flash download enabled\n        Selecting device: nRF52\n\n        *** loading blinky.elf ***\n        Loading section .text, size 0x5c84 lma 0x0\n        Loading section .ARM.extab, size 0x24 lma 0x5c84\n        Loading section .ARM.exidx, size 0xd8 lma 0x5ca8\n        Loading section .data, size 0x8f8 lma 0x5d80\n        Start address 0x48c, load size 26232\n        Transfer rate: 12808 KB/sec, 2914 bytes/write.\n        During symbol reading, unexpected overlap between:\n         (A) section `.text' from `~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf' [0x0, 0x5c84)\n         (B) section `*COM*' from `~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf' [0x0, 0x0).\n        Will ignore section B.\n\n        *** Resetting target ***\n        Resetting target\n\n        *** Halting target ***\n\n\n\n\n\n\nType 'c' to continue. The LED on the board will start to blink. You will also see some activity in the terminal showing the open J-Link GDB server connection. The LED will continue to blink after you quit out of that connection.\n\n\n\n\n        (gdb) c\n        Continuing.", 
+            "title": "Blinky on nRF52"
         }, 
         {
-            "location": "/os/tutorials/project2/#hardware-needed_1", 
+            "location": "/os/tutorials/nRF52/#blinky-on-nrf52-board", 
+            "text": "", 
+            "title": "Blinky on nRF52 board"
+        }, 
+        {
+            "location": "/os/tutorials/nRF52/#objective", 
+            "text": "Download a generic firmware skeleton (\"bootstrap image\") that applies to any hardware and then throw in additional applicable pkgs to generate a build for a specific board, namely the\nnRF52 Series chip from Nordic Semiconductors.", 
+            "title": "Objective"
+        }, 
+        {
+            "location": "/os/tutorials/nRF52/#hardware-needed", 
             "text": "nRF52 Development Kit  Laptop running Mac OS", 
             "title": "Hardware needed"
         }, 
         {
-            "location": "/os/tutorials/project2/#step-by-step-instructions-to-build-image_1", 
+            "location": "/os/tutorials/nRF52/#step-by-step-instructions-to-build-image", 
             "text": "The first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.           []user@~/dev]$ newt nest create nordic_blinky\n        Downloading nest skeleton from https://www.github.com/mynewt/tadpole... ok!\n        Nest nordic_blinky successfully created in ~dev/nordic_blinky\n\n        user@~/dev$ cd nordic_blinky/   Then, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file ( clutch.yml ) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.           []user@~/dev/nordic_blinky]$ newt nest add-clutch larva https://github.com/mynewt/larva\n        Downloading clutch.yml from https://github.com/mynewt/larva/master... ok!\n        Verifying clutch.yml format...ok!\n        Clutch larva successfully installed to Nest.   The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need.            [user@~/dev/nordic_blinky]$ newt egg install project/blinky \n        Downloading larva from https://github.com/mynewt/larva//master... ok!\n        Installing project/blinky\n        Installation was a success!\n\n\n        [user@~/dev/nordic_blinky]$ newt egg install hw/bsp/nrf52pdk\n        Downloading larva from https://github.com/mynewt/larva//master... ok!\n        Installing hw/bsp/nrf52pdk\n        Installing hw/mcu/nordic/nrf52xxx\n        Installing libs/cmsis-core\n        Installing compiler/arm-none-eabi-m4\n        Installation was a success!   It's time to create a target for the project and define the target attributes.            [user@~/dev/nordic_blinky]$ newt target create blink_nordic\n        Creating target blink_nordic\n        Target blink_nordic successfully created!\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic project=blinky\n        Target blink_nordic successfully set project to blinky\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic bsp=hw/bsp/nrf52pdk\n        Target blink_nordic successfully set bsp to hw/bsp/nrf52pdk\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic compiler_def=debug\n        Target blink_nordic successfully set compiler_def to debug\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic compiler=arm-none-eabi-m4\n        Target blink_nordic successfully set compiler to arm-none-eabi-m4\n        [user@~/dev/nordic_blinky]$ newt target set blink_nordic arch=cortex_m4\n        Target blink_nordic successfully set arch to cortex_m4\n        [user@~/dev/nordic_blinky]$ newt target show\n        blink_nordic\n            compiler: arm-none-eabi-m4\n            name: blink_nordic\n            arch: cortex_m4\n            project: blinky\n            bsp: hw/bsp/nrf52pdk\n            compiler_def: debug   Finally, you get to build the target and generate an executable that can now be uploaded to the board via the on-board SEGGER J-Link debugger.            [user@~/dev/nordic_blinky]$ newt target build blink_nordic\n        Building target blink_nordic (project = blinky)\n        Compiling case.c\n        Compiling suite.c\n        Compiling testutil.c\n        Compiling testutil_arch_arm.c\n        Archiving libtestutil.a\n        Compiling os.c\n        Compiling os_callout.c\n        Compiling os_eventq.c\n        Compiling os_heap.c\n        Compiling os_mbuf.c\n        Compiling os_mempool.c\n        Compiling os_mutex.c\n        Compiling os_sanity.c\n        Compiling os_sched.c\n        Compiling os_sem.c\n        Compiling os_task.c\n        Compiling os_time.c\n        Compiling os_arch_arm.c\n        Assembling HAL_CM4.s\n        Assembling SVC_Table.s\n        Archiving libos.a\n        Compiling hal_cputime.c\n        Compiling hal_gpio.c\n        Compiling hal_uart.c\n        Archiving libnrf52xxx.a\n        Compiling cmsis_nvic.c\n        Compiling hal_bsp.c\n        Compiling libc_stubs.c\n        Compiling os_bsp.c\n        Compiling sbrk.c\n        Compiling system_nrf52.c\n        Assembling gcc_startup_nrf52.s\n        Archiving libnrf52pdk.a\n        Compiling main.c\n        Building project blinky\n        Linking blinky.elf\n        Successfully run!    In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the \"Software and documentation pack for Mac OS X\" from  https://www.segger.com/jlink-software.html . The command line version of the server is used in the steps below.     Open a new terminal and start a J-Link session.            [user@~/dev/nordic_blinky/project/blinky/bin]$ which JLinkGDBServer\n        /usr/local/bin/JLinkGDBServer\n        [user@~/dev/nordic_blinky/project/blinky/bin]$ JLinkGDBServer -if SWD\n        SEGGER J-Link GDB Server V5.02f Command Line Version\n\n        JLinkARM.dll V5.02f (DLL compiled Oct  2 2015 20:55:03)\n\n        -----GDB Server start settings-----\n        GDBInit file:                  none\n        GDB Server Listening port:     2331\n        SWO raw output listening port: 2332\n        Terminal I/O port:             2333\n        Accept remote connection:      yes\n        Generate logfile:              off\n        Verify download:               off\n        Init regs on start:            off\n        Silent mode:                   off\n        Single run mode:               off\n        Target connection timeout:     0 ms\n        ------J-Link related settings------\n        J-Link Host interface:         USB\n        J-Link script:                 none\n        J-Link settings file:          none\n        ------Target related settings------\n        Target device:                 unspecified\n        Target interface:              SWD\n        Target interface speed:        1000kHz\n        Target endian:                 little\n\n        Connecting to J-Link...\n        J-Link is connected.\n        Firmware: J-Link OB-SAM3U128-V2-NordicSemi compiled Aug 28 2015 19:26:24\n        Hardware: V1.00\n        S/N: 682371959\n        Checking target voltage...\n        Target voltage: 3.30 V\n        Listening on TCP/IP port 2331\n        Connecting to target...Connected to target\n        Waiting for GDB connection...Connected to 127.0.0.1   You need a configuration file for the GDB session to be opened correctly and the image (\"blinky.elf\") you built for this target downloaded to flash. A sample config script is given below. Alternatively, you could choose to type each command at the gdb prompt.            [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ cat jlink-gdb.cfg \n         echo ***Setting up the environment for debugging gdb.***\\n\n         set complaints 1\n         set prompt (gdb) \n         set endian little\n         echo \\n*** Set target charset ASCII\\n\n         set target-charset ASCII\n         echo \\n*** Connecting over port #2331 ***\\n\n         target remote localhost:2331\n         echo \\n*** Enable flash write and set device to nrf52 ***\\n\n         monitor flash download=1\n         monitor flash device=nRF52\n         echo \\n*** loading blinky.elf ***\\n\n         load ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf \n         symbol-file ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf\n         echo \\n*** Resetting target ***\\n\n         monitor reset\n         echo \\n*** Halting target ***\\n\n         monitor halt   Start the gdb session and monitor that it loads the image, resets the target, and halts for a command to continue.            [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ arm-none-eabi-gdb -x ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/jlink-gdb.cfg\n\n        GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs\n        Copyright (C) 2014 Free Software Foundation, Inc.\n        License GPLv3+: GNU GPL version 3 or later  http://gnu.org/licenses/gpl.html \n        This is free software: you are free to change and redistribute it.\n        There is NO WARRANTY, to the extent permitted by law.  Type  show copying \n        and  show warranty  for details.\n        This GDB was configured as  --host=x86_64-apple-darwin10 --target=arm-none-eabi .\n        Type  show configuration  for configuration details.\n        For bug reporting instructions, please see:\n         http://www.gnu.org/software/gdb/bugs/ .\n        Find the GDB manual and other documentation resources online at:\n         http://www.gnu.org/software/gdb/documentation/ .\n        For help, type  help .\n        Type  apropos word  to search for commands related to  word .\n\n        ***Setting up the environment for debugging gdb.***\n        The target is assumed to be little endian\n\n        *** Set target charset ASCII\n\n        *** Connecting over port #2331 ***\n        0x00003c34 in ?? ()\n\n        *** Enable flash write and set device to nrf52 ***\n        Flash download enabled\n        Selecting device: nRF52\n\n        *** loading blinky.elf ***\n        Loading section .text, size 0x5c84 lma 0x0\n        Loading section .ARM.extab, size 0x24 lma 0x5c84\n        Loading section .ARM.exidx, size 0xd8 lma 0x5ca8\n        Loading section .data, size 0x8f8 lma 0x5d80\n        Start address 0x48c, load size 26232\n        Transfer rate: 12808 KB/sec, 2914 bytes/write.\n        During symbol reading, unexpected overlap between:\n         (A) section `.text' from `~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf' [0x0, 0x5c84)\n         (B) section `*COM*' from `~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky.elf' [0x0, 0x0).\n        Will ignore section B.\n\n        *** Resetting target ***\n        Resetting target\n\n        *** Halting target ***   Type 'c' to continue. The LED on the board will start to blink. You will also see some activity in the terminal showing the open J-Link GDB server connection. The LED will continue to blink after you quit out of that connection.           (gdb) c\n        Continuing.", 
             "title": "Step by Step Instructions to build image"
         }, 
         {
-            "location": "/os/tutorials/project3/", 
+            "location": "/os/tutorials/arduino_zero/", 
+            "text": "", 
+            "title": "Blinky on Arduino Zero"
+        }, 
+        {
+            "location": "/os/tutorials/unit_test/", 
             "text": "How to Test an Egg", 
             "title": "Unit Testing a Package"
         }, 
         {
-            "location": "/os/tutorials/project3/#how-to-test-an-egg", 
+            "location": "/os/tutorials/unit_test/#how-to-test-an-egg", 
             "text": "", 
             "title": "How to Test an Egg"
         }, 
@@ -1657,153 +1667,798 @@
         }, 
         {
             "location": "/os/core_os/mbuf/mbuf/", 
-            "text": "Mbufs\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe OS feature here \n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\nThe functions available in mbuf are:\n\n\n\n\n_os_mbuf_copypkthdr\n\n\n_os_msys_find_pool\n\n\nos_mbuf_adj\n\n\nos_mbuf_append\n\n\nos_mbuf_concat\n\n\nos_mbuf_copydata\n\n\nos_mbuf_copyinto\n\n\nos_mbuf_dup\n\n\nos_mbuf_extend\n\n\nos_mbuf_free\n\n\nos_mbuf_free_chain\n\n\nos_mbuf_get\n\n\nos_mbuf_get_pkthdr\n\n\nos_mbuf_memcmp\n\n\nos_mbuf_off\n\n\nos_mbuf_pool_init\n\n\nos_mbuf_prepend\n\n\nos_mbuf_pullup\n\n\nos_mqueue_get\n\n\nos_mqueue_init\n\n\nos_mqueue_put\n\n\nos_msys_get\n\n\nos_msys_get_pkthdr\n\n\nos_msys_register\n\n\nos_msys_reset", 
+            "text": "Mbufs\n\n\nThe mbuf (short for memory buffer) is a common concept in networking stacks. The mbuf is used to hold packet data as it traverses the stack. The mbuf also generally stores header information or other networking stack information that is carried around with the packet. The mbuf and its associated library of functions were developed to make common networking stack operations (like stripping and adding protocol headers) efficient and as copy-free as possible.\n\n\nIn its simplest form, an mbuf is a memory block with some space reserved for internal information and a pointer which is used to \"chain\" memory blocks together in order to create a \"packet\". This is a very important aspect of the mbuf: the ability to chain mbufs together to create larger \"packets\" (chains of mbufs).\n\n\nWhy use mbufs?\n\n\nThe main reason is to conserve memory. Consider a networking protocol that generally sends small packets but occasionally sends large ones. The Bluetooth Low Energy (BLE) protocol is one such example. A flat buffer would need to be sized so that the maximum packet size could be contained by the buffer. With the mbuf, a number of mbufs can be chained together so that the occasional large packet can be handled while leaving more packet buffers available to the networking stack for smaller packets.\n\n\nPacket Header mbuf\n\n\nNot all mbufs are created equal. The first mbuf in a chain of mbufs is a special mbuf called a \"packet header mbuf\". The reason that this mbuf is special is that it contains the length of all the data contained by the chain of mbufs (the packet length, in other words). The packet header mbuf may also contain a user defined structure (called a \"user header\") so that networking protocol specific information can be conveyed to various layers of the networking stack. Any mbufs that are part of the packet (i.e. in the mbuf chain but not the first one) are \"normal\" (i.e. non-packet header) mbufs. A normal mbuf does not have any packet header or user packet header structures in them; they only contain the basic mbuf header (\nstruct os_mbuf\n). Figure 1 illustrates these two types of mbufs. Note that the numbers/text in parentheses denote the size of the structures/elements (in bytes) and that MBLEN is the memory block length of the memory pool used by the mbuf pool.\n\n\n\n\nNormal mbuf\n\n\nNow let's take a deeper dive into the mbuf structure. Figure 2 illustrates a normal mbuf and breaks out the various fields in the \nos_mbuf\n structure. \n\n\n\n\nThe \nom_data\n field is a pointer to where the data starts inside the data buffer. Typically, mbufs that are allocated from the mbuf pool (discussed later) have their om_data pointer set to the start of the data buffer but there are cases where this may not be desirable (added a protocol header to a packet, for example). \n\n\nThe \nom_flags\n field is a set of flags used internally by the mbuf library. Currently, no flags have been defined. \n\n\nThe \nom_pkthdr_len\n field is the total length of all packet headers in the mbuf. For normal mbufs this is set to 0 as there is no packet or user packet headers. For packet header mbufs, this would be set to the length of the packet header structure (16) plus the size of the user packet header (if any). Note that it is this field which differentiates packet header mbufs from normal mbufs (i.e. if \nom_pkthdr_len\n is zero, this is a normal mbuf; otherwise it is a packet header mbuf). \n\n\nThe \nom_len\n field contains the amount of user data in the data buffer. When initially allocated, this field is 0 as there is no user data in the mbuf. \n\n\nThe \nomp_pool\n field is a pointer to the pool from which this mbuf has been allocated. This is used internally by the mbuf library. \n\n\nThe \nomp_next\n field is a linked list element which is used to chain mbufs.\n\n\n\n\nFigure 2 also shows a normal mbuf with actual values in the \nos_mbuf\n structure. This mbuf starts at address 0x1000 and is 256 bytes in total length. In this example, the user has copied 33 bytes into the data buffer starting at address 0x1010 (this is where om_data points). Note that the packet header length in this mbuf is 0 as it is not a packet header mbuf.\n\n\n\n\nFigure 3 illustrates the packet header mbuf along with some chained mbufs (i.e a \"packet\"). In this example, the user header structure is defined to be 8 bytes. Note that in figure 3 we show a number of different mbufs with varying \nom_data\n pointers and lengths since we want to show various examples of valid mbufs. For all the mbufs (both packet header and normal ones) the total length of the memory block is 128 bytes.\n\n\n\n\nMbuf pools\n\n\nMbufs are collected into \"mbuf pools\" much like memory blocks. The mbuf pool itself contains a pointer to a memory pool. The memory blocks in this memory pool are the actual mbufs; both normal and packet header mbufs. Thus, the memory block (and corresponding memory pool) must be sized correctly. In other words, the memory blocks which make up the memory pool used by the mbuf pool must be at least: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_defined_header) + desired minimum data buffer length. For example, if the developer wants mbufs to contain at least 64 bytes of user data and they have a user header of 12 bytes, the size of the memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes, this is a fair amount of overhead. However, the flexibility provided by the mbuf library usually outweighs overhead concerns.\n\n\nCreate mbuf pool\n\n\nCreating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro \nMBUF_PKTHDR_OVERHEAD\n to denote the amount of packet header overhead per mbuf and \nMBUF_MEMBLOCK_OVERHEAD\n to denote the total amount of overhead required per memory block. The macro \nMBUF_BUF_SIZE\n is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro \nMBUF_MEMBLOCK_OVERHEAD\n.\n\n\n\n#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)\n#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD\n\n#define MBUF_NUM_MBUFS      (32)\n#define MBUF_PAYLOAD_SIZE   (64)\n#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)\n#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)\n#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)\n\nstruct os_mbuf_pool g_mbuf_pool; \nstruct os_mempool g_mbuf_mempool;\nos_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];\n\nvoid\ncreate_mbuf_pool(void)\n{\n    int rc;\n\n    rc = os_mempool_init(\ng_mbuf_mempool, MBUF_NUM_MBUFS, \n                          MBUF_MEMBLOCK_SIZE, \ng_mbuf_buffer[0], \nmbuf_pool\n);\n    assert(rc == 0);\n\n    rc = os_mbuf_pool_init(\ng_mbuf_pool, \ng_mbuf_mempool, MBUF_MEMBLOCK_SIZE, \n                           MBUF_NUM_MBUFS);\n    assert(rc == 0);\n}\n\n\n\n\n\nUsing mbufs\n\n\nThe following examples illustrate typical mbuf usage. There are two basic mbuf allocation API: \nos_mbuf_get()\n and \nos_mbuf_get_pkthdr()\n. The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use \nos_mbuf_get_pkthdr()\n and rarely, if ever, need to call \nos_mbuf_get()\n as the rest of the mbuf API (e.g. \nos_mbuf_append()\n, \nos_mbuf_copyinto()\n, etc.) typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs.\n\n\nIn \nexample1\n, the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the \"pullup\" api (another very common mbuf api).\n\n\n\nvoid\nmbuf_usage_example1(uint8_t *mydata, int mydata_length)\n{\n    int rc;\n    struct os_mbuf *om;\n\n    /* get a packet header mbuf */\n    om = os_mbuf_get_pkthdr(\ng_mbuf_pool, sizeof(struct user_hdr));\n    if (om) {\n        /* \n         * Copy user data into mbuf. NOTE: if mydata_length is greater than the\n         * mbuf payload size (64 bytes using above example), mbufs are allocated\n         * and chained together to accommodate the total packet length.\n         */\n        rc = os_mbuf_copyinto(om, 0, mydata, len);\n        if (rc) {\n            /* Error! Could not allocate enough mbufs for total packet length */\n            return -1;\n        }\n\n        /* Send packet to networking interface */\n        send_pkt(om);\n    }\n}\n\n\n\n\nIn \nexample2\n we show use of the pullup api as this illustrates some of the typical pitfalls developers encounter when using mbufs. The first pitfall is one of alignment/padding. Depending on the processor and/or compiler, the sizeof() a structure may vary. Thus, the size of \nmy_protocol_header\n may be different inside the packet data of the mbuf than the size of the structure on the stack or as a global variable, for instance. While some networking protcols may align protocol information on convenient processor boundaries many others try to conserve bytes \"on the air\" (i.e inside the packet data). Typical methods used to deal with this are \"packing\" the structure (i.e. force compiler to not pad) or creating protocol headers that do not require padding. \nexample2\n assumes that one of these methods was used when defining the \nmy_protocol_header\n structure.\n\n\nAnother common pitfall occurs around endianness. A network protocol may be little endian or big endian; it all depends on the protocol specification. Processors also have an endianness; this means that the developer has to be careful that the processor endianness and the protocol endianness are handled correctly. In \nexample2\n, some common networking functions are used: \nntohs()\n and \nntohl()\n. These are shorthand for \"network order to host order, short\" and \"network order to host order, long\". Basically, these functions convert data of a certain size (i.e. 16 bits, 32 bits, etc) to the endianness of the host. Network byte order is big-endian (most significant byte first), so these functions convert big-endian byte order to host order (thus, the implementation of these functions is host dependent). Note that the BLE networking stack \"on the air\" format is least signigicant byte first (i.e. little endian), so a \"bletoh\" function would have to take little endian format and convert to host format.\n\n\nA long story short: the developer must take care when copying structure data to/from mbufs and flat buffers!\n\n\nA final note: these examples assume the same mbuf struture and definitions used in the first example. \n\n\nvoid\nmbuf_usage_example2(struct mbuf *rxpkt)\n{\n    int rc;\n    uint8_t packet_data[16];\n    struct mbuf *om;\n    struct my_protocol_header *phdr;\n\n    /* Make sure that \nmy_protocol_header\n bytes are contiguous in mbuf */\n    om = os_mbuf_pullup(\ng_mbuf_pool, sizeof(struct my_protocol_header));\n    if (!om) {\n        /* Not able to pull up data into contiguous area */\n        return -1;\n    }\n\n    /* \n     * Get the protocol information from the packet. In this example we presume that we\n     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero\n     * length, and have had some time in flight.\n     */\n    phdr = OS_MBUF_DATA(om, struct my_protocol_header *);\n    type = ntohs(phdr-\nprot_type);\n    length = ntohs(phdr-\nprot_length);\n    time_in_flight = ntohl(phdr-\nprot_tif);\n\n    if ((type == MY_PROTOCOL_TYPE) \n (length \n 0) \n (time_in_flight \n 0)) {\n        rc = os_mbuf_copydata(rxpkt, sizeof(struct my_protocol_header), 16, packet_data);\n        if (!rc) {\n            /* Success! Perform operations on packet data */\n            \n... user code here ...\n\n        }\n    }\n\n    /* Free passed in packet (mbuf chain) since we dont need it anymore */\n    os_mbuf_free_chain(om);\n}\n\n\n\n\n\n\n\nMsys\n\n\nmsys stands for \"system mbufs\" and is set of API built on top of the mbuf code. The basic idea behind msys is the following. The developer can create different size mbuf pools and register them with msys. The application then allocates mbufs using the msys API (as opposed to the mbuf API). The msys code will choose the mbuf pool with the smallest mbufs that can accommodate the requested size. \n\n\nLet us walk through an example where the user registers three mbuf pools with msys: one with 32 byte mbufs, one with 256 and one with 2048. If the user requests an mbuf with 10 bytes, the 32-byte mbuf pool is used. If the request is for 33 bytes the 256 byte mbuf pool is used. If an mbuf data size is requested that is larger than any of the pools (say, 4000 bytes) the largest pool is used. While this behaviour may not be optimal in all cases that is the currently implemented behaviour. All this means is that the user is not guaranteed that a single mbuf can hold the requested data.\n\n\nThe msys code will not allocate an mbuf from a larger pool if the chosen mbuf pool is empty. Similarly, the msys code will not chain together a number of smaller mbufs to accommodate the requested size. While this behaviour may change in future implementations the current code will simply return NULL. Using the above example, say the user requests 250 bytes. The msys code chooses the appropriate pool (i.e. the 256 byte mbuf pool) and attempts to allocate an mbuf from that pool. If that pool is empty, NULL is returned even though the 32 and 2048 byte pools are not empty.\n\n\nNote that no added descriptions on how to use the msys API are presented here (other than in the API descriptions themselves) as the msys API is used in exactly the same manner as the mbuf API. The only difference is that mbuf pools are added to msys by calling \nos_msys_register().\n\n\n  \n\n\nData Structures\n\n\nstruct os_mbuf_pool {\n    uint16_t omp_databuf_len;\n    uint16_t omp_mbuf_count;\n    struct os_mempool *omp_pool;\n    STAILQ_ENTRY(os_mbuf_pool) omp_next;\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nomp_databuf_len\n\n\nThe length, in bytes, of the \"data buffer\" of the mbuf. The data buffer of the mbuf is everything except the os_mbuf structure (which is present in all types of mbufs)\n\n\n\n\n\n\nomp_mbuf_count\n\n\nTotal number of mbufs in the pool when allocated. This is NOT the number of free mbufs in the pool!\n\n\n\n\n\n\nomp_pool\n\n\nThe memory pool from which the mbufs are allocated\n\n\n\n\n\n\nomp_next\n\n\nThis is a linked list pointer which chains memory pools. It is used by the system memory pool library\n\n\n\n\n\n\n\n\n\n\nstruct os_mbuf_pkthdr {\n    uint16_t omp_len;\n    uint16_t omp_flags;\n    STAILQ_ENTRY(os_mbuf_pkthdr) omp_next;\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nomp_len\n\n\nLength, in bytes, of the \"packet\". This is the sum of the user data in all the mbufs chained to the packet header mbuf (including the packet header mbuf)\n\n\n\n\n\n\nomp_flags\n\n\nPacket header flags.\n\n\n\n\n\n\nomp_next\n\n\nLinked list pointer to chain \"packets\". This can be used to add mbuf chains to a queue or linked list and is there for convenience.\n\n\n\n\n\n\n\n\n\n\nstruct os_mbuf {\n    uint8_t *om_data;\n    uint8_t om_flags;\n    uint8_t om_pkthdr_len;\n    uint16_t om_len;\n    struct os_mbuf_pool *om_omp;\n    SLIST_ENTRY(os_mbuf) om_next;\n    uint8_t om_databuf[0];\n};\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom_data\n\n\nPointer to start of user data in mbuf data buffer\n\n\n\n\n\n\nom_flags\n\n\nmbuf flags field. Currently all flags unused.\n\n\n\n\n\n\nom_pkthdr_len\n\n\nThe total length of all packet headers in the mbuf (mbuf packet header plus user packet header), in bytes\n\n\n\n\n\n\nom_len\n\n\nThe length of the user data contained in this mbuf, in bytes\n\n\n\n\n\n\nom_omp\n\n\nMemory pool pointer. This is the mbuf pool from which this mbuf was allocated.\n\n\n\n\n\n\nom_next\n\n\nPointer to next mbuf in packet chain\n\n\n\n\n\n\nom_databuf\n\n\nmbuf data buffer (accessor to start of mbuf data buffer). Note that the mbuf data buffer refers to the start of either the user data in normal mbufs or the start of the os mbuf packet header for packet header mbufs\n\n\n\n\n\n\n\n\nList of Functions/Macros\n\n\nThe functions/macros available in mbuf are:\n\n\n\n\nOS_MBUF_PKTHDR\n\n\nOS_MBUF_PKTHDR_TO_MBUF\n\n\nOS_MBUF_PKTLEN\n\n\nOS_MBUF_DATA\n\n\nOS_MBUF_USRHDR\n\n\nOS_MBUF_USRHDR_LEN\n\n\nOS_MBUF_LEADINGSPACE\n\n\nOS_MBUF_TRAILINGSPACE\n\n\nos_mbuf_adj\n\n\nos_mbuf_append\n\n\nos_mbuf_concat\n\n\nos_mbuf_copydata\n\n\nos_mbuf_copyinto\n\n\nos_mbuf_dup\n\n\nos_mbuf_extend\n\n\nos_mbuf_free_chain\n\n\nos_mbuf_get\n\n\nos_mbuf_get_pkthdr\n\n\nos_mbuf_memcmp\n\n\nos_mbuf_off\n\n\nos_mbuf_pool_init\n\n\nos_mbuf_prepend\n\n\nos_mbuf_pullup\n\n\nos_msys_get\n\n\nos_msys_get_pkthdr\n\n\nos_msys_register\n\n\nos_msys_reset", 
             "title": "Overview"
         }, 
         {
             "location": "/os/core_os/mbuf/mbuf/#mbufs", 
-            "text": "Insert synopsis here", 
+            "text": "The mbuf (short for memory buffer) is a common concept in networking stacks. The mbuf is used to hold packet data as it traverses the stack. The mbuf also generally stores header information or other networking stack information that is carried around with the packet. The mbuf and its associated library of functions were developed to make common networking stack operations (like stripping and adding protocol headers) efficient and as copy-free as possible.  In its simplest form, an mbuf is a memory block with some space reserved for internal information and a pointer which is used to \"chain\" memory blocks together in order to create a \"packet\". This is a very important aspect of the mbuf: the ability to chain mbufs together to create larger \"packets\" (chains of mbufs).", 
             "title": "Mbufs"
         }, 
         {
-            "location": "/os/core_os/mbuf/mbuf/#description", 
-            "text": "Describe OS feature here", 
-            "title": "Description"
+            "location": "/os/core_os/mbuf/mbuf/#why-use-mbufs", 
+            "text": "The main reason is to conserve memory. Consider a networking protocol that generally sends small packets but occasionally sends large ones. The Bluetooth Low Energy (BLE) protocol is one such example. A flat buffer would need to be sized so that the maximum packet size could be contained by the buffer. With the mbuf, a number of mbufs can be chained together so that the occasional large packet can be handled while leaving more packet buffers available to the networking stack for smaller packets.", 
+            "title": "Why use mbufs?"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/mbuf/#packet-header-mbuf", 
+            "text": "Not all mbufs are created equal. The first mbuf in a chain of mbufs is a special mbuf called a \"packet header mbuf\". The reason that this mbuf is special is that it contains the length of all the data contained by the chain of mbufs (the packet length, in other words). The packet header mbuf may also contain a user defined structure (called a \"user header\") so that networking protocol specific information can be conveyed to various layers of the networking stack. Any mbufs that are part of the packet (i.e. in the mbuf chain but not the first one) are \"normal\" (i.e. non-packet header) mbufs. A normal mbuf does not have any packet header or user packet header structures in them; they only contain the basic mbuf header ( struct os_mbuf ). Figure 1 illustrates these two types of mbufs. Note that the numbers/text in parentheses denote the size of the structures/elements (in bytes) and that MBLEN is the memory block length of the memory pool used by the mbuf pool.", 
+            "title": "Packet Header mbuf"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/mbuf/#normal-mbuf", 
+            "text": "Now let's take a deeper dive into the mbuf structure. Figure 2 illustrates a normal mbuf and breaks out the various fields in the  os_mbuf  structure.    The  om_data  field is a pointer to where the data starts inside the data buffer. Typically, mbufs that are allocated from the mbuf pool (discussed later) have their om_data pointer set to the start of the data buffer but there are cases where this may not be desirable (added a protocol header to a packet, for example).   The  om_flags  field is a set of flags used internally by the mbuf library. Currently, no flags have been defined.   The  om_pkthdr_len  field is the total length of all packet headers in the mbuf. For normal mbufs this is set to 0 as there is no packet or user packet headers. For packet header mbufs, this would be set to the length of the packet header structure (16) plus the size of the user packet header (if any). Note that it is this field which differentiates packet header mbufs from normal mbufs (i.e. if  om_pkthdr_len  is zero, this is a normal mbuf; otherwise it is a packet header mbuf).   The  om_len  field contains the amount of user data in the data buffer. When initially allocated, this field is 0 as there is no user data in the mbuf.   The  omp_pool  field is a pointer to the pool from which this mbuf has been allocated. This is used internally by the mbuf library.   The  omp_next  field is a linked list element which is used to chain mbufs.   Figure 2 also shows a normal mbuf with actual values in the  os_mbuf  structure. This mbuf starts at address 0x1000 and is 256 bytes in total length. In this example, the user has copied 33 bytes into the data buffer starting at address 0x1010 (this is where om_data points). Note that the packet header length in this mbuf is 0 as it is not a packet header mbuf.   Figure 3 illustrates the packet header mbuf along with some chained mbufs (i.e a \"packet\"). In this example, the user header structure is defined to be 8 bytes. Note that in figure 3 we show a number of different mbufs with varying  om_data  pointers and lengths since we want to show various examples of valid mbufs. For all the mbufs (both packet header and normal ones) the total length of the memory block is 128 bytes.", 
+            "title": "Normal mbuf"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/mbuf/#mbuf-pools", 
+            "text": "Mbufs are collected into \"mbuf pools\" much like memory blocks. The mbuf pool itself contains a pointer to a memory pool. The memory blocks in this memory pool are the actual mbufs; both normal and packet header mbufs. Thus, the memory block (and corresponding memory pool) must be sized correctly. In other words, the memory blocks which make up the memory pool used by the mbuf pool must be at least: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_defined_header) + desired minimum data buffer length. For example, if the developer wants mbufs to contain at least 64 bytes of user data and they have a user header of 12 bytes, the size of the memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes, this is a fair amount of overhead. However, the flexibility provided by the mbuf library usually outweighs overhead concerns.", 
+            "title": "Mbuf pools"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/mbuf/#create-mbuf-pool", 
+            "text": "Creating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro  MBUF_PKTHDR_OVERHEAD  to denote the amount of packet header overhead per mbuf and  MBUF_MEMBLOCK_OVERHEAD  to denote the total amount of overhead required per memory block. The macro  MBUF_BUF_SIZE  is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro  MBUF_MEMBLOCK_OVERHEAD .  \n#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)\n#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD\n\n#define MBUF_NUM_MBUFS      (32)\n#define MBUF_PAYLOAD_SIZE   (64)\n#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)\n#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)\n#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)\n\nstruct os_mbuf_pool g_mbuf_pool; \nstruct os_mempool g_mbuf_mempool;\nos_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];\n\nvoid\ncreate_mbuf_pool(void)\n{\n    int rc;\n\n    rc = os_mempool_init( g_mbuf_mempool, MBUF_NUM_MBUFS, \n                          MBUF_MEMBLOCK_SIZE,  g_mbuf_buffer[0],  mbuf_pool );\n    assert(rc == 0);\n\n    rc = os_mbuf_pool_init( g_mbuf_pool,  g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, \n                           MBUF_NUM_MBUFS);\n    assert(rc == 0);\n}", 
+            "title": "Create mbuf pool"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/mbuf/#using-mbufs", 
+            "text": "The following examples illustrate typical mbuf usage. There are two basic mbuf allocation API:  os_mbuf_get()  and  os_mbuf_get_pkthdr() . The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use  os_mbuf_get_pkthdr()  and rarely, if ever, need to call  os_mbuf_get()  as the rest of the mbuf API (e.g.  os_mbuf_append() ,  os_mbuf_copyinto() , etc.) typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs.  In  example1 , the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the \"pullup\" api (another very common mbuf api).  \nvoid\nmbuf_usage_example1(uint8_t *mydata, int mydata_length)\n{\n    int rc;\n    struct os_mbuf *om;\n\n    /* get a packet header mbuf */\n    om = os_mbuf_get_pkthdr( g_mbuf_pool, sizeof(struct user_hdr));\n    if (om) {\n        /* \n         * Copy user data into mbuf. NOTE: if mydata_length is greater than the\n         * mbuf payload size (64 bytes using above example), mbufs are allocated\n         * and chained together to accommodate the total packet length.\n         */\n        rc = os_mbuf_copyinto(om, 0, mydata, len);\n        if (rc) {\n            /* Error! Could not allocate enough mbufs for total packet length */\n            return -1;\n        }\n\n        /* Send packet to networking interface */\n        send_pkt(om);\n    }\n}  In  example2  we show use of the pullup api as this illustrates some of the typical pitfalls developers encounter when using mbufs. The first pitfall is one of alignment/padding. Depending on the processor and/or compiler, the sizeof() a structure may vary. Thus, the size of  my_protocol_header  may be different inside the packet data of the mbuf than the size of the structure on the stack or as a global variable, for instance. While some networking protcols may align protocol information on convenient processor boundaries many others try to conserve bytes \"on the air\" (i.e inside the packet data). Typical methods used to deal with this are \"packing\" the structure (i.e. force compiler to not pad) or creating protocol headers that do not require padding.  example2  assumes that one of these methods was used when defining the  my_protocol_header  structure.  Another common pitfall occurs around endianness. A network protocol may be little endian or big endian; it all depends on the protocol specification. Processors also have an endianness; this means that the developer has to be careful that the processor endianness and the protocol endianness are handled correctly. In  example2 , some common networking functions are used:  ntohs()  and  ntohl() . These are shorthand for \"network order to host order, short\" and \"network order to host order, long\". Basically, these functions convert data of a certain size (i.e. 16 bits, 32 bits, etc) to the endianness of the host. Network byte order is big-endian (most significant byte first), so these functions convert big-endian byte order to host order (thus, the implementation of these functions is host dependent). Note that the BLE networking stack \"on the air\" format is least signigicant byte first (i.e. little endian), so a \"bletoh\" function would have to take little endian format and convert to host format.  A long story short: the developer must take care when copying structure data to/from mbufs and flat buffers!  A final note: these examples assume the same mbuf struture and definitions used in the first example.   void\nmbuf_usage_example2(struct mbuf *rxpkt)\n{\n    int rc;\n    uint8_t packet_data[16];\n    struct mbuf *om;\n    struct my_protocol_header *phdr;\n\n    /* Make sure that  my_protocol_header  bytes are contiguous in mbuf */\n    om = os_mbuf_pullup( g_mbuf_pool, sizeof(struct my_protocol_header));\n    if (!om) {\n        /* Not able to pull up data into contiguous area */\n        return -1;\n    }\n\n    /* \n     * Get the protocol information from the packet. In this example we presume that we\n     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero\n     * length, and have had some time in flight.\n     */\n    phdr = OS_MBUF_DATA(om, struct my_protocol_header *);\n    type = ntohs(phdr- prot_type);\n    length = ntohs(phdr- prot_length);\n    time_in_flight = ntohl(phdr- prot_tif);\n\n    if ((type == MY_PROTOCOL_TYPE)   (length   0)   (time_in_flight   0)) {\n        rc = os_mbuf_copydata(rxpkt, sizeof(struct my_protocol_header), 16, packet_data);\n        if (!rc) {\n            /* Success! Perform operations on packet data */\n             ... user code here ... \n        }\n    }\n\n    /* Free passed in packet (mbuf chain) since we dont need it anymore */\n    os_mbuf_free_chain(om);\n}", 
+            "title": "Using mbufs"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/mbuf/#msys", 
+            "text": "msys stands for \"system mbufs\" and is set of API built on top of the mbuf code. The basic idea behind msys is the following. The developer can create different size mbuf pools and register them with msys. The application then allocates mbufs using the msys API (as opposed to the mbuf API). The msys code will choose the mbuf pool with the smallest mbufs that can accommodate the requested size.   Let us walk through an example where the user registers three mbuf pools with msys: one with 32 byte mbufs, one with 256 and one with 2048. If the user requests an mbuf with 10 bytes, the 32-byte mbuf pool is used. If the request is for 33 bytes the 256 byte mbuf pool is used. If an mbuf data size is requested that is larger than any of the pools (say, 4000 bytes) the largest pool is used. While this behaviour may not be optimal in all cases that is the currently implemented behaviour. All this means is that the user is not guaranteed that a single mbuf can hold the requested data.  The msys code will not allocate an mbuf from a larger pool if the chosen mbuf pool is empty. Similarly, the msys code will not chain together a number of smaller mbufs to accommodate the requested size. While this behaviour may change in future implementations the current code will simply return NULL. Using the above example, say the user requests 250 bytes. The msys code chooses the appropriate pool (i.e. the 256 byte mbuf pool) and attempts to allocate an mbuf from that pool. If that pool is empty, NULL is returned even though the 32 and 2048 byte pools are not empty.  Note that no added descriptions on how to use the msys API are presented here (other than in the API descriptions themselves) as the msys API is used in exactly the same manner as the mbuf API. The only difference is that mbuf pools are added to msys by calling  os_msys_register().", 
+            "title": "Msys"
         }, 
         {
             "location": "/os/core_os/mbuf/mbuf/#data-structures", 
-            "text": "Replace this with the list of data structures used, why, any neat features", 
-            "title": "Data structures"
+            "text": "struct os_mbuf_pool {\n    uint16_t omp_databuf_len;\n    uint16_t omp_mbuf_count;\n    struct os_mempool *omp_pool;\n    STAILQ_ENTRY(os_mbuf_pool) omp_next;\n};     Element  Description      omp_databuf_len  The length, in bytes, of the \"data buffer\" of the mbuf. The data buffer of the mbuf is everything except the os_mbuf structure (which is present in all types of mbufs)    omp_mbuf_count  Total number of mbufs in the pool when allocated. This is NOT the number of free mbufs in the pool!    omp_pool  The memory pool from which the mbufs are allocated    omp_next  This is a linked list pointer which chains memory pools. It is used by the system memory pool library      struct os_mbuf_pkthdr {\n    uint16_t omp_len;\n    uint16_t omp_flags;\n    STAILQ_ENTRY(os_mbuf_pkthdr) omp_next;\n};     Element  Description      omp_len  Length, in bytes, of the \"packet\". This is the sum of the user data in all the mbufs chained to the packet header mbuf (including the packet header mbuf)    omp_flags  Packet header flags.    omp_next  Linked list pointer to chain \"packets\". This can be used to add mbuf chains to a queue or linked list and is there for convenience.      struct os_mbuf {\n    uint8_t *om_data;\n    uint8_t om_flags;\n    uint8_t om_pkthdr_len;\n    uint16_t om_len;\n    struct os_mbuf_pool *om_omp;\n    SLIST_ENTRY(os_mbuf) om_next;\n    uint8_t om_databuf[0];\n};     Element  Description      om_data  Pointer to start of user data in mbuf data buffer    om_flags  mbuf flags field. Currently all flags unused.    om_pkthdr_len  The total length of all packet headers in the mbuf (mbuf packet header plus user packet header), in bytes    om_len  The length of the user data contained in this mbuf, in bytes    om_omp  Memory pool pointer. This is the mbuf pool from which this mbuf was allocated.    om_next  Pointer to next mbuf in packet chain    om_databuf  mbuf data buffer (accessor to start of mbuf data buffer). Note that the mbuf data buffer refers to the start of either the user data in normal mbufs or the start of the os mbuf packet header for packet header mbufs", 
+            "title": "Data Structures"
         }, 
         {
-            "location": "/os/core_os/mbuf/mbuf/#list-of-functions", 
-            "text": "The functions available in mbuf are:   _os_mbuf_copypkthdr  _os_msys_find_pool  os_mbuf_adj  os_mbuf_append  os_mbuf_concat  os_mbuf_copydata  os_mbuf_copyinto  os_mbuf_dup  os_mbuf_extend  os_mbuf_free  os_mbuf_free_chain  os_mbuf_get  os_mbuf_get_pkthdr  os_mbuf_memcmp  os_mbuf_off  os_mbuf_pool_init  os_mbuf_prepend  os_mbuf_pullup  os_mqueue_get  os_mqueue_init  os_mqueue_put  os_msys_get  os_msys_get_pkthdr  os_msys_register  os_msys_reset", 
-            "title": "List of Functions"
+            "location": "/os/core_os/mbuf/mbuf/#list-of-functionsmacros", 
+            "text": "The functions/macros available in mbuf are:   OS_MBUF_PKTHDR  OS_MBUF_PKTHDR_TO_MBUF  OS_MBUF_PKTLEN  OS_MBUF_DATA  OS_MBUF_USRHDR  OS_MBUF_USRHDR_LEN  OS_MBUF_LEADINGSPACE  OS_MBUF_TRAILINGSPACE  os_mbuf_adj  os_mbuf_append  os_mbuf_concat  os_mbuf_copydata  os_mbuf_copyinto  os_mbuf_dup  os_mbuf_extend  os_mbuf_free_chain  os_mbuf_get  os_mbuf_get_pkthdr  os_mbuf_memcmp  os_mbuf_off  os_mbuf_pool_init  os_mbuf_prepend  os_mbuf_pullup  os_msys_get  os_msys_get_pkthdr  os_msys_register  os_msys_reset", 
+            "title": "List of Functions/Macros"
         }, 
         {
-            "location": "/os/core_os/mbuf/_os_mbuf_copypkthdr/", 
-            "text": "", 
-            "title": "_os_mbuf_copypkthdr"
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR/", 
+            "text": "OS_MBUF_PKTHDR\n\n\nOS_MBUF_PKTHDR(__om)\n\n\n\n\nMacro used to get a pointer to the os mbuf packet header of an mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *)\n\n\n\n\n\n\n\n\n\n\nExample\n\n\nint\ndoes_packet_have_data(struct os_mbuf *om)\n{\n    struct os_mbuf_pkthdr *hdr;\n\n    hdr = OS_MBUF_PKTHDR(om);\n    if (hdr-\nomp_len != 0) {\n        /* Packet has data in it */\n        return TRUE\n    } else {\n        /* Packet has no data */\n        return FALSE;\n    }\n}", 
+            "title": "OS_MBUF_PKTHDR"
         }, 
         {
-            "location": "/os/core_os/mbuf/_os_msys_find_pool/", 
-            "text": "", 
-            "title": "_os_msys_find_pool.md"
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR/#os_mbuf_pkthdr", 
+            "text": "OS_MBUF_PKTHDR(__om)  Macro used to get a pointer to the os mbuf packet header of an mbuf.", 
+            "title": "OS_MBUF_PKTHDR"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR/#example", 
+            "text": "int\ndoes_packet_have_data(struct os_mbuf *om)\n{\n    struct os_mbuf_pkthdr *hdr;\n\n    hdr = OS_MBUF_PKTHDR(om);\n    if (hdr- omp_len != 0) {\n        /* Packet has data in it */\n        return TRUE\n    } else {\n        /* Packet has no data */\n        return FALSE;\n    }\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR_TO_MBUF/", 
+            "text": "OS_MBUF_PKTHDR_TO_MBUF\n\n\nOS_MBUF_PKTHDR_TO_MBUF(__hdr)\n\n\n\n\nMacro used to get a pointer to the mbuf given a pointer to the os mbuf packet header\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__hdr\n\n\nPointer to os mbuf packet header (struct os_mbuf_pkthdr *)\n\n\n\n\n\n\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n    struct os_mbuf_pkthdr *hdr;\n\n    om = OS_MBUF_PKTHDR_TO_MBUF(hdr);\n    os_mbuf_free_chain(om);", 
+            "title": "OS_MBUF_PKTHDR_TO_MBUF"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR_TO_MBUF/#os_mbuf_pkthdr_to_mbuf", 
+            "text": "OS_MBUF_PKTHDR_TO_MBUF(__hdr)  Macro used to get a pointer to the mbuf given a pointer to the os mbuf packet header", 
+            "title": "OS_MBUF_PKTHDR_TO_MBUF"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR_TO_MBUF/#arguments", 
+            "text": "Arguments  Description      __hdr  Pointer to os mbuf packet header (struct os_mbuf_pkthdr *)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTHDR_TO_MBUF/#example", 
+            "text": "struct os_mbuf *om;\n    struct os_mbuf_pkthdr *hdr;\n\n    om = OS_MBUF_PKTHDR_TO_MBUF(hdr);\n    os_mbuf_free_chain(om);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTLEN/", 
+            "text": "OS_MBUF_PKTLEN\n\n\nOS_MBUF_PKTLEN(__om)\n\n\n\n\nMacro used to get the length of an entire mbuf chain.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *)\n\n\n\n\n\n\n\n\n\n\nExample\n\n\n    uint16_t pktlen;\n    struct os_mbuf *om;\n\n    /* Check if there is any data in the mbuf chain */\n    pktlen = OS_MBUF_PKTLEN(om);\n    if (pktlen != 0) {\n        /* mbuf chain has data */\n    }", 
+            "title": "OS_MBUF_PKTLEN"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTLEN/#os_mbuf_pktlen", 
+            "text": "OS_MBUF_PKTLEN(__om)  Macro used to get the length of an entire mbuf chain.", 
+            "title": "OS_MBUF_PKTLEN"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTLEN/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_PKTLEN/#example", 
+            "text": "uint16_t pktlen;\n    struct os_mbuf *om;\n\n    /* Check if there is any data in the mbuf chain */\n    pktlen = OS_MBUF_PKTLEN(om);\n    if (pktlen != 0) {\n        /* mbuf chain has data */\n    }", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_DATA/", 
+            "text": "OS_MBUF_DATA\n\n\nOS_MBUF_DATA(__om, __type)\n\n\n\n\nMacro used to cast the data pointer of an mbuf to a given type.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *)\n\n\n\n\n\n\n__type\n\n\nType to cast\n\n\n\n\n\n\n\n\n\n\nExample\n\n\n    struct os_mbuf *om\n    uint8_t *rxbuf;\n\n    rxbuf = OS_MBUF_DATA(om, uint8_t *);", 
+            "title": "OS_MBUF_DATA"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_DATA/#os_mbuf_data", 
+            "text": "OS_MBUF_DATA(__om, __type)  Macro used to cast the data pointer of an mbuf to a given type.", 
+            "title": "OS_MBUF_DATA"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_DATA/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *)    __type  Type to cast", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_DATA/#example", 
+            "text": "struct os_mbuf *om\n    uint8_t *rxbuf;\n\n    rxbuf = OS_MBUF_DATA(om, uint8_t *);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR/", 
+            "text": "OS_MBUF_USRHDR\n\n\nOS_MBUF_USRHDR(__om)\n\n\n\n\nMacro used to get a pointer to the user packet header of an mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf)\n\n\n\n\n\n\n\n\n\n\nExample\n\n\n    struct os_mbuf *om\n    struct user_header *hdr;\n\n    hdr = OS_MBUF_USRHDR(om);", 
+            "title": "OS_MBUF_USRHDR"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR/#os_mbuf_usrhdr", 
+            "text": "OS_MBUF_USRHDR(__om)  Macro used to get a pointer to the user packet header of an mbuf.", 
+            "title": "OS_MBUF_USRHDR"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR/#example", 
+            "text": "struct os_mbuf *om\n    struct user_header *hdr;\n\n    hdr = OS_MBUF_USRHDR(om);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR_LEN/", 
+            "text": "OS_MBUF_USRHDR_LEN\n\n\nOS_MBUF_USRHDR_LEN(__om)\n\n\n\n\nMacro used to retrieve the length of the user packet header in an mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf)\n\n\n\n\n\n\n\n\n\n\nExample\n\n\n    uint16_t user_length;\n    struct os_mbuf *om\n    struct user_header *hdr;\n\n    user_length  = OS_MBUF_USRHDR_LEN(om);", 
+            "title": "OS_MBUF_USRHDR_LEN"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR_LEN/#os_mbuf_usrhdr_len", 
+            "text": "OS_MBUF_USRHDR_LEN(__om)  Macro used to retrieve the length of the user packet header in an mbuf.", 
+            "title": "OS_MBUF_USRHDR_LEN"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR_LEN/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_USRHDR_LEN/#example", 
+            "text": "uint16_t user_length;\n    struct os_mbuf *om\n    struct user_header *hdr;\n\n    user_length  = OS_MBUF_USRHDR_LEN(om);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_LEADINGSPACE/", 
+            "text": "OS_MBUF_LEADINGSPACE\n\n\nOS_MBUF_LEADINGSPACE(__om)\n\n\n\n\nMacro used to get the amount of leading space in an mbuf (in bytes).\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *)\n\n\n\n\n\n\n\n\n\n\nNotes\n\n\nThis macro works on both normal mbufs and packet header mbufs. The amount of leading space is the number of bytes between the current om_data pointer of the mbuf and the start of the mbuf user data buffer.\n\n\n\n\nExample\n\n\n    uint8_t *dptr;\n    uint16_t space;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;\n\n    /* Copy data from \nmy_data\n into the start of an mbuf but only if there is enough room */\n    space = OS_MBUF_LEADINGSPACE(om);\n    if (space \n= sizeof(struct my_data_struct)) {\n        dptr = om-\nom_data - sizeof(struct my_data_struct);\n        memcpy(dptr, \nmy_data, sizeof(struct my_data_struct));\n    }", 
+            "title": "OS_MBUF_LEADINGSPACE"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_LEADINGSPACE/#os_mbuf_leadingspace", 
+            "text": "OS_MBUF_LEADINGSPACE(__om)  Macro used to get the amount of leading space in an mbuf (in bytes).", 
+            "title": "OS_MBUF_LEADINGSPACE"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_LEADINGSPACE/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_LEADINGSPACE/#notes", 
+            "text": "This macro works on both normal mbufs and packet header mbufs. The amount of leading space is the number of bytes between the current om_data pointer of the mbuf and the start of the mbuf user data buffer.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_LEADINGSPACE/#example", 
+            "text": "uint8_t *dptr;\n    uint16_t space;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;\n\n    /* Copy data from  my_data  into the start of an mbuf but only if there is enough room */\n    space = OS_MBUF_LEADINGSPACE(om);\n    if (space  = sizeof(struct my_data_struct)) {\n        dptr = om- om_data - sizeof(struct my_data_struct);\n        memcpy(dptr,  my_data, sizeof(struct my_data_struct));\n    }", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_TRAILINGSPACE/", 
+            "text": "OS_MBUF_TRAILINGSPACE\n\n\nOS_MBUF_TRAILINGSPACE(__om)\n\n\n\n\nMacro used to get the amount of trailing space in an mbuf (in bytes).\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\n__om\n\n\nPointer to mbuf (struct os_mbuf *)\n\n\n\n\n\n\n\n\n\n\nNotes\n\n\nThis macro works on both normal mbufs and packet header mbufs. The amount of trailing space is the number of bytes between the current om_data pointer of the mbuf and the end of the mbuf.\n\n\n\n\nExample\n\n\n    uint16_t space;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;\n\n    /* Copy data from \nmy_data\n to the end of an mbuf but only if there is enough room */\n    space = OS_MBUF_TRAILINGSPACE(om);\n    if (space \n= sizeof(struct my_data_struct)) {\n        memcpy(om-\nom_data, \nmy_data, sizeof(struct my_data_struct));\n    }", 
+            "title": "OS_MBUF_TRAILINGSPACE"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_TRAILINGSPACE/#os_mbuf_trailingspace", 
+            "text": "OS_MBUF_TRAILINGSPACE(__om)  Macro used to get the amount of trailing space in an mbuf (in bytes).", 
+            "title": "OS_MBUF_TRAILINGSPACE"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_TRAILINGSPACE/#arguments", 
+            "text": "Arguments  Description      __om  Pointer to mbuf (struct os_mbuf *)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_TRAILINGSPACE/#notes", 
+            "text": "This macro works on both normal mbufs and packet header mbufs. The amount of trailing space is the number of bytes between the current om_data pointer of the mbuf and the end of the mbuf.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/OS_MBUF_TRAILINGSPACE/#example", 
+            "text": "uint16_t space;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;\n\n    /* Copy data from  my_data  to the end of an mbuf but only if there is enough room */\n    space = OS_MBUF_TRAILINGSPACE(om);\n    if (space  = sizeof(struct my_data_struct)) {\n        memcpy(om- om_data,  my_data, sizeof(struct my_data_struct));\n    }", 
+            "title": "Example"
         }, 
         {
             "location": "/os/core_os/mbuf/os_mbuf_adj/", 
-            "text": "", 
+            "text": "os_mbuf_adj\n\n\nvoid os_mbuf_adj(struct os_mbuf *mp, int req_len);\n\n\n\n\nTrims \nreq_len\n bytes from either the head (if positive) or tail (if negative) of an mbuf chain. Adjusts the packet length of the mbuf chain if \nmp\n points to a packet header mbuf. When trimming from the head, no mbufs are freed. When trimming from the tail, any mbufs of zero length left at the end of the chain are freed.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nmp\n\n\nPointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf\n\n\n\n\n\n\nreq_len\n\n\nNumber of bytes to trim from head or tail of mbuf\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nNone\n\n\nNotes\n\n\nExample\n\n\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct my_pkt_header hdr;\n\n    /* Get mbuf chain length */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    /* Strip header from mbuf chain */\n    os_mbuf_adj(om, sizeof(struct my_pkt_header));\n    pktlen -= sizeof(struct my_pkt_header);\n\n    /* New packet length should be old packet length minus stripped header */\n    assert(pktlen == OS_MBUF_PKTLEN(om));", 
             "title": "os_mbuf_adj"
         }, 
         {
-            "location": "/os/core_os/mbuf/os_mbuf_append/", 
+            "location": "/os/core_os/mbuf/os_mbuf_adj/#os_mbuf_adj", 
+            "text": "void os_mbuf_adj(struct os_mbuf *mp, int req_len);  Trims  req_len  bytes from either the head (if positive) or tail (if negative) of an mbuf chain. Adjusts the packet length of the mbuf chain if  mp  points to a packet header mbuf. When trimming from the head, no mbufs are freed. When trimming from the tail, any mbufs of zero length left at the end of the chain are freed.", 
+            "title": " os_mbuf_adj"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_adj/#arguments", 
+            "text": "Arguments  Description      mp  Pointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf    req_len  Number of bytes to trim from head or tail of mbuf", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_adj/#returned-values", 
+            "text": "None", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_adj/#notes", 
             "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_adj/#example", 
+            "text": "uint16_t pktlen;\n    struct os_mbuf *om;\n    struct my_pkt_header hdr;\n\n    /* Get mbuf chain length */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    /* Strip header from mbuf chain */\n    os_mbuf_adj(om, sizeof(struct my_pkt_header));\n    pktlen -= sizeof(struct my_pkt_header);\n\n    /* New packet length should be old packet length minus stripped header */\n    assert(pktlen == OS_MBUF_PKTLEN(om));", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_append/", 
+            "text": "os_mbuf_append\n\n\nint os_mbuf_append(struct os_mbuf *om, const void *data,  uint16_t len)\n\n\n\n\nAppends a data buffer of length \nlen\n to the end of an mbuf chain, adjusting packet length if \nom\n is a packet header mbuf. If not enough trailing space exists at the end of the mbuf chain, mbufs are allocated to hold the data.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf\n\n\n\n\n\n\ndata\n\n\nPointer to data buffer to copy from\n\n\n\n\n\n\nlen\n\n\nNumber of bytes to copy from data buffer to the end of the mbuf\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\n0: success\n\nOS_ENOMEM: Could not allocate enough mbufs to hold data.\n\nOS_EINVAL: \nom\n was NULL on entry.\n\n\n\n\nNotes\n\n\nIf not enough mbufs were available the packet header length of the mbuf may get adjusted even though the entire data buffer was not appended to the end of the mbuf.\n\n\n\n\nIf any mbufs are allocated, they are allocated from the same pool as \nom\n\n\n\n\nExample\n\n\n    int rc;\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;\n\n    /* Get initial packet length */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    /* Append \nmy_data\n to end of mbuf, freeing mbuf if unable to append all the data */\n    rc = os_mbuf_append(om, \nmy_data, sizeof(struct my_pkt_header));\n    if (rc) {\n        os_mbuf_free_chain(om);\n    }\n    pktlen += sizeof(struct my_pkt_header);\n\n    /* New packet length should be initial packet length plus length of \nmy_data\n */\n    assert(pktlen == OS_MBUF_PKTLEN(om));", 
             "title": "os_mbuf_append"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_append/#os_mbuf_append", 
+            "text": "int os_mbuf_append(struct os_mbuf *om, const void *data,  uint16_t len)  Appends a data buffer of length  len  to the end of an mbuf chain, adjusting packet length if  om  is a packet header mbuf. If not enough trailing space exists at the end of the mbuf chain, mbufs are allocated to hold the data.", 
+            "title": " os_mbuf_append"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_append/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf    data  Pointer to data buffer to copy from    len  Number of bytes to copy from data buffer to the end of the mbuf", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_append/#returned-values", 
+            "text": "0: success \nOS_ENOMEM: Could not allocate enough mbufs to hold data. \nOS_EINVAL:  om  was NULL on entry.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_append/#notes", 
+            "text": "If not enough mbufs were available the packet header length of the mbuf may get adjusted even though the entire data buffer was not appended to the end of the mbuf.   If any mbufs are allocated, they are allocated from the same pool as  om", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_append/#example", 
+            "text": "int rc;\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;\n\n    /* Get initial packet length */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    /* Append  my_data  to end of mbuf, freeing mbuf if unable to append all the data */\n    rc = os_mbuf_append(om,  my_data, sizeof(struct my_pkt_header));\n    if (rc) {\n        os_mbuf_free_chain(om);\n    }\n    pktlen += sizeof(struct my_pkt_header);\n\n    /* New packet length should be initial packet length plus length of  my_data  */\n    assert(pktlen == OS_MBUF_PKTLEN(om));", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_concat/", 
-            "text": "", 
+            "text": "os_mbuf_concat\n\n\nvoid os_mbuf_concat(struct os_mbuf *first, struct os_mbuf *second)\n\n\n\n\nAttaches a second mbuf chain onto the end of the first. If the first chain contains a packet header, the header's length is updated.  If the second chain has a packet header, its header is cleared.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfirst\n\n\nPointer to first mbuf chain\n\n\n\n\n\n\nsecond\n\n\nPointer to second mbuf chain\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nNone\n\n\n\n\nNotes\n\n\nNo data is copied or moved nor are any mbufs freed.\n\n\n\n\nExample\n\n\n    uint16_t pktlen1;\n    uint16_t pktlen2;\n    struct os_mbuf *pkt1;\n    struct os_mbuf *pkt2;\n\n    /* Get initial packet lengths */\n    pktlen1 = OS_MBUF_PKTLEN(pkt1);\n    pktlen2 = OS_MBUF_PKTLEN(pkt2);\n\n    /*  Add pkt2 to end of pkt1 */\n    os_mbuf_concat(pkt1, pkt2);\n\n    /* New packet length should be sum of pkt1 and pkt2 */\n    assert((pktlen1 + pktlen2) == OS_MBUF_PKTLEN(pkt1));", 
             "title": "os_mbuf_concat"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_concat/#os_mbuf_concat", 
+            "text": "void os_mbuf_concat(struct os_mbuf *first, struct os_mbuf *second)  Attaches a second mbuf chain onto the end of the first. If the first chain contains a packet header, the header's length is updated.  If the second chain has a packet header, its header is cleared.", 
+            "title": " os_mbuf_concat"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_concat/#arguments", 
+            "text": "Arguments  Description      first  Pointer to first mbuf chain    second  Pointer to second mbuf chain", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_concat/#returned-values", 
+            "text": "None", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_concat/#notes", 
+            "text": "No data is copied or moved nor are any mbufs freed.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_concat/#example", 
+            "text": "uint16_t pktlen1;\n    uint16_t pktlen2;\n    struct os_mbuf *pkt1;\n    struct os_mbuf *pkt2;\n\n    /* Get initial packet lengths */\n    pktlen1 = OS_MBUF_PKTLEN(pkt1);\n    pktlen2 = OS_MBUF_PKTLEN(pkt2);\n\n    /*  Add pkt2 to end of pkt1 */\n    os_mbuf_concat(pkt1, pkt2);\n\n    /* New packet length should be sum of pkt1 and pkt2 */\n    assert((pktlen1 + pktlen2) == OS_MBUF_PKTLEN(pkt1));", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_copydata/", 
-            "text": "", 
+            "text": "os_mbuf_copydata\n\n\nint os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst)\n\n\n\n\nCopy data from an mbuf chain starting \noff\n bytes from the beginning, continuing for \nlen\n bytes, into the indicated buffer.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nm\n\n\nPointer to mbuf chain\n\n\n\n\n\n\noff\n\n\nStart copy offset, in bytes, from beginning of mbuf chain\n\n\n\n\n\n\nlen\n\n\nNumber of bytes to copy\n\n\n\n\n\n\ndst\n\n\nData buffer to copy into\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\n0: success.\n\n-1: The mbuf does not contain enough data\n\n\n\n\nExample\n\n\n    int rc;\n    struct os_mbuf *om;\n    struct my_hdr_1 my_hdr1;    \n    struct my_hdr_2 my_hdr2;    \n\n    /* Header 1 and Header 2 are contiguous in packet at start. Retrieve them from the mbuf chain */    \n    rc = os_mbuf_copydata(om, 0, sizeof(struct my_hdr_1), \nmy_hdr1);\n    if (rc) {\n        /* error! */\n        return -1;\n    }\n\n    rc = os_mbuf_copydata(om, sizeof(struct my_hdr_1), sizeof(struct my_hdr_2), \nmy_hdr2);\n    if (rc) {\n        /* error! */\n        return -1;\n    }", 
             "title": "os_mbuf_copydata"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_copydata/#os_mbuf_copydata", 
+            "text": "int os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst)  Copy data from an mbuf chain starting  off  bytes from the beginning, continuing for  len  bytes, into the indicated buffer.", 
+            "title": " os_mbuf_copydata"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_copydata/#arguments", 
+            "text": "Arguments  Description      m  Pointer to mbuf chain    off  Start copy offset, in bytes, from beginning of mbuf chain    len  Number of bytes to copy    dst  Data buffer to copy into", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_copydata/#returned-values", 
+            "text": "0: success. \n-1: The mbuf does not contain enough data", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_copydata/#example", 
+            "text": "int rc;\n    struct os_mbuf *om;\n    struct my_hdr_1 my_hdr1;    \n    struct my_hdr_2 my_hdr2;    \n\n    /* Header 1 and Header 2 are contiguous in packet at start. Retrieve them from the mbuf chain */    \n    rc = os_mbuf_copydata(om, 0, sizeof(struct my_hdr_1),  my_hdr1);\n    if (rc) {\n        /* error! */\n        return -1;\n    }\n\n    rc = os_mbuf_copydata(om, sizeof(struct my_hdr_1), sizeof(struct my_hdr_2),  my_hdr2);\n    if (rc) {\n        /* error! */\n        return -1;\n    }", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_copyinto/", 
-            "text": "", 
+            "text": "os_mbuf_copyinto\n\n\nint os_mbuf_copyinto(struct os_mbuf *om, int off, const void *src, int len);\n\n\n\n\nCopies the contents of a flat buffer into an mbuf chain, starting at the specified destination offset.  If the mbuf is too small for the source data, it is extended as necessary.  If the destination mbuf contains a packet header, the header length is updated.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf chain\n\n\n\n\n\n\noff\n\n\nStart copy offset, in bytes, from beginning of mbuf chain\n\n\n\n\n\n\nsrc\n\n\nAddress from which bytes are copied\n\n\n\n\n\n\nlen\n\n\nNumber of bytes to copy from src\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\n0: success.\n\nAll other values indicate an error.\n\n\n\n\nExample\n\n\n    int rc;\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;  \n\n    /* Get initial packet length */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    /* Copy \nmy_data\n into mbuf */\n    rc = os_mbuf_copyinto(om, 0, \nmy_data, sizeof(struct my_data_struct));\n    if (rc) {\n        os_mbuf_free_chain(om);\n        return;\n    }\n\n    /* Packet length should have increased by size of \nmy_data\n */\n    pktlen += sizeof(struct my_data_struct);\n    assert(pktlen == OS_MBUF_PKTLEN(om));", 
             "title": "os_mbuf_copyinto"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_copyinto/#os_mbuf_copyinto", 
+            "text": "int os_mbuf_copyinto(struct os_mbuf *om, int off, const void *src, int len);  Copies the contents of a flat buffer into an mbuf chain, starting at the specified destination offset.  If the mbuf is too small for the source data, it is extended as necessary.  If the destination mbuf contains a packet header, the header length is updated.", 
+            "title": " os_mbuf_copyinto"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_copyinto/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf chain    off  Start copy offset, in bytes, from beginning of mbuf chain    src  Address from which bytes are copied    len  Number of bytes to copy from src", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_copyinto/#returned-values", 
+            "text": "0: success. \nAll other values indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_copyinto/#example", 
+            "text": "int rc;\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;  \n\n    /* Get initial packet length */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    /* Copy  my_data  into mbuf */\n    rc = os_mbuf_copyinto(om, 0,  my_data, sizeof(struct my_data_struct));\n    if (rc) {\n        os_mbuf_free_chain(om);\n        return;\n    }\n\n    /* Packet length should have increased by size of  my_data  */\n    pktlen += sizeof(struct my_data_struct);\n    assert(pktlen == OS_MBUF_PKTLEN(om));", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_dup/", 
-            "text": "", 
+            "text": "os_mbuf_dup\n\n\nstruct os_mbuf *os_mbuf_dup(struct os_mbuf *om)\n\n\n\n\nDuplicate a chain of mbufs.  Return the start of the duplicated chain.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf chain to duplicate\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nPointer to the duplicated chain or NULL if not enough mbufs were available to duplicate the chain.\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n    struct os_mbuf *new_om;\n\n    /* Make a copy of om, returning -1 if not able to duplicate om */\n    new_om = os_mbuf_dup(om);\n    if (!new_om) {\n        return -1;\n    }", 
             "title": "os_mbuf_dup"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_dup/#os_mbuf_dup", 
+            "text": "struct os_mbuf *os_mbuf_dup(struct os_mbuf *om)  Duplicate a chain of mbufs.  Return the start of the duplicated chain.", 
+            "title": " os_mbuf_dup"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_dup/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf chain to duplicate", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_dup/#returned-values", 
+            "text": "Pointer to the duplicated chain or NULL if not enough mbufs were available to duplicate the chain.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_dup/#example", 
+            "text": "struct os_mbuf *om;\n    struct os_mbuf *new_om;\n\n    /* Make a copy of om, returning -1 if not able to duplicate om */\n    new_om = os_mbuf_dup(om);\n    if (!new_om) {\n        return -1;\n    }", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_extend/", 
-            "text": "", 
+            "text": "os_mbuf_extend\n\n\nvoid *os_mbuf_extend(struct os_mbuf *om, uint16_t len);\n\n\n\n\nIncreases the length of an mbuf chain by the specified amount.  If there is not sufficient room in the last buffer, a new buffer is allocated and appended to the chain.  It is an error to request more data than can fit in a single buffer.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf chain\n\n\n\n\n\n\nlen\n\n\nNumber of bytes to increase packet header\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nPointer to start of extended data. Caller is guaranteed that there are at least \nlen\n bytes from this pointer to the end of the mbuf.\n\n\nReturns NULL if extension fails due to insufficient mbufs or \nlen\n too large.\n\n\n\nExample\n\n\n    uint8_t *dptr;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;  \n\n    /* Obtain enough room to add \nmy_data\n to an mbuf chain */\n    dptr = os_mbuf_extend(om, sizeof(struct my_data_struct));\n    if (dptr) {\n        memcpy(dptr, \nmy_data, sizeof(struct my_data_struct));\n    }", 
             "title": "os_mbuf_extend"
         }, 
         {
-            "location": "/os/core_os/mbuf/os_mbuf_free/", 
-            "text": "", 
-            "title": "os_mbuf_free"
+            "location": "/os/core_os/mbuf/os_mbuf_extend/#os_mbuf_extend", 
+            "text": "void *os_mbuf_extend(struct os_mbuf *om, uint16_t len);  Increases the length of an mbuf chain by the specified amount.  If there is not sufficient room in the last buffer, a new buffer is allocated and appended to the chain.  It is an error to request more data than can fit in a single buffer.", 
+            "title": " os_mbuf_extend"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_extend/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf chain    len  Number of bytes to increase packet header", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_extend/#returned-values", 
+            "text": "Pointer to start of extended data. Caller is guaranteed that there are at least  len  bytes from this pointer to the end of the mbuf.  Returns NULL if extension fails due to insufficient mbufs or  len  too large.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_extend/#example", 
+            "text": "uint8_t *dptr;\n    struct os_mbuf *om;\n    struct my_data_struct my_data;  \n\n    /* Obtain enough room to add  my_data  to an mbuf chain */\n    dptr = os_mbuf_extend(om, sizeof(struct my_data_struct));\n    if (dptr) {\n        memcpy(dptr,  my_data, sizeof(struct my_data_struct));\n    }", 
+            "title": "Example"
         }, 
         {
             "location": "/os/core_os/mbuf/os_mbuf_free_chain/", 
-            "text": "", 
+            "text": "os_mbuf_free_chain\n\n\nint os_mbuf_free_chain(struct os_mbuf *om);\n\n\n\n\nFrees a chain of mbufs\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf chain\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\n0: success\n\nAny other value indicates error\n\n\n\n\nNotes\n\n\nNote that for each mbuf in the chain, \nos_mbuf_free()\n is called.\n\n\n\n\nExample\n\n\n    int rc;\n    struct os_mbuf *om;\n\n    /* Free mbuf chain */\n    rc = os_mbuf_free_chain(om);\n    assert(rc == 0);", 
             "title": "os_mbuf_free_chain"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_free_chain/#os_mbuf_free_chain", 
+            "text": "int os_mbuf_free_chain(struct os_mbuf *om);  Frees a chain of mbufs", 
+            "title": " os_mbuf_free_chain"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_free_chain/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf chain", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_free_chain/#returned-values", 
+            "text": "0: success \nAny other value indicates error", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_free_chain/#notes", 
+            "text": "Note that for each mbuf in the chain,  os_mbuf_free()  is called.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_free_chain/#example", 
+            "text": "int rc;\n    struct os_mbuf *om;\n\n    /* Free mbuf chain */\n    rc = os_mbuf_free_chain(om);\n    assert(rc == 0);", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_get/", 
-            "text": "", 
+            "text": "os_mbuf_get\n\n\nstruct os_mbuf *os_mbuf_get(struct os_mbuf_pool *omp, uint16_t leadingspace)\n\n\n\n\nGet an mbuf from the mbuf pool. The mbuf is allocated, and initialized prior to being returned. The \nleadingspace\n parameter allows the user to specify the amount of leading space in the allocated mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf pool from which to allocate mbuf\n\n\n\n\n\n\nleadingspace\n\n\nAmount of leading space in allocated mbuf. Request cannot exceed the mbuf data buffer size.\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns a pointer to the allocated mbuf or NULL if there are no mbufs available or \nleadingspace\n was too large.\n\n\n\nNotes\n\n\nIn most typical applications, the application developer does not need to call \nos_mbuf_get()\n; the other API will do this automatically. However, this API is provided for convenience as mbufs can also be a simple way to allocate temporary chunks of memory.\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n\n    /* Get an mbuf */\n    om = os_mbuf_get(\ng_mbuf_pool, 0);\n    if (om) {\n        /* we have allocated an mbuf from the pool */\n    }", 
             "title": "os_mbuf_get"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_get/#os_mbuf_get", 
+            "text": "struct os_mbuf *os_mbuf_get(struct os_mbuf_pool *omp, uint16_t leadingspace)  Get an mbuf from the mbuf pool. The mbuf is allocated, and initialized prior to being returned. The  leadingspace  parameter allows the user to specify the amount of leading space in the allocated mbuf.", 
+            "title": "os_mbuf_get"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf pool from which to allocate mbuf    leadingspace  Amount of leading space in allocated mbuf. Request cannot exceed the mbuf data buffer size.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get/#returned-values", 
+            "text": "Returns a pointer to the allocated mbuf or NULL if there are no mbufs available or  leadingspace  was too large.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get/#notes", 
+            "text": "In most typical applications, the application developer does not need to call  os_mbuf_get() ; the other API will do this automatically. However, this API is provided for convenience as mbufs can also be a simple way to allocate temporary chunks of memory.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get/#example", 
+            "text": "struct os_mbuf *om;\n\n    /* Get an mbuf */\n    om = os_mbuf_get( g_mbuf_pool, 0);\n    if (om) {\n        /* we have allocated an mbuf from the pool */\n    }", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_get_pkthdr/", 
-            "text": "", 
+            "text": "os_mbuf_get_pkthdr\n\n\nstruct os_mbuf *os_mbuf_get_pkthdr(struct os_mbuf_pool *omp, uint8_t pkthdr_len);\n\n\n\n\nAllocates a packet header mbuf from the mbuf pool pointed to by \nomp\n. Adds a user header of length \npkthdr_len\n to packet header mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf pool from which to allocate mbuf\n\n\n\n\n\n\npkthdr_len\n\n\nThe user header packet length to allocate for the packet header mbuf\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns a pointer to the allocated mbuf or NULL if there are no mbufs available or the user packet header was too large.\n\n\n\n\nNotes\n\n\nThe packet header mbuf returned will have its data pointer incremented by the sizeof(struct os_mbuf_pkthdr) as well as the amount of user header data (i.e. \npkthdr_len\n). In other words, the data pointer is offset from the start of the mbuf by: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + pkthdr_len. The \nom_pkthdr_len\n element in the allocated mbuf is set to: sizeof(struct os_mbuf_pkthdr) + pkthdr_len.\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n    struct my_user_header my_hdr;\n\n    /* Get a packet header mbuf with a user header in it */\n    om = os_mbuf_get_pkthdr(\ng_mbuf_pool, sizeof(struct my_user_header));\n    if (om) {\n        /* Packet header mbuf was allocated */\n    }", 
             "title": "os_mbuf_get_pkthdr"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_get_pkthdr/#os_mbuf_get_pkthdr", 
+            "text": "struct os_mbuf *os_mbuf_get_pkthdr(struct os_mbuf_pool *omp, uint8_t pkthdr_len);  Allocates a packet header mbuf from the mbuf pool pointed to by  omp . Adds a user header of length  pkthdr_len  to packet header mbuf.", 
+            "title": "os_mbuf_get_pkthdr"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get_pkthdr/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf pool from which to allocate mbuf    pkthdr_len  The user header packet length to allocate for the packet header mbuf", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get_pkthdr/#returned-values", 
+            "text": "Returns a pointer to the allocated mbuf or NULL if there are no mbufs available or the user packet header was too large.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get_pkthdr/#notes", 
+            "text": "The packet header mbuf returned will have its data pointer incremented by the sizeof(struct os_mbuf_pkthdr) as well as the amount of user header data (i.e.  pkthdr_len ). In other words, the data pointer is offset from the start of the mbuf by: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + pkthdr_len. The  om_pkthdr_len  element in the allocated mbuf is set to: sizeof(struct os_mbuf_pkthdr) + pkthdr_len.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_get_pkthdr/#example", 
+            "text": "struct os_mbuf *om;\n    struct my_user_header my_hdr;\n\n    /* Get a packet header mbuf with a user header in it */\n    om = os_mbuf_get_pkthdr( g_mbuf_pool, sizeof(struct my_user_header));\n    if (om) {\n        /* Packet header mbuf was allocated */\n    }", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_memcmp/", 
-            "text": "", 
+            "text": "os_mbuf_memcmp\n\n\nint os_mbuf_memcmp(const struct os_mbuf *om, int off, const void *data, int len)\n\n\n\n\nPerforms a memory compare of the specified region of an mbuf chain against a flat buffer.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf\n\n\n\n\n\n\noff\n\n\nOffset, in bytes, from start of mbuf to start of comparison\n\n\n\n\n\n\ndata\n\n\nPointer to flat data buffer to compare\n\n\n\n\n\n\nlen\n\n\nNumber of bytes to compare\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nA value of zero means the memory regions are identical; all other values represent either an error or a value returned from memcmp. \n\n\n\n\nNotes\n\n\nThis function will compare bytes starting from \noff\n bytes from the start of the mbuf chain with a data buffer.\n\n\n\n\nExample\n\n\n    int rc;\n    struct os_mbuf *om;\n    uint8_t my_data_buffer[32];\n\n    /* Get a packet header mbuf with a user header in it */\n    rc = os_mbuf_memcmp(om, 0, my_data_buffer, 32);\n    if (!rc) {\n        /* \nmy_data_buffer\n and the data from offset 0 in the mbuf chain are identical! */\n    }", 
             "title": "os_mbuf_memcmp"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_memcmp/#os_mbuf_memcmp", 
+            "text": "int os_mbuf_memcmp(const struct os_mbuf *om, int off, const void *data, int len)  Performs a memory compare of the specified region of an mbuf chain against a flat buffer.", 
+            "title": "os_mbuf_memcmp"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_memcmp/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf    off  Offset, in bytes, from start of mbuf to start of comparison    data  Pointer to flat data buffer to compare    len  Number of bytes to compare", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_memcmp/#returned-values", 
+            "text": "A value of zero means the memory regions are identical; all other values represent either an error or a value returned from memcmp.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_memcmp/#notes", 
+            "text": "This function will compare bytes starting from  off  bytes from the start of the mbuf chain with a data buffer.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_memcmp/#example", 
+            "text": "int rc;\n    struct os_mbuf *om;\n    uint8_t my_data_buffer[32];\n\n    /* Get a packet header mbuf with a user header in it */\n    rc = os_mbuf_memcmp(om, 0, my_data_buffer, 32);\n    if (!rc) {\n        /*  my_data_buffer  and the data from offset 0 in the mbuf chain are identical! */\n    }", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_off/", 
-            "text": "", 
+            "text": "os_mbuf_off\n\n\nstruct os_mbuf *os_mbuf_off(struct os_mbuf *om, int off, int *out_off)\n\n\n\n\nGiven an offset in the packet (i.e. user data byte offset in the mbuf chain), return the mbuf and the offset in that mbuf where byte 'off' is located. Note that the offset is 'returned' in \nout_off\n.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf\n\n\n\n\n\n\noff\n\n\nLocation in mbuf chain of desired byte offset\n\n\n\n\n\n\nout_off\n\n\nPointer to storage for the relative offset of the absolute location in the returned mbuf\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nNULL if the offset is not within the mbuf chain or \nom\n points to NULL.\n\n\n\n\nNotes\n\n\nThe user is allowed to call this function with the length of the mbuf chain but no greater. This allows the user to get the mbuf and offset (in that mbuf) where the next user data byte should be written.\n\n\nWhile this api is provided to the user, other API are expected to be used by the applciation developer (i.e. \nos_mbuf_append()\n or \nos_mbuf_copyinto()\n).\n\n\n\nExample\n\n\n    int relative_offset;\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct os_mbuf *tmp;\n\n    /* Append a new line character to end of mbuf data */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    relative_offset = 0;\n    tmp = os_mbuf_off(om, pktlen, \nrelative_offset);\n    if (tmp) {\n        /* Offset found. */\n        tmp-\nom_data[relative_offset] = '\\n';\n    } else {\n        /*\n         * This mbuf does not contain enough bytes so this is an invalid offset.\n         * In other words, the mbuf is less than 62 bytes in length.\n         */\n    }", 
             "title": "os_mbuf_off"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_off/#os_mbuf_off", 
+            "text": "struct os_mbuf *os_mbuf_off(struct os_mbuf *om, int off, int *out_off)  Given an offset in the packet (i.e. user data byte offset in the mbuf chain), return the mbuf and the offset in that mbuf where byte 'off' is located. Note that the offset is 'returned' in  out_off .", 
+            "title": "os_mbuf_off"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_off/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf    off  Location in mbuf chain of desired byte offset    out_off  Pointer to storage for the relative offset of the absolute location in the returned mbuf", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_off/#returned-values", 
+            "text": "NULL if the offset is not within the mbuf chain or  om  points to NULL.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_off/#notes", 
+            "text": "The user is allowed to call this function with the length of the mbuf chain but no greater. This allows the user to get the mbuf and offset (in that mbuf) where the next user data byte should be written.  While this api is provided to the user, other API are expected to be used by the applciation developer (i.e.  os_mbuf_append()  or  os_mbuf_copyinto() ).", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_off/#example", 
+            "text": "int relative_offset;\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct os_mbuf *tmp;\n\n    /* Append a new line character to end of mbuf data */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    relative_offset = 0;\n    tmp = os_mbuf_off(om, pktlen,  relative_offset);\n    if (tmp) {\n        /* Offset found. */\n        tmp- om_data[relative_offset] = '\\n';\n    } else {\n        /*\n         * This mbuf does not contain enough bytes so this is an invalid offset.\n         * In other words, the mbuf is less than 62 bytes in length.\n         */\n    }", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_pool_init/", 
-            "text": "", 
+            "text": "os_mbuf_pool_init\n\n\nint os_mbuf_pool_init(struct os_mbuf_pool *omp, struct os_mempool *mp, uint16_t buf_len, \n                      uint16_t nbufs)\n\n\n\n\nInitialize an mbuf pool\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nomp\n\n\nPointer to mbuf pool to initialize\n\n\n\n\n\n\nmp\n\n\nPointer to memory pool used by mbuf pool\n\n\n\n\n\n\nbuf_len\n\n\nThe size of the memory blocks in the memory pool used by the mbuf pool\n\n\n\n\n\n\nnbufs\n\n\nThe number of mbufs in the pool\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success; all other values indicate an error.\n\n\n\n\nNotes\n\n\nThe parameter \nbuf_len\n is the total size of the memory block. This must accommodate the os_mbuf structure, the os_mbuf_pkthdr structure, any user headers plus the desired amount of user data.\n\n\n\n\nExample\n\n\n#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)\n#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD\n\n#define MBUF_NUM_MBUFS      (32)\n#define MBUF_PAYLOAD_SIZE   (64)\n#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)\n#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)\n#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)\n\nstruct os_mbuf_pool g_mbuf_pool; \nstruct os_mempool g_mbuf_mempool;\nos_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];\n\nvoid\ncreate_mbuf_pool(void)\n{\n    int rc;\n\n    rc = os_mempool_init(\ng_mbuf_mempool, MBUF_NUM_MBUFS, \n                          MBUF_MEMBLOCK_SIZE, \ng_mbuf_buffer[0], \nmbuf_pool\n);\n    assert(rc == 0);\n\n    rc = os_mbuf_pool_init(\ng_mbuf_pool, \ng_mbuf_mempool, MBUF_MEMBLOCK_SIZE, \n                           MBUF_NUM_MBUFS);\n    assert(rc == 0);\n}", 
             "title": "os_mbuf_pool_init"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_pool_init/#os_mbuf_pool_init", 
+            "text": "int os_mbuf_pool_init(struct os_mbuf_pool *omp, struct os_mempool *mp, uint16_t buf_len, \n                      uint16_t nbufs)  Initialize an mbuf pool", 
+            "title": "os_mbuf_pool_init"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pool_init/#arguments", 
+            "text": "Arguments  Description      omp  Pointer to mbuf pool to initialize    mp  Pointer to memory pool used by mbuf pool    buf_len  The size of the memory blocks in the memory pool used by the mbuf pool    nbufs  The number of mbufs in the pool", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pool_init/#returned-values", 
+            "text": "0 on success; all other values indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pool_init/#notes", 
+            "text": "The parameter  buf_len  is the total size of the memory block. This must accommodate the os_mbuf structure, the os_mbuf_pkthdr structure, any user headers plus the desired amount of user data.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pool_init/#example", 
+            "text": "#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)\n#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD\n\n#define MBUF_NUM_MBUFS      (32)\n#define MBUF_PAYLOAD_SIZE   (64)\n#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)\n#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)\n#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)\n\nstruct os_mbuf_pool g_mbuf_pool; \nstruct os_mempool g_mbuf_mempool;\nos_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];\n\nvoid\ncreate_mbuf_pool(void)\n{\n    int rc;\n\n    rc = os_mempool_init( g_mbuf_mempool, MBUF_NUM_MBUFS, \n                          MBUF_MEMBLOCK_SIZE,  g_mbuf_buffer[0],  mbuf_pool );\n    assert(rc == 0);\n\n    rc = os_mbuf_pool_init( g_mbuf_pool,  g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, \n                           MBUF_NUM_MBUFS);\n    assert(rc == 0);\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_prepend/", 
-            "text": "", 
+            "text": "os_mbuf_prepend\n\n\nstruct os_mbuf *os_mbuf_prepend(struct os_mbuf *om, int len)\n\n\n\n\nIncreases the length of an mbuf chain by adding data to the front.  If there is insufficient room in the leading mbuf, additional mbufs are allocated and prepended as necessary.  If this function fails to allocate an mbuf, the entire chain is freed.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf\n\n\n\n\n\n\nlen\n\n\nLength, in bytes, to prepend\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nPointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate \nlen\n.\n\n\n\n\nNotes\n\n\nIf \nom\n is a packet header mbuf, the total length of the packet is adjusted by \nlen\n. Note that the returned mbuf may not point to \nom\n if insufficient leading space was available in \nom\n.\n\n\n\n\nExample\n\n\n    uint16_t pktlen;\n    struct os_mbuf *om;\n    struct os_mbuf *tmp;\n\n    /* Get initial packet length before prepend */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    tmp = os_mbuf_prepend(om, 32);\n    if (!tmp) {\n        /* Not able to prepend. The chain pointed to by *om has been freed */\n        return -1;\n    }\n\n    /* The packet length should equal the original length plus what we prepended */\n    assert((pktlen + 32) == OS_MBUF_PKTLEN(tmp));", 
             "title": "os_mbuf_prepend"
         }, 
         {
+            "location": "/os/core_os/mbuf/os_mbuf_prepend/#os_mbuf_prepend", 
+            "text": "struct os_mbuf *os_mbuf_prepend(struct os_mbuf *om, int len)  Increases the length of an mbuf chain by adding data to the front.  If there is insufficient room in the leading mbuf, additional mbufs are allocated and prepended as necessary.  If this function fails to allocate an mbuf, the entire chain is freed.", 
+            "title": "os_mbuf_prepend"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_prepend/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf    len  Length, in bytes, to prepend", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_prepend/#returned-values", 
+            "text": "Pointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate  len .", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_prepend/#notes", 
+            "text": "If  om  is a packet header mbuf, the total length of the packet is adjusted by  len . Note that the returned mbuf may not point to  om  if insufficient leading space was available in  om .", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_prepend/#example", 
+            "text": "uint16_t pktlen;\n    struct os_mbuf *om;\n    struct os_mbuf *tmp;\n\n    /* Get initial packet length before prepend */\n    pktlen = OS_MBUF_PKTLEN(om);\n\n    tmp = os_mbuf_prepend(om, 32);\n    if (!tmp) {\n        /* Not able to prepend. The chain pointed to by *om has been freed */\n        return -1;\n    }\n\n    /* The packet length should equal the original length plus what we prepended */\n    assert((pktlen + 32) == OS_MBUF_PKTLEN(tmp));", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/core_os/mbuf/os_mbuf_pullup/", 
-            "text": "", 
+            "text": "os_mbuf_pullup\n\n\nstruct os_mbuf *os_mbuf_pullup(struct os_mbuf *om, uint16_t len)\n\n\n\n\nRearrange an mbuf chain so that len bytes are contiguous, and in the data area of an mbuf (so that OS_MBUF_DATA() will  work on a structure of size len.)  Returns the resulting mbuf chain on success, free's it and returns NULL on failure.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nom\n\n\nPointer to mbuf\n\n\n\n\n\n\nlen\n\n\nLength, in bytes, to pullup (make contiguous in mbuf)\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nPointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate \nlen\n or if the requested pullup size was too large.\n\n\n\n\nNotes\n\n\nHopefully it is apparent to the user that you cannot pullup more bytes than the mbuf can accommodate. Pullup does not allocate more than one mbuf; the entire pullup length must be contained within a single mbuf.\n\n\nThe mbuf that is being pulled up into does not need to be a packet header mbuf; it can be a normal mbuf. The user should note that the maximum pullup length does depend on the type of mbuf being pulled up into (a packet header or normal mbuf).\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n    struct os_mbuf *tmp;\n    struct my_header_struct my_header;\n\n    /* Make sure \nmy_header\n is contiguous in the mbuf */\n    tmp = os_mbuf_pullup(om, sizeof(my_header_struct));\n    if (!tmp) {\n        /* Pullup failed. The chain pointed to by *om has been freed */\n        return -1;\n    }\n\n    /* copy data from mbuf into header structure */\n    memcpy(\nmy_header, tmp-\nom_data, sizeof(struct my_header_struct));", 
             "title": "os_mbuf_pullup"
         }, 
         {
-            "location": "/os/core_os/mbuf/os_mqueue_get/", 
+            "location": "/os/core_os/mbuf/os_mbuf_pullup/#os_mbuf_pullup", 
+            "text": "struct os_mbuf *os_mbuf_pullup(struct os_mbuf *om, uint16_t len)  Rearrange an mbuf chain so that len bytes are contiguous, and in the data area of an mbuf (so that OS_MBUF_DATA() will  work on a structure of size len.)  Returns the resulting mbuf chain on success, free's it and returns NULL on failure.", 
+            "title": "os_mbuf_pullup"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pullup/#arguments", 
+            "text": "Arguments  Description      om  Pointer to mbuf    len  Length, in bytes, to pullup (make contiguous in mbuf)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pullup/#returned-values", 
+            "text": "Pointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate  len  or if the requested pullup size was too large.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pullup/#notes", 
+            "text": "Hopefully it is apparent to the user that you cannot pullup more bytes than the mbuf can accommodate. Pullup does not allocate more than one mbuf; the entire pullup length must be contained within a single mbuf.  The mbuf that is being pulled up into does not need to be a packet header mbuf; it can be a normal mbuf. The user should note that the maximum pullup length does depend on the type of mbuf being pulled up into (a packet header or normal mbuf).", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_mbuf_pullup/#example", 
+            "text": "struct os_mbuf *om;\n    struct os_mbuf *tmp;\n    struct my_header_struct my_header;\n\n    /* Make sure  my_header  is contiguous in the mbuf */\n    tmp = os_mbuf_pullup(om, sizeof(my_header_struct));\n    if (!tmp) {\n        /* Pullup failed. The chain pointed to by *om has been freed */\n        return -1;\n    }\n\n    /* copy data from mbuf into header structure */\n    memcpy( my_header, tmp- om_data, sizeof(struct my_header_struct));", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get/", 
+            "text": "os_msys_get\n\n\nstruct os_mbuf *os_msys_get(uint16_t dsize, uint16_t leadingspace)\n\n\n\n\nRetrieve an mbuf from the system mbuf pools with \nleadingspace\n bytes available in the mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\ndsize\n\n\nMinimum requested size of mbuf. Actual mbuf allocated may not accommodate \ndsize\n\n\n\n\n\n\nleadingspace\n\n\nNumber of bytes for leading space in mbuf (space at start of mbuf)\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nPointer to mbuf or NULL if no mbufs were available.\n\n\n\n\nNotes\n\n\nAs described in the overview section, \nos_msys_get()\n may return an mbuf that is smaller than dsize, meaning that the mbuf user data buffer does not have enough contiguous space to hold \ndsize\n bytes.\n\n\nThis API will not return an mbuf from a larger mbuf pool if the appropriate msys mbuf pool is empty. See the overview for more information.\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n\n    /* Allocate an mbuf with hopefully at least 100 bytes in its user data buffer */\n    om = os_msys_get(100, 0);\n    if (!om) {\n        /* No mbufs available. */\n        return -1;\n    }\n}", 
+            "title": "os_msys_get"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get/#os_msys_get", 
+            "text": "struct os_mbuf *os_msys_get(uint16_t dsize, uint16_t leadingspace)  Retrieve an mbuf from the system mbuf pools with  leadingspace  bytes available in the mbuf.", 
+            "title": "os_msys_get"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get/#arguments", 
+            "text": "Arguments  Description      dsize  Minimum requested size of mbuf. Actual mbuf allocated may not accommodate  dsize    leadingspace  Number of bytes for leading space in mbuf (space at start of mbuf)", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get/#returned-values", 
+            "text": "Pointer to mbuf or NULL if no mbufs were available.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get/#notes", 
+            "text": "As described in the overview section,  os_msys_get()  may return an mbuf that is smaller than dsize, meaning that the mbuf user data buffer does not have enough contiguous space to hold  dsize  bytes.  This API will not return an mbuf from a larger mbuf pool if the appropriate msys mbuf pool is empty. See the overview for more information.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get/#example", 
+            "text": "struct os_mbuf *om;\n\n    /* Allocate an mbuf with hopefully at least 100 bytes in its user data buffer */\n    om = os_msys_get(100, 0);\n    if (!om) {\n        /* No mbufs available. */\n        return -1;\n    }\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/", 
+            "text": "os_msys_get_pkthdr\n\n\nstruct os_mbuf *os_msys_get_pkthdr(uint16_t dsize, uint16_t user_hdr_len)\n\n\n\n\nRetrieve a packet header mbuf from the system mbuf pools with \nuser_hdr_len\n bytes available for the user header in the mbuf.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\ndsize\n\n\nMinimum requested size of mbuf. Actual mbuf allocated may not accommodate \ndsize\n\n\n\n\n\n\nuser_hdr_len\n\n\nSize, in of bytes, of user header in the mbuf\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\nPointer to mbuf or NULL if no mbufs were available.\n\n\n\n\nNotes\n\n\nThe same notes apply to this API as to \nos_msys_get()\n.\n\n\n\n\nExample\n\n\n    struct os_mbuf *om;\n    struct my_user_hdr_struct my_usr_hdr;\n\n    /*\n     * Allocate an mbuf with hopefully at least 100 bytes in its user data buffer\n     * and that has a user header of size sizeof(struct my_user_hdr_struct)\n     */\n    om = os_msys_get_pkthdr(100, sizeof(struct my_user_hdr_struct));\n    if (!om) {\n        /* No mbufs available. */\n        return -1;\n    }\n}", 
+            "title": "os_msys_get_pkthdr"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/#os_msys_get_pkthdr", 
+            "text": "struct os_mbuf *os_msys_get_pkthdr(uint16_t dsize, uint16_t user_hdr_len)  Retrieve a packet header mbuf from the system mbuf pools with  user_hdr_len  bytes available for the user header in the mbuf.", 
+            "title": "os_msys_get_pkthdr"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/#arguments", 
+            "text": "Arguments  Description      dsize  Minimum requested size of mbuf. Actual mbuf allocated may not accommodate  dsize    user_hdr_len  Size, in of bytes, of user header in the mbuf", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/#returned-values", 
+            "text": "Pointer to mbuf or NULL if no mbufs were available.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/#notes", 
+            "text": "The same notes apply to this API as to  os_msys_get() .", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/#example", 
+            "text": "struct os_mbuf *om;\n    struct my_user_hdr_struct my_usr_hdr;\n\n    /*\n     * Allocate an mbuf with hopefully at least 100 bytes in its user data buffer\n     * and that has a user header of size sizeof(struct my_user_hdr_struct)\n     */\n    om = os_msys_get_pkthdr(100, sizeof(struct my_user_hdr_struct));\n    if (!om) {\n        /* No mbufs available. */\n        return -1;\n    }\n}", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_register/", 
+            "text": "os_msys_register\n\n\nint os_msys_register(struct os_mbuf_pool *new_pool) \n\n\n\n\nRegister an mbuf pool for use as a system mbuf pool. The pool should be initialized prior to registration.\n\n\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nnew_pool\n\n\nPointer to mbuf pool to add to system mbuf pools\n\n\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success; all other values indicate an error.\n\n\n\n\nNotes\n\n\n\n\nExample\n\n\n    rc = os_msys_register(\ng_mbuf_pool);\n    assert(rc == 0);", 
+            "title": "os_msys_register"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_register/#os_msys_register", 
+            "text": "int os_msys_register(struct os_mbuf_pool *new_pool)   Register an mbuf pool for use as a system mbuf pool. The pool should be initialized prior to registration.", 
+            "title": "os_msys_register"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_register/#arguments", 
+            "text": "Arguments  Description      new_pool  Pointer to mbuf pool to add to system mbuf pools", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_register/#returned-values", 
+            "text": "0 on success; all other values indicate an error.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_register/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_register/#example", 
+            "text": "rc = os_msys_register( g_mbuf_pool);\n    assert(rc == 0);", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_reset/", 
+            "text": "os_msys_reset\n\n\nvoid os_msys_reset(void) \n\n\n\n\nResets msys module. This de-registers all pools from msys but does nothing to the pools themselves (they still exist as mbuf pools).\n\n\n\n\nArguments\n\n\nNone\n\n\n\n\nReturned values\n\n\nNone\n\n\n\n\nNotes\n\n\n\n\nExample\n\n\n    os_msys_reset();", 
+            "title": "os_msys_reset"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_reset/#os_msys_reset", 
+            "text": "void os_msys_reset(void)   Resets msys module. This de-registers all pools from msys but does nothing to the pools themselves (they still exist as mbuf pools).", 
+            "title": "os_msys_reset"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_reset/#arguments", 
+            "text": "None", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_reset/#returned-values", 
+            "text": "None", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_reset/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/core_os/mbuf/os_msys_reset/#example", 
+            "text": "os_msys_reset();", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/core_os/mqueue/mqueue/", 
+            "text": "", 
+            "title": "Overview"
+        }, 
+        {
+            "location": "/os/core_os/mqueue/os_mqueue_get/", 
             "text": "", 
             "title": "os_mqueue_get"
         }, 
         {
-            "location": "/os/core_os/mbuf/os_mqueue_init/", 
+            "location": "/os/core_os/mqueue/os_mqueue_init/", 
             "text": "", 
             "title": "os_mqueue_init"
         }, 
         {
-            "location": "/os/core_os/mbuf/os_mqueue_put/", 
+            "location": "/os/core_os/mqueue/os_mqueue_put/", 
             "text": "", 
             "title": "os_mqueue_put"
-        }, 
-        {
-            "location": "/os/core_os/mbuf/os_msys_get/", 
-            "text": "", 
-            "title": "os_msys_get"
-        }, 
-        {
-            "location": "/os/core_os/mbuf/os_msys_get_pkthdr/", 
-            "text": "", 
-            "title": "os_msys_get_pkthdr"
-        }, 
-        {
-            "location": "/os/core_os/mbuf/os_msys_register/", 
-            "text": "", 
-            "title": "os_msys_register"
-        }, 
-        {
-            "location": "/os/core_os/mbuf/os_msys_reset/", 
-            "text": "", 
-            "title": "os_msys_reset"
         }, 
         {
             "location": "/os/core_os/sanity/sanity/", 

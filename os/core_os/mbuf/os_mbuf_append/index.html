@@ -145,7 +145,7 @@
               
   
   <li><a href="
-  ../../../tutorials/project2/
+  ../../../tutorials/STM32F303/
 ">Tutorials</a>
     
   </li>
@@ -276,15 +276,15 @@
               
   
   <li><a href="
-  ../_os_mbuf_copypkthdr/
-">Functions</a>
+  ../OS_MBUF_PKTHDR/
+">Functions/Macros</a>
     
       <ul class="current-toc">
           
               
   
     <li>
-      <a href="../_os_mbuf_copypkthdr/">_os_mbuf_copypkthdr</a>
+      <a href="../OS_MBUF_PKTHDR/">OS_MBUF_PKTHDR</a>
     </li>
   
 
@@ -292,7 +292,55 @@
               
   
     <li>
-      <a href="../_os_msys_find_pool/">_os_msys_find_pool.md</a>
+      <a href="../OS_MBUF_PKTHDR_TO_MBUF/">OS_MBUF_PKTHDR_TO_MBUF</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_PKTLEN/">OS_MBUF_PKTLEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_DATA/">OS_MBUF_DATA</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR/">OS_MBUF_USRHDR</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_USRHDR_LEN/">OS_MBUF_USRHDR_LEN</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_LEADINGSPACE/">OS_MBUF_LEADINGSPACE</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../OS_MBUF_TRAILINGSPACE/">OS_MBUF_TRAILINGSPACE</a>
     </li>
   
 
@@ -349,14 +397,6 @@
   
     <li>
       <a href="../os_mbuf_extend/">os_mbuf_extend</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mbuf_free/">os_mbuf_free</a>
     </li>
   
 
@@ -428,30 +468,6 @@
               
   
     <li>
-      <a href="../os_mqueue_get/">os_mqueue_get</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_init/">os_mqueue_init</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../os_mqueue_put/">os_mqueue_put</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../os_msys_get/">os_msys_get</a>
     </li>
   
@@ -487,6 +503,15 @@
 
           
       </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../mqueue/mqueue/
+">MQueue</a>
     
   </li>
 
@@ -672,7 +697,7 @@
         
       
         
-          <li>Functions &raquo;</li>
+          <li>Functions/Macros &raquo;</li>
         
       
     
@@ -684,7 +709,67 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_mbuf_append"><font color="#F2853F" style="font-size:24pt"> os_mbuf_append</font><a class="headerlink" href="#os_mbuf_append" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int os_mbuf_append(struct os_mbuf *om, const void *data,  uint16_t len)
+</code></pre>
+
+<p>Appends a data buffer of length <em>len</em> to the end of an mbuf chain, adjusting packet length if <em>om</em> is a packet header mbuf. If not enough trailing space exists at the end of the mbuf chain, mbufs are allocated to hold the data.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>om</td>
+<td>Pointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf</td>
+</tr>
+<tr>
+<td>data</td>
+<td>Pointer to data buffer to copy from</td>
+</tr>
+<tr>
+<td>len</td>
+<td>Number of bytes to copy from data buffer to the end of the mbuf</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>0: success<br />
+OS_ENOMEM: Could not allocate enough mbufs to hold data.<br />
+OS_EINVAL: <em>om</em> was NULL on entry.</p>
+<p><br></p>
+<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
+<p>If not enough mbufs were available the packet header length of the mbuf may get adjusted even though the entire data buffer was not appended to the end of the mbuf.</p>
+<p><br></p>
+<p>If any mbufs are allocated, they are allocated from the same pool as <em>om</em></p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">    int rc;
+    uint16_t pktlen;
+    struct os_mbuf *om;
+    struct my_data_struct my_data;
+
+    /* Get initial packet length */
+    pktlen = OS_MBUF_PKTLEN(om);
+
+    /* Append &quot;my_data&quot; to end of mbuf, freeing mbuf if unable to append all the data */
+    rc = os_mbuf_append(om, &amp;my_data, sizeof(struct my_pkt_header));
+    if (rc) {
+        os_mbuf_free_chain(om);
+    }
+    pktlen += sizeof(struct my_pkt_header);
+
+    /* New packet length should be initial packet length plus length of &quot;my_data&quot; */
+    assert(pktlen == OS_MBUF_PKTLEN(om));
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>
