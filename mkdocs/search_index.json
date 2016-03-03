@@ -3956,6 +3956,36 @@
             "title": "Future enhancements"
         }, 
         {
+            "location": "/os/modules/hal/hal/", 
+            "text": "", 
+            "title": "Overview"
+        }, 
+        {
+            "location": "/os/modules/hal/hal_gpio/", 
+            "text": "", 
+            "title": "GPIO"
+        }, 
+        {
+            "location": "/os/modules/hal/hal_flash/", 
+            "text": "", 
+            "title": "Flash memory"
+        }, 
+        {
+            "location": "/os/modules/hal/hal_cpu_timer/", 
+            "text": "", 
+            "title": "CPU timer"
+        }, 
+        {
+            "location": "/os/modules/hal/hal_uart/", 
+            "text": "", 
+            "title": "UART"
+        }, 
+        {
+            "location": "/os/modules/hal/hal_sys/", 
+            "text": "", 
+            "title": "System"
+        }, 
+        {
             "location": "/os/modules/testutil/testutil/", 
             "text": "testutil\n\n\nThe testutil package is a test framework that provides facilities for specifying test cases and recording test results.\n\n\nYou would use it to build regression tests for your library.\n\n\nDescription\n\n\nA package may optionally contain a set of test cases.  Test cases are not normally compiled and linked when a package is built; they are only included\nwhen the \"test\" identity is specified.  All of a package's test code goes in its \nsrc/test\n directory.  For example, the nffs package's test code is located in the following directory:\n\n\n    * fs/nffs/src/test/\n\n\n\n\nThis directory contains the source and header files that implement the nffs test code.\n\n\nThe test code has access to all the header files in the following directories:\n\n\n    * src\n    * src/arch/\ntarget-arch\n\n    * include\n    * src/test\n    * src/test/arch/\ntarget-arch\n\n    * include directories of all package dependencies\n\n\n\n\nPackage test code typically depends on the testutil package, described later in this document.  If a package's test code uses testutil, then the package itself needs to have testutil in its dependency list.\n\n\nSome test cases or test initialization code may be platform-specific.  In such cases, the platform-specific function definitions are placed in arch subdirectories within the package test directory.\n\n\nWhile building the test code (i.e., when the \ntest\n identity is specified), the newt tool defines the \nTEST\n macro.  This macro is defined during compilation of all C source files in all projects and packages.\n\n\nTests are structured according to the following hierarchy:\n\n\n                [test]\n               /      \\\n        [suite]        [suite]\n       /       \\      /       \\\n     [case] [case]  [case] [case]\n\n\n\n\nI.e., a test consists of test suites, and a test suite consists of test cases.\n\n\nThe test code uses testutil to define test suites and test cases.\n\n\nRegression test can then be executed using 'newt target test' command, or by including a call to your test suite from \nproject/test/src/test.c\n.\n\n\nExample\n\n\nThe following example demonstrates how to create a simple test suite.\n\n\n    TEST_CASE(test_addition)\n    {\n        int sum;\n\n        sum = 5 + 10;\n        TEST_ASSERT(sum == 15, \nactual value: %d\n, sum);\n    }\n\n    TEST_CASE(test_times_0)\n    {\n        TEST_ASSERT(3 * 0 == 0);\n        TEST_ASSERT(4 * 0 == 0);\n        TEST_ASSERT(712 * 0 == 0);\n    }\n\n    TEST_SUITE(test_suite_arithmetic)\n    {\n        test_addition();\n        test_times_0();\n    }\n\n\n\n\nThe test suite would then be executed via a call to \ntest_suite_arithmetic()\n.\n\n\nData structures\n\n\nstruct tu_config {\n    int tc_print_results;\n    int tc_system_assert;\n\n    tu_case_init_fn_t *tc_case_init_cb;\n    void *tc_case_init_arg;\n\n    tu_case_report_fn_t *tc_case_fail_cb;\n    void *tc_case_fail_arg;\n\n    tu_case_report_fn_t *tc_case_pass_cb;\n    void *tc_case_pass_arg;\n\n    tu_suite_init_fn_t *tc_suite_init_cb;\n    void *tc_suite_init_arg;\n\n    tu_restart_fn_t *tc_restart_cb;\n    void *tc_restart_arg;\n};\nextern struct tu_config tu_config;\n\n\n\n\nThe global \ntu_config\n struct contains all the testutil package's settings.\nThis should be populated before \ntu_init()\n is called.\n\n\nList of Functions\n\n\n\n\nThe functions, and macros available in testutil are:\n\n\n\n\ntu_init\n\n\nTEST_ASSERT\n\n\nTEST_PASS\n\n\nTEST_SUITE\n\n\nTEST_CASE\n\n\ntu_restart", 
             "title": "Overview"
