@@ -3,8 +3,9 @@
 
 ## HAL API
 
-A HAL is always starts with a header file with function declarations 
-for your HAL, with the first argument of all functions the virtual 
+A HAL always includes header file with function declarations 
+for the HAL functionality in `/hw/hal/include/hal`.
+The first argument of all functions in the interface include the virtual 
 device_id of the device you are controlling.  
 
 For example, in [`hal_gpio.h`](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h) 
@@ -15,17 +16,17 @@ the device enumeration is the first argument to all methods and called `pin`.
 ```
 
 The device_id (in this case called `pin`) is not a physical device 
-(actual pin), but a virtual pin identified defined by the 
+(actual hardware pin), but a virtual pin which is defined by the 
 implementation of the HAL (and documented in the implementation of the HAL)
 
-Below this, there have been two paradigms for HAL interface to date.  They are 
+Below this, there are two different paradigms for HAL interface.  They are 
 discussed below.
 
 ## Direct HAL Interface
 
-In one HAL paradigm called **direct HAL**, this is the only component of the HAL
-interface.   Implementers of this HAL would create a source file that implements
-these methods.  
+In one HAL paradigm called **direct HAL**, the header file is the only component 
+of the HAL interface.   Implementers of this HAL would create a source file
+that implements these methods.  
 
 This has the advantage of being simple, small, and low execution overhead.
 
@@ -57,15 +58,14 @@ Using this simple model, the user can be exposed to a simple function
 interface (without structures or function pointers) and the system can provide
 a different software implementation for each device id.
 
-Although the GPIO interface today for Mynewt uses the **direct HAL** let's illustrate
+Although the GPIO interface for Mynewt uses the **direct HAL**, we can describe
 what it might look like for an indirect HAL.  
 
-The API `hal_gpio.h` is identical.
+The API `hal_gpio.h` is identical with a direct or indirect HAL.
 
-There would be an additional header file `hal_gpio_int.h` which describes the 
-driver interface for underlying implementations.  It looks similar to the 
-hal API except is driven by function pointers.
-
+In the indirect HAL there is an additional header file `hal_gpio_int.h`
+ which describes the driver interface for underlying implementations.  It 
+looks similar to the HAL API except is driven by function pointers.
 
 ```no-highlight
 struct hal_gpio_funcs {
@@ -79,8 +79,7 @@ struct hal_gpio_int {
 
 const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin);
 ```
-
- The BSP specific function is what will map the specific pin (device_id) 
+The BSP specific function is what will map the specific pin (device_id) 
 to its implementation.
 
 This is different than the **direct HAL** which maps this virtual/physical 
@@ -88,7 +87,7 @@ device pairing in the MCU implementation.  For the **indirect HAL** the
 mapping has to be done in the BSP since that is the place where multiple 
 disparate devices can be enumerated into a single `device_id` space.
 
-An implementation file `hal/hal_gpio.c` would perform the mapping as 
+An interface file `hal/hal_gpio.c` would perform the mapping as 
 follows:
 
 ```no-highlight
@@ -129,9 +128,9 @@ const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
 }
 ```
 
-**NOTE**: In this example where there are 32 GPIO, it may be memory inefficient
-to have 32 structures around to basically call the same functions.  In 
-Mynewt today, the hal_gpio is a **direct HAL** and does not have this overhead.
-More HAL paradigms may be added in the future to address the flexibility of the 
-**indirect HAL** with the memory efficiency of the **direct HAL**
+**NOTE**: In this example there could be 10s of GPIO. It may be memory inefficient
+to have that many `hal_gpio_int` structures around to basically call the 
+same functions.  In Mynewt today, the hal_gpio is a **direct HAL** and does 
+not have this overhead. More HAL paradigms may be added in the future to address 
+the flexibility of the **indirect HAL** with the memory efficiency of the **direct HAL**
 
