@@ -10,12 +10,13 @@ Alternatively, you may choose to create your own branch, specific to an individu
 
 You can have several [projects](#project) in your app repository, since an application can be used in several projects. Each project in your app will, in turn, consist of several [packages](#package-or-pkg). A project could be a package itself as well. In addition to packages, your app repository will contain additional items such as [target](#target) or build definitions, [package list](#package-list-or-pkg-list) description files, scripts etc.
 
-For example, a walk through the "larva" app at [https://github.com/mynewt/larva.git](https://github.com/mynewt/larva.git) shows the structure sketched below. The app.yml file in the larva directory indicates that it is an app. A pkg will have the pkg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is pkg; for instance, the API for the hardware abstraction layer is a pkg, and so on. 
+For example, a walk through the main app at [https://github.com/apache/incubator-mynewt-larva](https://github.com/apache/incubator-mynewt-larva) shows the structure of the repository. The app.yml file in the larva directory indicates that it is an app. A pkg will have the pkg.yml file in it as shown below. By this nomenclature, each board support package for a particular chip is a pkg; for instance, the API for the hardware abstraction layer is a pkg, and so on. 
 
 ```no-highlight
 larva
   |- app.yml 
   |- compiler
+        |- arm-none-eabi-m0
         |- arm-none-eabi-m4
         |- sim
   |- hw (hardware)
@@ -26,7 +27,7 @@ larva
                 |- olimex_stm32-e407_devboard (used in Project Blinky)
                         |- pkg.yml
                         |- ...
-                |- stm32f3discovery (another board with stm32f3 mcu)
+                |- nrf51dk
                         |- pkg.yml
                         |- ...
                 |- yet another board
@@ -39,6 +40,9 @@ larva
                         |- hal_flash.h
                         |- hal_gpio.h
                         |- ... (header files for other peripherals)
+                |- src
+                        |- flash_map.c
+                        |- ... (other files)
         |- mcu (microcontroller)
                 |- stm (STMicro family)
                     |- stm32f3xx (STM32f3 series, 32-bit ARM Cortex-M4  core)
@@ -73,11 +77,14 @@ larva
                     |- ... (related source code files)
   |- project
   |- scripts
+  |- net/nimble (BLE stack)
+  |- ... (additional modules or stacks)
 
 
 ```
 
-The *newt* tool offers the `app` sub command to create and manage apps. In general, commands represent actions, and flags act as modifiers for specfied actions. A *newt* command can have subcommands and it can optionally run an action. A full description of the `app` command can be found in the *newt* tool reference in Chapter 3.
+The *newt* tool offers the `app` sub command to create and manage apps. In general, commands represent actions, and flags act as modifiers for specfied actions. A *newt* command can have subcommands and it can optionally run an action. A full description of the `app` command can be found in the [Newt Tool Manual](../../newt/command_list/newt_app.md).
+
 ```no-highlight
     newt app [flags]
     newt app [child-commands] 
@@ -130,7 +137,7 @@ It lists all the pkgs in the current app where each pkg has details, such as ver
     path: /Users/aditihilbert/dev/test_project/libs/os
     deps: libs/testutil@none#stable 
 ```
-For a comphrehensive list of all pkg commands, consult the *newt* tool reference in [Newt Tool](../../newt/newt_tool_reference.md).
+For a comprehensive list of all pkg commands, consult the *newt* tool reference in [Newt Tool](../../newt/newt_intro.md).
 
 ### Package list or pkg-list
 
