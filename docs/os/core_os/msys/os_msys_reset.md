@@ -20,10 +20,6 @@ None
 
 <br>
 
-#### Notes
-
-<br>
-
 #### Example
 
 ```no-highlight
