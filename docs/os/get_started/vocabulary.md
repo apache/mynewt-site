@@ -165,7 +165,7 @@ To that end, *newt* tool offers commands to create, set and manipulate targets. 
 
 Capability, as the name suggests, is functionality that is exposed by a pkg. A capability is tracked by its name and version. In some cases, a pkg may require capabilities exposed by another pkg, thus establishing a dependency, which is tracked through the pkg.yml files. 
 
-With *newt* tool you can ascertain a map of pkgs' capabilities, use it to check dependencies, and ensure all the necessary pkgs in a project belong to its target.
+With *newt* tool you can verify a map of pkgs' capabilities, use it to check dependencies, and ensure all the necessary pkgs in a project belong to its target.
 
 ### Identity
 
