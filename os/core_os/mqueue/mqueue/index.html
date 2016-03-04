@@ -305,7 +305,7 @@
               
   
   <li><a href="
-  ../os_mqueue_get/
+  ../os_mqueue_init/
 ">Functions</a>
     
   </li>
@@ -520,7 +520,87 @@
   <hr/>
 </div>
                         
-                            
+                            <h1 id="mqueue">Mqueue<a class="headerlink" href="#mqueue" title="Permanent link">&para;</a></h1>
+<p>Mqueue (Mbuf event queue) is a set of API built on top of the mbuf and event queue code. A typical networking stack operation is to put a packet on a queue and post an event to the task handling that queue. Mqueue was designed to provide a common API so that individual packages would not each have to create similar code.</p>
+<p>The mqueue data structure consists of a queue head pointer (a "stailq" queue; a singly linked list with head structure having a pointer to the start and end of the list) and an os event structure. Packets (packet header mbufs) are added to the queue using the <em>omp_next</em> pointer in the <code>os_mbuf_pkthdr</code> structure of the mbuf. The event is used to post to the task an event of type OS_EVENT_T_MQUEUE_DATA. </p>
+<p><br>  </p>
+<h2 id="using-mqueue">Using Mqueue<a class="headerlink" href="#using-mqueue" title="Permanent link">&para;</a></h2>
+<p>The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call my_task_rx_data_func. Presumably, some other code will call this API. </p>
+<p><br></p>
+<pre><code class="no-highlight">uint32_t pkts_rxd;
+struct os_mqueue rxpkt_q;
+struct os_eventq my_task_evq;
+
+void
+process_rx_data_queue(void)
+{
+    struct os_mbuf *om;
+
+    /* Drain all packets off queue and process them */
+    while ((om = os_mqueue_get(&amp;rxpkt_q)) != NULL) {
+        ++pkts_rxd;
+        os_mbuf_free_chain(om);
+    }
+}
+
+int
+my_task_rx_data_func(struct os_mbuf *om)
+{
+    int rc;
+
+    rc = os_mqueue_put(&amp;rxpkt_q, &amp;my_task_evq, om);
+    if (rc != 0) {
+        return -1;
+    }
+
+    return 0;
+}
+
+void
+my_task_handler(void *arg)
+{
+    struct os_event *ev;
+    struct os_callout_func *cf;
+    int rc;
+
+    /* Initialize eventq */
+    os_eventq_init(&amp;my_task_evq);
+
+    /* Initialize mqueue */
+    os_mqueue_init(&amp;rxpkt_q, NULL);
+
+    while (1) {
+        ev = os_eventq_get(&amp;my_task_evq);
+        switch (ev-&gt;ev_type) {
+
+        case OS_EVENT_T_MQUEUE_DATA:
+            process_rx_data_queue();
+            break;
+
+        default:
+            assert(0);
+            break;
+        }
+    }
+}
+
+</code></pre>
+
+<h2 id="data-structures">Data Structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">struct os_mqueue {
+    STAILQ_HEAD(, os_mbuf_pkthdr) mq_head;
+    struct os_event mq_ev;
+};
+</code></pre>
+
+<p><br></p>
+<h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
+<p>The functions available in Mqueue are:</p>
+<ul>
+<li><a href="../os_mqueue_init/">os_mqueue_init</a></li>
+<li><a href="../os_mqueue_get/">os_mqueue_get</a></li>
+<li><a href="../os_mqueue_put/">os_mqueue_put</a></li>
+</ul>
                         
                     </div>
                 </div>

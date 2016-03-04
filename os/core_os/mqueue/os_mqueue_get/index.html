@@ -305,23 +305,23 @@
               
   
   <li><a href="
-  ./
+  ../os_mqueue_init/
 ">Functions</a>
     
       <ul class="current-toc">
           
               
   
-    <li class="active">
-      os_mqueue_get
+    <li>
+      <a href="../os_mqueue_init/">os_mqueue_init</a>
     </li>
   
 
           
               
   
-    <li>
-      <a href="../os_mqueue_init/">os_mqueue_init</a>
+    <li class="active">
+      os_mqueue_get
     </li>
   
 
@@ -548,7 +548,49 @@
   <hr/>
 </div>
                         
-                            
+                            <h2 id="os_mqueue_get"><font color="#F2853F" style="font-size:24pt">os_mqueue_get</font><a class="headerlink" href="#os_mqueue_get" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">struct os_mbuf *os_mqueue_get(struct os_mqueue *mq)
+</code></pre>
+
+<p>Retrieves a packet off an Mqueue. Returns a pointer to the mbuf at the head of the mbuf chain. NULL if no packets are on the queue.</p>
+<p><br></p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mq</td>
+<td>Pointer to Mqueue structure</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
+<p>The packet at the head of the queue or NULL if no packets are on the queue.</p>
+<p><br></p>
+<h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
+<pre><code class="no-highlight">uint32_t pkts_rxd;
+struct os_mqueue rxpkt_q;
+
+void
+process_rx_data_queue(void)
+{
+    struct os_mbuf *om;
+
+    /* Drain all packets off queue and process them */
+    while ((om = os_mqueue_get(&amp;rxpkt_q)) != NULL) {
+        ++pkts_rxd;
+        os_mbuf_free_chain(om);
+    }
+}
+</code></pre>
+
+<hr />
                         
                     </div>
                 </div>
