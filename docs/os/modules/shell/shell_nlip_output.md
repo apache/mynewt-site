@@ -4,7 +4,7 @@
 int shell_nlip_output(struct os_mbuf *m)
 ```
 
-Queue outgoing newtmgr message for transmission. Shell package will encode this, and frame it while sending it out via console.
+Queue outgoing newtmgr message for transmission. Shell package will encode this and frame it while sending it out via console.
 
 #### Arguments
 

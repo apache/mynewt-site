@@ -1,16 +1,18 @@
 # Shell
 
-The shell is package sitting on top of console, handling 2 jobs; processing console input and implementing newtmgr line protocol over serial line. Shell runs on it's own task.
+The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing newtmgr line protocol over serial line. Shell runs on its own task.
 
 ## Description
 
-First job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then shell looks for the subsystem to handle this command based on the first token of input.
+* Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.
 
-Subsystems register their command handlers using *shell_cmd_register()*. When shell calls the command handler, it passes the other tokens as arguments.
+    Subsystems register their command handlers using `shell_cmd_register()`. When shell calls the command handler, it passes the other tokens as arguments.
 
-A few commands are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
+    A few commands are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
 
-Second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using *shell_nlip_input_register()*, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using *shell_nlip_output()*.
+* Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using `shell_nlip_input_register()`, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using `shell_nlip_output()`.
+
+<br>
 
 Create a sim target to check out these commands available in shell.
 

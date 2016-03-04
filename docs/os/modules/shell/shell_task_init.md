@@ -5,8 +5,7 @@ int shell_task_init(uint8_t prio, os_stack_t *stack, uint16_t stack_size,
                     int max_input_length);
 ```
 
-Initializes the shell package. This creates a task for shell, and registers few commands on it's own (*echo*, *?*, for example).
-It also allocates memory for buffering console input.
+Initializes the shell package. This creates a task for shell, and registers few commands on its own (*echo*, *?*, for example). It also allocates memory for buffering console input.
 
 #### Arguments
 
