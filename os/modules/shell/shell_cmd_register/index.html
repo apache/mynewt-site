@@ -205,7 +205,7 @@
               
   
   <li><a href="
-  ../shell_cmd/
+  ../shell_task_init/
 ">Functions</a>
     
       <ul class="current-toc">
@@ -213,23 +213,7 @@
               
   
     <li>
-      <a href="../shell_cmd/">shell_cmd</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_cmd_list_lock/">shell_cmd_list_lock</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_cmd_list_unlock/">shell_cmd_list_unlock</a>
+      <a href="../shell_task_init/">shell_task_init</a>
     </li>
   
 
@@ -245,30 +229,6 @@
               
   
     <li>
-      <a href="../shell_console_rx_cb/">shell_console_rx_cb</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_echo_cmd/">shell_echo_cmd</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_help_cmd/">shell_help_cmd</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../shell_nlip_input_register/">shell_nlip_input_register</a>
     </li>
   
@@ -277,79 +237,7 @@
               
   
     <li>
-      <a href="../shell_nlip_mqueue_process/">shell_nlip_mqueue_process</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_nlip_mtx/">shell_nlip_mtx</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
       <a href="../shell_nlip_output/">shell_nlip_output</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_nlip_process/">shell_nlip_process</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_os_mpool_display_cmd/">shell_os_mpool_display_cmd</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_os_tasks_display_cmd/">shell_os_tasks_display_cmd</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_process_command/">shell_process_command</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_read_console/">shell_read_console</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_task_func/">shell_task_func</a>
-    </li>
-  
-
-          
-              
-  
-    <li>
-      <a href="../shell_task_init/">shell_task_init</a>
     </li>
   
 
@@ -517,11 +405,12 @@
   <hr/>
 </div>
                         
-                            <pre><code class="no-highlight">    int 
-    shell_cmd_register(struct shell_cmd *sc, char *cmd, shell_cmd_func_t func)
+                            <h2 id="shell_cmd_register"><font color="#F2853F" style="font-size:24pt"> shell_cmd_register </font><a class="headerlink" href="#shell_cmd_register" title="Permanent link">&para;</a></h2>
+<pre><code class="no-highlight">int shell_cmd_register(struct shell_cmd *sc)
 </code></pre>
 
-<p>Register a shell command. When shell reads a line of input which starts with <code>cmd</code>, it calls the handler <code>func</code>. Caller must allocate data structure <code>sc</code>. Shell internally links this to it's list of command handlers.</p>
+<p>Registers a handler for incoming console commands. Within the structure there is the command string and the handler for those commands. Caller must allocate the memory for this structure and keep it around as shell links this to its own internal data structures.</p>
+<p>Command handler is of type <code>int(*shell_cmd_func_t)(int argc, char **argv)</code>. Command line arguments are passed to it as an array of character pointers.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -533,41 +422,28 @@
 <tbody>
 <tr>
 <td>sc</td>
-<td>Pointer to data structure shell egg uses to store info about the registered command</td>
-</tr>
-<tr>
-<td>cmd</td>
-<td>Command getting registered</td>
-</tr>
-<tr>
-<td>func</td>
-<td>Function to call when command is received from console</td>
+<td>Structure containing info about the command.</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values<a class="headerlink" href="#returned-values" title="Permanent link">&para;</a></h4>
-<p>List any values returned.
-Error codes?</p>
-<h4 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h4>
-<p>Shell splits the arguments following the command into an array of character pointers, and passes these to registered handler. The function will be called in shell task's context, so the command handler should look out for possible issues due to concurrency.</p>
+<p>Returns 0 on success.
+Non-zero on failure.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
-<p>Here is FS registering command for 'ls'.</p>
-<pre><code class="no-highlight">static struct shell_cmd fs_ls_struct;
+<pre><code class="no-highlight">static int fs_ls_cmd(int argc, char **argv);
+
+static struct shell_cmd fs_ls_struct = {
+    .sc_cmd = &quot;ls&quot;,
+    .sc_cmd_func = fs_ls_cmd
+};
 
 void
 fs_cli_init(void)
 {
-    int rc;
-
-    rc = shell_cmd_register(&amp;fs_ls_struct, &quot;ls&quot;, fs_ls_cmd);
-    if (rc != 0) {
-        return;
-    }
+    shell_cmd_register(&amp;fs_ls_struct);
+    ....
 }
-
 </code></pre>
-
-<hr />
                         
                     </div>
                 </div>

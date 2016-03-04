@@ -205,7 +205,7 @@
               
   
   <li><a href="
-  ../shell_cmd/
+  ../shell_task_init/
 ">Functions</a>
     
   </li>
@@ -370,10 +370,19 @@
 </div>
                         
                             <h1 id="shell">Shell<a class="headerlink" href="#shell" title="Permanent link">&para;</a></h1>
-<p>The shell is the program which puts up a prompt for a command, processes commands, and returns output. Interacting with the console of a device is done using a shell program.</p>
+<p>The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing newtmgr line protocol over serial line. Shell runs on its own task.</p>
 <h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>Shell processes console input one line at a time. Eggs can register handlers for their commands. Shell parses the input, matches it against the set of registered commands, and then calls the handler it finds.</p>
+<ul>
+<li>
+<p>Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.</p>
+<p>Subsystems register their command handlers using <code>shell_cmd_register()</code>. When shell calls the command handler, it passes the other tokens as arguments.</p>
 <p>A few commands are currently available in the shell - <code>tasks</code>, <code>log</code>, and <code>stat stat</code>. A $ prompt sign will be coming soon!</p>
+</li>
+<li>
+<p>Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using <code>shell_nlip_input_register()</code>, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using <code>shell_nlip_output()</code>.</p>
+</li>
+</ul>
+<p><br></p>
 <p>Create a sim target to check out these commands available in shell.</p>
 <pre><code class="no-highlight">user@~/dev/larva$ newt target create blinky_sim
 Creating target blinky_sim
@@ -443,29 +452,44 @@ stat stat
 </code></pre>
 
 <h2 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<p>This data structure is used in holding information about registered command handlers.</p>
+<pre><code class="no-highlight">struct shell_cmd {
+    char *sc_cmd;
+    shell_cmd_func_t sc_cmd_func;
+    STAILQ_ENTRY(shell_cmd) sc_next;
+};
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sc_cmd</td>
+<td>Character string of the command</td>
+</tr>
+<tr>
+<td>sc_cmd_func</td>
+<td>Pointer to the command handler</td>
+</tr>
+<tr>
+<td>sc_next</td>
+<td>Bookkeeping linkage internal for shell</td>
+</tr>
+</tbody>
+</table>
 <h2 id="list-of-functions">List of Functions<a class="headerlink" href="#list-of-functions" title="Permanent link">&para;</a></h2>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in this OS feature are:</p>
 <ul>
-<li><a href="../shell_cmd/">shell_cmd</a></li>
-<li><a href="../shell_cmd_list_lock/">shell_cmd_list_lock</a></li>
-<li><a href="../shell_cmd_list_unlock/">shell_cmd_list_unlock</a></li>
-<li><a href="../shell_cmd_register/">shell_cmd_register</a></li>
-<li><a href="../shell_console_rx_cb/">shell_console_rx_cb</a></li>
-<li><a href="../shell_echo_cmd/">shell_echo_cmd</a></li>
-<li><a href="../shell_help_cmd/">shell_help_cmd</a></li>
-<li><a href="../shell_nlip_input_register/">shell_nlip_input_register</a></li>
-<li><a href="../shell_nlip_mqueue_process/">shell_nlip_mqueue_process</a></li>
-<li><a href="../shell_nlip_mtx/">shell_nlip_mtx</a></li>
-<li><a href="../shell_nlip_output/">shell_nlip_output</a></li>
-<li><a href="../shell_nlip_process/">shell_nlip_process</a></li>
-<li><a href="../shell_os_mpool_display_cmd/">shell_os_mpool_display_cmd</a></li>
-<li><a href="../shell_os_tasks_display_cmd/">shell_os_tasks_display_cmd</a></li>
-<li><a href="../shell_process_command/">shell_process_command</a></li>
-<li><a href="../shell_read_console/">shell_read_console</a></li>
-<li><a href="../shell_task_func/">shell_task_func</a></li>
 <li><a href="../shell_task_init/">shell_task_init</a></li>
+<li><a href="../shell_cmd_register/">shell_cmd_register</a></li>
+<li><a href="../shell_nlip_input_register/">shell_nlip_input_register</a></li>
+<li><a href="../shell_nlip_output/">shell_nlip_output</a></li>
 </ul>
                         
                     </div>
