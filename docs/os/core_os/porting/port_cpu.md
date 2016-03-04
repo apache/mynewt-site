@@ -6,7 +6,6 @@ A new CPU architecture typically requires the following:
 * New architecture-specific code for the OS
 * Helper libraries to help others porting to the same architecture
 
-
 These are discussed below:
 
 ## Create A New Compiler
@@ -31,7 +30,4 @@ There are several architecture-specific code functions that are required when im
 When porting to a new CPU architecture, use the existing architectures as samples when writing your implementation.
 
 Please contact the Mynewt development list for help and advice portingto new MCU.
-
-
-
 

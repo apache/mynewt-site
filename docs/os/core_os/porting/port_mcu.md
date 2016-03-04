@@ -1,6 +1,6 @@
 # Porting Mynewt to a new MCU
 
-Porting Mynew to a new MCU is not a difficult task if the core CPU architectures is already supported.
+Porting Mynewt to a new MCU is not a difficult task if the core CPU architectures is already supported.
 
 The depth of work depends on the amount of HAL (Hardware Abstraction Layer) support you need and provide in your port.
 
@@ -11,7 +11,6 @@ To get started:
 * Create a `hw/mcu/mymcu/variant/pkg.yml` file.  Copy from another mcu and fill out the relevant information
 * Create  `hw/mcu/mymcu/variant/include`,`hw/mcu/mymcu/variant/include/mcu`, and 
 `hw/mcu/mymcu/variant/src` directories to contain the code for your mcu.
-
 
 At this point there are two main tasks to complete.
 

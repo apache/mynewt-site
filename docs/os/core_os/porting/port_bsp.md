@@ -24,22 +24,21 @@ Select a name for your BSP.  For the remainder of this document, we'll assume th
 
 Create a directory `hw/bsp/myboard` using the name chosen above. Within this BSP directory, create the following subdirectories:
 
+Select a name for your BSP.  For the remainder of this document, 
+well assume the bsp is named `myboard`. In general its best to select a 
+name that describes the board/system you are creating.
+
 * `include`
 * `include/bsp`
 * `src`
 
 ##Create a Target using Mynewt
 
-Create a newt target for your test project for the BSP. To learn how to create a target, see this **howto** [Tutorial](../../get_started/project1). Once you are 
-familiar with creating targets, move on below to create a target to use to 
-test your BSP.
+Create a newt target for your test project for the BSP. To learn how to create a target, see this **howto** [Tutorial](../../get_started/project1). Once you are familiar with creating targets, move on below to create a target to use to test your BSP.
 
-Its recommended to use a simple `project` like `blinky` to minimize time to get a 
-working Mynewt system.  For this document, we will assume the `target` is called 
-`myboard_blinky` and uses project `blinky`.  
+It is recommended that you use a simple `project` like `blinky` to minimize time to get a working Mynewt system.  For this document, we will assume the `target` is called `myboard_blinky` and uses project `blinky`.  
 
-Set the `bsp` of the project to `/hw/bsp/myboard`.
-While creating your target, you will need to specify your `arch`and `compiler`. If your platform requires an architecture or compiler that are not defined in Mynewt, you will need to add them first.  To add a CPU architecture see [CPU Porting](port_cpu.md).
+Set the `bsp` of the project to `/hw/bsp/myboard`. While creating your target, you will need to specify your `arch`and `compiler`. If your platform requires an architecture or compiler that are not defined in Mynewt, you will need to add them first.  To add a CPU architecture see [CPU Porting](port_cpu.md).
 
 When you are complete, your `target` may look similar to this.
 
@@ -116,8 +115,7 @@ The following table describes additional attributes relevant to the BSP `pkg.yml
 | pkg.debugscript |  A script that can run the GDB debugger on your board |
 | pkg.deps |  Any dependencies on your BSP |
 
-The BSP will invariably depend upon an MCU ( in this sample it's `hw/mcu/mymcu/variant`) since the Mynewt OS runs on an MCU within your target.  If your MCU is not supported by Mynewt, see 
-[MCU Porting](port_mcu.md) for details on how to create an MCU in Mynewt.
+The BSP will invariably depend upon an MCU ( in this sample it's `hw/mcu/mymcu/variant`) since the Mynewt OS runs on an MCU within your target.  If your MCU is not supported by Mynewt, see [MCU Porting](port_mcu.md) for details on how to create an MCU in Mynewt.
 
 The package file may also contain:
 
@@ -163,14 +161,14 @@ Create an alternate linker script for the bootloader since it is typically linke
 
 At this point, it will be possible to run the `newt` tool to build your target. 
 
-You may find a few Mynewt specific functions missing.  We will describe these below.
+You may run into complaints from the linker script that a few Mynewt specific functions are missing.  We will describe these below.
 
 | **Function** | **Description** |
 |-----------|-------------|
 | os_bsp_init() | code to initialize the bsp |
 | os_bsp_systick_init() | code to setup the system tick for the OS |
 
-You may also find several libc definitions that can be stubbed in your first BSP.  But you must implement the following function to provide memory to the OS and system.
+There are also several libc definitions that can be stubbed in your first BSP. Examples are `_write`, `_read`, etc. that can be found in `libc_stubs.c`. But you _must_ implement the following function to provide memory to the OS and system.
 
 | **Function** | **Description** |
 |-----------|-------------|
