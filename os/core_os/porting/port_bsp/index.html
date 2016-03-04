@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/porting/port_bsp/">
+        <link rel="shortcut icon" href="../../../../img/favicon.ico">
+
+	<title>BSP Porting - Apache Mynewt</title>
+
+        <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../../css/highlight.css">
+        <link href="../../../../css/base.css" rel="stylesheet">
+        <link href="../../../../css/custom.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-72162311-1', 'mynewt.incubator.apache.org');
+                ga('send', 'pageview');
+            </script>
+        
+    </head>
+
+
+    <body class="BSP Porting">
+
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="logo-container">
+        <img src="/img/logo.svg">
+    </div>
+    <div class="container-fluid">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    <a href="/documentation/">Docs</a>
+                </li>
+                <li>
+                    <a href="/download/">Download</a>
+                </li>
+                <li>
+                    <a href="/community/">Community</a>
+                </li>
+                <li>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container-fluid">
+            
+                <div class="row sm-extra-padding">
+                    <div class="col-md-3 bg-grey sidebar-container"><div class="bs-sidebar hidden-print" role="complementary">
+    <div class="sidebar-top">
+        <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
+        <div class="small" role="search">
+            <form id ="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" placeholder="Search documentation" />
+                    <button class="search-button" type="submit"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="nav bs-sidenav">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  <li><a href="
+  ../../../get_started/introduction/
+">Apache Mynewt Manual</a>
+    
+      <ul class="current-toc">
+          
+              
+  
+    <li>
+      <a href="../../../get_started/introduction/">Introduction</a>
+    </li>
+  
+
+          
+              
+  
+  <li><a href="
+  ../../../get_started/project1/
+">Get Started</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../tutorials/STM32F303/
+">Tutorials</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  
+  
+  
+  
+  ../../mynewt_os/
+
+
+">OS User Guide</a>
+    
+      <ul class="current-toc">
+          
+              
+  
+  <li><a href="
+  
+  
+  ../../mynewt_os/
+
+">OS Core</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../port_os/
+">Porting to your Platform</a>
+    
+      <ul class="current-toc">
+          
+              
+  
+    <li>
+      <a href="../port_os/">Overview</a>
+    </li>
+  
+
+          
+              
+  
+    <li class="active">
+      BSP Porting
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../port_mcu/">MCU Porting</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../port_cpu/">CPU Porting</a>
+    </li>
+  
+
+          
+      </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/console/console/
+">Console</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/shell/shell/
+">Shell</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/bootloader/bootloader/
+">Bootloader</a>
+    
+  </li>
+
+          
+              
+  
+    <li>
+      <a href="../../../modules/filesystem/">File System Abstraction</a>
+    </li>
+  
+
+          
+              
+  
+    <li>
+      <a href="../../../modules/nffs/">Newtron Flash File System</a>
+    </li>
+  
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/hal/hal/
+">Hardware Abstraction Layer</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/testutil/testutil/
+">Test Utilities</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/imgmgr/imgmgr/
+">Image Manager</a>
+    
+  </li>
+
+          
+              
+  
+    <li>
+      <a href="../../../modules/baselibc/">Baselibc library</a>
+    </li>
+  
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/elua/elua/
+">Embedded Lua</a>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  ../../../modules/json/json/
+">JSON</a>
+    
+  </li>
+
+          
+      </ul>
+    
+  </li>
+
+          
+              
+  
+  <li><a href="
+  
+  
+  ../../../../network/ble/ble_intro/
+
+">Networking User Guide</a>
+    
+  </li>
+
+          
+      </ul>
+    
+  </li>
+
+        
+      
+        
+          
+  
+  <li><a href="
+  ../../../../newt/newt_intro/
+">Newt Tool Manual</a>
+    
+  </li>
+
+        
+      
+        
+          
+  
+  <li><a href="
+  ../../../../newtmgr/overview/
+">Newt Manager Manual</a>
+    
+  </li>
+
+        
+      
+    </ul>
+</div></div>
+                    
+                    <div class="show-sidebar-container">
+                        <button class="show-sidebar">Docs Menu</button>
+                    </div>
+                    
+                    <div class="col-md-9 documentation-viewer" role="main">
+                        <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>OS User Guide &raquo;</li>
+        
+      
+        
+          <li>Porting to your Platform &raquo;</li>
+        
+      
+    
+    <li>BSP Porting</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+                        
+                            <h1 id="create-a-bsp-for-your-target">Create a BSP for your Target<a class="headerlink" href="#create-a-bsp-for-your-target" title="Permanent link">&para;</a></h1>
+<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
+<p>If you are using a board or system not currently supported by Mynewt, you will need to create a BSP for the new target.   If another similar BSP exists it is recommended to copy that BSP as a starting point.  For example, if another BSP exists using the same MCU, start with a copy of that BSP.</p>
+<p>Either way, this document describes the steps necessary to create a new BSP from scratch.  </p>
+<h2 id="keep-your-reference-documents-handy">Keep your Reference Documents handy<a class="headerlink" href="#keep-your-reference-documents-handy" title="Permanent link">&para;</a></h2>
+<p>To build a proper BSP, you will typically need the following:</p>
+<ul>
+<li>The datasheet for the MCU you have chosen</li>
+<li>The schematic of your board</li>
+<li>The information on the CPU core within your MCU if it is not included in your MCU documentation</li>
+<li>This Mynewt documentation</li>
+</ul>
+<h2 id="name-your-bsp">Name your BSP<a class="headerlink" href="#name-your-bsp" title="Permanent link">&para;</a></h2>
+<p>Select a name for your BSP.  For the remainder of this document, we'll assume the bsp is named <code>myboard</code>. In general its best to select a name that describes the board/system you are creating.</p>
+<h2 id="create-a-bsp-directory">Create a BSP directory<a class="headerlink" href="#create-a-bsp-directory" title="Permanent link">&para;</a></h2>
+<p>Create a directory <code>hw/bsp/myboard</code> using the name chosen above. Within this BSP directory, create the following subdirectories:</p>
+<ul>
+<li><code>include</code></li>
+<li><code>include/bsp</code></li>
+<li><code>src</code></li>
+</ul>
+<h2 id="create-a-target-using-mynewt">Create a Target using Mynewt<a class="headerlink" href="#create-a-target-using-mynewt" title="Permanent link">&para;</a></h2>
+<p>Create a newt target for your test project for the BSP. To learn how to create a target, see this <strong>howto</strong> <a href="../../../get_started/project1">Tutorial</a>. Once you are 
+familiar with creating targets, move on below to create a target to use to 
+test your BSP.</p>
+<p>Its recommended to use a simple <code>project</code> like <code>blinky</code> to minimize time to get a 
+working Mynewt system.  For this document, we will assume the <code>target</code> is called 
+<code>myboard_blinky</code> and uses project <code>blinky</code>.  </p>
+<p>Set the <code>bsp</code> of the project to <code>/hw/bsp/myboard</code>.
+While creating your target, you will need to specify your <code>arch</code>and <code>compiler</code>. If your platform requires an architecture or compiler that are not defined in Mynewt, you will need to add them first.  To add a CPU architecture see <a href="../port_cpu/">CPU Porting</a>.</p>
+<p>When you are complete, your <code>target</code> may look similar to this.</p>
+<pre><code class="no-highlight">    $newt target show 
+        myboard_blinky
+            arch=cortex_m0
+            bsp=hw/bsp/myboard
+            compiler=arm-none-eabi-m0
+            compiler_def=debug
+            name=myboard_blinky
+            project=blinky
+</code></pre>
+
+<h2 id="create-required-files-for-compilation">Create Required Files For Compilation<a class="headerlink" href="#create-required-files-for-compilation" title="Permanent link">&para;</a></h2>
+<p>Create the following files within the BSP directory tree. For now, they can be empty files. We will fill them out one at a time.</p>
+<table>
+<thead>
+<tr>
+<th><strong>File Path Name</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LICENSE</td>
+<td>A File to present the source license for your BSP</td>
+</tr>
+<tr>
+<td>README.md</td>
+<td>A markdown file to write documentation for your BSP</td>
+</tr>
+<tr>
+<td>pkg.yml</td>
+<td>A package file to describe your BSP contents</td>
+</tr>
+<tr>
+<td>include/bsp/bsp.h</td>
+<td>A header file to include definitions required by system from the BSP</td>
+</tr>
+<tr>
+<td>src/os_bsp.c</td>
+<td>A C source file to provide functions required by the OS from your BSP</td>
+</tr>
+<tr>
+<td>src/sbrk.c</td>
+<td>A C source file to memory from your heap to the OS</td>
+</tr>
+<tr>
+<td>src/libc_stubs.c</td>
+<td>A C source file to provide stubs/methods required by libc</td>
+</tr>
+<tr>
+<td>myboard.ld</td>
+<td>A linker script to provide the memory map for your linked code</td>
+</tr>
+</tbody>
+</table>
+<p>Optionally, create these files as necessary to provide all functionality from Mynewt.</p>
+<table>
+<thead>
+<tr>
+<th><strong>File Path Name</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>myboard_boot.ld</td>
+<td>A linker script to provide the memory map for your bootloader</td>
+</tr>
+<tr>
+<td>myboard_download.sh</td>
+<td>A bash script to download code into your platform</td>
+</tr>
+<tr>
+<td>myboard_debug.sh</td>
+<td>A bash script to intiate a gdb session with your platform</td>
+</tr>
+<tr>
+<td>src/hal_bsp.c</td>
+<td>A C source file to provide functions required by the HAL from your BSP</td>
+</tr>
+</tbody>
+</table>
+<h2 id="fill-out-your-package-file">Fill Out your Package File<a class="headerlink" href="#fill-out-your-package-file" title="Permanent link">&para;</a></h2>
+<p>Edit the package file to describe your BSP. </p>
+<p>The package file must contain:</p>
+<pre><code class="no-highlight">    pkg.name: &quot;hw/bsp/myboard&quot;
+    pkg.linkerscript: &quot;myboard.ld&quot;
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>Attribute</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pkg.name</td>
+<td>The name of your bsp package</td>
+</tr>
+<tr>
+<td>pkg.linkerscript</td>
+<td>The linker script that controls the memory placement of the compiled code sections from the Mynewt OS and your applications.</td>
+</tr>
+</tbody>
+</table>
+<p>The linker script is a key component of the BSP and specifies where each section of code and data are stored within your CPU which can vary with the BSP depending on your chosen memory layout.  For a tutorial on writing linker scripts, see <a href="#create-or-copy-linker-script">Create or Copy Linker Script(s)</a>.</p>
+<p>The package file typically contains:</p>
+<pre><code class="no-highlight">    pkg.linkerscript.bootloader.OVERWRITE: &quot;myboard_boot.ld&quot;
+    pkg.downloadscript: &quot;myboard_download.sh&quot;
+    pkg.debugscript: &quot;myboard_debug.sh&quot;
+    pkg.deps: 
+    - hw/mcu/mymcu/variant
+</code></pre>
+
+<p>where <code>mymcu/variant</code> should be replaced with the specific MCU and variant used in your design.</p>
+<p>The following table describes additional attributes relevant to the BSP <code>pkg.yml</code> file.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Attribute</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pkg.linkerscript.bootloader.OVERWRITE</td>
+<td>A special linker for creating a bootloader for Mynewt</td>
+</tr>
+<tr>
+<td>pkg.downloadscript</td>
+<td>A script that can download a flash image into your target platform</td>
+</tr>
+<tr>
+<td>pkg.debugscript</td>
+<td>A script that can run the GDB debugger on your board</td>
+</tr>
+<tr>
+<td>pkg.deps</td>
+<td>Any dependencies on your BSP</td>
+</tr>
+</tbody>
+</table>
+<p>The BSP will invariably depend upon an MCU ( in this sample it's <code>hw/mcu/mymcu/variant</code>) since the Mynewt OS runs on an MCU within your target.  If your MCU is not supported by Mynewt, see 
+<a href="../port_mcu/">MCU Porting</a> for details on how to create an MCU in Mynewt.</p>
+<p>The package file may also contain:</p>
+<pre><code class="no-highlight">    pkg.cflags: -D__MY_SPECIAL_BSP_OPTIONS_
+    pkg.deps:
+    - libs/cmsis-core
+
+</code></pre>
+
+<table>
+<thead>
+<tr>
+<th><strong>Attribute</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pkg.cflags</td>
+<td>Any specific compiler flags for your bsp</td>
+</tr>
+<tr>
+<td>pkg.deps</td>
+<td>Any other libraries that may be required.  Some architectures (like ARM) have special libraries to make BSP creation easier.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="create-or-copy-linker-script">Create or Copy Linker Script<a class="headerlink" href="#create-or-copy-linker-script" title="Permanent link">&para;</a></h2>
+<p>It's probably best to start with a linker script from another BSP using the same MCU.  If this is not available, consult your MCU documentation and library samples to find a linker script to start with.</p>
+<p>Typically, a linker script has to specify the following sections for code:</p>
+<ul>
+<li>.text -- the location and alignment of the memory section to store your code</li>
+<li>.data -- the location and alignment of the memory section to store initialized data</li>
+<li>.bss -- the location and alignment of the memory section to store uninitialized data</li>
+<li>.heap -- the location and alignment of the memory section to provide system memory</li>
+</ul>
+<p>The linker script should specify the location and size of the different memory regions in your BSP and map the code sections described above into these regions.  </p>
+<p>The linker script should also include an ENTRY point. This is used by the debugger to know where to start the program counter when the target is debugged.</p>
+<p>There may be additional requirements from the MCU or OS that you may find easiest to place in the linker script. Some specific variables that the OS and MCU depends on are :</p>
+<table>
+<thead>
+<tr>
+<th><strong>Variable</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>__bss_start__</td>
+<td>a variable located at the start of the BSS section</td>
+</tr>
+<tr>
+<td>__bss_end__</td>
+<td>a variable located at the end of the BSS section</td>
+</tr>
+<tr>
+<td>__isr_vector</td>
+<td>Some CPUs map their interrupt vectors. They may need to be specified in the linker</td>
+</tr>
+<tr>
+<td>_user_heap_start</td>
+<td>the start of the heap for unallocated memory</td>
+</tr>
+<tr>
+<td>_user_heap_end</td>
+<td>the end of the heap for unallocated memory</td>
+</tr>
+</tbody>
+</table>
+<p>Create an alternate linker script for the bootloader since it is typically linked to use different addresses to boot the main image.  </p>
+<h2 id="add-functions-and-defines">Add Functions and Defines<a class="headerlink" href="#add-functions-and-defines" title="Permanent link">&para;</a></h2>
+<p>At this point, it will be possible to run the <code>newt</code> tool to build your target. </p>
+<p>You may find a few Mynewt specific functions missing.  We will describe these below.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Function</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>os_bsp_init()</td>
+<td>code to initialize the bsp</td>
+</tr>
+<tr>
+<td>os_bsp_systick_init()</td>
+<td>code to setup the system tick for the OS</td>
+</tr>
+</tbody>
+</table>
+<p>You may also find several libc definitions that can be stubbed in your first BSP.  But you must implement the following function to provide memory to the OS and system.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Function</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_sbrk</td>
+<td>Returns memory from heap (used by malloc)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Implement <code>_sbrk()</code></li>
+</ul>
+<p><code>sbrk()</code> is required by libc to get memory from the heap for things like malloc. Although not strongly BSP dependent, this is currently in the BSP to allow  flexibility in providing system memory.  See other BSPs for providing <code>sbrk</code> functionality.</p>
+<ul>
+<li>Implement <code>os_bsp_init()</code></li>
+</ul>
+<p><code>os_bsp_init</code> should initialize anything required by the OS by the BSP. Typically this is a very small set.  </p>
+<p>NOTE: Currently we are making calls to <code>_sbrk()</code> and <code>close(0)</code> from <code>os_bsp_init</code> to get around a linker issue where some of libc is not getting included.  Please include this in your <code>os_bsp_init</code>.</p>
+<pre><code class="no-highlight">    /*
+     * XXX these references are here to keep the functions in for libc to find.
+     */
+    _sbrk(0);
+    _close(0);
+
+</code></pre>
+
+<ul>
+<li>Other Unresolved Defines or Functions</li>
+</ul>
+<p>There may be other unresolved defines or functions that are required by the specific MCU within your BSP. Below lists some sample defines.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Undefined Variable</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CONSOLE_UART_PORT</td>
+<td>Which communications port on your target runs the console</td>
+</tr>
+<tr>
+<td>LED_BLINK_PIN</td>
+<td>which pin on your target runs the blinky LED</td>
+</tr>
+</tbody>
+</table>
+<p>The set of missing functionality depends upon the libraries and dependencies you have included in the project.  That's why its best to keep your first project pretty simple then add incrementally.  For example, if you include Newtron file system, you will need to define a file system map for your BSP.</p>
+<p>Missing functionality may take the form of <code>#define</code> items required to compile, or they may take the form of missing functions.  </p>
+<ul>
+<li><code>cmsis_nvic.h</code></li>
+</ul>
+<p>If you are using an ARM cortex architecture, you need to define the number of interrupts supported by your system.  If you are not using ARM Cortex architecture this may not be required (but something else might be).</p>
+<h2 id="add-debug-script">Add Debug Script<a class="headerlink" href="#add-debug-script" title="Permanent link">&para;</a></h2>
+<p>The debug script in the bsp directory allows the newt tool to automatically connect to the debugger, and create a debug session with the target.  This requires knowledge of your target debug interface. Most of the Mynewt BSP targets use <a href="http://openocd.org">openocd</a> to perform debugging.  This script typically creates an openocd connection to the target and then connects a gdb instance to this openocd connection.  There are several examples in existing BSPs to follow.</p>
+<p>The script must take a single argument which is the name of the image file minus the '.elf' suffix.</p>
+<p>The BSP is complete without this file, but newt will be unable to establish a debug session without it.</p>
+<h2 id="add-download-script">Add Download Script<a class="headerlink" href="#add-download-script" title="Permanent link">&para;</a></h2>
+<p>Similar to the debug script, the download script is a hook for newt to download the image to the target system.  The download script also typically uses openocd interface to erase flash, and progam the code into the device.</p>
+<p>NOTE: The download script needs to command openocd to program the image into the appropriate location, which is typically called <code>FLASH_OFFSET</code> in  these scripts. This location has to match the linker script location of the image link address.  For example, if your linker links the code to be run at <code>0xC000</code> your download script should download the image to the same
+address in the correct flash.  </p>
+<h1 id="add-license-and-documentation">Add License and Documentation<a class="headerlink" href="#add-license-and-documentation" title="Permanent link">&para;</a></h1>
+<p>The <code>LICENSE</code> file is an ASCII text file that describes the source license for this
+package.</p>
+<p>The <code>README.md</code> is a <a href="https://en.wikipedia.org/wiki/Markdown">markdown</a>
+ file that contains any documentation you 
+want to provide for the BSP.</p>
+                        
+                    </div>
+                </div>
+            
+            <div class="row">    
+                <footer>
+    <div class="row">
+        <div class="col-md-12">
+            
+                <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.<br>The Apache Software Foundation Apache Incubator</p>
+            
+        </div>
+    </div>
+    <div class="copyright-logos">
+        <div class="row">
+            <div class="col-xs-6 text-right">
+                <img src="/img/apache-feather.png" alt="Apache" title="Apache">
+            </div>
+            <div class="col-xs-6 text-left">
+                <img src="/img/apache-logo.png" alt="Apache Incubator" title="Apache Incubator">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <small class="footnote">
+                MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+            </small>
+        </div>
+    </div>
+</footer>
+            </div>
+        </div>
+
+        <script src="../../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../../js/highlight.pack.js"></script>
+        <script src="../../../../js/base.js"></script>
+        <script src="../../../../js/custom.js"></script>
+
+    </body>
+</html>
