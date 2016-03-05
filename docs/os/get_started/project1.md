@@ -130,7 +130,7 @@ Or if you're an adventurer then you can set up the environment on your computer,
 	        arch: sim
 ```
 
-3\. Now continue to populate and build out the sim project.
+3\. Now continue to populate and build out the sim target. 
 ```no-highlight
         $ newt target set sim_test project=test
         Target sim_test successfully set project to test
@@ -161,7 +161,8 @@ Or if you're an adventurer then you can set up the environment on your computer,
         $ cp compiler/sim/linux-compiler.yml compiler/sim/compiler.yml
 ```
 
-5\. Next, build the packages for the sim project using the *newt* tool. For extra details, specify the VERBOSE option.
+5\. Next, build the packages for the sim project using the *newt* tool. You should see lots of console output while *newt* is resolving dependencies and compiling the source code.  After a minute, it should complete with 
+the `Successfully run!` text.
 
 ```no-highlight
         $ newt target build sim_test
@@ -170,7 +171,8 @@ Or if you're an adventurer then you can set up the environment on your computer,
         ...
         Successfully run!
 ```
- You can specify the VERBOSE option if you want to see the gory details.
+For extra details, specify the VERBOSE option.
+
 ```no-highlight
         $newt -l VERBOSE target build sim_test
         2015/09/29 09:46:12 [INFO] Building project test
@@ -474,7 +476,7 @@ If you wish to build the image to run from the onboard flash memory on Olimex bo
 
 In summation, you achieved and learned a fair amount in this hands-on tutorial. If this is your first time to embedded systems, this must feel like the best hands-on and low-level "Hello World" progam ever. 
 
-Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like [Tutorials](../tutorials/project2.md).
+Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like [tutorials](../tutorials/nRF52.md).
 
 If you see anything missing or want to send us feeback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md)
 

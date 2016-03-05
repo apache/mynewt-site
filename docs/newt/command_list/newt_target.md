@@ -82,6 +82,7 @@ export  | newt target export -export-all  | Export all build targets from the cu
 export  | newt target export my_target | Export only target named 'my_target' and print it to standard output on the screen.
 import | newt target import ex_tgt_1 < exported_targets.txt | Imports the target configuration for 'ex_tgt_1' in 'exported_targets.txt'.
 import | newt target import -a < in_targets.txt | Imports all the targets specified in the file named `in_targets.txt`. A sample file is shown after this table.
+import | newt target import test3 | Awaits all the configuration variables for a target named 'test3'. This allows you to define all the attributes in one shot e.g. by cutting and pasting the contents of `in_targets.txt` file shown at the bottom of this page.  
 size   | newt target size blink_nordic | Inspects and lists the RAM and Flash memory use by each component (object files and libraries) of the target.
 download  | newt target -v -lVERBOSE download blinky | Downloads `blinky.elf.bin` to the hardware in verbose mode with logging turned on at VERBOSE level.
 debug | newt target debug blinky  | Downloads `blinky.elf.bin` to the hardware, opens up a gdb session with `blinky.elf` in the terminal, and halts for further input in gdb.

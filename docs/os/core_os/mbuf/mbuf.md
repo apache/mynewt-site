@@ -241,7 +241,4 @@ The functions/macros available in mbuf are:
 * [os_mbuf_pool_init](os_mbuf_pool_init.md)
 * [os_mbuf_prepend](os_mbuf_prepend.md)
 * [os_mbuf_pullup](os_mbuf_pullup.md)
-* [os_msys_get](os_msys_get.md)
-* [os_msys_get_pkthdr](os_msys_get_pkthdr.md)
-* [os_msys_register](os_msys_register.md)
-* [os_msys_reset](os_msys_reset.md)
+

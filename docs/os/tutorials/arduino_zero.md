@@ -4,8 +4,7 @@ This tutorial describes how to run Mynewt OS on Arduino Zero.
 
 ## Prerequisites
 
-Before tackling this tutorial, its best to read about Mynewt in the 
-[Introduction](../get_started/introduction) section of this documentation.
+Before tackling this tutorial, it's best to read about Mynewt in the [Introduction](../get_started/introduction) section of this documentation.
 
 ## Equipment
 
@@ -19,12 +18,11 @@ you have an arduino Zero.
 
 ## Steps
 
-Follow these simple steps and you be blinking in no time.
+Follow these simple steps and your board will be blinking in no time!
 
 ### Install Mynewt and Newt
 
-If you have not already done so, install Newt, Mynewt and other
-prerequisites as shown [here](ugh)
+If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/newt_mac.md) and cloned the Mynewt OS repository as shown in the [Get Started tutorial for Blinky](../get_started/project1.md)
 
 ### Fetch External Packages for Atmel SAMD21
 
@@ -37,7 +35,7 @@ the runtime github repository
 newt app add-pkg-list mynewt_arduino https://github.com/runtimeinc/mynewt_arduino_zero.git
 ```
 
-Once that completes install the arduino_zero bsp package
+Once that completes, install the arduino_zero bsp package.
 
 ```no-highlight
 newt pkg install hw/bsp/arduino_zero
@@ -46,8 +44,8 @@ newt pkg install hw/bsp/arduino_zero
 ### Create your bootloader Target
 
 You need to tell Newt what you want to build.  This is done by setting up a 
-target.   You may have already seen this target definition in this 
-[Example](/newt/tutorials/define_target/)
+target. It's easy - simply cut and paste the entire definition below.  You may have already seen how to set up a target definition one attribute (variable) at a time or by importing the entire definition in one command in this 
+[Example](/newt/tutorials/define_target/) or in the [Manual](/newt/command_list/newt_target.md).
 
 ```no-highlight
 newt target import arduino_zero_bootloader
@@ -140,7 +138,7 @@ Successfully run!
 
 Connect your computer to the Arduino Zero (from now on we'll call this the 
 target) with the Micro-USB cable through the Programming Port. Mynewt will
-download and debug the target through this port.
+download and debug the target through this port. You should see a little green LED come on. That means the board has power.
 
 No external debugger is required.  The Arduino Zero comes with an internal
 debugger that can be accessed by Mynewt.
@@ -186,7 +184,7 @@ Successfully run!
 
 ### Build the Downloadable Image
 
-This command attaches the image descriptor header with the specicifed version
+This command attaches the image descriptor header with the specified version
 number and prepares the image for download.
 
 ```no-highlight
@@ -200,8 +198,7 @@ Execute the command to download the image.
 ```no-highlight
 newt target download arduino_zero_blinky
 ```
-The newt tool should respond with. Then 10-15 seconds later it will return a 
-prompt indicating success.
+The newt tool should respond with the following message. Then 10-15 seconds later it will return a prompt indicating success.
  
 ```no-highlight
 Downloading with .../arduino_zero_download.sh
@@ -209,5 +206,5 @@ Downloading with .../arduino_zero_download.sh
 
 ### Watch the LED blink
 
-Congratulations!. You have create a Mynewt operating system running on the 
-Arduino Zero. The LED is toggled by one task running on the Mynewt OS.   
+Congratulations! You have created a Mynewt operating system running on the 
+Arduino Zero. The LED right next to the power LED should be blinking. It is toggled by one task running on the Mynewt OS.   
