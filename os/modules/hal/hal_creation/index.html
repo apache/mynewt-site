@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_creation/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>Overview - Apache Mynewt</title>
+	<title>Creating - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="Overview">
+    <body class="Creating">
 
 
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -228,15 +228,15 @@
               
   
   <li><a href="
-  ./
+  ../hal/
 ">Hardware Abstraction Layer</a>
     
       <ul class="current-toc">
           
               
   
-    <li class="active">
-      Overview
+    <li>
+      <a href="../hal/">Overview</a>
     </li>
   
 
@@ -260,8 +260,8 @@
           
               
   
-    <li>
-      <a href="../hal_creation/">Creating</a>
+    <li class="active">
+      Creating
     </li>
   
 
@@ -382,7 +382,7 @@
         
       
     
-    <li>Overview</li>
+    <li>Creating</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -390,50 +390,113 @@
   <hr/>
 </div>
                         
-                            <h1 id="hardware-abstraction-layer">Hardware Abstraction Layer<a class="headerlink" href="#hardware-abstraction-layer" title="Permanent link">&para;</a></h1>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<p>The Hardware Abstraction Layer (HAL) includes a set of APIs 
-(Application Programmer Interface) to connect to 
-the underlying hardware components including MCU components and peripheral
-components.</p>
-<p>The goal is to allow libraries, modules and applications written for Mynewt to 
-be shared within the Mynewt community and used across the variety of supported
-Mynewt platforms. A secondary goal is to provide a simple consistent API 
-to commonly used MCU components and peripherals to make development easier.
-Nothing in the HAL precludes the user of the underlying physical devices,
-it only limits the portability of the end application.</p>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>A Mynewt contributor might write a light-switch 
-module (<code>libs/light</code>) that provides the functionality of an intelligent light 
-switch.  This might involve using a timer, a General Purpose Output (GPO) 
-to set the light to the on or off state, and flash memory to log the times the 
-lights were turned on or off.  The contributor would like this module to 
-work with as many different hardware platforms as possible, but can't 
-possibly test across the complete set of hardware supported by Mynewt.</p>
-<p><strong>Solution</strong>:  The contributor uses the HAL APIs to control the peripherals.
-The Mynewt team ensures that the underlying HAL devices all work equivalently
-through the HAL APIs. The contributors library is independent of the specifics
-of the hardware.  </p>
-<h2 id="dependency">Dependency<a class="headerlink" href="#dependency" title="Permanent link">&para;</a></h2>
-<p>To include the HAL within your project,  simply add it to your package
-dependencies as follows:</p>
-<pre><code class="no-highlight">pkg.deps: 
-    . . .
-    hw/hal
+                            <h1 id="creating-new-hal-interfaces">Creating New HAL Interfaces<a class="headerlink" href="#creating-new-hal-interfaces" title="Permanent link">&para;</a></h1>
+<h2 id="hal-api">HAL API<a class="headerlink" href="#hal-api" title="Permanent link">&para;</a></h2>
+<p>A HAL always includes header file with function declarations 
+for the HAL functionality in <code>/hw/hal/include/hal</code>.
+The first argument of all functions in the interface include the virtual 
+device_id of the device you are controlling.  </p>
+<p>For example, in <a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h"><code>hal_gpio.h</code></a> 
+the device enumeration is the first argument to all methods and called <code>pin</code>.</p>
+<pre><code class="no-highlight">    void hal_gpio_set(int pin);
 </code></pre>
 
-<h2 id="platform-support">Platform Support<a class="headerlink" href="#platform-support" title="Permanent link">&para;</a></h2>
-<p>Not all platforms (MCU and BSP) support all HAL devices. Consult your MCU
-or BSP documentation to find out if you have hardware support for the 
-peripherals you are interested in using.  Once you verify support, then
-consult the MCU implementation and see if the specific HAL interface you are
-using is in the <code>mcu/xxx/src/hal_xxxx.c</code> implementation.  Finally, you 
-can build your project and ensure that there are no unresolved hal_xxx 
-externals.</p>
-<h2 id="implementing-hal-interfaces">Implementing HAL Interfaces<a class="headerlink" href="#implementing-hal-interfaces" title="Permanent link">&para;</a></h2>
-<p>It might be that a specific HAL interface is not supported on your MCU or
-platform.  See the specific HAL documentation for that interface for tips
-on implementing this for your MCU.</p>
+<p>The device_id (in this case called <code>pin</code>) is not a physical device 
+(actual hardware pin), but a virtual pin which is defined by the 
+implementation of the HAL (and documented in the implementation of the HAL)</p>
+<p>Below this, there are two different paradigms for HAL interface.  They are 
+discussed below.</p>
+<h2 id="direct-hal-interface">Direct HAL Interface<a class="headerlink" href="#direct-hal-interface" title="Permanent link">&para;</a></h2>
+<p>In one HAL paradigm called <strong>direct HAL</strong>, the header file is the only component 
+of the HAL interface.   Implementers of this HAL would create a source file
+that implements these methods.  </p>
+<p>This has the advantage of being simple, small, and low execution overhead.</p>
+<p>It has the disadvantage that its not possible to have two different implementations
+of the same <strong>direct HAL</strong> within the same image. Said another way, if I create
+a <strong>direct HAL</strong> <code>hal_foo.h</code>, there can be many implementations of 
+<code>xxx/hal_foo.c</code> but only one can be included in a project.  </p>
+<p>For example, support there is an ADC attached directly to the MCU and an ADC
+that is attached via SPI.  There would be no way in this simple paradigm
+to use both these devices from the HAL API at the same time.</p>
+<p>This brings up the second paradigm.</p>
+<h2 id="indirect-hal-interface">Indirect HAL Interface<a class="headerlink" href="#indirect-hal-interface" title="Permanent link">&para;</a></h2>
+<p>The second paradigm, <strong>indirect HAL</strong>  preserves the simple function 
+API with enumerated device_id but adds a small layer of code in the 
+HAL to allow different implementations to connect at runtime.</p>
+<p>The abstract interface contains three components:</p>
+<ul>
+<li>A header file <code>hal_foo.h</code> that includes the API above with a <code>device_id</code></li>
+<li>An implementation <code>hal/hal_foo.c</code> which maps the <code>device_id</code> to 
+a driver interface structure.  </li>
+<li>A driver interface structure that is defined for the underlying implementation</li>
+</ul>
+<p>Using this simple model, the user can be exposed to a simple function 
+interface (without structures or function pointers) and the system can provide
+a different software implementation for each device id.</p>
+<p>Although the GPIO interface for Mynewt uses the <strong>direct HAL</strong>, we can describe
+what it might look like for an indirect HAL.  </p>
+<p>The API <code>hal_gpio.h</code> is identical with a direct or indirect HAL.</p>
+<p>In the indirect HAL there is an additional header file <code>hal_gpio_int.h</code>
+ which describes the driver interface for underlying implementations.  It 
+looks similar to the HAL API except is driven by function pointers.</p>
+<pre><code class="no-highlight">struct hal_gpio_funcs {
+    void (*hgpio_set)(void);
+    . . .
+};
+
+struct hal_gpio_int {
+    struct hal_gpio_funcs funcs;
+}
+
+const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin);
+</code></pre>
+
+<p>The BSP specific function is what will map the specific pin (device_id) 
+to its implementation.</p>
+<p>This is different than the <strong>direct HAL</strong> which maps this virtual/physical 
+device pairing in the MCU implementation.  For the <strong>indirect HAL</strong> the 
+mapping has to be done in the BSP since that is the place where multiple 
+disparate devices can be enumerated into a single <code>device_id</code> space.</p>
+<p>An interface file <code>hal/hal_gpio.c</code> would perform the mapping as 
+follows:</p>
+<pre><code class="no-highlight">    void hal_gpio_set(int pin) {
+        const struct hal_gpio_int *pgpio;
+        pgpio = bsp_get_gpio_device(pin);
+        if(pgpio) {
+            pgpio-&gt;funcs.set();
+        }
+    }
+</code></pre>
+
+<p>The implementer of GPIO functionality (say in <code>mcu/xxx/hal_gpio.c</code>) would 
+implement the structure and provide the function pointers.</p>
+<pre><code class="no-highlight">void xxx_hal_gpio_set(void) {
+    /* implementation for this particular gpio device */
+    . . .
+}
+
+struct hal_gpio_int xxx_hal_gpio = {
+    .funcs.hgpio_set = xxx_hal_gpio_set;
+}
+</code></pre>
+
+<p>This leaves the BSP implementation to complete the function </p>
+<pre><code class="no-highlight">const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
+    switch(pin) {
+        case 0:
+            return &amp;xxx_hal_gpio;
+        case 1:
+            return &amp;yyy_hal_gpio;
+    }
+    return NULL;
+}
+</code></pre>
+
+<p><strong>NOTE</strong>: In this example there could be 10s of GPIO. It may be memory inefficient
+to have that many <code>hal_gpio_int</code> structures around to basically call the 
+same functions.  In Mynewt today, the hal_gpio is a <strong>direct HAL</strong> and does 
+not have this overhead. More HAL paradigms may be added in the future to address 
+the flexibility of the <strong>indirect HAL</strong> with the memory efficiency of the <strong>direct HAL</strong></p>
                         
                     </div>
                 </div>
