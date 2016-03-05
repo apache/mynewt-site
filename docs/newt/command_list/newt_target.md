@@ -38,7 +38,8 @@ Provides commands to create, build, delete, and query targets.
 
 Sub-command  | Explanation
 -------------| ------------------------
-set         | Set attributes of the target. Currently the list of possible attributes are:``` arch, compiler, compiler_def, project, bsp, pkg, identities, capabilities, dependencies, cflags, lflags```. Typically only the first 5 need to be set for a hardware target. For a simulated target, e.g. for software testing purposes, `arch=sim`, `compiler=sim`, and `pkg=<pkg name to be tested>`. You cannot set both the project and pkg for a target. 
+set         | Set attributes (variables) of the target. Currently the list of possible attributes (variables) are:``` arch, compiler, compiler_def, project, bsp, pkg, identities, capabilities, dependencies, cflags, lflags```. Typically only the first 5 need to be set for a hardware target. For a simulated target, e.g. for software testing purposes, `arch=sim`, `compiler=sim`, and `pkg=<pkg name to be tested>`. You cannot set both the project and pkg for a target. 
+         | To display all the existing values for any target attribute (variable), you can simply hit return after that variable. For example, `newt target set target1 arch` displays the valid values available for the attribute `arch` for a target named `target1`. 
 unset    | Unset attributes of the target in its configuration.
 delete         | Deletes only the description for the target. Does not delete the target directory with associated binaries. If you want to clean out the binaries, list files, and executables use`newt target build <target-name> clean` **before** deleting the target!
 create    |  Creates a target description or build definition by the name `input1`. By default it assigns the sim (simulator) architecture to it which allows you to build new projects and software on your native OS and try it out.
@@ -67,6 +68,7 @@ import  | -a, -import-all  | Import all targets typed into standard input or red
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
 set       | newt target set myblinky compiler=arm-none-eabi-m4 | Set the compiler for the 'myblinky' target to the gcc compiler for embedded ARM chips.
+set       | newt target set myblinky compiler | Lists the valid values currently available to be assigned for target attribute (variable) 'compiler'. For example, arm-none-eabi-m0, arm-none-eabi-m4, sim. As Mynewt grows, the number of possible values will grow.
 unset       | newt target unset myblinky compiler | Remove the setting for the compiler for the 'myblinky' target.
 delete       | newt target delete myblinky | Delete the target description for the target named 'myblinky'. Note that it does not remove any binaries or clean out the directory for this target. 
 create       | newt target create blink_f3disc | Create a new target description by the name 'blink_f3disc'. The architecture is 'sim' by default and can be changed using subcommand 'set' above.

@@ -52,18 +52,10 @@ If you want to build the newt tool from its source code you need to install
 #### Creating local repository
 
 * You are ready to download the newt tool repository. You will use Go to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
-```no-highlight
-        $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
-        $ ls
-         bin	pkg	   src
-        $ ls src
-        git-wip-us.apache.org	github.com		gopkg.in
-```
-
-If you run into an `unrecognized import path` issue, go to the `~/dev/go/src/git-wip-us.apache.org/repos/asf` directory and create a symbolic link. Then run the `go get` command above again to install all packages correctly.
 
 ```no-highlight
-        $ ln -s incubator-mynewt-newt.git incubator-mynewt-newt
+        $ go get mynewt.apache.org/newt/...
+
 ```
 
 * Check that newt.go is in place.
@@ -76,15 +68,17 @@ If you run into an `unrecognized import path` issue, go to the `~/dev/go/src/git
 #### Building the Newt tool
 
 * You will use Go to run the newt.go program to build the newt tool. The command used is `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+
 ```no-highlight
-        $ cd $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ cd $GOPATH/src/mynewt.apache.org/newt/newt
         $ go install
         $ ls "$GOPATH"/bin/
-        godep		incubator-mynewt-newt.git	  newt
+        newt	newtmgr	newtvm
 ```
 * Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
-   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt/newt/go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! 
+   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/mynewt.apache.org/newt/newt/newt.go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Essentially, `$newt` calls `go run` which runs the compiled binary directly without producing an executable. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! 
+   
 ```no-highlight
         $ newt version
         Newt version:  1.0
