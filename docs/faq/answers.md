@@ -22,13 +22,36 @@ You submit your proposed changes for your peers with committer status to review 
 
 You may choose to submit patches in one of the two following ways:
 
-1\. Fork the mirror on github.com to create your very own repo. Clone the forked repository into a local branch on your machine and make your changes. Push the branch to your fork on github. Then submit a pull request from that branch on your github repo:
-
-```no-highlight
-steps here
-```
+1\. Go to the [Mynewt OS mirror](https://github.com/apache/incubator-mynewt-larva) or [Newt Tool mirror](https://github.com/apache/incubator-mynewt-newt) on github.com, as appropriate. Click on the "Fork" button to create your own instance of the repo on github.com. Clone the forked repository into a local branch on your machine and make your changes. Push that branch to your fork on github. Then submit a pull request from that branch on your github repo.
 
 In the comment for the pull request, include a description of the changes you have made and why. Github will automatically notify everyone on the commits@mynewt.incubator.apache.org mailing list about the newly opened pull requests. You can open a pull request even if you don't think the code is ready for merging but want some discussion on the matter.
 Upon receiving notification, one or more committers will review your work, ask for edits or clarifications, and merge when your proposed changes are ready.
 
 2\.Use the `git format-patch` command to produce a patch file. Submit the patch (your code changes along with a diff from the old code) via email to the @dev mailing list. Summarize the issue and your work in the email. Regular project members will review your suggested patch and add it to the repository, acknowledging your contribution by referencing your name in the commit message.
+
+### I would like to make some edits to the documentation. What do I do?
+
+You submit your proposed changes for your peers with committer status to review and merge. 
+
+Go to the [documentation mirror](https://github.com/apache/incubator-mynewt-site) on github.com.
+
+Navigate to the file you wish to edit on github.com. All the technical documentation is in Markdown files under the `/docs` directory. Click on the pencil icon ("Edit the file in your fork of this project") and start making changes.
+
+Click the green "Propose file change" button. You will be directed to the page where you can start a pull request from the branch that was created for you. The branch is gets an automatic name `patch-#` where # is a number. Click on the green "Compare & pull request" to open the pull request.
+
+In the comment for the pull request, include a description of the changes you have made and why. Github will automatically notify everyone on the commits@mynewt.incubator.apache.org mailing list about the newly opened pull requests. You can open a pull request even if you don't think the code is ready for merging but want some discussion on the matter.
+
+Upon receiving notification, one or more committers will review your work, ask for edits or clarifications, and merge when your proposed changes are ready.
+
+If you want to withdraw the pull request simply go to your fork `https://github.com/<your github username>/incubator-mynewt-site` and click on "branches". You should see your branch under "Your branches". Click on the delete icon.
+
+### I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?
+
+You submit your proposed changes for your peers with committer status to review and merge. 
+
+Go to the [documentation mirror](https://github.com/apache/incubator-mynewt-site) on github.com. You need to create your own fork of the repo in github.com by clicking on the "Fork" button on the top right. Clone the forked repository into your laptop (using `git clone` from a terminal or using the download buttons on the github page)and create a local branch for the edits and switching to it (using `git checkout -b <new-branchname>` or GitHub Desktop). 
+
+Make your changes using the editor of your choice. Push that branch to your fork on github. Then submit a pull request from that branch on your github fork.
+
+The review and merge process is the same as other pull requests described for earlier questions.
+
