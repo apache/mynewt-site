@@ -112,7 +112,7 @@ To work with pkgs, the *newt* tool offers management commands that you can use w
 ```no-highlight
     newt pkg install [flags] <project pkg name>
 ```
-Other commands assocated with pkg are:
+Other commands associated with pkg are:
 ```no-highlight
   newt pkg list
   newt pkg checkdeps
