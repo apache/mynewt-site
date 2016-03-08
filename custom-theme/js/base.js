@@ -28,14 +28,15 @@ function fixDocSidebar() {
 
     // If the sidebar content is larger than visible height give it scrollability.
     if (sidebarHeight <= visibleHeight) {
-        $("#docSidebar").css("overflow", "none");
+        $("#docSidebar").css("overflow-y", "hidden");
     }
     else {
-        $("#docSidebar").css("overflow", "scroll");
+        $("#docSidebar").css("overflow-y", "scroll");
     }
 }
 
 $( document ).ready(function() {
+    $("#docSidebar").css("overflow-x", "hidden");
     fixDocSidebar();
     $( window ).on('resize', fixDocSidebar);
 });
