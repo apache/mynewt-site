@@ -419,7 +419,7 @@
 </code></pre>
 
 <ul>
-<li>The next step is to install relevant pkgs from the larvan app on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. </li>
+<li>The next step is to install relevant pkgs from the larva app from git server on Apache. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. </li>
 </ul>
 <pre><code class="no-highlight">
         [user:~/dev/test_project]$ newt pkg install project/blinky          
@@ -439,7 +439,7 @@
 </code></pre>
 
 <ul>
-<li>It's time to create a target for the project and define the target attributes. </li>
+<li>It's time to create a targets for the project and define the target attributes. STM32F3 BSP expects bootloader, so create targets for both blinky and bootloader.</li>
 </ul>
 <pre><code class="no-highlight">        [user:~/dev/test_project]$ newt target create blink_f3disc
         Creating target blink_f3disc
@@ -460,67 +460,139 @@
         [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4
         Target blink_f3disc successfully set arch to cortex_m4
 
+        [user:~/dev/test_project]$ newt target create boot_f3disc
+        Creating target boot_f3disc
+        Target boot_f3disc successfully created!
+
+        [user:~/dev/test_project]$ newt target set boot_f3disc project=boot
+        Target blink_f3disc successfully set project to blinky
+
+        [user:~/dev/test_project]$ newt target set boot_f3disc bsp=hw/bsp/stm32f3discovery
+        Target boot_f3disc successfully set bsp to hw/bsp/stm32f3discovery
+
+        [user:~/dev/test_project]$ newt target set boot_f3disc compiler_def=optimized
+        Target boot_f3disc successfully set compiler_def to debug
+
+        [user:~/dev/test_project]$ newt target set boot_f3disc compiler=arm-none-eabi-m4
+        Target boot_f3disc successfully set compiler to arm-none-eabi-m4
+
+        [user:~/dev/test_project]$ newt target set boot_f3disc arch=cortex_m4
+        Target boot_f3disc successfully set arch to cortex_m4
+
         [user:~/dev/test_project]$ newt target show blink_f3disc
         blink_f3disc
-            arch: cortex_m4
-            project: blinky
-            bsp: hw/bsp/stm32f3discovery
-            compiler_def: debug
-            compiler: arm-none-eabi-m4
-            name: blink_f3disc
+            arch=cortex_m4
+            bsp=hw/bsp/stm32f3discovery
+            compiler=arm-none-eabi-m4
+            compiler_def=debug
+            name=blink_f3disc
+            project=blinky
+
+        [user:~/dev/test_project]$ newt target show boot_f3disc
+        boot_f3disc
+            arch=cortex_m4
+            bsp=hw/bsp/stm32f3discovery
+            compiler=arm-none-eabi-m4
+            compiler_def=debug
+            name=blink_f3disc
+            project=boot
+
+</code></pre>
+
+<ul>
+<li>STM32F3 blinky project is too large to operate with newlib libc. You need to modify project/blinky/pkg.yml, and switch over to using baselibc.</li>
+</ul>
+<pre><code class="no-highlight">        [user:~/dev/test_project]$ cat project/blinky/pkg.yml 
+        #
+        # Licensed to the Apache Software Foundation (ASF) under one
+        # or more contributor license agreements.  See the NOTICE file
+        # distributed with this work for additional information
+        # regarding copyright ownership.  The ASF licenses this file
+        # to you under the Apache License, Version 2.0 (the
+        # &quot;License&quot;); you may not use this file except in compliance
+        # with the License.  You may obtain a copy of the License at
+        #
+        #  http://www.apache.org/licenses/LICENSE-2.0
+        #
+        # Unless required by applicable law or agreed to in writing,
+        # software distributed under the License is distributed on an
+        # &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+        # KIND, either express or implied.  See the License for the
+        # specific language governing permissions and limitations
+        # under the License.
+        #
+
+        pkg.name: project/blinky
+        pkg.vers: 0.8.0
+        pkg.description: Basic example application which blinks an LED.
+        pkg.author: Marko Kiiskila &lt;marko@runtime.io&gt;
+        pkg.homepage: http://mynewt.apache.org/os/get_acclimated/project2/
+        pkg.repository: https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva
+        pkg.keywords:
+
+        pkg.deps:
+            - libs/console/full
+            - libs/newtmgr
+            - libs/os
+            - libs/shell
+            - sys/config
+            - sys/log
+            - sys/stats
+            - libs/baselibc
 </code></pre>
 
 <ul>
 <li>
-<p>Next, you get to build the target and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at <a href="http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf">http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf</a></p>
+<p>Next, you get to build the targets and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at <a href="http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf">http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf</a></p>
 </li>
 <li>
 <p><img alt="STMdiscovery" src="../pics/STM32f3discovery_connector.png" /></p>
 </li>
 </ul>
-<pre><code class="no-highlight">        [user:~/dev/test_project]$ newt target build blink_f3disc
+<pre><code class="no-highlight">        [user:~/dev/test_project]$ newt target build boot_f3disc
+        Building target boot_f3 (project = boot)
+        Compiling asprintf.c
+        Compiling atoi.c
+        ...
+        ...
+        Assembling startup_stm32f303xc.s
+        Archiving libstm32f3discovery.a
+        Compiling boot.c
+        Building project boot
+        Linking boot.elf
+        Successfully run!
+
+        [user:~/dev/test_project]$ newt target build blink_f3disc
         Building target blink_f3disc (project = blinky)
-        Compiling case.c
-        Compiling suite.c
-        Compiling testutil.c
-        Compiling testutil_arch_arm.c
-        Archiving libtestutil.a
-        Compiling os.c
-        Compiling os_callout.c
-        Compiling os_eventq.c
-        Compiling os_heap.c
-        Compiling os_mbuf.c
-        Compiling os_mempool.c
-        Compiling os_mutex.c
-        Compiling os_sanity.c
-        Compiling os_sched.c
-        Compiling os_sem.c
-        Compiling os_task.c
-        Compiling os_time.c
-        Compiling os_arch_arm.c
-        Assembling HAL_CM4.s
-        Assembling SVC_Table.s
-        Archiving libos.a
-        Compiling hal_gpio.c
-        Compiling stm32f3xx_hal_gpio.c
-        Archiving libstm32f3xx.a
-        Compiling cmsis_nvic.c
-        Compiling libc_stubs.c
-        Compiling os_bsp.c
-        Compiling sbrk.c
-        Compiling system_stm32f3xx.c
+        Compiling asprintf.c
+        Compiling atoi.c
+        ...
+        ...
         Assembling startup_stm32f303xc.s
         Archiving libstm32f3discovery.a
         Compiling main.c
         Building project blinky
         Linking blinky.elf
         Successfully run!
+
+        [user:~/dev/test_project]$ newt target build boot_f3disc
+        Building target boot_f3disc (project = boot)
+        Building project boot
+        Successfully run!
+
+        [user:~/dev/test_project]$ newt target create-image blink_f3disc 0.0.1
+        Building target blink_f3disc (project = blinky)
+        Building project blinky
+
 </code></pre>
 
 <ul>
 <li>Finally, you have to download the image on to the board. You will see a blue light start to blink.</li>
 </ul>
-<pre><code class="no-highlight">        [user:~/dev/test_project]$ newt target download blink_f3disc
+<pre><code class="no-highlight">        [user:~/dev/test_project]$ newt target download boot_f3disc
+        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
+
+        [user:~/dev/test_project]$ newt target download blink_f3disc
         Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
 </code></pre>
                         
