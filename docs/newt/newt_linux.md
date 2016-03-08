@@ -4,7 +4,7 @@
 ### Getting your Ubuntu machine Ready 
 
 
-#### Installing some prerequisites
+#### 1. Install prerequisites
 
 * Install git, libcurl, and the Go language if you do not have them already.
 ```no-highlight
@@ -13,9 +13,9 @@
         $ sudo apt-get install golang 
 ```
 
-#### Creating local repository 
+#### 2. Create local repository 
 
-* The directory structure must be first readied for using Go. Go code must be kept inside a workspace. A workspace is a directory hierarchy with three directories at its root:
+* Go language enviroment dictates a directory structure. Known in Go parlanace as workspace, it must contain three sibling directories with the directory names src, pkg and bin, as explained below. 
 
     * src contains Go source files organized into packages (one package per directory),
 
@@ -23,16 +23,17 @@
 
     * bin contains executable commands.
 
-  The GOPATH environment variable specifies the location of your workspace. First create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory where you will soon clone the newt tool repository.
+    The GOPATH environment variable specifies the location of your workspace. To setup this workspace environment, create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory where you will soon clone the *newt* tool repository.
+
 ```no-highlight
         $ cd $HOME
         $ mkdir -p dev/go  
         $ cd dev/go
         $ export GOPATH=$PWD
 ```
-  Note that you need to add export statements to ~/.bashrc (or equivalent) to export variables permanently.
+  (Note that you need to add export statements to ~/.bashrc (or equivalent) to export variables permanently.)
 
-* You are ready to download the newt tool repository. You will use Go to copy the directory (currently the asf incubator directory). Be patient as it may take a minute or two. Check the directories installed.
+* Download the *newt* tool repository by using Go to copy the directory (currently the ASF incubator directory). Be patient as it may take a minute or two. Check the directories installed.
 ```no-highlight
         $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
         $ ls
@@ -47,17 +48,17 @@
         Godeps			README.md		coding_style.txt    newt.go
         LICENSE			cli			    design.txt
 ```
-#### Building the newt tool
+#### 3. Build the newt tool
 
 
-* You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
+* Use Go to run the newt.go program to build the *newt* tool. The command `go install` compiles and writes the resulting executable to an output file named `newt`, which is installed along with its dependencies in $GOPATH/bin.
 ```no-highlight
         $ cd $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
         $ go install
         $ ls "$GOPATH"/bin/
         godep		incubator-mynewt-newt.git	  newt
 ```
-* Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
+* Try running *newt*, the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
    Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt/newt/go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.   
   
@@ -102,5 +103,5 @@
 
         Use "newt help [command]" for more information about a command.
 ```        
-* Without creating a project repository you can't do a whole lot with the Newt tool. So you'll have to wait till you have downloaded a nest to try out the tool. 
+* Without creating a project repository, you can't do a whole lot with the Newt tool. So you'll have to wait till you have downloaded an app to try out the tool. 
 
