@@ -1,21 +1,21 @@
 ## Command Structure
 
-In the newt tool, commands represent actions and flags are modifiers for those actions. A command can have children commands which are also simply referred to as commands. One or more arguments may need to be provided to a command to execute it correctly. 
+Just like verbs are actions in a sentence and adverdbs modifiy verbs, so in *newt* tool, commands are actions and flags modify actions. A command can have subcommands, too. Arguments to commands and subcommands, with appropriate flags, will dictate the execution and result of a command. 
 
-In the example below, the `newt` command has the child command `target set`. The first argument 'my_target1' is the name of the target whose attributes are being set. The second argument 'arch=cortex_m4' specifies the value to set the attribute (variable) 'arch' to, which in this case is 'cortex_m4'. 
+For instance, in the example below, the *newt* command has the subcommand `target set` in which the argument 'my_target1' is the target whose attribute, *arch*, is set to 'cortex_md.' 
 
 ```no-highlight
     newt target set my_target1 arch=cortex_m4
 ```
 
-Global flags work on all newt commands in the same way. An example is the flag `-v, --verbose` to ask for a verbose output while executing a command. The help flag `-h` or  `--help` is available on all commands but provides command specific output, of course. These flags may be specified in either a long or a short form. 
+Global flags work uniformly across *newt* commands. Consider the flag `-v, --verbose,` It works both for command and subcommands, to generate verbose output. Likewise, the help flag `-h` or  `--help,`  to print helpful messsages.
 
-A command may additionally take flags specific to it. For example, the `-b ` flag may be used with `newt egg install` to tell it which branch to install the egg from. 
+A command may additionally take flags specific to it. For example, the `-b ` flag instructs `newt pkg install` to install the pkg from a git `branch.`
 
 ```no-highlight
-    newt egg install -b <branchname> <eggname>
+    newt pkg install -b <branchname> <eggname>
 ```
-In addition to the [Newt Tool Manual](newt_intro.md) in docs, command-line help is available for each command (and child command). Simply use the flag `-h` or `--help` as shown below:
+In addition to the [Newt Tool Manual](newt_intro.md) in docs, command-line help is available for each command (and subcommand), through the `-h` or `--help` options. 
 
 ```no-highlight
     $ newt target export --help
