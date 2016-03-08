@@ -27,7 +27,7 @@ Error: No package libs/cmsis-core found
 
 Ooops. You forgot to bring in the package list for larva itself. That's the one with most of the packages. Including libs/cmsis-core.
 
-You want the latest and greatest from larva, so you want to bring in the 'develop' branch. Note that normally the use of the more stable master branch is recommended. In that case you would drop the '-b develop' from command line.
+This time you need the latest and greatest from larva, so you want to bring in the 'develop' branch. Note that normally the use of the more stable master branch is recommended. In that case you would drop the '-b develop' from command line.
 
 However, you want to bring in the packages from develop branch. To make that happen you say:
 
@@ -188,7 +188,7 @@ And it's blinking.
 ### Create test project
 
 Now that you have your system setup, you can start creating your own stuff.
-First you want to create a project for myself - you can start by getting project template from blinky, as it pretty much has what you want.
+First you want to create a project for yourself - you can start by getting project template from blinky, as it pretty much has what you want.
 
 ```no-highlight
 [marko@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality
@@ -197,7 +197,7 @@ First you want to create a project for myself - you can start by getting project
 [marko@IsMyLaptop:~/src/air_quality]$ cp project/blinky/src/main.c project/air_quality/src/
 ```
 
-Then you modify the pkg.yml for air_quality in order to change the *pkg.name* to be *project/air_quality*.
+Then you modify the project/air_quality/pkg.yml for air_quality in order to change the *pkg.name* to be *project/air_quality*.
 
 And create a target for it:
 ```no-highlight
@@ -221,7 +221,7 @@ Successfully run!
 
 ### Create packages for drivers
 
-One of the sensors you want to enable is SenseAir K30, which will connect to my board over serial port.
+One of the sensors you want to enable is SenseAir K30, which will connect to the board over serial port.
 To start development of the driver, you first need to create a package description for it, and add stubs for sources.
 
 So you add few files. pkg.yml to describe the driver, and then header stub followed by source stub.
@@ -454,7 +454,7 @@ Here's your new target.
 
 You add the 2nd serial port to my new BSP.
 
-You modify the include/hal/bsp.h to increase UART_CNT to 2, and add a definition of the 2nd logical UART. You will use this in your sensor driver.
+Modify the include/hal/bsp.h to increase UART_CNT to 2, and add a definition of the 2nd logical UART. You will use this in your sensor driver.
 
 ```no-highlight
 static const struct stm32f3_uart_cfg uart_cfg[UART_CNT] = {
