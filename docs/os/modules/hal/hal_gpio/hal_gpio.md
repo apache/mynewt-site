@@ -8,10 +8,12 @@ The hardware independent GPIO Interface for Mynewt
 Contains the basic operations set and read General Purpose Digital I/O Pins
 within a Mynewt system.
 
-Individual GPIOs are referenced in the APIs as `pins`. However, this interface
-support virtual GPIO `pins`. The mapping to the physical device pins or port
-is done via the MCU code.  The BSP code may define virtual PIN definitions for
-physical ports within the system.
+Individual GPIOs are referenced in the APIs as `pins`. However, in this interface
+the `pins` are virtual GPIO pins. The MCU hal driver maps these virtual `pins`
+to the physical GPIO ports and pins. 
+
+Typically, the BSP code may define named IO pins in terms of these virtual 
+`pins` to describe the devices attached to the physical pins.
 
 Here's a brief example so you can get the gist of the translation.
 
@@ -44,7 +46,7 @@ to virtual pin 3 which on the stm32F4xxis port A pin 3.
 Said another way, in this specific system we get
 
 ```no-highlight
-SYSTEM_LED --> virtual pin 37 --> port C pin 5 on the stm34F4xx
+SYSTEM_LED --> hal_gpio virtual pin 37 --> port C pin 5 on the stm34F4xx
 ```
 
 ## Definition
