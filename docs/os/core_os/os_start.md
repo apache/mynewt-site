@@ -6,7 +6,7 @@ void os_start(void)
 
 Starts the OS by initializing and enabling the OS time tick and starting the scheduler.
 
-This function does not return
+This function does not return.
 
 <br>
 
