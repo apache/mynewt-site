@@ -32,7 +32,6 @@ The functions available in context_switch are:
 
 * [os_sched](os_sched.md)
 * [os_arch_ctx_sw](os_arch_ctx_sw.md)
-* [os_arch_ctx_sw_isr](os_arch_ctx_sw_isr.md)
 * [os_sched_ctx_sw_hook](os_sched_ctx_sw_hook.md)
 * [os_sched_get_current_task](os_sched_get_current_task.md)
 * [os_sched_insert](os_sched_insert.md)

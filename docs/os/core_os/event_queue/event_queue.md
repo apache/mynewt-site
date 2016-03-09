@@ -61,6 +61,5 @@ The functions available in event queue feature are:
 * [os_eventq_get](os_eventq_get)
 * [os_eventq_init](os_eventq_init)
 * [os_eventq_put](os_eventq_put)
-* [os_eventq_put2](os_eventq_put2)
 * [os_eventq_remove](os_eventq_remove)
 

@@ -26,7 +26,7 @@ Returns 0 on success.
 <Add text to set up the context for the example here>
 ```no-highlight
 void
-os_eventq_put2(struct os_eventq *evq, struct os_event *ev, int isr)
+os_eventq_put(struct os_eventq *evq, struct os_event *ev)
 {
     ....
         /* If task waiting on event, wake it up. */
