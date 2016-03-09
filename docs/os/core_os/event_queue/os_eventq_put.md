@@ -20,10 +20,6 @@ Queues an event to tail of the event queue.
 
 N/A
 
-#### Notes 
-
-Functionality is of *os_eventq_put2()*, but this is to be called from a task context only.
-
 #### Example
 
 <Add text to set up the context for the example here>
