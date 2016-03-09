@@ -35,7 +35,7 @@ os_mutex_release(struct os_mutex *mu)
 
     /* Re-schedule if needed */
     if (resched) {
-        os_sched(rdy, 0);
+        os_sched(rdy);
     }
 
     return OS_OK;

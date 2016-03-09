@@ -29,7 +29,7 @@ timer_handler(void)
     os_time_tick();
     os_callout_tick();
     os_sched_os_timer_exp();
-    os_sched(NULL, 1);
+    os_sched(NULL);
 }
 ```
 

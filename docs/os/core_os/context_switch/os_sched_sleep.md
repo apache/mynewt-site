@@ -47,7 +47,7 @@ pull_one:
         os_sched_sleep(evq->evq_task, OS_TIMEOUT_NEVER);
         OS_EXIT_CRITICAL(sr);
 
-        os_sched(NULL, 0);
+        os_sched(NULL);
 
         OS_ENTER_CRITICAL(sr);
         evq->evq_task = NULL;
