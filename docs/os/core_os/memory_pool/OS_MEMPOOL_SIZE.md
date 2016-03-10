@@ -37,5 +37,4 @@ Here we define a memory buffer to be used by a memory pool using OS_MEMPOOL_SIZE
 os_membuf_t my_pool_memory[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)]
 ```
 
----------------------
 

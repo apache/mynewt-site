@@ -10,7 +10,7 @@ Note that no added descriptions on how to use the msys API are presented here (o
 
 <br>  
 
-## List of Functions
+### List of Functions
 
 The functions available in msys are:
 

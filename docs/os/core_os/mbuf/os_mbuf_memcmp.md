@@ -43,4 +43,3 @@ This function will compare bytes starting from *off* bytes from the start of the
     }    
 ```
 
----------------------

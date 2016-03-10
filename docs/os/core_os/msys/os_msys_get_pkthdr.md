@@ -45,4 +45,3 @@ The same notes apply to this API as to `os_msys_get()`.
 }
 ```
 
----------------------

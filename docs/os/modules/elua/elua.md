@@ -1,19 +1,19 @@
 # elua
 
 
-## Description
+###Description
 
 This package contains a Lua interpreter. See http://lua.org for documentation of the language.
 
 You can execute lua scripts either from console with shell or start the execution programmatically.
 
-## Data structures
+###Data structures
 
-## Notes
+###Notes
 
 Currently we don't have language extension modules which would go together with this one, but those should be added.
 
-## List of Functions
+###List of Functions
 
 * [lua_init](lua_init.md)
 * [lua_main](lua_main.md)

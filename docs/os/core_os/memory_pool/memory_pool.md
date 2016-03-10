@@ -4,7 +4,7 @@
 A memory pool is a collection of fixed sized elements called memory blocks. Generally, memory pools are used when the developer wants to allocate a certain amount of memory to a given feature. Unlike the heap, where a code module is at the mercy of other code modules to insure there is sufficient memory, memory pools can insure sufficient memory allocation.
 
 
-## Description
+### Description
 
 In order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).
 
@@ -36,7 +36,7 @@ os_mempool_init(&my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
 <br>
 Once the memory pool has been initialized the developer can allocate memory blocks from the pool by calling `os_memblock_get`. When the memory block is no longer needed the memory can be freed by calling `os_memblock_put`. 
 
-## Data structures
+### Data structures
 ```no-highlight
 struct os_mempool {
     int mp_block_size;
@@ -61,7 +61,7 @@ struct os_mempool {
 | name | Name for the memory block |
   
   
-## List of Functions
+### List of Functions
 
 The functions available in mem_pool are:
 

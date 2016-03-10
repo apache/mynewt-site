@@ -28,4 +28,3 @@ Register an mbuf pool for use as a system mbuf pool. The pool should be initiali
     assert(rc == 0);
 ```
 
----------------------

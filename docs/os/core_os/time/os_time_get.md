@@ -25,4 +25,3 @@ See the [Special Notes](os_time) on OS time epoch and comparison
    os_time_t now = os_time_get();
 ```
 
----------------------

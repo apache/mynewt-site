@@ -39,4 +39,3 @@ Note that for each mbuf in the chain, `os_mbuf_free()` is called.
     assert(rc == 0);
 ```
 
----------------------

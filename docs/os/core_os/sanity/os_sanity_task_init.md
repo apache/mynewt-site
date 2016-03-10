@@ -33,4 +33,3 @@ All other error codes indicate an error.
     assert(rc == OS_OK);
 ```
 
----------------------

@@ -26,4 +26,4 @@ Called for every single tick by the architecture specific functions.
    os_time_tick();
 ```
 
----------------------
+

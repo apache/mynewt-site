@@ -38,5 +38,3 @@ assert(err == OS_OK);
 err = os_sem_release(&g_os_sem);
 assert(err == OS_OK);
 ```
-
----------------------

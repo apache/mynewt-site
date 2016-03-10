@@ -43,4 +43,3 @@ None
 	assert(pktlen == OS_MBUF_PKTLEN(om));
 ```
 
----------------------

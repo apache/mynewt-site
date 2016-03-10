@@ -43,4 +43,3 @@ my_task_rx_data_func(struct os_mbuf *om)
 }
 ```
 
----------------------

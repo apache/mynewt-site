@@ -29,5 +29,3 @@ Macro used to cast the data pointer of an mbuf to a given type.
     rxbuf = OS_MBUF_DATA(om, uint8_t *);
 ```
 
----------------------
-

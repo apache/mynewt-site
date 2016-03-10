@@ -25,6 +25,3 @@ None (does not return).
 
 Once os_start has been called, context is switched to the highest priority task that was initialized prior to calling os_start.
 
-<br>
-
----------------------

@@ -3,7 +3,7 @@
 A semaphore is a structure used for gaining exclusive access (much like a mutex), synchronizing task operations and/or use in a "producer/consumer" roles. Semaphores like the ones used by the myNewt OS are called "counting" semaphores as they are allowed to have more than one token (explained below).
 
 
-## Description
+### Description
 
 A semaphore is a fairly simple construct consisting of a queue for waiting tasks and the number of tokens currently owned by the semaphore. A semaphore can be obtained as long as there are tokens in the semaphore. Any task can add tokens to the semaphore and any task can request the semaphore, thereby removing tokens. When creating the semaphore, the initial number of tokens can be set as well.
 
@@ -13,7 +13,7 @@ Semaphores can also be used for task synchronization. A simple example of this w
 
 The other common use of a counting semaphore is in what is commonly called a "producer/consumer" relationship. The producer adds tokens (by calling *os_sem_release*) and the consumer consumes them by calling *os_sem_pend*. In this relationship, the producer has work for the consumer to do. Each token added to the semaphore will cause the consumer to do whatever work is required. A simple example could be the following: every time a button is pressed there is some work to do (ring a bell). Each button press causes the producer to add a token. Each token consumed rings the bell. There will exactly the same number of bell rings as there are button presses. In other words, each call to *os_sem_pend* subtracts exactly one token and each call to *os_sem_release* adds exactly one token.
 
-## Data structures
+### Data structures
 
 ```no-highlight
 struct os_sem
@@ -30,7 +30,7 @@ struct os_sem
 | _pad |  Padding for alignment  |
 | sem_tokens | Current number of tokens |
 
-## List of Functions
+### List of Functions
 
 
 The functions available in semaphore are:

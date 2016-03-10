@@ -38,5 +38,4 @@ This macro works on both normal mbufs and packet header mbufs. The amount of tra
     }
 ```
 
----------------------
 

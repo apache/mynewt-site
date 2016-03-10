@@ -37,4 +37,3 @@ Main loop of an example task.
 
 ```
 
----------------------

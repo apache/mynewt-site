@@ -36,5 +36,3 @@ struct os_callout my_callouts[8];
         os_callout_init(&my_callouts[i], &my_evq, (void *)i);
     }
 ```
-
----------------------

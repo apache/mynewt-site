@@ -31,5 +31,3 @@ N/A
     /* Re-start the timer (run every 50 msecs) */
     os_callout_reset(&g_bletest_timer.cf_c, OS_TICKS_PER_SEC / 20);
 ```
-
----------------------

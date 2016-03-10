@@ -4,17 +4,17 @@ The mbuf (short for memory buffer) is a common concept in networking stacks. The
 
 In its simplest form, an mbuf is a memory block with some space reserved for internal information and a pointer which is used to "chain" memory blocks together in order to create a "packet". This is a very important aspect of the mbuf: the ability to chain mbufs together to create larger "packets" (chains of mbufs).
 
-## Why use mbufs? 
+### Why use mbufs? 
 
 The main reason is to conserve memory. Consider a networking protocol that generally sends small packets but occasionally sends large ones. The Bluetooth Low Energy (BLE) protocol is one such example. A flat buffer would need to be sized so that the maximum packet size could be contained by the buffer. With the mbuf, a number of mbufs can be chained together so that the occasional large packet can be handled while leaving more packet buffers available to the networking stack for smaller packets.
 
-## Packet Header mbuf
+### Packet Header mbuf
 
 Not all mbufs are created equal. The first mbuf in a chain of mbufs is a special mbuf called a "packet header mbuf". The reason that this mbuf is special is that it contains the length of all the data contained by the chain of mbufs (the packet length, in other words). The packet header mbuf may also contain a user defined structure (called a "user header") so that networking protocol specific information can be conveyed to various layers of the networking stack. Any mbufs that are part of the packet (i.e. in the mbuf chain but not the first one) are "normal" (i.e. non-packet header) mbufs. A normal mbuf does not have any packet header or user packet header structures in them; they only contain the basic mbuf header (`struct os_mbuf`). Figure 1 illustrates these two types of mbufs. Note that the numbers/text in parentheses denote the size of the structures/elements (in bytes) and that MBLEN is the memory block length of the memory pool used by the mbuf pool.
 
 ![Packet header mbuf](pics/mbuf_fig1.png)
 
-## Normal mbuf 
+### Normal mbuf 
 
 Now let's take a deeper dive into the mbuf structure. Figure 2 illustrates a normal mbuf and breaks out the various fields in the `os_mbuf` structure. 
 
@@ -33,11 +33,11 @@ Figure 3 illustrates the packet header mbuf along with some chained mbufs (i.e a
 
 ![Packet](pics/mbuf_fig3.png)
 
-## Mbuf pools
+### Mbuf pools
 
 Mbufs are collected into "mbuf pools" much like memory blocks. The mbuf pool itself contains a pointer to a memory pool. The memory blocks in this memory pool are the actual mbufs; both normal and packet header mbufs. Thus, the memory block (and corresponding memory pool) must be sized correctly. In other words, the memory blocks which make up the memory pool used by the mbuf pool must be at least: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_defined_header) + desired minimum data buffer length. For example, if the developer wants mbufs to contain at least 64 bytes of user data and they have a user header of 12 bytes, the size of the memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes, this is a fair amount of overhead. However, the flexibility provided by the mbuf library usually outweighs overhead concerns.
 
-## Create mbuf pool
+### Create mbuf pool
 
 Creating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro *MBUF_PKTHDR_OVERHEAD* to denote the amount of packet header overhead per mbuf and *MBUF_MEMBLOCK_OVERHEAD* to denote the total amount of overhead required per memory block. The macro *MBUF_BUF_SIZE* is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro *MBUF_MEMBLOCK_OVERHEAD*.
 
@@ -72,7 +72,7 @@ create_mbuf_pool(void)
 }
 
 ```
-## Using mbufs
+### Using mbufs
 
 The following examples illustrate typical mbuf usage. There are two basic mbuf allocation API: `os_mbuf_get()` and `os_mbuf_get_pkthdr()`. The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use `os_mbuf_get_pkthdr()` and rarely, if ever, need to call `os_mbuf_get()` as the rest of the mbuf API (e.g. `os_mbuf_append()`, `os_mbuf_copyinto()`, etc.) typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs.
 
@@ -156,7 +156,7 @@ mbuf_usage_example2(struct mbuf *rxpkt)
 
 <br>
 
-## Data Structures
+### Data Structures
 
 ```no-highlight
 struct os_mbuf_pool {
@@ -214,7 +214,7 @@ struct os_mbuf {
 | om_next | Pointer to next mbuf in packet chain |
 | om_databuf | mbuf data buffer (accessor to start of mbuf data buffer). Note that the mbuf data buffer refers to the start of either the user data in normal mbufs or the start of the os mbuf packet header for packet header mbufs |
 
-## List of Functions/Macros
+### List of Functions/Macros
 
 The functions/macros available in mbuf are:
 

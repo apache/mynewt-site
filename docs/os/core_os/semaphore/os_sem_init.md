@@ -38,4 +38,4 @@ err = os_sem_init(&g_os_sem, 1);
 assert(err == OS_OK);
 ```
 
----------------------
+

@@ -1,13 +1,13 @@
 
 #Create a BSP for your Target 
 
-## Introduction
+###Introduction
 
 If you are using a board or system not currently supported by Mynewt, you will need to create a BSP for the new target.   If another similar BSP exists it is recommended to copy that BSP as a starting point.  For example, if another BSP exists using the same MCU, start with a copy of that BSP.
 
 Either way, this document describes the steps necessary to create a new BSP from scratch.  
 
-##Keep your Reference Documents handy
+###Keep your Reference Documents handy
 
 To build a proper BSP, you will typically need the following:
 
@@ -16,11 +16,11 @@ To build a proper BSP, you will typically need the following:
 * The information on the CPU core within your MCU if it is not included in your MCU documentation
 * This Mynewt documentation
 
-##Name your BSP
+###Name your BSP
 
 Select a name for your BSP.  For the remainder of this document, we'll assume the bsp is named `myboard`. In general its best to select a name that describes the board/system you are creating.
 
-##Create a BSP directory
+###Create a BSP directory
 
 Create a directory `hw/bsp/myboard` using the name chosen above. Within this BSP directory, create the following subdirectories:
 
@@ -32,7 +32,7 @@ name that describes the board/system you are creating.
 * `include/bsp`
 * `src`
 
-##Create a Target using Mynewt
+###Create a Target using Mynewt
 
 Create a newt target for your test project for the BSP. To learn how to create a target, see this **howto** [Tutorial](../../get_started/project1). Once you are familiar with creating targets, move on below to create a target to use to test your BSP.
 
@@ -53,7 +53,7 @@ When you are complete, your `target` may look similar to this.
             project=blinky
 ```
 
-##Create Required Files For Compilation
+###Create Required Files For Compilation
 
 Create the following files within the BSP directory tree. For now, they can be empty files. We will fill them out one at a time.
 
@@ -77,7 +77,7 @@ Optionally, create these files as necessary to provide all functionality from My
 | myboard_debug.sh | A bash script to intiate a gdb session with your platform |
 | src/hal_bsp.c | A C source file to provide functions required by the HAL from your BSP |
 
-## Fill Out your Package File
+###Fill Out your Package File
 
 Edit the package file to describe your BSP. 
 
@@ -130,7 +130,7 @@ The package file may also contain:
 | pkg.cflags | Any specific compiler flags for your bsp |
 | pkg.deps | Any other libraries that may be required.  Some architectures (like ARM) have special libraries to make BSP creation easier. |
 
-##Create or Copy Linker Script
+###Create or Copy Linker Script
 
 It's probably best to start with a linker script from another BSP using the same MCU.  If this is not available, consult your MCU documentation and library samples to find a linker script to start with.
 
@@ -157,7 +157,7 @@ There may be additional requirements from the MCU or OS that you may find easies
 
 Create an alternate linker script for the bootloader since it is typically linked to use different addresses to boot the main image.  
 
-##Add Functions and Defines
+###Add Functions and Defines
 
 At this point, it will be possible to run the `newt` tool to build your target. 
 
@@ -210,7 +210,7 @@ Missing functionality may take the form of `#define` items required to compile, 
 
 If you are using an ARM cortex architecture, you need to define the number of interrupts supported by your system.  If you are not using ARM Cortex architecture this may not be required (but something else might be).
 
-##Add Debug Script
+###Add Debug Script
 
 The debug script in the bsp directory allows the newt tool to automatically connect to the debugger, and create a debug session with the target.  This requires knowledge of your target debug interface. Most of the Mynewt BSP targets use [openocd](http://openocd.org) to perform debugging.  This script typically creates an openocd connection to the target and then connects a gdb instance to this openocd connection.  There are several examples in existing BSPs to follow.
 
@@ -218,14 +218,14 @@ The script must take a single argument which is the name of the image file minus
 
 The BSP is complete without this file, but newt will be unable to establish a debug session without it.
 
-##Add Download Script
+###Add Download Script
 
 Similar to the debug script, the download script is a hook for newt to download the image to the target system.  The download script also typically uses openocd interface to erase flash, and progam the code into the device.
 
 NOTE: The download script needs to command openocd to program the image into the appropriate location, which is typically called `FLASH_OFFSET` in  these scripts. This location has to match the linker script location of the image link address.  For example, if your linker links the code to be run at `0xC000` your download script should download the image to the same
 address in the correct flash.  
 
-#Add License and Documentation
+###Add License and Documentation
 
 The `LICENSE` file is an ASCII text file that describes the source license for this
 package.

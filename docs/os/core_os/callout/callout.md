@@ -2,7 +2,7 @@
 
 Callouts are MyNewt OS timers.
 
-## Description
+### Description
 
 Callout is a way of setting up an OS timer. When the timer fires, it is delivered as an event to task's event queue.
 
@@ -18,7 +18,7 @@ Time unit when arming the timer is OS ticks. This rate of this ticker depends on
 
 Callout timer fires out just once. For periodic timer type of operation you need to rearm it once it fires.
 
-## Data structures
+### Data structures
 
 ```no-highlight
 struct os_callout {
@@ -50,7 +50,7 @@ struct os_callout_func {
 | cf_func | Function pointer which should be called by event queue processing |
 | cf_arg | Generic void * argument to that function |
 
-## List of Functions
+### List of Functions
 
 The functions available in callout are:
 

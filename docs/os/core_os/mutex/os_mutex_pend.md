@@ -46,4 +46,4 @@ err = os_mutex_release(&g_mutex1);
 assert(err == OS_OK);
 ```
 
----------------------
+

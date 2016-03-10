@@ -36,5 +36,4 @@ os_time_delay(int32_t osticks)
 }
 ```
 
----------------------
 

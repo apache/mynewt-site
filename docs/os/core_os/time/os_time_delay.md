@@ -27,4 +27,4 @@ Passing `OS_TIMEOUT_NEVER` to this function will not block indefinitely but will
     int32_t delay = OS_TICKS_PER_SEC * 3;
     os_time_delay(delay);
 ```
----------------------
+

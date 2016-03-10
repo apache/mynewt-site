@@ -7,9 +7,9 @@ Mynewt includes the Newtron Flash File System (nffs).  This file system is desig
 
 Mynewt also provides an abstraction layer API (fs) to allow you to swap out nffs with a different file system of your choice.
 
-## Description
+###Description
 
-### Areas
+####Areas
 
 At the top level, an nffs disk is partitioned into *areas*.  An area is a region of disk with the following properties:
 
@@ -22,7 +22,7 @@ At the top level, an nffs disk is partitioned into *areas*.  An area is a region
 
 Thus, each area must comprise a discrete number of blocks.
 
-### Initialization
+####Initialization
 
 Before nffs can be used, it must be initialized.  There are two means of initializing an nffs file system:
 
@@ -86,7 +86,7 @@ main(int argc, char **argv)
 
 After nffs has been initialized, the application can access the file system via the [file system abstraction layer](../fs/fs.md).
 
-## Configuration
+###Configuration
 
 The nffs file system is configured by populating fields in a global [struct nffs\_config](nffs_config.md) instance.  Each field in the structure corresponds to a setting.  All configuration must be done prior to calling nffs\_init().
 
@@ -97,14 +97,14 @@ The global `struct nffs_config` instance is exposed in `nffs/nffs.h` as follows:
 extern struct nffs_config nffs_config;
 ```
 
-## Data Structures
+###Data Structures
 
 The `fs/nffs` package exposes the following data structures:
 
 * [struct nffs\_area\_desc](nffs_area_desc.md)
 * [struct nffs\_config](nffs_config.md)
 
-## API
+###API
 
 The functions available in this OS feature are:
 
@@ -112,7 +112,7 @@ The functions available in this OS feature are:
 * [nffs\_format](nffs_format.md)
 * [nffs\_init](nffs_init.md)
 
-# Miscellaneous measures
+###Miscellaneous measures
 
 * RAM usage:
     * 24 bytes per inode
@@ -123,13 +123,13 @@ The functions available in this OS feature are:
 * Maximum filename size: 256 characters (no null terminator required)
 * Disallowed filename characters: '/' and '\0'
 
-## Internals
+###Internals
 
 nffs implementation details can be found here:
 
 * [nffs\_internals](nffs_internals.md)
 
-## Future enhancements
+###Future enhancements
 
 * Error correction.
 * Encryption.

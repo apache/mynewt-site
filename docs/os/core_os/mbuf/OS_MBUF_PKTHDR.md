@@ -38,5 +38,4 @@ does_packet_have_data(struct os_mbuf *om)
 }
 ```
 
----------------------
 

@@ -4,10 +4,10 @@ The Mynewt Core OS is a multitasking, preemptive real-time operating system comb
 
 A multitasking, preemptive operating system is one in which a number of different tasks can be instantiated and assigned a priority, with higher priority tasks running before lower priority tasks. Furthermore, if a lower priority task is running and a higher priority task wants to run, the lower priority task is halted and the higher priority task is allowed to run. In other words, the lower priority task is preempted by the higher priority task.
 
-# Why use an OS?
+###Why use an OS?
 You may ask yourself "why do I need a multitasking preemptive OS"? The answer may indeed be that you do not. Some applications are simple and only require a polling loop. Others are more complex and may require that certain jobs are executed in a timely manner or before other jobs are executed. If you have a simple polling loop, you cannot move on to service a job until the current job is done being serviced. With the Mynewt OS, the application developer need not worry about certain jobs taking too long or not executing in a timely fashion; the OS provides mechanisms to deal with these situations. Another benefit of using an OS is that it helps shield application developers from other application code being written; the developer does not have to worry (or has to worry less) about other application code behaving badly and causing undesirable behavior or preventing their code from executing properly. Other benefits of using an OS (and the Mynewt OS in particular) is that it also provides features that the developer would otherwise need to create on his/her own. 
 
-# Core OS Features
+###Core OS Features
 
 <Insert basic feature descriptions, how the various pieces fit together etc., what's special in Mynewt OS>
 
@@ -25,7 +25,7 @@ You may ask yourself "why do I need a multitasking preemptive OS"? The answer ma
 * [Porting OS to other platforms](porting/port_os.md)
 
 
-# Basic OS Application Creation
+###Basic OS Application Creation
 Creating an application using the Mynewt Core OS is a relatively simple task: once you have installed the basic Newt Tool structure (build structure) for your application and created your BSP (Board Support Package), the developer initializes the OS by calling `os_init()`, performs application specific initializations, and then starts the os by calling `os_start()`. 
 
 The `os_init()` API performs two basic functions: calls architecture and bsp specific setup and initializes the idle task of the OS. This is required before the OS is started. The OS start API initializes the OS time tick interrupt and starts the highest priority task running (i.e starts the scheduler). Note that `os_start()` never returns; once called the device is either running in an application task context or in idle task context.
@@ -36,7 +36,7 @@ For example, take a simple application with two tasks (tasks 1 and 2, with task 
 
 Consider the sequence of events when the OS is started. The scheduler starts running and picks the highest priority task (task 1 in this case). The task handler function for task 1 is called and will keep running until it yields execution. Before yielding, code in the task 1 handler function calls the API provided by task 2. The semaphore being accessed in the task 2 API has yet to be initialized since the task 2 handler function has not had a chance to run! This will lead to undesirable behavior and will need to be addressed by the application developer. Note that the Mynewt OS does guard against internal API being called before the OS has started (they will return error) but it does not safeguard application defined objects from access prior to initialization.
 
-# Example
+###Example
 
 One way to avoid initialization issues like the one described above is to perform task initializations prior to starting the OS. The code example shown below illustrates this concept. The application initializes the OS, calls an application specific "task initialization" function, and then starts the OS. The application task initialization function is responsible for initializing all the data objects that each task exposes to the other tasks. The tasks themselves are also initialized at this time (by calling `os_task_init()`). 
 
@@ -153,7 +153,7 @@ main(void)
 ```
 
 
-## OS Functions
+###OS Functions
 
 
 The functions available at the OS level are:

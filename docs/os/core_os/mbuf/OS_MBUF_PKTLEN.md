@@ -32,5 +32,4 @@ Macro used to get the length of an entire mbuf chain.
     }
 ```
 
----------------------
 

@@ -34,5 +34,4 @@ os_arch_ctx_sw(struct os_task *t)
 }
 ```
 
----------------------
 

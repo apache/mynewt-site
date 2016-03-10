@@ -35,5 +35,4 @@ Here we allocate memory to be used as a pool.
     }
 ```
 
----------------------
 

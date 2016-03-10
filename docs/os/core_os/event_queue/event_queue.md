@@ -5,7 +5,7 @@ Event queue is a way of serializing events arring to a task. This makes it easy 
 
 Events arrive in a form of a data structure *struct os_event*.
 
-## Description
+### Description
 
 Events are in form of a data structure *struct os_event*, and they are queued to data structure *struct os_eventq*.
 
@@ -21,7 +21,7 @@ It is assumed that there is only one task consuming events from an event queue. 
 
 Note that os_callout subsystem assumes that event queue is used as the wakeup mechanism.
 
-## Data structures
+### Data structures
 
 ```no-highlight
 struct os_event {
@@ -53,7 +53,7 @@ struct os_eventq {
 | evq_task | Pointer to task if there is task sleeping on *os_eventq_get()* |
 | evq_list | Queue head for list of events in this queue |
 
-## List of Functions
+### List of Functions
 
 
 The functions available in event queue feature are:

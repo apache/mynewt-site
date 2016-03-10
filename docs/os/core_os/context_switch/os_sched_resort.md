@@ -37,4 +37,4 @@ os_mutex_pend(struct os_mutex *mu, uint32_t timeout)
 }
 ```
 
----------------------
+

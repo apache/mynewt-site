@@ -3,16 +3,16 @@
 
 The hardware independent UART interface for Mynewt.
 
-## Description
+###Description
 
 Contains the basic operations to send and receive data over a UART
 (Universal Asynchronous Receiver Transmitter).  
 
-## Definition
+###Definition
 
 [hal_uart.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_uart.h)
 
-## Examples
+###Examples
 
 This example shows a user writing a character to the uart
 

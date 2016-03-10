@@ -42,4 +42,3 @@ nmgr_task_init(uint8_t prio, os_stack_t *stack_ptr, uint16_t stack_len)
 }
 ```
 
----------------------

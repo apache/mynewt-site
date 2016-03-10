@@ -32,4 +32,3 @@ struct os_mqueue rxpkt_q;
 os_mqueue_init(&rxpkt_q, NULL);
 ```
 
----------------------

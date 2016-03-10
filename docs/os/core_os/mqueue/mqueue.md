@@ -6,7 +6,7 @@ The mqueue data structure consists of a queue head pointer (a "stailq" queue; a 
 
 <br>  
 
-## Using Mqueue
+### Using Mqueue
 
 The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call my_task_rx_data_func. Presumably, some other code will call this API. 
 
@@ -75,7 +75,7 @@ my_task_handler(void *arg)
 
 
 
-## Data Structures
+### Data Structures
 
 ```no-highlight
 struct os_mqueue {
@@ -86,7 +86,7 @@ struct os_mqueue {
 
 <br>
 
-## List of Functions
+### List of Functions
 
 The functions available in Mqueue are:
 

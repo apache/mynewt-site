@@ -43,5 +43,4 @@ os_mutex_release(struct os_mutex *mu)
 }
 ```
 
----------------------
 

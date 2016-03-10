@@ -30,5 +30,4 @@ non-zero: timer is armed
 <Insert the code snippet here>
 ```
 
----------------------
 

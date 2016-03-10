@@ -58,4 +58,3 @@ If any mbufs are allocated, they are allocated from the same pool as *om*
 	assert(pktlen == OS_MBUF_PKTLEN(om));
 ```
 
----------------------

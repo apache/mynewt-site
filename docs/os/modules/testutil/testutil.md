@@ -5,7 +5,7 @@ The testutil package is a test framework that provides facilities for specifying
 
 You would use it to build regression tests for your library.
 
-## Description
+###Description
 
 A package may optionally contain a set of test cases.  Test cases are not normally compiled and linked when a package is built; they are only included
 when the "test" identity is specified.  All of a package's test code goes in its `src/test` directory.  For example, the nffs package's test code is located in the following directory:
@@ -73,7 +73,7 @@ The following example demonstrates how to create a simple test suite.
 
 The test suite would then be executed via a call to `test_suite_arithmetic()`.
 
-## Data structures
+###Data structures
 
 ```no-highlight
 struct tu_config {
@@ -100,7 +100,7 @@ extern struct tu_config tu_config;
 The global `tu_config` struct contains all the testutil package's settings.
 This should be populated before `tu_init()` is called.
 
-## List of Functions
+###List of Functions
 
 <Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 

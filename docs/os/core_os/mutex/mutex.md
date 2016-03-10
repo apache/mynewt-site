@@ -4,7 +4,7 @@
 Mutex is short for "mutual exclusion"; a mutex provides mutually exclusive access to a shared resource. A mutex provides *priority inheritance* in order to prevent *priority inversion*. Priority inversion occurs when a higher priority task is waiting on a resource owned by a lower priority task. Using a mutex, the lower priority task will inherit the highest priority of any task waiting on the mutex. 
 
 
-## Description
+### Description
 
 The first order of business when using a mutex is to declare the mutex globally. The mutex needs to be initialized before it is used (see the examples). It is generally a good idea to initialize the mutex before tasks start running in order to avoid a task possibly using the mutex before it is initialized.
 
@@ -14,7 +14,7 @@ The following example will illustrate how priority inheritance works. In this ex
 
 Note that when multiple tasks are waiting on a mutex owned by another task, once the mutex is released the highest priority task waiting on the mutex is run. 
 
-## Data structures
+### Data structures
 
 ```no-highlight
 struct os_mutex
@@ -35,7 +35,7 @@ struct os_mutex
 | mu_level | Call nesting level (for nested calls) |
 | mu_owner | Pointer to task structure which owns mutex |
 
-## List of Functions
+### List of Functions
 
 <List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.>
 

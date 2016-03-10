@@ -42,4 +42,3 @@ void native_cputimer_cb(void *arg);
 ```
 
 
----------------------

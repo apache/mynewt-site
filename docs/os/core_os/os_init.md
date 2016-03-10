@@ -24,7 +24,3 @@ None
 The call to os_init performs architecture and bsp initializations and initializes the idle task.
 
 This function does not start the OS, the OS time tick interrupt, or the scheduler.
-
-<br>
-
----------------------
