@@ -70,8 +70,61 @@
                 <li>
                     <a href="/about/">About</a>
                 </li>
-                <li>
-                    <a href="/documentation/">Docs</a>
+                <li class="dropdown">
+                    <a href="/documentation/" class="dropdown-toggle" data-toggle="dropdown">Docs <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../documentation/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li class="active">
+                            <a href="../../../../get_started/introduction/">
+                                Mynewt OS Manual
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../newt/newt_intro/">
+                                Newt Tool Manual
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../newtmgr/overview/">
+                                Newt Manager Manual
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../faq/answers/">
+                                Appendix
+                            </a>
+                        </li>
+                        
+                        
+                    </ul>
                 </li>
                 <li>
                     <a href="/download/">Download</a>
@@ -530,7 +583,7 @@
         
       
         
-          <li>&raquo; <a href="./">Newtron Flash File System</a></li>
+          <li>&raquo; Newtron Flash File System</li>
         
       
       
@@ -548,8 +601,8 @@
 <li>Reliability</li>
 </ul>
 <p>Mynewt also provides an abstraction layer API (fs) to allow you to swap out nffs with a different file system of your choice.</p>
-<h2 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h2>
-<h3 id="areas">Areas<a class="headerlink" href="#areas" title="Permanent link">&para;</a></h3>
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
+<h4 id="areas">Areas<a class="headerlink" href="#areas" title="Permanent link">&para;</a></h4>
 <p>At the top level, an nffs disk is partitioned into <em>areas</em>.  An area is a region of disk with the following properties:</p>
 <ol>
 <li>An area can be fully erased without affecting any other areas.</li>
@@ -558,7 +611,7 @@
 <p><strong>Regarding property 1:</strong> Generally, flash hardware divides its memory space into "blocks."  When erasing flash, entire blocks must be erased in a single operation; partial erases are not possible.</p>
 <p><strong>Regarding property 2:</strong> Furthermore, some flash hardware imposes a restriction with regards to writes: writes within a block must be strictly sequential.  For example, if you wish to write to the first 16 bytes of a block, you must write bytes 1 through 15 before writing byte 16.  This restriction only applies at the block level; writes to one block have no effect on what parts of other blocks can be written.</p>
 <p>Thus, each area must comprise a discrete number of blocks.</p>
-<h3 id="initialization">Initialization<a class="headerlink" href="#initialization" title="Permanent link">&para;</a></h3>
+<h4 id="initialization">Initialization<a class="headerlink" href="#initialization" title="Permanent link">&para;</a></h4>
 <p>Before nffs can be used, it must be initialized.  There are two means of initializing an nffs file system:</p>
 <ol>
 <li>Restore an existing file system via detection.</li>
@@ -616,26 +669,26 @@ main(int argc, char **argv)
 </code></pre>
 
 <p>After nffs has been initialized, the application can access the file system via the <a href="../../fs/fs/">file system abstraction layer</a>.</p>
-<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
 <p>The nffs file system is configured by populating fields in a global <a href="../nffs_config/">struct nffs_config</a> instance.  Each field in the structure corresponds to a setting.  All configuration must be done prior to calling nffs_init().</p>
 <p>The global <code>struct nffs_config</code> instance is exposed in <code>nffs/nffs.h</code> as follows:</p>
 <pre><code class="no-highlight">extern struct nffs_config nffs_config;
 </code></pre>
 
-<h2 id="data-structures">Data Structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h2>
+<h3 id="data-structures">Data Structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h3>
 <p>The <code>fs/nffs</code> package exposes the following data structures:</p>
 <ul>
 <li><a href="../nffs_area_desc/">struct nffs_area_desc</a></li>
 <li><a href="../nffs_config/">struct nffs_config</a></li>
 </ul>
-<h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h2>
+<h3 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h3>
 <p>The functions available in this OS feature are:</p>
 <ul>
 <li><a href="../nffs_detect/">nffs_detect</a></li>
 <li><a href="../nffs_format/">nffs_format</a></li>
 <li><a href="../nffs_init/">nffs_init</a></li>
 </ul>
-<h1 id="miscellaneous-measures">Miscellaneous measures<a class="headerlink" href="#miscellaneous-measures" title="Permanent link">&para;</a></h1>
+<h3 id="miscellaneous-measures">Miscellaneous measures<a class="headerlink" href="#miscellaneous-measures" title="Permanent link">&para;</a></h3>
 <ul>
 <li>
 <p>RAM usage:</p>
@@ -651,12 +704,12 @@ main(int argc, char **argv)
 </li>
 <li>Disallowed filename characters: '/' and '\0'</li>
 </ul>
-<h2 id="internals">Internals<a class="headerlink" href="#internals" title="Permanent link">&para;</a></h2>
+<h3 id="internals">Internals<a class="headerlink" href="#internals" title="Permanent link">&para;</a></h3>
 <p>nffs implementation details can be found here:</p>
 <ul>
 <li><a href="../nffs_internals/">nffs_internals</a></li>
 </ul>
-<h2 id="future-enhancements">Future enhancements<a class="headerlink" href="#future-enhancements" title="Permanent link">&para;</a></h2>
+<h3 id="future-enhancements">Future enhancements<a class="headerlink" href="#future-enhancements" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Error correction.</li>
 <li>Encryption.</li>

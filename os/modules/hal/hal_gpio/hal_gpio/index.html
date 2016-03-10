@@ -70,8 +70,61 @@
                 <li>
                     <a href="/about/">About</a>
                 </li>
-                <li>
-                    <a href="/documentation/">Docs</a>
+                <li class="dropdown">
+                    <a href="/documentation/" class="dropdown-toggle" data-toggle="dropdown">Docs <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../documentation/">
+                                Overview
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <li class="active">
+                            <a href="../../../../get_started/introduction/">
+                                Mynewt OS Manual
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../newt/newt_intro/">
+                                Newt Tool Manual
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../newtmgr/overview/">
+                                Newt Manager Manual
+                            </a>
+                        </li>
+                        
+                        
+                        
+                        <li >
+                            <a href="../../../../../faq/answers/">
+                                Appendix
+                            </a>
+                        </li>
+                        
+                        
+                    </ul>
                 </li>
                 <li>
                     <a href="/download/">Download</a>
@@ -571,7 +624,40 @@
                             </div>
                         </div>
                         
-                            
+                            <h1 id="hal_gpio">hal_gpio<a class="headerlink" href="#hal_gpio" title="Permanent link">&para;</a></h1>
+<p>This is the hardware independent GPIO (General Purpose Input Output) Interface for Mynewt.</p>
+<h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
+<p>Contains the basic operations to set and read General Purpose Digital I/O Pins
+within a Mynewt system.</p>
+<p>Individual GPIOs are referenced in the APIs as <code>pins</code>. However, in this interface the <code>pins</code> are virtual GPIO pins. The MCU hal driver maps these virtual <code>pins</code> to the physical GPIO ports and pins. </p>
+<p>Typically, the BSP code may define named I/O pins in terms of these virtual <code>pins</code> to describe the devices attached to the physical pins.</p>
+<p>Here's a brief example so you can get the gist of the translation.</p>
+<p>Suppose my product uses the stm32F4xx processor.  There already exists support for this processor within Mynewt.  The processor has N ports (A,B,C..) of 16 GPIO pins per port.   The MCU hal_gpio driver maps these to a set of virtual pins 0-N where port A maps to 0-15, Port B maps to 16-31, Port C maps to 32-47 and so on.  The exact number of physical port (and virtual 
+port pins) depends on the specific variant of the stm32F4xx.  </p>
+<p>So if I want to turn on port B pin 3, that would be virtual pin  1*16 + 3 = 19. 
+This translation is defined in the MCU implementation of 
+<a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/mcu/stm/stm32f4xx/src/hal_gpio.c">hal_gpio.c</a> 
+for the stmf32F4xx.  Each MCU will typically have a different translation method 
+depending on its GPIO architecture. </p>
+<p>Now, when writing a BSP, it's common to give names to the relevant port pins that you are using.  Thus, the BSP may define a mapping between a function and a virtual port pin.  For example</p>
+<pre><code class="no-highlight">#define SYSTEM_LED              (37)
+#define FLASH_SPI_CHIP_SELECT   (3)
+</code></pre>
+
+<p>would map the system indicator LED to virtual pin 37 which on the stm32F4xx would be Port C pin 5 and the chip select line for the external SPI flash to virtual pin 3 which on the stm32F4xxis port A pin 3.</p>
+<p>Said another way, in this specific system we get</p>
+<pre><code class="no-highlight">SYSTEM_LED --&gt; hal_gpio virtual pin 37 --&gt; port C pin 5 on the stm34F4xx
+</code></pre>
+
+<h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
+<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h">hal_gpio.h</a></p>
+<h3 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h3>
+<h4 id="blinky">Blinky<a class="headerlink" href="#blinky" title="Permanent link">&para;</a></h4>
+<p>Blinky uses the hal_gpio to blink the system LED.  The blinky source code is available 
+<a href="https://github.com/apache/incubator-mynewt-larva/blob/master/project/blinky/src/main.c">here</a>.
+Examine how <code>task1_handler</code> initializes and toggles the GPIO to control the LED.</p>
+<p><br></p>
+<hr />
                         
                         <div class="row">
                             <footer>
