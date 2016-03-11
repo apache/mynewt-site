@@ -4,7 +4,7 @@
 TEST_CASE(test_case_name)
 ```
 
-Declares a test case function with the following type `int test_case_name(void)`. This can then be called from regression test's `TEST_SUITE()` function.
+Defines a test case function with the following type `int test_case_name(void)`. This can then be called from regression test's `TEST_SUITE()` function.
 
 #### Arguments
 
