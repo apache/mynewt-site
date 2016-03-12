@@ -1,5 +1,7 @@
 # Installing Cross Tools for ARM 
 
+This page shows how to install tools to use some ARM based platforms 
+with mynewt.
 
 ## Install Cross tools for ARM MAC
 

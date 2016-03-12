@@ -6,12 +6,14 @@
 
 #### 1. Install prerequisites
 
-* Install git, libcurl, and the Go language if you do not have them already.
+* Install git amd libcurlif you do not have them already.
 ```no-highlight
         $ sudo apt-get install git 
         $ sudo apt-get install libcurl4-gnutls-dev 
-        $ sudo apt-get install golang 
 ```
+
+* Download and install the Go Programming Language from 
+[Golang.org](https://golang.org/dl/).  
 
 #### 2. Create local repository 
 
@@ -35,16 +37,16 @@
 
 * Download the *newt* tool repository by using Go to copy the directory (currently the ASF incubator directory). Be patient as it may take a minute or two. Check the directories installed.
 ```no-highlight
-        $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ go get mynewt.apache.org/newt/...
         $ ls
          bin	pkg	   src
         $ ls src
-        git-wip-us.apache.org	github.com		gopkg.in
+        mynewt.apache.org	github.com		gopkg.in
 ```
 
 * Check that newt is in place.
 ```no-highlight
-        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt 
+        $ ls $GOPATH/src/
         Godeps			README.md		coding_style.txt    newt.go
         LICENSE			cli			    design.txt
 ```
@@ -53,14 +55,14 @@
 
 * Use Go to run the newt.go program to build the *newt* tool. The command `go install` compiles and writes the resulting executable to an output file named `newt`, which is installed along with its dependencies in $GOPATH/bin.
 ```no-highlight
-        $ cd $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ cd $GOPATH/src/mynewt.apache.org/newt/newt
         $ go install
         $ ls "$GOPATH"/bin/
-        godep		incubator-mynewt-newt.git	  newt
+        godep        newt   newtmgr     newtmv
 ```
 * Try running *newt*, the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
-   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt/newt/go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.   
+   Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/src/mynewt.apache.org/newt/newt/newt.go"` in your ~/.bashrc (or equivalent) and execute it by calling `$newt` at the prompt instead of `newt`. Here, you use `go run` which runs the compiled binary directly without producing an executable.   
   
 ```no-highlight
         $ newt version

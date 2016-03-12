@@ -120,6 +120,15 @@ under the specific repository you have included in the base project.
 Within each of these directories are the packages required to build your
 project for the various targets.
 
+## Do compiler stuff for Linux
+
+A current behavior on Linux requires that we copy a single file within this
+project.  
+
+```no-highlight
+cp repos/apache-mynewt-core/compiler/sim/linux-compiler.yml repos/apache-mynewt-core/compiler/sim/compiler.yml 
+```
+
 ## Testing the Project
 
 To validate, you can also run all the units test through simulation.
