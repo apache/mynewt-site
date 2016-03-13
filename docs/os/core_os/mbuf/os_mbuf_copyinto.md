@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_copyinto</font>
 
-```no-highlight
+```c
 int os_mbuf_copyinto(struct os_mbuf *om, int off, const void *src, int len);
 ```
 
@@ -29,7 +29,7 @@ All other values indicate an error.
 
 #### Example
 
-```no-highlight
+```c
     int rc;
     uint16_t pktlen;
 	struct os_mbuf *om;

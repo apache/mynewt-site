@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_sem_init</font>
 
-```no-highlight
+```c
 os_error_t os_sem_init(struct os_sem *sem, uint16_t tokens)    
 ```
 
@@ -30,7 +30,7 @@ Any caveats to be careful about (e.g. high memory requirements).>
 
 The following example shows how to initialize a semaphore used for exclusive access.
 
-```no-highlight
+```c
 struct os_mutex g_os_sem;
 os_error_t err;
 

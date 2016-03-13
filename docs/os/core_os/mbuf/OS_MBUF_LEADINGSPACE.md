@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MBUF_LEADINGSPACE</font>
 
-```no-highlight
+```c
 OS_MBUF_LEADINGSPACE(__om)
 ```
 
@@ -26,7 +26,7 @@ This macro works on both normal mbufs and packet header mbufs. The amount of lea
 
 #### Example
 
-```no-highlight
+```c
     uint8_t *dptr;
     uint16_t space;
     struct os_mbuf *om;

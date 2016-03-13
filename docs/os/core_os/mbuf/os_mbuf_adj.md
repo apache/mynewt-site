@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_adj</font>
 
-```no-highlight
+```c
 void os_mbuf_adj(struct os_mbuf *mp, int req_len);
 ```
 
@@ -27,7 +27,7 @@ None
 
 #### Example
 
-```no-highlight
+```c
     uint16_t pktlen;
 	struct os_mbuf *om;
 	struct my_pkt_header hdr;

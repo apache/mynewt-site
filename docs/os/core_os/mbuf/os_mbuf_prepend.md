@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_prepend</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mbuf_prepend(struct os_mbuf *om, int len)
 ```
 
@@ -29,7 +29,7 @@ If *om* is a packet header mbuf, the total length of the packet is adjusted by *
 
 #### Example
 
-```no-highlight
+```c
     uint16_t pktlen;
 	struct os_mbuf *om;
     struct os_mbuf *tmp;

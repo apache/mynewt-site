@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_memblock_put</font>
 
-```no-highlight
+```c
 os_error_t os_memblock_put(struct os_mempool *mp, void *block_addr)
 ```
 
@@ -25,7 +25,7 @@ OS_INVALID_PARAM: If either mp or block_addr were NULL, or the block being freed
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
     if (file != NULL) {
         rc = os_memblock_put(&nffs_file_pool, file);
         if (rc != 0) {

@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mqueue_put</font>
 
-```no-highlight
+```c
 int os_mqueue_put(struct os_mqueue *mq, struct os_eventq *evq, struct os_mbuf *m)
 ```
 
@@ -28,7 +28,7 @@ OS_EINVAL: the mbuf is not a packet header mbuf.
 
 #### Example
 
-```no-highlight
+```c
 int
 my_task_rx_data_func(struct os_mbuf *om)
 {

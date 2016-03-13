@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_msys_reset</font>
 
-```no-highlight
+```c
 void os_msys_reset(void) 
 ```
 
@@ -22,7 +22,7 @@ None
 
 #### Example
 
-```no-highlight
+```c
     os_msys_reset(); 
 ```
 

@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_next_task </font>
 
-```no-highlight
+```c
 struct os_task *os_sched_next_task(void)
 ```
 

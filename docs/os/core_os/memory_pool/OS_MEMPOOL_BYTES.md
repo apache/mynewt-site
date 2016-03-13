@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MEMPOOL_BYTES</font>
 
-```no-highlight
+```c
 OS_MEMPOOL_BYTES(n,blksize)
 ```
 
@@ -26,7 +26,7 @@ OS_MEMPOOL_BYTES is a macro and not a function.
 
 Here we allocate memory to be used as a pool.
 
-```no-highlight
+```c
     void *nffs_file_mem;
 
     nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));

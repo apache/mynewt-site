@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_sanity_check_register</font>
 
-```no-highlight
+```c
 int os_sanity_check_register(struct os_sanity_check *sc)
 ```
 Register the sanity check pointed to by `sc` with the sanity task.  After registration
@@ -23,7 +23,7 @@ All other error codes indicate an error.
 <br>
 #### Example
 
-```no-highlight
+```c
     int rc;
 
     rc = os_sanity_check_register(&my_sc); 

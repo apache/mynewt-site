@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_eventq_put</font>
 
-```no-highlight
+```c
 void
 os_eventq_put(struct os_eventq *evq, struct os_event *ev)
 ```
@@ -25,7 +25,7 @@ N/A
 <Add text to set up the context for the example here>
 This is used to pass info about an event to a task handling it.
 
-```no-highlight
+```c
     /* Get an event structure off the queue */
     ev = (struct os_event *)os_memblock_get(&g_hci_os_event_pool);
     if (!ev) {

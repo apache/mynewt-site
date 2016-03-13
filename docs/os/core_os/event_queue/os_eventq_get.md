@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_eventq_get</font>
 
-```no-highlight
+```c
 void
 os_eventq_get(struct os_eventq *evq)
 ```
@@ -26,7 +26,7 @@ Will return with a pointer to first *struct event* which is in the queue.
 
 Main loop of an example task.
 
-```no-highlight
+```c
     while (1) {
         ev = os_eventq_get(&task1_evq);
         assert(ev);

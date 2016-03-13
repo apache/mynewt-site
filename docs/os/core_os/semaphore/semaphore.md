@@ -15,7 +15,7 @@ The other common use of a counting semaphore is in what is commonly called a "pr
 
 ### Data structures
 
-```no-highlight
+```c
 struct os_sem
 {
     SLIST_HEAD(, os_task) sem_head;     /* chain of waiting tasks */

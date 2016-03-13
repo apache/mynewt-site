@@ -21,9 +21,6 @@ Tasks which are *sleeping* are kept in linked list `g_os_sleep_list`.
 
 Scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be *running*. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently *running* task is stored and the new task is swapped in.
 
-## Data structures
-
-
 
 ## List of Functions
 

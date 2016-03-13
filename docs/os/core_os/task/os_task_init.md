@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_task_init</font>
 
-```no-highlight
+```c
 int os_task_init(struct os_task *t, char *name, os_task_func_t func, void *arg, 
                  uint8_t prio, os_time_t sanity_itvl, os_stack_t *stack_bottom, 
                  uint16_t stack_size)
@@ -33,7 +33,7 @@ All other error codes indicate an internal error.
 <br>
 #### Example
 
-```no-highlight
+```c
 
     /* Create the task */ 
     int rc;

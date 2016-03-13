@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sem_pend </font>
 
-```no-highlight
+```c
 os_error_t os_sem_pend(struct os_sem *sem, uint32_t timeout)
 ```
 
@@ -29,7 +29,7 @@ If a timeout of 0 is used and the function returns OS_TIMEOUT, the semaphore was
 
 #### Example
 
-```no-highlight
+```c
 struct os_sem g_os_sem;
 os_error_t err;
 

@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_free_chain</font>
 
-```no-highlight
+```c
 int os_mbuf_free_chain(struct os_mbuf *om);
 ```
 
@@ -30,7 +30,7 @@ Note that for each mbuf in the chain, `os_mbuf_free()` is called.
 
 #### Example
 
-```no-highlight
+```c
     int rc;
 	struct os_mbuf *om;
 

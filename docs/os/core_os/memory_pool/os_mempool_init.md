@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_mempool_init</font>
 
-```no-highlight
+```c
 os_error_t os_mempool_init(struct os_mempool *mp, int blocks, int block_size, void *membuf, char *name)
 ```
 
@@ -36,7 +36,7 @@ It's recommended that you use *OS_MEMPOOL_BYTES()* or *OS_MEMPOOL_SIZE()* to fig
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
     void *nffs_file_mem;
    
     nffs_file_mem = malloc(OS_MEMPOOL_BYTES(nffs_config.nc_num_files, sizeof (struct nffs_file)));

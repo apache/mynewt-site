@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">os_realloc</font>
 
-```no-highlight
+```c
 void *os_realloc(void *ptr, size_t size)
 ```
 
@@ -26,7 +26,7 @@ ptr: pointer to new start of memory block
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
 <Insert the code snippet here>
 ```
 

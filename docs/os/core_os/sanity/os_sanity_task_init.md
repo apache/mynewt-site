@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_sanity_task_init</font>
 
-```no-highlight
+```c
 int os_sanity_task_init(int num_secs);
 ```
 Initialize the os sanity task.  `num_secs` is the number of seconds to wait
@@ -23,7 +23,7 @@ All other error codes indicate an error.
 <br>
 #### Example
 
-```no-highlight
+```c
 /* Run sanity checks every 50 seconds */
 
 #define SANITY_TASK_INTERVAL (50)

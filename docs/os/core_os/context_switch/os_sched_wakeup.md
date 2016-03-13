@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_wakeup </font>
 
-```no-highlight
+```c
 int
 os_sched_wakeup(struct os_task *t)
 ```
@@ -24,7 +24,7 @@ Returns 0 on success.
 #### Example
 
 <Add text to set up the context for the example here>
-```no-highlight
+```c
 void
 os_eventq_put(struct os_eventq *evq, struct os_event *ev)
 {

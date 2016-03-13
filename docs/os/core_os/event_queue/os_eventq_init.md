@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_eventq_init</font>
 
-```no-highlight
+```c
    void
     os_eventq_init(struct os_eventq *evq)
 ```
@@ -28,7 +28,7 @@ Usually done at subsystem init time; before OS has been started, and before inte
 This initializes event queue used by newtmgr task.
 
 
-```no-highlight
+```c
 struct os_eventq g_nmgr_evq;
 
 int

@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">os_time_delay</font>
 
-```no-highlight
+```c
 void os_time_delay(int32_t ticks) 
 ```
 
@@ -22,7 +22,7 @@ Passing `OS_TIMEOUT_NEVER` to this function will not block indefinitely but will
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
     /* delay 3 seconds */
     int32_t delay = OS_TICKS_PER_SEC * 3;
     os_time_delay(delay);

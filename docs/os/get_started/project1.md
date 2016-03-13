@@ -31,7 +31,7 @@ Let's gets started!
 
 
 * Install gcc/libc that will produce 32-bit executables, using *brew*. 
-```no-highlight
+```
         $ brew install gcc
         ...
         ...

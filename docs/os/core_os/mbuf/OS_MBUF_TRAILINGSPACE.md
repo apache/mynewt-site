@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MBUF_TRAILINGSPACE</font>
 
-```no-highlight
+```c
 OS_MBUF_TRAILINGSPACE(__om)
 ```
 
@@ -26,7 +26,7 @@ This macro works on both normal mbufs and packet header mbufs. The amount of tra
 
 #### Example
 
-```no-highlight
+```c
     uint16_t space;
     struct os_mbuf *om;
     struct my_data_struct my_data;

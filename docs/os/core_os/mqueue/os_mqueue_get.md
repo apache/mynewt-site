@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mqueue_get</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mqueue_get(struct os_mqueue *mq)
 ```
 
@@ -24,7 +24,7 @@ The packet at the head of the queue or NULL if no packets are on the queue.
 
 #### Example
 
-```no-highlight
+```c
 uint32_t pkts_rxd;
 struct os_mqueue rxpkt_q;
 

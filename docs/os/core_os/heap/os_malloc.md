@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_malloc</font>
 
-```no-highlight
+```c
 void *os_malloc(size_t size)
 ```
 
@@ -27,7 +27,7 @@ Depending on which C-library you use, you might have to do the heap setup differ
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
     info = (struct os_task_info *) os_malloc(
             sizeof(struct os_task_info) * tcount);
     if (!info) {

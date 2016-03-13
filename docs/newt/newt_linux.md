@@ -35,18 +35,18 @@
 
 * Download the *newt* tool repository by using Go to copy the directory (currently the ASF incubator directory). Be patient as it may take a minute or two. Check the directories installed.
 ```no-highlight
-        $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
+        $ go get mynewt.apache.org/newt/...
         $ ls
          bin	pkg	   src
         $ ls src
-        git-wip-us.apache.org	github.com		gopkg.in
+        github.com		golang.org		gopkg.in     mynewt.apache.org
 ```
 
 * Check that newt is in place.
 ```no-highlight
-        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt 
-        Godeps			README.md		coding_style.txt    newt.go
-        LICENSE			cli			    design.txt
+        $ ls $GOPATH/src/mynewt.apache.org/newt
+        DISCLAIMER	NOTICE		newt		newtvm      viper
+        LICENSE		README.md	newtmgr		util        yaml
 ```
 #### 3. Build the newt tool
 

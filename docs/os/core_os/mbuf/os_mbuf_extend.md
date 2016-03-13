@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_extend</font>
 
-```no-highlight
+```c
 void *os_mbuf_extend(struct os_mbuf *om, uint16_t len);
 ```
 
@@ -28,7 +28,7 @@ Returns NULL if extension fails due to insufficient mbufs or *len* too large.
 
 #### Example
 
-```no-highlight
+```c
     uint8_t *dptr;
 	struct os_mbuf *om;
     struct my_data_struct my_data;	

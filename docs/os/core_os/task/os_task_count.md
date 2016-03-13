@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_task_count</font>
 
-```no-highlight
+```c
 uint8_t os_task_count(void);
 ```
 Returns the number of tasks that have been created. 
@@ -18,7 +18,7 @@ unsigned 8-bit integer representing number of tasks created
 <br>
 #### Example
 
-```no-highlight
+```c
 
     uint8_t num_tasks;
 

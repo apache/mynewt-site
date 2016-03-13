@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_concat</font>
 
-```no-highlight
+```c
 void os_mbuf_concat(struct os_mbuf *first, struct os_mbuf *second)
 ```
 
@@ -30,7 +30,7 @@ No data is copied or moved nor are any mbufs freed.
 
 #### Example
 
-```no-highlight
+```c
     uint16_t pktlen1;
     uint16_t pktlen2;
 	struct os_mbuf *pkt1;

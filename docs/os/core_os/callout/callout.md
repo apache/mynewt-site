@@ -20,14 +20,13 @@ Callout timer fires out just once. For periodic timer type of operation you need
 
 ### Data structures
 
-```no-highlight
-struct os_callout {
-    struct os_event c_ev;
-    struct os_eventq *c_evq;
-    uint32_t c_ticks;
-    TAILQ_ENTRY(os_callout) c_next;
-};
-```
+    struct os_callout {
+        struct os_event c_ev;
+        struct os_eventq *c_evq;
+        uint32_t c_ticks;
+        TAILQ_ENTRY(os_callout) c_next;
+    };
+
 
 | Element | Description |
 |---------|-------------|
@@ -36,13 +35,13 @@ struct os_callout {
 | c_ticks | OS tick amount when timer fires |
 | c_next | Linkage to other unexpired callouts |
 
-```no-highlight
-struct os_callout_func {
-    struct os_callout cf_c;
-    os_callout_func_t cf_func;
-    void *cf_arg;
-};
-```
+
+    struct os_callout_func {
+        struct os_callout cf_c;
+        os_callout_func_t cf_func;
+        void *cf_arg;
+    };
+
 
 | Element | Description |
 |---------|-------------|

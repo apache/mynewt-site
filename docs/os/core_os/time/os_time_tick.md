@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">os_time_tick</font>
 
-```no-highlight
+```c
 void os_time_tick(void) 
 ```
 
@@ -22,7 +22,7 @@ Called for every single tick by the architecture specific functions.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
    os_time_tick();
 ```
 

@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">os_gettimeofday</font>
 
-```no-highlight
+```c
 int os_gettimeofday(struct os_timeval *utctime, struct os_timezone *timezone); 
 ```
 
@@ -24,7 +24,7 @@ The function is a no-op if both `utctime` and `timezone` are NULL.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
     /*
      * Display wallclock time on the console.
      */

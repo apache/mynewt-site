@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_pullup</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mbuf_pullup(struct os_mbuf *om, uint16_t len)
 ```
 
@@ -31,7 +31,7 @@ The mbuf that is being pulled up into does not need to be a packet header mbuf; 
 
 #### Example
 
-```no-highlight
+```c
 	struct os_mbuf *om;
     struct os_mbuf *tmp;
     struct my_header_struct my_header;

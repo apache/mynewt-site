@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_task_info_get_next</font>
 
-```no-highlight
+```c
 struct os_task *os_task_info_get_next(const struct os_task *prev, struct os_task_info *oti);
 ```
 Populates the os task info structure pointed to by *oti* with task information. 
@@ -28,7 +28,7 @@ information structure. NULL means that no tasks were created.
 <br>
 #### Example
 
-```no-highlight
+```c
 
 void 
 get_task_info(void)

@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_get_pkthdr</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mbuf_get_pkthdr(struct os_mbuf_pool *omp, uint8_t pkthdr_len);
 ```
 
@@ -30,7 +30,7 @@ The packet header mbuf returned will have its data pointer incremented by the si
 
 #### Example
 
-```no-highlight
+```c
 	struct os_mbuf *om;
     struct my_user_header my_hdr;
 

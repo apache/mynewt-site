@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sem_release </font>
 
-```no-highlight
+```c
 os_error_t os_sem_release(struct os_sem *sem)
 ```
 
@@ -26,7 +26,7 @@ OS_OK: semaphore released successfully.
 
 #### Example
 
-```no-highlight
+```c
 struct os_sem g_os_sem;
 os_error_t err;
 

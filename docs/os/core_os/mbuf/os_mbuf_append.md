@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_append</font>
 
-```no-highlight
+```c
 int os_mbuf_append(struct os_mbuf *om, const void *data,  uint16_t len)
 ```
 
@@ -38,7 +38,7 @@ If any mbufs are allocated, they are allocated from the same pool as *om*
 
 #### Example
 
-```no-highlight
+```c
     int rc;
     uint16_t pktlen;
 	struct os_mbuf *om;

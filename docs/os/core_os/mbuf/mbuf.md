@@ -42,7 +42,7 @@ Mbufs are collected into "mbuf pools" much like memory blocks. The mbuf pool its
 Creating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro *MBUF_PKTHDR_OVERHEAD* to denote the amount of packet header overhead per mbuf and *MBUF_MEMBLOCK_OVERHEAD* to denote the total amount of overhead required per memory block. The macro *MBUF_BUF_SIZE* is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro *MBUF_MEMBLOCK_OVERHEAD*.
 
 
-```no-highlight  
+```c  
 
 #define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)
 #define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD
@@ -78,7 +78,7 @@ The following examples illustrate typical mbuf usage. There are two basic mbuf a
 
 In `example1`, the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the "pullup" api (another very common mbuf api).
 
-```no-highlight
+```c
 
 void
 mbuf_usage_example1(uint8_t *mydata, int mydata_length)
@@ -114,7 +114,7 @@ A long story short: the developer must take care when copying structure data to/
 
 A final note: these examples assume the same mbuf struture and definitions used in the first example. 
 
-```no-highlight
+```c
 void
 mbuf_usage_example2(struct mbuf *rxpkt)
 {
@@ -158,7 +158,7 @@ mbuf_usage_example2(struct mbuf *rxpkt)
 
 ### Data Structures
 
-```no-highlight
+```c
 struct os_mbuf_pool {
     uint16_t omp_databuf_len;
     uint16_t omp_mbuf_count;
@@ -176,7 +176,7 @@ struct os_mbuf_pool {
 
 <br>
 
-```no-highlight
+```c
 struct os_mbuf_pkthdr {
     uint16_t omp_len;
     uint16_t omp_flags;
@@ -192,7 +192,7 @@ struct os_mbuf_pkthdr {
 
 <br>
 
-```no-highlight
+```c
 struct os_mbuf {
     uint8_t *om_data;
     uint8_t om_flags;

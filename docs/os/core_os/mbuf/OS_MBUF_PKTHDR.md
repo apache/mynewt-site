@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MBUF_PKTHDR</font>
 
-```no-highlight
+```c
 OS_MBUF_PKTHDR(__om)
 ```
 
@@ -21,7 +21,7 @@ Macro used to get a pointer to the os mbuf packet header of an mbuf.
 
 #### Example
 
-```no-highlight
+```c
 int
 does_packet_have_data(struct os_mbuf *om)
 {

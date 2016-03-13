@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MBUF_PKTHDR_TO_MBUF</font>
 
-```no-highlight
+```c
 OS_MBUF_PKTHDR_TO_MBUF(__hdr)
 ```
 
@@ -19,7 +19,7 @@ Macro used to get a pointer to the mbuf given a pointer to the os mbuf packet he
 
 #### Example
 
-```no-highlight
+```c
     struct os_mbuf *om;
     struct os_mbuf_pkthdr *hdr;
 

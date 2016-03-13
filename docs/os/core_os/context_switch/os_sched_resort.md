@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_resort </font>
 
-```no-highlight
+```c
 void os_sched_resort(struct os_task *t)
 ```
 
@@ -23,7 +23,7 @@ N/A
 #### Example
 
 <Add text to set up the context for the example here>
-```no-highlight
+```c
 os_error_t
 os_mutex_pend(struct os_mutex *mu, uint32_t timeout)
 {

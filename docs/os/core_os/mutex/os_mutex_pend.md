@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mutex_pend </font>
 
-```no-highlight
+```c
 os_error_t os_mutex_pend(struct os_mutex *mu, uint32_t timeout) 
 ```
 
@@ -33,7 +33,7 @@ If the mutex is owned by another task and the timeout is 0 the function returns 
 
 
 
-```no-highlight
+```c
 struct os_mutex g_mutex1;
 os_error_t err;
 

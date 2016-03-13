@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mqueue_init</font>
 
-```no-highlight
+```c
 int os_mqueue_init(struct os_mqueue *mq, void *arg)
 ```
 Initializes an queue. Sets the event argument in the os event of the mqueue to *arg*. Sets type of event to OS_EVENT_T_MQUEUE_DATA.
@@ -24,7 +24,7 @@ Initializes an queue. Sets the event argument in the os event of the mqueue to *
 
 #### Example
 
-```no-highlight
+```c
 /* Declare mqueue */
 struct os_mqueue rxpkt_q;
 

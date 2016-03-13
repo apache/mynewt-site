@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_off</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mbuf_off(struct os_mbuf *om, int off, int *out_off)
 ```
 
@@ -31,7 +31,7 @@ While this api is provided to the user, other API are expected to be used by the
 
 #### Example
 
-```no-highlight
+```c
     int relative_offset;
     uint16_t pktlen;
 	struct os_mbuf *om;

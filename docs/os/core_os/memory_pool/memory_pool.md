@@ -8,7 +8,7 @@ A memory pool is a collection of fixed sized elements called memory blocks. Gene
 
 In order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).
 
-```no-highlight
+```c
 struct os_mempool my_pool;
 ```
 <br>
@@ -18,18 +18,18 @@ In order to simplify this for the user two macros have been provided: `OS_MEMPOO
 
 Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).
 
-```no-highlight
+```c
 void *my_memory_buffer;
 my_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));
 ```
 
-```no-highlight
+```c
 os_membuf_t my_memory_buffer[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)];
 ```
 <br>
 Now that the memory pool has been defined as well as the memory required for the memory blocks which make up the pool the user needs to initialize the memory pool by calling `os_mempool_init`.
 
-```no-highlight
+```c
 os_mempool_init(&my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
                          "MyPool");
 ```
@@ -37,7 +37,7 @@ os_mempool_init(&my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
 Once the memory pool has been initialized the developer can allocate memory blocks from the pool by calling `os_memblock_get`. When the memory block is no longer needed the memory can be freed by calling `os_memblock_put`. 
 
 ### Data structures
-```no-highlight
+```c
 struct os_mempool {
     int mp_block_size;
     int mp_num_blocks;

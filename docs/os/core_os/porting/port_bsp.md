@@ -42,7 +42,7 @@ Set the `bsp` of the project to `/hw/bsp/myboard`. While creating your target, y
 
 When you are complete, your `target` may look similar to this.
 
-```no-highlight
+```c
     $newt target show 
         myboard_blinky
             arch=cortex_m0
@@ -83,7 +83,7 @@ Edit the package file to describe your BSP.
 
 The package file must contain:
 
-```no-highlight
+```c
     pkg.name: "hw/bsp/myboard"
     pkg.linkerscript: "myboard.ld"
 ```
@@ -97,7 +97,7 @@ The linker script is a key component of the BSP and specifies where each section
 
 The package file typically contains:
 
-```no-highlight
+```c
     pkg.linkerscript.bootloader.OVERWRITE: "myboard_boot.ld"
     pkg.downloadscript: "myboard_download.sh"
     pkg.debugscript: "myboard_debug.sh"
@@ -119,7 +119,7 @@ The BSP will invariably depend upon an MCU ( in this sample it's `hw/mcu/mymcu/v
 
 The package file may also contain:
 
-```no-highlight
+```c
     pkg.cflags: -D__MY_SPECIAL_BSP_OPTIONS_
     pkg.deps:
     - libs/cmsis-core
@@ -184,7 +184,7 @@ There are also several libc definitions that can be stubbed in your first BSP. E
 
 NOTE: Currently we are making calls to `_sbrk()` and `close(0)` from `os_bsp_init` to get around a linker issue where some of libc is not getting included.  Please include this in your `os_bsp_init`.
 
-```no-highlight
+```c
     /*
      * XXX these references are here to keep the functions in for libc to find.
      */

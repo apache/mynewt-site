@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched </font>
 
-```no-highlight
+```c
 void os_sched(struct os_task *next_t)
 ```
 
@@ -26,7 +26,7 @@ Interrupts must be disabled when calling this.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
 os_error_t
 os_mutex_release(struct os_mutex *mu)
 {

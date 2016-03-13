@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_get</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mbuf_get(struct os_mbuf_pool *omp, uint16_t leadingspace)
 ```
 
@@ -30,7 +30,7 @@ In most typical applications, the application developer does not need to call `o
 
 #### Example
 
-```no-highlight
+```c
 	struct os_mbuf *om;
 
     /* Get an mbuf */

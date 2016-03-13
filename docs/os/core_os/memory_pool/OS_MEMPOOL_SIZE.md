@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MEMPOOL_SIZE</font>
 
-```no-highlight
+```c
 OS_MEMPOOL_SIZE(n,blksize)
 ```
 
@@ -30,7 +30,7 @@ OS_MEMPOOL_SIZE is a macro and not a function.
 
 Here we define a memory buffer to be used by a memory pool using OS_MEMPOOL_SIZE
 
-```no-highlight
+```c
 #define NUM_BLOCKS      (16)
 #define BLOCK_SIZE      (32)
 

@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">os_settimeofday</font>
 
-```no-highlight
+```c
 int os_settimeofday(struct os_timeval *utctime, struct os_timezone *timezone);
 ```
 
@@ -26,7 +26,7 @@ The function is a no-op if both `utctime` and `timezone` are NULL.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
     int rc;
     parse_datetime(datestr, &utctime, &tz);
     rc = os_settimeofday(&utctime, &tz);

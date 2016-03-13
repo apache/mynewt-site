@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_insert </font>
 
-```no-highlight
+```c
 os_error_t
 os_sched_insert(struct os_task *t)
 ```

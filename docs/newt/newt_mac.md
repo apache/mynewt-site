@@ -60,9 +60,9 @@ If you want to build the *newt* tool from its source code, follow the following 
 
 * Check that newt.go is in place.
 ```no-highlight
-        $ ls $GOPATH/src/git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt  
-        Godeps			README.md		coding_style.txt    newt.go
-        LICENSE			cli			    design.txt
+        $ ls $GOPATH/src/mynewt.apache.org/newt
+        DISCLAIMER	NOTICE		newt		newtvm      viper
+        LICENSE		README.md	newtmgr		util        yaml
 ```
 
 #### 4. Build the Newt tool
@@ -72,7 +72,6 @@ If you want to build the *newt* tool from its source code, follow the following 
 ```no-highlight
         $ cd $GOPATH/src/mynewt.apache.org/newt/newt
         $ go install
-        $
         $ ls "$GOPATH"/bin/
         newt newtmgr newtvm
 ```

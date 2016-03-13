@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_sanity_task_checkin</font>
 
-```no-highlight
+```c
 int os_sanity_task_checkin(struct os_task *t)
 ```
 Used by a task to check in to the sanity task. This informs the sanity task that 
@@ -23,7 +23,7 @@ All other error codes indicate an error.
 <br>
 #### Example
 
-```no-highlight
+```c
     int rc;
 
     rc = os_sanity_task_checkin(&my_task); 

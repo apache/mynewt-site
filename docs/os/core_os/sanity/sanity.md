@@ -32,7 +32,7 @@ The Sanity Watchdog is a task in the Mynewt OS, which when enabled, runs
 every `sanity_seconds`.  In order to enable the Sanity Watchdog task, 
 call the `os_sanity_task_init()` function.
 
-```no-highlight
+```c
 int os_sanity_task_init(int sanity_seconds);
 ```
 
@@ -40,7 +40,7 @@ By default, every operating system task provides the frequency it will
 check in with the sanity task, with the `sanity_itvl` parameter in the 
 `os_task_init()` function:
 
-```no-highlight
+```c
 int os_task_init(struct os_task *t, char *name, os_task_func_t func, 
     void *arg, uint8_t prio, os_time_t sanity_itvl, os_stack_t *bottom,
     uint16_t stack_size);
@@ -57,7 +57,7 @@ function, which will reset the sanity check associated with this task.
 Here is an example of a task that uses a callout to checkin with the 
 sanity task every 50 seconds:
 
-```no-highlight
+```c
 #define TASK1_SANITY_CHECKIN_ITVL (50 * OS_TICKS_PER_SEC) 
 struct os_eventq task1_evq;
 
@@ -106,7 +106,7 @@ perform other checks during the sanity task's operation, it can do so by
 registering a `struct os_sanity_check` using the `os_sanity_check_register`
 function.
 
-```no-highlight
+```c
 static int 
 mymodule_perform_sanity_check(struct os_sanity_check *sc, void *arg)
 {
@@ -162,7 +162,7 @@ for temporary failures.
 
 ### OS Sanity Check 
 
-```no-highlight
+```c
 struct os_sanity_check {
     os_time_t sc_checkin_last;
     os_time_t sc_checkin_itvl;

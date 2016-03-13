@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_dup</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_mbuf_dup(struct os_mbuf *om)
 ```
 
@@ -25,7 +25,7 @@ Pointer to the duplicated chain or NULL if not enough mbufs were available to du
 
 #### Example
 
-```no-highlight
+```c
 	struct os_mbuf *om;
     struct os_mbuf *new_om;
 	

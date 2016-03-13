@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_ctx_sw_hook </font>
 
-```no-highlight
+```c
 void os_sched_ctx_sw_hook(struct os_task *next_t)
 ```
 
@@ -23,7 +23,7 @@ N/A
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
 void
 os_arch_ctx_sw(struct os_task *t)
 {

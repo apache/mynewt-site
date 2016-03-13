@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_sleep </font>
 
-```no-highlight
+```c
 int
 os_sched_sleep(struct os_task *t, os_time_t nticks)
 ```
@@ -29,7 +29,7 @@ Must be called with interrupts disabled.
 #### Example
 
 <Add text to set up the context for the example here>
-```no-highlight
+```c
 struct os_event *
 os_eventq_get(struct os_eventq *evq)
 {

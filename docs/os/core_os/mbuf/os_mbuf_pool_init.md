@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_pool_init</font>
 
-```no-highlight
+```c
 int os_mbuf_pool_init(struct os_mbuf_pool *omp, struct os_mempool *mp, uint16_t buf_len, 
                       uint16_t nbufs)
 ```
@@ -32,7 +32,7 @@ The parameter *buf_len* is the total size of the memory block. This must accommo
 
 #### Example
 
-```no-highlight
+```c
 #define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)
 #define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD
 

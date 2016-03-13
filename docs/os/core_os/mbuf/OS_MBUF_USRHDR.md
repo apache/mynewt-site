@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">OS_MBUF_USRHDR</font>
 
-```no-highlight
+```c
 OS_MBUF_USRHDR(__om)
 ```
 
@@ -20,7 +20,7 @@ Macro used to get a pointer to the user packet header of an mbuf.
 
 #### Example
 
-```no-highlight
+```c
     struct os_mbuf *om
     struct user_header *hdr;
 

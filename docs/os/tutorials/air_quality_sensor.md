@@ -799,14 +799,13 @@ senseair_init(int uartno)
 
 And you modified your main() for senseair driver init.
 
-```no-highlight
-int
-main(int argc, char **argv)
-{
-    ....
-    senseair_init(1);
-    ....
-}
-```
+    :::c
+    int
+    main(int argc, char **argv)
+    {
+        ....
+        senseair_init(1);
+        ....
+    }
 
 You can see from the code that you are using the HAL interface to open a UART port, and using OS semaphore as a way of blocking the task when waiting for read response to come back from the sensor.

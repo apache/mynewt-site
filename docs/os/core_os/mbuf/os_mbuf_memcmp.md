@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mbuf_memcmp</font>
 
-```no-highlight
+```c
 int os_mbuf_memcmp(const struct os_mbuf *om, int off, const void *data, int len)
 ```
 
@@ -31,7 +31,7 @@ This function will compare bytes starting from *off* bytes from the start of the
 
 #### Example
 
-```no-highlight
+```c
     int rc;
 	struct os_mbuf *om;
     uint8_t my_data_buffer[32];

@@ -23,7 +23,7 @@ Note that os_callout subsystem assumes that event queue is used as the wakeup me
 
 ### Data structures
 
-```no-highlight
+```c
 struct os_event {
     uint8_t ev_queued;
     uint8_t ev_type;
@@ -40,7 +40,7 @@ struct os_event {
 | ev_next | Linkage attaching this event to an event queue |
 
 
-```no-highlight
+```c
 struct os_eventq {
     struct os_task *evq_task;
     STAILQ_HEAD(, os_event) evq_list;

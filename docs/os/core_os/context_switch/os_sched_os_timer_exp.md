@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_os_timer_exp </font>
 
-```no-highlight
+```c
 void os_sched_os_timer_exp(void)
 ```
 
@@ -22,7 +22,7 @@ N/A
 #### Example
 
 <Add text to set up the context for the example here>
-```no-highlight
+```c
 void
 timer_handler(void)
 {

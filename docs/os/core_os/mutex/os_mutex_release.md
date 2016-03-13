@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mutex_release</font>
 
-```no-highlight
+```c
 os_error_t os_mutex_release(struct os_mutex *mu)
 ```
 
@@ -26,7 +26,7 @@ OS_NOT_STARTED: Attempt to release a mutex before the os has been started.
 #### Example
 
 
-```no-highlight
+```c
 struct os_mutex g_mutex1;
 os_error_t err;
 

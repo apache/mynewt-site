@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_sanity_check_init</font>
 
-```no-highlight
+```c
 int os_sanity_check_init(struct os_sanity_check *sc)
 ```
 Initialize the sanity check pointed to by `sc`.  Sets default values, and ensures
@@ -23,7 +23,7 @@ All other error codes indicate an error.
 <br>
 #### Example
 
-```no-highlight
+```c
     int rc;
 
     rc = os_sanity_task_check_init(&my_sanity_check); 

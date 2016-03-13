@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt"> os_sanity_check_reset</font>
 
-```no-highlight
+```c
 int os_sanity_check_reset(struct os_sanity_check *sc)
 ```
 Reset the sanity check pointed to by sc.  This tells the sanity task that 
@@ -24,7 +24,7 @@ All other error codes indicate an error.
 <br>
 #### Example
 
-```no-highlight
+```c
     int rc;
 
     rc = os_sanity_check_reset(&my_sc); 

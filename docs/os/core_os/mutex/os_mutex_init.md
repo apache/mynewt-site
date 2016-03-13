@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_mutex_init</font>
 
-```no-highlight
+```c
 os_error_t os_mutex_init(struct os_mutex *mu)
 ```
 
@@ -27,7 +27,7 @@ Any caveats to be careful about (e.g. high memory requirements).>
 #### Example
 
 
-```no-highlight
+```c
 struct os_mutex g_mutex1;
 os_error_t err;
 

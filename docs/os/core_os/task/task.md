@@ -59,7 +59,7 @@ tasks. This information is of type `os_task_info` and is described below.
 The following is a very simple example showing a single application task. This 
 task simply toggles an LED at a one second interval.
  
-```no-highlight 
+```c 
 /* Create a simple "project" with a task that blinks a LED every second */
 
 /* Define task stack and task object */
@@ -106,7 +106,7 @@ int main(void) {
 
 ## Data structures
 
-```no-highlight
+```c
 /* The highest and lowest task priorities */
 #define OS_TASK_PRI_HIGHEST         (0)
 #define OS_TASK_PRI_LOWEST          (0xff)
@@ -127,7 +127,7 @@ typedef void (*os_task_func_t)(void *);
 #define OS_TASK_MAX_NAME_LEN (32)
 ```
 <br>
-```no-highlight
+```c
 struct os_task {
     os_stack_t *t_stackptr;
     os_stack_t *t_stacktop;
@@ -185,7 +185,7 @@ struct os_task {
 | t_obj_list | List pointer for tasks waiting on a semaphore or mutex |
 
 <br>
-```no-highlight
+```c
 struct os_task_info {
     uint8_t oti_prio;
     uint8_t oti_taskid;

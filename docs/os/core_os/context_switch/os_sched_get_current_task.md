@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_get_current_task </font>
 
-```no-highlight
+```c
 struct os_task *os_sched_get_current_task(void)
 ```
 
@@ -21,7 +21,7 @@ See description.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
 void
 os_time_delay(int32_t osticks)
 {

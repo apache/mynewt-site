@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_sched_set_current_task </font>
 
-```no-highlight
+```c
 void 
 os_sched_set_current_task(struct os_task *t)
 ```

@@ -13,7 +13,7 @@ The following code sample will demonstrate how to use an mqueue. This is a simpl
 <br>
 
 
-```no-highlight
+```c
 uint32_t pkts_rxd;
 struct os_mqueue rxpkt_q;
 struct os_eventq my_task_evq;
@@ -77,7 +77,7 @@ my_task_handler(void *arg)
 
 ### Data Structures
 
-```no-highlight
+```c
 struct os_mqueue {
     STAILQ_HEAD(, os_mbuf_pkthdr) mq_head;
     struct os_event mq_ev;

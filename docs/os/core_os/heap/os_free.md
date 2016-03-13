@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">os_free</font>
 
-```no-highlight
+```c
 void os_free(void *mem)
 ```
 
@@ -25,7 +25,7 @@ Calls C-library *free()* behind the covers.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
    os_free(info);
 ```
 

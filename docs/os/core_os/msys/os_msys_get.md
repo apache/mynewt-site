@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_msys_get</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_msys_get(uint16_t dsize, uint16_t leadingspace)
 ```
 
@@ -31,7 +31,7 @@ This API will not return an mbuf from a larger mbuf pool if the appropriate msys
 
 #### Example
 
-```no-highlight
+```c
     struct os_mbuf *om;
 
     /* Allocate an mbuf with hopefully at least 100 bytes in its user data buffer */

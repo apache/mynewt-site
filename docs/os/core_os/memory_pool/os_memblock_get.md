@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_memblock_get</font>
 
-```no-highlight
+```c
 void *os_memblock_get(struct os_mempool *mp)
 ```
 
@@ -25,7 +25,7 @@ NULL: no elements available.
 
 <Add text to set up the context for the example here>
 
-```no-highlight
+```c
 	struct nffs_file *file;
 
     file = os_memblock_get(&nffs_file_pool);

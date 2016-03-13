@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_msys_register</font>
 
-```no-highlight
+```c
 int os_msys_register(struct os_mbuf_pool *new_pool) 
 ```
 
@@ -23,7 +23,7 @@ Register an mbuf pool for use as a system mbuf pool. The pool should be initiali
 
 #### Example
 
-```no-highlight
+```c
     rc = os_msys_register(&g_mbuf_pool);
     assert(rc == 0);
 ```

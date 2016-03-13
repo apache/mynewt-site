@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_msys_get_pkthdr</font>
 
-```no-highlight
+```c
 struct os_mbuf *os_msys_get_pkthdr(uint16_t dsize, uint16_t user_hdr_len)
 ```
 
@@ -29,7 +29,7 @@ The same notes apply to this API as to `os_msys_get()`.
 
 #### Example
 
-```no-highlight
+```c
     struct os_mbuf *om;
     struct my_user_hdr_struct my_usr_hdr;
 

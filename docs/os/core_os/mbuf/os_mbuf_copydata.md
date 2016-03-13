@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_mbuf_copydata</font>
 
-```no-highlight
+```c
 int os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst)
 ```
 
@@ -29,7 +29,7 @@ Copy data from an mbuf chain starting *off* bytes from the beginning, continuing
 
 #### Example
 
-```no-highlight
+```c
     int rc;
 	struct os_mbuf *om;
     struct my_hdr_1 my_hdr1;	

@@ -43,114 +43,108 @@ One way to avoid initialization issues like the one described above is to perfor
 
 In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called os_sem_init() for task2_sem inside task2_handler(), task 1 would have called os_sem_pend() using task2_sem before task2_sem was initialized.
 
-<br>
 
-
-```no-highlight
-
-/* Task 1 handler function */
-void
-task1_handler(void *arg)
-{
-    while (1) {
-        /* Release semaphore to task 2 */
-        os_sem_release(&task1_sem);
-        
-        /* Wait for semaphore from task 2 */
-        os_sem_pend(&task2_sem, OS_TIMEOUT_NEVER);
+    /* Task 1 handler function */
+    void
+    task1_handler(void *arg)
+    {
+        while (1) {
+            /* Release semaphore to task 2 */
+            os_sem_release(&task1_sem);
+            
+            /* Wait for semaphore from task 2 */
+            os_sem_pend(&task2_sem, OS_TIMEOUT_NEVER);
+        }
     }
-}
 
-/* Task 2 handler function */
-void
-task2_handler(void *arg)
-{
-    struct os_task *t;
+    /* Task 2 handler function */
+    void
+    task2_handler(void *arg)
+    {
+        struct os_task *t;
 
-    while (1) {
-        /* Wait for semaphore from task1 */
-        os_sem_pend(&task1_sem, OS_TIMEOUT_NEVER);
+        while (1) {
+            /* Wait for semaphore from task1 */
+            os_sem_pend(&task1_sem, OS_TIMEOUT_NEVER);
         
-        /* Release task2 semaphore */
-        os_sem_release(&task2_sem);
+            /* Release task2 semaphore */
+            os_sem_release(&task2_sem);
+        }
     }
-}
 
 
-/* Initialize task 1 exposed data objects */
-void
-task1_init(void)
-{
-    /* Initialize task1 semaphore */
-    os_sem_init(&task1_sem, 0);
-}
+    /* Initialize task 1 exposed data objects */
+    void
+    task1_init(void)
+    {
+        /* Initialize task1 semaphore */
+        os_sem_init(&task1_sem, 0);
+    }
 
-/* Initialize task 2 exposed data objects */
-void
-task2_init(void)
-{
-    /* Initialize task1 semaphore */
-    os_sem_init(&task2_sem, 0);
-}
+    /* Initialize task 2 exposed data objects */
+    void
+    task2_init(void)
+    {
+        /* Initialize task1 semaphore */
+        os_sem_init(&task2_sem, 0);
+    }
 
-/**
- * init_app_tasks
- *  
- * Called by main.c after os_init(). This function performs initializations 
- * that are required before tasks are running. 
- *  
- * @return int 0 success; error otherwise.
- */
-static int
-init_app_tasks(void)
-{
-	/*
-	 * Initialize tasks 1 and 2. Note that the task handlers are not called yet; they will
-	 * be called when the OS is started.
-	 */
-    os_task_init(&task1, "task1", task1_handler, NULL, TASK1_PRIO, 
-                 OS_WAIT_FOREVER, task1_stack, TASK1_STACK_SIZE);
+    /**
+     * init_app_tasks
+     *  
+     * Called by main.c after os_init(). This function performs initializations 
+     * that are required before tasks are running. 
+     *  
+     * @return int 0 success; error otherwise.
+     */
+    static int
+    init_app_tasks(void)
+    {
+    	/*
+    	 * Initialize tasks 1 and 2. Note that the task handlers are not called yet; they will
+    	 * be called when the OS is started.
+    	 */
+        os_task_init(&task1, "task1", task1_handler, NULL, TASK1_PRIO, 
+                     OS_WAIT_FOREVER, task1_stack, TASK1_STACK_SIZE);
 
-    os_task_init(&task2, "task2", task2_handler, NULL, TASK2_PRIO, 
-                 OS_WAIT_FOREVER, task2_stack, TASK2_STACK_SIZE);
+        os_task_init(&task2, "task2", task2_handler, NULL, TASK2_PRIO, 
+                     OS_WAIT_FOREVER, task2_stack, TASK2_STACK_SIZE);
 
-	/* Call task specific initialization functions. */
-	task1_init();
-	task2_init();
+    	/* Call task specific initialization functions. */
+    	task1_init();
+    	task2_init();
 
-    return 0;
-}
+        return 0;
+    }
 
-/**
- * main
- *  
- * The main function for the application. This function initializes the os, calls 
- * the application specific task initialization function. then starts the 
- * OS. We should not return from os start! 
- */
-int
-main(void)
-{
-    int i;
-    int rc;
-    uint32_t seed;
+    /**
+     * main
+     *  
+     * The main function for the application. This function initializes the os, calls 
+     * the application specific task initialization function. then starts the 
+     * OS. We should not return from os start! 
+     */
+    int
+    main(void)
+    {
+        int i;
+        int rc;
+        uint32_t seed;
 
-    /* Initialize OS */
-    os_init();
+        /* Initialize OS */
+        os_init();
 
-    /* Initialize application specific tasks */
-    init_app_tasks();
+        /* Initialize application specific tasks */
+        init_app_tasks();
 
-    /* Start the OS */
-    os_start();
+        /* Start the OS */
+        os_start();
 
-    /* os start should never return. If it does, this should be an error */
-    assert(0);
+        /* os start should never return. If it does, this should be an error */
+        assert(0);
 
-    return rc;
-}
-
-```
+        return rc;
+    }
 
 
 ###OS Functions
