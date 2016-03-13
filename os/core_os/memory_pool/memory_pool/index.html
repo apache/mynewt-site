@@ -684,30 +684,30 @@
 <p>A memory pool is a collection of fixed sized elements called memory blocks. Generally, memory pools are used when the developer wants to allocate a certain amount of memory to a given feature. Unlike the heap, where a code module is at the mercy of other code modules to insure there is sufficient memory, memory pools can insure sufficient memory allocation.</p>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
 <p>In order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).</p>
-<pre><code class="no-highlight">struct os_mempool my_pool;
+<pre><code class="c">struct os_mempool my_pool;
 </code></pre>
 
 <p><br>
 The next order of business is to allocate the memory used by the memory pool. This memory can either be statically allocated (i.e. a global variable) or dynamically allocated (i.e. from the heap). When determining the amount of memory required for the memory pool, simply multiplying the number of blocks by the size of each block is not sufficient as the OS may have alignment requirements. The alignment size definition is named <code>OS_ALIGNMENT</code> and can be found in os_arch.h as it is architecture specific. The memory block alignment is usually for efficiency but may be due to other reasons. Generally, blocks are aligned on 32-bit boundaries. Note that memory blocks must also be of sufficient size to hold a list pointer as this is needed to chain memory blocks on the free list.</p>
 <p>In order to simplify this for the user two macros have been provided: <code>OS_MEMPOOL_BYTES(n, blksize)</code> and <code>OS_MEMPOOL_SIZE(n, blksize)</code>. The first macro returns the number of bytes needed for the memory pool while the second returns the number of <code>os_membuf_t</code> elements required by the memory pool. The <code>os_membuf_t</code> type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary. </p>
 <p>Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).</p>
-<pre><code class="no-highlight">void *my_memory_buffer;
+<pre><code class="c">void *my_memory_buffer;
 my_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));
 </code></pre>
 
-<pre><code class="no-highlight">os_membuf_t my_memory_buffer[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)];
+<pre><code class="c">os_membuf_t my_memory_buffer[OS_MEMPOOL_SIZE(NUM_BLOCKS, BLOCK_SIZE)];
 </code></pre>
 
 <p><br>
 Now that the memory pool has been defined as well as the memory required for the memory blocks which make up the pool the user needs to initialize the memory pool by calling <code>os_mempool_init</code>.</p>
-<pre><code class="no-highlight">os_mempool_init(&amp;my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
+<pre><code class="c">os_mempool_init(&amp;my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
                          &quot;MyPool&quot;);
 </code></pre>
 
 <p><br>
 Once the memory pool has been initialized the developer can allocate memory blocks from the pool by calling <code>os_memblock_get</code>. When the memory block is no longer needed the memory can be freed by calling <code>os_memblock_put</code>. </p>
 <h3 id="data-structures">Data structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h3>
-<pre><code class="no-highlight">struct os_mempool {
+<pre><code class="c">struct os_mempool {
     int mp_block_size;
     int mp_num_blocks;
     int mp_num_free;

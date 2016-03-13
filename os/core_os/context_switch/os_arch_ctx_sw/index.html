@@ -797,9 +797,7 @@
                         </div>
                         
                             <h2 id="os_arch_ctx_sw"><font color="#F2853F" style="font-size:24pt"> os_arch_ctx_sw </font><a class="headerlink" href="#os_arch_ctx_sw" title="Permanent link">&para;</a></h2>
-<pre><code class="no-highlight">void os_arch_ctx_sw(struct os_task *next_t)
-</code></pre>
-
+<p>void os_arch_ctx_sw(struct os_task *next_t)</p>
 <p>Change the state of task pointed by <em>next_t</em> to be <em>running</em>.</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <table>
@@ -822,23 +820,23 @@
 <p>This would get called from another task's context.</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p><Add text to set up the context for the example here></p>
-<pre><code class="no-highlight">void
-os_sched(struct os_task *next_t)
-{
-    os_sr_t sr;
+<pre><code class="c">void
+    os_sched(struct os_task *next_t)
+    {
+        os_sr_t sr;
 
-    OS_ENTER_CRITICAL(sr);
+        OS_ENTER_CRITICAL(sr);
 
-    if (!next_t) {
-        next_t = os_sched_next_task();
+        if (!next_t) {
+            next_t = os_sched_next_task();
+        }
+
+        if (next_t != g_current_task) {
+            os_arch_ctx_sw(next_t);
+        }
+
+        OS_EXIT_CRITICAL(sr);
     }
-
-    if (next_t != g_current_task) {
-        os_arch_ctx_sw(next_t);
-    }
-
-    OS_EXIT_CRITICAL(sr);
-}
 </code></pre>
                         
                         <div class="row">
