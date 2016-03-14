@@ -450,11 +450,16 @@
 <p>You will need the following equipment</p>
 <ul>
 <li>An Arduino Zero board.  NOTE: There are many flavors of Arduino. Ensure that 
-you have an arduino Zero.  </li>
+you have an Arduino Zero. See below for the verions of Arduino Zero that are
+compatible with this tutorial</li>
 <li>A computer that can connect to the Arduino Zero over USB</li>
 <li>A USB cable (Type A to micro B) that can connect the computer to the Arduino</li>
 <li>The Mynewt Release</li>
 </ul>
+<h2 id="arduino-boards">Arduino Boards<a class="headerlink" href="#arduino-boards" title="Permanent link">&para;</a></h2>
+<p>This tutorial has been tested on the following two Arduino Zero boards.</p>
+<p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
+<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/></p>
 <h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h2>
 <p>Follow these simple steps and your board will be blinking in no time!</p>
 <h3 id="install-mynewt-and-newt">Install Mynewt and Newt<a class="headerlink" href="#install-mynewt-and-newt" title="Permanent link">&para;</a></h3>
@@ -464,23 +469,24 @@ you have an arduino Zero.  </li>
 low level operations. This code is licensed only for Atmel parts, and 
 cannot live in the Apache Mynewt repository. Fetch the package from 
 the runtime github repository</p>
-<pre><code class="no-highlight">newt app add-pkg-list mynewt_arduino https://github.com/runtimeinc/mynewt_arduino_zero.git
+<pre><code class="c">newt app add-pkg-list mynewt_arduino https://github.com/runtimeinc/mynewt_arduino_zero.git
 </code></pre>
 
 <p>Once that completes, install the arduino_zero bsp package.</p>
-<pre><code class="no-highlight">newt pkg install hw/bsp/arduino_zero
+<pre><code class="c">newt pkg install hw/bsp/arduino_zero
 </code></pre>
 
 <h3 id="create-your-bootloader-target">Create your bootloader Target<a class="headerlink" href="#create-your-bootloader-target" title="Permanent link">&para;</a></h3>
 <p>You need to tell Newt what you want to build.  This is done by setting up a 
 target. It's easy - simply cut and paste the entire definition below.  You may have already seen how to set up a target definition one attribute (variable) at a time or by importing the entire definition in one command in this 
 <a href="../../../newt/tutorials/define_target/">Example</a> or in the <a href="../../../newt/command_list/newt_target/">Manual</a>.</p>
-<pre><code class="no-highlight">newt target import arduino_zero_bootloader
+<pre><code class="c">newt target import arduino_zero_bootloader
 @target=arduino_zero_bootloader
 name=arduino_zero_bootloader
 project=boot
 bsp=hw/bsp/arduino_zero
 compiler=arm-none-eabi-m0
+identities=arduino_zero_pro
 vers=0.0.1
 arch=cortex_m0
 compiler_def=optimized
@@ -489,13 +495,18 @@ compiler_def=optimized
 
 <p>If your console blocks, you may need to do a <code>ctrl-D</code> to complete 
 the import.</p>
+<p><em>NOTE: The identity in the target configuration above is for the Arduino 
+Zero Pro board.  The BSP requires an option to specify <code>arduino_zero</code> or 
+<code>arduino_zero_pro</code> target identity.  Regardless of the board you chose, 
+you can leave this identity alone for this tutorial. The BSP differences 
+are minor and not relevant for this tutorial.</em></p>
 <h3 id="create-your-image-target">Create Your Image Target<a class="headerlink" href="#create-your-image-target" title="Permanent link">&para;</a></h3>
 <p>You need to tell Newt what you want to build.  This is done by setting up a 
 target.   You may have already seen this target definition in this 
 <a href="../../../newt/tutorials/define_target/">Example</a></p>
 <p>For simplicity, you can just import this target.  Just cut and paste
 this into your Linux or MAC terminal from the larva directory.</p>
-<pre><code class="no-highlight">newt target import arduino_zero_blinky 
+<pre><code class="c">newt target import arduino_zero_blinky 
 @target=arduino_zero_blinky 
 vers=0.0.1 
 arch=cortex_m0 
@@ -503,22 +514,29 @@ compiler_def=debug
 name=arduino_zero_blinky 
 bsp=hw/bsp/arduino_zero 
 compiler=arm-none-eabi-m0 
+identities=arduino_zero_pro
 project=blinky 
 @endtargets
 </code></pre>
 
 <p>If your console blocks, you may need to do a <code>ctrl-D</code> to complete 
 the import.</p>
+<p><em>NOTE: The identity in the target configuration above is for the Arduino 
+Zero Pro board.  The BSP requires an option to specify <code>arduino_zero</code> or 
+<code>arduino_zero_pro</code> target identity.  Regardless of the board you chose, 
+you can leave this identity alone for this tutorial. The BSP differences 
+are minor and not relevant for this tutorial.</em></p>
 <h3 id="verify-your-targets">Verify Your Targets<a class="headerlink" href="#verify-your-targets" title="Permanent link">&para;</a></h3>
 <p>Depending on your shell you may need to do a <code>Ctrl-D</code> to terminate the import
 operation. </p>
 <p>You can do a <code>newt target show</code> to see your results.</p>
-<pre><code class="no-highlight">arduino_zero_blinky
+<pre><code class="c">arduino_zero_blinky
     arch=cortex_m0
     bsp=hw/bsp/arduino_zero
     compiler=arm-none-eabi-m0
     compiler_def=debug
     name=arduino_zero_blinky
+    identities=arduino_zero
     project=blinky
     vers=0.0.1
 arduino_zero_bootloader
@@ -527,19 +545,20 @@ arduino_zero_bootloader
     compiler=arm-none-eabi-m0
     compiler_def=optimized
     name=arduino_zero_bootloader
+    identities=arduino_zero_pro
     project=boot
     vers=0.0.1
 </code></pre>
 
 <h3 id="build-the-bootloader">Build the Bootloader<a class="headerlink" href="#build-the-bootloader" title="Permanent link">&para;</a></h3>
 <p>To Build the bootloader, use newt to do:</p>
-<pre><code class="no-highlight">newt target build arduino_zero_bootloader
+<pre><code class="c">newt target build arduino_zero_bootloader
 </code></pre>
 
 <p>You should see lots of console output while newt is resolving dependencies
 and compiling the source code.  After a minute, it should complete with 
 the following text.</p>
-<pre><code class="no-highlight">. . .
+<pre><code class="c">. . .
 Archiving libarduino_zero.a
 Compiling boot.c
 Building project boot
@@ -549,31 +568,33 @@ Successfully run!
 
 <h3 id="connect-the-target">Connect the Target<a class="headerlink" href="#connect-the-target" title="Permanent link">&para;</a></h3>
 <p>Connect your computer to the Arduino Zero (from now on we'll call this the 
-target) with the Micro-USB cable through the Programming Port. Mynewt will
-download and debug the target through this port. You should see a little green LED come on. That means the board has power.</p>
+target) with the Micro-USB cable through the Programming Port as shown below. 
+Mynewt will download and debug the target through this port. You should see a 
+little green LED come on. That means the board has power.</p>
 <p>No external debugger is required.  The Arduino Zero comes with an internal
 debugger that can be accessed by Mynewt.</p>
 <p>A image below shows the Arduino Zero Programming Port.</p>
-<p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/></p>
+<p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
+<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/></p>
 <h3 id="download-the-bootloader">Download the Bootloader<a class="headerlink" href="#download-the-bootloader" title="Permanent link">&para;</a></h3>
 <p>Execute the command to download the bootloader. </p>
-<pre><code class="no-highlight">newt target download arduino_zero_bootloader
+<pre><code class="c">newt target download arduino_zero_bootloader
 </code></pre>
 
 <p>The newt tool should respond with. Then 10-15 seconds later it will return a 
 prompt indicating success.</p>
-<pre><code class="no-highlight">Downloading with .../arduino_zero_download.sh
+<pre><code class="c">Downloading with .../arduino_zero_download.sh
 </code></pre>
 
 <h3 id="build-the-target">Build the Target<a class="headerlink" href="#build-the-target" title="Permanent link">&para;</a></h3>
 <p>To Build the target, use newt to do:</p>
-<pre><code class="no-highlight">newt target build arduino_zero_blinky
+<pre><code class="c">newt target build arduino_zero_blinky
 </code></pre>
 
 <p>You should see lots of console output while newt is resolving dependencies
 and compiling the source code.  After a minute, it should complete with 
 the following text.</p>
-<pre><code class="no-highlight">Archiving libarduino_zero.a
+<pre><code class="c">Archiving libarduino_zero.a
 Compiling main.c
 Building project blinky
 Linking blinky.elf
@@ -583,16 +604,16 @@ Successfully run!
 <h3 id="build-the-downloadable-image">Build the Downloadable Image<a class="headerlink" href="#build-the-downloadable-image" title="Permanent link">&para;</a></h3>
 <p>This command attaches the image descriptor header with the specified version
 number and prepares the image for download.</p>
-<pre><code class="no-highlight">newt target create-image arduino_zero_blinky 1.2.3
+<pre><code class="c">newt target create-image arduino_zero_blinky 1.2.3
 </code></pre>
 
 <h3 id="download-the-image">Download the Image<a class="headerlink" href="#download-the-image" title="Permanent link">&para;</a></h3>
 <p>Execute the command to download the image. </p>
-<pre><code class="no-highlight">newt target download arduino_zero_blinky
+<pre><code class="c">newt target download arduino_zero_blinky
 </code></pre>
 
 <p>The newt tool should respond with the following message. Then 10-15 seconds later it will return a prompt indicating success.</p>
-<pre><code class="no-highlight">Downloading with .../arduino_zero_download.sh
+<pre><code class="c">Downloading with .../arduino_zero_download.sh
 </code></pre>
 
 <h3 id="watch-the-led-blink">Watch the LED blink<a class="headerlink" href="#watch-the-led-blink" title="Permanent link">&para;</a></h3>

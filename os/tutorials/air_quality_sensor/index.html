@@ -445,13 +445,13 @@
                             <h2 id="air-quality-sensor-project">Air quality sensor project<a class="headerlink" href="#air-quality-sensor-project" title="Permanent link">&para;</a></h2>
 <h3 id="setting-up-source-tree-for-stuff-you-need">Setting up source tree for stuff you need<a class="headerlink" href="#setting-up-source-tree-for-stuff-you-need" title="Permanent link">&para;</a></h3>
 <p>To start with, you need to create a new app under which you will do this development. So you type in:</p>
-<pre><code class="no-highlight">$ mkdir $HOME/src
+<pre><code class="c">$ mkdir $HOME/src
 $ cd $HOME/src
 $ newt new air_quality
 </code></pre>
 
 <p>Let's say you are using STM32F3discovery board for this project. You know you need the board support package for that hardware. You can look up its location in the repository, fetch the package list from there, and install the egg for the BSP.</p>
-<pre><code class="no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list mynewt_stm32f3 https://github.com/runtimeinc/mynewt_stm32f3.git
+<pre><code class="c">[user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list mynewt_stm32f3 https://github.com/runtimeinc/mynewt_stm32f3.git
 Downloading pkg-list.yml from https://github.com/runtimeinc/mynewt_stm32f3.git/master... ok!
 Verifying pkg-list.yml format...
  ok!
@@ -466,7 +466,7 @@ Error: No package libs/cmsis-core found
 <p>Ooops. You forgot to bring in the package list for larva itself. That's the one with most of the packages. Including libs/cmsis-core.</p>
 <p>This time you need the latest and greatest from larva, so you want to bring in the 'develop' branch. Note that normally the use of the more stable master branch is recommended. In that case you would drop the '-b develop' from command line.</p>
 <p>However, you want to bring in the packages from develop branch. To make that happen you say:</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list -b develop larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list -b develop larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
 Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/develop... ok!
 Verifying pkg-list.yml format...
  ok!
@@ -477,7 +477,7 @@ Installation was a success!
 </code></pre>
 
 <p>That's better. You want to make sure you have all the needed bits for supporting your board; so you decide to build the blinky project for it first.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt pkg install project/blinky
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt pkg install project/blinky
 Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
 Installing project/blinky
 Installing libs/console/full
@@ -496,7 +496,7 @@ Installation was a success!
 
 <p>As you can see, this brought in quite a few other dependencies as well.</p>
 <p>Now create a target for it and build it.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target create blink_f3
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target create blink_f3
 Creating target blink_f3
 Target blink_f3 successfully created!
 [marko@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 arch=cortex_m4
@@ -524,7 +524,7 @@ collect2: error: ld returned 1 exit status
 <p>The error indicates that the images need to be smaller for this board, so you decide to switch over to using baselibc instead of libc.</p>
 <p>To do that, you modify the project's egg file project/blinky/pkg.yml. And add <em>libs/baselibc</em> to list of package dependencies (pkg.deps).</p>
 <p>Now:</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
 Building target blink_f3 (project = blinky)
 ....
 Archiving libstm32f3discovery.a
@@ -536,7 +536,7 @@ Successfully run!
 
 <p>That's better.</p>
 <p>You know that this platform uses bootloader, which means you have to create a target for that too. And download the bootloader package.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target create boot_f3
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target create boot_f3
 Creating target boot_f3
 Target boot_f3 successfully created!
 [marko@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 arch=cortex_m4
@@ -561,14 +561,14 @@ Installation was a success!
 </code></pre>
 
 <p>And then build it:</p>
-<pre><code class="no-highlight">newt target build boot_f3
+<pre><code class="c">newt target build boot_f3
 ....
 Linking boot.elf
 Successfully run!
 </code></pre>
 
 <p>Next you must download the targets to board, and see that the LED actually blinks. You plug in the STM32F3 discovery board to your laptop, and say:</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
 Downloading with /Users/marko/src/air_quality/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
 Downloading /Users/marko/src/air_quality/project/blinky/bin/blink_f3/blinky.img to 0x08008000
 Open On-Chip Debugger 0.9.0 (2015-05-28-12:05)
@@ -584,7 +584,7 @@ exit status 1
 </code></pre>
 
 <p>Ah. Forgot to create an image out of the blinky binary.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target create-image blink_f3 0.0.1
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target create-image blink_f3 0.0.1
 Building target blink_f3 (project = blinky)
 Compiling hal_flash.c
 Archiving libhal.a
@@ -605,7 +605,7 @@ Downloading with /Users/marko/src/air_quality/hw/bsp/stm32f3discovery/stm32f3dis
 <h3 id="create-test-project">Create test project<a class="headerlink" href="#create-test-project" title="Permanent link">&para;</a></h3>
 <p>Now that you have your system setup, you can start creating your own stuff.
 First you want to create a project for yourself - you can start by getting project template from blinky, as it pretty much has what you want.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality
 [marko@IsMyLaptop:~/src/air_quality]$ cp project/blinky/pkg.yml project/air_quality/
 [marko@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality/src
 [marko@IsMyLaptop:~/src/air_quality]$ cp project/blinky/src/main.c project/air_quality/src/
@@ -613,7 +613,7 @@ First you want to create a project for yourself - you can start by getting proje
 
 <p>Then you modify the project/air_quality/pkg.yml for air_quality in order to change the <em>pkg.name</em> to be <em>project/air_quality</em>.</p>
 <p>And create a target for it:</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target create air_q
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target create air_q
 newt targCreating target air_q
 Target air_q successfully created!
 [marko@IsMyLaptop:~/src/air_quality]$ newt target set air_q arch=cortex_m4
@@ -635,7 +635,7 @@ Successfully run!
 <p>One of the sensors you want to enable is SenseAir K30, which will connect to the board over serial port.
 To start development of the driver, you first need to create a package description for it, and add stubs for sources.</p>
 <p>So you add few files. pkg.yml to describe the driver, and then header stub followed by source stub.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -659,7 +659,7 @@ pkg.deps:
     - hw/hal
 </code></pre>
 
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/include/senseair/senseair.h
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/include/senseair/senseair.h
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -687,7 +687,7 @@ void senseair_init(void);
 
 </code></pre>
 
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -715,7 +715,7 @@ senseair_init(void)
 
 <p>And add dependency to this package in my project yml file.</p>
 <p>Here's from project/air_quality/pkg.yml</p>
-<pre><code class="no-highlight">pkg.name: project/air_quality
+<pre><code class="c">pkg.name: project/air_quality
 pkg.vers: 0.8.0
 pkg.description: Basic example application which blinks an LED.
 pkg.author: Marko Kiiskila &lt;marko@runtime.io&gt;
@@ -737,7 +737,7 @@ pkg.deps:
 </code></pre>
 
 <p>And add a call to your main() to initialize this driver.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
 28a29
 &gt; #include &lt;senseair/senseair.h&gt;
 190a192
@@ -746,7 +746,7 @@ pkg.deps:
 </code></pre>
 
 <p>And then build it to make sure all goes well.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target build air_q
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target build air_q
 Building target air_q (project = air_quality)
 Building project air_quality
 Successfully run!
@@ -756,14 +756,14 @@ Successfully run!
 <h3 id="add-cli-commands-for-testing-drivers">Add CLI commands for testing drivers<a class="headerlink" href="#add-cli-commands-for-testing-drivers" title="Permanent link">&para;</a></h3>
 <p>While developing the driver, you want to issue operations from console asking it to do stuff. The way to do this is to register your command handler with shell. Whenever your custom command is issued, you can respond to it.</p>
 <p>The way you do this is first adding a dependency to shell package for your senseair driver. So you change libs/my_drivers/senseair/pkg.yml to have the following:</p>
-<pre><code class="no-highlight">pkg.name: libs/my_drivers/senseair
+<pre><code class="c">pkg.name: libs/my_drivers/senseair
 pkg.deps:
     - hw/hal
     - libs/shell
 </code></pre>
 
 <p>And then register your shell command in <em>senseair_init()</em>.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
  ....
 
 #include &lt;shell/shell.h&gt;
@@ -793,7 +793,7 @@ senseair_shell_func(int argc, char **argv)
 </code></pre>
 
 <p>Then you build this, download to target, and start minicom on your console port.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
+<pre><code class="c">[marko@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
 
 
 Welcome to minicom 2.7
@@ -817,17 +817,17 @@ senseair
 <h3 id="use-of-hal-for-drivers">Use of HAL for drivers<a class="headerlink" href="#use-of-hal-for-drivers" title="Permanent link">&para;</a></h3>
 <p>The sensor has a serial port connection, and that's how you are going to connect to it. Your original BSP, hw/bsp/stm32f3discovery, has only one UART set up (as specified in src/hal_bsp.c, include/hal/bsp.h). Therefore, you need to create your own bsp which has configuration for this added hardware.</p>
 <p>So in the shell you make a copy of the original BSP, and then change the package file a little.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ cp -R hw/bsp/stm32f3discovery hw/bsp/stm32f3discovery_with_senseair
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ cp -R hw/bsp/stm32f3discovery hw/bsp/stm32f3discovery_with_senseair
 </code></pre>
 
 <p>Then you modify the pkg.yml in the copied BSP to assign name for this package.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ grep pkg.name hw/bsp/stm32f3discovery_with_senseair/pkg.yml
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ grep pkg.name hw/bsp/stm32f3discovery_with_senseair/pkg.yml
 pkg.name: &quot;hw/bsp/stm32f3discovery_with_senseair&quot;
 </code></pre>
 
 <p>And you want to use this BSP with my target. So you change the BSP in the target definition.</p>
 <p>Here's your new target.</p>
-<pre><code class="no-highlight">[marko@IsMyLaptop:~/src/air_quality]$ newt target show air_q                    air_q
+<pre><code class="c">[marko@IsMyLaptop:~/src/air_quality]$ newt target show air_q                    air_q
     arch=cortex_m4
     bsp=hw/bsp/stm32f3discovery_with_senseair
     compiler=arm-none-eabi-m4
@@ -839,7 +839,7 @@ pkg.name: &quot;hw/bsp/stm32f3discovery_with_senseair&quot;
 
 <p>You add the 2nd serial port to my new BSP.</p>
 <p>Modify the include/hal/bsp.h to increase UART_CNT to 2, and add a definition of the 2nd logical UART. You will use this in your sensor driver.</p>
-<pre><code class="no-highlight">static const struct stm32f3_uart_cfg uart_cfg[UART_CNT] = {
+<pre><code class="c">static const struct stm32f3_uart_cfg uart_cfg[UART_CNT] = {
     [0] = {
         .suc_uart = USART1,
         .suc_rcc_cmd = RCC_APB2PeriphClockCmd,
@@ -867,7 +867,7 @@ pkg.name: &quot;hw/bsp/stm32f3discovery_with_senseair&quot;
 
 <p>With this in place, you can refer to serial port where your SenseAir sensor is by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.</p>
 <p>You will now see what the driver code ends up looking like. Here's the header file, filled in from stub you created earlier.</p>
-<pre><code class="no-highlight">/*
+<pre><code class="c">/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -903,7 +903,7 @@ int senseair_read(enum senseair_read_type);
 
 <p>As you can see, logical UART number has been added to the init routine. A 'read' function has been added, which is a blocking read. If you were making a commercial product, you would probably have a callback for reporting the results.</p>
 <p>And here is the source for the driver.</p>
-<pre><code class="no-highlight">/**
+<pre><code class="c">/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
