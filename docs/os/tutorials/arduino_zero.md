@@ -11,10 +11,19 @@ Before tackling this tutorial, it's best to read about Mynewt in the [Introducti
 You will need the following equipment
 
 * An Arduino Zero board.  NOTE: There are many flavors of Arduino. Ensure that 
-you have an arduino Zero.  
+you have an Arduino Zero. See below for the verions of Arduino Zero that are
+compatible with this tutorial
 * A computer that can connect to the Arduino Zero over USB
 * A USB cable (Type A to micro B) that can connect the computer to the Arduino
 * The Mynewt Release
+
+## Arduino Boards
+
+This tutorial has been tested on the following two Arduino Zero boards.
+
+<img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
+<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
+
 
 ## Steps
 
@@ -54,6 +63,7 @@ name=arduino_zero_bootloader
 project=boot
 bsp=hw/bsp/arduino_zero
 compiler=arm-none-eabi-m0
+identities=arduino_zero_pro
 vers=0.0.1
 arch=cortex_m0
 compiler_def=optimized
@@ -62,6 +72,12 @@ compiler_def=optimized
 
 If your console blocks, you may need to do a `ctrl-D` to complete 
 the import.
+
+_NOTE: The identity in the target configuration above is for the Arduino 
+Zero Pro board.  The BSP requires an option to specify `arduino_zero` or 
+`arduino_zero_pro` target identity.  Regardless of the board you chose, 
+you can leave this identity alone for this tutorial. The BSP differences 
+are minor and not relevant for this tutorial._
 
 ### Create Your Image Target
 
@@ -81,12 +97,19 @@ compiler_def=debug
 name=arduino_zero_blinky 
 bsp=hw/bsp/arduino_zero 
 compiler=arm-none-eabi-m0 
+identities=arduino_zero_pro
 project=blinky 
 @endtargets
 ```
 
 If your console blocks, you may need to do a `ctrl-D` to complete 
 the import.
+
+_NOTE: The identity in the target configuration above is for the Arduino 
+Zero Pro board.  The BSP requires an option to specify `arduino_zero` or 
+`arduino_zero_pro` target identity.  Regardless of the board you chose, 
+you can leave this identity alone for this tutorial. The BSP differences 
+are minor and not relevant for this tutorial._
 
 ### Verify Your Targets
 
@@ -102,6 +125,7 @@ arduino_zero_blinky
 	compiler=arm-none-eabi-m0
 	compiler_def=debug
 	name=arduino_zero_blinky
+	identities=arduino_zero
 	project=blinky
 	vers=0.0.1
 arduino_zero_bootloader
@@ -110,6 +134,7 @@ arduino_zero_bootloader
 	compiler=arm-none-eabi-m0
 	compiler_def=optimized
 	name=arduino_zero_bootloader
+	identities=arduino_zero_pro
 	project=boot
 	vers=0.0.1
 ```
@@ -137,8 +162,9 @@ Successfully run!
 ### Connect the Target
 
 Connect your computer to the Arduino Zero (from now on we'll call this the 
-target) with the Micro-USB cable through the Programming Port. Mynewt will
-download and debug the target through this port. You should see a little green LED come on. That means the board has power.
+target) with the Micro-USB cable through the Programming Port as shown below. 
+Mynewt will download and debug the target through this port. You should see a 
+little green LED come on. That means the board has power.
 
 No external debugger is required.  The Arduino Zero comes with an internal
 debugger that can be accessed by Mynewt.
@@ -146,6 +172,7 @@ debugger that can be accessed by Mynewt.
 A image below shows the Arduino Zero Programming Port.
 
 <img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
+<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
 
 ### Download the Bootloader
 
