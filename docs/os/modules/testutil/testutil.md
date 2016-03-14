@@ -46,32 +46,8 @@ Regression test can then be executed using 'newt target test' command, or by inc
 
 ### Example
 
-The following example demonstrates how to create a simple test suite.
-
-```no-highlight
-    TEST_CASE(test_addition)
-    {
-        int sum;
-
-        sum = 5 + 10;
-        TEST_ASSERT(sum == 15, "actual value: %d", sum);
-    }
-
-    TEST_CASE(test_times_0)
-    {
-        TEST_ASSERT(3 * 0 == 0);
-        TEST_ASSERT(4 * 0 == 0);
-        TEST_ASSERT(712 * 0 == 0);
-    }
-
-    TEST_SUITE(test_suite_arithmetic)
-    {
-        test_addition();
-        test_times_0();
-    }
-```
-
-The test suite would then be executed via a call to `test_suite_arithmetic()`.
+[This Tutorial](../../tutorials/unit_test.md) shows how to create a test suite
+for a Mynewt package.
 
 ###Data structures
 
@@ -104,11 +80,12 @@ This should be populated before `tu_init()` is called.
 
 <Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
-The functions, and macros available in testutil are:
+The functions, and macros available in `testutil` are:
 
 * [tu_init](tu_init.md)
 * [TEST_ASSERT](test_assert.md)
 * [TEST_PASS](test_pass.md)
 * [TEST_SUITE](test_suite.md)
 * [TEST_CASE](test_case.md)
+* [TEST_CASE_DECL](test_decl.md)
 * [tu_restart](tu_restart.md)
