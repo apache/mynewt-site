@@ -22,7 +22,7 @@ If you are not a committer, you may follow the proposed non-committer workflow t
 ### Making a local copy
 
 * Copy the document source files into a local directory and look at the contents of the copied directory to get an idea of the directory structure. Use http instead of https if you are a non-committer.
-```no-highlight
+```c
         $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git
         Cloning into 'incubator-mynewt-site'...
         remote: Counting objects: 330, done.
@@ -37,7 +37,7 @@ If you are not a committer, you may follow the proposed non-committer workflow t
         docs		images		mkdocs.yml
 ```
 * Create a new branch to work on your documentation and move to that branch.
-```no-highlight
+```c
         $ git checkout -b <your-branch-name>
 ```
 
@@ -58,7 +58,7 @@ The file you will edit is named try_markdown.md. It is in the incubator-mynewt-s
 ### Adding a new page
 
 If you create a new file somewhere in the `docs` subdirectory to add a new page, you have to add a line in the `mkdocs.yml` file at the correct level. For example, if you add a new module named "Ethernet" by creating a new file named `ethernet.md` in the `modules` subdirectory, you have to insert the following line under `Modules:` in the `mkdocs.yml` file.
-```no-highlight
+```c
         - 'Ethernet': 'modules/ethernet.md'
 ```
 ### Pushing changes to remote as a committer
@@ -66,20 +66,20 @@ If you create a new file somewhere in the `docs` subdirectory to add a new page,
 If you are not a committer yet, skip this section and proceed to the [next section](#sharing-changes-as-a-non-committer).
 
 * Check whether your remote git repository is set up. If you see the remote location as shown below you can skip the next step.
-```no-highlight
+```c
         $ git remote -v
         origin	https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git (fetch)
         origin	https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git (push)
 ```
 * If, however, you do not see your remote repository, then set it up as follows.
 
-```no-highlight
+```c
         $ git remote add origin https://git-wip-us.apache.org/repos/asf/incubator-mynewt-site.git 
 ```       
 * First check the git status. It will show you that the `try_markdown.md` document has been modified. So you will stage a commit, and then commit the change. Finally, you will push the changes to the remote repository. 
 
   During staging below using `git add`, we use the `-A` option indicating you want to stage all your modifications. Instead, you can choose to specify only the files that you want to. The commit message (specified after `-m`) should summarize what your changes are about.
-```no-highlight
+```c
         $ git status
         $ git add -A 
         $ git commit -m "My first doc change as a trial run"
@@ -94,7 +94,7 @@ If you are not a committer yet, skip this section and proceed to the [next secti
 We suggest you follow the proposed non-committer workflow at Apache to share your work. The direct link to the proposed workflow is [https://git-wip-us.apache.org/docs/workflow.html](https://git-wip-us.apache.org/docs/workflow.html). 
 
 * Assuming you have made changes to the example file, you will first commit your changes.
-```no-highlight
+```c
         $ git add -A 
         $ git commit -m "My first doc change as a trial run"
 ```
@@ -102,7 +102,7 @@ We suggest you follow the proposed non-committer workflow at Apache to share you
 
    If there is a JIRA ticket associated with your work you should post your patch files to the ticket.
 
-```no-highlight
+```c
         $ git format-patch origin/trunk
 ```  
 
@@ -116,7 +116,7 @@ The conversion of the Markdown files to HTML for the website happens manually an
 ### Local preview of HTML files
 
 However, you have the option to download MkDocs and do a local conversion yourself to preview the pages using the built-in devserver that comes with MkDocs. But first you will have to install MkDocs for that. In order to install MkDocs you'll need Python installed on your system, as well as the Python package manager, pip. You can check if you have them already (usually you will).
-```no-highlight
+```c
         $ python --version
         Python 2.7.2
         $ pip --version
@@ -124,7 +124,7 @@ However, you have the option to download MkDocs and do a local conversion yourse
         $ pip install mkdocs
 ```
 You will then run the built-in webserver from the root of the documentation directory using the command `mkdocs serve`. The root directory for documentation is `incubator-mynewt-site` or the directory with the `mkdocs.yml` file.
-```no-highlight
+```c
         $ ls
         docs		images		mkdocs.yml
         $ mkdocs serve

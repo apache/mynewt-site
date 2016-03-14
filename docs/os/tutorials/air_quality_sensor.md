@@ -4,7 +4,7 @@
 
 To start with, you need to create a new app under which you will do this development. So you type in:
 
-```no-highlight
+```c
 $ mkdir $HOME/src
 $ cd $HOME/src
 $ newt new air_quality
@@ -12,7 +12,7 @@ $ newt new air_quality
 
 Let's say you are using STM32F3discovery board for this project. You know you need the board support package for that hardware. You can look up its location in the repository, fetch the package list from there, and install the egg for the BSP.
 
-```no-highlight
+```c
 [user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list mynewt_stm32f3 https://github.com/runtimeinc/mynewt_stm32f3.git
 Downloading pkg-list.yml from https://github.com/runtimeinc/mynewt_stm32f3.git/master... ok!
 Verifying pkg-list.yml format...
@@ -31,7 +31,7 @@ This time you need the latest and greatest from larva, so you want to bring in t
 
 However, you want to bring in the packages from develop branch. To make that happen you say:
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list -b develop larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
 Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/develop... ok!
 Verifying pkg-list.yml format...
@@ -44,7 +44,7 @@ Installation was a success!
 
 That's better. You want to make sure you have all the needed bits for supporting your board; so you decide to build the blinky project for it first.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt pkg install project/blinky
 Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
 Installing project/blinky
@@ -66,7 +66,7 @@ As you can see, this brought in quite a few other dependencies as well.
 
 Now create a target for it and build it.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target create blink_f3
 Creating target blink_f3
 Target blink_f3 successfully created!
@@ -97,7 +97,7 @@ The error indicates that the images need to be smaller for this board, so you de
 To do that, you modify the project's egg file project/blinky/pkg.yml. And add *libs/baselibc* to list of package dependencies (pkg.deps).
 
 Now:
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
 Building target blink_f3 (project = blinky)
 ....
@@ -112,7 +112,7 @@ That's better.
 
 You know that this platform uses bootloader, which means you have to create a target for that too. And download the bootloader package.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target create boot_f3
 Creating target boot_f3
 Target boot_f3 successfully created!
@@ -138,7 +138,7 @@ Installation was a success!
 ```
 
 And then build it:
-```no-highlight
+```c
 newt target build boot_f3
 ....
 Linking boot.elf
@@ -147,7 +147,7 @@ Successfully run!
 
 Next you must download the targets to board, and see that the LED actually blinks. You plug in the STM32F3 discovery board to your laptop, and say:
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
 Downloading with /Users/marko/src/air_quality/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
 Downloading /Users/marko/src/air_quality/project/blinky/bin/blink_f3/blinky.img to 0x08008000
@@ -165,7 +165,7 @@ exit status 1
 
 Ah. Forgot to create an image out of the blinky binary.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target create-image blink_f3 0.0.1
 Building target blink_f3 (project = blinky)
 Compiling hal_flash.c
@@ -190,7 +190,7 @@ And it's blinking.
 Now that you have your system setup, you can start creating your own stuff.
 First you want to create a project for yourself - you can start by getting project template from blinky, as it pretty much has what you want.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality
 [marko@IsMyLaptop:~/src/air_quality]$ cp project/blinky/pkg.yml project/air_quality/
 [marko@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality/src
@@ -200,7 +200,7 @@ First you want to create a project for yourself - you can start by getting proje
 Then you modify the project/air_quality/pkg.yml for air_quality in order to change the *pkg.name* to be *project/air_quality*.
 
 And create a target for it:
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target create air_q
 newt targCreating target air_q
 Target air_q successfully created!
@@ -226,7 +226,7 @@ To start development of the driver, you first need to create a package descripti
 
 So you add few files. pkg.yml to describe the driver, and then header stub followed by source stub.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -251,7 +251,7 @@ pkg.deps:
     - hw/hal
 ```
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/include/senseair/senseair.h
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -280,7 +280,7 @@ void senseair_init(void);
 
 ```
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -310,7 +310,7 @@ senseair_init(void)
 And add dependency to this package in my project yml file.
 
 Here's from project/air_quality/pkg.yml
-```no-highlight
+```c
 pkg.name: project/air_quality
 pkg.vers: 0.8.0
 pkg.description: Basic example application which blinks an LED.
@@ -333,7 +333,7 @@ pkg.deps:
 ```
 
 And add a call to your main() to initialize this driver.
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
 28a29
 > #include <senseair/senseair.h>
@@ -344,7 +344,7 @@ And add a call to your main() to initialize this driver.
 
 And then build it to make sure all goes well.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target build air_q
 Building target air_q (project = air_quality)
 Building project air_quality
@@ -358,7 +358,7 @@ All looks good.
 While developing the driver, you want to issue operations from console asking it to do stuff. The way to do this is to register your command handler with shell. Whenever your custom command is issued, you can respond to it.
 
 The way you do this is first adding a dependency to shell package for your senseair driver. So you change libs/my_drivers/senseair/pkg.yml to have the following:
-```no-highlight
+```c
 pkg.name: libs/my_drivers/senseair
 pkg.deps:
     - hw/hal
@@ -367,7 +367,7 @@ pkg.deps:
 
 And then register your shell command in *senseair_init()*.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
  ....
 
@@ -399,7 +399,7 @@ senseair_shell_func(int argc, char **argv)
 
 Then you build this, download to target, and start minicom on your console port.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
 
 
@@ -427,13 +427,13 @@ Now that's great. You can connect the hardware to board and start developing cod
 The sensor has a serial port connection, and that's how you are going to connect to it. Your original BSP, hw/bsp/stm32f3discovery, has only one UART set up (as specified in src/hal_bsp.c, include/hal/bsp.h). Therefore, you need to create your own bsp which has configuration for this added hardware.
 
 So in the shell you make a copy of the original BSP, and then change the package file a little.
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ cp -R hw/bsp/stm32f3discovery hw/bsp/stm32f3discovery_with_senseair
 ```
 
 Then you modify the pkg.yml in the copied BSP to assign name for this package.
 
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ grep pkg.name hw/bsp/stm32f3discovery_with_senseair/pkg.yml
 pkg.name: "hw/bsp/stm32f3discovery_with_senseair"
 ```
@@ -441,7 +441,7 @@ pkg.name: "hw/bsp/stm32f3discovery_with_senseair"
 And you want to use this BSP with my target. So you change the BSP in the target definition.
 
 Here's your new target.
-```no-highlight
+```c
 [marko@IsMyLaptop:~/src/air_quality]$ newt target show air_q                    air_q
 	arch=cortex_m4
 	bsp=hw/bsp/stm32f3discovery_with_senseair
@@ -456,7 +456,7 @@ You add the 2nd serial port to my new BSP.
 
 Modify the include/hal/bsp.h to increase UART_CNT to 2, and add a definition of the 2nd logical UART. You will use this in your sensor driver.
 
-```no-highlight
+```c
 static const struct stm32f3_uart_cfg uart_cfg[UART_CNT] = {
     [0] = {
         .suc_uart = USART1,
@@ -487,7 +487,7 @@ With this in place, you can refer to serial port where your SenseAir sensor is b
 
 You will now see what the driver code ends up looking like. Here's the header file, filled in from stub you created earlier.
 
-```no-highlight
+```c
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -527,7 +527,7 @@ As you can see, logical UART number has been added to the init routine. A 'read'
 
 And here is the source for the driver.
 
-```no-highlight
+```c
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file

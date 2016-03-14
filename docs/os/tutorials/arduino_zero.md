@@ -40,13 +40,13 @@ low level operations. This code is licensed only for Atmel parts, and
 cannot live in the Apache Mynewt repository. Fetch the package from 
 the runtime github repository
 
-```no-highlight
+```c
 newt app add-pkg-list mynewt_arduino https://github.com/runtimeinc/mynewt_arduino_zero.git
 ```
 
 Once that completes, install the arduino_zero bsp package.
 
-```no-highlight
+```c
 newt pkg install hw/bsp/arduino_zero
 ```
 
@@ -56,7 +56,7 @@ You need to tell Newt what you want to build.  This is done by setting up a
 target. It's easy - simply cut and paste the entire definition below.  You may have already seen how to set up a target definition one attribute (variable) at a time or by importing the entire definition in one command in this 
 [Example](/newt/tutorials/define_target/) or in the [Manual](/newt/command_list/newt_target.md).
 
-```no-highlight
+```c
 newt target import arduino_zero_bootloader
 @target=arduino_zero_bootloader
 name=arduino_zero_bootloader
@@ -88,7 +88,7 @@ target.   You may have already seen this target definition in this
 For simplicity, you can just import this target.  Just cut and paste
 this into your Linux or MAC terminal from the larva directory.
 
-```no-highlight
+```c
 newt target import arduino_zero_blinky 
 @target=arduino_zero_blinky 
 vers=0.0.1 
@@ -118,7 +118,7 @@ operation.
 
 You can do a `newt target show` to see your results.
 
-```no-highlight
+```c
 arduino_zero_blinky
 	arch=cortex_m0
 	bsp=hw/bsp/arduino_zero
@@ -143,7 +143,7 @@ arduino_zero_bootloader
 
 To Build the bootloader, use newt to do:
 
-```no-highlight
+```c
 newt target build arduino_zero_bootloader
 ```
 
@@ -151,7 +151,7 @@ You should see lots of console output while newt is resolving dependencies
 and compiling the source code.  After a minute, it should complete with 
 the following text.
 
-```no-highlight
+```c
 . . .
 Archiving libarduino_zero.a
 Compiling boot.c
@@ -178,14 +178,14 @@ A image below shows the Arduino Zero Programming Port.
 
 Execute the command to download the bootloader. 
 
-```no-highlight
+```c
 newt target download arduino_zero_bootloader
 ```
 
 The newt tool should respond with. Then 10-15 seconds later it will return a 
 prompt indicating success.
 
-```no-highlight
+```c
 Downloading with .../arduino_zero_download.sh
 ```
 
@@ -193,7 +193,7 @@ Downloading with .../arduino_zero_download.sh
 
 To Build the target, use newt to do:
 
-```no-highlight
+```c
 newt target build arduino_zero_blinky
 ```
 
@@ -201,7 +201,7 @@ You should see lots of console output while newt is resolving dependencies
 and compiling the source code.  After a minute, it should complete with 
 the following text.
 
-```no-highlight
+```c
 Archiving libarduino_zero.a
 Compiling main.c
 Building project blinky
@@ -214,7 +214,7 @@ Successfully run!
 This command attaches the image descriptor header with the specified version
 number and prepares the image for download.
 
-```no-highlight
+```c
 newt target create-image arduino_zero_blinky 1.2.3
 ```
 
@@ -222,12 +222,12 @@ newt target create-image arduino_zero_blinky 1.2.3
 
 Execute the command to download the image. 
 
-```no-highlight
+```c
 newt target download arduino_zero_blinky
 ```
 The newt tool should respond with the following message. Then 10-15 seconds later it will return a prompt indicating success.
  
-```no-highlight
+```c
 Downloading with .../arduino_zero_download.sh
 ```
 

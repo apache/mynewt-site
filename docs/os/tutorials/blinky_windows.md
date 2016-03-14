@@ -33,7 +33,7 @@ environment variable.  To add to the PATH environment variable, right-click on t
 #### Install newtvm tool
 
 * From your base user (home) directory, pull or clone the latest code from the newt repository into the `newt` directory. It includes the executable `newtvm.exe` for the newtvm tool in the `newtvm` directory.
-```no-highlight
+```c
       C:\Users\admin> git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt newt
 ```
   The newtvm tool is what allows you to run programs in the Linux docker
@@ -42,7 +42,7 @@ instance.
 * Run the Docker Quickstart Terminal application inside the Docker folder under Programs. You can find it by clicking Start button -> All apps. By default, the Docker Toolbox installer creates a shortcut to this program on your desktop.  Wait until you see an ASCII art whale displayed in the terminal window and the Docker prompt given.  
 
          
-```no-highlight
+```c
                           ##         .
                     ## ## ##        ==
                  ## ## ## ## ##    ===
@@ -63,7 +63,7 @@ instance.
 restart your computer.
 
 * Open a command prompt (e.g., Windows-R, "cmd", enter). You execute the newt tool commands as though you were running newt in Linux, but you prefix each command with "newtvm".  For example:
-```no-highlight
+```c
         C:\Users\admin\newt\newtvm> newtvm newt help
 ```
 
@@ -142,13 +142,13 @@ tutorial for a Windows machine assumes the specified folders.
     * bin contains executable commands.
 
     The GOPATH environment variable specifies the location of your workspace. First create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory and then proceed to create the directory for cloning the newt tool repository.
-```no-highlight
+```c
         $ cd c:\
         $ mkdir dev\go
         $ cd dev\go
 ```
 * Set the following user environment variables using the steps outlined here.
-```no-highlight
+```c
     * GOPATH: C:\dev\go
     * PATH: C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q3\bin;%GOPATH%\bin;C:\win-builds-x86_64\bin;C:\win-builds-i686\bin;C:\msys\bin
 ```  
@@ -167,11 +167,11 @@ tutorial for a Windows machine assumes the specified folders.
 
  
 * Next, install godep. Note that the following command produces no output.
-```no-highlight
+```c
         $ go get github.com/tools/godep 
 ```
 * Set up the repository for the package building tool "newt" on your local machine. First create the appropriate directory for it and then clone the newt tool repository from the online apache repository (or its github.com mirror) into this newly created directory. Check the contents of the directory.
-```no-highlight
+```c
         $ go get git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git/newt
         $ dir 
          bin	pkg	   src
@@ -185,7 +185,7 @@ tutorial for a Windows machine assumes the specified folders.
         LICENSE                 cli                     design.txt
 ```
 * Check that newt is in place.
-```no-highlight
+```c
         $ dir $GOPATH\src\git-wip-us.apache.org\repos\asf\incubator-mynewt-newt.git\newt 
         Godeps			README.md		coding_style.txt    newt.go
         LICENSE			cli			    design.txt
@@ -195,7 +195,7 @@ tutorial for a Windows machine assumes the specified folders.
 #### Building the newt tool
 
 * You will use Go to run the newt.go program to build the newt tool. The command used is  `go install` which compiles and writes the resulting executable to an output file named `newt`. It installs the results along with its dependencies in $GOPATH/bin.
-```no-highlight
+```c
         $ go install
         $ ls "$GOPATH"/bin/
         godep		incubator-mynewt-newt.git	  newt
@@ -203,7 +203,7 @@ tutorial for a Windows machine assumes the specified folders.
 * Try running newt using the compiled binary. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
    Note: If you are going to be be modifying the newt tool itself often and wish to compile the program every time you call it, you may want to define the newt environment variable that allows you to execute the command via `%newt%`. Use `set newt=go run %GOPATH%\src\github.com\mynewt\newt\newt.go` or set it from the GUI. Here, you use `go run` which runs the compiled binary directly without producing an executable.
-```no-highlight
+```c
         $ newt version
         Newt version:  1.0
         $ newt -h

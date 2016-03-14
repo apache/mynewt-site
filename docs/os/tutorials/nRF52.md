@@ -14,7 +14,7 @@ nRF52 Series chip from Nordic Semiconductors.
 #### Step by Step Instructions to build image
 
 * The first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.
-```no-highlight
+```c
         []user@~/dev]$ newt nest create nordic_blinky
         Downloading nest skeleton from https://www.github.com/mynewt/tadpole... ok!
         Nest nordic_blinky successfully created in ~dev/nordic_blinky
@@ -23,14 +23,14 @@ nRF52 Series chip from Nordic Semiconductors.
 ```
 
 * Then, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (`clutch.yml`) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.
-```no-highlight
+```c
         []user@~/dev/nordic_blinky]$ newt nest add-clutch larva https://github.com/mynewt/larva
         Downloading clutch.yml from https://github.com/mynewt/larva/master... ok!
         Verifying clutch.yml format...ok!
         Clutch larva successfully installed to Nest.
 ```
 * The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. 
-```no-highlight
+```c
         [user@~/dev/nordic_blinky]$ newt egg install project/blinky 
         Downloading larva from https://github.com/mynewt/larva//master... ok!
         Installing project/blinky
@@ -47,7 +47,7 @@ nRF52 Series chip from Nordic Semiconductors.
 ```
 
 * It's time to create a target for the project and define the target attributes. 
-```no-highlight
+```c
         [user@~/dev/nordic_blinky]$ newt target create blink_nordic
         Creating target blink_nordic
         Target blink_nordic successfully created!
@@ -72,7 +72,7 @@ nRF52 Series chip from Nordic Semiconductors.
 ```
         
 * Finally, you get to build the target and generate an executable that can now be uploaded to the board via the on-board SEGGER J-Link debugger. 
-```no-highlight
+```c
         [user@~/dev/nordic_blinky]$ newt target build blink_nordic
         Building target blink_nordic (project = blinky)
         Compiling case.c
@@ -116,7 +116,7 @@ nRF52 Series chip from Nordic Semiconductors.
 * In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from [https://www.segger.com/jlink-software.html](https://www.segger.com/jlink-software.html). The command line version of the server is used in the steps below. 
 
 * Open a new terminal and start a J-Link session.
-```no-highlight
+```c
         [user@~/dev/nordic_blinky/project/blinky/bin]$ which JLinkGDBServer
         /usr/local/bin/JLinkGDBServer
         [user@~/dev/nordic_blinky/project/blinky/bin]$ JLinkGDBServer -if SWD
@@ -159,7 +159,7 @@ nRF52 Series chip from Nordic Semiconductors.
 ```
 
 * You need a configuration file for the GDB session to be opened correctly and the image ("blinky.elf") you built for this target downloaded to flash. A sample config script is given below. Alternatively, you could choose to type each command at the gdb prompt.
-```no-highlight
+```c
          [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ cat jlink-gdb.cfg 
          echo ***Setting up the environment for debugging gdb.***\n
          set complaints 1
@@ -181,7 +181,7 @@ nRF52 Series chip from Nordic Semiconductors.
          monitor halt
 ```
 * Start the gdb session and monitor that it loads the image, resets the target, and halts for a command to continue. 
-```no-highlight
+```c
         [user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic]$ arm-none-eabi-gdb -x ~/dev/nordic_blinky/project/blinky/bin/blink_nordic/jlink-gdb.cfg
         
         GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
@@ -229,7 +229,7 @@ nRF52 Series chip from Nordic Semiconductors.
         *** Halting target ***
 ```
 * Type 'c' to continue. The LED on the board will start to blink. You will also see some activity in the terminal showing the open J-Link GDB server connection. The LED will continue to blink after you quit out of that connection.
-```no-highlight
+```c
         (gdb) c
         Continuing.
 ```
