@@ -31,7 +31,7 @@ Follow these simple steps and your board will be blinking in no time!
 
 ### Install Mynewt and Newt
 
-If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/newt_mac.md) and cloned the Mynewt OS repository as shown in the [Get Started tutorial for Blinky](../get_started/project1.md)
+If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/tutorials/newt_mac.md) and cloned the Mynewt OS repository as shown in the [Get Started tutorial for Blinky](../get_started/project1.md)
 
 ### Fetch External Packages for Atmel SAMD21
 
