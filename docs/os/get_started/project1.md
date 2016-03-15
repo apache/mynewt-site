@@ -16,7 +16,7 @@ This tutorial will guide to achieve the following:
 
 1. Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)
 2. An account on Github repository and *git* installed on your computer.
-3. It assumed you already installed native tools described [here](tools.md)
+3. It assumed you already installed native tools described [here](native_tools.md)
 
 Also, we assume that you're familiar with UNIX shells.
 
@@ -25,8 +25,8 @@ Let's gets started!
 ### Install Native and Cross Tools
 
 
-See [Installing Native Tools](native_tools.md)
- and [Installing Cross Tools](cross_tools.md) for ARM to install
+See [Installing Native Tools](../get_started/native_tools.md)
+ and [Installing Cross Tools](../get_started/cross_tools.md) for ARM to install
 the tools needed by newt.
 
 

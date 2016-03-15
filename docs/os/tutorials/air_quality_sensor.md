@@ -5,24 +5,24 @@
 To start with, you need to create a new app under which you will do this development. So you type in:
 
 ```no-highlight
-$ mkdir $HOME/src
-$ cd $HOME/src
-$ newt new air_quality
+    $ mkdir $HOME/src
+    $ cd $HOME/src
+    $ newt new air_quality
 ```
 
 Let's say you are using STM32F3discovery board for this project. You know you need the board support package for that hardware. You can look up its location in the repository, fetch the package list from there, and install the egg for the BSP.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list mynewt_stm32f3 https://github.com/runtimeinc/mynewt_stm32f3.git
-Downloading pkg-list.yml from https://github.com/runtimeinc/mynewt_stm32f3.git/master... ok!
-Verifying pkg-list.yml format...
+    [user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list mynewt_stm32f3 https://github.com/runtimeinc/mynewt_stm32f3.git
+    Downloading pkg-list.yml from https://github.com/runtimeinc/mynewt_stm32f3.git/master... ok!
+    Verifying pkg-list.yml format...
  ok!
-Package list mynewt_stm32f3 successfully installed to application.
-[user@IsMyLaptop:~/src/air_quality]$ newt pkg install hw/bsp/stm32f3discovery
-Downloading mynewt_stm32f3 from https://github.com/runtimeinc/mynewt_stm32f3.git/master... ok!
-Installing hw/bsp/stm32f3discovery
-Installing hw/mcu/stm/stm32f3xx
-Error: No package libs/cmsis-core found
+    Package list mynewt_stm32f3 successfully installed to application.
+    [user@IsMyLaptop:~/src/air_quality]$ newt pkg install hw/bsp/stm32f3discovery
+    Downloading mynewt_stm32f3 from https://github.com/runtimeinc/mynewt_stm32f3.git/master... ok!
+    Installing hw/bsp/stm32f3discovery
+    Installing hw/mcu/stm/stm32f3xx
+    Error: No package libs/cmsis-core found
 ```
 
 Ooops. You forgot to bring in the package list for larva itself. That's the one with most of the packages. Including libs/cmsis-core.
@@ -32,34 +32,34 @@ This time you need the latest and greatest from larva, so you want to bring in t
 However, you want to bring in the packages from develop branch. To make that happen you say:
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list -b develop larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
-Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/develop... ok!
-Verifying pkg-list.yml format...
+    [user@IsMyLaptop:~/src/air_quality]$ newt app add-pkg-list -b develop larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
+    Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/develop... ok!
+    Verifying pkg-list.yml format...
  ok!
-Package list larva successfully installed to application.
-[user@IsMyLaptop:~/src/air_quality]$ newt pkg install libs/cmsis-core          Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
-Installing libs/cmsis-core
-Installation was a success!
+    Package list larva successfully installed to application.
+    [user@IsMyLaptop:~/src/air_quality]$ newt pkg install libs/cmsis-core          Downloading     larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
+    Installing libs/cmsis-core
+    Installation was a success!
 ```
 
 That's better. You want to make sure you have all the needed bits for supporting your board; so you decide to build the blinky project for it first.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt pkg install project/blinky
-Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
-Installing project/blinky
-Installing libs/console/full
-Installing libs/newtmgr
-Installing libs/json
-Installing libs/shell
-Installing sys/config
-Installing sys/log
-Installing sys/stats
-Installation was a success!
-[user@IsMyLaptop:~/src/air_quality]$ newt pkg install compiler/arm-none-eabi-m4
-Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
-Installing compiler/arm-none-eabi-m4
-Installation was a success!
+    [user@IsMyLaptop:~/src/air_quality]$ newt pkg install project/blinky
+    Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
+    Installing project/blinky
+    Installing libs/console/full
+    Installing libs/newtmgr
+    Installing libs/json
+    Installing libs/shell
+    Installing sys/config
+    Installing sys/log
+    Installing sys/stats
+    Installation was a success!
+    [user@IsMyLaptop:~/src/air_quality]$ newt pkg install compiler/arm-none-eabi-m4
+    Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
+    Installing compiler/arm-none-eabi-m4
+    Installation was a success!
 ```
 As you can see, this brought in quite a few other dependencies as well.
 
@@ -67,29 +67,30 @@ As you can see, this brought in quite a few other dependencies as well.
 Now create a target for it and build it.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target create blink_f3
-Creating target blink_f3
-Target blink_f3 successfully created!
-[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 arch=cortex_m4
-Target blink_f3 successfully set arch to cortex_m4
-[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 bsp=hw/bsp/stm32f3discovery
-Target blink_f3 successfully set bsp to hw/bsp/stm32f3discovery
-[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 compiler=arm-none-eabi-m4
-Target blink_f3 successfully set compiler to arm-none-eabi-m4
-[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 compiler_def=debug
-Target blink_f3 successfully set compiler_def to debug
-[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 project=blinky
-Target blink_f3 successfully set project to blinky
-[user@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
-Building target blink_f3 (project = blinky)
- ...
-[user@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
-Building target blink_f3 (project = blinky)
-Building project blinky
-Linking blinky.elf
-/usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/../lib/gcc/arm-none-eabi/4.9.3/../../../../arm-none-eabi/bin/ld: /Users/user/src/air_quality/project/blinky//bin/blink_f3/blinky.elf section `.text' will not fit in region `FLASH'
-/usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/../lib/gcc/arm-none-eabi/4.9.3/../../../../arm-none-eabi/bin/ld: region `FLASH' overflowed by 5180 bytes
-collect2: error: ld returned 1 exit status
+    [user@IsMyLaptop:~/src/air_quality]$ newt target create blink_f3
+    Creating target blink_f3
+        Target blink_f3 successfully created!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 arch=cortex_m4
+    Target blink_f3 successfully set arch to cortex_m4
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 bsp=hw/bsp/stm32f3discovery
+    Target blink_f3 successfully set bsp to hw/bsp/stm32f3discovery
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 compiler=arm-none-eabi-m4
+    Target blink_f3 successfully set compiler to arm-none-eabi-m4
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 compiler_def=debug
+    Target blink_f3 successfully set compiler_def to debug
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 project=blinky
+    Target blink_f3 successfully set project to blinky
+    [user@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
+    Building target blink_f3 (project = blinky)
+     ...
+    [user@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
+    Building target blink_f3 (project = blinky)
+    Building project blinky
+    Linking blinky.elf
+    /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/../lib/gcc/arm-none-eabi 
+    4.9.3/../../../../arm-none-eabi/bin/ld: /Users/user/src/air_quality/project/blinky//bin/    blink_f3/blinky.elf section `.text' will not fit in region `FLASH'
+    /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/../lib/gcc/arm-none-eabi 4.9.3/../../../../arm-none-eabi/bin/ld: region `FLASH' overflowed by 5180 bytes
+    collect2: error: ld returned 1 exit status
 ```
 
 The error indicates that the images need to be smaller for this board, so you decide to switch over to using baselibc instead of libc.
@@ -98,14 +99,14 @@ To do that, you modify the project's egg file project/blinky/pkg.yml. And add *l
 
 Now:
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
-Building target blink_f3 (project = blinky)
-....
-Archiving libstm32f3discovery.a
-Compiling main.c
-Building project blinky
-Linking blinky.elf
-Successfully run!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target build blink_f3
+    Building target blink_f3 (project = blinky)
+    ....
+    Archiving libstm32f3discovery.a
+    Compiling main.c
+    Building project blinky
+    Linking blinky.elf
+    Successfully run!
 ```
 
 That's better.
@@ -113,73 +114,73 @@ That's better.
 You know that this platform uses bootloader, which means you have to create a target for that too. And download the bootloader package.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target create boot_f3
-Creating target boot_f3
-Target boot_f3 successfully created!
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 arch=cortex_m4
-newTarget boot_f3 successfully set arch to cortex_m4
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 bsp=hw/bsp/stm32f3discovery
-newtTarget boot_f3 successfully set bsp to hw/bsp/stm32f3discovery
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 compiler=arm-none-eabi-m4
-Target boot_f3 successfully set compiler to arm-none-eabi-m4
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 compiler_def=optimized
-Target boot_f3 successfully set compiler_def to optimized
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 project=boot
-Target boot_f3 successfully set project to boot
-[user@IsMyLaptop:~/src/air_quality]$ newt pkg install project/boot
-Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
-Installing project/boot
-Installing fs/nffs
-Installing fs/fs
-Installing libs/bootutil
-Installing libs/mbedtls
-Installing libs/console/stub
-Installation was a success!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target create boot_f3
+    Creating target boot_f3
+    Target boot_f3 successfully created!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 arch=cortex_m4
+    newTarget boot_f3 successfully set arch to cortex_m4
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 bsp=hw/bsp/stm32f3discovery
+    newtTarget boot_f3 successfully set bsp to hw/bsp/stm32f3discovery
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 compiler=arm-none-eabi-m4
+    Target boot_f3 successfully set compiler to arm-none-eabi-m4
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 compiler_def=optimized
+    Target boot_f3 successfully set compiler_def to optimized
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 project=boot
+    Target boot_f3 successfully set project to boot
+    [user@IsMyLaptop:~/src/air_quality]$ newt pkg install project/boot
+    Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/develop... ok!
+    Installing project/boot
+    Installing fs/nffs
+    Installing fs/fs
+    Installing libs/bootutil
+    Installing libs/mbedtls
+    Installing libs/console/stub
+    Installation was a success!
 ```
 
 And then build it:
 ```no-highlight
-newt target build boot_f3
-....
-Linking boot.elf
-Successfully run!
+    newt target build boot_f3
+    ....
+    Linking boot.elf
+    Successfully run!
 ```
 
 Next you must download the targets to board, and see that the LED actually blinks. You plug in the STM32F3 discovery board to your laptop, and say:
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
-Downloading with /Users/user/src/air_quality/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
-Downloading /Users/user/src/air_quality/project/blinky/bin/blink_f3/blinky.img to 0x08008000
-Open On-Chip Debugger 0.9.0 (2015-05-28-12:05)
-...
-target state: halted
-target halted due to debug-request, current mode: Thread 
-xPSR: 0x01000000 pc: 0x0800026c msp: 0x10002000
-auto erase enabled
-Error: couldn't open /Users/user/src/air_quality/project/blinky/bin/blink_f3/blinky.img
-Error: exit status 1
-exit status 1
+    [user@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
+    Downloading with /Users/user/src/air_quality/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
+    Downloading /Users/user/src/air_quality/project/blinky/bin/blink_f3/blinky.img to 0x08008000
+    Open On-Chip Debugger 0.9.0 (2015-05-28-12:05)
+    ...
+    target state: halted
+    target halted due to debug-request, current mode: Thread 
+    xPSR: 0x01000000 pc: 0x0800026c msp: 0x10002000
+    auto erase enabled
+    Error: couldn't open /Users/user/src/air_quality/project/blinky/bin/blink_f3/blinky.img
+    Error: exit status 1
+    exit status 1
 ```
 
 Ah. Forgot to create an image out of the blinky binary.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target create-image blink_f3 0.0.1
-Building target blink_f3 (project = blinky)
-Compiling hal_flash.c
-Archiving libhal.a
-Compiling cons_tty.c
-Archiving libfull.a
-Compiling hal_uart.c
-Archiving libstm32f3xx.a
-Compiling hal_bsp.c
-Archiving libstm32f3discovery.a
-Compiling main.c
-Building project blinky
-Linking blinky.elf
-[user@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
-Downloading with /Users/user/src/air_quality/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
+    [user@IsMyLaptop:~/src/air_quality]$ newt target create-image blink_f3 0.0.1
+    Building target blink_f3 (project = blinky)
+    Compiling hal_flash.c
+    Archiving libhal.a
+    Compiling cons_tty.c
+    Archiving libfull.a
+    Compiling hal_uart.c
+    Archiving libstm32f3xx.a
+    Compiling hal_bsp.c
+    Archiving libstm32f3discovery.a
+    Compiling main.c
+    Building project blinky
+    Linking blinky.elf
+    [user@IsMyLaptop:~/src/air_quality]$ newt target download blink_f3
+    Downloading with /Users/user/src/air_quality/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
 ```
 
 And it's blinking.
@@ -190,32 +191,32 @@ Now that you have your system setup, you can start creating your own stuff.
 First you want to create a project for yourself - you can start by getting project template from blinky, as it pretty much has what you want.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality
-[user@IsMyLaptop:~/src/air_quality]$ cp project/blinky/pkg.yml project/air_quality/
-[user@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality/src
-[user@IsMyLaptop:~/src/air_quality]$ cp project/blinky/src/main.c project/air_quality/src/
+    [user@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality
+    [user@IsMyLaptop:~/src/air_quality]$ cp project/blinky/pkg.yml project/air_quality/
+    [user@IsMyLaptop:~/src/air_quality]$ mkdir project/air_quality/src
+    [user@IsMyLaptop:~/src/air_quality]$ cp project/blinky/src/main.c project/air_quality/src/
 ```
 
 Then you modify the project/air_quality/pkg.yml for air_quality in order to change the *pkg.name* to be *project/air_quality*.
 
 And create a target for it:
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target create air_q
-newt targCreating target air_q
-Target air_q successfully created!
-[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q arch=cortex_m4
-Target air_q successfully set arch to cortex_m4
-[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=hw/bsp/stm32f3discovery
-Target air_q successfully set bsp to hw/bsp/stm32f3discovery
-[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q compiler=arm-none-eabi-m4
-Target air_q successfully set compiler to arm-none-eabi-m4
-[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q compiler_def=debug
-Target air_q successfully set compiler_def to debug
-[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q project=air_quality
-Target air_q successfully set project to air_quality
-[user@IsMyLaptop:~/src/air_quality]$ newt target build air_q
-   ....
-Successfully run!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target create air_q
+    newt targCreating target air_q
+    Target air_q successfully created!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q arch=cortex_m4
+    Target air_q successfully set arch to cortex_m4
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=hw/bsp/stm32f3discovery
+    Target air_q successfully set bsp to hw/bsp/stm32f3discovery
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q compiler=arm-none-eabi-m4
+    Target air_q successfully set compiler to arm-none-eabi-m4
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q compiler_def=debug
+    Target air_q successfully set compiler_def to debug
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q project=air_quality
+    Target air_q successfully set project to air_quality
+    [user@IsMyLaptop:~/src/air_quality]$ newt target build air_q
+       ....
+    Successfully run!
 ```
 
 ### Create packages for drivers
@@ -227,6 +228,9 @@ So you add few files. pkg.yml to describe the driver, and then header stub follo
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml
+```
+
+```c
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -252,6 +256,9 @@ pkg.deps:
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/include/senseair/senseair.h
+```
+
+```c
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -272,15 +279,17 @@ pkg.deps:
 */
 #ifndef _SENSEAIR_H_
 #define _SENSEAIR_H_
-
+    
 void senseair_init(void);
-
+    
 #endif /* _SENSEAIR_H_ */
-
 ```
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
+```
+
+```c
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -334,21 +343,21 @@ pkg.deps:
 And add a call to your main() to initialize this driver.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
-28a29
-> #include <senseair/senseair.h>
-190a192
->     senseair_init();
-[user@IsMyLaptop:~/src/air_quality
+    [user@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
+    28a29
+    > #include <senseair/senseair.h>
+    190a192
+    > senseair_init();
+    [user@IsMyLaptop:~/src/air_quality
 ```
 
 And then build it to make sure all goes well.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target build air_q
-Building target air_q (project = air_quality)
-Building project air_quality
-Successfully run!
+    [user@IsMyLaptop:~/src/air_quality]$ newt target build air_q
+    Building target air_q (project = air_quality)
+    Building project air_quality
+    Successfully run!
 ```
 
 All looks good.
@@ -403,24 +412,24 @@ senseair_shell_func(int argc, char **argv)
 Then you build this, download to target, and start minicom on your console port.
 
 ```no-highlight
-[user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
-
-
-Welcome to minicom 2.7
-
-OPTIONS: 
-Compiled on Oct 12 2015, 07:48:30.
-Port /dev/tty.usbserial-AH02MIE2, 13:44:40
-
-Press CTRL-X Z for help on special keys
-
-?
-141964:Unknown command ?
-?
-143804:config   log     echo    ?       tasks   mempools 
-143806:stat     senseair 
-senseair
-150644:Yay! Somebody called!
+    [user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
+    
+    
+    Welcome to minicom 2.7
+    
+    OPTIONS: 
+    Compiled on Oct 12 2015, 07:48:30.
+    Port /dev/tty.usbserial-AH02MIE2, 13:44:40
+    
+    Press CTRL-X Z for help on special keys
+    
+    ?
+    141964:Unknown command ?
+    ?
+    143804:config   log     echo    ?       tasks   mempools 
+    143806:stat     senseair 
+    senseair
+    150644:Yay! Somebody called!
 ```
 
 Now that's great. You can connect the hardware to board and start developing code for the driver itself.
@@ -431,14 +440,14 @@ The sensor has a serial port connection, and that's how you are going to connect
 
 So in the shell you make a copy of the original BSP, and then change the package file a little.
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ cp -R hw/bsp/stm32f3discovery hw/bsp/stm32f3discovery_with_senseair
+    [user@IsMyLaptop:~/src/air_quality]$ cp -R hw/bsp/stm32f3discovery hw/bsp/stm32f3discovery_with_senseair
 ```
 
 Then you modify the pkg.yml in the copied BSP to assign name for this package.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ grep pkg.name hw/bsp/stm32f3discovery_with_senseair/pkg.yml
-pkg.name: "hw/bsp/stm32f3discovery_with_senseair"
+    [user@IsMyLaptop:~/src/air_quality]$ grep pkg.name hw/bsp/stm32f3discovery_with_senseair/pkg.yml
+    pkg.name: "hw/bsp/stm32f3discovery_with_senseair"
 ```
 
 And you want to use this BSP with my target. So you change the BSP in the target definition.

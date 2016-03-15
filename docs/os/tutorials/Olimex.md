@@ -20,7 +20,7 @@ Download packages and use tools to create a runtime image for a board to make it
 3. USB A-B type cable to connect the debugger to your personal computer
 4. Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)
 5. An account on Github repository and *git* installed on your computer.
-6. It assumed you already installed native tools described [here](native_tools.md)
+6. It assumed you already installed native tools described [here](../get_started/native_tools.md)
 
 Also, we assume that you're familiar with UNIX shells.
 
