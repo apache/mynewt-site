@@ -16,18 +16,9 @@ Chose a project name. For this tutorial we will call this project `myproj`.
 Enter the `newt new myproj` command. Your put
 ```no-highlight
 $ newt new myproj
-
 Downloading project skeleton from apache/incubator-mynewt-blinky...
-Downloading repository incubator-mynewt-blinky (branch: develop) at https://github.com/apache/incubator-mynewt-blinky.git
-Cloning into '/var/folders/x0/1yjkfd_93j79r64d2vf104d40000gp/T/newt-repo290518149'...
-remote: Counting objects: 727, done.
-remote: Compressing objects: 100% (29/29), done.
-remote: Total 727 (delta 7), reused 0 (delta 0), pack-reused 696
-Receiving objects: 100% (727/727), 201.64 KiB | 0 bytes/s, done.
-Resolving deltas: 100% (329/329), done.
-Checking connectivity... done.
 Installing skeleton in myproj...
-Project myproj successfully created
+Project myproj successfully created.
 ```
 
 The `newt` tool has created a project directory structure like the one below:
@@ -77,18 +68,18 @@ change into the `myproj` directory.  Then ask newt to install all the
 project package dependencies using `newt install`
 
 ```no-highlight
-$ newt install
-
+$ newt install -v 
+apache-mynewt-core
 Downloading repository description for apache-mynewt-core... success!
-Downloading repository incubator-mynewt-core (branch: develop) at https://github.com/apache/incubator-mynewt-core.git
-Cloning into '/var/folders/x0/1yjkfd_93j79r64d2vf104d40000gp/T/newt-repo379645046'...
-remote: Counting objects: 17684, done.
-remote: Compressing objects: 100% (377/377), done.
-remote: Total 17684 (delta 190), reused 0 (delta 0), pack-reused 17284
-Receiving objects: 100% (17684/17684), 6.11 MiB | 2.19 MiB/s, done.
-Resolving deltas: 100% (10395/10395), done.
+Downloading repository incubator-mynewt-core (branch: master; commit: mynewt_0_8_0_b2_tag) at https://github.com/apache/incubator-mynewt-core.git
+Cloning into '/var/folders/7l/7b3w9m4n2mg3sqmgw2q1b9p80000gn/T/newt-repo969988348'...
+remote: Counting objects: 17935, done.
+remote: Compressing objects: 100% (234/234), done.
+remote: Total 17935 (delta 101), reused 0 (delta 0), pack-reused 17686
+Receiving objects: 100% (17935/17935), 6.18 MiB | 315.00 KiB/s, done.
+Resolving deltas: 100% (10541/10541), done.
 Checking connectivity... done.
-Repos successfully installed
+apache-mynewt-core successfully installed version 0.7.9-none
 $ 
 ```
 
@@ -120,15 +111,6 @@ under the specific repository you have included in the base project.
 Within each of these directories are the packages required to build your
 project for the various targets.
 
-## Do compiler stuff for Linux
-
-A current behavior on Linux requires that we copy a single file within this
-project.  
-
-```no-highlight
-cp repos/apache-mynewt-core/compiler/sim/linux-compiler.yml repos/apache-mynewt-core/compiler/sim/compiler.yml 
-```
-
 ## Testing the Project
 
 To validate, you can also run all the units test through simulation.
@@ -149,7 +131,7 @@ All tests passed
 To build the project you can use `newt build` using the target 
 
 ```no-highlight
-$ newt build targets/my_blinky_sim
+$ newt build my_blinky_sim
 App successfully built: /bin/my_blinky_sim/apps/blinky/blinky.elf
 ```
 

@@ -43,93 +43,122 @@ Or if you're an adventurer then you can set up the environment on your computer,
 ### Build test code on simulator 
 
 
-1\. Clone the larva repository from the Apache git repository into a local directory named `larva`.
+1\. Create a new project with newt 
 
 ```no-highlight
-        $ cd ~/dev 
-        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
-        $ ls
+$ newt new my_project
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in my_project...
+Project my_project successfully created.
+$ tree -L 3
+.
+├── DISCLAIMER
+├── LICENSE
+├── NOTICE
+├── README.md
+├── apps
+│   └── blinky
+│       ├── pkg.yml
+│       └── src
+├── project.yml
+└── targets
+    ├── my_blinky_sim
+    │   ├── pkg.yml
+    │   └── target.yml
+    └── unittest
+        ├── pkg.yml
+        └── target.yml
 
-        go	larva
-        $ ls larva
-        DISCLAIMER	NOTICE		app.yml		compiler	hw		net		project		sys
-        LICENSE		README.md	autotargets	fs  libs	pkg-list.yml	scripts
+6 directories, 10 files
+$ 
 ``` 
   
-2\. Create a target using the newt tool. 
+2\. Install remote dependencies for the new project 
 
 ```no-highlight
-        $ cd larva
-        $ newt target create sim_test
-        Creating target sim_test
-        Target sim_test sucessfully created!
-        $ newt target show
-        sim_test
-	        name: sim_test
-	        arch: sim
+$ newt install -v 
+apache-mynewt-core
+Downloading repository description for apache-mynewt-core... success!
+Downloading repository incubator-mynewt-core (branch: master; commit: mynewt_0_8_0_b2_tag) at https://github.com/apache/incubator-mynewt-core.git
+Cloning into '/var/folders/7l/7b3w9m4n2mg3sqmgw2q1b9p80000gn/T/newt-repo969988348'...
+remote: Counting objects: 17935, done.
+remote: Compressing objects: 100% (234/234), done.
+remote: Total 17935 (delta 101), reused 0 (delta 0), pack-reused 17686
+Receiving objects: 100% (17935/17935), 6.18 MiB | 315.00 KiB/s, done.
+Resolving deltas: 100% (10541/10541), done.
+Checking connectivity... done.
+apache-mynewt-core successfully installed version 0.7.9-none
 ```
 
-3\. Now continue to populate and build out the sim target. 
-```no-highlight
-        $ newt target set sim_test project=test
-        Target sim_test successfully set project to test
-        $ newt target set sim_test compiler_def=debug
-        Target sim_test successfully set compiler_def to debug
-        $ newt target set sim_test bsp=hw/bsp/native
-        Target sim_test successfully set bsp to hw/bsp/native
-        $ newt target set sim_test compiler=sim
-        Target sim_test successfully set compiler to sim
-        $ newt target show sim_test
-        sim_test
-			arch=sim
-	     	bsp=hw/bsp/native
-	     	compiler=sim
-	     	compiler_def=debug
-	     	name=sim_test
-	     	project=test
-```
-        
-4\. Configure *newt* to use the gnu build tools native to OS X or Linux. In order for sim to work properly, it needs the 32-bit gcc (gcc-5). Replace *~/dev/larva/compiler/sim/compiler.yml* with the *compiler/sim/osx-compiler.yml* or *linux-compiler.yml* file, depending on the system. On a Windows machine, follow the instruction for the Linux machine as you are running commands in a Linux VM.
-
-  For a Mac OS X environment:
-```no-highlight
-        $ cp compiler/sim/osx-compiler.yml compiler/sim/compiler.yml 
-```        
-  For a Linux machine:
-```no-highlight        
-        $ cp compiler/sim/linux-compiler.yml compiler/sim/compiler.yml
-```
-
-5\. Next, build the packages for the sim project using the *newt* tool. You should see lots of console output while *newt* is resolving dependencies and compiling the source code.  After a minute, it should complete with 
+3\. Next, build the packages for the sim project using the *newt* tool. You should see lots of console output while *newt* is resolving dependencies and compiling the source code.  After a minute, it should complete with 
 the `Successfully run!` text.
 
 ```no-highlight
-        $ newt target build sim_test
-        Building target sim_test (project = test)
-        ...
-        ...
-        Successfully run!
+$ newt build my_blinky_sim 
+Compiling main.c
+Archiving blinky.a
+Compiling flash_map.c
+Compiling hal_flash.c
+Archiving hal.a
+Compiling hal_cputime.c
+Compiling hal_flash.c
+Compiling hal_gpio.c
+Compiling hal_system.c
+Compiling hal_uart.c
+Archiving native.a
+Compiling base64.c
+<snip>
 ```
-For extra details, specify the VERBOSE option.
+For extra details, specify the ```-v``` (verbose) option.
+
+4\.  Run the blinky target, and enjoy your first successful Apache Mynewt project:
 
 ```no-highlight
-        $newt -l VERBOSE target build sim_test
-        2015/09/29 09:46:12 [INFO] Building project test
-        2015/09/29 09:46:12 [INFO] Loading Package /Users/aditihilbert/dev/larva/libs//bootutil...
-        2015/09/29 09:46:12 [INFO] Loading Package /Users/aditihilbert/dev/larva/libs//cmsis-core...
-        2015/09/29 09:46:12 [INFO] Loading Package /Users/aditihilbert/dev/larva/libs//ffs..
-        ...
-        Successfully run!
-```
-6\. Run the test suite executable inside this project and enjoy your first successful test!
-```no-highlight
-        $ project/test/bin/sim_test/test.elf
-        [pass] os_mempool_test_suite/os_mempool_test_case
-        [pass] os_mutex_test_suite/os_mutex_test_basic
-        [pass] os_mutex_test_suite/os_mutex_test_case_1
-        ...
-        ...
-        [pass] cbmem_test_suite/cbmem_test_case_3
+$ newt run my_blinky_sim 
+<snip>
+Compiling cons_fmt.c
+Compiling cons_tty.c
+Archiving full.a
+Compiling hal_bsp.c
+Compiling os_bsp.c
+Compiling sbrk.c
+Archiving native.a
+Compiling os.c
+Compiling os_callout.c
+Compiling os_eventq.c
+Compiling os_heap.c
+Compiling os_mbuf.c
+Compiling os_mempool.c
+Compiling os_mutex.c
+Compiling os_sanity.c
+Compiling os_sched.c
+Compiling os_sem.c
+Compiling os_task.c
+Compiling os_time.c
+Compiling os_arch_sim.c
+Compiling os_fault.c
+Assembling os_arch_stack_frame.s
+Archiving os.a
+Linking blinky.elf
+No download script for BSP hw/bsp/native
+Debugging /Users/sterling/dev/site/my_project/bin/my_blinky_sim/apps/blinky/blinky.elf
+GNU gdb (GDB) 7.10.1
+Copyright (C) 2015 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-apple-darwin15.2.0".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /Users/sterling/dev/site/my_project/bin/my_blinky_sim/apps/blinky/blinky.elf...Reading symbols from /Users/sterling/dev/site/my_project/bin/my_blinky_sim/apps/blinky/blinky.elf.dSYM/Contents/Resources/DWARF/blinky.elf...done.
+done.
+(gdb) r
 ```
 
 ### Conclusion

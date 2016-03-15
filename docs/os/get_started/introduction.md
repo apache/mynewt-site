@@ -20,9 +20,9 @@ makes the operating system requirements for them unique:
 * Low power operation: devices operate in mostly sleeping mode, in order to conserve
 battery power and maximize power usage.
 
-As more and more devices get connected, these interconnected devies perform complex tasks. To
+As more and more devices get connected, these interconnected devices perform complex tasks. To
 perform these tasks, you need low-level operational functionality built into the operating system.
-Typically, connected devices built with these microcontrollers perform a myriad of low-level tasks: 
+Typically, connected devices built with these microcontrollers perform a myriad of functions: 
 
 * Networking Stacks: Bluetooth Low Energy and Thread
 
@@ -53,47 +53,140 @@ You can install and build *newt* for [Linux](http://mynewt.apache.org/newt/newt_
 ### Build your first Mynewt App with Newt ###
 
 Before you start your first Mynewt application, you must first create a new Mynewt
-application with the *newt* tool: 
+project with the *newt* tool: 
 
 ```no-highlight
-$ newt new my_app
-Downloading application skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!
-Application my_app successfully created in /Users/mynewt/dev/my_app
+$ newt new my_project
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in my_app...
+Project my_app successfully created.
+```
+
+Newt populates this new project with a base skeleton of a new Apache Mynewt 
+project.  It has the following structure:
+
+```no-highlight 
+$ cd my_project
+$ tree -L 3
+.
+├── DISCLAIMER
+├── LICENSE
+├── NOTICE
+├── README.md
+├── apps
+│   └── blinky
+│       ├── pkg.yml
+│       └── src
+├── project.yml
+└── targets
+    ├── my_blinky_sim
+    │   ├── pkg.yml
+    │   └── target.yml
+    └── unittest
+        ├── pkg.yml
+        └── target.yml
+
+6 directories, 10 files
 $ 
 ```
 
-This new application contains the core of the operating system and the hardware abstraction layer, which all fits into less than 5KB of compiled code size.
-
-Once the application is created, you can then install the packages you need, as Mynewt will automatically download them, along with their dependencies into your application.
-
-For example, let's install a file system into the "my\_app" application.
-
-First, we'll search for file system packages: 
+Once you've switched into your new project's directory, the next step is to fetch
+any dependencies this project has.  By default, all Newt projects rely on a single
+remote repository, apache-mynewt-core.  Newt install will fetch this locally:
 
 ```no-highlight
-$ newt pkg search fs
-Package list larva has package fs/nffs@0.8.0
-Package list larva has package fs/fs@0.0.0
-Package list larva has package project/ffs2native@0.0.0
+$ newt install
+apache-mynewt-core
+$
 ```
 
-Once found, you can install the nffs package (Newtron Flash File System) with *newt*:
+*NOTE:* ```apache-mynewt-core``` may take a while to download, to see progress, use
+the ```-v``` (verbose) option to install. 
+
+
+Once ```newt install``` has successfully finished, the contents of ```apache-mynewt-core```
+will have been downloaded into your local directory.  You can view them by issuing the 
+following commands in the base directory of the new project:
 
 ```no-highlight
-$ newt pkg install fs/nffs
-Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
-Installing fs/nffs
-Installing fs/fs
-Installation was a success!
+$ cd repos/apache-mynewt-core
+$ tree -L2
+.
+<snip>
+├── fs
+│   ├── fs
+│   └── nffs
+├── hw
+│   ├── bsp
+│   ├── hal
+│   └── mcu
+├── libs
+│   ├── baselibc
+│   ├── bootutil
+│   ├── cmsis-core
+│   ├── console
+│   ├── elua
+│   ├── flash_test
+│   ├── imgmgr
+│   ├── json
+│   ├── mbedtls
+│   ├── newtmgr
+│   ├── os
+│   ├── shell
+│   ├── testreport
+│   ├── testutil
+│   └── util
+├── net
+│   └── nimble
+<snip>
 ```
 
-At this point you have your first Mynewt application. And it's that simple!
+As you can see, the core of the Apache Mynewt operating system has been brought 
+into your local directory!  
 
-Mynewt contains all the packages and reusable software components you need to develop a device using a 32-bit 
-Microcontroller. And by providing a robust package management and build system, to help you build building blocks, Mynewt allows you to scale from 5KB of code size to MBs of compiled code size.
+New projects created with Newt, come with by default an example application 
+(```apps/blinky```) and an example target (```my_blinky_sim```) which allows you to 
+build that application for the simulated platform.  
 
-Next, try doing your first project using *newt.* In the next section, [Get Started](http://mynewt.apache.org/os/get_started/project1/), we guide you how get a LED on a target board blink. 
+With your new project, all you need to build and run your new application is to 
+issue the following commands: 
 
-So get on with it!
+```no-highlight
+$ newt build my_blinky_sim 
+Compiling base64.c
+Compiling cbmem.c
+Compiling datetime.c
+Compiling tpq.c
+Archiving util.a
+Compiling main.c
+Archiving blinky.a
+Compiling flash_map.c
+Compiling hal_flash.c
+Archiving hal.a
+Compiling cons_fmt.c
+Compiling cons_tty.c
+<snip>
+Linking blinky.elf
+App successfully built: /Users/sterling/dev/tmp/my_app/bin/my_blinky_sim/apps/blinky/blinky.elf
+$ newt run my_blinky_sim
+(runs target my_blinky_sim on the simulator)
+```
+
+At this point you have your first Mynewt application!
+
+Apache Mynewt has a lot more functionality than just running simulated applications.  It provides all 
+the features you'll need to cross-compile your application, run it on real hardware and develop a 
+full featured application.
+
+If you're interested in learning more, a good next step is to choose a project to 
+[Get Started](http://mynewt.apache.org/os/get_started/project1/) with, and begin to familiarize 
+yourself with operating within the newt environment.  These projects will get your toolchain installed, 
+and get you blinking an LED with the Apache Mynewt OS.
+
+After you've tried a few getting started projects, there are plenty of tutorials that will help 
+expose you to much of the functionality provided by the Apache Mynewt Core Operating System.   There is 
+also full reference documentation for all of the Core Apache Mynewt APIs.
+
+Happy Hacking!
 
 
