@@ -202,7 +202,7 @@
   
   
     <li><a href="
-  ../../../get_started/project1/
+  ../../../get_started/native_tools/
 ">Get Started</a>
   
     
@@ -226,7 +226,7 @@
   
   
     <li><a href="
-  ../../../tutorials/STM32F303/
+  ../../../tutorials/olimex/
 ">Tutorials</a>
   
     
@@ -558,19 +558,20 @@
 <p>Libraries use Mynewt's file system abstraction layer (<code>fs/fs</code>) for all file operations.  Because clients use an abstraction layer, the underlying file system can be swapped out without affecting client code.  This page documents the procedure for plugging a custom file system into the Mynewt file system abstraction layer.</p>
 <h3 id="1-specify-fsfs-as-a-dependency-of-your-file-system-package">1. Specify <code>fs/fs</code> as a dependency of your file system package.<a class="headerlink" href="#1-specify-fsfs-as-a-dependency-of-your-file-system-package" title="Permanent link">&para;</a></h3>
 <p>The file system package must register itself with the <code>fs/fs</code> package, so it must specify <code>fs/fs</code> as a dependency.  As an example, part of the Newtron Flash File System (nffs) <code>pkg.yml</code> is reproduced below.   Notice the first item in the <code>pkg.deps</code> list.</p>
-<pre><code class="no-highlight">pkg.name: fs/nffs
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: fs/nffs
 pkg.deps:
     - fs/fs
     - hw/hal
     - libs/os
     - libs/testutil
     - sys/log
-</code></pre>
+</pre></div>
+
 
 <h3 id="2-register-your-packages-api-with-the-fsfs-interface">2. Register your package's API with the <code>fs/fs</code> interface.<a class="headerlink" href="#2-register-your-packages-api-with-the-fsfs-interface" title="Permanent link">&para;</a></h3>
 <p>The <code>fs/fs</code> package calls into the underlying file system via a collection of function pointers.  To plug your file system into the <code>fs/fs</code> API, you must assign these function pointers to the corresponding routines in your file system package.</p>
 <p>For example, <code>nffs</code> registers itself with <code>fs/fs</code> as follows (from <code>fs/nffs/src/nffs.c</code>):</p>
-<pre><code class="no-highlight">static const struct fs_ops nffs_ops = {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">static const struct fs_ops nffs_ops = {
     .f_open = nffs_open,
     .f_close = nffs_close,
     .f_read = nffs_read,
@@ -600,12 +601,13 @@ nffs_init(void)
     /* [...] */
     fs_register(&amp;nffs_ops);
 }
-</code></pre>
+</pre></div>
+
 
 <h3 id="header-files">Header Files<a class="headerlink" href="#header-files" title="Permanent link">&para;</a></h3>
 <p>To gain access to <code>fs/fs</code>'s registration interface, include the following header:</p>
-<pre><code class="no-highlight">#include &quot;fs/fs_if.h&quot;
-</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs_if.h&quot;</span>
+</pre></div>
                         
                         <div class="row">
                             <footer>

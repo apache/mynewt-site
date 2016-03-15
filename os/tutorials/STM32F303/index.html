@@ -202,7 +202,7 @@
   
   
     <li><a href="
-  ../../get_started/project1/
+  ../../get_started/native_tools/
 ">Get Started</a>
   
     
@@ -226,11 +226,21 @@
   
   
     <li><a href="
-  ./
+  ../olimex/
 ">Tutorials</a>
   
     
       <ul class="current-toc">
+          
+              
+                
+  
+    <li>
+      <a href="../olimex/">Blinky on Olimex</a>
+    </li>
+  
+
+              
           
               
                 
@@ -429,7 +439,7 @@
         
       
         
-          <li>&raquo; Tutorials</li>
+          <li>&raquo; <a href="../olimex/">Tutorials</a></li>
         
       
       
@@ -454,147 +464,150 @@
 <ul>
 <li>The first step is to download the generic skeleton of the project. The pkgs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as an app in a separate repository on Apache. You know it is an app because there is an app.yml file. </li>
 </ul>
-<pre><code class="c">        [user:~/dev]$ newt app create test_project
-        Downloading app skeleton from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!
-        app test_project successfully created in ~/dev/go/test_project
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">app</span> <span style="color: #000000">create</span> <span style="color: #000000">test_project</span>
+        <span style="color: #000000">Downloading</span> <span style="color: #000000">app</span> <span style="color: #000000">skeleton</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!</span>
+        <span style="color: #000000">app</span> <span style="color: #000000">test_project</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created</span> <span style="color: #000000">in</span> <span style="color: #000000">~/dev/go/test_project</span>
 
-        [user:~/dev]$ cd test_project/
-        [user:~/dev/test_project]$ ls
-        README.md   compiler    hw      libs    app.yml
-</code></pre>
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev</span>]<span style="color: #000000">$</span> <span style="color: #000000">cd</span> <span style="color: #000000">test_project/</span>
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">ls</span>
+        <span style="color: #000000">README</span>.<span style="color: #000000">md</span>   <span style="color: #000000">compiler</span>    <span style="color: #000000">hw</span>      <span style="color: #000000">libs</span>    <span style="color: #000000">app</span>.<span style="color: #000000">yml</span>
+</pre></div>
+
 
 <ul>
 <li>Next, the pkg-list named larva is added from the app (also named larva) from another repository on Apache. This step simply downloads the pkg-list description file and does not actually install the pkgs that constitute the pkg-list. The pkg-list description file (<code>pkg-list.yml</code>) will be used to check dependencies during the pkg install to ensure completeness. It serves as a reference for all the pkgs in the pkg-list that one can choose from and install.</li>
 </ul>
-<pre><code class="c">        [user:~/dev/test_project]$ newt app add-pkg-list larva https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git
-        Downloading pkg-list.yml from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!
-        Verifying pkg-list.yml format...
-        ok!
-        pkg-list larva successfully installed to app.
-</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">app</span> <span style="color: #000000">add-pkg-list</span> <span style="color: #000000">larva</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git</span>
+        <span style="color: #000000">Downloading</span> <span style="color: #000000">pkg-list</span>.<span style="color: #000000">yml</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!</span>
+        <span style="color: #000000">Verifying</span> <span style="color: #000000">pkg-list</span>.<span style="color: #000000">yml</span> <span style="color: #000000">format</span>...
+        <span style="color: #000000">ok!</span>
+        <span style="color: #000000">pkg-list</span> <span style="color: #000000">larva</span> <span style="color: #000000">successfully</span> <span style="color: #000000">installed</span> <span style="color: #000000">to</span> <span style="color: #000000">app</span>.
+</pre></div>
+
 
 <ul>
 <li>The next step is to install relevant pkgs from the larva app from git server on Apache. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. </li>
 </ul>
-<pre><code class="c">
-        [user:~/dev/test_project]$ newt pkg install project/blinky          
-        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
-        Installing project/blinky
-        Installing libs/console/full
-        Installing libs/shell
-        Installation was a success!
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">pkg</span> <span style="color: #000000">install</span> <span style="color: #000000">project/blinky</span>          
+        <span style="color: #000000">Downloading</span> <span style="color: #000000">larva</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">project/blinky</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/console/full</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/shell</span>
+        <span style="color: #000000">Installation</span> <span style="color: #000000">was</span> <span style="color: #000000">a</span> <span style="color: #000000">success!</span>
 
-        [user:~/dev/test_project]$ newt pkg install hw/bsp/stm32f3discovery
-        Downloading larva from https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!
-        Installing hw/bsp/stm32f3discovery
-        Installing hw/mcu/stm/stm32f3xx
-        Installing libs/cmsis-core
-        Installing compiler/arm-none-eabi-m4
-        Installation was a success!
-</code></pre>
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">pkg</span> <span style="color: #000000">install</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
+        <span style="color: #000000">Downloading</span> <span style="color: #000000">larva</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">hw/mcu/stm/stm32f3xx</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/cmsis-core</span>
+        <span style="color: #000000">Installing</span> <span style="color: #000000">compiler/arm-none-eabi-m4</span>
+        <span style="color: #000000">Installation</span> <span style="color: #000000">was</span> <span style="color: #000000">a</span> <span style="color: #000000">success!</span>
+</pre></div>
+
 
 <ul>
 <li>It's time to create a targets for the project and define the target attributes. STM32F3 BSP expects bootloader, so create targets for both blinky and bootloader.</li>
 </ul>
-<pre><code class="c">        [user:~/dev/test_project]$ newt target create blink_f3disc
-        Creating target blink_f3disc
-        Target blink_f3disc successfully created!
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create</span> <span style="color: #000000">blink_f3disc</span>
+        <span style="color: #000000">Creating</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_f3disc</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created!</span>
 
-        [user:~/dev/test_project]$ newt target set blink_f3disc project=blinky
-        Target blink_f3disc successfully set project to blinky
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">project=blinky</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">project</span> <span style="color: #000000">to</span> <span style="color: #000000">blinky</span>
 
-        [user:~/dev/test_project]$ newt target set blink_f3disc bsp=hw/bsp/stm32f3discovery
-        Target blink_f3disc successfully set bsp to hw/bsp/stm32f3discovery
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">bsp</span> <span style="color: #000000">to</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
 
-        [user:~/dev/test_project]$ newt target set blink_f3disc compiler_def=debug
-        Target blink_f3disc successfully set compiler_def to debug
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">compiler_def=debug</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler_def</span> <span style="color: #000000">to</span> <span style="color: #000000">debug</span>
 
-        [user:~/dev/test_project]$ newt target set blink_f3disc compiler=arm-none-eabi-m4
-        Target blink_f3disc successfully set compiler to arm-none-eabi-m4
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">compiler=arm-none-eabi-m4</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler</span> <span style="color: #000000">to</span> <span style="color: #000000">arm-none-eabi-m4</span>
 
-        [user:~/dev/test_project]$ newt target set blink_f3disc arch=cortex_m4
-        Target blink_f3disc successfully set arch to cortex_m4
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">arch=cortex_m4</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">arch</span> <span style="color: #000000">to</span> <span style="color: #000000">cortex_m4</span>
 
-        [user:~/dev/test_project]$ newt target create boot_f3disc
-        Creating target boot_f3disc
-        Target boot_f3disc successfully created!
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create</span> <span style="color: #000000">boot_f3disc</span>
+        <span style="color: #000000">Creating</span> <span style="color: #000000">target</span> <span style="color: #000000">boot_f3disc</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created!</span>
 
-        [user:~/dev/test_project]$ newt target set boot_f3disc project=boot
-        Target blink_f3disc successfully set project to blinky
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">project=boot</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">project</span> <span style="color: #000000">to</span> <span style="color: #000000">blinky</span>
 
-        [user:~/dev/test_project]$ newt target set boot_f3disc bsp=hw/bsp/stm32f3discovery
-        Target boot_f3disc successfully set bsp to hw/bsp/stm32f3discovery
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">bsp</span> <span style="color: #000000">to</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
 
-        [user:~/dev/test_project]$ newt target set boot_f3disc compiler_def=optimized
-        Target boot_f3disc successfully set compiler_def to debug
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">compiler_def=optimized</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler_def</span> <span style="color: #000000">to</span> <span style="color: #000000">debug</span>
 
-        [user:~/dev/test_project]$ newt target set boot_f3disc compiler=arm-none-eabi-m4
-        Target boot_f3disc successfully set compiler to arm-none-eabi-m4
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">compiler=arm-none-eabi-m4</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler</span> <span style="color: #000000">to</span> <span style="color: #000000">arm-none-eabi-m4</span>
 
-        [user:~/dev/test_project]$ newt target set boot_f3disc arch=cortex_m4
-        Target boot_f3disc successfully set arch to cortex_m4
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">arch=cortex_m4</span>
+        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">arch</span> <span style="color: #000000">to</span> <span style="color: #000000">cortex_m4</span>
 
-        [user:~/dev/test_project]$ newt target show blink_f3disc
-        blink_f3disc
-            arch=cortex_m4
-            bsp=hw/bsp/stm32f3discovery
-            compiler=arm-none-eabi-m4
-            compiler_def=debug
-            name=blink_f3disc
-            project=blinky
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">show</span> <span style="color: #000000">blink_f3disc</span>
+        <span style="color: #000000">blink_f3disc</span>
+            <span style="color: #000000">arch=cortex_m4</span>
+            <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
+            <span style="color: #000000">compiler=arm-none-eabi-m4</span>
+            <span style="color: #000000">compiler_def=debug</span>
+            <span style="color: #000000">name=blink_f3disc</span>
+            <span style="color: #000000">project=blinky</span>
 
-        [user:~/dev/test_project]$ newt target show boot_f3disc
-        boot_f3disc
-            arch=cortex_m4
-            bsp=hw/bsp/stm32f3discovery
-            compiler=arm-none-eabi-m4
-            compiler_def=debug
-            name=blink_f3disc
-            project=boot
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">show</span> <span style="color: #000000">boot_f3disc</span>
+        <span style="color: #000000">boot_f3disc</span>
+            <span style="color: #000000">arch=cortex_m4</span>
+            <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
+            <span style="color: #000000">compiler=arm-none-eabi-m4</span>
+            <span style="color: #000000">compiler_def=debug</span>
+            <span style="color: #000000">name=blink_f3disc</span>
+            <span style="color: #000000">project=boot</span>
+</pre></div>
 
-</code></pre>
 
 <ul>
 <li>STM32F3 blinky project is too large to operate with newlib libc. You need to modify project/blinky/pkg.yml, and switch over to using baselibc.</li>
 </ul>
-<pre><code class="c">        [user:~/dev/test_project]$ cat project/blinky/pkg.yml 
-        #
-        # Licensed to the Apache Software Foundation (ASF) under one
-        # or more contributor license agreements.  See the NOTICE file
-        # distributed with this work for additional information
-        # regarding copyright ownership.  The ASF licenses this file
-        # to you under the Apache License, Version 2.0 (the
-        # &quot;License&quot;); you may not use this file except in compliance
-        # with the License.  You may obtain a copy of the License at
-        #
-        #  http://www.apache.org/licenses/LICENSE-2.0
-        #
-        # Unless required by applicable law or agreed to in writing,
-        # software distributed under the License is distributed on an
-        # &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-        # KIND, either express or implied.  See the License for the
-        # specific language governing permissions and limitations
-        # under the License.
-        #
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">cat</span> <span style="color: #000000">project/blinky/pkg</span>.<span style="color: #000000">yml</span> 
+        <span style="color: #000000">#</span>
+        <span style="color: #633820"># Licensed to the Apache Software Foundation (ASF) under one</span>
+        <span style="color: #633820"># or more contributor license agreements.  See the NOTICE file</span>
+        <span style="color: #633820"># distributed with this work for additional information</span>
+        <span style="color: #633820"># regarding copyright ownership.  The ASF licenses this file</span>
+        <span style="color: #633820"># to you under the Apache License, Version 2.0 (the</span>
+        <span style="color: #633820"># &quot;License&quot;); you may not use this file except in compliance</span>
+        <span style="color: #633820"># with the License.  You may obtain a copy of the License at</span>
+        <span style="color: #633820">#</span>
+        <span style="color: #633820">#  http:</span><span style="color: #177500">//www.apache.org/licenses/LICENSE-2.0</span>
+        <span style="color: #633820">#</span>
+        <span style="color: #633820"># Unless required by applicable law or agreed to in writing,</span>
+        <span style="color: #633820"># software distributed under the License is distributed on an</span>
+        <span style="color: #633820"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
+        <span style="color: #633820"># KIND, either express or implied.  See the License for the</span>
+        <span style="color: #633820"># specific language governing permissions and limitations</span>
+        <span style="color: #633820"># under the License.</span>
+        <span style="color: #633820">#</span>
 
-        pkg.name: project/blinky
-        pkg.vers: 0.8.0
-        pkg.description: Basic example application which blinks an LED.
-        pkg.author: Marko Kiiskila &lt;marko@runtime.io&gt;
-        pkg.homepage: http://mynewt.apache.org/os/get_acclimated/project2/
-        pkg.repository: https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva
-        pkg.keywords:
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">name</span>: <span style="color: #000000">project/blinky</span>
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">vers</span>: <span style="color: #1C01CE">0.8.0</span>
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">description</span>: <span style="color: #000000">Basic</span> <span style="color: #000000">example</span> <span style="color: #000000">application</span> <span style="color: #000000">which</span> <span style="color: #000000">blinks</span> <span style="color: #000000">an</span> <span style="color: #000000">LED</span>.
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">author</span>: <span style="color: #000000">Marko</span> <span style="color: #000000">Kiiskila</span> <span style="color: #000000">&lt;marko@runtime</span>.<span style="color: #000000">io&gt;</span>
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">homepage</span>: <span style="color: #000000">http</span>:<span style="color: #177500">//mynewt.apache.org/os/get_acclimated/project2/</span>
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">repository</span>: <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva</span>
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">keywords</span>:
 
-        pkg.deps:
-            - libs/console/full
-            - libs/newtmgr
-            - libs/os
-            - libs/shell
-            - sys/config
-            - sys/log
-            - sys/stats
-            - libs/baselibc
-</code></pre>
+        <span style="color: #000000">pkg</span>.<span style="color: #000000">deps</span>:
+            <span style="color: #000000">-</span> <span style="color: #000000">libs/console/full</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">libs/newtmgr</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">libs/os</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">libs/shell</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">sys/config</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">sys/log</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">sys/stats</span>
+            <span style="color: #000000">-</span> <span style="color: #000000">libs/baselibc</span>
+</pre></div>
+
 
 <ul>
 <li>
@@ -604,52 +617,52 @@
 <p><img alt="STMdiscovery" src="../pics/STM32f3discovery_connector.png" /></p>
 </li>
 </ul>
-<pre><code class="c">        [user:~/dev/test_project]$ newt target build boot_f3disc
-        Building target boot_f3 (project = boot)
-        Compiling asprintf.c
-        Compiling atoi.c
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">boot_f3disc</span>
+        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">boot_f3</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">boot</span>)
+        <span style="color: #000000">Compiling</span> <span style="color: #000000">asprintf</span>.<span style="color: #000000">c</span>
+        <span style="color: #000000">Compiling</span> <span style="color: #000000">atoi</span>.<span style="color: #000000">c</span>
         ...
         ...
-        Assembling startup_stm32f303xc.s
-        Archiving libstm32f3discovery.a
-        Compiling boot.c
-        Building project boot
-        Linking boot.elf
-        Successfully run!
+        <span style="color: #000000">Assembling</span> <span style="color: #000000">startup_stm32f303xc</span>.<span style="color: #000000">s</span>
+        <span style="color: #000000">Archiving</span> <span style="color: #000000">libstm32f3discovery</span>.<span style="color: #000000">a</span>
+        <span style="color: #000000">Compiling</span> <span style="color: #000000">boot</span>.<span style="color: #000000">c</span>
+        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">boot</span>
+        <span style="color: #000000">Linking</span> <span style="color: #000000">boot</span>.<span style="color: #000000">elf</span>
+        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
 
-        [user:~/dev/test_project]$ newt target build blink_f3disc
-        Building target blink_f3disc (project = blinky)
-        Compiling asprintf.c
-        Compiling atoi.c
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">blink_f3disc</span>
+        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_f3disc</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">blinky</span>)
+        <span style="color: #000000">Compiling</span> <span style="color: #000000">asprintf</span>.<span style="color: #000000">c</span>
+        <span style="color: #000000">Compiling</span> <span style="color: #000000">atoi</span>.<span style="color: #000000">c</span>
         ...
         ...
-        Assembling startup_stm32f303xc.s
-        Archiving libstm32f3discovery.a
-        Compiling main.c
-        Building project blinky
-        Linking blinky.elf
-        Successfully run!
+        <span style="color: #000000">Assembling</span> <span style="color: #000000">startup_stm32f303xc</span>.<span style="color: #000000">s</span>
+        <span style="color: #000000">Archiving</span> <span style="color: #000000">libstm32f3discovery</span>.<span style="color: #000000">a</span>
+        <span style="color: #000000">Compiling</span> <span style="color: #000000">main</span>.<span style="color: #000000">c</span>
+        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">blinky</span>
+        <span style="color: #000000">Linking</span> <span style="color: #000000">blinky</span>.<span style="color: #000000">elf</span>
+        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
 
-        [user:~/dev/test_project]$ newt target build boot_f3disc
-        Building target boot_f3disc (project = boot)
-        Building project boot
-        Successfully run!
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">boot_f3disc</span>
+        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">boot_f3disc</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">boot</span>)
+        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">boot</span>
+        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
 
-        [user:~/dev/test_project]$ newt target create-image blink_f3disc 0.0.1
-        Building target blink_f3disc (project = blinky)
-        Building project blinky
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create-image</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #1C01CE">0.0.1</span>
+        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_f3disc</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">blinky</span>)
+        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">blinky</span>
+</pre></div>
 
-</code></pre>
 
 <ul>
 <li>Finally, you have to download the image on to the board. You will see a blue light start to blink.</li>
 </ul>
-<pre><code class="c">        [user:~/dev/test_project]$ newt target download boot_f3disc
-        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">download</span> <span style="color: #000000">boot_f3disc</span>
+        <span style="color: #000000">Downloading</span> <span style="color: #000000">with</span> <span style="color: #000000">/Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download</span>.<span style="color: #000000">sh</span>
 
-        [user:~/dev/test_project]$ newt target download blink_f3disc
-        Downloading with /Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download.sh
-</code></pre>
+        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">download</span> <span style="color: #000000">blink_f3disc</span>
+        <span style="color: #000000">Downloading</span> <span style="color: #000000">with</span> <span style="color: #000000">/Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download</span>.<span style="color: #000000">sh</span>
+</pre></div>
                         
                         <div class="row">
                             <footer>

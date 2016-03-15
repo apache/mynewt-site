@@ -202,7 +202,7 @@
   
   
     <li><a href="
-  ../../../../get_started/project1/
+  ../../../../get_started/native_tools/
 ">Get Started</a>
   
     
@@ -226,7 +226,7 @@
   
   
     <li><a href="
-  ../../../../tutorials/STM32F303/
+  ../../../../tutorials/olimex/
 ">Tutorials</a>
   
     
@@ -599,7 +599,7 @@
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
 <p>Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the <code>fs/fs</code> package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the <strong>project</strong> package must depend on a specific file system package, while <strong>library</strong> packages should only depend on <code>fs/fs</code>.</p>
 <p>The following example illustrates how file system dependencies should be managed.  In the slinky application, the project is responsible for initializing the file system, so it depends on a concrete file system package called <code>fs/nffs</code> (Newtron Flash File System). The project explicitly initializes nffs via calls to <code>nffs_init()</code>, <code>nffs_detect()</code> and <code>nffs_format()</code>.</p>
-<pre><code class="no-highlight"># project/slinky/pkg.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># project/slinky/pkg.yml
 
 pkg.name: project/slinky
 pkg.vers: 0.8.0
@@ -607,57 +607,62 @@ pkg.deps:
     - fs/nffs
 
 # [...]
-</code></pre>
+</pre></div>
 
-<pre><code class="no-highlight">// project/slinky/src/main.c
 
-#include &quot;nffs/nffs.h&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">// project/slinky/src/main.c</span>
 
-int
-main(int argc, char **argv)
+<span style="color: #633820">#include &quot;nffs/nffs.h&quot;</span>
+
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
-    int rc;
-    int cnt;
-    struct nffs_area_desc descs[NFFS_AREA_MAX];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_area_desc</span> <span style="color: #000000">descs</span>[<span style="color: #000000">NFFS_AREA_MAX</span>];
 
-    rc = nffs_init();
-    assert(rc == 0);
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_init</span>();
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
-    cnt = NFFS_AREA_MAX;
-    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &amp;cnt, descs);
-    assert(rc == 0);
-    if (nffs_detect(descs) == FS_ECORRUPT) {
-        rc = nffs_format(descs);
-        assert(rc == 0);
+    <span style="color: #000000">cnt</span> <span style="color: #000000">=</span> <span style="color: #000000">NFFS_AREA_MAX</span>;
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">flash_area_to_nffs_desc</span>(<span style="color: #000000">FLASH_AREA_NFFS</span>, <span style="color: #000000">&amp;cnt</span>, <span style="color: #000000">descs</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">nffs_detect</span>(<span style="color: #000000">descs</span>) <span style="color: #000000">==</span> <span style="color: #000000">FS_ECORRUPT</span>) {
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_format</span>(<span style="color: #000000">descs</span>);
+        <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
     }
-    // [...]
+    <span style="color: #177500">// [...]</span>
 }
-</code></pre>
+</pre></div>
+
 
 <p>On the other hand, code which uses the file system after it has been initialized need only depend on <code>fs/fs</code>.  For example, the <code>libs/imgmgr</code> package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main project has initialized the file system, and therefore only depends on the <code>fs/fs</code> package.</p>
-<pre><code class="no-highlight"># libs/imgmgr/pkg.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># libs/imgmgr/pkg.yml
 pkg.name: libs/imgmgr
 pkg.vers: 0.8.0
 pkg.deps:
     - fs/fs
 
 # [...]
-</code></pre>
+</pre></div>
+
 
 <p>The <code>libs/imgmgr</code> package uses the <code>fs/fs</code> API for all file system operations.</p>
 <h3 id="thread-safety">Thread Safety<a class="headerlink" href="#thread-safety" title="Permanent link">&para;</a></h3>
 <p>All <code>fs/fs</code> functions are thread safe.</p>
 <h3 id="header-files">Header Files<a class="headerlink" href="#header-files" title="Permanent link">&para;</a></h3>
 <p>All code which uses the <code>fs/fs</code> package needs to include the following header:</p>
-<pre><code class="no-highlight">#include &quot;fs/fs.h&quot;
-</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs.h&quot;</span>
+</pre></div>
+
 
 <h3 id="data-structures">Data Structures<a class="headerlink" href="#data-structures" title="Permanent link">&para;</a></h3>
 <p>All <code>fs/fs</code> data structures are opaque to client code.</p>
-<pre><code class="no-highlight">struct fs_file;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct fs_file;
 struct fs_dir;
 struct fs_dirent;
-</code></pre>
+</pre></div>
+
 
 <h3 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h3>
 <p>Functions in <code>fs/fs</code> that indicate success or failure do so with the following set of return codes:</p>
