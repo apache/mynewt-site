@@ -196,7 +196,7 @@ Let's create boot_olimex:
     $ newt target set boot_olimex compiler_def=optimized
     Target boot_olimex successfully set compiler_def to optimized
     $ newt target set boot_olimex bsp=hw/bsp/olimex_stm32-e407_devboard
-    Target boot_olimex successfully set bsp to hw/bsp/olimex_stm32-e407_devboard
+    Target boot_olimex successfully set bsp to ...
     $ newt target set boot_olimex app=apps/boot
     Target targets/boot_olimex successfully set target.app to apps/boot
     $ newt target show boot_olimex
@@ -207,26 +207,24 @@ Let's create boot_olimex:
         compiler=arm-none-eabi-m4
         compiler_def=optimized
 ```
-* Now let's build all the three targets now.
+* Now let's build both targets now.
 ```no-highlight
-    Successfully run!
     $ newt build boot_olimex
-    App successfully built: ~/dev/core/bin/boot_olimex/apps/boot/boot_olimex.elf
-    Successfully run!
     ...
-    Successfully run!
+    App successfully built: ~/dev/core/bin/boot_olimex/apps/boot/boot_olimex.elf
     $ newt  build blinky
+    ...
     Linking blinky.elf
     App successfully built: ~/dev/core/bin/blinky/apps/blinky/blinky.elf
-    Successfully run!
 ```
 
 * Create the bootloader image and download the bootloader and the image to flash ... in a flash! 
+When creating an image, you can assign a version number to your image; here we use '1.2.3'
 ```no-highlight
     $ newt create-image boot_olimex 1.2.3
-    $ newt target download boot_olimex
+    $ newt download boot_olimex
     $ newt create-image blinky 1.2.3
-    $ newt target download blinky
+    $ newt download blinky
 
 ```
 
@@ -236,14 +234,14 @@ Let's create boot_olimex:
 
    The LED light will start blinking again. Success!
   
-   Note #1: If you want to download the image to flash and a gdb session opened up, use `newt debug blinky` after `newt target download blinky`.
+   Note #1: If you want to download the image to flash and a gdb session opened up, use `newt debug blinky` after `newt download blinky`.
 ```no-highlight     
     $ newt debug blinky
-    Debugging with ~/dev/core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_debug.sh blinky
+    Debugging with ~/dev/core/hw/bsp/olimex_stm32-e407_...
     Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
     GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
     Copyright (C) 2014 Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+    License GPLv3+: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>
     ...
     (info)
     ...
