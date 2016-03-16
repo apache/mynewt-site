@@ -20,7 +20,8 @@ Download packages and use tools to create a runtime image for a board to make it
 3. USB A-B type cable to connect the debugger to your personal computer
 4. Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)
 5. An account on Github repository and *git* installed on your computer.
-6. It assumed you already installed native tools described [here](../get_started/native_tools.md)
+6. It assumed you have already installed newt tool. 
+7. It assumed you already installed native tools described [here](../get_started/native_tools.md)
 
 Also, we assume that you're familiar with UNIX shells.
 
@@ -30,49 +31,57 @@ Let's gets started!
 ### Use SRAM to make LED blink
 
 If you wish to build the image to run from the onboard SRAM on Olimex board, follow the steps below:
+
 #### Preparing the Software
 
 * Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. 
 
-* If you have cloned the core repository for the simulator test in the previous section, you can skip this step. Otherwise, you have to create a repository for the project. Go to ~/dev and clone the core repository from the apache git repository into a local directory named `core`.
+#### creating a project.  
+
+Create a new project to hold your work.  For a deeper understanding, 
+you can read about project creation in 
+[Get Started -- Creating Your First Project](../get_started/project_create.md)
+or just follow the commands below.
 
 ```no-highlight
-    $ cd ~/dev 
-    $ git clone https://github.com/apache/incubator-mynewt-core.git core
-    $ ls
+    $ mkdir ~/dev
+    $ cd ~/dev
+    $ newt new myproj
+    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Installing skeleton in myproj...
+    Project myproj successfully created.
 
-    go	core
-    $ ls core
-        DISCLAIMER         compiler       repository.yml
-        LICENSE            fs             scripts
-        NOTICE             hw             sys
-        README.md          libs           targets
-        RELEASE_NOTES.md   net
-        apps               project.yml
+    $cd myproj
 
+    $ newt install -v 
+    apache-mynewt-core
+    Downloading repository description for apache-mynewt-core... success!
+    ...
+    apache-mynewt-core successfully installed version 0.7.9-none
 ``` 
-    
-* Change directory to ~/dev/core directory and build the *blinky* project inside core, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
+   
+#### creating a target
+
+* Change directory to ~/dev/core directory and define the *blinky* target inside core, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
 
     (Remember to prefix each command with "newtvm" if you are executing the newt command in a Linux virtual machine on your Windows box!)
 
 ```no-highlight
-    $ cd ~/dev/core
     $ newt target create blinky
     Target targets/blinky successfully created
     $ newt target set blinky build_profile=debug
     Target targets/blinky successfully set target.compiler_def to debug
-    $ newt target set blinky bsp=hw/bsp/olimex_stm32-e407_devboard
+    $ newt target set blinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
     Target targets/blinky successfully set target.bsp to ...
-    $ newt target set blinky app=apps/blinky
+    $ newt target set blinky app=@apache-mynewt-core/apps/blinky
     Target targets/blinky successfully set target.app to apps/blinky
     $ newt target show blinky
     targets/boot_olimex
         app=apps/blinky
         bsp=hw/bsp/olimex_stm32-e407_devboard
         build_profile=debug
-
 ```
+#### Build the image
 
 * Next, let's build the image with the above values assigned. By default, the linker script within the `hw/bsp/olimex_stm32-e407_devboard` package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with `run_from_sram.ld`. 
 
@@ -185,14 +194,14 @@ Let's create boot_olimex:
     Target boot_olimex successfully created!
     $ newt target set boot_olimex build_profile=optimized
     Target boot_olimex successfully set compiler_def to optimized
-    $ newt target set boot_olimex bsp=hw/bsp/olimex_stm32-e407_devboard
+    $ newt target set boot_olimex @apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
     Target boot_olimex successfully set bsp to ...
-    $ newt target set boot_olimex app=apps/boot
+    $ newt target set boot_olimex app=@apache-mynewt-core/apps/boot
     Target targets/boot_olimex successfully set target.app to apps/boot
     $ newt target show boot_olimex
     targets/boot_olimex
-        app=apps/boot
-        bsp=hw/bsp/olimex_stm32-e407_devboard
+        app=app=@apache-mynewt-core/apps/boot
+        bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboar
         build_profile=optimized
 ```
 * Now let's build both targets now.
@@ -212,12 +221,12 @@ When creating an image, you can assign a version number to your image; here we u
     $ newt create-image blinky 1.2.3
     App image successfully generated: ~/dev/core/bin/blinky/apps/blinky/blinky.img
     Build manifest: ~/dev/core/bin/blinky/apps/blinky/manifest.json
-    $ newt download boot_olimex
+    $ newt load boot_olimex
     Downloading ~/dev/core/bin/boot_olimex/apps/boot/boot.elf.bin to 0x08000000
     Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
     ...
     shutdown command invoked
-    $ newt download blinky
+    $ newt load blinky
     Downloading ~/dev/core/bin/blinky/apps/blinky/blinky.img to 0x08020000
     Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
     ...
