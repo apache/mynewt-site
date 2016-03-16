@@ -58,25 +58,19 @@ If you wish to build the image to run from the onboard SRAM on Olimex board, fol
 
 ```no-highlight
     $ cd ~/dev/core
-    $  newt target create blinky
+    $ newt target create blinky
     Target targets/blinky successfully created
-    $ newt target set blinky arch=cortex_m4
-    Target targets/blinky successfully set target.arch to cortex_m4
-    $ newt target set blinky compiler=arm-none-eabi-m4
-    Target targets/blinky successfully set target.compiler to ...
-    $  newt target set blinky compiler_def=debug
+    $ newt target set blinky build_profile=debug
     Target targets/blinky successfully set target.compiler_def to debug
     $ newt target set blinky bsp=hw/bsp/olimex_stm32-e407_devboard
     Target targets/blinky successfully set target.bsp to ...
     $ newt target set blinky app=apps/blinky
     Target targets/blinky successfully set target.app to apps/blinky
     $ newt target show blinky
-    targets/blinky
+    targets/boot_olimex
         app=apps/blinky
-        arch=cortex_m4
         bsp=hw/bsp/olimex_stm32-e407_devboard
-        compiler=arm-none-eabi-m4
-        compiler_def=debug
+        build_profile=debug
 
 ```
 
@@ -189,11 +183,7 @@ Let's create boot_olimex:
     $ newt target create boot_olimex
     Creating target boot_olimex
     Target boot_olimex successfully created!
-    $ newt target set boot_olimex arch=cortex_m4
-    Target boot_olimex successfully set arch to cortex_m4
-    $ newt target set boot_olimex compiler=arm-none-eabi-m4
-    Target boot_olimex successfully set compiler to arm-none-eabi-m4
-    $ newt target set boot_olimex compiler_def=optimized
+    $ newt target set boot_olimex build_profile=optimized
     Target boot_olimex successfully set compiler_def to optimized
     $ newt target set boot_olimex bsp=hw/bsp/olimex_stm32-e407_devboard
     Target boot_olimex successfully set bsp to ...
@@ -202,30 +192,36 @@ Let's create boot_olimex:
     $ newt target show boot_olimex
     targets/boot_olimex
         app=apps/boot
-        arch=cortex_m4
         bsp=hw/bsp/olimex_stm32-e407_devboard
-        compiler=arm-none-eabi-m4
-        compiler_def=optimized
+        build_profile=optimized
 ```
 * Now let's build both targets now.
 ```no-highlight
     $ newt build boot_olimex
     ...
     App successfully built: ~/dev/core/bin/boot_olimex/apps/boot/boot_olimex.elf
-    $ newt  build blinky
+    $ newt build blinky
     ...
     Linking blinky.elf
     App successfully built: ~/dev/core/bin/blinky/apps/blinky/blinky.elf
 ```
 
-* Create the bootloader image and download the bootloader and the image to flash ... in a flash! 
+* Create the blinky image and download the bootloader and the image to flash ... in a flash! 
 When creating an image, you can assign a version number to your image; here we use '1.2.3'
 ```no-highlight
-    $ newt create-image boot_olimex 1.2.3
-    $ newt download boot_olimex
     $ newt create-image blinky 1.2.3
+    App image successfully generated: ~/dev/core/bin/blinky/apps/blinky/blinky.img
+    Build manifest: ~/dev/core/bin/blinky/apps/blinky/manifest.json
+    $ newt download boot_olimex
+    Downloading ~/dev/core/bin/boot_olimex/apps/boot/boot.elf.bin to 0x08000000
+    Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
+    ...
+    shutdown command invoked
     $ newt download blinky
-
+    Downloading ~/dev/core/bin/blinky/apps/blinky/blinky.img to 0x08020000
+    Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
+    ...
+    shutdown command invoked
 ```
 
 * Voilà! The LED should be blinking! Success!
