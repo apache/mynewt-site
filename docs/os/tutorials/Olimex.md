@@ -34,45 +34,50 @@ If you wish to build the image to run from the onboard SRAM on Olimex board, fol
 
 * Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. 
 
-* If you have cloned the larva repository for the simulator test in the previous section, you can skip this step. Otherwise, you have to create a repository for the project. Go to ~/dev and clone the larva repository from the apache git repository into a local directory named `larva`.
+* If you have cloned the core repository for the simulator test in the previous section, you can skip this step. Otherwise, you have to create a repository for the project. Go to ~/dev and clone the core repository from the apache git repository into a local directory named `core`.
 
 ```no-highlight
-        $ cd ~/dev 
-        $ git clone https://git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git larva
-        $ ls
+    $ cd ~/dev 
+    $ git clone https://github.com/apache/incubator-mynewt-core.git core
+    $ ls
 
-        go	larva
-        $ ls larva
-        DISCLAIMER	NOTICE		app.yml		compiler	hw		net		project		sys
-        LICENSE		README.md	autotargets	fs  libs	pkg-list.yml	scripts
+    go	core
+    $ ls core
+        DISCLAIMER         compiler       repository.yml
+        LICENSE            fs             scripts
+        NOTICE             hw             sys
+        README.md          libs           targets
+        RELEASE_NOTES.md   net
+        apps               project.yml
+
 ``` 
     
-* Change directory to ~dev/larva directory and build the *blinky* project inside larva, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
+* Change directory to ~/dev/core directory and build the *blinky* project inside core, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
 
     (Remember to prefix each command with "newtvm" if you are executing the newt command in a Linux virtual machine on your Windows box!)
 
 ```no-highlight
-        $ newt target create blinky
-        Creating target blinky
-        Target blinky sucessfully created!
-        $ newt target set blinky arch=cortex_m4
-        Target blinky successfully set arch to arm
-        $ newt target set blinky compiler=arm-none-eabi-m4
-        Target blinky successfully set compiler to arm-none-eabi-m4
-        $ newt target set blinky project=blinky
-        Target blinky successfully set project to blinky
-        $ newt target set blinky compiler_def=debug
-        Target blinky successfully set compiler_def to debug
-        $ newt target set blinky bsp=hw/bsp/olimex_stm32-e407_devboard
-        Target blinky successfully set bsp to hw/bsp/olimex_stm32-e407_devboard
-        $ newt target show blinky
-        blinky
-	    	arch=cortex_m4
-	    	bsp=hw/bsp/olimex_stm32-e407_devboard
-	    	compiler=arm-none-eabi-m4
-	    	compiler_def=debug
-	    	name=blinky
-	    	project=blinky
+    $ cd ~/dev/core
+    $  newt target create blinky
+    Target targets/blinky successfully created
+    $ newt target set blinky arch=cortex_m4
+    Target targets/blinky successfully set target.arch to cortex_m4
+    $ newt target set blinky compiler=arm-none-eabi-m4
+    Target targets/blinky successfully set target.compiler to ...
+    $  newt target set blinky compiler_def=debug
+    Target targets/blinky successfully set target.compiler_def to debug
+    $ newt target set blinky bsp=hw/bsp/olimex_stm32-e407_devboard
+    Target targets/blinky successfully set target.bsp to ...
+    $ newt target set blinky app=apps/blinky
+    Target targets/blinky successfully set target.app to apps/blinky
+    $ newt target show blinky
+    targets/blinky
+        app=apps/blinky
+        arch=cortex_m4
+        bsp=hw/bsp/olimex_stm32-e407_devboard
+        compiler=arm-none-eabi-m4
+        compiler_def=debug
+
 ```
 
 * Next, let's build the image with the above values assigned. By default, the linker script within the `hw/bsp/olimex_stm32-e407_devboard` package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with `run_from_sram.ld`. 
@@ -80,33 +85,23 @@ If you wish to build the image to run from the onboard SRAM on Olimex board, fol
 <font color="red">
 (We are working to simplify this scheme whereby an executable for a project will correctly elect the linker scripts and generate the relevant image. For example, the scheme will key on project identity such as bootloader, RAM, Flash (default) and build accordingly. </font>.)
 
-    Afer you build the target, you can find the executable *blinky.elf* in the project directory *~/dev/larva/project/blinky/bin/blinky.* 
+Afer you build the target, you can find the executable *blinky.elf* in the project directory *~/dev/core/bin/blinky/apps/blinky/.* 
     
 ```no-highlight
-        $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
-        $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-        (some diff will be displayed)
-        $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
-        $ cd ~/dev/larva/project/blinky/
-        $ newt target build blinky
-        Building target blinky (project = blinky)
-        Compiling case.c
-        Compiling suite.c
-        ...
-        Successfully run!
-        $ ls bin/blinky
-        blinky.elf	blinky.elf.bin	blinky.elf.cmd  blinky.elf.lst  blinky.elf.map
-```
-
-* Check if you have all the scripts needed to launch OpenOCD and interact with the project's specific hardware. Depending on your system (Ubuntu or Windows) you may already have the scripts in your */usr/share/openocd/scripts/* directory, as they may have been part of the openocd download. If they exist, you are all set and can proceed to prepare the hardware. Otherwise check the *~/dev/larva/hw/bsp/olimex_stm32-e407_devboard* directory for a file named *f407.cfg*. Used by OpenOCD, this config enables us to interact with this specific hardware. 
-
-You are all set if you see the file.
-
-```no-highlight
-        $ ls ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
-        bin		include		olimex_stm32-e407_devboard_download.sh	run_from_loader.ld
-        boot-olimex_stm32-e407_devboard.ld	olimex_stm32-e407_devboard.ld	pkg.yml		run_from_sram.ld
-        f407.cfg		olimex_stm32-e407_devboard_debug.sh	run_from_flash.ld			src
+    $ cd ~/dev/core/hw/bsp/olimex_stm32-e407_devboard
+    $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
+    (some diff will be displayed)
+    $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
+    $ cd ~/dev/core
+    $ newt build blinky
+    Compiling case.c
+    Compiling suite.c
+    ...
+    Linking blinky.elf
+    App successfully built:~/dev/core/bin/blinky/apps/blinky/blinky.elf    
+    $ ls bin/blinky/apps/blinky/
+        blinky.elf      blinky.elf.bin     blinky.elf.cmd  
+        blinky.elf.lst  blinky.elf.map
 ```
  
 #### Prepare the hardware to boot from embedded SRAM
@@ -128,27 +123,25 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 
 * Ensure that you are in the blinky project directory with the *blinky.elf* executable. Run the debug command in the *newt* tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an `-c "reset halt"` command.
 ```no-highlight
-        $ cd ~/dev/larva/project/blinky/bin/blinky
-        $ newt target debug blinky
-        Debugging with /Users/aditihilbert/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_debug.sh blinky
-        Debugging /Users/aditihilbert/dev/larva/project/blinky/bin/blinky/blinky.elf
-        GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
-        Copyright (C) 2014 Free Software Foundation, Inc.
-        License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-        ...
-        (info)
-        ...
-        target state: halted
-        target halted due to debug-request, current mode: Thread 
-        xPSR: 0x01000000 pc: 0x20000250 msp: 0x10010000
-        Info : accepting 'gdb' connection from 3333
-        Info : device id = 0x10036413
-        Info : flash size = 1024kbytes
-        Reset_Handler () at startup_STM32F40x.s:199
-        199	    ldr    r1, =__etext
+    $ cd ~/dev/core
+    $ newt debug blinky
+    Debugging with ~/dev/core/hw/bsp/olimex_...
+    Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
+    GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
+    Copyright (C) 2014 Free Software Foundation, Inc.
+    License GPLv3+: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>
+    ...
+    (info)
+    ...
+    target state: halted
+    target halted due to debug-request, current mode: Thread 
+    xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
+    Info : accepting 'gdb' connection on tcp/3333
+    Info : device id = 0x10036413
+    Info : flash size = 1024kbytes
 ```
 
-   Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdp tool and load the image on it. For example, 
+   Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, 
    
 ```no-highlight
         (gdb) set $msp=0x10010000
@@ -156,13 +149,12 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
    Now load the image and type "c" or "continue" from the GNU debugger. 
 
 ```no-highlight           
-        (gdb) load ~/dev/larva/project/blinky/bin/blinky/blinky.elf         
-        Loading section .text, size 0x4294 lma 0x20000000
-        Loading section .ARM.extab, size 0x24 lma 0x20004294
-        Loading section .ARM.exidx, size 0xd8 lma 0x200042b8
-        Loading section .data, size 0x874 lma 0x20004390
-        Start address 0x20000250, load size 19460
-        Transfer rate: 81 KB/sec, 2432 bytes/write.
+        (gdb) load ~/dev/core/bin/blinky/apps/blinky/blinky.elf      
+        Loading section .text, size 0x16b88 lma 0x20000000
+        Loading section .ARM.exidx, size 0x18 lma 0x20016b88
+        Loading section .data, size 0x9ec lma 0x20016ba0
+        Start address 0x200004b8, load size 95628
+        Transfer rate: 74 KB/sec, 3825 bytes/write.
         (gdb) c
         Continuing.
 ```   
@@ -182,89 +174,60 @@ If you wish to build the image to run from the onboard flash memory on Olimex bo
    By default, the linker script (`olimex_stm32-e407_devboard.ld`) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed `olimex_stm32-e407_devboard.ld` to match `run_from_sram.ld`. You will, therefore, return to defaults with `olimex_stm32-e407_devboard.ld` linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.
 
 ```no-highlight
-        $ cd ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard
-        $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-        $ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
-        (some diff will be displayed)
-        $ cp run_from_loader.ld olimex_stm32-e407_devboard.ld
-        $ cd ~/dev/larva/project/blinky/bin/blinky
+    $ cd ~/dev/core/hw/bsp/olimex_stm32-e407_devboard
+    $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
+    $ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
+    (some diff will be displayed)
+    $ cp run_from_loader.ld olimex_stm32-e407_devboard.ld
+    $ cd ~/dev/core
 ```
 
-* In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial set up of the Olimex board and then transfers control to the image stored at a location in flash known to it. The bootloader in turn requires the *bin2image* tool to check the image header for version information, CRC checks etc. So, we will need to build these two additional targets (bootloader and bin2img).
-
-   Let's first create bin2img:
-```no-highlight
-        $ newt target create bin2img
-        Creating target bin2img
-        Target bin2img successfully created!
-        $ newt target set bin2img arch=sim
-        Target bin2img successfully set arch to sim
-        $ newt target set bin2img compiler=sim
-        Target bin2img successfully set compiler to sim
-        $ newt target set bin2img project=bin2img
-        Target bin2img successfully set project to bin2img
-        $ newt target set bin2img compiler_def=debug
-        Target bin2img successfully set compiler_def to debug
-        $ newt target set bin2img bsp=hw/bsp/native
-        Target bin2img successfully set bsp to hw/bsp/native
-        $ newt target show bin2img
-        bin2img
-        		arch=sim
-	    		bsp=hw/bsp/native
-	    		compiler=sim
-	    		compiler_def=debug
-	    		name=bin2img
-	    		project=bin2img
+* In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial set up of the Olimex board and then transfers control to the image stored at a location in flash known to it. 
 ```
-   And then let's create boot_olimex:
+Let's create boot_olimex:
 ```no-highlight
-        $ newt target create boot_olimex
-        Creating target boot_olimex
-        Target boot_olimex successfully created!
-        $ newt target set boot_olimex arch=cortex_m4
-        Target boot_olimex successfully set arch to cortex_m4
-        $ newt target set boot_olimex compiler=arm-none-eabi-m4
-        Target boot_olimex successfully set compiler to arm-none-eabi-m4
-        $ newt target set boot_olimex project=boot
-        Target boot_olimex successfully set project to boot
-        $ newt target set boot_olimex compiler_def=optimized
-        Target boot_olimex successfully set compiler_def to optimized
-        $ newt target set boot_olimex bsp=hw/bsp/olimex_stm32-e407_devboard
-        Target boot_olimex successfully set bsp to hw/bsp/olimex_stm32-e407_devboard
-        $ newt target show boot_olimex
-        boot_olimex
-        		arch=cortex_m4
-	    		bsp=hw/bsp/olimex_stm32-e407_devboard
-	    		compiler=arm-none-eabi-m4
-	    		compiler_def=optimized
-	    		name=boot_olimex
-	    		project=boot
+    $ newt target create boot_olimex
+    Creating target boot_olimex
+    Target boot_olimex successfully created!
+    $ newt target set boot_olimex arch=cortex_m4
+    Target boot_olimex successfully set arch to cortex_m4
+    $ newt target set boot_olimex compiler=arm-none-eabi-m4
+    Target boot_olimex successfully set compiler to arm-none-eabi-m4
+    $ newt target set boot_olimex compiler_def=optimized
+    Target boot_olimex successfully set compiler_def to optimized
+    $ newt target set boot_olimex bsp=hw/bsp/olimex_stm32-e407_devboard
+    Target boot_olimex successfully set bsp to hw/bsp/olimex_stm32-e407_devboard
+    $ newt target set boot_olimex app=apps/boot
+    Target targets/boot_olimex successfully set target.app to apps/boot
+    $ newt target show boot_olimex
+    targets/boot_olimex
+        app=apps/boot
+        arch=cortex_m4
+        bsp=hw/bsp/olimex_stm32-e407_devboard
+        compiler=arm-none-eabi-m4
+        compiler_def=optimized
 ```
 * Now let's build all the three targets now.
 ```no-highlight
-        $ newt target build bin2img
-        Building target bin2img (project = bin2img)
-        Building project bin2img
-        ...
-        Successfully run!
-        $ newt target build boot_olimex
-        Building target boot_olimex (project = boot)
-        Building project boot
-        ...
-        Successfully run!
-        $ newt target build blinky
-        Building target blinky (project = blinky)
-        Building project blinky
-        Successfully run!
+    Successfully run!
+    $ newt build boot_olimex
+    App successfully built: ~/dev/core/bin/boot_olimex/apps/boot/boot_olimex.elf
+    Successfully run!
+    ...
+    Successfully run!
+    $ newt  build blinky
+    Linking blinky.elf
+    App successfully built: ~/dev/core/bin/blinky/apps/blinky/blinky.elf
+    Successfully run!
 ```
 
-* Go to the project directory and download the bootloader and the image to flash ... in a flash! 
+* Create the bootloader image and download the bootloader and the image to flash ... in a flash! 
 ```no-highlight
-        $ cd ~/dev/larva/project/blinky/bin/blinky
-        $ newt target download boot_olimex
-        Downloading with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh
-        $ newt target download blinky
-        Downloading with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh
+    $ newt create-image boot_olimex 1.2.3
+    $ newt target download boot_olimex
+    $ newt create-image blinky 1.2.3
+    $ newt target download blinky
+
 ```
 
 * Voilà! The LED should be blinking! Success!
@@ -273,46 +236,46 @@ If you wish to build the image to run from the onboard flash memory on Olimex bo
 
    The LED light will start blinking again. Success!
   
-   Note #1: If you want to download the image to flash and a gdb session opened up, use `newt target debug blinky` instead of `newt target download blinky`.
+   Note #1: If you want to download the image to flash and a gdb session opened up, use `newt debug blinky` after `newt target download blinky`.
 ```no-highlight     
-        $ newt target debug blinky
-        Debugging with ~/dev/larva/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_debug.sh blinky
-        Debugging ~/dev/larva/project/blinky/bin/blinky/blinky.elf
-        GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
-        Copyright (C) 2014 Free Software Foundation, Inc.
-        License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-        ...
-        (info)
-        ...
-        target state: halted
-        target halted due to debug-request, current mode: Thread 
-        xPSR: 0x01000000 pc: 0x08000250 msp: 0x10010000
-        Info : accepting 'gdb' connection from 3333
-        Info : device id = 0x10036413
-        Info : flash size = 1024kbytes
-        Reset_Handler () at startup_STM32F40x.s:199
-        199	    ldr    r1, =__etext
-        (gdb)
+    $ newt debug blinky
+    Debugging with ~/dev/core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_debug.sh blinky
+    Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
+    GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
+    Copyright (C) 2014 Free Software Foundation, Inc.
+    License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+    ...
+    (info)
+    ...
+    target state: halted
+    target halted due to debug-request, current mode: Thread 
+    xPSR: 0x01000000 pc: 0x08000250 msp: 0x10010000
+    Info : accepting 'gdb' connection from 3333
+    Info : device id = 0x10036413
+    Info : flash size = 1024kbytes
+    Reset_Handler () at startup_STM32F40x.s:199
+    199	    ldr    r1, =__etext
+    (gdb)
 ```
     
    Note #2: If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase_sector 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma,' you should see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
 ```no-highlight         
-        (gdb) monitor flash erase_sector 0 0 4
-        erased sectors 0 through 4 on flash bank 0 in 2.296712s
-        (gdb) monitor mdw 0x08000000 16
-        0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
-        (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
-        (0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
-        (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff         
-        (gdb) monitor flash info 0
+    (gdb) monitor flash erase_sector 0 0 4
+    erased sectors 0 through 4 on flash bank 0 in 2.296712s
+    (gdb) monitor mdw 0x08000000 16
+    0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+    (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+    (0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+    (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff         
+    (gdb) monitor flash info 0
 ```
 
 ### Conclusion
 
-Congratulations! You have now tried out a project on actual hardware. If this is your first time to embedded systems, this must feel like the best hands-on and low-level "Hello World" progam ever. 
+Congratulations! You have now tried out a project on actual hardware. If this is your first time to embedded systems, this must feel like the best hands-on and low-level "Hello World" program ever. 
 
 Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like [tutorials](../tutorials/nRF52.md).
 
-If you see anything missing or want to send us feeback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md)
+If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md)
 
 Keep on hacking and blinking!
