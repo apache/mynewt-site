@@ -10,7 +10,7 @@ To start with, you need to create a new project under which you will do this dev
     $ newt new air_quality
 ```
 
-Let's say you are using STM32F3discovery board as the platform. You know you need the board support package for that hardware. You can look up it's location, add it your project, and fetch that along with the core OS components.
+Let's say you are using STM32F3discovery board as the platform. You know you need the board support package for that hardware. You can look up its location, add it your project, and fetch that along with the core OS components.
 
 To make this happen, you'll need to modify the project.yml in your project's root directory.
 

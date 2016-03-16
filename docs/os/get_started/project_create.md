@@ -15,33 +15,33 @@ support native compiling to build the project this tutorial creates.
 Chose a project name. For this tutorial we will call this project `myproj`.
 Enter the `newt new myproj` command. Your put
 ```no-highlight
-$ newt new myproj
-Downloading project skeleton from apache/incubator-mynewt-blinky...
-Installing skeleton in myproj...
-Project myproj successfully created.
+    $ newt new myproj
+    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Installing skeleton in myproj...
+    Project myproj successfully created.
 ```
 
 The `newt` tool has created a project directory structure like the one below:
 
 ```no-highlight
-─── myproj
-    ├── DISCLAIMER
-    ├── LICENSE
-    ├── NOTICE
-    ├── README.md
-    ├── apps
-    │   └── blinky
-    │       ├── pkg.yml
-    │       └── src
-    │           └── main.c
-    ├── project.yml
-    └── targets
-        ├── my_blinky_sim
-        │   ├── pkg.yml
-        │   └── target.yml
-        └── unittest
-            ├── pkg.yml
-            └── target.yml
+    ─── myproj
+        ├── DISCLAIMER
+        ├── LICENSE
+        ├── NOTICE
+        ├── README.md
+        ├── apps
+        │   └── blinky
+        │       ├── pkg.yml
+        │       └── src
+        │           └── main.c
+        ├── project.yml
+        └── targets
+            ├── my_blinky_sim
+            │   ├── pkg.yml
+            │   └── target.yml
+            └── unittest
+                ├── pkg.yml
+                └── target.yml
 ```
 
 `newt` has installed the base files for a project comprising the following.
@@ -68,19 +68,19 @@ change into the `myproj` directory.  Then ask newt to install all the
 project package dependencies using `newt install`
 
 ```no-highlight
-$ newt install -v 
-apache-mynewt-core
-Downloading repository description for apache-mynewt-core... success!
-Downloading repository incubator-mynewt-core (branch: master; commit: mynewt_0_8_0_b2_tag) at https://github.com/apache/incubator-mynewt-core.git
-Cloning into '/var/folders/7l/7b3w9m4n2mg3sqmgw2q1b9p80000gn/T/newt-repo969988348'...
-remote: Counting objects: 17935, done.
-remote: Compressing objects: 100% (234/234), done.
-remote: Total 17935 (delta 101), reused 0 (delta 0), pack-reused 17686
-Receiving objects: 100% (17935/17935), 6.18 MiB | 315.00 KiB/s, done.
-Resolving deltas: 100% (10541/10541), done.
-Checking connectivity... done.
-apache-mynewt-core successfully installed version 0.7.9-none
-$ 
+    $ newt install -v 
+    apache-mynewt-core
+    Downloading repository description for apache-mynewt-core... success!
+    Downloading repository incubator-mynewt-core (branch: master; commit: mynewt_0_8_0_b2_tag) at https://github.com/apache/incubator-mynewt-core.git
+    Cloning into '/var/folders/7l/7b3w9m4n2mg3sqmgw2q1b9p80000gn/T/newt-repo969988348'...
+    remote: Counting objects: 17935, done.
+    remote: Compressing objects: 100% (234/234), done.
+    remote: Total 17935 (delta 101), reused 0 (delta 0), pack-reused 17686
+    Receiving objects: 100% (17935/17935), 6.18 MiB | 315.00 KiB/s, done.
+    Resolving deltas: 100% (10541/10541), done.
+    Checking connectivity... done.
+    apache-mynewt-core successfully installed version 0.7.9-none
+    $ 
 ```
 
 Now you will have installed packages required to build your project. Note in 
@@ -88,24 +88,24 @@ the package you now have dependent packages stored in the `repos` directory
 under the specific repository you have included in the base project.  
 
 ```no-highlight
-.
-├── apps
-│   └── blinky
-│       └── src
-├── repos
-│   └── apache-mynewt-core
-│       ├── apps
-│       ├── compiler
-│       ├── fs
-│       ├── hw
-│       ├── libs
-│       ├── net
-│       ├── scripts
-│       ├── sys
-│       └── targets
-└── targets
-    ├── my_blinky_sim
-    └── unittest
+    .
+    ├── apps
+    │   └── blinky
+    │       └── src
+    ├── repos
+    │   └── apache-mynewt-core
+    │       ├── apps
+    │       ├── compiler
+    │       ├── fs
+    │       ├── hw
+    │       ├── libs
+    │       ├── net
+    │       ├── scripts
+    │       ├── sys
+    │       └── targets
+    └── targets
+        ├── my_blinky_sim
+        └── unittest
 ```
 
 Within each of these directories are the packages required to build your
@@ -116,14 +116,14 @@ project for the various targets.
 To validate, you can also run all the units test through simulation.
 
 ```no-highlight
-newt test all
-...lots of compiling and testing...
-...about 2 minutes later ...
-Archiving bootutil.a
-Linking test_bootutil
-Executing test: /myproj/bin/unittest/libs/bootutil/test_bootutil
-Passed tests: [net/nimble/host fs/nffs libs/os hw/hal libs/mbedtls libs/util sys/config libs/bootutil]
-All tests passed
+    $ newt test all
+    ...lots of compiling and testing...
+    ...about 2 minutes later ...
+    Archiving bootutil.a
+    Linking test_bootutil
+    Executing test: /myproj/bin/unittest/libs/bootutil/test_bootutil
+    Passed tests: [net/nimble/host fs/nffs libs/os hw/hal libs/mbedtls libs/util sys/config libs/bootutil]
+    All tests passed
 ```
 
 ## Building the Project
@@ -131,15 +131,15 @@ All tests passed
 To build the project you can use `newt build` using the target 
 
 ```no-highlight
-$ newt build my_blinky_sim
-App successfully built: /bin/my_blinky_sim/apps/blinky/blinky.elf
+    $ newt build my_blinky_sim
+    App successfully built: /bin/my_blinky_sim/apps/blinky/blinky.elf
 ```
 
 You can run the simulated version of your project and see the simulated LED
 blink
 ```no-highlight
-./bin/my_blinky_sim/apps/blinky/blinky.elf
-hal_gpio set pin  1 to 0
+    ./bin/my_blinky_sim/apps/blinky/blinky.elf
+    hal_gpio set pin  1 to 0
 ```
 
 Just do `ctrl-c` to exit.
