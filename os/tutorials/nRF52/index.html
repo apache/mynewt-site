@@ -460,252 +460,69 @@ nRF52 Series chip from Nordic Semiconductors.</p>
 <ul>
 <li>nRF52 Development Kit</li>
 <li>Laptop running Mac OS</li>
+<li>It is assumed you have already installed newt tool. </li>
+<li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
 </ul>
-<h4 id="step-by-step-instructions-to-build-image">Step by Step Instructions to build image<a class="headerlink" href="#step-by-step-instructions-to-build-image" title="Permanent link">&para;</a></h4>
-<ul>
-<li>The first step is to download the generic skeleton of the project. The eggs installed are not hardware architecture specific.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        []<span style="color: #000000">user@~/dev</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">nest</span> <span style="color: #000000">create</span> <span style="color: #000000">nordic_blinky</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">nest</span> <span style="color: #000000">skeleton</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//www.github.com/mynewt/tadpole... ok!</span>
-        <span style="color: #000000">Nest</span> <span style="color: #000000">nordic_blinky</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created</span> <span style="color: #000000">in</span> <span style="color: #000000">~dev/nordic_blinky</span>
+<h4 id="install-jlinkexe">Install jlinkEXE<a class="headerlink" href="#install-jlinkexe" title="Permanent link">&para;</a></h4>
+<p>In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from <a href="https://www.segger.com/jlink-software.html">https://www.segger.com/jlink-software.html</a>. </p>
+<h4 id="create-a-project">Create a project.<a class="headerlink" href="#create-a-project" title="Permanent link">&para;</a></h4>
+<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
+<a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
+or just follow the commands below.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
+    $ cd ~/dev
+    $ newt new myproj
+    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Installing skeleton in myproj...
+    Project myproj successfully created.
 
-        <span style="color: #000000">user@~/dev$</span> <span style="color: #000000">cd</span> <span style="color: #000000">nordic_blinky/</span>
+    $ cd myproj
+
+    $ newt install -v 
+    apache-mynewt-core
+    Downloading repository description for apache-mynewt-core... success!
+    ...
+    apache-mynewt-core successfully installed version 0.7.9-none
 </pre></div>
 
 
-<ul>
-<li>Then, the clutch of eggs named larva is added from the nest (also named larva) on the github. This step simply downloads the clutch description file and does not actually install the eggs that constitute the clutch. The clutch description file (<code>clutch.yml</code>) will be used to check dependencies during the egg install to ensure completeness. It serves as a reference for all the eggs in the clutch that one can choose from and install.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        []<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">nest</span> <span style="color: #000000">add-clutch</span> <span style="color: #000000">larva</span> <span style="color: #000000">https</span>:<span style="color: #177500">//github.com/mynewt/larva</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">clutch</span>.<span style="color: #000000">yml</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//github.com/mynewt/larva/master... ok!</span>
-        <span style="color: #000000">Verifying</span> <span style="color: #000000">clutch</span>.<span style="color: #000000">yml</span> <span style="color: #000000">format</span>...<span style="color: #000000">ok!</span>
-        <span style="color: #000000">Clutch</span> <span style="color: #000000">larva</span> <span style="color: #000000">successfully</span> <span style="color: #000000">installed</span> <span style="color: #000000">to</span> <span style="color: #000000">Nest</span>.
+<h4 id="create-the-target">Create the target<a class="headerlink" href="#create-the-target" title="Permanent link">&para;</a></h4>
+<p>Create a single target for the nrf52.  NOTE: The nrf52 mynewt core does not
+yet have bootloader support, so we will create a single image to download
+to the device.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create blink_nordic
+$ newt target set blink_nordic app=apps/blinky
+$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set blink_nordic build_profile=debug
+$ newt target show 
+targets/blink_nordic
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    build_profile=debug
 </pre></div>
 
 
-<ul>
-<li>The next step is to install relevant eggs from the larva nest on github. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. </li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">egg</span> <span style="color: #000000">install</span> <span style="color: #000000">project/blinky</span> 
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">larva</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//github.com/mynewt/larva//master... ok!</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">project/blinky</span>
-        <span style="color: #000000">Installation</span> <span style="color: #000000">was</span> <span style="color: #000000">a</span> <span style="color: #000000">success!</span>
-
-
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">egg</span> <span style="color: #000000">install</span> <span style="color: #000000">hw/bsp/nrf52pdk</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">larva</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//github.com/mynewt/larva//master... ok!</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">hw/bsp/nrf52pdk</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">hw/mcu/nordic/nrf52xxx</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/cmsis-core</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">compiler/arm-none-eabi-m4</span>
-        <span style="color: #000000">Installation</span> <span style="color: #000000">was</span> <span style="color: #000000">a</span> <span style="color: #000000">success!</span>
+<h4 id="build-the-image">Build the image<a class="headerlink" href="#build-the-image" title="Permanent link">&para;</a></h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build blink_nordic
+...
+Compiling main.c
+Archiving blinky.a
+Linking blinky.elf
+App successfully built: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.elf
 </pre></div>
 
 
-<ul>
-<li>It's time to create a target for the project and define the target attributes. </li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create</span> <span style="color: #000000">blink_nordic</span>
-        <span style="color: #000000">Creating</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_nordic</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created!</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">project=blinky</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">project</span> <span style="color: #000000">to</span> <span style="color: #000000">blinky</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">bsp=hw/bsp/nrf52pdk</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">bsp</span> <span style="color: #000000">to</span> <span style="color: #000000">hw/bsp/nrf52pdk</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">compiler_def=debug</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler_def</span> <span style="color: #000000">to</span> <span style="color: #000000">debug</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">compiler=arm-none-eabi-m4</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler</span> <span style="color: #000000">to</span> <span style="color: #000000">arm-none-eabi-m4</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">arch=cortex_m4</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_nordic</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">arch</span> <span style="color: #000000">to</span> <span style="color: #000000">cortex_m4</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">show</span>
-        <span style="color: #000000">blink_nordic</span>
-            <span style="color: #000000">compiler</span>: <span style="color: #000000">arm-none-eabi-m4</span>
-            <span style="color: #000000">name</span>: <span style="color: #000000">blink_nordic</span>
-            <span style="color: #000000">arch</span>: <span style="color: #000000">cortex_m4</span>
-            <span style="color: #000000">project</span>: <span style="color: #000000">blinky</span>
-            <span style="color: #000000">bsp</span>: <span style="color: #000000">hw/bsp/nrf52pdk</span>
-            <span style="color: #000000">compiler_def</span>: <span style="color: #000000">debug</span>
+<h4 id="connect-the-board">Connect the board<a class="headerlink" href="#connect-the-board" title="Permanent link">&para;</a></h4>
+<p>Connect the evaluation board via micro-USB to your PC via USB cable.</p>
+<h4 id="download-to-the-target">Download to the target<a class="headerlink" href="#download-to-the-target" title="Permanent link">&para;</a></h4>
+<p>Download the executable to the target platform.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load blink_nordic
 </pre></div>
 
 
-<ul>
-<li>Finally, you get to build the target and generate an executable that can now be uploaded to the board via the on-board SEGGER J-Link debugger. </li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user@~/dev/nordic_blinky</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">blink_nordic</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_nordic</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">blinky</span>)
-        <span style="color: #000000">Compiling</span> <span style="color: #A90D91">case</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">suite</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">testutil</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">testutil_arch_arm</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Archiving</span> <span style="color: #000000">libtestutil</span>.<span style="color: #000000">a</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_callout</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_eventq</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_heap</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_mbuf</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_mempool</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_mutex</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_sanity</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_sched</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_sem</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_task</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_time</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_arch_arm</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Assembling</span> <span style="color: #000000">HAL_CM4</span>.<span style="color: #000000">s</span>
-        <span style="color: #000000">Assembling</span> <span style="color: #000000">SVC_Table</span>.<span style="color: #000000">s</span>
-        <span style="color: #000000">Archiving</span> <span style="color: #000000">libos</span>.<span style="color: #000000">a</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">hal_cputime</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">hal_gpio</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">hal_uart</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Archiving</span> <span style="color: #000000">libnrf52xxx</span>.<span style="color: #000000">a</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">cmsis_nvic</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">hal_bsp</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">libc_stubs</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">os_bsp</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">sbrk</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">system_nrf52</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Assembling</span> <span style="color: #000000">gcc_startup_nrf52</span>.<span style="color: #000000">s</span>
-        <span style="color: #000000">Archiving</span> <span style="color: #000000">libnrf52pdk</span>.<span style="color: #000000">a</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">main</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">blinky</span>
-        <span style="color: #000000">Linking</span> <span style="color: #000000">blinky</span>.<span style="color: #000000">elf</span>
-        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
-</pre></div>
-
-
-<ul>
-<li>
-<p>In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from <a href="https://www.segger.com/jlink-software.html">https://www.segger.com/jlink-software.html</a>. The command line version of the server is used in the steps below. </p>
-</li>
-<li>
-<p>Open a new terminal and start a J-Link session.</p>
-</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user@~/dev/nordic_blinky/project/blinky/bin</span>]<span style="color: #000000">$</span> <span style="color: #000000">which</span> <span style="color: #000000">JLinkGDBServer</span>
-        <span style="color: #000000">/usr/local/bin/JLinkGDBServer</span>
-        [<span style="color: #000000">user@~/dev/nordic_blinky/project/blinky/bin</span>]<span style="color: #000000">$</span> <span style="color: #000000">JLinkGDBServer</span> <span style="color: #000000">-</span><span style="color: #A90D91">if</span> <span style="color: #000000">SWD</span>
-        <span style="color: #000000">SEGGER</span> <span style="color: #000000">J-Link</span> <span style="color: #000000">GDB</span> <span style="color: #000000">Server</span> <span style="color: #000000">V5</span><span style="color: #1C01CE">.02f</span> <span style="color: #000000">Command</span> <span style="color: #000000">Line</span> <span style="color: #000000">Version</span>
-
-        <span style="color: #000000">JLinkARM</span>.<span style="color: #000000">dll</span> <span style="color: #000000">V5</span><span style="color: #1C01CE">.02f</span> (<span style="color: #000000">DLL</span> <span style="color: #000000">compiled</span> <span style="color: #000000">Oct</span>  <span style="color: #1C01CE">2</span> <span style="color: #1C01CE">2015</span> <span style="color: #1C01CE">20</span><span style="color: #000000">:</span><span style="color: #1C01CE">55</span><span style="color: #000000">:</span><span style="color: #1C01CE">03</span>)
-
-        <span style="color: #000000">-----GDB</span> <span style="color: #000000">Server</span> <span style="color: #000000">start</span> <span style="color: #000000">settings-----</span>
-        <span style="color: #000000">GDBInit</span> <span style="color: #000000">file</span>:                  <span style="color: #000000">none</span>
-        <span style="color: #000000">GDB</span> <span style="color: #000000">Server</span> <span style="color: #000000">Listening</span> <span style="color: #000000">port</span>:     <span style="color: #1C01CE">2331</span>
-        <span style="color: #000000">SWO</span> <span style="color: #000000">raw</span> <span style="color: #000000">output</span> <span style="color: #000000">listening</span> <span style="color: #000000">port</span>: <span style="color: #1C01CE">2332</span>
-        <span style="color: #000000">Terminal</span> <span style="color: #000000">I/O</span> <span style="color: #000000">port</span>:             <span style="color: #1C01CE">2333</span>
-        <span style="color: #000000">Accept</span> <span style="color: #000000">remote</span> <span style="color: #000000">connection</span>:      <span style="color: #000000">yes</span>
-        <span style="color: #000000">Generate</span> <span style="color: #000000">logfile</span>:              <span style="color: #000000">off</span>
-        <span style="color: #000000">Verify</span> <span style="color: #000000">download</span>:               <span style="color: #000000">off</span>
-        <span style="color: #000000">Init</span> <span style="color: #000000">regs</span> <span style="color: #000000">on</span> <span style="color: #000000">start</span>:            <span style="color: #000000">off</span>
-        <span style="color: #000000">Silent</span> <span style="color: #000000">mode</span>:                   <span style="color: #000000">off</span>
-        <span style="color: #000000">Single</span> <span style="color: #000000">run</span> <span style="color: #000000">mode</span>:               <span style="color: #000000">off</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">connection</span> <span style="color: #000000">timeout</span>:     <span style="color: #1C01CE">0</span> <span style="color: #000000">ms</span>
-        <span style="color: #000000">------J-Link</span> <span style="color: #000000">related</span> <span style="color: #000000">settings------</span>
-        <span style="color: #000000">J-Link</span> <span style="color: #000000">Host</span> <span style="color: #000000">interface</span>:         <span style="color: #000000">USB</span>
-        <span style="color: #000000">J-Link</span> <span style="color: #000000">script</span>:                 <span style="color: #000000">none</span>
-        <span style="color: #000000">J-Link</span> <span style="color: #000000">settings</span> <span style="color: #000000">file</span>:          <span style="color: #000000">none</span>
-        <span style="color: #000000">------Target</span> <span style="color: #000000">related</span> <span style="color: #000000">settings------</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">device</span>:                 <span style="color: #000000">unspecified</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">interface</span>:              <span style="color: #000000">SWD</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">interface</span> <span style="color: #000000">speed</span>:        <span style="color: #1C01CE">1000</span><span style="color: #000000">kHz</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">endian</span>:                 <span style="color: #000000">little</span>
-
-        <span style="color: #000000">Connecting</span> <span style="color: #000000">to</span> <span style="color: #000000">J-Link</span>...
-        <span style="color: #000000">J-Link</span> <span style="color: #000000">is</span> <span style="color: #000000">connected</span>.
-        <span style="color: #000000">Firmware</span>: <span style="color: #000000">J-Link</span> <span style="color: #000000">OB-SAM3U128-V2-NordicSemi</span> <span style="color: #000000">compiled</span> <span style="color: #000000">Aug</span> <span style="color: #1C01CE">28</span> <span style="color: #1C01CE">2015</span> <span style="color: #1C01CE">19</span><span style="color: #000000">:</span><span style="color: #1C01CE">26</span><span style="color: #000000">:</span><span style="color: #1C01CE">24</span>
-        <span style="color: #000000">Hardware</span>: <span style="color: #000000">V1</span><span style="color: #1C01CE">.00</span>
-        <span style="color: #000000">S/N</span>: <span style="color: #1C01CE">682371959</span>
-        <span style="color: #000000">Checking</span> <span style="color: #000000">target</span> <span style="color: #000000">voltage</span>...
-        <span style="color: #000000">Target</span> <span style="color: #000000">voltage</span>: <span style="color: #1C01CE">3.30</span> <span style="color: #000000">V</span>
-        <span style="color: #000000">Listening</span> <span style="color: #000000">on</span> <span style="color: #000000">TCP/IP</span> <span style="color: #000000">port</span> <span style="color: #1C01CE">2331</span>
-        <span style="color: #000000">Connecting</span> <span style="color: #000000">to</span> <span style="color: #000000">target</span>...<span style="color: #000000">Connected</span> <span style="color: #000000">to</span> <span style="color: #000000">target</span>
-        <span style="color: #000000">Waiting</span> <span style="color: #A90D91">for</span> <span style="color: #000000">GDB</span> <span style="color: #000000">connection</span>...<span style="color: #000000">Connected</span> <span style="color: #000000">to</span> <span style="color: #1C01CE">127.0.0.1</span>
-</pre></div>
-
-
-<ul>
-<li>You need a configuration file for the GDB session to be opened correctly and the image ("blinky.elf") you built for this target downloaded to flash. A sample config script is given below. Alternatively, you could choose to type each command at the gdb prompt.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">         [<span style="color: #000000">user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic</span>]<span style="color: #000000">$</span> <span style="color: #000000">cat</span> <span style="color: #000000">jlink-gdb</span>.<span style="color: #000000">cfg</span> 
-         <span style="color: #000000">echo</span> <span style="color: #000000">***Setting</span> <span style="color: #000000">up</span> <span style="color: #000000">the</span> <span style="color: #000000">environment</span> <span style="color: #A90D91">for</span> <span style="color: #000000">debugging</span> <span style="color: #000000">gdb</span>.<span style="color: #000000">***\n</span>
-         <span style="color: #000000">set</span> <span style="color: #000000">complaints</span> <span style="color: #1C01CE">1</span>
-         <span style="color: #000000">set</span> <span style="color: #000000">prompt</span> (<span style="color: #000000">gdb</span>) 
-         <span style="color: #000000">set</span> <span style="color: #000000">endian</span> <span style="color: #000000">little</span>
-         <span style="color: #000000">echo</span> <span style="color: #000000">\n***</span> <span style="color: #000000">Set</span> <span style="color: #000000">target</span> <span style="color: #000000">charset</span> <span style="color: #000000">ASCII\n</span>
-         <span style="color: #000000">set</span> <span style="color: #000000">target-charset</span> <span style="color: #000000">ASCII</span>
-         <span style="color: #000000">echo</span> <span style="color: #000000">\n***</span> <span style="color: #000000">Connecting</span> <span style="color: #000000">over</span> <span style="color: #000000">port</span> <span style="color: #000000">#</span><span style="color: #1C01CE">2331</span> <span style="color: #000000">***\n</span>
-         <span style="color: #000000">target</span> <span style="color: #000000">remote</span> <span style="color: #000000">localhost</span>:<span style="color: #1C01CE">2331</span>
-         <span style="color: #000000">echo</span> <span style="color: #000000">\n***</span> <span style="color: #000000">Enable</span> <span style="color: #000000">flash</span> <span style="color: #000000">write</span> <span style="color: #000000">and</span> <span style="color: #000000">set</span> <span style="color: #000000">device</span> <span style="color: #000000">to</span> <span style="color: #000000">nrf52</span> <span style="color: #000000">***\n</span>
-         <span style="color: #000000">monitor</span> <span style="color: #000000">flash</span> <span style="color: #000000">download=</span><span style="color: #1C01CE">1</span>
-         <span style="color: #000000">monitor</span> <span style="color: #000000">flash</span> <span style="color: #000000">device=nRF52</span>
-         <span style="color: #000000">echo</span> <span style="color: #000000">\n***</span> <span style="color: #000000">loading</span> <span style="color: #000000">blinky</span>.<span style="color: #000000">elf</span> <span style="color: #000000">***\n</span>
-         <span style="color: #000000">load</span> <span style="color: #000000">~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky</span>.<span style="color: #000000">elf</span> 
-         <span style="color: #000000">symbol-file</span> <span style="color: #000000">~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky</span>.<span style="color: #000000">elf</span>
-         <span style="color: #000000">echo</span> <span style="color: #000000">\n***</span> <span style="color: #000000">Resetting</span> <span style="color: #000000">target</span> <span style="color: #000000">***\n</span>
-         <span style="color: #000000">monitor</span> <span style="color: #000000">reset</span>
-         <span style="color: #000000">echo</span> <span style="color: #000000">\n***</span> <span style="color: #000000">Halting</span> <span style="color: #000000">target</span> <span style="color: #000000">***\n</span>
-         <span style="color: #000000">monitor</span> <span style="color: #000000">halt</span>
-</pre></div>
-
-
-<ul>
-<li>Start the gdb session and monitor that it loads the image, resets the target, and halts for a command to continue. </li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user@~/dev/nordic_blinky/project/blinky/bin/blink_nordic</span>]<span style="color: #000000">$</span> <span style="color: #000000">arm-none-eabi-gdb</span> <span style="color: #000000">-x</span> <span style="color: #000000">~/dev/nordic_blinky/project/blinky/bin/blink_nordic/jlink-gdb</span>.<span style="color: #000000">cfg</span>
-
-        <span style="color: #000000">GNU</span> <span style="color: #000000">gdb</span> (<span style="color: #000000">GNU</span> <span style="color: #000000">Tools</span> <span style="color: #A90D91">for</span> <span style="color: #000000">ARM</span> <span style="color: #000000">Embedded</span> <span style="color: #000000">Processors</span>) <span style="color: #1C01CE">7.8.0.20150604</span><span style="color: #000000">-cvs</span>
-        <span style="color: #000000">Copyright</span> (<span style="color: #000000">C</span>) <span style="color: #1C01CE">2014</span> <span style="color: #000000">Free</span> <span style="color: #000000">Software</span> <span style="color: #000000">Foundation</span>, <span style="color: #000000">Inc</span>.
-        <span style="color: #000000">License</span> <span style="color: #000000">GPLv3+:</span> <span style="color: #000000">GNU</span> <span style="color: #000000">GPL</span> <span style="color: #000000">version</span> <span style="color: #1C01CE">3</span> <span style="color: #000000">or</span> <span style="color: #000000">later</span> <span style="color: #000000">&lt;http</span>:<span style="color: #177500">//gnu.org/licenses/gpl.html&gt;</span>
-        <span style="color: #000000">This</span> <span style="color: #000000">is</span> <span style="color: #000000">free</span> <span style="color: #000000">software</span>: <span style="color: #000000">you</span> <span style="color: #000000">are</span> <span style="color: #000000">free</span> <span style="color: #000000">to</span> <span style="color: #000000">change</span> <span style="color: #000000">and</span> <span style="color: #000000">redistribute</span> <span style="color: #000000">it</span>.
-        <span style="color: #000000">There</span> <span style="color: #000000">is</span> <span style="color: #000000">NO</span> <span style="color: #000000">WARRANTY</span>, <span style="color: #000000">to</span> <span style="color: #000000">the</span> <span style="color: #000000">extent</span> <span style="color: #000000">permitted</span> <span style="color: #000000">by</span> <span style="color: #000000">law</span>.  <span style="color: #000000">Type</span> <span style="color: #C41A16">&quot;show copying&quot;</span>
-        <span style="color: #000000">and</span> <span style="color: #C41A16">&quot;show warranty&quot;</span> <span style="color: #A90D91">for</span> <span style="color: #000000">details</span>.
-        <span style="color: #000000">This</span> <span style="color: #000000">GDB</span> <span style="color: #000000">was</span> <span style="color: #000000">configured</span> <span style="color: #000000">as</span> <span style="color: #C41A16">&quot;--host=x86_64-apple-darwin10 --target=arm-none-eabi&quot;</span>.
-        <span style="color: #000000">Type</span> <span style="color: #C41A16">&quot;show configuration&quot;</span> <span style="color: #A90D91">for</span> <span style="color: #000000">configuration</span> <span style="color: #000000">details</span>.
-        <span style="color: #000000">For</span> <span style="color: #000000">bug</span> <span style="color: #000000">reporting</span> <span style="color: #000000">instructions</span>, <span style="color: #000000">please</span> <span style="color: #000000">see</span>:
-        <span style="color: #000000">&lt;http</span>:<span style="color: #177500">//www.gnu.org/software/gdb/bugs/&gt;.</span>
-        <span style="color: #000000">Find</span> <span style="color: #000000">the</span> <span style="color: #000000">GDB</span> <span style="color: #000000">manual</span> <span style="color: #000000">and</span> <span style="color: #000000">other</span> <span style="color: #000000">documentation</span> <span style="color: #000000">resources</span> <span style="color: #000000">online</span> <span style="color: #000000">at</span>:
-        <span style="color: #000000">&lt;http</span>:<span style="color: #177500">//www.gnu.org/software/gdb/documentation/&gt;.</span>
-        <span style="color: #000000">For</span> <span style="color: #000000">help</span>, <span style="color: #000000">type</span> <span style="color: #C41A16">&quot;help&quot;</span>.
-        <span style="color: #000000">Type</span> <span style="color: #C41A16">&quot;apropos word&quot;</span> <span style="color: #000000">to</span> <span style="color: #000000">search</span> <span style="color: #A90D91">for</span> <span style="color: #000000">commands</span> <span style="color: #000000">related</span> <span style="color: #000000">to</span> <span style="color: #C41A16">&quot;word&quot;</span>.
-
-        <span style="color: #000000">***Setting</span> <span style="color: #000000">up</span> <span style="color: #000000">the</span> <span style="color: #000000">environment</span> <span style="color: #A90D91">for</span> <span style="color: #000000">debugging</span> <span style="color: #000000">gdb</span>.<span style="color: #000000">***</span>
-        <span style="color: #000000">The</span> <span style="color: #000000">target</span> <span style="color: #000000">is</span> <span style="color: #000000">assumed</span> <span style="color: #000000">to</span> <span style="color: #000000">be</span> <span style="color: #000000">little</span> <span style="color: #000000">endian</span>
-
-        <span style="color: #000000">***</span> <span style="color: #000000">Set</span> <span style="color: #000000">target</span> <span style="color: #000000">charset</span> <span style="color: #000000">ASCII</span>
-
-        <span style="color: #000000">***</span> <span style="color: #000000">Connecting</span> <span style="color: #000000">over</span> <span style="color: #000000">port</span> <span style="color: #000000">#</span><span style="color: #1C01CE">2331</span> <span style="color: #000000">***</span>
-        <span style="color: #1C01CE">0x00003c34</span> <span style="color: #000000">in</span> <span style="color: #000000">??</span> ()
-
-        <span style="color: #000000">***</span> <span style="color: #000000">Enable</span> <span style="color: #000000">flash</span> <span style="color: #000000">write</span> <span style="color: #000000">and</span> <span style="color: #000000">set</span> <span style="color: #000000">device</span> <span style="color: #000000">to</span> <span style="color: #000000">nrf52</span> <span style="color: #000000">***</span>
-        <span style="color: #000000">Flash</span> <span style="color: #000000">download</span> <span style="color: #000000">enabled</span>
-        <span style="color: #000000">Selecting</span> <span style="color: #000000">device</span>: <span style="color: #000000">nRF52</span>
-
-        <span style="color: #000000">***</span> <span style="color: #000000">loading</span> <span style="color: #000000">blinky</span>.<span style="color: #000000">elf</span> <span style="color: #000000">***</span>
-        <span style="color: #000000">Loading</span> <span style="color: #000000">section</span> .<span style="color: #000000">text</span>, <span style="color: #000000">size</span> <span style="color: #1C01CE">0x5c84</span> <span style="color: #000000">lma</span> <span style="color: #1C01CE">0x0</span>
-        <span style="color: #000000">Loading</span> <span style="color: #000000">section</span> .<span style="color: #000000">ARM</span>.<span style="color: #000000">extab</span>, <span style="color: #000000">size</span> <span style="color: #1C01CE">0x24</span> <span style="color: #000000">lma</span> <span style="color: #1C01CE">0x5c84</span>
-        <span style="color: #000000">Loading</span> <span style="color: #000000">section</span> .<span style="color: #000000">ARM</span>.<span style="color: #000000">exidx</span>, <span style="color: #000000">size</span> <span style="color: #1C01CE">0xd8</span> <span style="color: #000000">lma</span> <span style="color: #1C01CE">0x5ca8</span>
-        <span style="color: #000000">Loading</span> <span style="color: #000000">section</span> .<span style="color: #000000">data</span>, <span style="color: #000000">size</span> <span style="color: #1C01CE">0x8f8</span> <span style="color: #000000">lma</span> <span style="color: #1C01CE">0x5d80</span>
-        <span style="color: #000000">Start</span> <span style="color: #000000">address</span> <span style="color: #1C01CE">0x48c</span>, <span style="color: #000000">load</span> <span style="color: #000000">size</span> <span style="color: #1C01CE">26232</span>
-        <span style="color: #000000">Transfer</span> <span style="color: #000000">rate</span>: <span style="color: #1C01CE">12808</span> <span style="color: #000000">KB/sec</span>, <span style="color: #1C01CE">2914</span> <span style="color: #000000">bytes/write</span>.
-        <span style="color: #000000">During</span> <span style="color: #000000">symbol</span> <span style="color: #000000">reading</span>, <span style="color: #000000">unexpected</span> <span style="color: #000000">overlap</span> <span style="color: #000000">between</span>:
-         (<span style="color: #000000">A</span>) <span style="color: #000000">section</span> <span style="color: #000000">`</span>.<span style="color: #000000">text&#39;</span> <span style="color: #000000">from</span> <span style="color: #000000">`~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky</span>.<span style="color: #000000">elf&#39;</span> [<span style="color: #1C01CE">0x0</span>, <span style="color: #1C01CE">0x5c84</span>)
-         (<span style="color: #000000">B</span>) <span style="color: #000000">section</span> <span style="color: #000000">`*COM*&#39;</span> <span style="color: #000000">from</span> <span style="color: #000000">`~/dev/nordic_blinky/project/blinky/bin/blink_nordic/blinky</span>.<span style="color: #000000">elf&#39;</span> [<span style="color: #1C01CE">0x0</span>, <span style="color: #1C01CE">0x0</span>).
-        <span style="color: #000000">Will</span> <span style="color: #000000">ignore</span> <span style="color: #000000">section</span> <span style="color: #000000">B</span>.
-
-        <span style="color: #000000">***</span> <span style="color: #000000">Resetting</span> <span style="color: #000000">target</span> <span style="color: #000000">***</span>
-        <span style="color: #000000">Resetting</span> <span style="color: #000000">target</span>
-
-        <span style="color: #000000">***</span> <span style="color: #000000">Halting</span> <span style="color: #000000">target</span> <span style="color: #000000">***</span>
-</pre></div>
-
-
-<ul>
-<li>Type 'c' to continue. The LED on the board will start to blink. You will also see some activity in the terminal showing the open J-Link GDB server connection. The LED will continue to blink after you quit out of that connection.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        (<span style="color: #000000">gdb</span>) <span style="color: #000000">c</span>
-        <span style="color: #000000">Continuing</span>.
-</pre></div>
+<h4 id="congratulations">Congratulations<a class="headerlink" href="#congratulations" title="Permanent link">&para;</a></h4>
+<p>You have created, setup, compiled, loaded, and ran your first mynewt application
+for the nrf52 evaluation board.</p>
                         
                         <div class="row">
                             <footer>
