@@ -81,7 +81,7 @@ is created.
 
 ### Run the target
 
-* Run the executable you have build for the simulated environment. The serial port name on which the simulated target is connected is shown in the output
+Run the executable you have build for the simulated environment. The serial port name on which the simulated target is connected is shown in the output
 when mynewt slinky starts.
 
 ```no-highlight
@@ -89,10 +89,14 @@ when mynewt slinky starts.
     uart0 at /dev/ttys005
 ```
 
+<br>
+
 In this example, the slinky app opened up a com port `/dev/ttys005`
-for communications with newtmgr. *NOTE: this application will block. You
-will need to open a new console (or execute this in another console) to
-continue the tutorial.*
+for communications with newtmgr. 
+
+**NOTE:** This application will block. You will need to open a new console (or execute this in another console) to continue the tutorial.*
+
+<br>
 
 ### Setting up a connection profile
 
@@ -134,5 +138,5 @@ will echo that string back in a response to newtmgr.
 
 The response comes back as a json string.
 
-In addition to these, uou can also examine running tasks, statistics, 
+In addition to these, you can also examine running tasks, statistics, 
 logs, image status (not on sim), and configuration.

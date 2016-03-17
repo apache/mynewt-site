@@ -3,7 +3,7 @@
 
 ### Objective
 
-The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr). We will do this through building a project with Mynewt called Slinky that runs on the STM32-E407 board.
+The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr). We will do this through a project with Mynewt called Slinky that runs on the STM32-E407 board.
 
 ### What you need
 
@@ -26,19 +26,19 @@ The instructions assume the user is using a Bourne-compatible shell (e.g. bash o
 * Create a connection profile using the newtmgr tool
 * Use the newtmgr tool to communicate with the targets
 
-### Installing newt
+### Install newt
 
-If you have not already installed `newt` see the 
+If you have not already installed `newt`, see the 
 [newt installation instructions](../newt/tutorials/newt_mac.md) and ensure newt is installed an in your path.
 
-### Installing newtmgr
+### Install newtmgr
 
-If you have not already installed `newtmgr` see the 
+If you have not already installed `newtmgr`, see the 
 [newtmgr installation instructions](installing.md) and ensure newtmgr is installed an in your path.
 
-### Creating a new project
+### Create a new project
 
-Instructions for creating a project are located in the [Getting Started](../os/get_started/project_create.md) section of the [Mynewt OS Manual](../os/get_started/introduction.md)
+Instructions for creating a project are located in the [Getting Started](../os/get_started/project_create.md) section of the [Mynewt OS Manual](../os/get_started/introduction.md).
 
 If you already completed [sim slinky](project-slinky.md) you can skip this step.
 
@@ -58,7 +58,9 @@ Downloading repository description for apache-mynewt-core... success!
 Repos successfully installed
 ```
 
-### Setting up your target builds
+<br>
+
+### Set up your target builds
 
 Create a target for `stm32_slinky` using the native bsp.  See 
 [How to Define a Target](../newt/tutorials/define_target.md) for a detailed
@@ -81,7 +83,9 @@ $ newt target set stm32_bootloader build_profile=optimized
 $ newt target set stm32_bootloader target.app=@apache-mynewt-core/apps/boot
 ```
 
-### Building Targets
+<br>
+
+### Build Targets
 
 ```no-highlight
 $ newt build stm32_slinky
@@ -108,6 +112,8 @@ App image succesfully generated: /Users/paulfdietrich/dev/slinky/bin/stm32_slink
 Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/manifest.json
 ```
 
+<br>
+
 ### Using newtmgr with a remote target 
 
 * First make sure the USB A-B type cable is connected to the ARM-USB-TINY-H debugger connector on the Olimex board. 
@@ -119,8 +125,10 @@ $ newt load stm32_bootloader
 $ newt load stm32_slinky
 ```
 
-   You can now disconnect the debugging cable from the board. You should see the green LED blinking. If not, try powercycling the board.
-   
+You can now disconnect the debugging cable from the board. You should see the green LED blinking. If not, try powercycling the board.
+
+<br>
+
 * Now you have to set up the serial connection from your computer to the Olimex board. Locate the PC6/USART6_TX (pin#3), PC7/USART6_RX (pin#4), and GND (pin#2) of the UEXT connector on the Olimex board. More information on the UEXT connector can be found at [https://www.olimex.com/Products/Modules/UEXT/](https://www.olimex.com/Products/Modules/UEXT/). The schematic of the board can be found at [https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf) for reference.
 
      ![Alt Layout - Serial Connection](pics/serial_conn.png)
@@ -130,6 +138,7 @@ $ newt load stm32_slinky
 	* Connect the female TX pin of the USB-TTL serial cable to the RX of the UEXT connector on the board. 
 	* Connect the GND pin of the USB-TTL serial cable to the GND of the UEXT connector on the board.
 
+<br>
 
 * Locate the serial connection established in the /dev directory of your computer. It should be of the type `tty.usbserial-<some identifier>`.
 
@@ -137,6 +146,8 @@ $ newt load stm32_slinky
         $ ls /dev/tty.usbserial-AJ03HAQQ 
         /dev/tty.usbserial-AJ03HAQQ
 ```
+
+<br>
 
 * You now have to define a connection profile using newtmgr. You can give it any name you want. The example below shows the connection profile being named as the very imaginative `olimex01`.
 
@@ -150,6 +161,8 @@ $ newt load stm32_slinky
           sim1: type=serial, connstring='/dev/ttys007'
           olimex01: type=serial, connstring='/dev/tty.usbserial-AJ03HAQQ'
 ```
+
+<br>
 
 * Now go ahead and query the Olimex board to get responses back. The simplest command is the `echo` command to ask it to respond with the text you send it. 
 
