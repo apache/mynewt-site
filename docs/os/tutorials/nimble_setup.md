@@ -2,7 +2,24 @@
 
 This tutorial explains how to setup an application using the Nimble stack. The end result will be a framework that you can use to create your own BLE application using the nimble stack.
 
-This tutorial assumes that you have already installed a source tree and are familiar with the newt tools and concepts. 
+This tutorial assumes that you have already installed a source tree and are familiar with the newt tools and concepts.
+
+
+## Table of Contents
+
+* [Creating the application directory](#creating-the-application-directory)
+* [Creating the target](#creating-the-target)
+* [Nimble stack initialization](#nimble-stack-initialization)
+    * [Add cputime](#add-cputime)
+    * [Create the system memory buffer pool](#create-the-system-memory-buffer-pool)
+    * [Initializing the device address](#initializing-the-device-address)
+    * [Initializing the statistics package](#initializing-the-statistics-package)
+    * [Initializing the console package](#initializing-the-console-package)
+    * [Initializing the Nimble stack](#initializing-the-nimble-stack)
+        * [Initializing the Nimble controller](#initializing-the-nimble-controller)
+        * [Initializing the Nimble host](#initializing-the-nimble-host)
+    * [Compile-time configuration](#compile-time-configuration)
+* [Building the application](#building-the-application)
 
 ### Creating the application directory
 <This needs to be added. This should talk about how you create the pkg.yml file in the apps directory that the user will create. Also, discuss other application dir stuff>
@@ -57,7 +74,7 @@ A note about the code samples: the main() function in each code sample builds up
 
 Let's start with a very basic main() function (shown below). In this main all we are doing is initializing the Mynewt OS and starting it.
 
-```no-highlight
+```c
 #include "os/os.h"
 
 int
@@ -83,17 +100,17 @@ The Nimble stack requires "cputime". This is provided by the Mynewt HAL of the s
 
 Add the initialization of cputime to your application:
 
-```no-highlight
+```c
 #include "hal/hal_cputime.h"
 
 int
 main(void)
 {
 	int rc;
-	
+
     /* Initialize OS */
     os_init();
-    
+
     /* Set cputime to count at 1 usec increments */
     rc = cputime_init(1000000);
     assert(rc == 0);
@@ -115,9 +132,8 @@ Creating the memory pool and registering it with the system memory buffer pool c
 
 A note about the size of the mbufs and `BLE_MBUF_PAYLOAD_SIZE`. Msys allows for multiple mbuf pools of various size. Currently, the Nimble stack requires that msys has an mbuf pool registered that can accommodate the maximum size BLE LL PDU. Thus, we only show the creation of one mbuf pool of maximum size mbufs which gets registered to the system mbuf memory pool. We plan on modifying the Nimble stack so that smaller mbufs can be used (to conserve memory) but at this point in time you cannot modify `BLE_MBUF_PAYLOAD_SIZE`. Furthermore, you cannot add a mbuf pool of smaller size elements to the msys pool as the msys code might then allocate a mbuf that is too small for the nimble stack.
 
-```no-highlight
+```c
 #include "nimble/ble.h"
-
 
 /* Create a mbuf pool of BLE mbufs */
 #define MBUF_NUM_MBUFS      (8)
@@ -125,7 +141,7 @@ A note about the size of the mbufs and `BLE_MBUF_PAYLOAD_SIZE`. Msys allows for 
 #define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + BLE_MBUF_MEMBLOCK_OVERHEAD)
 #define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)
 
-struct os_mbuf_pool g_mbuf_pool; 
+struct os_mbuf_pool g_mbuf_pool;
 struct os_mempool g_mbuf_mempool;
 os_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];
 
@@ -133,25 +149,25 @@ int
 main(void)
 {
 	int rc;
-	
+
     /* Initialize OS */
     os_init();
-    
+
     /* Set cputime to count at 1 usec increments */
     rc = cputime_init(1000000);
     assert(rc == 0);
 
-    /* Create memory pool for Nimble packets and register with Msys */    
-    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS, 
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS,
             MBUF_MEMBLOCK_SIZE, &g_mbuf_buffer[0], "mbuf_pool");
     assert(rc == 0);
 
-    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, 
+    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
                            MBUF_NUM_MBUFS);
     assert(rc == 0);
 
     rc = os_msys_register(&g_mbuf_pool);
-    assert(rc == 0);    
+    assert(rc == 0);
 
     /* Start the OS */
     os_start();
@@ -168,7 +184,7 @@ The BLE specification requires that devices have an address (called a device add
 
 The two variables that must be defined are named `g_dev_addr` (public device address) and `g_random_addr` (static random address). The device address must be initialized prior to initializing the Nimble stack. The random address does not have to be initialized ahead of time as it is possible to set the random address in the Nimble controller when it is running. In this example, we only initialize the device address. The company OUI in this example is 0a:bb:cc; the unique portion is 11:22:33 for a device address equal to 0a:bb:cc:11:22:33. Note that we store the address in little endian order as BLE expects the OUI to be in the most significant bytes.
 
-```no-highlight
+```c
 /* Our global device address (public) */
 uint8_t g_dev_addr[BLE_DEV_ADDR_LEN];
 
@@ -179,26 +195,26 @@ int
 main(void)
 {
 	int rc;
-	
+
     /* Initialize OS */
     os_init();
-    
+
     /* Set cputime to count at 1 usec increments */
     rc = cputime_init(1000000);
     assert(rc == 0);
 
-    /* Create memory pool for Nimble packets and register with Msys */    
-    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS, 
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS,
             MBUF_MEMBLOCK_SIZE, &g_mbuf_buffer[0], "mbuf_pool");
     assert(rc == 0);
 
-    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, 
+    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
                            MBUF_NUM_MBUFS);
     assert(rc == 0);
 
     rc = os_msys_register(&g_mbuf_pool);
     assert(rc == 0);
-    
+
     /* Initialize our device address */
     g_dev_addr[0] = 0x33;
     g_dev_addr[1] = 0x22;
@@ -220,33 +236,33 @@ main(void)
 ####  Initializing the statistics package
 The Nimble stack uses the statistics package and this must be initialized prior to initializing the Nimble stack. Initializing the statistics package is quite simple; all you need to do is call the initialization function `stats_module_init()`.
 
-```no-highlight
+```c
 #include "stats/stats.h"
 
 int
 main(void)
 {
 	int rc;
-	
+
     /* Initialize OS */
     os_init();
-    
+
     /* Set cputime to count at 1 usec increments */
     rc = cputime_init(1000000);
     assert(rc == 0);
 
-    /* Create memory pool for Nimble packets and register with Msys */    
-    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS, 
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS,
             MBUF_MEMBLOCK_SIZE, &g_mbuf_buffer[0], "mbuf_pool");
     assert(rc == 0);
 
-    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, 
+    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
                            MBUF_NUM_MBUFS);
     assert(rc == 0);
 
     rc = os_msys_register(&g_mbuf_pool);
     assert(rc == 0);
-    
+
     /* Initialize our device address */
     g_dev_addr[0] = 0x33;
     g_dev_addr[1] = 0x22;
@@ -258,7 +274,7 @@ main(void)
 	/* Initialize the statistics package */
     rc = stats_module_init();
     assert(rc == 0);
-	
+
     /* Start the OS */
     os_start();
 
@@ -270,35 +286,35 @@ main(void)
 <br>
 
 ####  Initializing the console package
-The console is also required by the Nimble stack. The console is currently used for log output so it needs to be initialized. For this example, we are not going to use a console receive callback. All this means is that input from the console will not be accepted by default; the developer will have to install their own handler or use one provided by another package (the shell, for example). Just like statistics, the console is initialized by calling the console initialization function `console_init()`. 
+The console is also required by the Nimble stack. The console is currently used for log output so it needs to be initialized. For this example, we are not going to use a console receive callback. All this means is that input from the console will not be accepted by default; the developer will have to install their own handler or use one provided by another package (the shell, for example). Just like statistics, the console is initialized by calling the console initialization function `console_init()`.
 
-```no-highlight
+```c
 #include "console/console.h"
 
 int
 main(void)
 {
 	int rc;
-	
+
     /* Initialize OS */
     os_init();
-    
+
     /* Set cputime to count at 1 usec increments */
     rc = cputime_init(1000000);
     assert(rc == 0);
 
-    /* Create memory pool for Nimble packets and register with Msys */    
-    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS, 
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS,
             MBUF_MEMBLOCK_SIZE, &g_mbuf_buffer[0], "mbuf_pool");
     assert(rc == 0);
 
-    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, 
+    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
                            MBUF_NUM_MBUFS);
     assert(rc == 0);
 
     rc = os_msys_register(&g_mbuf_pool);
     assert(rc == 0);
-    
+
     /* Initialize our device address */
     g_dev_addr[0] = 0x33;
     g_dev_addr[1] = 0x22;
@@ -310,10 +326,10 @@ main(void)
 	/* Initialize the statistics package */
     rc = stats_module_init();
     assert(rc == 0);
-    
+
     /* Init the console */
     rc = console_init(NULL);
-    assert(rc == 0);    
+    assert(rc == 0);
 
     /* Start the OS */
     os_start();
@@ -326,48 +342,50 @@ main(void)
 <br>
 
 ####  Initializing the Nimble stack
-We are now ready to initialize the Nimble stack! There are two API that need to be called to initialize the Nimble stack: `ble_hs_init()` and `ble_ll_init()`. The first call initializes the host and the second initializes the controller (the Link Layer) of the Nimble stack.
+We are now ready to initialize the Nimble stack! There are two API that need to be called to initialize the Nimble stack: `ble_ll_init()` and `ble_hs_init()`. The first call initializes the controller (the Link Layer) and the second initializes the host of the Nimble stack.
 
 At this point it is a good idea to talk about the Mynewt OS, tasks, and task priorities. If you are not familiar with multitasking, preemptive operating systems we highly encourage you to read the Core OS section of Mynewt OS manual. It is up to the application developer to decide the priority of tasks in the system. Note that the lower the priority number the higher the priority in the OS. For example, if a task is running at priority 5 and a task at priority 3 wants to run, the task at priority 5 gets preempted as the other task is a higher proiority.
 
-When initializing the Nimble stack the developer must assign a higher priority to the LL task than the Host task. In the example shown below, `HOST_TASK_PRIO` is defined to be 1 and the LL task priority (`BLE_LL_TASK_PRI`) is defined to be the highest priority task (priority 0). We recommend making the BLE LL task the highest priority task in your application as it has fairly rigorous timing requirements and allowing other tasks to preempt the LL task could cause undesirable behavior. Note that we do not force this to be the case as an application may require a task to be even higher priority than the LL task. Just be warned: a task higher in priority than the LL task should not perform actions that take too long; even a few milliseconds could cause undesirable behavior.
+When initializing the Nimble stack the developer must assign a higher priority to the LL task than the Host task. In the example shown below, the LL task priority (*BLE_LL_TASK_PRI*) is defined to be the highest priority task (priority 0). We recommend making the BLE LL task the highest priority task in your application as it has fairly rigorous timing requirements and allowing other tasks to preempt the LL task could cause undesirable behavior. Note that we do not force this to be the case as an application may require a task to be even higher priority than the LL task. Just be warned: a task higher in priority than the LL task should not perform actions that take too long; even a few milliseconds could cause undesirable behavior.
 
-To initialize the host...
-<Need content here>
+<br>
+
+##### Initializing the Nimble controller
 
 Initializing the LL task is done by caling `ble_ll_init()`. The caller passes the task priority of the LL task when calling this API.
 
 
-```no-highlight
+```c
 #include "host/ble_hs.h"
 #include "controller/ble_ll.h"
 
+#define BLE_LL_TASK_PRI     0
 
 int
 main(void)
 {
 	int rc;
     struct ble_hs_cfg cfg;
-	
+
     /* Initialize OS */
     os_init();
-    
+
     /* Set cputime to count at 1 usec increments */
     rc = cputime_init(1000000);
     assert(rc == 0);
 
-    /* Create memory pool for Nimble packets and register with Msys */    
-    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS, 
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS,
             MBUF_MEMBLOCK_SIZE, &g_mbuf_buffer[0], "mbuf_pool");
     assert(rc == 0);
 
-    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, 
+    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
                            MBUF_NUM_MBUFS);
     assert(rc == 0);
 
     rc = os_msys_register(&g_mbuf_pool);
     assert(rc == 0);
-    
+
     /* Initialize our device address */
     g_dev_addr[0] = 0x33;
     g_dev_addr[1] = 0x22;
@@ -380,22 +398,101 @@ main(void)
     rc = stats_module_init();
     assert(rc == 0);
 
-    /* Initialize the BLE host. */
-    cfg = ble_hs_cfg_dflt;
-    cfg.max_hci_bufs = 3;
-    cfg.max_attrs = 32;
-    cfg.max_services = 4;
-    cfg.max_client_configs = 6;
-    cfg.max_gattc_procs = 2;
-    cfg.max_l2cap_chans = 3;
-    cfg.max_l2cap_sig_procs = 2;
+    /* Initialize the BLE LL */
+    ble_ll_init(BLE_LL_TASK_PRI);
 
-    rc = ble_hs_init(HOST_TASK_PRIO, &cfg);
+    /* Start the OS */
+    os_start();
+
+    /* os start should never return. If it does, this should be an error */
+    assert(0);
+}
+```
+<br>
+
+##### Initializing the Nimble host
+
+The Nimble host is initialized via a call to `ble_hs_init()`.  This function is declared as follows:
+
+```c
+int ble_hs_init(uint8_t prio, struct ble_hs_cfg *cfg)
+```
+
+The parameters are documented below.
+
+| **Parameter** | **Description** |
+| ------------- | --------------- |
+| *prio*        | The priority of the Nimble host task.  Unlike the controller, the host does not have any strict timing requirements.  This number should be greater than the priority of any time-critical tasks in your application (remember, bigger number = lower priority!).  There are no restrictions with regards to the host task's priority relative to its client tasks. |
+| *cfg*         |  A pointer to the desired host configuration, or *NULL* if you want to use the default settings. |
+
+As mentioned above, passing a *cfg* value of *NULL* will initialize the Nimble host with the default configuration.  This is convenient while familiarizing yourself with the Nimble stack, but ultimately you will probably want to use a custom configuration.  To configure the host with custom values, prepare an instance of `struct ble_hs_cfg` using the below procedure:
+
+1. Declare an instance of `struct ble_hs_cfg`.
+2. Copy the default settings into your struct instance via initialization or assignment.  The default settings are stored in a global variable called `ble_hs_cfg_dflt`.
+3. Assign specific values to your configuration object.
+
+**Note:** Even if you plan on explicitly specifying every host runtime setting, it is still recommended that you initialize your configuration instance with the default values (step 2).  This is recommended to protect against an indeterminate configuration when new settings are added in future versions of Nimble.
+
+The values that you assign to the configuration object depend heavily on the specifics of your application.  For general guidelines, see the Nimble peripheral tutorial (TBD) and the Nimble central tutorial (TBD).  For details, the `struct ble_hs_cfg` type is fully documented here: TBD.
+
+Continuing with our running example, we now add Nimble host initialization to the *main()* function.  This application is a BLE peripheral that will be running on memory-constrained hardware.  The default GATT server configuration allows for more services and characteristics than we need, so we scale down some of the numbers to reduce RAM usage.
+
+```c
+#include "host/ble_hs.h"
+#include "controller/ble_ll.h"
+
+#define BLE_LL_TASK_PRI     0
+#define BLE_HS_TASK_PRI     1
+
+int
+main(void)
+{
+	int rc;
+    struct ble_hs_cfg cfg;
+
+    /* Initialize OS */
+    os_init();
+
+    /* Set cputime to count at 1 usec increments */
+    rc = cputime_init(1000000);
+    assert(rc == 0);
+
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&g_mbuf_mempool, MBUF_NUM_MBUFS,
+            MBUF_MEMBLOCK_SIZE, &g_mbuf_buffer[0], "mbuf_pool");
+    assert(rc == 0);
+
+    rc = os_mbuf_pool_init(&g_mbuf_pool, &g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
+                           MBUF_NUM_MBUFS);
+    assert(rc == 0);
+
+    rc = os_msys_register(&g_mbuf_pool);
+    assert(rc == 0);
+
+    /* Initialize our device address */
+    g_dev_addr[0] = 0x33;
+    g_dev_addr[1] = 0x22;
+    g_dev_addr[2] = 0x11;
+    g_dev_addr[3] = 0xcc;
+    g_dev_addr[4] = 0xbb;
+    g_dev_addr[5] = 0x0a;
+
+	/* Initialize the statistics package */
+    rc = stats_module_init();
     assert(rc == 0);
 
     /* Initialize the BLE LL */
     ble_ll_init(BLE_LL_TASK_PRI);
-		
+
+    /* Initialize the BLE host. */
+    cfg = ble_hs_cfg_dflt;
+    cfg.max_attrs = 32;
+    cfg.max_services = 4;
+    cfg.max_client_configs = 6;
+
+    rc = ble_hs_init(BLE_HS_TASK_PRI, &cfg);
+    assert(rc == 0);
+
     /* Start the OS */
     os_start();
 
@@ -406,11 +503,11 @@ main(void)
 
 <br>
 
-####  Configuring the Nimble stack
+#### Compile-time configuration
 <Add content here. We should discuss nimble_opt.h (at least). I dont think we need to go into detail about each option here. That should be in the BLE stack documentation>
 
+<br>
 
- 
 ### Building the application
 Now that we have created the application and the target we can build it and test it out. The command you need to run is the newt build command with the target we created (ble_tgt). The output will show the files being compiled and linked. You should see this when all is done (except for the ... of course):
 
