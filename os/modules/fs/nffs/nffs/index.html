@@ -624,49 +624,49 @@
 </ol>
 <p>Both methods require the user to describe how the flash memory should be divided into nffs areas.  This is accomplished with an array of <a href="../nffs_area_desc/">struct nffs_area_desc</a>.</p>
 <p>Typically, a product's flash layout is exposed via its BSP-specific <code>bsp_flash_dev()</code> function.  This function retrieves the layout of the specified flash device resident in the BSP.  The result of this function can then be converted into the <code>struct nffs_area_desc[]</code> that nffs requires.  The below example, taken from the slinky project, illustrates the nffs initialization procedure.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*** hw/hal/include/hal/flash_map.h */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">/*** hw/hal/include/hal/flash_map.h */
 
-<span style="color: #177500">/*</span>
-<span style="color: #177500"> * Flash area types</span>
-<span style="color: #177500"> */</span>
-<span style="color: #000000">#</span>define FLASH_AREA_BOOTLOADER           <span style="color: #1C01CE">0</span>
-<span style="color: #000000">#</span>define FLASH_AREA_IMAGE_0              <span style="color: #1C01CE">1</span>
-<span style="color: #000000">#</span>define FLASH_AREA_IMAGE_1              <span style="color: #1C01CE">2</span>
-<span style="color: #000000">#</span>define FLASH_AREA_IMAGE_SCRATCH        <span style="color: #1C01CE">3</span>
-<span style="color: #000000">#</span>define FLASH_AREA_NFFS                 <span style="color: #1C01CE">4</span>
+/*
+ * Flash area types
+ */
+#define FLASH_AREA_BOOTLOADER           0
+#define FLASH_AREA_IMAGE_0              1
+#define FLASH_AREA_IMAGE_1              2
+#define FLASH_AREA_IMAGE_SCRATCH        3
+#define FLASH_AREA_NFFS                 4
 </pre></div>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*** project/slinky/src/main.c */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">/*** project/slinky/src/main.c */
 
 int
-main<span style="color: #000000">(</span>int argc<span style="color: #000000">,</span> char <span style="color: #000000">**</span>argv<span style="color: #000000">)</span>
-<span style="color: #000000">{</span>
-    int rc<span style="color: #000000">;</span>
-    int cnt<span style="color: #000000">;</span>
+main(int argc, char **argv)
+{
+    int rc;
+    int cnt;
 
-    <span style="color: #177500">/* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */</span>
-    struct nffs_area_desc descs<span style="color: #000000">[</span>NFFS_AREA_MAX<span style="color: #000000">];</span>
+    /* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */
+    struct nffs_area_desc descs[NFFS_AREA_MAX];
 
-    <span style="color: #177500">/* Initialize nffs&#39;s internal state. */</span>
-    rc <span style="color: #000000">=</span> nffs_init<span style="color: #000000">();</span>
-    assert<span style="color: #000000">(</span>rc <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span><span style="color: #000000">);</span>
+    /* Initialize nffs&#39;s internal state. */
+    rc = nffs_init();
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Convert the set of flash blocks we intend to use for nffs into an array</span>
-<span style="color: #177500">     * of nffs area descriptors.</span>
-<span style="color: #177500">     */</span>
-    cnt <span style="color: #000000">=</span> NFFS_AREA_MAX<span style="color: #000000">;</span>
-    rc <span style="color: #000000">=</span> flash_area_to_nffs_desc<span style="color: #000000">(</span>FLASH_AREA_NFFS<span style="color: #000000">,</span> <span style="color: #000000">&amp;</span>cnt<span style="color: #000000">,</span> descs<span style="color: #000000">);</span>
-    assert<span style="color: #000000">(</span>rc <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span><span style="color: #000000">);</span>
+    /* Convert the set of flash blocks we intend to use for nffs into an array
+     * of nffs area descriptors.
+     */
+    cnt = NFFS_AREA_MAX;
+    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &amp;cnt, descs);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Attempt to restore an existing nffs file system from flash. */</span>
-    <span style="color: #A90D91">if</span> <span style="color: #000000">(</span>nffs_detect<span style="color: #000000">(</span>descs<span style="color: #000000">)</span> <span style="color: #000000">==</span> FS_ECORRUPT<span style="color: #000000">)</span> <span style="color: #000000">{</span>
-        <span style="color: #177500">/* No valid nffs instance detected; format a new one. */</span>
-        rc <span style="color: #000000">=</span> nffs_format<span style="color: #000000">(</span>descs<span style="color: #000000">);</span>
-        assert<span style="color: #000000">(</span>rc <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span><span style="color: #000000">);</span>
-    <span style="color: #000000">}</span>
-    <span style="color: #177500">/* [ ... ] */</span>
-<span style="color: #000000">}</span>
+    /* Attempt to restore an existing nffs file system from flash. */
+    if (nffs_detect(descs) == FS_ECORRUPT) {
+        /* No valid nffs instance detected; format a new one. */
+        rc = nffs_format(descs);
+        assert(rc == 0);
+    }
+    /* [ ... ] */
+}
 </pre></div>
 
 

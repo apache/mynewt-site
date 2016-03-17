@@ -624,18 +624,18 @@
 <p>N/A</p>
 <h4 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h4>
 <p>Here is an example of calling <code>console_blocking_mode</code> and printing crash information from an assert to help debug.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">void</span>
-<span style="color: #000000">_assert_func(const</span> <span style="color: #000000">char</span> <span style="color: #000000">*file,</span> <span style="color: #000000">int</span> <span style="color: #000000">line,</span> <span style="color: #000000">const</span> <span style="color: #000000">char</span> <span style="color: #000000">*func,</span> <span style="color: #000000">const</span> <span style="color: #000000">char</span> <span style="color: #000000">*e)</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void
+_assert_func(const char *file, int line, const char *func, const char *e)
 {
-    <span style="color: #000000">int</span> <span style="color: #000000">sr</span>;
+    int sr;
 
-    <span style="color: #000000">OS_ENTER_CRITICAL</span>(<span style="color: #000000">sr</span>);
-    (<span style="color: #000000">void</span>)<span style="color: #000000">sr</span>;
-    <span style="color: #000000">os_die_line</span> <span style="color: #000000">=</span> <span style="color: #000000">line</span>;
-    <span style="color: #000000">os_die_module</span> <span style="color: #000000">=</span> <span style="color: #000000">file</span>;
-    <span style="color: #000000">console_blocking_mode</span>();
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Assert %s; failed in %s:%d\n&quot;</span><span style="color: #000000">,</span> <span style="color: #000000">e</span> <span style="color: #000000">?</span> <span style="color: #000000">e</span> <span style="color: #000000">:</span> <span style="color: #C41A16">&quot;&quot;</span><span style="color: #000000">,</span> <span style="color: #000000">file,</span> <span style="color: #000000">line</span>);
-    <span style="color: #000000">system_reset</span>();
+    OS_ENTER_CRITICAL(sr);
+    (void)sr;
+    os_die_line = line;
+    os_die_module = file;
+    console_blocking_mode();
+    console_printf(&quot;Assert %s; failed in %s:%d\n&quot;, e ? e : &quot;&quot;, file, line);
+    system_reset();
 }
 </pre></div>
                         
