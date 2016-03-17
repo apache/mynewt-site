@@ -1,4 +1,4 @@
-# How To Write A Test Suite for Your Package
+# Write a Test Suite for a Package
 
 This document presents a tutorial which guides the reader through writing
 a test suite for a Mynewt package (new or existing).

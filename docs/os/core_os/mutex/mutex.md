@@ -16,7 +16,7 @@ Note that when multiple tasks are waiting on a mutex owned by another task, once
 
 ### Data structures
 
-```c
+```c 
 struct os_mutex
 {
     SLIST_HEAD(, os_task) mu_head;
