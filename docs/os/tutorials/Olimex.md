@@ -2,16 +2,19 @@
 
 ### Objective
 
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using *newt* tool, this application will blink the LED lights on the target board. Fun stuff!
+Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board. Fun stuff!
 
-This tutorial will guide to achieve the following, assuming you have already set up the environment on your computer to use Mynewt OS and newt tool:
+This tutorial will guide you to achieve the following, assuming you have already set up the environment on your computer to use Mynewt OS and newt tool:
 
-Download packages and use tools to create a runtime image for a board to make its LED blink. You have two choices here:
+* Download packages and use tools to create a runtime image for a board to make its LED blink. You have two choices here:
     * [Download an image to SRAM](#use-sram-to-make-led-blink), or 
     * [Download it to flash](#use-flash-to-make-led-blink).
 
+<br>
+
 ** Time Requirement**: Allow yourself a couple of hours for this project if you are relatively new to embedded systems and playing with development boards. Those jumpers can be pesky!
 
+<br>
 
 ### What you need
 
@@ -20,26 +23,29 @@ Download packages and use tools to create a runtime image for a board to make it
 3. USB A-B type cable to connect the debugger to your personal computer
 4. Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)
 5. An account on Github repository and *git* installed on your computer.
-6. It assumed you have already installed newt tool. 
-7. It assumed you already installed native tools described [here](../get_started/native_tools.md)
+6. It is assumed you have already installed newt tool. 
+7. It is assumed you already installed native tools as described [here](../get_started/native_tools.md)
 
-Also, we assume that you're familiar with UNIX shells.
+Also, we assume that you're familiar with UNIX shells. Let's gets started!
 
-Let's gets started!
+<br>
 
 
 ### Use SRAM to make LED blink
 
 If you wish to build the image to run from the onboard SRAM on Olimex board, follow the steps below:
 
-#### Preparing the Software
+<br>
+
+#### Prepare the Software
 
 * Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. 
+ 
+<br>
 
-#### creating a project.  
+#### Create a project.  
 
-Create a new project to hold your work.  For a deeper understanding, 
-you can read about project creation in 
+Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
 [Get Started -- Creating Your First Project](../get_started/project_create.md)
 or just follow the commands below.
 
@@ -59,12 +65,13 @@ or just follow the commands below.
     ...
     apache-mynewt-core successfully installed version 0.7.9-none
 ``` 
+
+<br>
    
-#### creating a target
+#### Create a target
 
-* Change directory to ~/dev/core directory and define the *blinky* target inside core, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the architecture (arch), compiler, board support package (bsp), project, and compiler mode.
+Change directory to ~/dev/core directory and define the *blinky* target inside core, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.
 
-    (Remember to prefix each command with "newtvm" if you are executing the newt command in a Linux virtual machine on your Windows box!)
 
 ```no-highlight
     $ newt target create blinky
@@ -81,14 +88,18 @@ or just follow the commands below.
         bsp=hw/bsp/olimex_stm32-e407_devboard
         build_profile=debug
 ```
+
+<br>
+
 #### Build the image
 
-* Next, let's build the image with the above values assigned. By default, the linker script within the `hw/bsp/olimex_stm32-e407_devboard` package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with `run_from_sram.ld`. 
+Next, let's build the image with the above values assigned. By default, the linker script within the `hw/bsp/olimex_stm32-e407_devboard` package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with `run_from_sram.ld`. 
 
 <font color="red">
-(We are working to simplify this scheme whereby an executable for a project will correctly elect the linker scripts and generate the relevant image. For example, the scheme will key on project identity such as bootloader, RAM, Flash (default) and build accordingly. </font>.)
+(We are working to simplify this scheme whereby an executable for a project will correctly elect the linker scripts and generate the relevant image. For example, the scheme will key on project identity such as bootloader, RAM, Flash (default) and build accordingly.) </font>.
 
 Afer you build the target, you can find the executable *blinky.elf* in the project directory *~/dev/core/bin/blinky/apps/blinky/.* 
+    
     
 ```no-highlight
     $ cd ~/dev/core/hw/bsp/olimex_stm32-e407_devboard
@@ -106,12 +117,19 @@ Afer you build the target, you can find the executable *blinky.elf* in the proje
         blinky.elf      blinky.elf.bin     blinky.elf.cmd  
         blinky.elf.lst  blinky.elf.map
 ```
- 
+
+<br>
+
 #### Prepare the hardware to boot from embedded SRAM
 
 * Locate the boot jumpers on the board.
+
+<br>
+
 ![Alt Layout - Top View](pics/topview.png)
 ![Alt Layout - Bottom View](pics/bottomview.png)
+
+<br>
 
 * B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present. 
 To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering **B0_1** and **B1_1**.
@@ -121,6 +139,8 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 * The red PWR LED should be lit. 
 
 * Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.
+
+<br>
 
 #### Let's Go!
 
@@ -143,12 +163,16 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
     Info : device id = 0x10036413
     Info : flash size = 1024kbytes
 ```
+<br>
 
-   Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, 
+Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, 
    
 ```no-highlight
         (gdb) set $msp=0x10010000
 ```
+
+<br>
+
    Now load the image and type "c" or "continue" from the GNU debugger. 
 
 ```no-highlight           
@@ -164,13 +188,15 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
       
 * Voilà! The board's LED should be blinking at 1 Hz. Success!
 
+<br>
+
 ### Use flash to make LED blink
 
 If you wish to build the image to run from the onboard flash memory on Olimex board, follow the steps below:
 
 * Configure the board to boot from flash by moving the two jumpers together to **B0_0** and **B1_0**. Refer to the pictures of the board under the section titled ["Prepare the hardware to boot from embedded SRAM"](#prepare-the-hardware-to-boot-from-embedded-sram).
 
-   You will have to reset the board once the image is uploaded to it.
+     You will have to reset the board once the image is uploaded to it.
         
 * If you skipped the first option for the project [(downloading an image to SRAM)](#use-sram-to-make-led-blink), then skip this step. Otherwise, continue with this step. 
 
@@ -185,9 +211,12 @@ If you wish to build the image to run from the onboard flash memory on Olimex bo
     $ cd ~/dev/core
 ```
 
+<br>
+
 * In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial set up of the Olimex board and then transfers control to the image stored at a location in flash known to it. 
 ```
 Let's create boot_olimex:
+
 ```no-highlight
     $ newt target create boot_olimex
     Creating target boot_olimex
@@ -204,7 +233,11 @@ Let's create boot_olimex:
         bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboar
         build_profile=optimized
 ```
+
+<br>
+
 * Now let's build both targets now.
+
 ```no-highlight
     $ newt build boot_olimex
     ...
@@ -215,8 +248,11 @@ Let's create boot_olimex:
     App successfully built: ~/dev/core/bin/blinky/apps/blinky/blinky.elf
 ```
 
+<br>
+
 * Create the blinky image and download the bootloader and the image to flash ... in a flash! 
 When creating an image, you can assign a version number to your image; here we use '1.2.3'
+
 ```no-highlight
     $ newt create-image blinky 1.2.3
     App image successfully generated: ~/dev/core/bin/blinky/apps/blinky/blinky.img
@@ -233,13 +269,18 @@ When creating an image, you can assign a version number to your image; here we u
     shutdown command invoked
 ```
 
+<br>
+
 * Voilà! The LED should be blinking! Success!
 
-* But wait...not so fast. let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor, severing the debug connection to the JTAG port. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. 
+<br>
+
+**But wait...not so fast.** Let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor, severing the debug connection to the JTAG port. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. 
 
    The LED light will start blinking again. Success!
   
-   Note #1: If you want to download the image to flash and a gdb session opened up, use `newt debug blinky` after `newt download blinky`.
+   **Note #1:** If you want to download the image to flash and a gdb session opened up, use `newt debug blinky` after `newt download blinky`.
+    
 ```no-highlight     
     $ newt debug blinky
     Debugging with ~/dev/core/hw/bsp/olimex_stm32-e407_...
@@ -260,8 +301,10 @@ When creating an image, you can assign a version number to your image; here we u
     199	    ldr    r1, =__etext
     (gdb)
 ```
+
+<br>
     
-   Note #2: If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase_sector 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma,' you should see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
+   **Note #2:** If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase_sector 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma,' you should see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
 ```no-highlight         
     (gdb) monitor flash erase_sector 0 0 4
     erased sectors 0 through 4 on flash bank 0 in 2.296712s
