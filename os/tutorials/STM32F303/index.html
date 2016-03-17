@@ -201,9 +201,7 @@
                 
   
   
-    <li><a href="
-  ../../get_started/native_tools/
-">Get Started</a>
+    <li ><a href="../../get_started/get_started/">Get Started</a></li>
   
     
   </li>
@@ -225,12 +223,22 @@
                 
   
   
-    <li><a href="
-  ../olimex/
-">Tutorials</a>
+    <li ><a href="../tutorials/">Tutorials</a></li>
   
     
       <ul class="current-toc">
+          
+              
+          
+              
+                
+  
+    <li>
+      <a href="../arduino_zero/">Blinky on Arduino Zero</a>
+    </li>
+  
+
+              
           
               
                 
@@ -266,7 +274,7 @@
                 
   
     <li>
-      <a href="../arduino_zero/">Blinky on Arduino Zero</a>
+      <a href="../unit_test/">Write a Test Suite for a Package</a>
     </li>
   
 
@@ -276,17 +284,7 @@
                 
   
     <li>
-      <a href="../unit_test/">Unit Testing a Package</a>
-    </li>
-  
-
-              
-          
-              
-                
-  
-    <li>
-      <a href="../air_quality_sensor/">Adding an air-quality sensor</a>
+      <a href="../air_quality_sensor/">Air-quality Sensor project</a>
     </li>
   
 
@@ -439,7 +437,7 @@
         
       
         
-          <li>&raquo; <a href="../olimex/">Tutorials</a></li>
+          <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
         
       
       
@@ -452,217 +450,169 @@
                             </div>
                         </div>
                         
-                            <h2 id="blinky-on-stm32f303-board">Blinky on STM32F303 board<a class="headerlink" href="#blinky-on-stm32f303-board" title="Permanent link">&para;</a></h2>
+                            <h2 id="blinky-on-stm32f303-discovery-board">Blinky on STM32F303 Discovery board<a class="headerlink" href="#blinky-on-stm32f303-discovery-board" title="Permanent link">&para;</a></h2>
+<p><br></p>
 <h3 id="objective">Objective<a class="headerlink" href="#objective" title="Permanent link">&para;</a></h3>
-<p>Download a generic firmware skeleton ("bootstrap image") that applies to any hardware and then throw in additional applicable pkgs to generate a build for a specific board, namely the STM32F303VC MCU from STMicroelectronics.</p>
-<h4 id="hardware-needed">Hardware needed<a class="headerlink" href="#hardware-needed" title="Permanent link">&para;</a></h4>
+<p>Create a project with a simple app that blinks an LED on the stmf303 
+discovery board.  Download the application to the target and watch it blink.</p>
+<p><br></p>
+<h3 id="what-you-need">What you need<a class="headerlink" href="#what-you-need" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Discovery kit with STM32F303VC MCU</li>
-<li>Laptop running Mac OS</li>
+<li>Laptop running Mac OSX. </li>
+<li>It is assumed you have already installed newt tool. </li>
+<li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
 </ul>
-<h4 id="step-by-step-instructions-to-build-image">Step by Step Instructions to build image<a class="headerlink" href="#step-by-step-instructions-to-build-image" title="Permanent link">&para;</a></h4>
-<ul>
-<li>The first step is to download the generic skeleton of the project. The pkgs constituting the skeleton are not hardware architecture specific. The skeleton is maintained as an app in a separate repository on Apache. You know it is an app because there is an app.yml file. </li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">app</span> <span style="color: #000000">create</span> <span style="color: #000000">test_project</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">app</span> <span style="color: #000000">skeleton</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-tadpole.git... ok!</span>
-        <span style="color: #000000">app</span> <span style="color: #000000">test_project</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created</span> <span style="color: #000000">in</span> <span style="color: #000000">~/dev/go/test_project</span>
+<p>Also, we assume that you're familiar with UNIX shells. Let's gets started!</p>
+<p><br></p>
+<h3 id="create-a-project">Create a project<a class="headerlink" href="#create-a-project" title="Permanent link">&para;</a></h3>
+<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
+<a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
+or just follow the commands below.</p>
+<p>If you've already created a project from another tutorial, you can re-use
+that project.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ mkdir ~/dev
+$ cd ~/dev
+$ newt new myproj
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in myproj...
+Project myproj successfully created.
 
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev</span>]<span style="color: #000000">$</span> <span style="color: #000000">cd</span> <span style="color: #000000">test_project/</span>
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">ls</span>
-        <span style="color: #000000">README</span>.<span style="color: #000000">md</span>   <span style="color: #000000">compiler</span>    <span style="color: #000000">hw</span>      <span style="color: #000000">libs</span>    <span style="color: #000000">app</span>.<span style="color: #000000">yml</span>
+$ cd myproj
 </pre></div>
 
 
-<ul>
-<li>Next, the pkg-list named larva is added from the app (also named larva) from another repository on Apache. This step simply downloads the pkg-list description file and does not actually install the pkgs that constitute the pkg-list. The pkg-list description file (<code>pkg-list.yml</code>) will be used to check dependencies during the pkg install to ensure completeness. It serves as a reference for all the pkgs in the pkg-list that one can choose from and install.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">app</span> <span style="color: #000000">add-pkg-list</span> <span style="color: #000000">larva</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">pkg-list</span>.<span style="color: #000000">yml</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva.git/master... ok!</span>
-        <span style="color: #000000">Verifying</span> <span style="color: #000000">pkg-list</span>.<span style="color: #000000">yml</span> <span style="color: #000000">format</span>...
-        <span style="color: #000000">ok!</span>
-        <span style="color: #000000">pkg-list</span> <span style="color: #000000">larva</span> <span style="color: #000000">successfully</span> <span style="color: #000000">installed</span> <span style="color: #000000">to</span> <span style="color: #000000">app</span>.
+<p><strong>Note:</strong> Don't forget to change into the <code>myproj</code> directory.</p>
+<p><br></p>
+<h3 id="import-external-stm32f3-library-support">Import External STM32F3 Library support<a class="headerlink" href="#import-external-stm32f3-library-support" title="Permanent link">&para;</a></h3>
+<p>The STM32F303 support for Mynewt lives in an external repository.  It's
+necessary to add another repository to the project.  To do this,
+edit the file <code>project.yml</code> in the root directory of your project <code>myproj</code></p>
+<p>This requires two changes to this file.</p>
+<ol>
+<li>You must define the properties of the external repository that you want
+to add</li>
+<li>You must include the repository in your project.</li>
+</ol>
+<p>Edit the file <code>project.yml</code> with your favorite editor and add the 
+following repository details in the file (after the core 
+repository).  This gives newt the information to contact the repository
+and extract its contents.  In this case, the repository is on github in 
+the <code>runtimeinc</code> collection. Its name is <code>mynewt-stm32f3</code> and we will accept
+any version up to the latest. You can look at the contents <a href="https://github.com/runtimeinc/mynewt_stm32f3">here</a>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">repository.mynewt_stm32f3:
+    type: github
+    vers: 0-latest
+    user: runtimeinc
+    repo: mynewt_stm32f3
 </pre></div>
 
 
-<ul>
-<li>The next step is to install relevant pkgs from the larva app from git server on Apache. The instructions assume that you know what application or project you are interested in (the blinky application, in this case), what hardware you are using (STM32F3DISCOVERY board, in this case) and hence, what board support package you need. </li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">pkg</span> <span style="color: #000000">install</span> <span style="color: #000000">project/blinky</span>          
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">larva</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">project/blinky</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/console/full</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/shell</span>
-        <span style="color: #000000">Installation</span> <span style="color: #000000">was</span> <span style="color: #000000">a</span> <span style="color: #000000">success!</span>
+<p><br></p>
+<p>In the same file, add the following highlighted line to the 
+<code>project.repositories</code> variable.  This tells newt to download the
+ repository contents into your project. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">project.repositories:
+    - apache-mynewt-core
+<span style="background-color: #ffffcc">    - mynewt_stm32f3
+</span></pre></div>
 
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">pkg</span> <span style="color: #000000">install</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">larva</span> <span style="color: #000000">from</span> <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva/master... ok!</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">hw/mcu/stm/stm32f3xx</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">libs/cmsis-core</span>
-        <span style="color: #000000">Installing</span> <span style="color: #000000">compiler/arm-none-eabi-m4</span>
-        <span style="color: #000000">Installation</span> <span style="color: #000000">was</span> <span style="color: #000000">a</span> <span style="color: #000000">success!</span>
+
+<p><br></p>
+<h3 id="install-dependencies">Install dependencies<a class="headerlink" href="#install-dependencies" title="Permanent link">&para;</a></h3>
+<p>Now you can install this into the project using:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt install -v 
+Downloading repository description for apache-mynewt-core... success!
+...
+apache-mynewt-core successfully installed version 0.7.9-none
+...
+Downloading repository description for mynewt_stm32f3... success!
+Downloading repository mynewt_stm32f3 
+...
+Resolving deltas: 100% (65/65), done.
+Checking connectivity... done.
+mynewt_stm32f3 successfully installed version 0.0.0-none
 </pre></div>
 
 
-<ul>
-<li>It's time to create a targets for the project and define the target attributes. STM32F3 BSP expects bootloader, so create targets for both blinky and bootloader.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create</span> <span style="color: #000000">blink_f3disc</span>
-        <span style="color: #000000">Creating</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_f3disc</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created!</span>
+<p><br></p>
+<h3 id="create-targets">Create  targets<a class="headerlink" href="#create-targets" title="Permanent link">&para;</a></h3>
+<p>Create two targets to build using the stmf3 board support package and the 
+app blinky example from mynewt.  The output of these commands are not
+shown here for brevity. </p>
+<p>The first target is the application image itself. The second
+target is the bootloader which allows you to upgrade your mynewt 
+applications. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create stmf3_blinky
+$ newt target set stmf3_blinky build_profile=optimized
+$ newt target set stmf3_blinky bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
+$ newt target set stmf3_blinky app=apps/blinky
 
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">project=blinky</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">project</span> <span style="color: #000000">to</span> <span style="color: #000000">blinky</span>
+$ newt target create stmf3_boot
+$ newt target set stmf3_boot app=@apache-mynewt-core/apps/boot
+$ newt target set stmf3_boot bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
+$ newt target set stmf3_boot build_profile=optimized
 
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">bsp</span> <span style="color: #000000">to</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
+$ newt target show
 
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">compiler_def=debug</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler_def</span> <span style="color: #000000">to</span> <span style="color: #000000">debug</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">compiler=arm-none-eabi-m4</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler</span> <span style="color: #000000">to</span> <span style="color: #000000">arm-none-eabi-m4</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">arch=cortex_m4</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">arch</span> <span style="color: #000000">to</span> <span style="color: #000000">cortex_m4</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create</span> <span style="color: #000000">boot_f3disc</span>
-        <span style="color: #000000">Creating</span> <span style="color: #000000">target</span> <span style="color: #000000">boot_f3disc</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">created!</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">project=boot</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">project</span> <span style="color: #000000">to</span> <span style="color: #000000">blinky</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">bsp</span> <span style="color: #000000">to</span> <span style="color: #000000">hw/bsp/stm32f3discovery</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">compiler_def=optimized</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler_def</span> <span style="color: #000000">to</span> <span style="color: #000000">debug</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">compiler=arm-none-eabi-m4</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">compiler</span> <span style="color: #000000">to</span> <span style="color: #000000">arm-none-eabi-m4</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">arch=cortex_m4</span>
-        <span style="color: #000000">Target</span> <span style="color: #000000">boot_f3disc</span> <span style="color: #000000">successfully</span> <span style="color: #000000">set</span> <span style="color: #000000">arch</span> <span style="color: #000000">to</span> <span style="color: #000000">cortex_m4</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">show</span> <span style="color: #000000">blink_f3disc</span>
-        <span style="color: #000000">blink_f3disc</span>
-            <span style="color: #000000">arch=cortex_m4</span>
-            <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
-            <span style="color: #000000">compiler=arm-none-eabi-m4</span>
-            <span style="color: #000000">compiler_def=debug</span>
-            <span style="color: #000000">name=blink_f3disc</span>
-            <span style="color: #000000">project=blinky</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">show</span> <span style="color: #000000">boot_f3disc</span>
-        <span style="color: #000000">boot_f3disc</span>
-            <span style="color: #000000">arch=cortex_m4</span>
-            <span style="color: #000000">bsp=hw/bsp/stm32f3discovery</span>
-            <span style="color: #000000">compiler=arm-none-eabi-m4</span>
-            <span style="color: #000000">compiler_def=debug</span>
-            <span style="color: #000000">name=blink_f3disc</span>
-            <span style="color: #000000">project=boot</span>
+targets/stmf3_blinky
+    app=apps/blinky
+    bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
+    build_profile=optimized
+targets/stmf3_boot
+    app=apps/boot
+    bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
+    build_profile=optimized
 </pre></div>
 
 
-<ul>
-<li>STM32F3 blinky project is too large to operate with newlib libc. You need to modify project/blinky/pkg.yml, and switch over to using baselibc.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">cat</span> <span style="color: #000000">project/blinky/pkg</span>.<span style="color: #000000">yml</span> 
-        <span style="color: #000000">#</span>
-        <span style="color: #633820"># Licensed to the Apache Software Foundation (ASF) under one</span>
-        <span style="color: #633820"># or more contributor license agreements.  See the NOTICE file</span>
-        <span style="color: #633820"># distributed with this work for additional information</span>
-        <span style="color: #633820"># regarding copyright ownership.  The ASF licenses this file</span>
-        <span style="color: #633820"># to you under the Apache License, Version 2.0 (the</span>
-        <span style="color: #633820"># &quot;License&quot;); you may not use this file except in compliance</span>
-        <span style="color: #633820"># with the License.  You may obtain a copy of the License at</span>
-        <span style="color: #633820">#</span>
-        <span style="color: #633820">#  http:</span><span style="color: #177500">//www.apache.org/licenses/LICENSE-2.0</span>
-        <span style="color: #633820">#</span>
-        <span style="color: #633820"># Unless required by applicable law or agreed to in writing,</span>
-        <span style="color: #633820"># software distributed under the License is distributed on an</span>
-        <span style="color: #633820"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-        <span style="color: #633820"># KIND, either express or implied.  See the License for the</span>
-        <span style="color: #633820"># specific language governing permissions and limitations</span>
-        <span style="color: #633820"># under the License.</span>
-        <span style="color: #633820">#</span>
+<p><br></p>
+<h3 id="build-the-images">Build the images<a class="headerlink" href="#build-the-images" title="Permanent link">&para;</a></h3>
+<p>To build the images, use the <code>newt build</code> command below.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build stmf3_blinky
+   ...
+Archiving stm32f3discovery.a
+Linking blinky.elf
+App successfully built: ~/dev/myproj/bin/stmf3_blinky/apps/blinky/blinky.elf
 
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">name</span>: <span style="color: #000000">project/blinky</span>
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">vers</span>: <span style="color: #1C01CE">0.8.0</span>
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">description</span>: <span style="color: #000000">Basic</span> <span style="color: #000000">example</span> <span style="color: #000000">application</span> <span style="color: #000000">which</span> <span style="color: #000000">blinks</span> <span style="color: #000000">an</span> <span style="color: #000000">LED</span>.
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">author</span>: <span style="color: #000000">Marko</span> <span style="color: #000000">Kiiskila</span> <span style="color: #000000">&lt;marko@runtime</span>.<span style="color: #000000">io&gt;</span>
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">homepage</span>: <span style="color: #000000">http</span>:<span style="color: #177500">//mynewt.apache.org/os/get_acclimated/project2/</span>
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">repository</span>: <span style="color: #000000">https</span>:<span style="color: #177500">//git-wip-us.apache.org/repos/asf/incubator-mynewt-larva</span>
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">keywords</span>:
-
-        <span style="color: #000000">pkg</span>.<span style="color: #000000">deps</span>:
-            <span style="color: #000000">-</span> <span style="color: #000000">libs/console/full</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">libs/newtmgr</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">libs/os</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">libs/shell</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">sys/config</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">sys/log</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">sys/stats</span>
-            <span style="color: #000000">-</span> <span style="color: #000000">libs/baselibc</span>
+$ newt build stmf3_boot
+Compiling log_shell.c
+Archiving log.a
+Linking boot.elf
+App successfully built: ~/dev/myproj/bin/stmf3_boot/apps/boot/boot.elf
 </pre></div>
 
 
-<ul>
-<li>
-<p>Next, you get to build the targets and generate an executable that can then be uploaded to the board. The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at <a href="http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf">http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf</a></p>
-</li>
-<li>
-<p><img alt="STMdiscovery" src="../pics/STM32f3discovery_connector.png" /></p>
-</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">boot_f3disc</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">boot_f3</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">boot</span>)
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">asprintf</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">atoi</span>.<span style="color: #000000">c</span>
-        ...
-        ...
-        <span style="color: #000000">Assembling</span> <span style="color: #000000">startup_stm32f303xc</span>.<span style="color: #000000">s</span>
-        <span style="color: #000000">Archiving</span> <span style="color: #000000">libstm32f3discovery</span>.<span style="color: #000000">a</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">boot</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">boot</span>
-        <span style="color: #000000">Linking</span> <span style="color: #000000">boot</span>.<span style="color: #000000">elf</span>
-        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">blink_f3disc</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_f3disc</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">blinky</span>)
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">asprintf</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">atoi</span>.<span style="color: #000000">c</span>
-        ...
-        ...
-        <span style="color: #000000">Assembling</span> <span style="color: #000000">startup_stm32f303xc</span>.<span style="color: #000000">s</span>
-        <span style="color: #000000">Archiving</span> <span style="color: #000000">libstm32f3discovery</span>.<span style="color: #000000">a</span>
-        <span style="color: #000000">Compiling</span> <span style="color: #000000">main</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">blinky</span>
-        <span style="color: #000000">Linking</span> <span style="color: #000000">blinky</span>.<span style="color: #000000">elf</span>
-        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">build</span> <span style="color: #000000">boot_f3disc</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">boot_f3disc</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">boot</span>)
-        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">boot</span>
-        <span style="color: #000000">Successfully</span> <span style="color: #000000">run!</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">create-image</span> <span style="color: #000000">blink_f3disc</span> <span style="color: #1C01CE">0.0.1</span>
-        <span style="color: #000000">Building</span> <span style="color: #000000">target</span> <span style="color: #000000">blink_f3disc</span> (<span style="color: #000000">project</span> <span style="color: #000000">=</span> <span style="color: #000000">blinky</span>)
-        <span style="color: #000000">Building</span> <span style="color: #000000">project</span> <span style="color: #000000">blinky</span>
+<p><br></p>
+<h3 id="create-an-application-image-from-the-binary">Create an application image from the binary<a class="headerlink" href="#create-an-application-image-from-the-binary" title="Permanent link">&para;</a></h3>
+<p>You must sign and version your application image to download it using newt.  Use
+the <code>newt create-image</code> command to perform this action. Here we assign this
+image an arbitrary version <code>1.2.3</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image stmf3_blinky 1.2.3
+App image succesfully generated: ~/dev/myproj/bin/stmf3_blinky/apps/blinky/blinky.img
+Build manifest:~/dev/myproj/bin/stmf3_blinky/apps/blinky/manifest.json
 </pre></div>
 
 
+<p><br></p>
+<h3 id="configure-the-hardware">Configure the hardware<a class="headerlink" href="#configure-the-hardware" title="Permanent link">&para;</a></h3>
+<p>The STM32F3DISCOVERY board includes an ST-LINK/V2 embedded debug tool interface that will be used to program/debug the board. To program the MCU on the board, simply plug in the two jumpers on CN4, as shown in the picture in red. If you want to learn more about the board you will find the User Manual at <a href="http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf">http://www.st.com/st-web-ui/static/active/jp/resource/technical/document/user_manual/DM00063382.pdf</a></p>
 <ul>
-<li>Finally, you have to download the image on to the board. You will see a blue light start to blink.</li>
+<li><img alt="STMdiscovery" src="../pics/STM32f3discovery_connector.png" /></li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">download</span> <span style="color: #000000">boot_f3disc</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">with</span> <span style="color: #000000">/Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download</span>.<span style="color: #000000">sh</span>
-
-        [<span style="color: #000000">user</span>:<span style="color: #000000">~/dev/test_project</span>]<span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">download</span> <span style="color: #000000">blink_f3disc</span>
-        <span style="color: #000000">Downloading</span> <span style="color: #000000">with</span> <span style="color: #000000">/Users/user/dev/test_project/hw/bsp/stm32f3discovery/stm32f3discovery_download</span>.<span style="color: #000000">sh</span>
+<p><br></p>
+<h3 id="download-the-images">Download the Images<a class="headerlink" href="#download-the-images" title="Permanent link">&para;</a></h3>
+<p>Use the <code>newt load</code> command to download the images to the target board.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load stmf3_boot
+$ newt -v load stmf3_blinky
 </pre></div>
+
+
+<p><br></p>
+<h3 id="watch-the-led-blink">Watch the LED blink<a class="headerlink" href="#watch-the-led-blink" title="Permanent link">&para;</a></h3>
+<p>Congratulations! You have built, downloaded, and run your first application using mynewt for the
+stf32f3 discovery board. One of the LEDs on the LED wheel should be blinking 
+at 1 Hz.</p>
                         
                         <div class="row">
                             <footer>
