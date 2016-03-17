@@ -70,18 +70,14 @@ or just follow the commands below.
    
 #### Create a target
 
-Change directory to ~/dev/core directory and define the *blinky* target inside core, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.
+Change directory to ~/dev/myproj directory and define the *blinky* target inside myproj, using the *newt* tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.
 
 
 ```no-highlight
     $ newt target create blinky
-    Target targets/blinky successfully created
     $ newt target set blinky build_profile=debug
-    Target targets/blinky successfully set target.compiler_def to debug
     $ newt target set blinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-    Target targets/blinky successfully set target.bsp to ...
-    $ newt target set blinky app=@apache-mynewt-core/apps/blinky
-    Target targets/blinky successfully set target.app to apps/blinky
+    $ newt target set blinky app=apps/blinky
     $ newt target show blinky
     targets/boot_olimex
         app=apps/blinky
@@ -98,22 +94,22 @@ Next, let's build the image with the above values assigned. By default, the link
 <font color="red">
 (We are working to simplify this scheme whereby an executable for a project will correctly elect the linker scripts and generate the relevant image. For example, the scheme will key on project identity such as bootloader, RAM, Flash (default) and build accordingly.) </font>.
 
-Afer you build the target, you can find the executable *blinky.elf* in the project directory *~/dev/core/bin/blinky/apps/blinky/.* 
+Afer you build the target, you can find the executable *blinky.elf* in the project directory *~/dev/myproj/bin/blinky/apps/blinky/.* 
     
     
 ```no-highlight
-    $ cd ~/dev/core/hw/bsp/olimex_stm32-e407_devboard
+    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
     $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
     (some diff will be displayed)
     $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
-    $ cd ~/dev/core
+    $ cd ~/dev/myproj
     $ newt build blinky
     Compiling case.c
     Compiling suite.c
     ...
     Linking blinky.elf
-    App successfully built:~/dev/core/bin/blinky/apps/blinky/blinky.elf    
-    $ ls bin/blinky/apps/blinky/
+    App successfully built:~/dev/myproj/bin/blinky/apps/blinky/blinky.elf
+    $ ls ~/dev/myproj/bin/blinky/apps/blinky/
         blinky.elf      blinky.elf.bin     blinky.elf.cmd  
         blinky.elf.lst  blinky.elf.map
 ```
@@ -168,7 +164,7 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, 
    
 ```no-highlight
-        (gdb) set $msp=0x10010000
+    (gdb) set $msp=0x10010000
 ```
 
 <br>
@@ -176,14 +172,14 @@ Check the value of the msp (main service pointer) register. If it is not 0x10010
    Now load the image and type "c" or "continue" from the GNU debugger. 
 
 ```no-highlight           
-        (gdb) load ~/dev/core/bin/blinky/apps/blinky/blinky.elf      
-        Loading section .text, size 0x16b88 lma 0x20000000
-        Loading section .ARM.exidx, size 0x18 lma 0x20016b88
-        Loading section .data, size 0x9ec lma 0x20016ba0
-        Start address 0x200004b8, load size 95628
-        Transfer rate: 74 KB/sec, 3825 bytes/write.
-        (gdb) c
-        Continuing.
+    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
+    Loading section .text, size 0x16b88 lma 0x20000000
+    Loading section .ARM.exidx, size 0x18 lma 0x20016b88
+    Loading section .data, size 0x9ec lma 0x20016ba0
+    Start address 0x200004b8, load size 95628
+    Transfer rate: 74 KB/sec, 3825 bytes/write.
+    (gdb) c
+    Continuing.
 ```   
       
 * Voilà! The board's LED should be blinking at 1 Hz. Success!
@@ -203,30 +199,25 @@ If you wish to build the image to run from the onboard flash memory on Olimex bo
    By default, the linker script (`olimex_stm32-e407_devboard.ld`) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed `olimex_stm32-e407_devboard.ld` to match `run_from_sram.ld`. You will, therefore, return to defaults with `olimex_stm32-e407_devboard.ld` linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.
 
 ```no-highlight
-    $ cd ~/dev/core/hw/bsp/olimex_stm32-e407_devboard
-    $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-    $ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
-    (some diff will be displayed)
-    $ cp run_from_loader.ld olimex_stm32-e407_devboard.ld
-    $ cd ~/dev/core
+$ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
+$ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
+$ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
+(some diff will be displayed)
+$ cp run_from_loader.ld olimex_stm32-e407_devboard.ld
+$ cd ~/dev/myproj
 ```
 
 <br>
 
 * In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial set up of the Olimex board and then transfers control to the image stored at a location in flash known to it. 
-```
+
 Let's create boot_olimex:
 
 ```no-highlight
     $ newt target create boot_olimex
-    Creating target boot_olimex
-    Target boot_olimex successfully created!
     $ newt target set boot_olimex build_profile=optimized
-    Target boot_olimex successfully set compiler_def to optimized
-    $ newt target set boot_olimex @apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-    Target boot_olimex successfully set bsp to ...
+    $ newt target set boot_olimex bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
     $ newt target set boot_olimex app=@apache-mynewt-core/apps/boot
-    Target targets/boot_olimex successfully set target.app to apps/boot
     $ newt target show boot_olimex
     targets/boot_olimex
         app=app=@apache-mynewt-core/apps/boot
@@ -241,11 +232,11 @@ Let's create boot_olimex:
 ```no-highlight
     $ newt build boot_olimex
     ...
-    App successfully built: ~/dev/core/bin/boot_olimex/apps/boot/boot_olimex.elf
+    App successfully built: ~/dev/myproj/bin/boot_olimex/apps/boot/boot.elf
     $ newt build blinky
     ...
     Linking blinky.elf
-    App successfully built: ~/dev/core/bin/blinky/apps/blinky/blinky.elf
+    App successfully built: ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf
 ```
 
 <br>
@@ -255,15 +246,15 @@ When creating an image, you can assign a version number to your image; here we u
 
 ```no-highlight
     $ newt create-image blinky 1.2.3
-    App image successfully generated: ~/dev/core/bin/blinky/apps/blinky/blinky.img
-    Build manifest: ~/dev/core/bin/blinky/apps/blinky/manifest.json
+    App image succesfully generated: ~/dev/myproj/bin/blinky/apps/blinky/blinky.img
+    Build manifest: ~/dev/myproj/bin/blinky/apps/blinky/manifest.json
     $ newt load boot_olimex
-    Downloading ~/dev/core/bin/boot_olimex/apps/boot/boot.elf.bin to 0x08000000
+    Downloading~/dev/myproj/bin/boot_olimex/apps/boot/boot.elf.bin to 0x08000000
     Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
     ...
     shutdown command invoked
     $ newt load blinky
-    Downloading ~/dev/core/bin/blinky/apps/blinky/blinky.img to 0x08020000
+    Downloading ~/dev/myproj/bin/blinky/apps/blinky/blinky.img to 0x08020000
     Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
     ...
     shutdown command invoked
@@ -283,8 +274,8 @@ When creating an image, you can assign a version number to your image; here we u
     
 ```no-highlight     
     $ newt debug blinky
-    Debugging with ~/dev/core/hw/bsp/olimex_stm32-e407_...
-    Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
+    Debugging with ~/dev/myproj/hw/bsp/olimex_stm32-e407_...
+    Debugging ~/dev/myproj/project/blinky/bin/blinky/blinky.elf
     GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
     Copyright (C) 2014 Free Software Foundation, Inc.
     License GPLv3+: GNU GPL version 3 <http://gnu.org/licenses/gpl.html>
