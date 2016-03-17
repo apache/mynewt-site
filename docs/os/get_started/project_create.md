@@ -1,29 +1,34 @@
-# Creating a Mynewt Project
+## Create Your First Mynewt Project
 
-This page shows how to create a Mynewt Project using `newt`
+This page shows how to create a Mynewt Project using the `newt` command-line tool.
 
-# Pre-Requisites
+### Pre-Requisites
 
-* Ensure you have installed [newt](../../newt/newt_intro) and that the 
-newt command is in your system path.
+* Ensure you have installed [newt](../../newt/tutorials/newt_mac.md) and that the 
+newt command is in your system path. 
 * You must have Internet connectivity to fetch remote Mynewt components
 * You must [install the compiler tools](project1.md) to 
 support native compiling to build the project this tutorial creates.  
 
-## Newt New
+<br>
 
-Chose a project name. For this tutorial we will call this project `myproj`.
-Enter the `newt new myproj` command. Your put
-```no-highlight
+### Newt New
+
+Choose a project name. For this tutorial we will call this project `myproj`.
+Enter the `newt new myproj` command. 
+
+```
     $ newt new myproj
     Downloading project skeleton from apache/incubator-mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
 ```
 
+<br>
+
 The `newt` tool has created a project directory structure like the one below:
 
-```no-highlight
+```
     ─── myproj
         ├── DISCLAIMER
         ├── LICENSE
@@ -44,6 +49,9 @@ The `newt` tool has created a project directory structure like the one below:
                 └── target.yml
 ```
 
+<br>
+
+
 `newt` has installed the base files for a project comprising the following.
 
 1. file `project.yml` contains the repository list that the project uses to fetch
@@ -58,16 +66,17 @@ targets.
 4. A non-build-able target called `unittest`.  This is used
 internally by `newt` and is not a formal build target.
 
- NOTE: the actual code and package files are not installed 
-(except the template for `main.c`.  See the next step for installing 
-the packages.
+**NOTE:** the actual code and package files are not installed 
+(except the template for `main.c`).  See the next step for installing the packages.
 
-## Newt Install
+<br>
 
-change into the `myproj` directory.  Then ask newt to install all the 
-project package dependencies using `newt install`
+### Newt Install
 
-```no-highlight
+Change into the `myproj` directory.  Then ask newt to install all the 
+project package dependencies using `newt install`.
+
+```
     $ newt install -v 
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
@@ -111,6 +120,8 @@ under the specific repository you have included in the base project.
 Within each of these directories are the packages required to build your
 project for the various targets.
 
+<br>
+
 ## Testing the Project
 
 To validate, you can also run all the units test through simulation.
@@ -126,6 +137,8 @@ To validate, you can also run all the units test through simulation.
     All tests passed
 ```
 
+<br>
+
 ## Building the Project
 
 To build the project you can use `newt build` using the target 
@@ -134,6 +147,8 @@ To build the project you can use `newt build` using the target
     $ newt build my_blinky_sim
     App successfully built: /bin/my_blinky_sim/apps/blinky/blinky.elf
 ```
+
+<br>
 
 You can run the simulated version of your project and see the simulated LED
 blink
@@ -144,8 +159,10 @@ blink
 
 Just do `ctrl-c` to exit.
 
+<br>
+
 ## Complete
 
-Congratulations, you have created your first project.  This project contains 
+Congratulations, you have created your first project!  This project contains 
 the core OS, a simple application to blink an LED and all of the dependencies
 required.

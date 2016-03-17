@@ -12,7 +12,7 @@ nRF52 Series chip from Nordic Semiconductors.
 * It is assumed you have already installed newt tool. 
 * It is assumed you already installed native tools as described [here](../get_started/native_tools.md)
 
-#### install jlinkEXE
+#### Install jlinkEXE
 
 In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from [https://www.segger.com/jlink-software.html](https://www.segger.com/jlink-software.html). 
 
@@ -22,16 +22,16 @@ Create a new project to hold your work.  For a deeper understanding, you can rea
 [Get Started -- Creating Your First Project](../get_started/project_create.md)
 or just follow the commands below.
 
-```no-highlight
+```
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
     Downloading project skeleton from apache/incubator-mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
-
+    
     $ cd myproj
-
+    
     $ newt install -v 
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
@@ -45,7 +45,7 @@ Create a single target for the nrf52.  NOTE: The nrf52 mynewt core does not
 yet have bootloader support, so we will create a single image to download
 to the device.
 
-```no-highlight
+```
 $ newt target create blink_nordic
 $ newt target set blink_nordic app=apps/blinky
 $ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
@@ -59,7 +59,7 @@ targets/blink_nordic
 
 #### Build the image 
 
-```no-highlight
+```
 $ newt build blink_nordic
 ...
 Compiling main.c
@@ -76,7 +76,7 @@ Connect the evaluation board via micro-USB to your PC via USB cable.
 
 Download the executable to the target platform.
 
-```no-highlight
+```
 $ newt -v load blink_nordic
 ```
 

@@ -1,12 +1,12 @@
-# Running Mynewt on Arduino Zero
+## Running Mynewt on Arduino Zero
 
 This tutorial describes how to run Mynewt OS on Arduino Zero.  
 
-## Prerequisites
+### Prerequisites
 
 Before tackling this tutorial, it's best to read about Mynewt in the [Introduction](../get_started/introduction) section of this documentation.
 
-## Equipment
+### Equipment
 
 You will need the following equipment
 
@@ -17,7 +17,7 @@ compatible with this tutorial
 * A USB cable (Type A to micro B) that can connect the computer to the Arduino
 * The Mynewt Release
 
-## Arduino Boards
+### Arduino Boards
 
 This tutorial has been tested on the following two Arduino Zero boards.
 
@@ -25,13 +25,13 @@ This tutorial has been tested on the following two Arduino Zero boards.
 <img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
 
 
-## Steps
+### Steps
 
 Follow these simple steps and your board will be blinking in no time!
 
-### Install Mynewt and Newt
+#### Install Mynewt and Newt
 
-If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/tutorials/newt_mac.md) and cloned the Mynewt OS repository as shown in the [Get Started tutorial for Blinky](../get_started/project1.md)
+If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/tutorials/newt_mac.md) and cloned the Mynewt OS repository as shown in the [Get Started tutorial for Sim Blinky](../get_started/project_create.md)
 
 ### Fetch External Packages for Atmel SAMD21
 
