@@ -176,13 +176,18 @@ Compiling cons_tty.c
 <snip>
 Linking blinky.elf
 App successfully built: /Users/sterling/dev/tmp/my_app/bin/my_blinky_sim/apps/blinky/blinky.elf
-$ newt run my_blinky_sim
-(runs target my_blinky_sim on the simulator)
 ```
+
+You can run the simulated version of your project and see the simulated LED
+blink
+```no-highlight
+./bin/my_blinky_sim/apps/blinky/blinky.elf
+hal_gpio set pin  1 to 0
+```
+
 Just press _ctrl-c_ to exit.
 
 <br>
-
 
 ## Complete
 
@@ -193,6 +198,6 @@ applications.  It provides all the features you'll need to cross-compile your
 application, run it on real hardware and develop a full featured application.
 
 If you're interested in learning more, a good next step is to dig in to one of
-the tutorials and get a Mynewt project running on real hardware.
+the [tutorials](../tutorials/tutorials) and get a Mynewt project running on real hardware.
 
 Happy Hacking!
