@@ -1,16 +1,19 @@
-## Building newt tool on your Mac
+## Install newt tool on Linux
+
+<br>
 
 ### Getting your Mac Ready 
 
 If you want to build the *newt* tool from its source code, follow the following steps:
-#### 1. Install Homebrew on your Mac OS X 
 
-* Do you have Homebrew? If not, open a terminal on your Mac and paste the following at a Terminal prompt. It will ask you for your sudo password.
+#### 1. Install git, libcurl
 
-```no-highlight
-        $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
-   Alternatively, you can just extract (or `git clone`) Homebrew and install it to `/usr/local`.
+        $ sudo apt-get install git 
+        $ sudo apt-get install libcurl4-gnutls-dev 
+```
+
+<br>
 
 #### 2. Install Go, the programming language
 
@@ -24,7 +27,7 @@ If you want to build the *newt* tool from its source code, follow the following 
 
     The GOPATH environment variable specifies the location of your workspace. To setup this workspace environment, create a 'dev' directory and then a 'go' directory under it. Set the GOPATH environment variable to this directory where you will soon clone the *newt* tool repository.
     
-```no-highlight
+```
         $ cd $HOME
         $ mkdir -p dev/go  
         $ cd dev/go
@@ -32,22 +35,22 @@ If you want to build the *newt* tool from its source code, follow the following 
 ```
   (Note that you need to add export statements to ~/.bash_profile to export variables permanently. Don't forget to source the file for the change to go into effect.)
 
-```no-highlight
+<br>
+
+```
         $ vi ~/.bash_profile
         $ source ~/.bash_profile
 ```
-* Next, using *brew*, install Go. When installed, Go offers you as a developer a language enviroment (to compile Go code), construct Go packages (to assemble Go packages) and import Go code (from github). In the next step, you will use the Go commands to import *newt* repo into your local Go environment.
+
+<br>
+
+* Next, install Go. When installed, Go offers you as a developer a language enviroment (to compile Go code), construct Go packages (to assemble Go packages) and import Go code (from github). In the next step, you will use the Go commands to import *newt* repo into your local Go environment.
      
 ```no-highlight
-        $ brew install go
-        ==> 
-        ...
-        ... 
-        ==> *Summary*
-        🍺  /usr/local/Cellar/go/1.5.1: 5330 files, 273M
+        $ sudo apt-get install golang 
 ```
-  Alternatively, you can download the Go package directly from (https://golang.org/dl/) instead of brewing it. Install it in /usr/local directory.
-    
+
+<br>    
 
 #### 3. Create local repository
 
@@ -55,8 +58,9 @@ If you want to build the *newt* tool from its source code, follow the following 
 
 ```no-highlight
         $ go get mynewt.apache.org/newt/...
-
 ```
+
+<br>
 
 * Check that newt.go is in place.
 ```no-highlight
@@ -65,9 +69,11 @@ If you want to build the *newt* tool from its source code, follow the following 
         LICENSE		README.md	newtmgr		util        yaml
 ```
 
+<br>
+
 #### 4. Build the Newt tool
 
-* Use Go to run the newt.go program to build the *newt* tool. The command `go install` compiles and writes the resulting executable to an output file named `newt`, which is then installed, along with its dependencies, in $GOPATH/bin.
+* Use Go to run the newt.go program to build the *newt* tool. The command `go install` compiles and writes the resulting executable to an output file named `newt`, which is then installed, along with its dependencies, in $GOPATH/bin. If you get errors it is likely because of path resolution issues. Try `go build`  followed by `go install` in that case.
 
 ```no-highlight
         $ cd $GOPATH/src/mynewt.apache.org/newt/newt
@@ -75,11 +81,14 @@ If you want to build the *newt* tool from its source code, follow the following 
         $ ls "$GOPATH"/bin/
         newt newtmgr newtvm
 ```
+
+<br>
+
 * At this point, you can try using *newt*. For example, check for the version number by typing 'newt version'. See all the possible commands available to a user of newt by typing 'newt -h'.
 
    (Note: If you are going to be modifying the *newt* often and going to be compile the program every time you call it, you will want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/mynewt.apache.org/newt/newt/newt.go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Essentially, `$newt` calls `go run` which runs the compiled binary directly without producing an executable. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! )
    
-```no-highlight
+```
         $ newt version
         Newt version:  1.0
         $ newt -h
@@ -120,5 +129,7 @@ If you want to build the *newt* tool from its source code, follow the following 
 
         Use "newt help [command]" for more information about a command.
 ```
-* Without creating a project repository, you can't do a whole lot with the *newt tool. So you'll have to wait till you have downloaded an app to try out the tool. 
+
+<br>
+
 

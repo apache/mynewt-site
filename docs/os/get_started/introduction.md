@@ -43,12 +43,16 @@ Controller implementations.
 peripheral functions, allowing developers to easily write cross-platform
 code.
 
+<br>
+
 ### Newt ###
 In order to provide all this functionality, and operate in an 
 extremely low resource environment, Mynewt provides a very fine-grained source 
 package management and build system tool, called *newt*. 
 
-You can install and build *newt* for [Linux](http://mynewt.apache.org/newt/newt_linux/) or [Mac](http://mynewt.apache.org/newt/newt_mac/). 
+You can install and build *newt* for [Linux](../../newt/install/newt_linux.md) or [Mac](../../newt/install/newt_mac.md). 
+
+<br>
 
 ### Build your first Mynewt App with Newt ###
 
@@ -61,6 +65,8 @@ Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in my_app...
 Project my_app successfully created.
 ```
+
+<br>
 
 Newt populates this new project with a base skeleton of a new Apache Mynewt 
 project.  It has the following structure:
@@ -100,8 +106,7 @@ apache-mynewt-core
 $
 ```
 
-*NOTE:* ```apache-mynewt-core``` may take a while to download, to see progress, use
-the ```-v``` (verbose) option to install. 
+**NOTE:** ```apache-mynewt-core``` may take a while to download, to see progress, use the ```-v``` (verbose) option to install. 
 
 
 Once ```newt install``` has successfully finished, the contents of ```apache-mynewt-core```
@@ -141,6 +146,8 @@ $ tree -L2
 <snip>
 ```
 
+<br>
+
 As you can see, the core of the Apache Mynewt operating system has been brought 
 into your local directory!  
 
@@ -172,6 +179,8 @@ $ newt run my_blinky_sim
 (runs target my_blinky_sim on the simulator)
 ```
 
+<br>
+
 At this point you have your first Mynewt application!
 
 Apache Mynewt has a lot more functionality than just running simulated applications.  It provides all 
@@ -179,7 +188,7 @@ the features you'll need to cross-compile your application, run it on real hardw
 full featured application.
 
 If you're interested in learning more, a good next step is to choose a project to 
-[Get Started](http://mynewt.apache.org/os/get_started/project1/) with, and begin to familiarize 
+[get started](get_started.md) with, and begin to familiarize 
 yourself with operating within the newt environment.  These projects will get your toolchain installed, 
 and get you blinking an LED with the Apache Mynewt OS.
 

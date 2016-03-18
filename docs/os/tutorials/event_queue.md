@@ -1,25 +1,30 @@
-# How to define a task which uses event queues to manage multiple events
+## How to define a task which uses event queues to manage multiple events
 
-## Introduction
+### Introduction
 
 Event queue is a mechanism by which you can serialize incoming events for your task. You can use it to get info about arrived hardware interrupts, callout expirations and messages from other tasks.
 
-Benefit of doing inter-task communication this way is that there should be less resources that need to be locked.
+The benefit of doing inter-task communication this way is that there should be less resources that need to be locked.
 
-Benefit of doing interrupt processing in a task context instead of inside interrupt context is that you are not blocking other HW interrupts when doing the work. The same goes for high priority tasks in the system; they're blocked until the interrupt handler returns. From task context you'll also be able to access other OS facilities; you can sleep while waiting for a lock, for example.
+The benefit of doing interrupt processing in a task context instead of inside an interrupt context is that you are not blocking other HW interrupts when doing the work. The same goes for high priority tasks in the system; they're blocked until the interrupt handler returns. From the task context you'll also be able to access other OS facilities; you can sleep while waiting for a lock, for example.
 
-## Example app
+<br>
 
-Here I'm going to write an app which demonstrates the use of event queues for communication between tasks. I'll also use OS callouts for timer expiration, and another event from a GPIO interrupt.
+### Example app
 
-I use inputs from these 3 sources to toggle 3 GPIO outputs on my STM32F3discovery board.
+Here you are going to write an app which demonstrates the use of event queues for communication between tasks. You will  also use OS callouts for timer expiration and another event from a GPIO interrupt.
 
-### Create project
+You will  use inputs from 3 sources to toggle 3 GPIO outputs on my STM32F3discovery board.
 
-I start by creating a project, and populating it with repositories incubator-mynewt-core and mynewt_stm32f3. See [STM32F3 tutorial](STM32F303.md) if you need help with this.
+<br>
 
+#### Create project
 
-### Create application
+You start by creating a project and populating it with repositories incubator-mynewt-core and mynewt_stm32f3. See [STM32F3 tutorial](STM32F303.md) if you need help with this. You can also read the tutorial on [Additional Repositories](add_repos.md) for a more thorough understanding. 
+
+<br> 
+
+#### Create application
 
 Here's what the pkg.yml looks for the application.
 
@@ -34,14 +39,16 @@ pkg.deps:
     - "@apache-mynewt-core/libs/console/stub"
 ```
 
-### Initialize the event queue structure
+<br>
+
+#### Initialize the event queue structure
 
 This must be done before anyone tries to place events to the queue. Here it's done before any task gets created. Initialization is done by calling *os_eventq_init()*.
 
 ```c
 #define MY_TASK_PRIO		4
 #define MY_TASK_STACK_SZ	512
-
+    
 static struct os_eventq my_eventq;
 static os_stack_t my_task_stack[MY_TASK_STACK_SZ];
 static struct os_task my_task_str;
@@ -57,7 +64,9 @@ init_tasks(void)
 
 ```
 
-### Processing events
+<br>
+
+#### Processing events
 
 Here event processing is done inside *my_task*. The main loop of the task is pulling events from the queue, and then taking action. We look at the type of the event to figure out what to do.
 
@@ -80,7 +89,9 @@ my_task(void *arg)
 }
 ```
 
-### Event types
+<br>
+
+#### Event types
 
 You can define your own event types. Some numbers are already reserved by the OS, so you should not use those as your own types.
 
@@ -95,7 +106,9 @@ You are going to generate events from GPIO interrupt handler, from another task 
 #define MY_TASK_TASK_EVENT	(OS_EVENT_T_PERUSER + 1)
 ```
 
-### Posting events from another task
+<br>
+
+#### Posting events from another task
 
 Events are posted to a queue by calling *os_eventq_put()*. You need to preallocate memory for the event structure. Here it's done by declaring the event structure as a global variable.
 
@@ -106,11 +119,11 @@ In the code snippet we declare the os_event structure, and initialize it. We als
 ```c
 #define GEN_TASK_PRIO		3
 #define GEN_TASK_STACK_SZ	512
-
+    
 static struct os_event gen_task_ev;
 static os_stack_t gen_task_stack[GEN_TASK_STACK_SZ];
 static struct os_task gen_task_str;
-
+    
 void
 gen_task(void *arg)
 {
@@ -119,7 +132,7 @@ gen_task(void *arg)
 		os_eventq_put(&my_eventq, &gen_task_ev);
 	}
 }
-
+    
 void
 init_tasks(void)
 {
@@ -130,11 +143,13 @@ init_tasks(void)
 }
 ```
 
-### Callout events
+<br>
+
+#### Callout events
 
 You can get timer events delivered to your task's event queue with OS callout. Check [callout documentation](../core_os/callout/callout.md) for description on how to use the API.
 
-For this example, you'll use only one type of callout, so you can use the simpler structure.
+For this example, you'll use only one type of callout; so you can use the simpler structure.
 
 In the code snippet we declare the os_callout structure and initialize it. Then we arm the timer.
 
@@ -152,13 +167,16 @@ init_tasks(void)
 
 ```
 
-### Posting events from interrupt handler
+<br>
+
+
+#### Posting events from interrupt handler
 
 Another place where posting events makes sense is from an interrupt handler. In this tutorial you will do it when GPIO changes state.
 
-You'll use HAL GPIO interface to register a routine which is getting called from interrupt handler context. This routine will then post event to your queue.
+You'll use HAL GPIO interface to register a routine which is getting called from the interrupt handler context. This routine will then post event to your queue.
 
-On STM32F3Discovery board, there is a button connected to PA0. Identifier for this GPIO pin is 0.
+On STM32F3Discovery board, there is a button connected to PA0. The identifier for this GPIO pin is 0.
 
 ```c
 static struct os_event gpio_ev;
@@ -181,10 +199,11 @@ my_gpio_irq(void *arg)
 }
 ```
 
+<br>
 
-### Event processing finalized
+#### Event processing finalized
 
-Now that you are posting events from different sources, you will fill in the parts in the task main loop to behave differently depending on event type.
+Now that you are posting events from different sources, you will fill in the parts in the task main loop to trigger different behaviors depending on event type.
 
 You'll drive different LEDs depending on what type of event arrived. LEDs on this board are connected to PE8, PE9, PE10 and so on. These have GPIO identifiers starting from 72 onwards.
 
@@ -203,14 +222,14 @@ init_tasks(void)
 }
 ```
 
-And the the new main loop for your task. Note that when callout event arrives, we re-arm the callout.
+And here is the new main loop for your task. Note that when callout event arrives, we re-arm the callout.
 
 ```c
 void
 my_task(void *arg)
 {
 	struct os_event *ev;
-
+    
 	while (1) {
 		ev = os_eventq_get(&my_eventq);
 		switch (ev->ev_type) {
@@ -231,8 +250,11 @@ my_task(void *arg)
 }
 ```
 
-Now you're done. Once you load this to your board, the task LED will blink at interval of 250ms, callout LED with interval of 500ms, and GPIO led every time you press the button.
+<br>
 
+Now you're done. Once you load this to your board, the task LED will blink at an interval of 250ms, the callout LED with an interval of 500ms, and the GPIO LED every time you press the button.
+
+<br>
 
 ### Code for the example
 
