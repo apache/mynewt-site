@@ -1,39 +1,40 @@
-## What is a Repository
+## Additional Repositories
 
-A repository is a version-ed mynewt project, which is a 
-collection of mynewt packages organized in a specific
+### What is a Repository
+
+A repository is a version-ed Mynewt project, which is a 
+collection of Mynewt packages organized in a specific
 way.  
 
-What differentiates a repository from a mynewt project is the presence of a
+What differentiates a repository from a Mynewt project is the presence of a
 `repository.yml` file describing the repository. This will be described 
-below.
-
-For the remainder of this document we'll use the term repo as shorthand for a 
-mynewt repository.
+below. **Note:** For the remainder of this document we'll use the term repo as shorthand for a 
+Mynewt repository.
 
 Repos are useful because they are an organized way for the community
-to share mynewt packages and projects.  In fact, the mynewt-core is 
+to share Mynewt packages and projects.  In fact, the Mynewt-core is 
 distributed as a repo.
 
-# Additional Repos 
+<br>
 
-Why does mynewt need additional repos? 
+### Why does Mynewt need additional repos? 
 
-Repos add functionality 
-not included in the mynewt core.  New repos might be created for 
+Repos add functionality not included in the Mynewt core.  New repos might be created for 
 several reasons.
 
 * **Expertise**.  Individuals or organizations may have expertise that they want
 to share in the form of repos. For example a chip vendor may
-create a repo to hold the mynewt support for their chips.
+create a repo to hold the Mynewt support for their chips.
 * **Non-Core component**.  Some components, although very useful to Mynewt users
-are not core to all mynewt users.  These are likely candidate to be held in 
+are not core to all Mynewt users.  These are likely candidates to be held in 
 different repos.
-* **Software licensing**.  Some software has licenses that make them incompatible
+* **Software licensing**.  Some software have licenses that make them incompatible
 with the ASF (Apache Software Foundation) license policies.  These may be 
-valuable components to some mynewt users, but cannot be contained in the `apache-mynewt-core`.
+valuable components to some Mynewt users, but cannot be contained in the `apache-Mynewt-core`.
 
-## What Repos are in my Project
+<br>
+
+### What Repos are in my Project
 
 The list of repos used by your project are contained within the 
 `project.yml` file.  An example can be seen by creating a new project:
@@ -45,26 +46,32 @@ $ newt new myproj
 $ cd myproj
 ```
 
+<br>
+
 View the `project.yml` section and you will see a line describing the repos:
 
 ```no-highlight
 project.repositories:
-    - apache-mynewt-core
+    - apache-Mynewt-core
 ```
 
+<br> 
+
 By default, this newly created project uses a single repo called 
-`apache-mynewt-core`.  
+`apache-Mynewt-core`.  
 
 If you wish to add additional repos, you would add 
 additional lines to the `project.repositories` variable like this.
 
 ```no-highlight
 project.repositories:
-    - apache-mynewt-core
+    - apache-Mynewt-core
     - another_repo_named_x
 ```
 
-## Repo Descriptors
+<br>
+
+### Repo Descriptors
 
 In addition to the repo name, the `project.yml` file must also contain
 a repo descriptor for each repository you include that gives `newt` 
@@ -73,7 +80,7 @@ information on obtaining the repo.
 In the same `myproj` above you will see the following repo descriptor.
  
 ```no-highlight
-repository.apache-mynewt-core:
+repository.apache-Mynewt-core:
     type: github
     vers: 0-latest
     user: apache
@@ -81,7 +88,9 @@ repository.apache-mynewt-core:
 ```
 
 A repo descriptor starts with `repository.<name>.`.  In this example, the 
-descriptor specifies the information for the `apache-mynewt-core`.
+descriptor specifies the information for the `apache-Mynewt-core`.
+
+<br>
 
 The fields within the descriptor have the following definitions:
 
@@ -90,7 +99,7 @@ of `newt` only supports github.  Future versions may support generic git or othe
 code storage mechanisms.
 
 * **vers** -- The version of the repo to use for your project.  A source
-code repository contains many version of the source. This field is used to 
+code repository contains many versions of the source. This field is used to 
 specify the one to use for this project.  See the section on versions below 
 for a detailed description of the format of this field.
 
@@ -99,14 +108,16 @@ after `github.com` in the repo path.  Consider the repository
 `https://github.com/apache/incubator-mynewt-core`. It has username `apache`.  
 
 * **repo** -- The name of the repo.  On github, this is the name after
-the user name described above.  Consider the repository 
+the username described above.  Consider the repository 
 `https://github.com/apache/incubator-mynewt-core`. It has username 
 `incubator-mynewt-core`.  This is a path to the source control
 and should not be confused with the name of the repo that you used in the 
 `repository.<name>` declaration above.   That name is contained elsewhere
 within the repo. See Below.
 
-## Adding Existing Repos to my Project
+<br>
+
+### Adding Existing Repos to my Project
 
 To add a new repo to your project, you have to complete two steps.
 
@@ -122,33 +133,35 @@ An example if a `project.yml` file with two repositories is shown below:
 project.name: "my_project"
 
 project.repositories:
-    - apache-mynewt-core
-    - mynewt_arduino_zero
-
+    - apache-Mynewt-core
+    - Mynewt_arduino_zero
+    
 # Use github's distribution mechanism for core ASF libraries.
 # This provides mirroring automatically for us.
 #
-repository.apache-mynewt-core:
+repository.apache-Mynewt-core:
     type: github
     vers: 0-latest
     user: apache
     repo: incubator-mynewt-core
-
+    
 # a special repo to hold hardware specific stuff for arduino zero
-repository.mynewt_arduino_zero:
+repository.Mynewt_arduino_zero:
     type: github
     vers: 0-latest
     user: runtimeinc
-    repo: mynewt_arduino_zero
+    repo: Mynewt_arduino_zero
 ```
 
-## What Version of the Repo
+<br>
+
+### What Version of the Repo to use
 
 Mynewt repos are version-ed artifacts.  They are stored in source control 
 systems like github.  The repo descriptor in your `project.yml` file must
 specify the version of the repo you will accept into your project.
 
-For now, we are at the beginnings of mynewt. For testing and evaluation
+For now, we are at the beginnings of Mynewt. For testing and evaluation
 please use `0-latest` in the `vers` field in your repo descriptor.
 
 ```
@@ -157,13 +170,15 @@ please use `0-latest` in the `vers` field in your repo descriptor.
 
 See below for a description of the version system.
 
-## What is in a Repo
+<br>
 
-A repo is a collection of mynewt packages organized in a specific
+### What is in a Repo
+
+A repo is a collection of Mynewt packages organized in a specific
 way and stored in one of the supported code storage methods described above.  
 
-A repo is a mynewt project, with an additional file `repository.yml`
-which describes the repo for `newt` (and humans browsing them).
+A repo is a Mynewt project with an additional file `repository.yml`
+which describes the repo for use by `newt` (and humans browsing them).
 
 There is one key consideration for this `repository.yml` file. The 
 `repository.yml` file only lives in the master branch of the git
@@ -172,17 +187,19 @@ use that to resolve the actual branch required depending on the version
 specified in the project.  Special care should be taken to ensure that this
 file exists only in the master branch.
 
-Here is the `repository.yml` file from the apache-mynewt-core 
+Here is the `repository.yml` file from the apache-Mynewt-core:
 
 ```no-highlight
 repo.name: apache-mynewt-core
 repo.versions:
-    "0.7.9": "mynewt_0_8_0_b2_tag"
+    "0.7.9": "Mynewt_0_8_0_b2_tag"
     "0-latest": "0.7.9"
     "0.8-latest": "0.7.9"
 ```
 
-it contains the following:
+<br>
+
+It contains the following:
 
 * **repo.name** The external name that is used to include the library in 
 your `project.yml` file.   This is the name you in include in the `project.repositories` variable when adding this repository to your project.
@@ -190,7 +207,9 @@ your `project.yml` file.   This is the name you in include in the `project.repos
 on the settings in their `project.yml` file.  See below for a thorough description
 on versioning. Its a flexible mapping between version numbers and git branches.
 
-## Repo Version
+<br>
+
+### Repo Version
 
 The version field argument in your `project.yml` file has the following format:
 
@@ -210,6 +229,8 @@ or
 <major_num>-<stability string>
 ```
 
+<br>
+
 The stability string can be one of 3 pre-defined stability values.
 
 1. stable -- A stable release version of the repository
@@ -224,17 +245,19 @@ the version number and stability value.  For example:
 * `1.2-dev`       -- The development version from 1.2
 * `1.1.1`         -- a specific version 1.1.1
 
-You cannot specify a stability string with a fully number version, e.g.
+You cannot specify a stability string with a fully numbered version, e.g.
 
 ```no-highlight
 1.2.8-stable
 ```
 
+<br>
+
 A `repository.yml` file contains information to match this version request
 into a git branch to fetch for your project.
 
 Its up to the repository maintainer to map these to branches of the 
-repository.  For example, in a fictitious repository, the following are 
+repository.  For example, let's say in a fictitious repository the following are 
 defined.
 
 ```no-highlight
@@ -259,20 +282,25 @@ When the `project.yml` file asks for `1.2-stable` its resolved to version
 branch `xxx_branch_1_2_0`.  This is the branch that `newt` fetches into 
 your project.
 
-## How do I find out what Repos are available for Mynewt components
+<br>
 
-Currently, there is no `newt` command to locate/search mynewt package 
+### How to find out what Repos are available for Mynewt components
+
+Currently, there is no `newt` command to locate/search Mynewt package 
 repositories.  However, since the `newt` tool supports only github, 
 searching github by keyword is a satisfactory option until a search 
 tool is created.
 
-When searching github, recall that a mynewt repository must 
+When searching github, recall that a Mynewt repository must 
 have a `repository.yml` file in its root directory. If you don't see 
-that file, its not a mynewt repository can cant be included in your 
-project via the mynewt tool.  
+that file, it's not a Mynewt repository and can't be included in your 
+project via the newt tool.  
 
 Once you find a repository, the github URL and `repository.yml` file
 should give you all the information to add it to your `project.yml` file.
+
+<br>
+
 
 
 
