@@ -92,6 +92,13 @@ STATS_SECT_START(my_stat_section)
 STATS_SECT_END
 ```
 
+In this case we chose to make the stats 32-bits each.  `stats.h` supports three
+different stats sizes through the following macros:
+
+* `STATS_SIZE_16` -- stats are 16 bits (wraps at 65536)
+* `STATS_SIZE_32` -- stats are 32 bits (wraps at 4294967296)
+* `STATS_SIZE_64` -- stats are 64-bits
+
 When this compiles/pre-processes, it produces a structure definition like this
 
 ```
