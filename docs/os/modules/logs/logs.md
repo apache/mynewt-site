@@ -1,17 +1,21 @@
-# Mynewt Logging
+## Mynewt Logging
 
-Mynewt has a logging package (`apache-mynewt-core/sys/log`) to support
-logging of information within a mynewt application.
+Apache Mynewt has a logging package (`apache-mynewt-core/sys/log`) to support
+logging of information within a Mynewt application.
 
-#Description
+<br>
+
+###Description
 
 Logging API is provided in `apache-mynewt-core/sys/log/include/log/log.h`.
 
 It allows packages to define their own log streams with separate 
-names.  It also allows application to control the output destinations
+names.  It also allows an application to control the output destinations
 of logs. 
 
-## Compile Time Settings
+<br>
+
+#### Compile Time Settings
 
 To save space at compile time, there is a compile time log level that
 includes/excludes certain logs at compile time, saving image space.  For 
@@ -37,32 +41,36 @@ or
 
 would both set the compile-time log level to `LOG_LEVEL_ERROR`.  All logs
 of less than `LOG_LEVEL_ERROR` severity would be disabled at compile 
-time and take no space within the mynewt application image.
+time and take no space within the Mynewt application image.
 
 These compile time settings are applicable to all logs registered with the
 system.
 
-## Log
+<br>
+
+### Log
 
 Each log stream requires a log structure to define its  logging properties.
-Its typical for modules to extern this structure.
+It is typical for modules to extern this structure.
 
-## Log Handler
+<br>
+
+### Log Handler
 
 To use logs, a log-handler is required, which is responsible for handling
-the I/O from the log.  The log package comes with two pre-build log handlers
+the I/O from the log.  The log package comes with two pre-built log handlers.
 
 * console -- streams log events directly to the console port.  Does
 not support walking and reading.
 * cbmem -- writes/reads log events to a circular buffer.  Supports walking 
-and reading for access by newtmgr and shell commands.
+and reading for access by `newtmgr` and shell commands.
 
-In addition, its possible to create custom log handlers for other methods.
-Example may include
+In addition, it is possible to create custom log handlers for other methods.
+Examples may include
 
 * Flash file system
 * Flat flash buffer
-* streamed over some other interface
+* Streamed over some other interface
 
 To use logging, you will not typically need to create your own log handler.
 You can use one of the two supplied above. 
@@ -71,9 +79,11 @@ In Mynewt today, each module will register its logs with a default log handler.
 Its up to the application to use or override this log handler for its 
 specific purposes.  See below for an example.
 
-## Typical use of logging when writing an application 
+<br>
 
-When writing an application that is using others log modules, you 
+### Typical use of logging when writing an application 
+
+When writing an application that is using other's log modules, you 
 may want to override their log handlers and log levels.
 
 Add the logging to your package file.
@@ -83,9 +93,11 @@ Add the logging to your package file.
         - "@apache-mynewt-core/sys/log"
 ```
 
+<br>
+
 Initialize the logs in your startup code. It may look like this 
 
-```no-highlight
+```c
 #include <module1/module1.h>
 #include <module3/module2.h>
 #include <module3/module3.h>
@@ -116,22 +128,25 @@ void app_log_init(void)
 }
 ```
 
+<br>
 
-## Typical use of Logging when writing a module 
+### Typical use of Logging when writing a module 
 
 When creating a package using its own logging, you can have this type of
 structure.  
 
-```no-highlight
+```c
 /* my_package.h*/
 
 /* pick a unique name here */
 extern struct log my_log;
 ```
 
-with an implementation in your module that looks like this 
+<br>
 
-```no-highlight
+with an implementation in your module that looks like this: 
+
+```c
 
 /* my_package.c */
 
