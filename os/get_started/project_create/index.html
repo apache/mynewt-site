@@ -407,6 +407,7 @@
                         
                             <h2 id="create-your-first-mynewt-project">Create Your First Mynewt Project<a class="headerlink" href="#create-your-first-mynewt-project" title="Permanent link">&para;</a></h2>
 <p>This page shows how to create a Mynewt Project using the <code>newt</code> command-line tool.</p>
+<p><br></p>
 <h3 id="pre-requisites">Pre-Requisites<a class="headerlink" href="#pre-requisites" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Ensure you have installed <a href="../../../newt/install/newt_mac/">newt</a> and that the 
@@ -419,40 +420,44 @@ support native compiling to build the project this tutorial creates.  </li>
 <h3 id="newt-new">Newt New<a class="headerlink" href="#newt-new" title="Permanent link">&para;</a></h3>
 <p>Choose a project name. For this tutorial we will call this project <code>myproj</code>.
 Enter the <code>newt new myproj</code> command. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
-    Installing skeleton in myproj...
-    Project myproj successfully created.
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt new myproj
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in myproj...
+Project myproj successfully created.
 </pre></div>
 
 
 <p><br></p>
-<p>The <code>newt</code> tool has created a project directory structure like the one below:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    ─── myproj
-        ├── DISCLAIMER
-        ├── LICENSE
-        ├── NOTICE
-        ├── README.md
-        ├── apps
-        │   └── blinky
-        │       ├── pkg.yml
-        │       └── src
-        │           └── main.c
-        ├── project.yml
-        └── targets
-            ├── my_blinky_sim
-            │   ├── pkg.yml
-            │   └── target.yml
-            └── unittest
-                ├── pkg.yml
-                └── target.yml
+<p>Newt populates this new project with a base skeleton of a new Apache Mynewt 
+project.  It has the following structure:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd myproj
+$ tree -L 3
+.
+├── DISCLAIMER
+├── LICENSE
+├── NOTICE
+├── README.md
+├── apps
+│   └── blinky
+│       ├── pkg.yml
+│       └── src
+├── project.yml
+└── targets
+    ├── my_blinky_sim
+    │   ├── pkg.yml
+    │   └── target.yml
+    └── unittest
+        ├── pkg.yml
+        └── target.yml
+
+6 directories, 10 files
 </pre></div>
 
 
 <p><br></p>
-<p><code>newt</code> has installed the base files for a project comprising the following.</p>
+<p>The Newt tool has installed the base files for a project comprising the following:</p>
 <ol>
-<li>file <code>project.yml</code> contains the repository list that the project uses to fetch
+<li>the file <code>project.yml</code> contains the repository list that the project uses to fetch
 its packages. Your project is a collection of repositories.  In this case, the project just
 comprises the core mynewt repository.  Later you will add more repositories
 to include other mynewt components.</li>
@@ -461,93 +466,119 @@ and its package dependencies.</li>
 <li>A target directory containing <code>my_blinky_sim</code>, a target descriptor used to
 build a version of myproj.  Use <code>newt target show</code> to see available build 
 targets.</li>
-<li>A non-build-able target called <code>unittest</code>.  This is used
+<li>A non-buildable target called <code>unittest</code>.  This is used
 internally by <code>newt</code> and is not a formal build target.</li>
 </ol>
 <p><strong>NOTE:</strong> the actual code and package files are not installed 
 (except the template for <code>main.c</code>).  See the next step for installing the packages.</p>
 <p><br></p>
 <h3 id="newt-install">Newt Install<a class="headerlink" href="#newt-install" title="Permanent link">&para;</a></h3>
-<p>Change into the <code>myproj</code> directory.  Then ask newt to install all the 
-project package dependencies using <code>newt install</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt install -v 
-    apache-mynewt-core
-    Downloading repository description for apache-mynewt-core... success!
-    Downloading repository incubator-mynewt-core (branch: master; commit: mynewt_0_8_0_b2_tag) at https://github.com/apache/incubator-mynewt-core.git
-    Cloning into &#39;/var/folders/7l/7b3w9m4n2mg3sqmgw2q1b9p80000gn/T/newt-repo969988348&#39;...
-    remote: Counting objects: 17935, done.
-    remote: Compressing objects: 100% (234/234), done.
-    remote: Total 17935 (delta 101), reused 0 (delta 0), pack-reused 17686
-    Receiving objects: 100% (17935/17935), 6.18 MiB | 315.00 KiB/s, done.
-    Resolving deltas: 100% (10541/10541), done.
-    Checking connectivity... done.
-    apache-mynewt-core successfully installed version 0.7.9-none
-    $ 
+<p>Once you've switched into your new project's directory, the next step is to fetch
+any dependencies this project has.  By default, all Newt projects rely on a
+single remote repository, apache-mynewt-core.  The <em>newt install</em> command will
+fetch this repository.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt install
+apache-mynewt-core
 </pre></div>
 
 
-<p>Now you will have installed packages required to build your project. Note in 
-the package you now have dependent packages stored in the <code>repos</code> directory
-under the specific repository you have included in the base project.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    .
-    ├── apps
-    │   └── blinky
-    │       └── src
-    ├── repos
-    │   └── apache-mynewt-core
-    │       ├── apps
-    │       ├── compiler
-    │       ├── fs
-    │       ├── hw
-    │       ├── libs
-    │       ├── net
-    │       ├── scripts
-    │       ├── sys
-    │       └── targets
-    └── targets
-        ├── my_blinky_sim
-        └── unittest
+<p><strong>NOTE:</strong> <em>apache-mynewt-core</em> may take a while to download.  To see progress,
+use the <em>-v</em> (verbose) option to install. </p>
+<p>Once <em>newt install</em> has successfully finished, the contents of <em>apache-mynewt-core</em> will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ tree -L 2 repos/apache-mynewt-core/
+.
+&lt;snip&gt;
+├── fs
+│   ├── fs
+│   └── nffs
+├── hw
+│   ├── bsp
+│   ├── hal
+│   └── mcu
+├── libs
+│   ├── baselibc
+│   ├── bootutil
+│   ├── cmsis-core
+│   ├── console
+│   ├── elua
+│   ├── flash_test
+│   ├── imgmgr
+│   ├── json
+│   ├── mbedtls
+│   ├── newtmgr
+│   ├── os
+│   ├── shell
+│   ├── testreport
+│   ├── testutil
+│   └── util
+├── net
+│   └── nimble
+&lt;snip&gt;
 </pre></div>
 
 
-<p>Within each of these directories are the packages required to build your
-project for the various targets.</p>
+<p>As you can see, the core of the Apache Mynewt operating system has been brought 
+into your local directory!  </p>
 <p><br></p>
-<h2 id="testing-the-project">Testing the Project<a class="headerlink" href="#testing-the-project" title="Permanent link">&para;</a></h2>
-<p>To validate, you can also run all the units test through simulation.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt test all
-    ...lots of compiling and testing...
-    ...about 2 minutes later ...
-    Archiving bootutil.a
-    Linking test_bootutil
-    Executing test: /myproj/bin/unittest/libs/bootutil/test_bootutil
-    Passed tests: [net/nimble/host fs/nffs libs/os hw/hal libs/mbedtls libs/util sys/config libs/bootutil]
-    All tests passed
+<h3 id="test-the-projects-packages">Test the project's packages<a class="headerlink" href="#test-the-projects-packages" title="Permanent link">&para;</a></h3>
+<p>Use the following command to execute a package's unit tests:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt test &lt;package-name&gt;
+</pre></div>
+
+
+<p>To test all the packages in a project, specify <code>all</code> as the <em>&lt;package-name></em>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt test all
+...lots of compiling and testing...
+...about 2 minutes later ...
+Archiving bootutil.a
+Linking test_bootutil
+Executing test: /myproj/bin/unittest/libs/bootutil/test_bootutil
+Passed tests: [net/nimble/host fs/nffs libs/os hw/hal libs/mbedtls libs/util sys/config libs/bootutil]
+All tests passed
 </pre></div>
 
 
 <p><br></p>
-<h2 id="building-the-project">Building the Project<a class="headerlink" href="#building-the-project" title="Permanent link">&para;</a></h2>
-<p>To build the project you can use <code>newt build</code> using the target </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt build my_blinky_sim
-    App successfully built: /bin/my_blinky_sim/apps/blinky/blinky.elf
+<h3 id="build-the-project">Build the Project<a class="headerlink" href="#build-the-project" title="Permanent link">&para;</a></h3>
+<p>To build and run your new application, simply issue the following command:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build my_blinky_sim 
+Compiling base64.c
+Compiling cbmem.c
+Compiling datetime.c
+Compiling tpq.c
+Archiving util.a
+Compiling main.c
+Archiving blinky.a
+Compiling flash_map.c
+Compiling hal_flash.c
+Archiving hal.a
+Compiling cons_fmt.c
+Compiling cons_tty.c
+&lt;snip&gt;
+Linking blinky.elf
+App successfully built: /Users/sterling/dev/tmp/my_app/bin/my_blinky_sim/apps/blinky/blinky.elf
 </pre></div>
 
 
 <p><br></p>
 <p>You can run the simulated version of your project and see the simulated LED
-blink</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    ./bin/my_blinky_sim/apps/blinky/blinky.elf
-    hal_gpio set pin  1 to 0
+blink.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">./bin/my_blinky_sim/apps/blinky/blinky.elf
+hal_gpio set pin  1 to 0
 </pre></div>
 
 
-<p>Just do <code>ctrl-c</code> to exit.</p>
+<p>Just press <em>ctrl-c</em> to exit.</p>
 <p><br></p>
-<h2 id="complete">Complete<a class="headerlink" href="#complete" title="Permanent link">&para;</a></h2>
-<p>Congratulations, you have created your first project!  This project contains 
-the core OS, a simple application to blink an LED and all of the dependencies
-required.</p>
+<h3 id="complete">Complete<a class="headerlink" href="#complete" title="Permanent link">&para;</a></h3>
+<p>Congratulations, you have created your first project!  The blinky application
+is not terribly exciting when it is run in the simulator, as there is no LED to
+blink.  Apache Mynewt has a lot more functionality than just running simulated
+applications.  It provides all the features you'll need to cross-compile your
+application, run it on real hardware and develop a full featured application.</p>
+<p>If you're interested in learning more, a good next step is to dig in to one of
+the <a href="../../tutorials/tutorials">tutorials</a> and get a Mynewt project running on real hardware.</p>
+<p>Happy Hacking!</p>
                         
                         <div class="row">
                             
