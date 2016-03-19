@@ -43,13 +43,14 @@ Controller implementations.
 peripheral functions, allowing developers to easily write cross-platform
 code.
 
+<br>
+
 ### Newt ###
 In order to provide all this functionality, and operate in an 
 extremely low resource environment, Mynewt provides a very fine-grained source 
 package management and build system tool, called *newt*. 
 
-You can install and build *newt* for Linux or
-[Mac](../../../newt/tutorials/newt_mac/)
+You can install and build *newt* for [Linux](../../newt/install/newt_linux.md) or [Mac](../../newt/install/newt_mac.md). 
 
 ### Build your first Mynewt App with Newt ###
 
