@@ -2,6 +2,8 @@
 
 This page shows how to create a Mynewt Project using the `newt` command-line tool.
 
+<br>
+
 ### Pre-Requisites
 
 * Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
@@ -91,9 +93,7 @@ apache-mynewt-core
 use the _-v_ (verbose) option to install. 
 
 
-Once _newt install_ has successfully finished, the contents of _apache-mynewt-core_
-will have been downloaded into your local directory.  You can view them by issuing the 
-following commands in the base directory of the new project:
+Once _newt install_ has successfully finished, the contents of _apache-mynewt-core_ will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project:
 
 ```no-highlight
 $ tree -L 2 repos/apache-mynewt-core/
@@ -132,11 +132,11 @@ into your local directory!
 
 <br>
 
-## Testing the project's packages
+### Test the project's packages
 
 Use the following command to execute a package's unit tests:
 
-```no-highlight
+```
 $ newt test <package-name>
 ```
 
@@ -155,11 +155,11 @@ All tests passed
 
 <br>
 
-## Building the Project
+### Build the Project
 
 To build and run your new application, simply issue the following command:
 
-```no-highlight
+```
 $ newt build my_blinky_sim 
 Compiling base64.c
 Compiling cbmem.c
@@ -178,9 +178,12 @@ Linking blinky.elf
 App successfully built: /Users/sterling/dev/tmp/my_app/bin/my_blinky_sim/apps/blinky/blinky.elf
 ```
 
+<br>
+
 You can run the simulated version of your project and see the simulated LED
-blink
-```no-highlight
+blink.
+
+```
 ./bin/my_blinky_sim/apps/blinky/blinky.elf
 hal_gpio set pin  1 to 0
 ```
@@ -189,7 +192,7 @@ Just press _ctrl-c_ to exit.
 
 <br>
 
-## Complete
+### Complete
 
 Congratulations, you have created your first project!  The blinky application
 is not terribly exciting when it is run in the simulator, as there is no LED to

@@ -3,7 +3,9 @@
 This page shows how to install tools to use some ARM based platforms with
 Apache Mynewt.
 
-## Install ARM Cross tools for in Mac OS X
+<br>
+
+## Install ARM Cross tools in Mac OS X
 
 ### Install Tool Chain
 
@@ -30,6 +32,8 @@ available. Mynewt OS will eventually work with multiple versions available,
 including the latest releases. However, at present we have tested only with
 this version and recommend it for getting started. 
 
+<br>
+
 ### Install OpenOCD
     
 OpenOCD (Open On-Chip Debugger) is open-source software that allows your
@@ -47,7 +51,9 @@ $ ls -l $(which openocd)
 lrwxr-xr-x  1 <user>  admin  36 Sep 17 16:22 /usr/local/bin/openocd -> ../Cellar/open-ocd/0.8.0/bin/openocd
 ```
 
-## Install cross arm tools for Linux
+<br>
+
+## Install ARM cross arm tools for Linux
 
 ### Install Tool Chain
 
@@ -62,7 +68,10 @@ $ sudo apt-get update
 $ sudo apt-get install gcc-arm-none-eabi
 ```
 
+<br>
+
 ###Install OpenOCD
+
 OpenOCD (Open On-Chip Debugger) is open-source software that allows your
 computer to interface with the JTAG debug connector on a variety of boards.  A
 JTAG connection lets you debug and test embedded target devices. For more on

@@ -52,6 +52,8 @@ package management and build system tool, called *newt*.
 
 You can install and build *newt* for [Linux](../../newt/install/newt_linux.md) or [Mac](../../newt/install/newt_mac.md). 
 
+<br>
+
 ### Build your first Mynewt App with Newt ###
 
 With the introductions out of the way, now is a good time to [get
