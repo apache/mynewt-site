@@ -29,7 +29,7 @@ The instructions assume the user is using a Bourne-compatible shell (e.g. bash o
 ### Install newt
 
 If you have not already installed `newt`, see the 
-[newt installation instructions](../newt/tutorials/newt_mac.md) and ensure newt is installed an in your path.
+[newt installation instructions](../newt/install/newt_mac.md) and ensure newt is installed an in your path.
 
 ### Install newtmgr
 

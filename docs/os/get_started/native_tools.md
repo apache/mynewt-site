@@ -11,7 +11,7 @@ This page provides guidance for MAC and Linux. See the relevant sections below.
 ### Install Brew
 
 If you have not already installed Homebrew from the 
-[`newt` tutorials pages](../../newt/tutorials/newt_mac.md), install it. 
+[`newt` tutorials pages](../../newt/install/newt_mac.md), install it. 
 
 ###Install gcc/libc 
 
