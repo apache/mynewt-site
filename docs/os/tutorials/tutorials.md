@@ -8,7 +8,8 @@ If the introduction to Mynewt has piqued your interest and you want to familiari
 * [Blinky on nRF52 Development Kit from Nordic Semiconductor](nRF52.md) **Note:** This supports BLE.
 * [Add a unit Test for a Package](unit_test.md)
 * [Add an air-quality sensor](air_quality_sensor.md) 
-* [How to contribute to docs](how_to_edit_docs.md)
+* [Additional Repositories](add_repos.md)
+* [A task to manage multiple events](event_queue.md)
 
 **Send us an email on the dev@ mailing list if you have comments or suggestions!** If you haven't joined the mailing list, you will find the links [here](../../community.md).
 
