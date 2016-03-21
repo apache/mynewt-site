@@ -37,30 +37,26 @@ What this command just did was to create a directory called `ble_tgt` in the tar
 
 The target is not yet complete though! We need to set some target variables for this project. Currently, the nimble stack has been ported to the Nordic nrf5x chipsets; specifically the nrf51 and nrf52. This application will use the nrf52 but we will also show the setup for the nrf51 in case your project uses that chip.
 
-Here are the commands you will need to setup your target for the nrf52:
+Here is the command you will need to setup your target for the nrf52:
 
 ```no-highlight
-$ newt target set ble_tgt arch=cortex_m4
-Target targets/ble_tgt successfully set target.arch to cortex_m4
-$ newt target set ble_tgt bsp=hw/bsp/nrf52pdk
-Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf52pdk
-$ newt target set ble_tgt build_profile=optimized
-Target targets/ble_tgt successfully set target.build_profile to optimized
-$newt target set ble_tgt app=apps/ble_app
+$ newt target set ble_tgt app=apps/ble_app          \
+                          bsp=hw/bsp/nrf52pdk       \
+                          build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
+Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf52pdk
+Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
-Here are the commands you will need to setup your target for the nrf51:
+Here is the command you will need to setup your target for the nrf51:
 
 ```no-highlight
-$ newt target set ble_tgt arch=cortex_m0
-Target targets/ble_tgt successfully set target.arch to cortex_m0
-$ newt target set ble_tgt bsp=hw/bsp/nrf51dk
-Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf51dk
-$ newt target set ble_tgt build_profile=optimized
-Target targets/ble_tgt successfully set target.build_profile to optimized
-$newt target set ble_tgt app=apps/ble_app
+$ newt target set ble_tgt app=apps/ble_app          \
+                          bsp=hw/bsp/nrf51dk        \
+                          build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
+Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf51dk
+Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
 <br>
