@@ -18,7 +18,6 @@ This tutorial assumes that you have already installed a source tree and are fami
     * [Initializing the Nimble stack](#initializing-the-nimble-stack)
         * [Initializing the Nimble controller](#initializing-the-nimble-controller)
         * [Initializing the Nimble host](#initializing-the-nimble-host)
-    * [Compile-time configuration](#compile-time-configuration)
 * [Building the application](#building-the-application)
 
 ### Creating the application directory
@@ -26,7 +25,7 @@ This tutorial assumes that you have already installed a source tree and are fami
 
 ### Creating the target
 
-The first step will be to create the target that you will use to build your application. We will call this target "ble_tgt". Type the `newt target create ble_tgt` command. You should get this:
+The first step will be to create the target that you will use to build your application. We will call this target "ble\_tgt". Type the `newt target create ble_tgt` command. You should get this:
 
 ```no-highlight
 $ newt target create ble_tgt
@@ -421,17 +420,9 @@ The parameters are documented below.
 | *prio*        | The priority of the Nimble host task.  Unlike the controller, the host does not have any strict timing requirements.  This number should be greater than the priority of any time-critical tasks in your application (remember, bigger number = lower priority!).  There are no restrictions with regards to the host task's priority relative to its client tasks. |
 | *cfg*         |  A pointer to the desired host configuration, or *NULL* if you want to use the default settings. |
 
-As mentioned above, passing a *cfg* value of *NULL* will initialize the Nimble host with the default configuration.  This is convenient while familiarizing yourself with the Nimble stack, but ultimately you will probably want to use a custom configuration.  To configure the host with custom values, prepare an instance of `struct ble_hs_cfg` using the below procedure:
+As mentioned above, passing a *cfg* value of *NULL* will initialize the Nimble host with the default configuration.  This is convenient while familiarizing yourself with the Nimble stack, but ultimately you will probably want to use a custom configuration.  For more information on configuring the host, see the Nimble Configuration Guide (TBD).
 
-1. Declare an instance of `struct ble_hs_cfg`.
-2. Copy the default settings into your struct instance via initialization or assignment.  The default settings are stored in a global variable called `ble_hs_cfg_dflt`.
-3. Assign specific values to your configuration object.
-
-**Note:** Even if you plan on explicitly specifying every host runtime setting, it is still recommended that you initialize your configuration instance with the default values (step 2).  This is recommended to protect against an indeterminate configuration when new settings are added in future versions of Nimble.
-
-The values that you assign to the configuration object depend heavily on the specifics of your application.  For general guidelines, see the Nimble peripheral tutorial (TBD) and the Nimble central tutorial (TBD).  For details, the `struct ble_hs_cfg` type is fully documented here: TBD.
-
-Continuing with our running example, we now add Nimble host initialization to the *main()* function.  This application is a BLE peripheral that will be running on memory-constrained hardware.  The default GATT server configuration allows for more services and characteristics than we need, so we scale down some of the numbers to reduce RAM usage.
+Continuing with our running example, we now add Nimble host initialization to the *main()* function.  This application uses the default host configuration, so it specifies *NULL* as the second argument to `ble_hs_init()`.
 
 ```c
 #include "host/ble_hs.h"
@@ -481,12 +472,7 @@ main(void)
     ble_ll_init(BLE_LL_TASK_PRI);
 
     /* Initialize the BLE host. */
-    cfg = ble_hs_cfg_dflt;
-    cfg.max_attrs = 32;
-    cfg.max_services = 4;
-    cfg.max_client_configs = 6;
-
-    rc = ble_hs_init(BLE_HS_TASK_PRI, &cfg);
+    rc = ble_hs_init(BLE_HS_TASK_PRI, NULL);
     assert(rc == 0);
 
     /* Start the OS */
@@ -496,11 +482,6 @@ main(void)
     assert(0);
 }
 ```
-
-<br>
-
-#### Compile-time configuration
-<Add content here. We should discuss nimble_opt.h (at least). I dont think we need to go into detail about each option here. That should be in the BLE stack documentation>
 
 <br>
 
