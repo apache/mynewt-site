@@ -1,26 +1,22 @@
-## Additional Repositories
+## Adding Repositories to your Project
 
 ### What is a Repository
 
-A repository is a version-ed Mynewt project, which is a 
-collection of Mynewt packages organized in a specific
-way.  
+A repository is a version-ed Mynewt project, which is a collection of Mynewt packages organized in a specific way for redistribution.  
 
 What differentiates a repository from a Mynewt project is the presence of a
 `repository.yml` file describing the repository. This will be described 
-below. **Note:** For the remainder of this document we'll use the term repo as shorthand for a 
-Mynewt repository.
+below. For a basic understanding of repositories you may read the [Newt Tool Manual](../../newt/newt_intro.md) and [How to create repos](../../newt/create_repo.md).
 
-Repos are useful because they are an organized way for the community
-to share Mynewt packages and projects.  In fact, the Mynewt-core is 
-distributed as a repo.
+**Note:** For the remainder of this document we'll use the term repo as shorthand for a Mynewt repository.
+
+Repos are useful because they are an organized way for the community to share Mynewt packages and projects.  In fact, the Mynewt-core is distributed as a repo.
 
 <br>
 
 ### Why does Mynewt need additional repos? 
 
-Repos add functionality not included in the Mynewt core.  New repos might be created for 
-several reasons.
+Repos add functionality not included in the Mynewt core.  New repos might be created for several reasons.
 
 * **Expertise**.  Individuals or organizations may have expertise that they want
 to share in the form of repos. For example a chip vendor may
@@ -63,7 +59,7 @@ By default, this newly created project uses a single repo called
 If you wish to add additional repos, you would add 
 additional lines to the `project.repositories` variable like this.
 
-```no-highlight
+``` hl_lines="3"
 project.repositories:
     - apache-Mynewt-core
     - another_repo_named_x
@@ -127,7 +123,7 @@ section includes information on the field required in your repo descriptor.
 * Edit the `project/yml` file and add a new line to the `project.repositories`
 variable with the name of the repo you are adding.  
 
-An example if a `project.yml` file with two repositories is shown below:
+An example of a `project.yml` file with two repositories is shown below:
 
 ```no-highlight
 project.name: "my_project"
@@ -168,24 +164,18 @@ please use `0-latest` in the `vers` field in your repo descriptor.
     vers:0-latest
 ```
 
-See below for a description of the version system.
+See [Create a Repo](../../newt/create_repo) for a description of the versioning system and all the possible ways to specify a version to use.
 
 <br>
 
-### What is in a Repo
+### Identifying a Repo
 
-A repo is a collection of Mynewt packages organized in a specific
-way and stored in one of the supported code storage methods described above.  
+A repo contains Mynewt packages organized in a specific way and stored in one of the supported code storage methods described above. In other words, it is a Mynewt project with an additional file `repository.yml` which describes the repo for use by `newt` (and humans browsing them). It contains a mapping of version numbers to the actual github branches containing the source code.
 
-A repo is a Mynewt project with an additional file `repository.yml`
-which describes the repo for use by `newt` (and humans browsing them).
-
-There is one key consideration for this `repository.yml` file. The 
-`repository.yml` file only lives in the master branch of the git
+Note that the `repository.yml` file lives only in the master branch of the git
 repository.  `Newt` will always fetch this file from the master branch and then
-use that to resolve the actual branch required depending on the version
-specified in the project.  Special care should be taken to ensure that this
-file exists only in the master branch.
+use that to determine the actual branch required depending on the version
+specified in your `project.yml` file.  Special care should be taken to ensure that this file exists only in the master branch.
 
 Here is the `repository.yml` file from the apache-Mynewt-core:
 
@@ -204,14 +194,13 @@ It contains the following:
 * **repo.name** The external name that is used to include the library in 
 your `project.yml` file.   This is the name you in include in the `project.repositories` variable when adding this repository to your project.
 * **repo.versions** A description of what versions to give the user depending 
-on the settings in their `project.yml` file.  See below for a thorough description
-on versioning. Its a flexible mapping between version numbers and git branches.
+on the settings in their `project.yml` file.  
 
 <br>
 
 ### Repo Version
 
-The version field argument in your `project.yml` file has the following format:
+The repo version number resolves to an actual git branch depending on the mapping specified in `repository.yml` for that repo. The version field argument in your `project.yml` file supports multiple formats for flexibility:
 
 ```no-highlight
 <major_num>.<minor_num>.<revision_num>
@@ -253,10 +242,12 @@ You cannot specify a stability string with a fully numbered version, e.g.
 
 <br>
 
-A `repository.yml` file contains information to match this version request
+### Repo Versions Available
+
+A `repository.yml` file contains information to match a version request
 into a git branch to fetch for your project.
 
-Its up to the repository maintainer to map these to branches of the 
+It's up to the repository maintainer to map these to branches of the 
 repository.  For example, let's say in a fictitious repository the following are 
 defined.
 
@@ -277,10 +268,12 @@ repo.versions:
     ....
 ```
 
-When the `project.yml` file asks for `1.2-stable` its resolved to version
-`1.2.0` (perhaps `1.2.1` is not stable yet), which resolves to a specific
+When the `project.yml` file asks for `1.2-stable` it is resolved to version
+`1.2.0` (perhaps `1.2.1` is not stable yet), which in turn resolves to a specific
 branch `xxx_branch_1_2_0`.  This is the branch that `newt` fetches into 
-your project.
+your project. 
+
+**Note:** Make sure a repo version exists in the `repository.yml` file of a repo you wish to add. Otherwise Newt will not be able to resolve the version and will fail to fetch the repo into your project.
 
 <br>
 
