@@ -25,16 +25,16 @@ The instructions assume the user is using a Bourne-compatible shell (e.g. bash o
 ### Installing newt
 
 If you have not already installed `newt` see the 
-[newt installation instructions](../newt/install/newt_mac.md) and ensure newt is installed an in your path.
+[newt installation instructions](../../newt/install/newt_mac.md) and ensure newt is installed an in your path.
 
 ### Installing newtmgr
 
 If you have not already installed `newtmgr` see the 
-[newtmgr installation instructions](installing.md) and ensure newtmgr is installed an in your path.
+[newtmgr installation instructions](../../newtmgr/installing.md) and ensure newtmgr is installed an in your path.
 
 ### Creating a new project
 
-Instructions for creating a project are located in the [Getting Started](../os/get_started/project_create.md) section of the [Mynewt OS Manual](../os/get_started/introduction.md)
+Instructions for creating a project are located in the [Getting Started](../get_started/project_create.md) section of the [Mynewt OS Manual](../get_started/introduction.md)
 
 We will list only the steps here for brevity.  We will name the project
 `slinky`.
@@ -54,10 +54,7 @@ We will list only the steps here for brevity.  We will name the project
 
 ### Setting up your target build
 
-Create a target for `slinky` using the native bsp.  See 
-[How to Define a Target](../newt/tutorials/define_target.md) for a detailed
-description.  We will list only the steps and suppress the tool output 
-here for brevity.
+Create a target for `slinky` using the native bsp. We will list only the steps and suppress the tool output here for brevity.
 
 ```no-highlight
     $ newt target create sim_slinky
