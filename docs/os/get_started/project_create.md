@@ -29,11 +29,13 @@ Project myproj successfully created.
 <br>
 
 Newt populates this new project with a base skeleton of a new Apache Mynewt 
-project.  It has the following structure:
+project.  It has the following structure. 
+
+**Note**: If you do not have `tree`, install it by running `brew install tree`.
 
 ```no-highlight 
 $ cd myproj
-$ tree -L 3
+$ tree 
 .
 ├── DISCLAIMER
 ├── LICENSE

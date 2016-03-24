@@ -44,9 +44,9 @@ To fetch the package from the runtime git repository, you need to add
 the repository to the ```project.yml``` file in your base project directory.
 
 Here is an example ```project.yml``` file with the Arduino Zero repository
-added:
+added. The lines to be added are highlighted.
 
-```no-higlight
+```hl_lines="6 14 15 16 17 18"
 $ more project.yml 
 project.name: "my_project"
 
