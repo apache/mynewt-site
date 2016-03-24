@@ -62,17 +62,16 @@ $ tree
 
 The Newt tool has installed the base files for a project comprising the following:
 
-1. the file `project.yml` contains the repository list that the project uses to fetch
+1. The file `project.yml` contains the repository list that the project uses to fetch
 its packages. Your project is a collection of repositories.  In this case, the project just
 comprises the core mynewt repository.  Later you will add more repositories
 to include other mynewt components.
-2. the file `apps/blinky/pkg.yml` contains the description of your application
+2. The file `apps/blinky/pkg.yml` contains the description of your application
 and its package dependencies.
-3.  A target directory containing `my_blinky_sim`, a target descriptor used to
+3. A `target` directory containing `my_blinky_sim`, a target descriptor used to
 build a version of myproj.  Use `newt target show` to see available build 
 targets.
-4. A non-buildable target called `unittest`.  This is used
-internally by `newt` and is not a formal build target.
+4. A non-buildable target called `unittest`.  This is used internally by `newt` and is not a formal build target.
 
 **NOTE:** the actual code and package files are not installed 
 (except the template for `main.c`).  See the next step for installing the packages.
@@ -94,6 +93,7 @@ apache-mynewt-core
 **NOTE:** _apache-mynewt-core_ may take a while to download.  To see progress,
 use the _-v_ (verbose) option to install. 
 
+<br>
 
 Once _newt install_ has successfully finished, the contents of _apache-mynewt-core_ will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project:
 
@@ -130,19 +130,29 @@ $ tree -L 2 repos/apache-mynewt-core/
 ```
 
 As you can see, the core of the Apache Mynewt operating system has been brought 
-into your local directory!  
+into your local directory. 
 
 <br>
 
 ### Test the project's packages
 
-Use the following command to execute a package's unit tests:
+You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the shell package in the `apache-mynewt-core` repo, call newt as shown below.
 
 ```
-$ newt test <package-name>
+$ newt test @apache-mynewt-core/libs/shell
+Testing package @apache-mynewt-core/libs/shell
+Compiling os.c
+Compiling os_callout.c
+Compiling os_eventq.c
+Compiling os_heap.c
+Compiling os_mbuf.c
+Compiling os_mempool.c
+<snip>
 ```
 
-To test all the packages in a project, specify `all` as the _<package-name\>_.
+<br>
+
+To test all the packages in a project, specify `all` instead of the package name.
 
 ```no-highlight
 $ newt test all

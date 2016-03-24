@@ -1,6 +1,6 @@
 ## Running Mynewt on Arduino Zero
 
-This tutorial describes how to run Mynewt OS on Arduino Zero.  
+This tutorial describes how to run Mynewt OS on Arduino Zero. Follow these simple steps and your board will be blinking in no time!
 
 ### Prerequisites
 
@@ -17,34 +17,30 @@ compatible with this tutorial
 * A USB cable (Type A to micro B) that can connect the computer to the Arduino
 * The Mynewt Release
 
-### Arduino Boards
-
-This tutorial has been tested on the following two Arduino Zero boards.
+This tutorial has been tested on the following two Arduino Zero boards - Zero and Zero-Pro.
 
 <img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
 <img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
 
 
-### Steps
+### Install Mynewt and Newt
 
-Follow these simple steps and your board will be blinking in no time!
+* If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/install/newt_mac.md)
+* If you have not already done so, create a project as shown in the Quick Start guide on how to [Create Your First Project](../get_started/project_create.md). Skip the testing and building the project steps in that tutorial since you will be defining a target for your Arduino board in this tutorial.
 
-#### Install Mynewt and Newt
+<br>
 
-If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/install/newt_mac.md) and cloned the Mynewt OS repository as shown in the [Get Started tutorial for Sim Blinky](../get_started/project_create.md)
-
-### Fetch External Packages for Atmel SAMD21
+### Fetch External Packages 
 
 Mynewt uses source code provided directly from the chip manufacturer for 
-low level operations. This code is licensed only for Atmel parts, and 
-cannot live in the Apache Mynewt repository. Fetch the package from 
-the runtime github repository.
+low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.
 
-To fetch the package from the runtime git repository, you need to add 
-the repository to the ```project.yml``` file in your base project directory.
+To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add 
+the repository to the `project.yml` file in your base project directory.
 
 Here is an example ```project.yml``` file with the Arduino Zero repository
-added. The lines to be added are highlighted.
+added. The sections with ```mynewt_arduino_zero``` that need to be added to 
+your project file are highlighted.
 
 ```hl_lines="6 14 15 16 17 18"
 $ more project.yml 
@@ -68,8 +64,7 @@ repository.mynewt_arduino_zero:
 $ 
 ```
 
-In the above, the sections with ```mynewt_arduino_zero``` need to be added to 
-your project file.
+<br>
 
 Once you've edited your ```project.yml``` file, the next step is to install the 
 project dependencies, this can be done with the ```newt install``` command 
@@ -82,7 +77,9 @@ mynewt_arduino_zero
 $
 ```
 
-### Create your bootloader Target
+<br>
+
+### Create your bootloader target
 
 Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
 generate both a bootloader, and an image target.
@@ -102,6 +99,8 @@ $ newt target set arduino_boot features=arduino_zero_pro
 Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
 ```
 
+<br>
+
 These commands do a few things: 
 
   * Create a target named ```arduino_boot```, in order to build the Arduino Zero Bootloader.
@@ -117,8 +116,11 @@ These commands do a few things:
     the Arduino Zero.  This is done through setting a build feature.  If you are building 
     for an Arduino Zero, and not a Zero Pro, this feature should be set to ```arduino_zero```.
 
-Once you've configured the bootloader target, the next step is to build the bootloader for
-your Arduino, you can do this by using the ```newt build``` command:
+<br>
+
+### Build your bootloader
+
+Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the ```newt build``` command:
 
 ```no-highlight
 $ newt build arduino_boot 
@@ -139,9 +141,11 @@ If this command finishes successfully, you have successfully built the Arduino
 bootloader, and the next step is to build your application for the Arduino 
 board.
 
-To create and download your application, you create another target, this one pointing
-to the application you want to download to the Arduino board.  In this tutorial, 
-we will use the default application that comes with your project, ```apps/blinky```:
+<br>
+
+### Build your blinky app 
+
+To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the default application that comes with your project, ```apps/blinky```:
 
 ```no-highlight
 $ newt target create arduino_blinky 
@@ -156,6 +160,8 @@ $ newt target set arduino_blinky features=arduino_zero_pro
 Target targets/arduino_blinky successfully set pkg.features to arduino_zero_pro
 $ 
 ```
+
+<br>
 
 You can now build the target, with ```newt build```: 
 
@@ -174,8 +180,10 @@ Archiving testutil.a
 App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf
 ```
 
-Congratulations!  You have successfully built your application, now it's 
-time to load the bootloader and application onto the target.
+Congratulations!  You have successfully built your application. Now it's 
+time to load both the bootloader and application onto the target.
+
+<br>
 
 ### Connect the Target
 
@@ -192,6 +200,8 @@ A image below shows the Arduino Zero Programming Port.
 <img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
 <img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
 
+<br>
+
 ### Download the Bootloader
 
 Execute the command to download the bootloader. 
@@ -203,6 +213,7 @@ Execute the command to download the bootloader.
 If the newt tool finishes without error, that means the bootloader has been 
 successfully loaded onto the target.
 
+<br>
 
 ### Run the Image 
 
@@ -261,13 +272,16 @@ The "remote" target does not support "run".  Try "help target" or "continue".
 Continuing.
 ```
 
-*NOTE:* The 0.0.0 specified after the target name to newt run, is the version 
+<br>
+
+**NOTE:** The 0.0.0 specified after the target name to `newt run` is the version 
 of the image to load.  If you are not providing remote upgrade, and are just 
 developing locally, you can provide 0.0.0 for every image version.
 
 If you want the image to run without the debugger connected, simply quit the 
-debugger and restart the board.  The image you programmed will come and run on the 
-Arduino on next boot!  
+debugger and restart the board.  The image you programmed will come and run on the Arduino on next boot!  
+
+<br>
 
 ### Watch the LED blink
 
