@@ -496,7 +496,7 @@
                         </div>
                         
                             <h2 id="running-mynewt-on-arduino-zero">Running Mynewt on Arduino Zero<a class="headerlink" href="#running-mynewt-on-arduino-zero" title="Permanent link">&para;</a></h2>
-<p>This tutorial describes how to run Mynewt OS on Arduino Zero.  </p>
+<p>This tutorial describes how to run Mynewt OS on Arduino Zero. Follow these simple steps and your board will be blinking in no time!</p>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
 <p>Before tackling this tutorial, it's best to read about Mynewt in the <a href="../../get_started/introduction">Introduction</a> section of this documentation.</p>
 <h3 id="equipment">Equipment<a class="headerlink" href="#equipment" title="Permanent link">&para;</a></h3>
@@ -509,23 +509,23 @@ compatible with this tutorial</li>
 <li>A USB cable (Type A to micro B) that can connect the computer to the Arduino</li>
 <li>The Mynewt Release</li>
 </ul>
-<h3 id="arduino-boards">Arduino Boards<a class="headerlink" href="#arduino-boards" title="Permanent link">&para;</a></h3>
-<p>This tutorial has been tested on the following two Arduino Zero boards.</p>
+<p>This tutorial has been tested on the following two Arduino Zero boards - Zero and Zero-Pro.</p>
 <p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
 <img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/></p>
-<h3 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h3>
-<p>Follow these simple steps and your board will be blinking in no time!</p>
-<h4 id="install-mynewt-and-newt">Install Mynewt and Newt<a class="headerlink" href="#install-mynewt-and-newt" title="Permanent link">&para;</a></h4>
-<p>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a> and cloned the Mynewt OS repository as shown in the <a href="../../get_started/project_create/">Get Started tutorial for Sim Blinky</a></p>
-<h3 id="fetch-external-packages-for-atmel-samd21">Fetch External Packages for Atmel SAMD21<a class="headerlink" href="#fetch-external-packages-for-atmel-samd21" title="Permanent link">&para;</a></h3>
+<h3 id="install-mynewt-and-newt">Install Mynewt and Newt<a class="headerlink" href="#install-mynewt-and-newt" title="Permanent link">&para;</a></h3>
+<ul>
+<li>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a></li>
+<li>If you have not already done so, create a project as shown in the Quick Start guide on how to <a href="../../get_started/project_create/">Create Your First Project</a>. Skip the testing and building the project steps in that tutorial since you will be defining a target for your Arduino board in this tutorial.</li>
+</ul>
+<p><br></p>
+<h3 id="fetch-external-packages">Fetch External Packages<a class="headerlink" href="#fetch-external-packages" title="Permanent link">&para;</a></h3>
 <p>Mynewt uses source code provided directly from the chip manufacturer for 
-low level operations. This code is licensed only for Atmel parts, and 
-cannot live in the Apache Mynewt repository. Fetch the package from 
-the runtime github repository.</p>
-<p>To fetch the package from the runtime git repository, you need to add 
+low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.</p>
+<p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add 
 the repository to the <code>project.yml</code> file in your base project directory.</p>
 <p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
-added. The lines to be added are highlighted.</p>
+added. The sections with <code>mynewt_arduino_zero</code> that need to be added to 
+your project file are highlighted.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more project.yml 
 project.name: &quot;my_project&quot;
 
@@ -548,8 +548,7 @@ repository.apache-mynewt-core:
 </pre></div>
 
 
-<p>In the above, the sections with <code>mynewt_arduino_zero</code> need to be added to 
-your project file.</p>
+<p><br></p>
 <p>Once you've edited your <code>project.yml</code> file, the next step is to install the 
 project dependencies, this can be done with the <code>newt install</code> command 
 (to see more output, provide the <code>-v</code> verbose option.): </p>
@@ -560,7 +559,8 @@ $
 </pre></div>
 
 
-<h3 id="create-your-bootloader-target">Create your bootloader Target<a class="headerlink" href="#create-your-bootloader-target" title="Permanent link">&para;</a></h3>
+<p><br></p>
+<h3 id="create-your-bootloader-target">Create your bootloader target<a class="headerlink" href="#create-your-bootloader-target" title="Permanent link">&para;</a></h3>
 <p>Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
 generate both a bootloader, and an image target.</p>
 <p>To generate the bootloader target, you need to specify the following options:</p>
@@ -577,6 +577,7 @@ Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
 </pre></div>
 
 
+<p><br></p>
 <p>These commands do a few things: </p>
 <ul>
 <li>Create a target named <code>arduino_boot</code>, in order to build the Arduino Zero Bootloader.</li>
@@ -592,8 +593,9 @@ Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
     the Arduino Zero.  This is done through setting a build feature.  If you are building 
     for an Arduino Zero, and not a Zero Pro, this feature should be set to <code>arduino_zero</code>.</li>
 </ul>
-<p>Once you've configured the bootloader target, the next step is to build the bootloader for
-your Arduino, you can do this by using the <code>newt build</code> command:</p>
+<p><br></p>
+<h3 id="build-your-bootloader">Build your bootloader<a class="headerlink" href="#build-your-bootloader" title="Permanent link">&para;</a></h3>
+<p>Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the <code>newt build</code> command:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_boot 
 Compiling asprintf.c
 Compiling atoi.c
@@ -612,9 +614,9 @@ App successfully built: myproject/bin/arduino_boot/apps/boot/boot.elf
 <p>If this command finishes successfully, you have successfully built the Arduino 
 bootloader, and the next step is to build your application for the Arduino 
 board.</p>
-<p>To create and download your application, you create another target, this one pointing
-to the application you want to download to the Arduino board.  In this tutorial, 
-we will use the default application that comes with your project, <code>apps/blinky</code>:</p>
+<p><br></p>
+<h3 id="build-your-blinky-app">Build your blinky app<a class="headerlink" href="#build-your-blinky-app" title="Permanent link">&para;</a></h3>
+<p>To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the default application that comes with your project, <code>apps/blinky</code>:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_blinky 
 Target targets/arduino_blinky successfully created
 $ newt target set arduino_blinky app=apps/blinky 
@@ -629,6 +631,7 @@ $
 </pre></div>
 
 
+<p><br></p>
 <p>You can now build the target, with <code>newt build</code>: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_blinky 
 Compiling main.c
@@ -645,8 +648,9 @@ App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf
 </pre></div>
 
 
-<p>Congratulations!  You have successfully built your application, now it's 
-time to load the bootloader and application onto the target.</p>
+<p>Congratulations!  You have successfully built your application. Now it's 
+time to load both the bootloader and application onto the target.</p>
+<p><br></p>
 <h3 id="connect-the-target">Connect the Target<a class="headerlink" href="#connect-the-target" title="Permanent link">&para;</a></h3>
 <p>Connect your computer to the Arduino Zero (from now on we'll call this the 
 target) with the Micro-USB cable through the Programming Port as shown below. 
@@ -657,6 +661,7 @@ debugger that can be accessed by Mynewt.</p>
 <p>A image below shows the Arduino Zero Programming Port.</p>
 <p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
 <img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/></p>
+<p><br></p>
 <h3 id="download-the-bootloader">Download the Bootloader<a class="headerlink" href="#download-the-bootloader" title="Permanent link">&para;</a></h3>
 <p>Execute the command to download the bootloader. </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">load</span> <span style="color: #000000">arduino_boot</span>
@@ -665,6 +670,7 @@ debugger that can be accessed by Mynewt.</p>
 
 <p>If the newt tool finishes without error, that means the bootloader has been 
 successfully loaded onto the target.</p>
+<p><br></p>
 <h3 id="run-the-image">Run the Image<a class="headerlink" href="#run-the-image" title="Permanent link">&para;</a></h3>
 <p>Now that the bootloader is downloaded to the target, the next step is to load 
 your image onto the Arduino Zero.  The easiest way to do this, is to use the 
@@ -719,12 +725,13 @@ Continuing.
 </pre></div>
 
 
-<p><em>NOTE:</em> The 0.0.0 specified after the target name to newt run, is the version 
+<p><br></p>
+<p><strong>NOTE:</strong> The 0.0.0 specified after the target name to <code>newt run</code> is the version 
 of the image to load.  If you are not providing remote upgrade, and are just 
 developing locally, you can provide 0.0.0 for every image version.</p>
 <p>If you want the image to run without the debugger connected, simply quit the 
-debugger and restart the board.  The image you programmed will come and run on the 
-Arduino on next boot!  </p>
+debugger and restart the board.  The image you programmed will come and run on the Arduino on next boot!  </p>
+<p><br></p>
 <h3 id="watch-the-led-blink">Watch the LED blink<a class="headerlink" href="#watch-the-led-blink" title="Permanent link">&para;</a></h3>
 <p>Congratulations! You have created a Mynewt operating system running on the 
 Arduino Zero. The LED right next to the power LED should be blinking. It is toggled by one task running on the Mynewt OS.   </p>
