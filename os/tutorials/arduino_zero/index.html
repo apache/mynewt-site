@@ -525,26 +525,26 @@ the runtime github repository.</p>
 <p>To fetch the package from the runtime git repository, you need to add 
 the repository to the <code>project.yml</code> file in your base project directory.</p>
 <p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
-added:</p>
+added. The lines to be added are highlighted.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more project.yml 
 project.name: &quot;my_project&quot;
 
 project.repositories:
     - apache-mynewt-core
-    - mynewt_arduino_zero
-
+<span style="background-color: #ffffcc">    - mynewt_arduino_zero
+</span>
 repository.apache-mynewt-core:
     type: github
     vers: 0-latest
     user: apache
     repo: incubator-mynewt-core
 
-repository.mynewt_arduino_zero:
-    type: github
-    vers: 0-latest
-    user: runtimeinc
-    repo: mynewt_arduino_zero
-$ 
+<span style="background-color: #ffffcc">repository.mynewt_arduino_zero:
+</span><span style="background-color: #ffffcc">    type: github
+</span><span style="background-color: #ffffcc">    vers: 0-latest
+</span><span style="background-color: #ffffcc">    user: runtimeinc
+</span><span style="background-color: #ffffcc">    repo: mynewt_arduino_zero
+</span>$ 
 </pre></div>
 
 
@@ -570,6 +570,8 @@ $ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 Target targets/arduino_boot successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
 Target targets/arduino_boot successfully set target.app to @apache-mynewt-core/apps/boot
+$ newt target set arduino_boot build_profile=optimized
+Target targets/arduino_boot successfully set target.build_profile to optimized
 $ newt target set arduino_boot features=arduino_zero_pro 
 Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
 </pre></div>
@@ -583,6 +585,9 @@ Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
 <li>Set the board support package for the target to 
     <code>@mynewt_arduino_zero/hw/bsp/arduino_zero</code>.  This is a reference to the downloaded 
     Arduino Zero support from Github.</li>
+<li>Use the "optimized" build profile for the <code>arduino_boot</code> target.  This
+    instructs Newt to generate smaller and more efficient code for this target.
+    This setting is necessary due to the bootloader's strict size constraints.</li>
 <li>Tells the Board Support Package to enable support for the Arduino Zero Pro, and not 
     the Arduino Zero.  This is done through setting a build feature.  If you are building 
     for an Arduino Zero, and not a Zero Pro, this feature should be set to <code>arduino_zero</code>.</li>
