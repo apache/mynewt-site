@@ -129,7 +129,7 @@ You can now disconnect the debugging cable from the board. You should see the gr
 
 * Now you have to set up the serial connection from your computer to the Olimex board. Locate the PC6/USART6_TX (pin#3), PC7/USART6_RX (pin#4), and GND (pin#2) of the UEXT connector on the Olimex board. More information on the UEXT connector can be found at [https://www.olimex.com/Products/Modules/UEXT/](https://www.olimex.com/Products/Modules/UEXT/). The schematic of the board can be found at [https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf) for reference.
 
-     ![Alt Layout - Serial Connection](pics/serial_conn.png)
+    ![Alt Layout - Serial Connection](pics/serial_conn.png)
 
 
 	* Connect the female RX pin of the USB-TTL serial cable to the TX of the UEXT connector on the board. 
