@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/unit_test/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/bletiny_project/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Write a Test Suite for a Package - Apache Mynewt</title>
+	<title>BLE commands via console - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="Write a Test Suite for a Package">
+    <body class="BLE commands via console">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -303,8 +303,8 @@
               
                 
   
-    <li>
-      <a href="../bletiny_project/">BLE commands via console</a>
+    <li class="active">
+      BLE commands via console
     </li>
   
 
@@ -333,8 +333,8 @@
               
                 
   
-    <li class="active">
-      Write a Test Suite for a Package
+    <li>
+      <a href="../unit_test/">Write a Test Suite for a Package</a>
     </li>
   
 
@@ -496,7 +496,7 @@
         
       
       
-        <li>&raquo; Write a Test Suite for a Package</li>
+        <li>&raquo; BLE commands via console</li>
       
     
     
@@ -505,175 +505,165 @@
                             </div>
                         </div>
                         
-                            <h1 id="write-a-test-suite-for-a-package">Write a Test Suite for a Package<a class="headerlink" href="#write-a-test-suite-for-a-package" title="Permanent link">&para;</a></h1>
-<p>This document presents a tutorial which guides the reader through writing
-a test suite for a Mynewt package (new or existing).</p>
-<h2 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">&para;</a></h2>
-<p>Writing a test suite involves using the <a href="../../modules/testutil/testutil/"><code>libs/testutil</code></a>
- package within Mynewt core os. The <code>testutil</code> library provides the interface to 
-the <code>newt</code> command tool and also provides the compile time hooks to include
-test suites into your code.  Review the 
-[<code>testutil</code> introduction page ] (../modules/testutil/testutil.md)
-to learn about how the library works.</p>
-<h3 id="identify-your-package">Identify Your Package<a class="headerlink" href="#identify-your-package" title="Permanent link">&para;</a></h3>
-<p>Identify the package for which you are writing a test suite.  For this example
-we will use <code>libs/json</code>.  To create a new package, see <a href="">this Tutorial</a>.</p>
-<h3 id="modify-pkgyml">Modify Pkg.yml<a class="headerlink" href="#modify-pkgyml" title="Permanent link">&para;</a></h3>
-<p>Edit the package (<code>pkg.yml</code>) file for your package and add the test dependency
-for the Mynewt core OS <code>libs/testutil</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">pkg</span>.<span style="color: #000000">deps</span>.<span style="color: #000000">TEST</span>:
-   <span style="color: #000000">-</span> <span style="color: #000000">libs/testutil</span>
-</pre></div>
-
-
-<h3 id="create-your-test-suite-template">Create Your Test Suite Template<a class="headerlink" href="#create-your-test-suite-template" title="Permanent link">&para;</a></h3>
-<p>Create a subdirectory <code>test</code> under your package main directory. 
-Create a file pair for your test code and header files within the <code>test</code>
-directory created above.  Below shows the <code>libs/json</code> directory within the 
-Mynewt core, including the test directory. In this example, we used the 
-convention <code>test_xxx.c/h</code> (in this case <code>test_json</code>).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">├──</span> <span style="color: #000000">MSJSON_COPYING</span>
-<span style="color: #000000">├──</span> <span style="color: #000000">include</span>
-<span style="color: #000000">│  </span> <span style="color: #000000">└──</span> <span style="color: #000000">json</span>
-<span style="color: #000000">│  </span>     <span style="color: #000000">└──</span> <span style="color: #000000">json</span>.<span style="color: #000000">h</span>
-<span style="color: #000000">├──</span> <span style="color: #000000">pkg</span>.<span style="color: #000000">yml</span>
-<span style="color: #000000">└──</span> <span style="color: #000000">src</span>
-    <span style="color: #000000">├──</span> <span style="color: #000000">json_decode</span>.<span style="color: #000000">c</span>
-    <span style="color: #000000">├──</span> <span style="color: #000000">json_encode</span>.<span style="color: #000000">c</span>
-    <span style="color: #000000">└──</span> <span style="color: #000000">test</span>
-        <span style="color: #000000">├──</span> <span style="color: #000000">test_json</span>.<span style="color: #000000">c</span>
-        <span style="color: #000000">└──</span> <span style="color: #000000">test_json</span>.<span style="color: #000000">h</span>
-</pre></div>
-
-
-<h3 id="create-your-test-suite-code">Create Your Test Suite Code<a class="headerlink" href="#create-your-test-suite-code" title="Permanent link">&para;</a></h3>
-<p>Edit the <code>test_json.c</code> file and add your test suite definition.  NOTE that 
-the test suite code requires <code>#include &lt;testutil/testutil.h&gt;</code> to get the 
-Mynewt testutil definitions.</p>
-<p>Your test suite <code>test_json.c</code> file contains at a minimum two functions:</p>
-<ol>
-<li>A test Suite which is empty for now, but will contain calls to your test
-cases.  </li>
-<li>A main function which must be <code>#ifdef</code>'d using <code>MYNEWT_SELFTEST</code> to ensure
-that is does not get compiled in when this test suite is run with 
-test suites from other packages </li>
-</ol>
-<p>Below shows the contents of the <code>test_json.c</code> file.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &lt;testutil/testutil.h&gt;</span>
-
-<span style="color: #000000">TEST_SUITE</span>(<span style="color: #000000">test_json_suite</span>) {
-    <span style="color: #177500">/* empty for now, add test cases later */</span>
-}
-
-<span style="color: #633820">#ifdef MYNEWT_SELFTEST</span>
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
-{
-    <span style="color: #000000">tu_config</span>.<span style="color: #000000">tc_print_results</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">tu_init</span>();
-    <span style="color: #000000">test_json_suite</span>();
-    <span style="color: #A90D91">return</span> <span style="color: #000000">tu_any_failed</span>;
-}
-<span style="color: #633820">#endif</span>
-</pre></div>
-
-
-<h3 id="try-it-out">Try It Out<a class="headerlink" href="#try-it-out" title="Permanent link">&para;</a></h3>
-<p>At this point, you have a working test suite with <strong>no</strong> tests.<br />
-This will by default pass the test.  Your output will look
-something like this.</p>
-<p>You can use the <code>newt test</code> command to run the unit tests for any package.<br />
-Just include the package name.  These unit tests run via the project 
-<code>unittest</code> which is a native project automatically included in the core
-os package.  Below shows some of the test output of this command.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">test</span> <span style="color: #000000">libs/json</span>
-<span style="color: #000000">Archiving</span> <span style="color: #000000">util</span>.<span style="color: #000000">a</span>
-<span style="color: #000000">Linking</span> <span style="color: #000000">test_json</span>
-<span style="color: #000000">Testing</span> <span style="color: #000000">package</span> <span style="color: #000000">libs/json</span>
-<span style="color: #000000">Test</span> ...<span style="color: #000000">/bin/unittest/libs/json/test_json</span> <span style="color: #000000">ok!</span>
-</pre></div>
-
-
-<h3 id="create-a-test">Create a Test<a class="headerlink" href="#create-a-test" title="Permanent link">&para;</a></h3>
-<p>To create a test within your test suite, there are two things to do.</p>
-<ol>
-<li>Add the functions to your test suite</li>
-<li>Implement the function using the <code>testutil</code> macros</li>
-</ol>
-<p>For this tutorial we will create two functions: one to test a simple json
-encode and one to test the decode of this simple message to ensure its 
-coherent.</p>
-<p>Follow These steps;</p>
-<p>1. Create function prototypes in <code>test_json.h</code> for your test functions. 
-A macro in <code>testutil.h</code> hides the actual prototype, but as of this writing
-the prototype is <code>int test_func(void);</code>.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#ifndef TEST_JSON_H</span>
-<span style="color: #633820">#define TEST_JSON_H</span>
-
-<span style="color: #000000">TEST_CASE_DECL</span>(<span style="color: #000000">test_json_simple_encode</span>);
-<span style="color: #000000">TEST_CASE_DECL</span>(<span style="color: #000000">test_json_simple_decode</span>);
-
-<span style="color: #633820">#endif /* TEST_JSON_H </span>
-</pre></div>
-
-
-<p>2. create a new file <code>test_json_simple.c</code> to define these two functions.  For
-now you can stub these functions. Below shows the contents of this file. 
-The functions are defined using macros which reference back to the 
-<code>testutil</code> library so the test can be enumerated and recorded automatically.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;testutil/testutil.h&quot;</span>
-<span style="color: #633820">#include &quot;test_json.h&quot;</span>
-
-<span style="color: #000000">TEST_CASE</span>(<span style="color: #000000">test_json_simple_encode</span>) {
-}
-
-<span style="color: #000000">TEST_CASE</span>(<span style="color: #000000">test_json_simple_decode</span>) {
-}
-<span style="color: #633820">#endif /* TEST_JSON_H </span>
-</pre></div>
-
-
-<p>3. Add the tests to your test suite in <code>test_json.c</code> as shown below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">TEST_SUITE</span>(<span style="color: #000000">test_json_suite</span>) {
-    <span style="color: #000000">test_json_simple_encode</span>();
-    <span style="color: #000000">test_json_simple_decode</span>();
-}
-</pre></div>
-
-
-<p>Your test suite should still pass as shown below</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">$newt</span> <span style="color: #000000">test</span> <span style="color: #000000">libs/json</span>
-<span style="color: #000000">Testing</span> <span style="color: #000000">package</span> <span style="color: #000000">libs/json</span>
-<span style="color: #000000">Test</span> ...<span style="color: #000000">/bin/unittest/libs/json/test_json</span> <span style="color: #000000">ok!</span>
-</pre></div>
-
-
-<h2 id="add-contents-to-your-tests">Add Contents to your Tests<a class="headerlink" href="#add-contents-to-your-tests" title="Permanent link">&para;</a></h2>
-<p>At this point, you can add contents to your test and verify that 
-the test suites pass.  For now, lets just add a simple failure to show
-what it would look like when running from Newt.</p>
+                            <h2 id="check-stats-on-a-ble-device">Check stats on a BLE device<a class="headerlink" href="#check-stats-on-a-ble-device" title="Permanent link">&para;</a></h2>
+<p><br></p>
+<p>This tutorial explains how to run an example BLE app on a board and command it to scan and spew some stats. The stats will be seen over a serial port, not a BLE wireless connection.</p>
+<p><br></p>
+<h3 id="pre-requisites">Pre-Requisites<a class="headerlink" href="#pre-requisites" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Edit <code>test_json_simple.c</code> and add a <code>TEST_ASSERT</code> to a test funtion. The
-test assert will fail if its argument is <code>false</code>.</li>
+<li>Ensure you have installed <a href="../../../newt/install/newt_mac/">newt</a> and that the 
+newt command is in your system path. </li>
+<li>You must have Internet connectivity to fetch remote Mynewt components.</li>
+<li>You must <a href="native_tools.md">install the compiler tools</a> to 
+support native compiling to build the project this tutorial creates.  </li>
+<li>You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.</li>
+<li>Cable to establish a serial USB connection between the board and the laptop</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">TEST_CASE</span>(<span style="color: #000000">test_json_simple_encode</span>) {
-    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #1C01CE">0</span>);
-}
+<p><br></p>
+<h3 id="create-a-project">Create a project<a class="headerlink" href="#create-a-project" title="Permanent link">&para;</a></h3>
+<p>Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt new myapp1
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in myapp1...
+Project myapp1 successfully created.
+$ cd myapp1
 </pre></div>
 
 
-<p>When running newt, you will see the test suite fails with something like
-the message shown below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">Testing</span> <span style="color: #000000">package</span> <span style="color: #000000">libs/json</span>
-[<span style="color: #000000">FAIL</span>] <span style="color: #000000">test_json_suite/</span>(<span style="color: #000000">null</span>) <span style="color: #000000">|test_json_simple</span>.<span style="color: #000000">c</span>:<span style="color: #1C01CE">24</span><span style="color: #000000">|</span> <span style="color: #000000">failed</span> <span style="color: #000000">assertion</span>: <span style="color: #1C01CE">0</span>
-<span style="color: #000000">Error</span>: <span style="color: #000000">Test</span> <span style="color: #000000">crashed</span>: ..<span style="color: #000000">/bin/unittest/libs/json/test_json</span>
-<span style="color: #000000">exit</span> <span style="color: #000000">status</span> <span style="color: #1C01CE">1</span>
+<p><br></p>
+<h3 id="create-a-target">Create a target<a class="headerlink" href="#create-a-target" title="Permanent link">&para;</a></h3>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create myble
+Target targets/myble successfully created
+$ newt target show
+targets/my_blinky_sim
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/native
+    build_profile=debug
+targets/myble
 </pre></div>
 
 
-<h2 id="congratulations">Congratulations<a class="headerlink" href="#congratulations" title="Permanent link">&para;</a></h2>
-<p>Now you can begin the work of adding your test cases and test.</p>
-<h2 id="testing-on-your-target">Testing on your target<a class="headerlink" href="#testing-on-your-target" title="Permanent link">&para;</a></h2>
+<p><br></p>
+<p>Define the target further. Note that you are using the example app <code>bletiny</code>. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set myble app=@apache-mynewt-core/apps/bletiny
+Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
+$ newt target set myble build_profile=optimized
+Target targets/myble successfully set target.build_profile to optimized
+$ newt target set myble cflags=DSTATS_NAME_ENABLE
+Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
+$ newt target show
+targets/my_blinky_sim
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/native
+    build_profile=debug
+targets/myble
+    app=@apache-mynewt-core/apps/bletiny
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    build_profile=optimized
+    cflags=DSTATS_NAME_ENABLE 
+</pre></div>
+
+
+<p><br></p>
+<p>Then build the target.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build myble
+Compiling hci_common.c
+Compiling util.c
+Archiving nimble.a
+Compiling os.c
+&lt;snip&gt;
+</pre></div>
+
+
+<p><br></p>
+<h3 id="load-the-image">Load the image<a class="headerlink" href="#load-the-image" title="Permanent link">&para;</a></h3>
+<p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load myble
+</pre></div>
+
+
+<p><br></p>
+<h3 id="establish-serial-connection">Establish serial connection<a class="headerlink" href="#establish-serial-connection" title="Permanent link">&para;</a></h3>
+<p>You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up.</p>
+<p><img alt="nRF52" src="../pics/nrf52.jpg" title="nRF52 Dev Board with a Serial Connection set up" /></p>
+<p><br></p>
+<p>You may use any terminal emulation program to communicate with the board. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your laptop, of course.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ minicom -D /dev/tty.usbserial-AJ03HAQQ
+</pre></div>
+
+
+<p><br></p>
+<p>When the Minicom screen comes up, type in <code>?</code></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">Welcome to minicom 2.7
+
+OPTIONS: 
+Compiled on Nov 24 2015, 16:14:21.
+Port /dev/tty.usbserial-AJ03HAQQ, 09:57:17
+
+Press Meta-Z for help on special keys
+
+<span style="background-color: #ffffcc">?
+</span>4828455:log     echo    ?       tasks   mempools        date 
+4828457:stat    b 
+</pre></div>
+
+
+<p><br></p>
+<p>Try the <code>stat</code> command. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">stat
+</span>4973017:Must specify a statistic name to dump, possible names are:
+4973021:        stat
+4973022:        ble_l2cap
+4973024:        ble_att
+4973026:        ble_gap
+4973027:        ble_gattc
+4973029:        ble_gatts
+4973031:        ble_hs
+4973032:        ble_ll_conn
+4973034:        ble_ll
+</pre></div>
+
+
+<p><br></p>
+<p>Try specifying a BLE related stat, for example <code>ble_ll</code>. You should see some HCI (Host Controller Interface) command counts. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">stat ble_ll
+</span>4986297:hci_cmds: 5
+4986297:hci_cmd_errs: 0
+4986299:hci_events_sent: 5
+4986301:bad_ll_state: 0
+4986303:bad_acl_hdr: 0
+4986306:rx_adv_pdu_crc_ok: 0
+4986308:rx_adv_pdu_crc_err: 0
+4986311:rx_adv_bytes_crc_ok: 0
+4986314:rx_adv_bytes_crc_err: 0
+4986317:rx_data_pdu_crc_ok: 0
+4986319:rx_data_pdu_crc_err: 0
+4986322:rx_data_bytes_crc_ok: 0
+&lt;snip&gt;
+</pre></div>
+
+
+<p><br></p>
+<p>For a more exciting output, try scanning your surroundings for BLE adverstisements. The HCI command shown below specifies a scan duration in ms, sets discovery mode to general (as opposed to limited), the filter to no-whitelist, and type of scan to passive. You should see some scan data flying by!</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">b scan dur=10000 disc=gen filt=no_wl type=passive
+</span>
+5301227:[ts=5301227ssb, mod=4 level=1] host_hci_cmd_send: ogf=0x08 ocf=0x0b len=7
+5301233:[ts=5301233ssb, mod=4 level=1] Command Complete: cmd_pkts=1 ogf=0x8 ocf=0xb status=0
+5301241:[ts=5301241ssb, mod=4 level=1] host_hci_cmd_send: ogf=0x08 ocf=0x0c len=2
+5301248:[ts=5301248ssb, mod=4 level=1] Command Complete: cmd_pkts=1 ogf=0x8 ocf=0xc status=0
+GAP procedure initiated: discovery; disc_mode=2 filter_policyLE advertising report. len=38 num=1 evtype=3 addr9
+5301270:[ts=5301270ssb, mod=4 level=1] 02 01 06 03 03 aa fe 12 
+5301276:[ts=5301276ssb, mod=4 level=1] 16 aa fe 10 f6 02 67 2e 
+5301281:[ts=5301281ssb, mod=4 level=1] 63 6f 2f 62 65 61 63 6f 
+5301287:[ts=5301287ssb, mod=4 level=1] 6e 73 
+5301291:[ts=5301291ssb, mod=64 level=2] received advertisement; event_type=3 addr_type=1 addr=0xa0:0x0d:0xec:0:
+5301316:[ts=5301316ssb, mod=64 level=2]     flags=0x06
+5301321:[ts=5301321ssb, mod=64 level=2]     uuids16(complete)=0xfeaa 
+5301327:[ts=5301327ssb, mod=64 level=2]     svc_data_uuid16=
+&lt;snip&gt;
+</pre></div>
                         
                         <div class="row">
                             
@@ -683,16 +673,16 @@ the message shown below.</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../project-target-slinky/>
+    <a href=../upgrade_repo/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Enable remote comms on STM32 board
+        Previous: Upgrade a repo
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../air_quality_sensor/>
-        Next: Air-quality Sensor project
+    <a href=../project-slinky/>
+        Next: Enable remote comms on sim device
         <span class="fa fa-arrow-right"></span>
     </a>
     
