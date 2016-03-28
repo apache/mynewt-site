@@ -11,7 +11,7 @@ This tutorial explains how to run an example BLE app on a board and command it t
 * Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
 newt command is in your system path. 
 * You must have Internet connectivity to fetch remote Mynewt components.
-* You must [install the compiler tools](native_tools.md) to 
+* You must [install the compiler tools](../get_started/native_tools.md) to 
 support native compiling to build the project this tutorial creates.  
 * You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
 * Cable to establish a serial USB connection between the board and the laptop
