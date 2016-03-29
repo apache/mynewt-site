@@ -2,7 +2,7 @@
 
 <br>
 
-### Getting your Mac Ready 
+### Getting your Linux box Ready 
 
 If you want to build the *newt* tool from its source code, follow the following steps:
 
@@ -45,7 +45,9 @@ If you want to build the *newt* tool from its source code, follow the following 
 <br>
 
 * Next, install Go. When installed, Go offers you as a developer a language enviroment (to compile Go code), construct Go packages (to assemble Go packages) and import Go code (from github). In the next step, you will use the Go commands to import *newt* repo into your local Go environment.
-     
+
+    **Note**: The Newt tool requires Go version 1.5 or later. It uses the support for "vendoring" that was added in Go 1.5. Depending on the Ubuntu version you have, the following may install an earlier version. In that case, download the latest package of Go 1.5 or 1.6 from [https://golang.org/dl/](https://golang.org/dl/). You can search for more detailed instructions such as installing Go 1.6 on Ubuntu 14.04 which can be found at [https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04).
+   
 ```no-highlight
         $ sudo apt-get install golang 
 ```
