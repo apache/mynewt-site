@@ -96,8 +96,8 @@ $ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 Target targets/arduino_boot successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
 Target targets/arduino_boot successfully set target.app to @apache-mynewt-core/apps/boot
-$ newt target set arduino_boot features=arduino_zero_pro 
-Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
+$ newt target set arduino_boot features=arduino_zero
+Target targets/arduino_boot successfully set pkg.features to arduino_zero
 ```
 
 These commands do a few things: 
@@ -147,8 +147,8 @@ $ newt target set arduino_blinky bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 Target targets/arduino_blinky successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_blinky build_profile=debug 
 Target targets/arduino_blinky successfully set target.build_profile to debug
-$ newt target set arduino_blinky features=arduino_zero_pro 
-Target targets/arduino_blinky successfully set pkg.features to arduino_zero_pro
+$ newt target set arduino_blinky features=arduino_zero
+Target targets/arduino_blinky successfully set pkg.features to arduino_zero
 $ 
 ```
 
