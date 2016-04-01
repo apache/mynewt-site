@@ -99,7 +99,7 @@ $ newt load myble
 
 You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up.
 
-![nRF52](pics/nrf52.jpg "nRF52 Dev Board with a Serial Connection set up")
+![nRF52](pics/nrf52.JPG "nRF52 Dev Board with a Serial Connection set up")
 
 <br>
 
