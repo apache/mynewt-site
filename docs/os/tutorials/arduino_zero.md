@@ -84,19 +84,27 @@ $
 Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
 generate both a bootloader, and an image target.
 
-To generate the bootloader target, you need to specify the following options:
+To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability. 
 
 ```no-highlight
 $ newt target create arduino_boot 
-Target targets/arduino_boot successfully created
 $ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero 
-Target targets/arduino_boot successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
-Target targets/arduino_boot successfully set target.app to @apache-mynewt-core/apps/boot
 $ newt target set arduino_boot build_profile=optimized
-Target targets/arduino_boot successfully set target.build_profile to optimized
+```
+
+<br>
+
+If you have an Arduino Zero Pro, you have to set the following next:
+
+```
 $ newt target set arduino_boot features=arduino_zero_pro 
-Target targets/arduino_boot successfully set pkg.features to arduino_zero_pro
+```
+
+If you have an Arduino Zero, you have to set the following instead:
+
+```
+$ newt target set arduino_boot features=arduino_zero 
 ```
 
 <br>
@@ -109,12 +117,10 @@ These commands do a few things:
   * Set the board support package for the target to 
     ```@mynewt_arduino_zero/hw/bsp/arduino_zero```.  This is a reference to the downloaded 
     Arduino Zero support from Github.
-  * Use the "optimized" build profile for the ```arduino_boot``` target.  This
+  * Use the "optimized" build profile for the `arduino_boot` target.  This
     instructs Newt to generate smaller and more efficient code for this target.
     This setting is necessary due to the bootloader's strict size constraints.
-  * Tells the Board Support Package to enable support for the Arduino Zero Pro, and not 
-    the Arduino Zero.  This is done through setting a build feature.  If you are building 
-    for an Arduino Zero, and not a Zero Pro, this feature should be set to ```arduino_zero```.
+  * Tells the Board Support Package to enable support for the Arduino Zero Pro or the Arduino Zero. Set it to `arduino_zero` or `arduino_zero_pro` depending on the board you have.
 
 <br>
 
