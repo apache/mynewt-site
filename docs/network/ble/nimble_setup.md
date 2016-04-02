@@ -14,8 +14,8 @@ $ newt new my_proj1
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in my_proj1...
 Project my_proj1 successfully created.
-$ tree
-.
+$ tree my_proj1
+my_proj1
 ├── DISCLAIMER
 ├── LICENSE
 ├── NOTICE
@@ -146,17 +146,17 @@ Details of the initialization step requirements are covered in [Initialize Stack
 
 ### Building the application
 
-Now that we have created the application and the target we can build it and test it out. The command you need to run is the newt build command with the target we created (ble\_tgt). The output will show the files being compiled and linked. You should see this when all is done (except for the ... of course):
+Now that we have created the application and the target we can build it and test it out. The command you need to run is the `newt build` command with the target we created (_ble\_tgt_). The output will show the files being compiled and linked. You should see this when all is done (except for the _..._ of course):
 
 ```no-highlight
-wes@~/dev/larva$ newt build ble_tgt
+wes@~/dev/my_proj1$ newt build ble_tgt
 ...
 Archiving os.a
 Compiling cons_fmt.c
 Compiling cons_tty.c
 Archiving full.a
 Linking ble_app.elf
-App successfully built: /Users/wes/dev/larva/bin/ble_tgt/apps/ble_app/ble_app.elf
+App successfully built: /Users/wes/dev/my_proj1/bin/ble_tgt/apps/ble_app/ble_app.elf
 ```
 
 ### Conclusion
