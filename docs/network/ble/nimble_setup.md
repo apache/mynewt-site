@@ -1,6 +1,6 @@
 ## Set up a NimBLE application
 
-This tutorial explains how to setup an application using the NimBLE stack. The end result will be a framework that you can use to create your own BLE application using the nimble stack.
+This tutorial explains how to set up an application using the NimBLE stack. The end result will be a framework that you can use to create your own BLE application using the nimble stack.
 
 This tutorial assumes that you have already installed the newt tool and are familiar with its concepts.
 
@@ -94,7 +94,7 @@ bletest		blinky		ffs2native	slinky
 
 <br>
 
-At the very least your app must contain a `main.c()` and a `pkg.yml` file. So copy the ones from `bletiny`. And start enhancing it for your own custom use case!
+At the very least your app must contain a `main.c()` and a `pkg.yml` file. So copy the ones from `bletiny` and start enhancing it for your own custom use case!
 
 <br>
 
@@ -111,7 +111,7 @@ What this command just did was to create a directory called `ble_tgt` in the tar
 
 The target is not yet complete though! We need to set some target variables for this project. Currently, the nimble stack has been ported to the Nordic nrf5x chipsets; specifically the nrf51 and nrf52. This application will use the nrf52 but we will also show the setup for the nrf51 in case your project uses that chip.
 
-Here is the command you will need to setup your target for the nrf52:
+Here is the command you will need to set up your target for the nrf52:
 
 ```no-highlight
 $ newt target set ble_tgt app=apps/ble_app          \
@@ -122,7 +122,7 @@ Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf52pdk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
-Here is the command you will need to setup your target for the nrf51:
+Here is the command you will need to set up your target for the nrf51:
 
 ```no-highlight
 $ newt target set ble_tgt app=apps/ble_app          \
@@ -140,7 +140,7 @@ Target targets/ble_tgt successfully set target.build_profile to optimized
 
 There are certain stack initialization steps that are required for a BLE application to be up and running. If you are running a canned example (e.g. bletiny), these steps are already done for you. When you are writing your own app, you may want to assign different initial values or initialize additional packages that you may have added to your project or written yourself. 
 
-Details of the initialization step requirements are covered in the section on how to [Initialize Stack](ini_stack/ble_ini_intro.md).
+Details of the initialization step requirements are covered in [Initialize Stack](ini_stack/ble_ini_intro.md) step.
 
 <br>
 
