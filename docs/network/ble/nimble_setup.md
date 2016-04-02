@@ -114,22 +114,22 @@ The target is not yet complete though! We need to set some target variables for 
 Here is the command you will need to set up your target for the nrf52:
 
 ```no-highlight
-$ newt target set ble_tgt app=apps/ble_app          \
-                          bsp=hw/bsp/nrf52pdk       \
+$ newt target set ble_tgt app=apps/ble_app                              \
+                          bsp=@apache-mynewt-core/hw/bsp/nrf52pdk       \
                           build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
-Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf52pdk
+Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
 Here is the command you will need to set up your target for the nrf51:
 
 ```no-highlight
-$ newt target set ble_tgt app=apps/ble_app          \
-                          bsp=hw/bsp/nrf51dk        \
+$ newt target set ble_tgt app=apps/ble_app                              \
+                          bsp=@apache-mynewt-core/hw/bsp/nrf51dk        \
                           build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
-Target targets/ble_tgt successfully set target.bsp to hw/bsp/nrf51dk
+Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf51dk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
