@@ -10,11 +10,11 @@ This tutorial assumes that you have already installed the newt tool and are fami
 You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/add_repos.md) for more on working with repos.
 
 ```
-$ newt new my_proj1
+~/dev$ newt new my_proj1
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in my_proj1...
 Project my_proj1 successfully created.
-$ tree my_proj1
+~/dev$ tree my_proj1
 my_proj1
 ├── DISCLAIMER
 ├── LICENSE
@@ -36,10 +36,10 @@ my_proj1
 
 6 directories, 11 files
     
-$ cd my_proj1
-$ newt install
+~/dev$ cd my_proj1
+~/dev/my_proj1$ newt install
 apache-mynewt-core
-$ tree 
+~/dev/my_proj1$ tree
 .
 ├── DISCLAIMER
 ├── LICENSE
@@ -87,14 +87,53 @@ $ tree
 It's time to build your own app using one or more of the example apps available in the repo `apache-mynewt-core`. 
 
 ```
-$ ls repos/apache-mynewt-core/apps
+~/dev/my_proj1$ ls repos/apache-mynewt-core/apps
 bleprph		bletiny		boot		luatest		test
 bletest		blinky		ffs2native	slinky
 ```
 
 <br>
 
-At the very least your app must contain a `main.c()` and a `pkg.yml` file. So copy the ones from `bletiny` and start enhancing it for your own custom use case!
+At the very least your app must contain a `main()` function and a `pkg.yml` file.  Use the following steps to create minimal ...
+
+*1. Create the app directory structure.*
+```no-highlight
+~/dev/my_proj1$ mkdir -p apps/ble_app/src
+```
+<br>
+*2. Paste the following contents into `apps/ble_app/pkg.yml`.*
+
+```no-highlight
+pkg.name: apps/ble_app
+pkg.type: app
+
+pkg.deps:
+    - "@apache-mynewt-core/libs/baselibc"
+    - "@apache-mynewt-core/libs/console/full"
+    - "@apache-mynewt-core/libs/os"
+    - "@apache-mynewt-core/net/nimble/controller"
+    - "@apache-mynewt-core/net/nimble/host"
+```
+<br>
+*3. Paste the following contents into `apps/ble_app/src/main.c`.*
+```c
+#include <assert.h>
+#include "os/os.h"
+
+int
+main(void)
+{
+    /* Initialize OS */
+    os_init();
+
+    /* Start the OS */
+    os_start();
+
+    /* os_start should never return. If it does, this should be an error */
+    assert(0);
+}
+```
+In this _main()_ all we are doing is initializing the Mynewt OS and starting it.
 
 <br>
 
@@ -103,7 +142,7 @@ At the very least your app must contain a `main.c()` and a `pkg.yml` file. So co
 Now you have to create the target that you will use to build your application. We will call this target "ble\_tgt". Type the `newt target create ble_tgt` command. You should get this:
 
 ```no-highlight
-$ newt target create ble_tgt
+~/dev/my_proj1$ newt target create ble_tgt
 Target targets/ble_tgt successfully created
 ```
 
@@ -114,9 +153,10 @@ The target is not yet complete though! We need to set some target variables for 
 Here is the command you will need to set up your target for the nrf52:
 
 ```no-highlight
-$ newt target set ble_tgt app=apps/ble_app                              \
-                          bsp=@apache-mynewt-core/hw/bsp/nrf52pdk       \
-                          build_profile=optimized
+~/dev/my_proj1$ newt target set ble_tgt     \
+    app=apps/ble_app                        \
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk \
+    build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
 Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
 Target targets/ble_tgt successfully set target.build_profile to optimized
@@ -125,16 +165,16 @@ Target targets/ble_tgt successfully set target.build_profile to optimized
 Here is the command you will need to set up your target for the nrf51:
 
 ```no-highlight
-$ newt target set ble_tgt app=apps/ble_app                              \
-                          bsp=@apache-mynewt-core/hw/bsp/nrf51dk        \
-                          build_profile=optimized
+~/dev/my_proj1$ newt target set ble_tgt     \
+    app=apps/ble_app                        \
+    bsp=@apache-mynewt-core/hw/bsp/nrf51dk  \
+    build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
 Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf51dk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
 <br>
-
 
 ### Nimble stack initialization
 
@@ -149,7 +189,7 @@ Details of the initialization step requirements are covered in [Initialize Stack
 Now that we have created the application and the target we can build it and test it out. The command you need to run is the `newt build` command with the target we created (_ble\_tgt_). The output will show the files being compiled and linked. You should see this when all is done (except for the _..._ of course):
 
 ```no-highlight
-wes@~/dev/my_proj1$ newt build ble_tgt
+~/dev/my_proj1$ newt build ble_tgt
 ...
 Archiving os.a
 Compiling cons_fmt.c
