@@ -7,13 +7,13 @@ This tutorial assumes that you have already installed the newt tool and are fami
 
 ### Create the application directory
 
-You start by creating a project space for your own application work using the Newt tool (`my_app1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/add_repos.md) for more on working with repos.
+You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/add_repos.md) for more on working with repos.
 
 ```
-$ newt new my_app1
+$ newt new my_proj1
 Downloading project skeleton from apache/incubator-mynewt-blinky...
-Installing skeleton in my_app1...
-Project my_app1 successfully created.
+Installing skeleton in my_proj1...
+Project my_proj1 successfully created.
 $ tree
 .
 ├── DISCLAIMER
@@ -36,7 +36,7 @@ $ tree
 
 6 directories, 11 files
     
-$ cd my_app1
+$ cd my_proj1
 $ newt install
 apache-mynewt-core
 $ tree 
