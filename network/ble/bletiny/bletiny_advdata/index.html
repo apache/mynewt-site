@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/network/ble/bletiny/bletiny_GAP/">
+        <link rel="canonical" href="http://mynewt.apache.org/network/ble/bletiny/bletiny_advdata/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>GAP in bletiny - Apache Mynewt</title>
+	<title>Advertisement Data Fields - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="GAP in bletiny">
+    <body class="Advertisement Data Fields">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -297,8 +297,8 @@
               
                 
   
-    <li class="active">
-      GAP in bletiny
+    <li>
+      <a href="../bletiny_GAP/">GAP in bletiny</a>
     </li>
   
 
@@ -317,8 +317,8 @@
               
                 
   
-    <li>
-      <a href="../bletiny_advdata/">Advertisement Data Fields</a>
+    <li class="active">
+      Advertisement Data Fields
     </li>
   
 
@@ -439,7 +439,7 @@
         
       
       
-        <li>&raquo; GAP in bletiny</li>
+        <li>&raquo; Advertisement Data Fields</li>
       
     
     
@@ -448,206 +448,117 @@
                             </div>
                         </div>
                         
-                            <h2 id="gap-api-for-bletiny">GAP API for bletiny<a class="headerlink" href="#gap-api-for-bletiny" title="Permanent link">&para;</a></h2>
+                            <h2 id="advertisement-data-fields">Advertisement Data Fields<a class="headerlink" href="#advertisement-data-fields" title="Permanent link">&para;</a></h2>
 <p><br></p>
-<p>Generic Access Profile (GAP) defines the generic procedures related to discovery of Bluetooth devices (idle mode procedures) and link management aspects of connecting to Bluetooth devices (connecting mode procedures). It also defines procedures related to use of different security levels. </p>
-<p>Several different modes and procedures may be performed simultaneously over an LE physical transport. The following modes and procedures are defined for use over an LE physical transport:</p>
-<ol>
-<li><strong>Broadcast mode and observation procedure</strong><ul>
-<li>These allow two devices to communicate in a unidirectional connectionless manner using the advertising events.</li>
-</ul>
-</li>
-<li><strong>Discovery modes and procedures</strong><ul>
-<li>All devices shall be in either non-discoverable mode or one of the discoverable modes.</li>
-<li>A device in the discoverable mode shall be in either the general discoverable mode or the limited discoverable mode.</li>
-<li>A device in non-discoverable mode will not be discovered by any device that is performing either the general discovery procedure or the limited discovery procedure.</li>
-</ul>
-</li>
-<li><strong>Connection modes and procedures</strong><ul>
-<li>allow a device to establish a connection to another device.</li>
-<li>allow updating of parameters of the connection </li>
-<li>allow termination of the connection </li>
-</ul>
-</li>
-<li><strong>Bonding modes and procedures</strong><ul>
-<li>Bonding allows two connected devices to exchange and store security and identity information to create a trusted relationship. </li>
-<li>Bonding can occur only between two devices in bondable mode.</li>
-</ul>
-</li>
-</ol>
+<p>This part defines the advertisement data fields used in the <code>bletiny</code> app. For a complete list of all data types and formats used for Extended Inquiry Response (EIR), Advertising Data (AD), and OOB data blocks, refer to the Supplement to the Bluetooth Core Specification, CSSv6, available for download <a href="https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=302735&amp;_ga=1.133090766.1368218946.1444779486">here</a>. </p>
 <p><br></p>
-<h3 id="usage-api">Usage API<a class="headerlink" href="#usage-api" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th><strong>Item No.</strong></th>
-<th><strong>Modes and Procedures</strong></th>
-<th><strong>nimBLE command</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Broadcast Mode</td>
-<td><code>b adv conn=non disc=x</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Observation Procedure</td>
-<td><code>b scan dur=x disc=x type=x filt=x</code></td>
-</tr>
-<tr>
-<td>2</td>
-<td>Non-Discoverable mode</td>
-<td><code>b adv conn=x disc=non</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Limited Discoverable mode</td>
-<td><code>b adv conn=x disc=ltd</code></td>
-</tr>
-<tr>
-<td></td>
-<td>General Discoverable mode</td>
-<td><code>b adv conn=x disc=gen</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Limited Discovery procedure</td>
-<td><code>b scan dur=x disc=ltd type=active filt=no_wl</code></td>
-</tr>
-<tr>
-<td></td>
-<td>General Discovery procedure</td>
-<td><code>b scan dur=x disc=gen type=active filt=no_wl</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Name Discovery procedure</td>
-<td>UNSUPPORTED</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Non-connectable mode</td>
-<td><code>b adv conn=non disc=x</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Directed connectable mode</td>
-<td><code>b adv conn=dir disc=x addr_type=x addr=x</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Undirected connectable mode</td>
-<td><code>b adv conn=und disc=x</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Auto connection establishment procedure</td>
-<td><code>b wl addr_type=x addr=x</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Auto connection establishment procedure</td>
-<td><code>b conn addr_type=wl</code></td>
-</tr>
-<tr>
-<td></td>
-<td>General connection establishment procedure</td>
-<td>AVAILABLE SOON</td>
-</tr>
-<tr>
-<td></td>
-<td>Selective connection establishment procedure</td>
-<td>AVAILABLE SOON</td>
-</tr>
-<tr>
-<td></td>
-<td>Direct connection establishment procedure</td>
-<td><code>b conn addr_type=x addr=x [params]</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Connection parameter update procedure</td>
-<td><code>b update conn=x &lt;params&gt;</code></td>
-</tr>
-<tr>
-<td></td>
-<td>Terminate connection procedure</td>
-<td><code>b term conn=x</code></td>
-</tr>
-<tr>
-<td>4</td>
-<td>Non-Bondable mode</td>
-<td>AVAILABLE SOON</td>
-</tr>
-<tr>
-<td></td>
-<td>Bondable mode</td>
-<td>AVAILABLE SOON</td>
-</tr>
-<tr>
-<td></td>
-<td>Bonding procedure</td>
-<td>AVAILABLE SOON</td>
-</tr>
-</tbody>
-</table>
-<p><br></p>
-<h3 id="connection-parameters">Connection Parameters<a class="headerlink" href="#connection-parameters" title="Permanent link">&para;</a></h3>
-<p>The Connection parameter definitions can be found in Section 7.8.12 of the BLUETOOTH SPECIFICATION Version 4.2 [Vol 2, Part E].</p>
 <table>
 <thead>
 <tr>
 <th><strong>Name</strong></th>
-<th><strong>Description</strong></th>
-<th><strong>nimBLE parameter</strong></th>
+<th><strong>Definition</strong></th>
+<th><strong>Details</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Minimum connection interval</td>
-<td>Defines minimum allowed connection interval</td>
-<td>itvl_min</td>
+<td>uuids16</td>
+<td>16-bit Bluetooth Service UUIDs</td>
+<td>Indicates the Service UUID list is incomplete i.e. more 16-bit Service UUIDs available. 16 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.</td>
 </tr>
 <tr>
-<td>Maximum connection interval</td>
-<td>Defines maximum allowed connection interval</td>
-<td>itvl_max</td>
+<td>uuids16_is_complete</td>
+<td>16-bit Bluetooth Service UUIDs</td>
+<td>Indicates the Service UUID list is complete. 16 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.</td>
 </tr>
 <tr>
-<td>Conn_Latency</td>
-<td>Defines the maximum allowed connection latency</td>
-<td>latency</td>
+<td>uuids32</td>
+<td>32-bit Bluetooth Service UUIDs</td>
+<td>Indicates the Service UUID list is incomplete i.e. more 32-bit Service UUIDs available. 32 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.</td>
 </tr>
 <tr>
-<td>Supervision_Timeout</td>
-<td>Link supervision timeout for the connection.</td>
-<td>timeout</td>
+<td>uuids32_is_complete</td>
+<td>32-bit Bluetooth Service UUIDs</td>
+<td>Indicates the Service UUID list is complete. 32 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.</td>
 </tr>
 <tr>
-<td>LE_Scan_Interval</td>
-<td>Recommendation from the Host on how long the Controller should scan</td>
-<td>scan_itvl</td>
+<td>uuids128</td>
+<td>Global 128-bit Service UUIDs</td>
+<td>More 128-bit Service UUIDs available.</td>
 </tr>
 <tr>
-<td>LE_Scan_Window</td>
-<td>Recommendation from the Host on how frequently the Controller should scan</td>
-<td>scan_window</td>
+<td>uuids128_is_complete</td>
+<td>Global 128-bit Service UUIDs</td>
+<td>Complete list of 128-bit Service UUIDs</td>
 </tr>
 <tr>
-<td>Minimum_CE_Length</td>
-<td>Informative parameter providing the Controller with the expected minimum length of the connection event</td>
-<td>min_ce_len</td>
+<td>tx_pwr_lvl</td>
+<td>TX Power Level</td>
+<td>Indicates the transmitted power level of the packet containing the data type. The TX Power Level data type may be used to calculate path loss on a received packet using the following equation: <br> <br> pathloss = Tx Power Level – RSSI <br> <br> where “RSSI” is the received signal strength, in dBm, of the packet received.</td>
 </tr>
 <tr>
-<td>Maximum_CE_Length</td>
-<td>Informative parameter providing the Controller with the expected maximum length of the connection event</td>
-<td>max_ce_len</td>
+<td>device_class</td>
+<td>Class of device</td>
+<td>Size: 3 octets</td>
+</tr>
+<tr>
+<td>slave_itvl_range</td>
+<td>Slave Connection Interval Range</td>
+<td>Contains the Peripheral’s preferred connection interval range, for all logical connections. Size: 4 Octets . The first 2 octets defines the minimum value for the connection interval in the following manner: <br> <br> connIntervalmin = Conn_Interval_Min * 1.25 ms <br> <br> Conn_Interval_Min range: 0x0006 to 0x0C80 <br> Value of 0xFFFF indicates no specific minimum. <br> <br> The other 2 octets defines the maximum value for the connection interval in the following manner: <br> <br> connIntervalmax = Conn_Interval_Max * 1.25 ms <br> Conn_Interval_Max range: 0x0006 to 0x0C80 <br> Conn_Interval_Max shall be equal to or greater than the Conn_Interval_Min. <br> Value of 0xFFFF indicates no specific maximum.</td>
+</tr>
+<tr>
+<td>svc_data_uuid16</td>
+<td>Service Data - 16 bit UUID</td>
+<td>Size: 2 or more octets <br> The first 2 octets contain the 16 bit Service UUID followed by additional service data</td>
+</tr>
+<tr>
+<td>public_tgt_addr</td>
+<td>Public Target Address</td>
+<td>Defines the address of one or more intended recipients of an advertisement when one or more devices were bonded using a public address. This data type shall exist only once. It may be sent in either the Advertising or Scan Response data, but not both.</td>
+</tr>
+<tr>
+<td>appearance</td>
+<td>Appearance</td>
+<td>Defines the external appearance of the device. The Appearance data type shall exist only once. It may be sent in either the Advertising or Scan Response data, but not both.</td>
+</tr>
+<tr>
+<td>adv_itvl</td>
+<td>Advertising Interval</td>
+<td>Contains the advInterval value as defined in the Core specification, Volume 6, Part B, Section 4.4.2.2.</td>
+</tr>
+<tr>
+<td>le_addr</td>
+<td>LE Bluetooth Device Address</td>
+<td>Defines the device address of the local device and the address type on the LE transport.</td>
+</tr>
+<tr>
+<td>le_role</td>
+<td>LE Role</td>
+<td>Defines the LE role capabilities of the device. <br> 0x00 Only Peripheral Role supported <br> 0x01 Only Central Role supported <br> 0x02 Peripheral and Central Role supported, Peripheral Role preferred for connection establishment <br> 0x03 Peripheral and Central Role supported, Central Role preferred for connection establishment <br> 0x04 – 0xFF Reserved for future use</td>
+</tr>
+<tr>
+<td>svc_data_uuid32</td>
+<td>Service Data - 32 bit UUID</td>
+<td>Size: 4 or more octets <br> The first 4 octets contain the 32 bit Service UUID followed by additional service data</td>
+</tr>
+<tr>
+<td>svc_data_uuid128</td>
+<td>Service Data - 128 bit UUID</td>
+<td>Size: 16 or more octets <br> The first 16 octets contain the 128 bit Service UUID followed by additional service data</td>
+</tr>
+<tr>
+<td>uri</td>
+<td>Uniform Resource Identifier (URI)</td>
+<td>Scheme name string and URI as a UTF-8 string</td>
+</tr>
+<tr>
+<td>mfg_data</td>
+<td>Manufacturer Specific data</td>
+<td>Size: 2 or more octets <br> The first 2 octets contain the Company Identifier Code followed by additional manufacturer specific data</td>
 </tr>
 </tbody>
 </table>
-<h3 id="advertisement-data-fields">Advertisement data fields<a class="headerlink" href="#advertisement-data-fields" title="Permanent link">&para;</a></h3>
+<p><br></p>
                         
                         <div class="row">
                             
@@ -657,16 +568,16 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../bletiny_api/>
+    <a href=../bletiny_GATT/>
         <span class="fa fa-arrow-left"></span>
-        Previous: API for bletiny app
+        Previous: GATT in bletiny
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../bletiny_GATT/>
-        Next: GATT in bletiny
+    <a href=../../../../newt/newt_intro/>
+        Next: Introduction
         <span class="fa fa-arrow-right"></span>
     </a>
     
