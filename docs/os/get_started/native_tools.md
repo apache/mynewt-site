@@ -1,8 +1,6 @@
 # Installing Native Mynewt Tools
 
-This page shows how to install tools for native Mynewt targets. This
-allows you to run Mynewt OS as a native application.  It also allows
-you to run the test suites for all packages not requiring HW support. 
+This page shows how to install tools for native Mynewt targets (simulated targets on your laptop/computer) without using a Docker container. In other words, it allows you to run Mynewt OS as a native application on your Mac or Linux machine to simulate a target and use the Newt tool running natively on your machine to manage the simulated target. It also allows you to run the test suites for all packages not requiring HW support. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.
 
 This page provides guidance for MAC and Linux. See the relevant sections below.
 
@@ -86,4 +84,4 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
 
 <br>
 
-At this point you have installed all the necessary software to build and test code on a simluator for Linux. Proceed to the [Build test code on simulator](#build-test-code-on-simulator) section.
+At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the [Build test code on simulator](#build-test-code-on-simulator) section.

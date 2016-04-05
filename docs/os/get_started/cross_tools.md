@@ -1,7 +1,8 @@
 # Installing Cross Tools for ARM 
 
-This page shows how to install tools to use some ARM based platforms with
-Apache Mynewt.
+This page shows how to install tools on your laptop/computer to use for direct communication (e.g. for debugging) with some ARM based HW platforms running Apache Mynewt. You will also have to use the Newt tool installed to run natively on your machine. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.
+
+This page provides guidance for installing the tools directly on your MAC and Linux machine. See the relevant sections below.
 
 <br>
 
