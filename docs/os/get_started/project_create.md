@@ -6,8 +6,9 @@ This page shows how to create a Mynewt Project using the `newt` command-line too
 
 ### Pre-Requisites
 
-* Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
-newt command is in your system path. 
+* Newt:
+    * If you have taken the Docker route, you have already installed Newt.
+    * If you have taken the native install route, you have to ensure that you have installed the Newt tool following the instructions for [Mac](../../newt/install/newt_mac.md) or [Linux](../../newt/install/newt_linux.md) as appropriate, and that the `newt` command is in your system path. 
 * You must have Internet connectivity to fetch remote Mynewt components.
 * You must [install the compiler tools](native_tools.md) to 
 support native compiling to build the project this tutorial creates.  
