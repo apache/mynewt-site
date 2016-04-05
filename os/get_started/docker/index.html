@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/get_started/cross_tools/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/get_started/docker/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Install Cross Tools for ARM - Apache Mynewt</title>
+	<title>All-in-one Docker Container - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="Install Cross Tools for ARM">
+    <body class="All-in-one Docker Container">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -211,8 +211,8 @@
               
                 
   
-    <li>
-      <a href="../docker/">All-in-one Docker Container</a>
+    <li class="active">
+      All-in-one Docker Container
     </li>
   
 
@@ -241,8 +241,8 @@
               
                 
   
-    <li class="active">
-      Install Cross Tools for ARM
+    <li>
+      <a href="../cross_tools/">Install Cross Tools for ARM</a>
     </li>
   
 
@@ -403,7 +403,7 @@
         
       
       
-        <li>&raquo; Install Cross Tools for ARM</li>
+        <li>&raquo; All-in-one Docker Container</li>
       
     
     
@@ -412,78 +412,51 @@
                             </div>
                         </div>
                         
-                            <h1 id="installing-cross-tools-for-arm">Installing Cross Tools for ARM<a class="headerlink" href="#installing-cross-tools-for-arm" title="Permanent link">&para;</a></h1>
-<p>This page shows how to install tools on your laptop/computer to use for direct communication (e.g. for debugging) with some ARM based HW platforms running Apache Mynewt. You will also have to use the Newt tool installed to run natively on your machine. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.</p>
-<p>This page provides guidance for installing the tools directly on your MAC and Linux machine. See the relevant sections below.</p>
-<p><br></p>
-<h2 id="install-arm-cross-tools-in-mac-os-x">Install ARM Cross tools in Mac OS X<a class="headerlink" href="#install-arm-cross-tools-in-mac-os-x" title="Permanent link">&para;</a></h2>
-<h3 id="install-tool-chain">Install Tool Chain<a class="headerlink" href="#install-tool-chain" title="Permanent link">&para;</a></h3>
-<p>Install the PX4 Toolchain and check the version installed. ARM maintains a
-pre-built GNU toolchain with a GCC source branch targeted at Embedded ARM
-Processors, namely Cortex-R/Cortex-M processor families. After installing,
-ensure that the symbolic link installed by Homebrew points to the correct
-version of the debugger.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew tap PX4/homebrew-px4
-$ brew update
-$ brew install gcc-arm-none-eabi-49
-$ arm-none-eabi-gcc --version  
-arm-none-eabi-gcc (GNU Tools for ARM Embedded Processors) 4.9.3 20150529 (release) [ARM/embedded-4_9-branch revision 224288]
-Copyright (C) 2014 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-$ ls -al /usr/local/bin/arm-none-eabi-gdb
-lrwxr-xr-x  1 aditihilbert  admin  69 Sep 22 17:16 /usr/local/bin/arm-none-eabi-gdb -&gt; /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/arm-none-eabi-gdb
+                            <h2 id="everything-you-need-in-a-docker-container">Everything You Need in a Docker Container<a class="headerlink" href="#everything-you-need-in-a-docker-container" title="Permanent link">&para;</a></h2>
+<p>Docker provides a quick and easy way to get up and running with Mynewt. The
+newt command line tool and the entire build toolchain is available in a single
+docker container. The container is all that's needed to run your Mynewt based
+application in the simulator.  Enabling USB2 with your docker installation will
+allow you to load your application on a supported device.</p>
+<h3 id="install-docker">Install Docker<a class="headerlink" href="#install-docker" title="Permanent link">&para;</a></h3>
+<p>Install docker for your platform. <a href="https://docs.docker.com/mac/">Mac OS X</a> / <a href="https://docs.docker.com/windows/">Windows</a> / <a href="https://docs.docker.com/linux/">Linux</a></p>
+<p>Make sure to double click the Docker Quickstart Terminal application if you're on Mac or Windows.</p>
+<h3 id="use-the-newt-wrapper-script">Use the newt wrapper script<a class="headerlink" href="#use-the-newt-wrapper-script" title="Permanent link">&para;</a></h3>
+<p>Use the newt wrapper script to invoke newt.  Create the following file, name it
+<code>newt</code>, make it executable, and put it in your path.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">#!/bin/bash</span>
+
+docker run -ti --rm --device<span style="color: #000000">=</span>/dev/bus/usb --privileged -v <span style="color: #A90D91">$(pwd)</span>:/workspace -w /workspace mynewt/newt:latest /newt <span style="color: #C41A16">&quot;</span><span style="color: #000000">$@</span><span style="color: #C41A16">&quot;</span>
 </pre></div>
 
 
-<p><strong>Note:</strong> If no version is specified, brew will install the latest version
-available. Mynewt OS will eventually work with multiple versions available,
-including the latest releases. However, at present we have tested only with
-this version and recommend it for getting started. </p>
-<p><br></p>
-<h3 id="install-openocd">Install OpenOCD<a class="headerlink" href="#install-openocd" title="Permanent link">&para;</a></h3>
-<p>OpenOCD (Open On-Chip Debugger) is open-source software that allows your
-computer to interface with the JTAG debug connector on a variety of boards.  A
-JTAG connection lets you debug and test embedded target devices. For more on
-OpenOCD go to <a href="http://openocd.org">http://openocd.org</a>.</p>
-<p>Currently, only OpenOCD 0.8.0 is supported.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install open-ocd
-$ which openocd
-/usr/local/bin/openocd
-$ ls -l $(which openocd)
-lrwxr-xr-x  1 &lt;user&gt;  admin  36 Sep 17 16:22 /usr/local/bin/openocd -&gt; ../Cellar/open-ocd/0.8.0/bin/openocd
-</pre></div>
-
-
-<p><br></p>
-<h2 id="install-arm-cross-arm-tools-for-linux">Install ARM cross arm tools for Linux<a class="headerlink" href="#install-arm-cross-arm-tools-for-linux" title="Permanent link">&para;</a></h2>
-<h3 id="install-tool-chain_1">Install Tool Chain<a class="headerlink" href="#install-tool-chain_1" title="Permanent link">&para;</a></h3>
-<p>On a Debian-based Linux distribution, gcc 4.9.3 for ARM can be installed with
-apt-get as documented below. The steps are explained in depth at
-<a href="https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded">https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded</a>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo apt-get remove binutils-arm-none-eabi gcc-arm-none-eabi 
-$ sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded 
-$ sudo apt-get update 
-$ sudo apt-get install gcc-arm-none-eabi
-$ sudo apt-get install gdb-arm-none-eabi
-</pre></div>
-
-
-<p><br></p>
-<h3 id="install-openocd_1">Install OpenOCD<a class="headerlink" href="#install-openocd_1" title="Permanent link">&para;</a></h3>
-<p>OpenOCD (Open On-Chip Debugger) is open-source software that allows your
-computer to interface with the JTAG debug connector on a variety of boards.  A
-JTAG connection lets you debug and test embedded target devices. For more on
-OpenOCD go to <a href="http://openocd.org">http://openocd.org</a>.</p>
-<p>If you are running Ubuntu 15.x, then you are in luck and you can simply run: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo apt-get install openocd 
-</pre></div>
-
-
-<p>For this project, you should download the openocd 0.8.0 package from
-<a href="https://launchpad.net/ubuntu/vivid/+source/openocd">https://launchpad.net/ubuntu/vivid/+source/openocd</a>.
-The direct link to the amd64 build is
-<a href="http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb">http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb</a>. </p>
+<p>This will allow you to run newt as if it was natively installed.  You can now
+follow the normal tutorials using the newt wrapper script.</p>
+<p>You can upgrade your container by running <code>docker pull mynewt/newt:latest</code> when
+updates are made available.</p>
+<p>If you plan on loading your application on an actual device, continue on to
+configure USB2 support.</p>
+<h3 id="enable-usb2-support-for-mac-or-windows">Enable USB2 Support for Mac or Windows<a class="headerlink" href="#enable-usb2-support-for-mac-or-windows" title="Permanent link">&para;</a></h3>
+<h4 id="install-virtualbox-extension-pack">Install VirtualBox extension pack<a class="headerlink" href="#install-virtualbox-extension-pack" title="Permanent link">&para;</a></h4>
+<p>Docker uses a VirtualBox Linux VM to run containers.  A free VirtualBox
+extension pack is required to enable USB2 support.  Download the <a href="http://download.virtualbox.org/virtualbox/5.0.16/Oracle_VM_VirtualBox_Extension_Pack-5.0.16-105871.vbox-extpack">VirtualBox
+5.0.16 Oracle VM VirtualBox Extension
+Pack</a>
+and double click to install</p>
+<h4 id="enable-usb2-and-select-your-device">Enable USB2 and select your device<a class="headerlink" href="#enable-usb2-and-select-your-device" title="Permanent link">&para;</a></h4>
+<ul>
+<li>The "default" VM created by docker-machine must first be stopped before you
+  can enable USB2.  You can run the command <code>docker-machine stop default</code> or
+  use the VirtualBox UI to stop the VM.</li>
+<li>Enable USB2 using the VirtualBox UI. Select the "default"
+  VM-&gt;Settings-&gt;Ports-&gt;USB2 to enable USB2.   Add your device to the USB Device
+  Filters to make the device visible in the docker container.  See the image below.</li>
+</ul>
+<p><img src="../pics/virtualbox_usb.jpg" width="728px" /></p>
+<ul>
+<li>Restart the "default" VM by running <code>docker-machine start default</code> or by
+  using the VirtualBox UI.</li>
+</ul>
                         
                         <div class="row">
                             
@@ -493,16 +466,16 @@ The direct link to the amd64 build is
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../project_create/>
+    <a href=../get_started/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Create Your First Project
+        Previous: Quick Start
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../vocabulary/>
-        Next: Concepts
+    <a href=../native_tools/>
+        Next: Install Native Tools
         <span class="fa fa-arrow-right"></span>
     </a>
     
