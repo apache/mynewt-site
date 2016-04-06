@@ -2,6 +2,8 @@
 
 If the introduction to Mynewt has piqued your interest and you want to familiarize yourself with some of its functionality, this series of tutorials is for you. The lessons are aimed at the beginner. 
 
+Here is a sampler of the tutorials available. New ones are being constantly added and can be seen in the navigation bar on the left.
+
 * [Blinky on Arduino Zero hardware](arduino_zero.md)
 * [Blinky on Olimex/STM32F407ZGT6 Cortex-M4 hardware](olimex.md)
 * [Blinky on STM32F3 discovery kit from ST Micro](STM32F303.md)

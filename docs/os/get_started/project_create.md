@@ -137,17 +137,16 @@ into your local directory.
 
 ### Test the project's packages
 
-You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the shell package in the `apache-mynewt-core` repo, call newt as shown below.
+You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the `libs/os` package in the `apache-mynewt-core` repo, call newt as shown below.
 
 ```
-$ newt test @apache-mynewt-core/libs/shell
-Testing package @apache-mynewt-core/libs/shell
-Compiling os.c
-Compiling os_callout.c
-Compiling os_eventq.c
-Compiling os_heap.c
-Compiling os_mbuf.c
-Compiling os_mempool.c
+$ newt test @apache-mynewt-core/libs/os
+Testing package @apache-mynewt-core/libs/os
+Compiling hal_bsp.c
+Compiling os_bsp.c
+Compiling sbrk.c
+Archiving native.a
+Compiling flash_map.c
 <snip>
 ```
 

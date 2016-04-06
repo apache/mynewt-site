@@ -153,7 +153,9 @@ board.
 
 To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the default application that comes with your project, ```apps/blinky```:
 
-```no-highlight
+**Note**: Remember to set features to `arduino_zero` if your board is Arduino Zero and not a Pro!
+
+```hl_lines="9"
 $ newt target create arduino_blinky 
 Target targets/arduino_blinky successfully created
 $ newt target set arduino_blinky app=apps/blinky 
@@ -185,9 +187,7 @@ Archiving testutil.a
 <snip>
 App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf
 ```
-
-Congratulations!  You have successfully built your application. Now it's 
-time to load both the bootloader and application onto the target.
+<font color="#FF0000"> Congratulations! </font> You have successfully built your application. Now it's time to load both the bootloader and application onto the target.
 
 <br>
 
@@ -218,6 +218,10 @@ Execute the command to download the bootloader.
 
 If the newt tool finishes without error, that means the bootloader has been 
 successfully loaded onto the target.
+
+<br>
+
+<font color="#FF0000"> Reminder if you are using Docker: </font> When working with actual hardware, remember that each board has an ID. If you swap boards and do not refresh the USB Device Filter on the VirtualBox UI, the ID might be stale and the Docker instance may not be able to see the board correctly. For example, you may see an error message like `Error: unable to find CMSIS-DAP device` when you try to load or run an image on the board. In that case, you need to click on the USB link in VirtualBox UI, remove the existing USB Device Filter (e.g. "Atmel Corp. EDBG CMSIS-DAP[0101]") by clicking on the "Removes selected USB filter" button, and add a new filter by clicking on the "Adds new USB filter" button.
 
 <br>
 
