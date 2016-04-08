@@ -28,6 +28,12 @@ Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in myapp1...
 Project myapp1 successfully created.
 $ cd myapp1
+
+$ newt install -v 
+apache-mynewt-core
+Downloading repository description for apache-mynewt-core... success!
+...
+apache-mynewt-core successfully installed version 0.7.9-none
 ```
 
 <br>
@@ -67,7 +73,7 @@ targets/myble
     app=@apache-mynewt-core/apps/bletiny
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
-    cflags=DSTATS_NAME_ENABLE 
+    cflags=-DSTATS_NAME_ENABLE 
 ```
 
 <br>
