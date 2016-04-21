@@ -50,6 +50,11 @@ using is in the `mcu/xxx/src/hal_xxxx.c` implementation.  Finally, you
 can build your project and ensure that there are no unresolved hal_xxx 
 externals.
 
+### HAL Architecture
+
+Visit the [HAL architecture](./hal_architecture.md) page to get a understanding 
+of our current hal and its evolution.
+
 ###Implementing HAL Interfaces
 
 It might be that a specific HAL interface is not supported on your MCU or

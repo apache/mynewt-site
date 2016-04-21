@@ -22,6 +22,7 @@ implementation of the HAL (and documented in the implementation of the HAL)
 Below this, there are two different paradigms for HAL interface.  They are 
 discussed below.
 
+
 ## Direct HAL Interface
 
 In one HAL paradigm called **direct HAL**, the header file is the only component 
@@ -38,6 +39,14 @@ a **direct HAL** `hal_foo.h`, there can be many implementations of
 For example, support there is an ADC attached directly to the MCU and an ADC
 that is attached via SPI.  There would be no way in this simple paradigm
 to use both these devices from the HAL API at the same time.
+
+Current Direct HAL interfaces include:
+
+| **Hal Name** | ** Interface File ** |
+|--------------|----------------------|
+| [hal_gpio]   |  [hal_gpio.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h)     |
+| [hal_uart]   |  [hal_uart.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_uart.h)     |
+| [hal_cputime]|  [hal_cputime.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h)    |
 
 This brings up the second paradigm.
 
@@ -134,3 +143,12 @@ same functions.  In Mynewt today, the hal_gpio is a **direct HAL** and does
 not have this overhead. More HAL paradigms may be added in the future to address 
 the flexibility of the **indirect HAL** with the memory efficiency of the **direct HAL**
 
+Current Indirect HAL interfaces include:
+
+| **Hal Name** | ** Interface File ** |
+|--------------|----------------------|
+| [adc_int](hal_adc/hal_adc_int.md)    |  [hal_adc_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_adc_int.h)    
+| [dac_int](hal_dac/hal_dac_int.md)    |  [hal_dac_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_dac_int.h)
+| [flash_int](hal_flash/hal_flash_int.md)    |  [hal_flash_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_flash_int.h) 
+| [pwm_int](hal_pwm/hal_pwm_int.md)    |  [hal_pwm_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm_int.h)  
+| [i2c_int](hal_i2c/hal_i2c_int.md)    |  [hal_i2c_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_i2c_int.h)    | [spi_int](hal_spi/hal_spi_int.md)    |  [hal_spi_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_spi_int.h)    
