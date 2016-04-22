@@ -11,17 +11,19 @@ Before tackling this tutorial, it's best to read about Mynewt in the [Introducti
 You will need the following equipment
 
 * An Arduino Zero board.  NOTE: There are many flavors of Arduino. Ensure that 
-you have an Arduino Zero. See below for the verions of Arduino Zero that are
+you have an Arduino Zero. See below for the versions of Arduino Zero that are
 compatible with this tutorial
 * A computer that can connect to the Arduino Zero over USB
 * A USB cable (Type A to micro B) that can connect the computer to the Arduino
 * The Mynewt Release
 
-This tutorial has been tested on the following two Arduino Zero boards - Zero and Zero-Pro.
+This tutorial has been tested on the following three Arduino Zero boards - Zero, M0 Pro, and Zero-Pro.
 
-<img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
-<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
+<img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 390px;"/>
+<img src="http://www.arduino.org/images/products/Arduino-M0Pro-flat.jpg" alt="Drawing" style="width: 310px;"/>
+<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 310px;"/>
 
+Mynewt has not been tested on Arduino M0 which has no internal debugger support.
 
 ### Install Mynewt and Newt
 
@@ -95,7 +97,7 @@ $ newt target set arduino_boot build_profile=optimized
 
 <br>
 
-If you have an Arduino Zero Pro, you have to set the following next:
+If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:
 
 ```
 $ newt target set arduino_boot features=arduino_zero_pro 

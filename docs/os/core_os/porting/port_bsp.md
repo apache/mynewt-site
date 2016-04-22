@@ -63,6 +63,7 @@ Create the following files within the BSP directory tree. For now, they can be e
 | README.md | A markdown file to write documentation for your BSP |
 | pkg.yml   | A package file to describe your BSP contents |
 | include/bsp/bsp.h | A header file to include definitions required by system from the BSP |
+| include/bsp/bsp_sysid.h | A header file to enumerate the devices in your BSP |
 | src/os_bsp.c | A C source file to provide functions required by the OS from your BSP |
 | src/sbrk.c | A C source file to memory from your heap to the OS |
 | src/libc_stubs.c | A C source file to provide stubs/methods required by libc |
