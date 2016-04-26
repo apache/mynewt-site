@@ -1,9 +1,12 @@
-## Blinky on nRF52 board
+## Blinky, your "Hello World!", on nRF52
+
+<br>
 
 ### Objective
 
-Download a generic firmware skeleton ("bootstrap image") that applies to any hardware and then throw in additional applicable pkgs to generate a build for a specific board, namely the
-nRF52 Series chip from Nordic Semiconductors.
+Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
+
+Create a project with a simple app that blinks an LED on the nRF52 board from Nordic Semiconductors.  Download the application to the target and watch it blink!
 
 #### Hardware needed
 

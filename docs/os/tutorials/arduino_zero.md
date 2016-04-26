@@ -1,4 +1,6 @@
-## Running Mynewt on Arduino Zero
+## Blinky, your "Hello World!", on Arduino Zero
+
+Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
 
 This tutorial describes how to run Mynewt OS on Arduino Zero. Follow these simple steps and your board will be blinking in no time!
 

@@ -1,4 +1,4 @@
-## Blinky, Your Hello World!
+## Blinky, your "Hello World!", on Olimex
 
 ### Objective
 
@@ -142,7 +142,6 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 
 * Ensure that you are in the blinky project directory with the *blinky.elf* executable. Run the debug command in the *newt* tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an `-c "reset halt"` command.
 ```no-highlight
-    $ cd ~/dev/core
     $ newt debug blinky
     Debugging with ~/dev/core/hw/bsp/olimex_...
     Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
@@ -220,8 +219,8 @@ Let's create boot_olimex:
     $ newt target set boot_olimex app=@apache-mynewt-core/apps/boot
     $ newt target show boot_olimex
     targets/boot_olimex
-        app=app=@apache-mynewt-core/apps/boot
-        bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboar
+        app=@apache-mynewt-core/apps/boot
+        bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
         build_profile=optimized
 ```
 
