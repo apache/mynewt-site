@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_cputime/hal_cpu_timer/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_i2c/hal_i2c/">
         <link rel="shortcut icon" href="../../../../../img/favicon.ico">
 
-	<title>CPU timer - Apache Mynewt</title>
+	<title>I2C - Apache Mynewt</title>
 
         <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="CPU timer">
+    <body class="I2C">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -367,8 +367,8 @@
               
                 
   
-    <li class="active">
-      CPU timer
+    <li>
+      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
     </li>
   
 
@@ -410,8 +410,8 @@
               
                 
   
-    <li>
-      <a href="../../hal_i2c/hal_i2c/">I2C</a>
+    <li class="active">
+      I2C
     </li>
   
 
@@ -687,7 +687,7 @@
         
       
       
-        <li>&raquo; CPU timer</li>
+        <li>&raquo; I2C</li>
       
     
     
@@ -696,27 +696,95 @@
                             </div>
                         </div>
                         
-                            <h1 id="hal_cputime">hal_cputime<a class="headerlink" href="#hal_cputime" title="Permanent link">&para;</a></h1>
-<p>The hardware independent interface to system time.</p>
+                            <h1 id="hal_i2c">hal_i2c<a class="headerlink" href="#hal_i2c" title="Permanent link">&para;</a></h1>
+<p>The hardware independent interface to I2C Devices.</p>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
-<p>Contains several different interface.</p>
-<ul>
-<li>An interface to get the current CPU time </li>
-<li>Interfaces to convert between CPU time and clock time (microseconds etc.)</li>
-<li>An Interface to set up a software timer based on CPU time.</li>
-</ul>
+<p>An Inter-Integrated Circuit (I²C ] I-squared-C) bus is a multi-master,
+multi-save serial interface used to connect components on a circuit board
+and often peripherals devices located off the circuit board.</p>
+<p>I2C is often though of as a 2-wire protocol because it uses two wires (SDA, SCL)
+to send data between devices.  </p>
+<p>For a detailed description of I2C, see the <a href="https://en.wikipedia.org/wiki/I²C">I²C wikipedia page</a></p>
 <h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h">hal_cputime.h</a></p>
-<h3 id="cpu-time">CPU Time<a class="headerlink" href="#cpu-time" title="Permanent link">&para;</a></h3>
-<p>The CPU time is not the same as the <a href="../TBD">os_time</a>.  Typically,
-the os_time is set to a much slower tick rate than the CPU time.  The CPU
-time should be used for timing real-time events at exact times.  The os_time
-should be used for system level timeout etc that are not in fine time 
-resolutions.  In fact, cputime is not part of the os at all, but a hardware
-layer abstraction to high resolution timers. </p>
-<p>There are methods to get the cputime as 32-bit and 64-bit values.  Both 
-values may eventually wrap, but for timing short events a 32-bit value
-may be sufficient and would </p>
+<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_i2c.h">hal_i2c.h</a></p>
+<h3 id="hal_i2c-theory-of-operation">HAL_I2C Theory Of Operation<a class="headerlink" href="#hal_i2c-theory-of-operation" title="Permanent link">&para;</a></h3>
+<p>An I²C transaction typically involves acquiring the bus, sending and/or receiving
+data and release the bus.  The bus acquisition portion is important because
+the bus is typically multi-master so other devices may be trying to read/write
+the same peripheral.  </p>
+<p>HAL_I2C implements a master interface to the I²C bus.  Typical usage of the 
+interface would involve the following steps.</p>
+<ol>
+<li>initialize an I²C device using <code>hal_i2c_init</code></li>
+<li>when you want to perform an I²C transaction:<ol>
+<li>Issue the <code>hal_i2c_begin()</code> command.    </li>
+<li>Issue one or more  <code>hal_i2c_read</code> and/or <code>hal_i2c_write</code> commands</li>
+<li>Issue the <code>hal_i2c_end()</code> command.</li>
+</ol>
+</li>
+</ol>
+<p>An addition API was added called <code>hal_i2c_probe</code>.  This command combines
+<code>hal_i2c_begin()</code>, <code>hal_i2c_read</code>, and <code>hal_i2c_end()</code> to try to read 0-bytes
+from a specific bus address.  its intended to provide an easy way to probe
+the bus for a specific device.  NOTE: if the device is write-only, it will 
+not appear with this command.</p>
+<h3 id="hal_i2c-data">HAL_I2C Data<a class="headerlink" href="#hal_i2c-data" title="Permanent link">&para;</a></h3>
+<p>Data to read/write is passed to the hal_i2c APIs via the </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct hal_i2c_master_data {
+    uint8_t  address;   /* destination address */
+    uint16_t len;       /* number of bytes to transmit or receive */
+    uint8_t *buffer;    /* data buffer for transmit or receive */
+};
+</pre></div>
+
+
+<p><code>buffer</code> is a pointer to the data to send.  <code>len</code> is the number of bytes
+to send over the bus.  <code>address</code> is a 7-bit bus address of the device.</p>
+<p>When  I²C builds its address, it uses the 7-bit address plus a 1-bit R/W 
+(read/write) indicator to identify the device and direction of the 
+transaction.  Thus when using this API, you should use a 7-bit address
+in the data structure and ensure that address is a value between 0-127.</p>
+<p>As an example, consider an  I²C  device address that looks like this:</p>
+<table>
+<thead>
+<tr>
+<th>B7</th>
+<th>B6</th>
+<th>B5</th>
+<th>B4</th>
+<th>B3</th>
+<th>B2</th>
+<th>B1</th>
+<th>B0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>R/W</td>
+</tr>
+<tr>
+<td>MSB</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>LSB</td>
+</tr>
+</tbody>
+</table>
+<p>In the HAL_I2C API you would communicate with this device with address 
+<code>0b1000110</code>, whic is hex 0x46 or decimal 70.  The I²C drive would add the R/W bit
+and transmit it as hex 0x8D or 0x8D depending whether it was a read or
+write command.</p>
                         
                         <div class="row">
                             
@@ -726,16 +794,16 @@ may be sufficient and would </p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../hal_adc/hal_adc/>
+    <a href=../../hal_gpio/hal_gpio/>
         <span class="fa fa-arrow-left"></span>
-        Previous: ADC
+        Previous: GPIO
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../hal_dac/hal_dac/>
-        Next: DAC
+    <a href=../../hal_pwm/hal_pwm/>
+        Next: PWM
         <span class="fa fa-arrow-right"></span>
     </a>
     

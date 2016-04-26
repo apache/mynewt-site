@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_cputime/hal_cpu_timer/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_spi/hal_spi/">
         <link rel="shortcut icon" href="../../../../../img/favicon.ico">
 
-	<title>CPU timer - Apache Mynewt</title>
+	<title>SPI - Apache Mynewt</title>
 
         <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="CPU timer">
+    <body class="SPI">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -367,8 +367,8 @@
               
                 
   
-    <li class="active">
-      CPU timer
+    <li>
+      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
     </li>
   
 
@@ -430,8 +430,8 @@
               
                 
   
-    <li>
-      <a href="../../hal_spi/hal_spi/">SPI</a>
+    <li class="active">
+      SPI
     </li>
   
 
@@ -687,7 +687,7 @@
         
       
       
-        <li>&raquo; CPU timer</li>
+        <li>&raquo; SPI</li>
       
     
     
@@ -696,27 +696,71 @@
                             </div>
                         </div>
                         
-                            <h1 id="hal_cputime">hal_cputime<a class="headerlink" href="#hal_cputime" title="Permanent link">&para;</a></h1>
-<p>The hardware independent interface to system time.</p>
+                            <h1 id="hal_spi">hal_spi<a class="headerlink" href="#hal_spi" title="Permanent link">&para;</a></h1>
+<p>SPI (Serial Peripheral Interface) is a synchronous 4-wire serial interface
+commonly used to connect components in embedded systems.</p>
+<p>For a detailed description of SPI, see <a href="https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">Wikipedia</a>.</p>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
-<p>Contains several different interface.</p>
-<ul>
-<li>An interface to get the current CPU time </li>
-<li>Interfaces to convert between CPU time and clock time (microseconds etc.)</li>
-<li>An Interface to set up a software timer based on CPU time.</li>
-</ul>
+<p>The Mynewt HAL interface supports the SPI master functionality only.  Future
+version will support SPI slave functionality.</p>
 <h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h">hal_cputime.h</a></p>
-<h3 id="cpu-time">CPU Time<a class="headerlink" href="#cpu-time" title="Permanent link">&para;</a></h3>
-<p>The CPU time is not the same as the <a href="../TBD">os_time</a>.  Typically,
-the os_time is set to a much slower tick rate than the CPU time.  The CPU
-time should be used for timing real-time events at exact times.  The os_time
-should be used for system level timeout etc that are not in fine time 
-resolutions.  In fact, cputime is not part of the os at all, but a hardware
-layer abstraction to high resolution timers. </p>
-<p>There are methods to get the cputime as 32-bit and 64-bit values.  Both 
-values may eventually wrap, but for timing short events a 32-bit value
-may be sufficient and would </p>
+<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_spi.h">hal_spi.h</a></p>
+<h3 id="hal_spi-theory-of-operation">HAL_SPI Theory Of Operation<a class="headerlink" href="#hal_spi-theory-of-operation" title="Permanent link">&para;</a></h3>
+<p>SPI is called a 4-wire interface because of the 4 signals, MISO, MOSI, CLK, 
+and SS.  The SS signal (slave select) is an active low signal that activates
+a SPI slave device.  This is how a master "addresses" a particular slave
+device.  Often this signal is also referred to as "chip select" as it
+selects particular slave device for communications.</p>
+<p>The Mynewt SPI HAL has blocking transfers.  This means that the API call
+to transfer a byte will wait until the byte completes transmissions before
+the function returns.</p>
+<p>Since SPI is generally a shared communications bus, the hal_spi API allows
+SPI runtime configuration to be compatible with the data format and speed of the 
+slave device.  See the <code>hal_spi_config</code> method in the API above for a 
+description of the available settings.  These settings are critical to the
+operation of the slave device.</p>
+<p>The Mynewt SPI HAL does not include built-in SS signaling.  Its up to the 
+hal_spi user to control their own SS pins.  Typically applications will do 
+this with GPIO.</p>
+<p>An example of this would look like this (error handling excluded for brevity):</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        /* each device may have different settings */
+        extern struct hal_spi_settings dev1;    
+        extern struct hal_spi_settings dev2;
+
+        gpio_init_out(SS_DEV_1, 1);
+        gpio_init_out(SS_DEV_2, 1);
+        hal_spi *pspi = hal_spi_init(SPI0);
+
+        ...
+        /* write a single byte (0) to device 1 */
+        hal_spi_config(pspi, &amp;dev1);
+        gpio_clear(SS_DEV_1)
+        rc = hal_spi_transfer(pspi, 0)
+        gpio_set(SS_DEV_1)
+
+        /* read a single byte from device 2 */
+        hal_spi_config(pspi, &amp;dev2);
+        gpio_clear(SS_DEV_2)
+        val = hal_spi_transfer(pspi, 0)
+        gpio_set(SS_DEV_2)
+</pre></div>
+
+
+<p>Depending on the device's operation, it may be necessary or more efficient
+to write or read multiple bytes in a single transaction.  An example is
+shown below</p>
+<p>```no-highlight</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void spi_write_buf(struct hal_spi *pspi, uint8_t *buf, int len) {
+    char *ptr = buf;
+
+    hal_spi_config(pspi, &amp;dev2);
+    gpio_clear(SS_DEV_2)
+    while(len--  &gt; 0) {
+        val = hal_spi_transfer(pspi, (uint16_t) *ptr++)
+    }
+    gpio_set(SS_DEV_2)
+}
+</pre></div>
                         
                         <div class="row">
                             
@@ -726,16 +770,16 @@ may be sufficient and would </p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../hal_adc/hal_adc/>
+    <a href=../../hal_pwm/hal_pwm/>
         <span class="fa fa-arrow-left"></span>
-        Previous: ADC
+        Previous: PWM
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../hal_dac/hal_dac/>
-        Next: DAC
+    <a href=../../hal_system/hal_sys/>
+        Next: System
         <span class="fa fa-arrow-right"></span>
     </a>
     

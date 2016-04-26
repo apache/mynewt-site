@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_cputime/hal_cpu_timer/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_pwm/hal_pwm/">
         <link rel="shortcut icon" href="../../../../../img/favicon.ico">
 
-	<title>CPU timer - Apache Mynewt</title>
+	<title>PWM - Apache Mynewt</title>
 
         <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="CPU timer">
+    <body class="PWM">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -367,8 +367,8 @@
               
                 
   
-    <li class="active">
-      CPU timer
+    <li>
+      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
     </li>
   
 
@@ -420,8 +420,8 @@
               
                 
   
-    <li>
-      <a href="../../hal_pwm/hal_pwm/">PWM</a>
+    <li class="active">
+      PWM
     </li>
   
 
@@ -687,7 +687,7 @@
         
       
       
-        <li>&raquo; CPU timer</li>
+        <li>&raquo; PWM</li>
       
     
     
@@ -696,27 +696,65 @@
                             </div>
                         </div>
                         
-                            <h1 id="hal_cputime">hal_cputime<a class="headerlink" href="#hal_cputime" title="Permanent link">&para;</a></h1>
-<p>The hardware independent interface to system time.</p>
+                            <h1 id="hal_pwm">hal_pwm<a class="headerlink" href="#hal_pwm" title="Permanent link">&para;</a></h1>
+<p>The hardware independent interface to Pulse Width Modulators</p>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
-<p>Contains several different interface.</p>
-<ul>
-<li>An interface to get the current CPU time </li>
-<li>Interfaces to convert between CPU time and clock time (microseconds etc.)</li>
-<li>An Interface to set up a software timer based on CPU time.</li>
-</ul>
+<p>Pulse Width Modulators (PWMs) are hardware devices that output digital waveforms
+with programmable duty cycle and frequency.  They use a digital waveform
+but can contiuously adjust the amount of power delivered to their load via
+duty cycle.  They are often used to create analog waveforms via low pass filter, 
+drive LEDs at various intensities, and control DC or servo motors.</p>
+<p>For a description of PSM, see <a href="https://en.wikipedia.org/wiki/Pulse-width_modulation">wikipedia</a></p>
 <h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h">hal_cputime.h</a></p>
-<h3 id="cpu-time">CPU Time<a class="headerlink" href="#cpu-time" title="Permanent link">&para;</a></h3>
-<p>The CPU time is not the same as the <a href="../TBD">os_time</a>.  Typically,
-the os_time is set to a much slower tick rate than the CPU time.  The CPU
-time should be used for timing real-time events at exact times.  The os_time
-should be used for system level timeout etc that are not in fine time 
-resolutions.  In fact, cputime is not part of the os at all, but a hardware
-layer abstraction to high resolution timers. </p>
-<p>There are methods to get the cputime as 32-bit and 64-bit values.  Both 
-values may eventually wrap, but for timing short events a 32-bit value
-may be sufficient and would </p>
+<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm.h">hal_pwm.h</a></p>
+<h3 id="hal_pwm-theory-of-operation">HAL_PWM Theory Of Operation<a class="headerlink" href="#hal_pwm-theory-of-operation" title="Permanent link">&para;</a></h3>
+<p>The HAL_PWM interface was designed with some specific use cases in mind.  It
+was also designed to exploit a subset of the functionality provided by 
+common PWM controllers.</p>
+<p>Fundamentally, a PWM has at it root an N-bit COUNTER, a CLOCK source, one or 
+more CAPTURE registers, and sometimes a TOP register.</p>
+<p>The clock source feeds the COUNTER register which is continuously counting
+(up or down), When the COUNTER is less than the value of the CAPTURE
+register, the PWM outputs a logic HIGH.  When the counter is greater than
+the CAPTURE register the PWM outputs logic LOW. When the counter reaches the TOP
+register, it wraps back to zero.  If the PWM has no TOP register, it simply
+wraps back to zero after reaching 2^N-1.</p>
+<p>The HAL_PWM abstracts this implementation and provides methods to set the
+PWM frequency and duty cycle.  The frequency is the rate at which the counter
+wraps back to zero.  The duty cycle is the fraction of time the PWM is in 
+logic HIGH state.</p>
+<p>The HAL_PWM API provides a few methods to get information on the PWM.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Method Name</strong></th>
+<th><strong> Description </strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hal_pwm_get_source_clock_freq</td>
+<td>gets the frequency of the CLOCK that is driving the COUNTER</td>
+</tr>
+<tr>
+<td>hal_pwm_get_resolution_bits</td>
+<td>gets the number of bits in the COUNTER</td>
+</tr>
+</tbody>
+</table>
+<p>To use a PWM via HAL_PWM, follow these simple steps.</p>
+<p>1) initialize a PWM using <code>hal_pwm_init</code> -- this binds the driver to the device
+for the specific PWM you are using
+2) Optionally set the frequency of the PWM using <code>hal_pwm_set_frequency</code>
+-- PWMs that support a TOP register have fine control over their frequency 
+settings.  If this command is not supported by the PWM it will return an error 
+and its likely that there is no TOP register; the frequency resolution is not 
+finely adjustable.  See the BSP for coarse adjustment of the PWM frequency.<br />
+3) Enable the PWM to output a specific duty cycle using the 
+<code>hal_pwm_enable_duty_cycle</code> API</p>
+<p>To change the duty cycle dynamically, just issue another 
+<code>hal_pwm_enable_duty_cycle</code> command.</p>
+<p>To disable the PWM waveform, use <code>hal_pwm_disable</code>.</p>
                         
                         <div class="row">
                             
@@ -726,16 +764,16 @@ may be sufficient and would </p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../hal_adc/hal_adc/>
+    <a href=../../hal_i2c/hal_i2c/>
         <span class="fa fa-arrow-left"></span>
-        Previous: ADC
+        Previous: I2C
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../hal_dac/hal_dac/>
-        Next: DAC
+    <a href=../../hal_spi/hal_spi/>
+        Next: SPI
         <span class="fa fa-arrow-right"></span>
     </a>
     

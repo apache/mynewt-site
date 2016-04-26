@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_cputime/hal_cpu_timer/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_dac/hal_dac/">
         <link rel="shortcut icon" href="../../../../../img/favicon.ico">
 
-	<title>CPU timer - Apache Mynewt</title>
+	<title>DAC - Apache Mynewt</title>
 
         <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="CPU timer">
+    <body class="DAC">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -367,8 +367,8 @@
               
                 
   
-    <li class="active">
-      CPU timer
+    <li>
+      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
     </li>
   
 
@@ -377,8 +377,8 @@
               
                 
   
-    <li>
-      <a href="../../hal_dac/hal_dac/">DAC</a>
+    <li class="active">
+      DAC
     </li>
   
 
@@ -687,7 +687,7 @@
         
       
       
-        <li>&raquo; CPU timer</li>
+        <li>&raquo; DAC</li>
       
     
     
@@ -696,27 +696,45 @@
                             </div>
                         </div>
                         
-                            <h1 id="hal_cputime">hal_cputime<a class="headerlink" href="#hal_cputime" title="Permanent link">&para;</a></h1>
-<p>The hardware independent interface to system time.</p>
+                            <h1 id="hal_dac">hal_dac<a class="headerlink" href="#hal_dac" title="Permanent link">&para;</a></h1>
+<p>The hardware independent interface to Digital To Analog Converters.</p>
 <h3 id="description">Description<a class="headerlink" href="#description" title="Permanent link">&para;</a></h3>
-<p>Contains several different interface.</p>
-<ul>
-<li>An interface to get the current CPU time </li>
-<li>Interfaces to convert between CPU time and clock time (microseconds etc.)</li>
-<li>An Interface to set up a software timer based on CPU time.</li>
-</ul>
+<p>For a description of Digital to Analog Converters, see 
+<a href="https://en.wikipedia.org/wiki/Digital-to-analog_converter">wikipedia</a></p>
 <h3 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h">hal_cputime.h</a></p>
-<h3 id="cpu-time">CPU Time<a class="headerlink" href="#cpu-time" title="Permanent link">&para;</a></h3>
-<p>The CPU time is not the same as the <a href="../TBD">os_time</a>.  Typically,
-the os_time is set to a much slower tick rate than the CPU time.  The CPU
-time should be used for timing real-time events at exact times.  The os_time
-should be used for system level timeout etc that are not in fine time 
-resolutions.  In fact, cputime is not part of the os at all, but a hardware
-layer abstraction to high resolution timers. </p>
-<p>There are methods to get the cputime as 32-bit and 64-bit values.  Both 
-values may eventually wrap, but for timing short events a 32-bit value
-may be sufficient and would </p>
+<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_dac.h">hal_dac.h</a></p>
+<h3 id="hal_dac-theory-of-operation">HAL_DAC Theory Of Operation<a class="headerlink" href="#hal_dac-theory-of-operation" title="Permanent link">&para;</a></h3>
+<p>DACs have differing conversion resolution (bits), reference voltages (Volts)
+and conversion times (sample rate).</p>
+<p>The hal_dac implements function to query some of these values from the
+BSP.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Method Name</strong></th>
+<th><strong> Description </strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>hal_dac_get_bits</td>
+<td>gets the resolution of the DAC in bits.  For example if the DAC is 10 bits, it supports setting of value from 0 through 2^10 - 1 = 1023.</td>
+</tr>
+<tr>
+<td>hal_dac_get_ref_mv</td>
+<td>gets the underlying reference voltage for the DAC in millivolts.  For example, if the DAC is 10 bits and the reference voltage is 5000 mV setting the DAC value to 1023 corresponds to 5V; setting the DAC value to 0 corresponds to 0 volts.</td>
+</tr>
+</tbody>
+</table>
+<p>From these two pieces of information the application or library can
+determine how to set a specific output voltage.  NOTE: each underlying
+hardware may return different values for these settings.</p>
+<p>The API to set the DAC output value is blocking. This means the function 
+will return after the DAC value has been programmed.</p>
+<p>Future HAL_DAC APIs will include A DMA interface to automatically write 
+DMA data to the DAC based in events.</p>
+<p>The Mynewt HAL also supports a <a href="../../hal_pwm/hal_pwm/">PWM</a> interface which can 
+be used in conjunction with a low pass filter to set an analog output voltage.</p>
                         
                         <div class="row">
                             
@@ -726,16 +744,16 @@ may be sufficient and would </p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../hal_adc/hal_adc/>
+    <a href=../../hal_cputime/hal_cpu_timer/>
         <span class="fa fa-arrow-left"></span>
-        Previous: ADC
+        Previous: CPU timer
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../hal_dac/hal_dac/>
-        Next: DAC
+    <a href=../../hal_flash/hal_flash/>
+        Next: Overview
         <span class="fa fa-arrow-right"></span>
     </a>
     
