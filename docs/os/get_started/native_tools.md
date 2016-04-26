@@ -84,4 +84,4 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
 
 <br>
 
-At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the [Build test code on simulator](#build-test-code-on-simulator) section.
+At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the [Create Your First Project](project_create.md) section.

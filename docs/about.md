@@ -11,7 +11,7 @@ Apache Mynewt's open-source embedded software is designed with the following com
 * System configuration that allows collection of logs and statistics for all packages (with filtering options) ranging from OS-level resources such as memory pools, priorities to interface level counters such as packet exchange and queues
 * Core dump captures to enable remote diagnosis of device failures and hiccups
 * Network protocol stacks 
-    * First fully open-source BLE 4.2 stack
+    * World's first fully open-source BLE 4.2 stack
         * Support for PDUs of up to 251 bytes for high throughput
         * Support for all 4 roles to be run concurrently - Broadcaster, Observer, Peripheral, Central
         * Random addresses for link-layer security
@@ -23,24 +23,23 @@ Apache Mynewt's open-source embedded software is designed with the following com
 
 Release Version | Descriptor | Date |Features 
 ------------ | ------------- |------|-------
-0.8.0b2 | Beta #2 before pre-GA release #1  | mid-March, 2016 | * Arduino Zero support
-      |      |      | * OS Time
-      |      |      | * Several new tutorials for OS
-      |      |      | * Tutorials for BLE 4.2
-      |      |      | * BLE 4.2: Random static address
-0.8.0 | pre-GA release #1  | mid-April, 2016 | * HAL extensions in OS
+0.8.0 | pre-GA release #1  | late-April, 2016 | * HAL extensions in OS
       |      |      | * Arduino DUE support
       |      |      | * Image verification
-      |      |      | * BLE 4.2 stats and logs
-      |      |      | * Crash dump capture and retrieval
-0.9.0b1 | Beta before pre-GA release #2  | mid-May, 2016 | * Support images in external flash
-      |      |      | * Support for low power modes in multiple SoCs
-      |      |      | * BLE 4.2: LE legacy pairing   
+      |      |      | * Stats and logs enhancement
+      |      |      | * HAL additions: ADC, DAC, I2C, PWM, SPI
+      |      |      | * BLE 4.2: LE legacy pairing
+      |      |      | * BLE 4.2: Code size optimization 
+0.9.0 | pre-GA release #2  | May, 2016 | * Support images in external flash
+      |      |      | * System watchdog
+      |      |      | * Support for low power modes in multiple SoCs   
       |      |      | * BLE 4.2: LE Secure Connections
       |      |      | * BLE 4.2: Host and Controller separation
       |      |      | * BLE 4.2: Random private resolvable addresses
-      |      |      | * BLE 4.2 stats and logs
-0.9.0 | pre-GA release #2  | mid-June, 2016 | * Test coverage improvements
+      |      |      | * BLE 4.2: Remote configuration, upgrade, factory reset over BLE 4.2      
+      |      |      | * BLE 4.2: Factory reset
+0.10.0| pre-GA release #3  | June, 2016 | * Test coverage improvements
+      |      |      | * Support for additional Arduino boards
       |      |      | * BLE 4.2: GATT based BLE profiles for Mynewt 
       |      |      | * BLE 4.2: Configurability improvements 
 

@@ -6,6 +6,8 @@ docker container. The container is all that's needed to run your Mynewt based
 application in the simulator.  Enabling USB2 with your docker installation will
 allow you to load your application on a supported device.
 
+The Docker is the only supported option if you are working on a Windows machine. If you are using Mac OS X or Linux, you have the choice of installing a Docker container of tools and toolchains or installing them natively. This chapter describes how to set up the Docker image for all three platforms.
+
 <br>
 
 ### Install Docker
