@@ -145,10 +145,11 @@ the flexibility of the **indirect HAL** with the memory efficiency of the **dire
 
 Current Indirect HAL interfaces include:
 
-| **Hal Name** | ** Interface File ** |
-|--------------|----------------------|
-| [adc_int](hal_adc/hal_adc_int.md)    |  [hal_adc_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_adc_int.h)    
-| [dac_int](hal_dac/hal_dac_int.md)    |  [hal_dac_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_dac_int.h)
-| [flash_int](hal_flash/hal_flash_int.md)    |  [hal_flash_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_flash_int.h) 
-| [pwm_int](hal_pwm/hal_pwm_int.md)    |  [hal_pwm_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm_int.h)  
-| [i2c_int](hal_i2c/hal_i2c_int.md)    |  [hal_i2c_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_i2c_int.h)    | [spi_int](hal_spi/hal_spi_int.md)    |  [hal_spi_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_spi_int.h)    
+| **Hal Name**  | ** Interface File ** |
+|---------------|----------------------|
+| hal_adc_int   |  [hal_adc_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_adc_int.h)
+| hal_dac       |  [hal_dac_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_dac_int.h)
+| hal_flash_int |  [hal_flash_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_flash_int.h)
+| hal_pwm_int   |  [hal_pwm_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm_int.h)
+| hal_i2c_int   |  [hal_i2c_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_i2c_int.h)
+| hal_spi_int   |  [hal_spi_int.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_spi_int.h)
