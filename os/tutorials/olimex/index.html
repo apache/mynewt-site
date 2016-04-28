@@ -274,6 +274,16 @@
                 
   
     <li>
+      <a href="../blinky_sram_olimex/">Run Blinky from SRAM, no bootloader</a>
+    </li>
+  
+
+              
+          
+              
+                
+  
+    <li>
       <a href="../add_repos/">Add repo to project</a>
     </li>
   
@@ -304,7 +314,7 @@
                 
   
     <li>
-      <a href="../bletiny_project/">BLE commands via console</a>
+      <a href="../bletiny_project/">Use BLE app to check stats via console</a>
     </li>
   
 
@@ -505,16 +515,7 @@
                             <h2 id="blinky-your-hello-world-on-olimex">Blinky, your "Hello World!", on Olimex<a class="headerlink" href="#blinky-your-hello-world-on-olimex" title="Permanent link">&para;</a></h2>
 <h3 id="objective">Objective<a class="headerlink" href="#objective" title="Permanent link">&para;</a></h3>
 <p>Learn how to use packages from a default application repository of Mynewt to build your first <em>Hello World</em> application (Blinky) on a target board. Once built using the <em>newt</em> tool, this application will blink the LED lights on the target board. Fun stuff!</p>
-<p>This tutorial will guide you to achieve the following, assuming you have already set up the environment on your computer to use Mynewt OS and newt tool:</p>
-<ul>
-<li>Download packages and use tools to create a runtime image for a board to make its LED blink. You have two choices here:<ul>
-<li><a href="#use-sram-to-make-led-blink">Download an image to SRAM</a>, or </li>
-<li><a href="#use-flash-to-make-led-blink">Download it to flash</a>.</li>
-</ul>
-</li>
-</ul>
-<p><br></p>
-<p><strong> Time Requirement</strong>: Allow yourself a couple of hours for this project if you are relatively new to embedded systems and playing with development boards. Those jumpers can be pesky!</p>
+<p>This tutorial shows you how to create a runtime image for an Olimex board to make its LED blink. Download the image to its flash memory and see the LED blink!</p>
 <p><br></p>
 <h3 id="what-you-need">What you need<a class="headerlink" href="#what-you-need" title="Permanent link">&para;</a></h3>
 <ol>
@@ -528,15 +529,12 @@
 </ol>
 <p>Also, we assume that you're familiar with UNIX shells. Let's gets started!</p>
 <p><br></p>
-<h3 id="use-sram-to-make-led-blink">Use SRAM to make LED blink<a class="headerlink" href="#use-sram-to-make-led-blink" title="Permanent link">&para;</a></h3>
-<p>If you wish to build the image to run from the onboard SRAM on Olimex board, follow the steps below:</p>
-<p><br></p>
-<h4 id="prepare-the-software">Prepare the Software<a class="headerlink" href="#prepare-the-software" title="Permanent link">&para;</a></h4>
+<h3 id="prepare-the-software">Prepare the Software<a class="headerlink" href="#prepare-the-software" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. </li>
 </ul>
 <p><br></p>
-<h4 id="create-a-project">Create a project.<a class="headerlink" href="#create-a-project" title="Permanent link">&para;</a></h4>
+<h3 id="create-a-project">Create a project.<a class="headerlink" href="#create-a-project" title="Permanent link">&para;</a></h3>
 <p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
 <a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
 or just follow the commands below.</p>
@@ -558,32 +556,34 @@ or just follow the commands below.</p>
 
 
 <p><br></p>
-<h4 id="create-a-target">Create a target<a class="headerlink" href="#create-a-target" title="Permanent link">&para;</a></h4>
+<h3 id="create-targets">Create targets<a class="headerlink" href="#create-targets" title="Permanent link">&para;</a></h3>
 <p>Change directory to ~/dev/myproj directory and define the <em>blinky</em> target inside myproj, using the <em>newt</em> tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt target create blinky
     $ newt target set blinky build_profile=debug
     $ newt target set blinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
     $ newt target set blinky app=apps/blinky
-    $ newt target show blinky
-    targets/boot_olimex
+
+    $ newt target create boot_olimex
+    $ newt target set boot_olimex app=@apache-mynewt-core/apps/boot
+    $ newt target set boot_olimex bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
+    $ newt target set boot_olimex build_profile=optimized
+
+    $ newt target show 
+    targets/blinky
         app=apps/blinky
-        bsp=hw/bsp/olimex_stm32-e407_devboard
+        bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
         build_profile=debug
+    targets/boot_olimex
+        app=@apache-mynewt-core/apps/boot
+        bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
+        build_profile=optimized
 </pre></div>
 
 
 <p><br></p>
-<h4 id="build-the-image">Build the image<a class="headerlink" href="#build-the-image" title="Permanent link">&para;</a></h4>
-<p>Next, let's build the image with the above values assigned. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>. </p>
-<p><font color="red">
-(We are working to simplify this scheme whereby an executable for a project will correctly elect the linker scripts and generate the relevant image. For example, the scheme will key on project identity such as bootloader, RAM, Flash (default) and build accordingly.) </font>.</p>
-<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em> </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
-    $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-    (some diff will be displayed)
-    $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
-    $ cd ~/dev/myproj
-    $ newt build blinky
+<h3 id="build-the-images">Build the images<a class="headerlink" href="#build-the-images" title="Permanent link">&para;</a></h3>
+<p>Next, let's build the images for the above targets. Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em> </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt build blinky
     Compiling case.c
     Compiling suite.c
     ...
@@ -592,11 +592,24 @@ or just follow the commands below.</p>
     $ ls ~/dev/myproj/bin/blinky/apps/blinky/
         blinky.elf      blinky.elf.bin     blinky.elf.cmd  
         blinky.elf.lst  blinky.elf.map
+
+    $ newt build boot_olimex
+    Building target targets/boot_olimex
+    App successfully built: ~/dev/myproj/bin/boot_olimex/apps/boot/boot.elf
 </pre></div>
 
 
 <p><br></p>
-<h4 id="prepare-the-hardware-to-boot-from-embedded-sram">Prepare the hardware to boot from embedded SRAM<a class="headerlink" href="#prepare-the-hardware-to-boot-from-embedded-sram" title="Permanent link">&para;</a></h4>
+<h3 id="sign-and-create-the-blinky-application-image">Sign and create the blinky application image<a class="headerlink" href="#sign-and-create-the-blinky-application-image" title="Permanent link">&para;</a></h3>
+<p>You must sign and version your application image to download it using newt to the board. Use the newt create-image command to perform this action. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image blinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/blinky/apps/blinky/blinky.img
+Build manifest: ~/dev/myproj/bin/blinky/apps/blinky/manifest.json
+</pre></div>
+
+
+<p><br></p>
+<h3 id="prepare-the-hardware-to-boot-from-flash">Prepare the hardware to boot from flash<a class="headerlink" href="#prepare-the-hardware-to-boot-from-flash" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Locate the boot jumpers on the board.</li>
 </ul>
@@ -607,7 +620,7 @@ or just follow the commands below.</p>
 <ul>
 <li>
 <p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present. 
-To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering <strong>B0_1</strong> and <strong>B1_1</strong>.</p>
+To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from flash by jumpering <strong>B0_0</strong> and <strong>B1_0</strong>.</p>
 </li>
 <li>
 <p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board). </p>
@@ -620,121 +633,17 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 </li>
 </ul>
 <p><br></p>
-<h4 id="lets-go">Let's Go!<a class="headerlink" href="#lets-go" title="Permanent link">&para;</a></h4>
+<h3 id="lets-go">Let's Go!<a class="headerlink" href="#lets-go" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Ensure that you are in the blinky project directory with the <em>blinky.elf</em> executable. Run the debug command in the <em>newt</em> tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an <code>-c "reset halt"</code> command.</li>
+<li>Load the images</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt debug blinky
-    Debugging with ~/dev/core/hw/bsp/olimex_...
-    Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
-    GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
-    Copyright (C) 2014 Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 &lt;http://gnu.org/licenses/gpl.html&gt;
-    ...
-    (info)
-    ...
-    target state: halted
-    target halted due to debug-request, current mode: Thread 
-    xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
-    Info : accepting &#39;gdb&#39; connection on tcp/3333
-    Info : device id = 0x10036413
-    Info : flash size = 1024kbytes
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load boot_olimex
+Loading image with: ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/ ~/dev/myproj/bin/boot_olimex/apps/boot/boot BASELIBC FS LIBC NFFS bootloader
+Successfully loaded image.
 
-
-<p><br></p>
-<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) set $msp=0x10010000
-</pre></div>
-
-
-<p><br></p>
-<p>Now load the image and type "c" or "continue" from the GNU debugger. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
-    Loading section .text, size 0x16b88 lma 0x20000000
-    Loading section .ARM.exidx, size 0x18 lma 0x20016b88
-    Loading section .data, size 0x9ec lma 0x20016ba0
-    Start address 0x200004b8, load size 95628
-    Transfer rate: 74 KB/sec, 3825 bytes/write.
-    (gdb) c
-    Continuing.
-</pre></div>
-
-
-<ul>
-<li>Voilà! The board's LED should be blinking at 1 Hz. Success!</li>
-</ul>
-<p><br></p>
-<h3 id="use-flash-to-make-led-blink">Use flash to make LED blink<a class="headerlink" href="#use-flash-to-make-led-blink" title="Permanent link">&para;</a></h3>
-<p>If you wish to build the image to run from the onboard flash memory on Olimex board, follow the steps below:</p>
-<ul>
-<li>
-<p>Configure the board to boot from flash by moving the two jumpers together to <strong>B0_0</strong> and <strong>B1_0</strong>. Refer to the pictures of the board under the section titled <a href="#prepare-the-hardware-to-boot-from-embedded-sram">"Prepare the hardware to boot from embedded SRAM"</a>.</p>
-<p>You will have to reset the board once the image is uploaded to it.</p>
-</li>
-<li>
-<p>If you skipped the first option for the project <a href="#use-sram-to-make-led-blink">(downloading an image to SRAM)</a>, then skip this step. Otherwise, continue with this step. </p>
-</li>
-</ul>
-<p>By default, the linker script (<code>olimex_stm32-e407_devboard.ld</code>) is configured to run from bootloader and flash. However, if you first ran the image from SRAM you had changed <code>olimex_stm32-e407_devboard.ld</code> to match <code>run_from_sram.ld</code>. You will, therefore, return to defaults with <code>olimex_stm32-e407_devboard.ld</code> linker script matching the contents of 'run_from_loader.ld'. Return to the project directory.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
-$ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-$ diff olimex_stm32-e407_devboard.ld run_from_loader.ld
-(some diff will be displayed)
-$ cp run_from_loader.ld olimex_stm32-e407_devboard.ld
-$ cd ~/dev/myproj
-</pre></div>
-
-
-<p><br></p>
-<ul>
-<li>In order to run the image from flash, you need to build the bootloader as well. The bootloader does the initial set up of the Olimex board and then transfers control to the image stored at a location in flash known to it. </li>
-</ul>
-<p>Let's create boot_olimex:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt target create boot_olimex
-    $ newt target set boot_olimex build_profile=optimized
-    $ newt target set boot_olimex bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-    $ newt target set boot_olimex app=@apache-mynewt-core/apps/boot
-    $ newt target show boot_olimex
-    targets/boot_olimex
-        app=@apache-mynewt-core/apps/boot
-        bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-        build_profile=optimized
-</pre></div>
-
-
-<p><br></p>
-<ul>
-<li>Now let's build both targets now.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt build boot_olimex
-    ...
-    App successfully built: ~/dev/myproj/bin/boot_olimex/apps/boot/boot.elf
-    $ newt build blinky
-    ...
-    Linking blinky.elf
-    App successfully built: ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf
-</pre></div>
-
-
-<p><br></p>
-<ul>
-<li>Create the blinky image and download the bootloader and the image to flash ... in a flash! 
-When creating an image, you can assign a version number to your image; here we use '1.2.3'</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt create-image blinky 1.2.3
-    App image succesfully generated: ~/dev/myproj/bin/blinky/apps/blinky/blinky.img
-    Build manifest: ~/dev/myproj/bin/blinky/apps/blinky/manifest.json
-    $ newt load boot_olimex
-    Downloading~/dev/myproj/bin/boot_olimex/apps/boot/boot.elf.bin to 0x08000000
-    Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
-    ...
-    shutdown command invoked
-    $ newt load blinky
-    Downloading ~/dev/myproj/bin/blinky/apps/blinky/blinky.img to 0x08020000
-    Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
-    ...
-    shutdown command invoked
+$ newt -v load blinky
+Loading image with: ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/ ~/dev/myproj/bin/blinky/apps/blinky/blinky BASELIBC LIBC
+Successfully loaded image.
 </pre></div>
 
 
@@ -745,7 +654,7 @@ When creating an image, you can assign a version number to your image; here we u
 <p><br></p>
 <p><strong>But wait...not so fast.</strong> Let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor, severing the debug connection to the JTAG port. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board. </p>
 <p>The LED light will start blinking again. Success!</p>
-<p><strong>Note #1:</strong> If you want to download the image to flash and a gdb session opened up, use <code>newt debug blinky</code> after <code>newt download blinky</code>.</p>
+<p><strong>Note #1:</strong> If you want to download the image to flash and a gdb session opened up, use <code>newt debug blinky</code>. Type <code>c</code> to continue inside the gdb session.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt debug blinky
     Debugging with ~/dev/myproj/hw/bsp/olimex_stm32-e407_...
     Debugging ~/dev/myproj/project/blinky/bin/blinky/blinky.elf
@@ -782,8 +691,8 @@ When creating an image, you can assign a version number to your image; here we u
 
 <h3 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h3>
 <p>Congratulations! You have now tried out a project on actual hardware. If this is your first time to embedded systems, this must feel like the best hands-on and low-level "Hello World" program ever. </p>
-<p>Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like <a href="../nRF52/">tutorials</a>.</p>
-<p>If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our <a href="../../../community/">Community Page</a></p>
+<p>Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like <a href="../nRF52/">tutorials</a> or try enabling additional functionality such as <a href="../project-target-slinky/">remote comms</a> on the current board.</p>
+<p>If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our <a href="../../../community/">Community Page</a>.</p>
 <p>Keep on hacking and blinking!</p>
                         
                         <div class="row">

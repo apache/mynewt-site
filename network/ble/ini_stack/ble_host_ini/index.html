@@ -356,6 +356,16 @@
               
                 
   
+    <li>
+      <a href="../ble_parent_ini/">Initialize parent task</a>
+    </li>
+  
+
+              
+          
+              
+                
+  
     <li class="active">
       Initialize host
     </li>
@@ -500,7 +510,7 @@
                         
                             <h2 id="initialize-the-nimble-host">Initialize the NimBLE host<a class="headerlink" href="#initialize-the-nimble-host" title="Permanent link">&para;</a></h2>
 <p>The Nimble host is initialized via a call to <code>ble_hs_init()</code>.  This function is declared as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">ble_hs_init</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">prio</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_cfg</span> <span style="color: #000000">*cfg</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">ble_hs_init</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*parent_evq</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_cfg</span> <span style="color: #000000">*cfg</span>)
 </pre></div>
 
 
@@ -514,8 +524,8 @@
 </thead>
 <tbody>
 <tr>
-<td><em>prio</em></td>
-<td>The priority of the Nimble host task.  A lower number corresponds to higher priority.</td>
+<td><em>parent_evq</em></td>
+<td>The OS event queue that the host should use to schedule host-related operations.</td>
 </tr>
 <tr>
 <td><em>cfg</em></td>
@@ -523,26 +533,23 @@
 </tr>
 </tbody>
 </table>
-<p><strong>prio</strong>:</p>
-<p>Unlike the controller, the host does not have any strict timing requirements.
-This number should be greater than the priority of any time-critical tasks in
-your application (remember, bigger number = lower priority!).  There are no
-restrictions with regards to the host task's priority relative to its client
-tasks.  In the below example, the host is assigned a priority of 1.</p>
+<p><strong>parent_evq</strong>:</p>
+<p>This is the event queue associated with the <a href="#ble_parent_ini">host parent task</a>.</p>
 <p><strong>cfg</strong>:</p>
 <p>As mentioned above, passing a <em>cfg</em> value of <em>NULL</em> will initialize the Nimble
 host with the default configuration.  This is convenient while familiarizing
 yourself with the Nimble stack, but ultimately you will probably want to use a
 custom configuration.  For more information on configuring the host, see the
 Nimble Configuration Guide (TBD).</p>
-<p>Continuing with our running example, we now add Nimble host initialization to the <em>main()</em> function.  This application uses the default host configuration, so it specifies <em>NULL</em> as the second argument to <code>ble_hs_init()</code>.</p>
+<p>Continuing with our running example, we now add Nimble host initialization to
+the <em>main()</em> function.  This application uses the default host configuration,
+so it specifies <em>NULL</em> as the second argument to <code>ble_hs_init()</code>.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc"><span style="color: #633820">#include &quot;host/ble_hs.h&quot;</span>
 </span>
 <span style="color: #A90D91">int</span>
 <span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_cfg</span> <span style="color: #000000">cfg</span>;
 
     <span style="color: #177500">/* Initialize OS */</span>
     <span style="color: #000000">os_init</span>();
@@ -579,8 +586,13 @@ Nimble Configuration Guide (TBD).</p>
     <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ll_init</span>(<span style="color: #1C01CE">0</span>, <span style="color: #1C01CE">7</span>, <span style="color: #1C01CE">260</span>);
     <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
+    <span style="color: #177500">/* Initialize the application task. */</span>
+    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;app_evq</span>);
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;app_task</span>, <span style="color: #C41A16">&quot;app&quot;</span>, <span style="color: #000000">app_task_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #1C01CE">1</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>,
+                 <span style="color: #000000">app_stack</span>, <span style="color: #000000">APP_STACK_SIZE</span>);
+
 <span style="background-color: #ffffcc">    <span style="color: #177500">/* Initialize the BLE host. */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_init</span>(<span style="color: #000000">BLE_HS_TASK_PRI</span>, <span style="color: #A90D91">NULL</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_init</span>(<span style="color: #000000">&amp;app_evq</span>, <span style="color: #A90D91">NULL</span>);
 </span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 </span>
     <span style="color: #177500">/* Start the OS */</span>
@@ -602,9 +614,9 @@ Nimble Configuration Guide (TBD).</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../ble_controller_ini/>
+    <a href=../ble_parent_ini/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Initialize controller
+        Previous: Initialize parent task
     </a>
     
     </li>
