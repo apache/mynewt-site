@@ -301,3 +301,9 @@ debugger and restart the board.  The image you programmed will come and run on t
 
 Congratulations! You have created a Mynewt operating system running on the 
 Arduino Zero. The LED right next to the power LED should be blinking. It is toggled by one task running on the Mynewt OS.   
+
+We have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like [tutorials](../tutorials/nRF52.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) on the current board.
+
+If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
+
+Keep on hacking and blinking!
