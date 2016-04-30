@@ -6,7 +6,7 @@ The hardware independent UART interface for Mynewt.
 ###Description
 
 Contains the basic operations to send and receive data over a UART
-(Universal Asynchronous Receiver Transmitter).  
+(Universal Asynchronous Receiver Transmitter).
 
 ###Definition
 
@@ -22,10 +22,10 @@ This example shows a user writing a character to the uart
     char *str = "Hello World!";
     char *ptr = str;
 
-    while(*ptr++) {
-        hal_uart_blocking_tx(MY_UART, *ptr);        
+    while(*ptr) {
+        hal_uart_blocking_tx(MY_UART, *ptr++);
     }
-    hal_uart_blocking_tx(MY_UART, '\n');        
+    hal_uart_blocking_tx(MY_UART, '\n');
 }
 ```
 
