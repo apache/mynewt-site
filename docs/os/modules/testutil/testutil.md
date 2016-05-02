@@ -23,7 +23,7 @@ The test code has access to all the header files in the following directories:
     * src/test/arch/<target-arch>
     * include directories of all package dependencies
 ```
-Package test code typically depends on the testutil package, described later in this document.  If a package's test code uses testutil, then the package itself needs to have testutil in its dependency list.
+Package test code typically depends on the testutil package, described later in this document.
 
 Some test cases or test initialization code may be platform-specific.  In such cases, the platform-specific function definitions are placed in arch subdirectories within the package test directory.
 
