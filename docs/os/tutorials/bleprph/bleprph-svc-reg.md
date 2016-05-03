@@ -2,6 +2,8 @@
 
 ### Service Registration
 
+<br>
+
 #### Attribute Set
 
 The NimBLE host uses a table-based design for GATT server configuration.  The
@@ -14,6 +16,8 @@ place in your code.
 *bleprph* uses a single attribute table located in the *gatt_svr.c* file,
 so let's take a look at that now.  The attribute table is called
 `gatt_svr_svcs`; here are the first several lines from this table:
+
+<br>
 
 ```c
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
@@ -35,6 +39,8 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     // [...]
 ```
 
+<br>
+
 As you can see, the table is an array of service definitions (
 `struct ble_gatt_svc_def`).  This code excerpt contains a small part of the
 *GAP service*.  The GAP service exposes generic information about a device,
@@ -48,7 +54,9 @@ A service definition consists of the following fields:
 | ------- | --------- | ------- |
 | type        | Specifies whether this is a primary or secondary service. | Secondary services are not very common.  When in doubt, specify *BLE_GATT_SVC_TYPE_PRIMARY* for new services. |
 | uuid128         | The 128-bit UUID of this service. | If the service has a 16-bit UUID, you can convert it to its corresponding 128-bit UUID with the `BLE_UUID16()` macro. |
-| characteristics | The array of characteristics that belong this service.   | |
+| characteristics | The array of characteristics that belong to this service.   | |
+
+<br>
 
 A service is little more than a container of characteristics; the
 characteristics themselves are where the real action happens.  A characteristic
@@ -58,7 +66,7 @@ definition consists of the following fields:
 | ------- | --------- | ------- |
 | uuid128     | The 128-bit UUID of this characteristic. | If the characteristic has a 16-bit UUID, you can convert it to its corresponding 128-bit UUID with the `BLE_UUID16()` macro. |
 | access_cb   | A callback function that gets executed whenever a peer device accesses this characteristic. | *For reads:* this function generates the value that gets sent back to the peer.<br>*For writes:* this function provides the written value as an argument. |
-| flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found TBD. |
+| flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/incubator-mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).|
 
 The access callback is what implements the characteristic's behavior.  Access
 callbacks are described in detail in the next section:
@@ -68,6 +76,8 @@ The service definition array and each characteristic definition array is
 terminated with an empty entry, represented with a 0.  The below code listing
 shows the last service in the array, including terminating zeros for the
 characteristic array and service array.
+
+<br>
 
 ```c hl_lines="26 31"
     {
@@ -104,6 +114,8 @@ characteristic array and service array.
     },
 ```
 
+<br>
+
 #### Registration function
 
 After you have created your service table, your app needs to register it with the NimBLE stack.  This is done by calling the following function:
@@ -135,8 +147,10 @@ The *bleprph* app registers its services as follows:
     assert(rc == 0);
 ```
 
+<br>
+
 #### Descriptors and Included Services
 
 Your peripheral can also expose descriptors and included services.  These are
 less common, so they are not covered in this tutorial.  For more information,
-see the [BLE User Guide](../../../network/ble/ble_intro/) (TBD).
+see the [BLE User Guide](../../../network/ble/ble_intro/).

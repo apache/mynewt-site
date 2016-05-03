@@ -2,7 +2,10 @@
 
 ### Advertising
 
+<br>
+
 #### Overview
+
 
 A peripheral announces its presence to the world by broadcasting
 advertisements.  An advertisement typically contains additional information
@@ -24,6 +27,8 @@ remainder of this tutorial.
 When a connection is terminated, *bleprph* resumes advertising.
 
 Let's take a look at *bleprph*'s advertisement code (*main.c*):
+
+<br>
 
 ```c
 /**
@@ -60,14 +65,21 @@ bleprph_advertise(void)
 
 Now let's examine this code in detail.
 
+<br>
+
 #### Setting advertisement data
 
+
 A NimBLE peripheral specifies what information to include in its advertisements with the following function:
+
+<br>
 
 ```c
 int
 ble_gap_adv_set_fields(struct ble_hs_adv_fields *adv_fields)
 ```
+
+<br>
 
 The *adv_fields* argument specifies the fields and their contents to include in
 subsequent advertisements.  The Bluetooth [Core Specification
@@ -96,12 +108,17 @@ specifies two name-related advertisement fields: *Shortened Local Name* and
 *Complete Local Name*.  Setting the `name_is_complete` variable to 1 or 0 tells
 NimBLE which of these two fields to include in advertisements.  Some other
 advertisement fields also correspond to multiple variables in the field struct,
-so it is a good idea to review the *ble\_hs\_adv\_fields* reference (TBD) to
+so it is a good idea to review the *ble\_hs\_adv\_fields* reference to
 make sure you get the details right in your app.
+
+<br>
 
 #### Begin advertising
 
+
 An app starts advertising with the following function:
+
+<br>
 
 ```c
 int
@@ -128,9 +145,6 @@ to your app via calls to this callback function.  Connection callbacks are an
 important part of building a BLE app, and we examine *bleprph*'s connection
 callback in detail in the next section of this tutorial.
 
-One final note: your peripheral automatically stops advertising when a central
-connects to it.  You can immediately resume advertising if you want to allow
-another central to connect, but you will need to do so explicitly by calling
-`ble_gap_adv_start()` again.  Also, be aware NimBLE's default configuration
-only allows a single connection at a time.  NimBLE supports multiple concurrent
-connections, but you must configure it to do so first.
+<br>
+
+**One final note:** Your peripheral automatically stops advertising when a central connects to it.  You can immediately resume advertising if you want to allow another central to connect, but you will need to do so explicitly by calling `ble_gap_adv_start()` again.  Also, be aware NimBLE's default configuration only allows a single connection at a time.  NimBLE supports multiple concurrent connections, but you must configure it to do so first.

@@ -2,6 +2,8 @@
 
 ### Characteristic Access
 
+<br>
+
 #### Review
 
 A characteristic's access callback implements its behavior.  Recall that
@@ -13,6 +15,8 @@ whenever a peer device attempts to read or write the characteristic.
 Earlier in this tutorial, we looked at how *bleprph* implements the GAP
 service.  Let's take another look at how *bleprph* specifies the first few
 characteristics in this service.
+
+<br>
 
 ```c
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
@@ -38,6 +42,8 @@ As you can see, *bleprph* uses the same *access_cb* function for all the GAP
 service characteristics, but the developer could have implemented separate
 functions for each characteristic if they preferred.  Here is the *access_cb*
 function that the GAP service characteristics use:
+
+<br>
 
 ```c
 static int
@@ -94,7 +100,11 @@ gatt_svr_chr_access_gap(uint16_t conn_handle, uint16_t attr_handle, uint8_t op,
 
 After you've taken a moment to examine the structure of this function, let's explore some details.
 
+<br>
+
 #### Function signature
+
+<br>
 
 ```c
 static int
@@ -105,6 +115,8 @@ gatt_svr_chr_access_gap(uint16_t conn_handle, uint16_t attr_handle, uint8_t op,
 A characteristic access function always takes this same set of parameters and
 always returns an int.  The parameters to this function type are documented
 below.
+
+<br>
 
 | **Parameter** | **Purpose** | **Notes** |
 | ------------- | ----------- | --------- |
@@ -117,9 +129,14 @@ The return value of the access function tells the NimBLE stack how to respond
 to the peer performing the operation.  A value of 0 indicates success.  For
 failures, the function returns the specific ATT error code that the NimBLE
 stack should respond with.  The ATT error codes are defined in
-*net/nimble/host/include/host/ble_att.h*.
+[net/nimble/host/include/host/ble_att.h](https://github.com/apache/incubator-mynewt-core/blob/master/net/nimble/host/include/host/ble_att.h).
+
+<br>
 
 #### Determine characteristic being accessed
+
+<br>
+
 ```c
 {
     uint16_t uuid16;
@@ -146,7 +163,12 @@ the NimBLE stack is doing its job properly; the stack should only call this
 function for accesses to characteristics that it is registered with, and all
 GAP service characteristics have valid 16-bit UUIDs.
 
+<br>
+
 #### Read access
+
+<br>
+
 ```c
     case BLE_GAP_CHR_UUID16_DEVICE_NAME:
         assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
@@ -165,6 +187,8 @@ To fulfill a characteristic read request, the application needs to assign the
 and fill the *ctxt->chr_access.len* field with the length of the attribute data.
 *bleprph* stores the device name in read-only memory as follows:
 
+<br>
+
 ```c
 const char *bleprph_device_name = "nimble-bleprph";
 ```
@@ -178,6 +202,8 @@ By returning 0, *bleprph* indicates that the characteristic data in
 *ctxt->chr_access* is valid and that NimBLE should include it in its response
 to the peer.
 
+<br>
+
 **A word of warning:** The attribute data that *ctxt->chr_access.data* points to
 must remain valid after the access function returns, as the NimBLE stack needs
 to use it to form a GATT read response.  In other words, you must not
@@ -185,7 +211,12 @@ allocate the characteristic value data on the stack of the access function.
 Two characteristic accesses never occur at the same time, so it is OK to use
 the same memory for repeated accesses.
 
+<br>
+
 #### Write access
+
+<br>
+
 ```c
     case BLE_GAP_CHR_UUID16_RECONNECT_ADDR:
         assert(op == BLE_GATT_ACCESS_OP_WRITE_CHR);

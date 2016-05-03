@@ -2,7 +2,10 @@
 
 ### Connection callbacks
 
+<br>
+
 #### Overview
+
 
 Every BLE connection has a *connection callback* associated with it.  A
 connection callback is a bit of application code which NimBLE uses to inform
@@ -14,6 +17,8 @@ application specifies a connection callback when it begins advertising.  NimBLE
 uses this callback to notify the application that a central has connected to
 your peripheral after receiving an advertisement.  Let's revisit how *bleprph* specifies its connection callback when advertising:
 
+<br>
+
 ```c
     /* Begin advertising. */
     rc = ble_gap_adv_start(BLE_GAP_DISC_MODE_GEN, BLE_GAP_CONN_MODE_UND,
@@ -24,7 +29,10 @@ your peripheral after receiving an advertisement.  Let's revisit how *bleprph* s
     }
 ```
 
+<br>
+
 #### bleprph_on_connect()
+
 
 The `bleprph_on_connect()` function is *bleprph*'s connection callback; NimBLE
 calls this function when the advertising operation leads to connection
@@ -34,6 +42,7 @@ communicated through this callback.
 
 Now let's look at the function that *bleprph* uses for all its connection
 callbacks: `bleprph_on_connect()`.
+
 
 ```c
 static int
@@ -58,10 +67,12 @@ bleprph_on_connect(int event, int status, struct ble_gap_conn_ctxt *ctxt,
 }
 ```
 
+<br>
+
 Connection callbacks are used to communicate a variety of events related to a
 connection.  An application determines the type of event that occurred by
 inspecting the value of the *event* parameter.  The full list of event codes
-can be found in the [BLE User Guide](../../../network/ble/ble_intro/) (TBD).
+can be found in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/incubator-mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).
 *bleprph* only concerns itself with a single event type: *BLE_GAP_EVENT_CONN*.
 This event indicates that a new connection has been established, or an existing
 connection has been terminated; the *status* parameter clarifies which.  As you
@@ -89,6 +100,8 @@ struct ble_gap_conn_ctxt {
 };
 ```
 
+<br>
+
 As shown, a connection context object consists of two parts:
 
 * *desc:* The connection descriptor; indicates properties of the connection.
@@ -107,15 +120,21 @@ struct ble_gap_conn_desc {
 };
 ```
 
+<br>
+
 We will examine these fields in a slightly different order from how they appear
 in the struct definition.
+
+<br>
 
 | *Field* | *Purpose* | *Notes* |
 | ------- | --------- | ------- |
 | peer\_addr | The 48-bit address of the peer device. | |
-| peer\_addr\_type | Whether the peer is using a public or random address. | The address type list is documented in the [BLE User Guide](../../../network/ble/ble_intro/) (TBD). |
+| peer\_addr\_type | Whether the peer is using a public or random address. | The address type list is documented in [net/nimble/include/nimble/hci_common.h](https://github.com/apache/incubator-mynewt-core/blob/master/net/nimble/include/nimble/hci_common.h). |
 | conn\_handle | The 16-bit handle associated with this connection. | This number is how your app and the NimBLE stack refer to this connection. |
 | conn\_itvl,<br>conn\_latency,<br>supervision\_timeout | Low-level properties of the connection. | |
+
+<br>
 
 #### Guarantees
 
