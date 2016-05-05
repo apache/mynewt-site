@@ -28,18 +28,19 @@ Release Version | Descriptor | Date |Features
       |      |      | * Image verification
       |      |      | * Stats and logs enhancement
       |      |      | * HAL additions: ADC, DAC, I2C, PWM, SPI
-      |      |      | * BLE 4.2: LE legacy pairing
+      |      |      | * BLE 4.2: LE legacy pairing, no bonding
       |      |      | * BLE 4.2: Code size optimization 
 0.9.0 | pre-GA release #2  | May, 2016 | * Support images in external flash
-      |      |      | * System watchdog
+      |      |      | * HAL for Nordic nRF52
       |      |      | * Support for low power modes in multiple SoCs   
-      |      |      | * BLE 4.2: LE Secure Connections
+      |      |      | * BLE 4.2: LE Secure Connections Pairing, including bonding
       |      |      | * BLE 4.2: Host and Controller separation
       |      |      | * BLE 4.2: Random private resolvable addresses
-      |      |      | * BLE 4.2: Remote configuration, upgrade, factory reset over BLE 4.2      
-      |      |      | * BLE 4.2: Factory reset
 0.10.0| pre-GA release #3  | June, 2016 | * Test coverage improvements
+      |      |      | * System watchdog
       |      |      | * Support for additional Arduino boards
+      |      |      | * BLE 4.2: Remote configuration, upgrade, factory reset over BLE 4.2
+      |      |      | * BLE 4.2: Factory reset
       |      |      | * BLE 4.2: GATT based BLE profiles for Mynewt 
       |      |      | * BLE 4.2: Configurability improvements 
 
