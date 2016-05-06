@@ -83,6 +83,10 @@ $
 
 <br>
 
+**NOTE:** If there has been a new release of a repo used in your project since you last installed it, the `0-latest` version for the repo in the `project.yml` file will refer to the new release and will not match the installed files. In that case you will get an error message saying so and you will need to run `newt upgrade` to overwrite the existing files with the latest codebase.
+
+<br>
+
 ### Create your bootloader target
 
 Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
