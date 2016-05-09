@@ -17,7 +17,7 @@ This function starts the encoded JSON object. Usually this means writing out the
 
 0 on success.
 
-#### Notes
+
 
 #### Example
 

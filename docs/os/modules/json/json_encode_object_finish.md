@@ -17,7 +17,7 @@ This function finalizes the encoded JSON object. This means writing out the last
 
 0 on success.
 
-#### Notes
+
 
 #### Example
 
