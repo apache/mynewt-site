@@ -6072,73 +6072,163 @@
         }, 
         {
             "location": "/os/modules/json/json/", 
-            "text": "JSON\n\n\nInsert synopsis here\n\n\nDescription\n\n\nDescribe module here, special features, how pieces fit together etc.\n\n\nData structures\n\n\nReplace this with the list of data structures used, why, any neat features\n\n\nList of Functions\n\n\n\n\nThe functions available in json are:\n\n\n\n\njson_encode_object_entry\n\n\njson_encode_object_finish\n\n\njson_encode_object_key\n\n\njson_encode_object_start\n\n\njson_encode_value\n\n\njson_internal_read_object\n\n\njson_read_array\n\n\njson_read_object\n\n\njson_target_address", 
+            "text": "JSON\n\n\nJSON is a data interchange format. The description of this format can be found from IETF RFC 4627.\n\n\nDescription\n\n\nThis package helps in converting between C data types and JSON data objects. It supports both encoding and decoding.\n\n\nData structures\n\n\nEncoding\n\n\n/* Encoding functions */\n\n\ntypedef\n \nint\n (\n*\njson_write_func_t\n)(\nvoid\n \n*buf\n, \nchar\n \n*data\n,\n        \nint\n \nlen\n);\n\n\nstruct\n \njson_encoder\n {\n    \njson_write_func_t\n \nje_write\n;\n    \nvoid\n \n*je_arg\n;\n    \nint\n \nje_wr_commas\n:\n1\n;\n    \nchar\n \nje_encode_buf\n[\n64\n];\n};\n\n\n\n\n\nHere's the data structure encoder funtions use, and it must be initialized by the caller. The key element is \nje_write\n, which is a function pointer which gets called whenever encoding routine is ready with encoded data. The element \nje_arg\n is passed to \nje_write\n as the first argument. The rest of the structure contents are for internal state management.\nThis function should collect all the data encoder function generates. It can collect this data to a flat buffer, chain of mbufs or even stream through.\n\n\n/**\n\n\n * For encode.  The contents of a JSON value to encode.\n\n\n */\n\n\nstruct\n \njson_value\n {\n    \nuint8_t\n \njv_pad1\n;\n    \nuint8_t\n \njv_type\n;\n    \nuint16_t\n \njv_len\n;\n\n    \nunion\n {\n        \nuint64_t\n \nu\n;\n        \nfloat\n \nfl\n;\n        \nchar\n \n*str\n;\n        \nstruct\n {\n            \nchar\n \n**keys\n;\n            \nstruct\n \njson_value\n \n**values\n;\n        } \ncomposite\n;\n    } \njv_val\n;\n};\n\n\n\n\n\nThis data structure is filled with data to be encoded. It is best to fill this using the macros \nJSON_VALUE_STRING()\n or \nJSON_VALUE_STRINGN()\n when value is string, \nJSON_VALUE_INT()\n when value is an integer, and so forth.\n\n\nDecoding\n\n\n/* when you implement a json buffer, you must implement these functions */\n\n\n\n/* returns the next character in the buffer or \n\\0\n*/\n\n\ntypedef\n \nchar\n (\n*\njson_buffer_read_next_byte_t\n)(\nstruct\n \njson_buffer\n \n*\n);\n\n/* returns the previous character in the buffer or \n\\0\n */\n\n\ntypedef\n \nchar\n (\n*\njson_buffer_read_prev_byte_t\n)(\nstruct\n \njson_buffer\n \n*\n);\n\n/* returns the number of characters read or zero */\n\n\ntypedef\n \nint\n (\n*\njson_buffer_readn_t\n)(\nstruct\n \njson_buffer\n \n*\n, \nchar\n \n*buf\n, \nint\n \nn\n);\n\n\nstruct\n \njson_buffer\n {\n    \njson_buffer_readn_t\n \njb_readn\n;\n    \njson_buffer_read_next_byte_t\n \njb_read_next\n;\n    \njson_buffer_read_prev_byte_t\n \njb_read_prev\n;\n};\n\n\n\n\n\nFunction pointers within this structure are used by decoder when it is reading in more data to decode.\n\n\nstruct\n \njson_attr_t\n {\n    \nchar\n \n*attribute\n;\n    \njson_type\n \ntype\n;\n    \nunion\n {\n        \nint\n \n*integer\n;\n        \nunsigned\n \nint\n \n*uinteger\n;\n        \ndouble\n \n*real\n;\n        \nchar\n \n*string\n;\n        \nbool\n \n*boolean\n;\n        \nchar\n \n*character\n;\n        \nstruct\n \njson_array_t\n \narray\n;\n        \nsize_t\n \noffset\n;\n    } \naddr\n;\n    \nunion\n {\n        \nint\n \ninteger\n;\n        \nunsigned\n \nint\n \nuinteger\n;\n        \ndouble\n \nreal\n;\n        \nbool\n \nboolean\n;\n        \nchar\n \ncharacter\n;\n        \nchar\n \n*check\n;\n    } \ndflt\n;\n    \nsize_t\n \nlen\n;\n    \nconst\n \nstruct\n \njson_enum_t\n \n*map\n;\n    \nbool\n \nnodefault\n;\n};\n\n\n\n\n\nThis structure tells the decoder about a particular name/value pair. Structure must be filled in before calling the decoder routine \njson_read_object()\n.\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nattribute\n\n\nName of the value\n\n\n\n\n\n\ntype\n\n\nThe type of the variable; see enum json_type\n\n\n\n\n\n\naddr\n\n\nContains the address where value should be stored\n\n\n\n\n\n\ndflt\n\n\nDefault value to fill in, if this name is not found\n\n\n\n\n\n\nlen\n\n\nMax number of bytes to read in for value\n\n\n\n\n\n\nnodefault\n\n\nIf set, default value is not copied name\n\n\n\n\n\n\n\n\nList of Functions\n\n\nFunctions for encoding:\n\n\n\n\njson_encode_object_start\n\n\njson_encode_object_key\n\n\njson_encode_object_entry\n\n\njson_encode_object_finish\n\n\n\n\nFunctions for decoding:\n\n\n\n\njson_read_object", 
             "title": "toc"
         }, 
         {
             "location": "/os/modules/json/json/#json", 
-            "text": "Insert synopsis here", 
+            "text": "JSON is a data interchange format. The description of this format can be found from IETF RFC 4627.", 
             "title": "JSON"
         }, 
         {
             "location": "/os/modules/json/json/#description", 
-            "text": "Describe module here, special features, how pieces fit together etc.", 
+            "text": "This package helps in converting between C data types and JSON data objects. It supports both encoding and decoding.", 
             "title": "Description"
         }, 
         {
             "location": "/os/modules/json/json/#data-structures", 
-            "text": "Replace this with the list of data structures used, why, any neat features", 
+            "text": "", 
             "title": "Data structures"
         }, 
         {
+            "location": "/os/modules/json/json/#encoding", 
+            "text": "/* Encoding functions */  typedef   int  ( * json_write_func_t )( void   *buf ,  char   *data ,\n         int   len ); struct   json_encoder  {\n     json_write_func_t   je_write ;\n     void   *je_arg ;\n     int   je_wr_commas : 1 ;\n     char   je_encode_buf [ 64 ];\n};  Here's the data structure encoder funtions use, and it must be initialized by the caller. The key element is  je_write , which is a function pointer which gets called whenever encoding routine is ready with encoded data. The element  je_arg  is passed to  je_write  as the first argument. The rest of the structure contents are for internal state management.\nThis function should collect all the data encoder function generates. It can collect this data to a flat buffer, chain of mbufs or even stream through.  /**   * For encode.  The contents of a JSON value to encode.   */  struct   json_value  {\n     uint8_t   jv_pad1 ;\n     uint8_t   jv_type ;\n     uint16_t   jv_len ;\n\n     union  {\n         uint64_t   u ;\n         float   fl ;\n         char   *str ;\n         struct  {\n             char   **keys ;\n             struct   json_value   **values ;\n        }  composite ;\n    }  jv_val ;\n};  This data structure is filled with data to be encoded. It is best to fill this using the macros  JSON_VALUE_STRING()  or  JSON_VALUE_STRINGN()  when value is string,  JSON_VALUE_INT()  when value is an integer, and so forth.", 
+            "title": "Encoding"
+        }, 
+        {
+            "location": "/os/modules/json/json/#decoding", 
+            "text": "/* when you implement a json buffer, you must implement these functions */  /* returns the next character in the buffer or  \\0 */  typedef   char  ( * json_buffer_read_next_byte_t )( struct   json_buffer   * ); /* returns the previous character in the buffer or  \\0  */  typedef   char  ( * json_buffer_read_prev_byte_t )( struct   json_buffer   * ); /* returns the number of characters read or zero */  typedef   int  ( * json_buffer_readn_t )( struct   json_buffer   * ,  char   *buf ,  int   n ); struct   json_buffer  {\n     json_buffer_readn_t   jb_readn ;\n     json_buffer_read_next_byte_t   jb_read_next ;\n     json_buffer_read_prev_byte_t   jb_read_prev ;\n};  Function pointers within this structure are used by decoder when it is reading in more data to decode.  struct   json_attr_t  {\n     char   *attribute ;\n     json_type   type ;\n     union  {\n         int   *integer ;\n         unsigned   int   *uinteger ;\n         double   *real ;\n         char   *string ;\n         bool   *boolean ;\n         char   *character ;\n         struct   json_array_t   array ;\n         size_t   offset ;\n    }  addr ;\n     union  {\n         int   integer ;\n         unsigned   int   uinteger ;\n         double   real ;\n         bool   boolean ;\n         char   character ;\n         char   *check ;\n    }  dflt ;\n     size_t   len ;\n     const   struct   json_enum_t   *map ;\n     bool   nodefault ;\n};  This structure tells the decoder about a particular name/value pair. Structure must be filled in before calling the decoder routine  json_read_object() .     Element  Description      attribute  Name of the value    type  The type of the variable; see enum json_type    addr  Contains the address where value should be stored    dflt  Default value to fill in, if this name is not found    len  Max number of bytes to read in for value    nodefault  If set, default value is not copied name", 
+            "title": "Decoding"
+        }, 
+        {
             "location": "/os/modules/json/json/#list-of-functions", 
-            "text": "The functions available in json are:   json_encode_object_entry  json_encode_object_finish  json_encode_object_key  json_encode_object_start  json_encode_value  json_internal_read_object  json_read_array  json_read_object  json_target_address", 
+            "text": "Functions for encoding:   json_encode_object_start  json_encode_object_key  json_encode_object_entry  json_encode_object_finish   Functions for decoding:   json_read_object", 
             "title": "List of Functions"
         }, 
         {
             "location": "/os/modules/json/json_encode_object_entry/", 
-            "text": "", 
+            "text": "json_encode_object_entry \n\n\n   int json_encode_object_entry(struct json_encoder *encoder, char *key, struct json_value *val)\n\n\n\n\n\nThis function writes out a name for a field, followed by \":\" character, and the value itself. How value is treated depends on the type of the value.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nencoder\n\n\njson_encoder to use\n\n\n\n\n\n\nkey\n\n\nname to write out\n\n\n\n\n\n\nval\n\n\nvalue to write out\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success.\n\n\nExample\n\n\nstatic\n \nint\n\n\nimgr_list\n(\nstruct\n \nnmgr_jbuf\n \n*njb\n)\n{\n    \nstruct\n \njson_encoder\n \n*enc\n;\n    \nstruct\n \njson_value\n \narray\n;\n\n    ...\n\n    \njson_encode_object_start\n(\nenc\n);\n    \njson_encode_object_entry\n(\nenc\n, \nimages\n, \narray\n);\n    \njson_encode_object_finish\n(\nenc\n);\n\n    \nreturn\n \n0\n;\n}", 
             "title": "json_encode_object_entry"
         }, 
         {
+            "location": "/os/modules/json/json_encode_object_entry/#json_encode_object_entry", 
+            "text": "int json_encode_object_entry(struct json_encoder *encoder, char *key, struct json_value *val)  This function writes out a name for a field, followed by \":\" character, and the value itself. How value is treated depends on the type of the value.", 
+            "title": " json_encode_object_entry "
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_entry/#arguments", 
+            "text": "Arguments  Description      encoder  json_encoder to use    key  name to write out    val  value to write out", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_entry/#returned-values", 
+            "text": "0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_entry/#example", 
+            "text": "static   int  imgr_list ( struct   nmgr_jbuf   *njb )\n{\n     struct   json_encoder   *enc ;\n     struct   json_value   array ;\n\n    ...\n\n     json_encode_object_start ( enc );\n     json_encode_object_entry ( enc ,  images ,  array );\n     json_encode_object_finish ( enc );\n\n     return   0 ;\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/modules/json/json_encode_object_finish/", 
-            "text": "", 
+            "text": "json_encode_object_finish \n\n\n   int json_encode_object_finish(struct json_encoder *encoder)\n\n\n\n\n\nThis function finalizes the encoded JSON object. This means writing out the last \"}\" character.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nencoder\n\n\njson_encoder to use\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success.\n\n\nExample\n\n\nstatic\n \nint\n\n\nimgr_list\n(\nstruct\n \nnmgr_jbuf\n \n*njb\n)\n{\n    \nstruct\n \njson_encoder\n \n*enc\n;\n    \nstruct\n \njson_value\n \narray\n;\n\n    ...\n\n    \njson_encode_object_start\n(\nenc\n);\n    \njson_encode_object_entry\n(\nenc\n, \nimages\n, \narray\n);\n    \njson_encode_object_finish\n(\nenc\n);\n\n    \nreturn\n \n0\n;\n}", 
             "title": "json_encode_object_finish"
         }, 
         {
+            "location": "/os/modules/json/json_encode_object_finish/#json_encode_object_finish", 
+            "text": "int json_encode_object_finish(struct json_encoder *encoder)  This function finalizes the encoded JSON object. This means writing out the last \"}\" character.", 
+            "title": " json_encode_object_finish "
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_finish/#arguments", 
+            "text": "Arguments  Description      encoder  json_encoder to use", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_finish/#returned-values", 
+            "text": "0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_finish/#example", 
+            "text": "static   int  imgr_list ( struct   nmgr_jbuf   *njb )\n{\n     struct   json_encoder   *enc ;\n     struct   json_value   array ;\n\n    ...\n\n     json_encode_object_start ( enc );\n     json_encode_object_entry ( enc ,  images ,  array );\n     json_encode_object_finish ( enc );\n\n     return   0 ;\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/modules/json/json_encode_object_key/", 
-            "text": "", 
+            "text": "json_encode_object_key \n\n\n   int json_encode_object_key(struct json_encoder *encoder, char *key)\n\n\n\n\n\nThis function writes out a name for a field, followed by \":\" character. You would use this e.g. when the value that follows is a JSON object.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nencoder\n\n\njson_encoder to use\n\n\n\n\n\n\nkey\n\n\nname to write out\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success.\n\n\nExample\n\n\nint\n\n\nnmgr_def_taskstat_read\n(\nstruct\n \nnmgr_jbuf\n \n*njb\n)\n{\n    ...\n\n    \nstruct\n \njson_value\n \njv\n;\n\n    \njson_encode_object_start\n(\nnjb-\nnjb_enc\n);\n    \nJSON_VALUE_INT\n(\njv\n, \nNMGR_ERR_EOK\n);\n    \njson_encode_object_entry\n(\nnjb-\nnjb_enc\n, \nrc\n, \njv\n);\n\n    \njson_encode_object_key\n(\nnjb-\nnjb_enc\n, \ntasks\n);\n    \njson_encode_object_start\n(\nnjb-\nnjb_enc\n);\n    ...\n}", 
             "title": "json_encode_object_key"
         }, 
         {
+            "location": "/os/modules/json/json_encode_object_key/#json_encode_object_key", 
+            "text": "int json_encode_object_key(struct json_encoder *encoder, char *key)  This function writes out a name for a field, followed by \":\" character. You would use this e.g. when the value that follows is a JSON object.", 
+            "title": " json_encode_object_key "
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_key/#arguments", 
+            "text": "Arguments  Description      encoder  json_encoder to use    key  name to write out", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_key/#returned-values", 
+            "text": "0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_key/#example", 
+            "text": "int  nmgr_def_taskstat_read ( struct   nmgr_jbuf   *njb )\n{\n    ...\n\n     struct   json_value   jv ;\n\n     json_encode_object_start ( njb- njb_enc );\n     JSON_VALUE_INT ( jv ,  NMGR_ERR_EOK );\n     json_encode_object_entry ( njb- njb_enc ,  rc ,  jv );\n\n     json_encode_object_key ( njb- njb_enc ,  tasks );\n     json_encode_object_start ( njb- njb_enc );\n    ...\n}", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/modules/json/json_encode_object_start/", 
-            "text": "", 
+            "text": "json_encode_object_start \n\n\n   int json_encode_object_start(struct json_encoder *encoder)\n\n\n\n\n\nThis function starts the encoded JSON object. Usually this means writing out the initial \"{\" character.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nencoder\n\n\njson_encoder to use\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success.\n\n\nExample\n\n\nstatic\n \nint\n\n\nimgr_list\n(\nstruct\n \nnmgr_jbuf\n \n*njb\n)\n{\n    \nstruct\n \njson_encoder\n \n*enc\n;\n    \nstruct\n \njson_value\n \narray\n;\n\n    ...\n\n    \njson_encode_object_start\n(\nenc\n);\n    \njson_encode_object_entry\n(\nenc\n, \nimages\n, \narray\n);\n    \njson_encode_object_finish\n(\nenc\n);\n\n    \nreturn\n \n0\n;\n}", 
             "title": "json_encode_object_start"
         }, 
         {
-            "location": "/os/modules/json/json_encode_value/", 
-            "text": "", 
-            "title": "json_encode_value"
+            "location": "/os/modules/json/json_encode_object_start/#json_encode_object_start", 
+            "text": "int json_encode_object_start(struct json_encoder *encoder)  This function starts the encoded JSON object. Usually this means writing out the initial \"{\" character.", 
+            "title": " json_encode_object_start "
         }, 
         {
-            "location": "/os/modules/json/json_internal_read_object/", 
-            "text": "", 
-            "title": "json_internal_read_object"
+            "location": "/os/modules/json/json_encode_object_start/#arguments", 
+            "text": "Arguments  Description      encoder  json_encoder to use", 
+            "title": "Arguments"
         }, 
         {
-            "location": "/os/modules/json/json_read_array/", 
-            "text": "", 
-            "title": "json_read_array"
+            "location": "/os/modules/json/json_encode_object_start/#returned-values", 
+            "text": "0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/json/json_encode_object_start/#example", 
+            "text": "static   int  imgr_list ( struct   nmgr_jbuf   *njb )\n{\n     struct   json_encoder   *enc ;\n     struct   json_value   array ;\n\n    ...\n\n     json_encode_object_start ( enc );\n     json_encode_object_entry ( enc ,  images ,  array );\n     json_encode_object_finish ( enc );\n\n     return   0 ;\n}", 
+            "title": "Example"
         }, 
         {
             "location": "/os/modules/json/json_read_object/", 
-            "text": "", 
+            "text": "json_read_object \n\n\n   int json_read_object(struct json_buffer *jb, const struct json_attr_t *attrs)\n\n\n\n\n\nThis function reads in JSON data stream, while looking for name/value pairs described in \nattrs\n. \nattrs\n is an array; end of the array is indicated by an entry with \nNULL\n as the name.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\njb\n\n\njson_decoder to use\n\n\n\n\n\n\nattrs\n\n\narray of attributes to look for\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success.\n\n\nExample\n\n\nstatic\n \nint\n\n\nimgr_upload\n(\nstruct\n \nnmgr_jbuf\n \n*njb\n)\n{\n    ...\n    \nconst\n \nstruct\n \njson_attr_t\n \noff_attr\n[\n4\n] \n=\n {\n        [\n0\n] \n=\n {\n            .\nattribute\n \n=\n \noff\n,\n            .\ntype\n \n=\n \nt_uinteger\n,\n            .\naddr\n.\nuinteger\n \n=\n \noff\n,\n            .\nnodefault\n \n=\n \ntrue\n\n        },\n        [\n1\n] \n=\n {\n            .\nattribute\n \n=\n \ndata\n,\n            .\ntype\n \n=\n \nt_string\n,\n            .\naddr\n.\nstring\n \n=\n \nimg_data\n,\n            .\nlen\n \n=\n \nsizeof\n(\nimg_data\n)\n        },\n        [\n2\n] \n=\n {\n            .\nattribute\n \n=\n \nlen\n,\n            .\ntype\n \n=\n \nt_uinteger\n,\n            .\naddr\n.\nuinteger\n \n=\n \nsize\n,\n            .\nnodefault\n \n=\n \ntrue\n\n        }\n    };\n    ...\n\n    \nrc\n \n=\n \njson_read_object\n(\nnjb-\nnjb_buf\n, \noff_attr\n);\n    \nif\n (\nrc\n \n||\n \noff\n \n==\n \nUINT_MAX\n) {\n        \nrc\n \n=\n \nOS_EINVAL\n;\n        \ngoto\n \nerr\n;\n    }\n    ...\n}", 
             "title": "json_read_object"
         }, 
         {
-            "location": "/os/modules/json/json_target_address/", 
-            "text": "", 
-            "title": "json_target_address"
+            "location": "/os/modules/json/json_read_object/#json_read_object", 
+            "text": "int json_read_object(struct json_buffer *jb, const struct json_attr_t *attrs)  This function reads in JSON data stream, while looking for name/value pairs described in  attrs .  attrs  is an array; end of the array is indicated by an entry with  NULL  as the name.", 
+            "title": " json_read_object "
+        }, 
+        {
+            "location": "/os/modules/json/json_read_object/#arguments", 
+            "text": "Arguments  Description      jb  json_decoder to use    attrs  array of attributes to look for", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/json/json_read_object/#returned-values", 
+            "text": "0 on success.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/json/json_read_object/#example", 
+            "text": "static   int  imgr_upload ( struct   nmgr_jbuf   *njb )\n{\n    ...\n     const   struct   json_attr_t   off_attr [ 4 ]  =  {\n        [ 0 ]  =  {\n            . attribute   =   off ,\n            . type   =   t_uinteger ,\n            . addr . uinteger   =   off ,\n            . nodefault   =   true \n        },\n        [ 1 ]  =  {\n            . attribute   =   data ,\n            . type   =   t_string ,\n            . addr . string   =   img_data ,\n            . len   =   sizeof ( img_data )\n        },\n        [ 2 ]  =  {\n            . attribute   =   len ,\n            . type   =   t_uinteger ,\n            . addr . uinteger   =   size ,\n            . nodefault   =   true \n        }\n    };\n    ...\n\n     rc   =   json_read_object ( njb- njb_buf ,  off_attr );\n     if  ( rc   ||   off   ==   UINT_MAX ) {\n         rc   =   OS_EINVAL ;\n         goto   err ;\n    }\n    ...\n}", 
+            "title": "Example"
         }, 
         {
             "location": "/os/modules/stats/stats/", 
