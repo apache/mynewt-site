@@ -22,3 +22,21 @@ This function writes out a name for a field, followed by ":" character, and the 
 #### Notes
 
 #### Example
+
+```c
+static int
+imgr_list(struct nmgr_jbuf *njb)
+{
+    struct json_encoder *enc;
+    struct json_value array;
+
+    ...
+
+    json_encode_object_start(enc);
+    json_encode_object_entry(enc, "images", &array);
+    json_encode_object_finish(enc);
+
+    return 0;
+}
+
+```
