@@ -1,5 +1,7 @@
 ## BLE iBeacon
 
+<br>
+
 ### iBeacon Protocol
 
 A beaconing device announces its presence to the world by broadcasting
@@ -8,6 +10,8 @@ advertisement specification.  An iBeacon advertisement contains a single field:
 *Manufacturer Specific Data*; this field contains the iBeacon-specific
 sub-fields.  [This page](http://www.warski.org/blog/2014/01/how-ibeacons-work/)
 provides a good summary of the iBeacon sub-fields.
+
+<br>
 
 ### Configuration
 
@@ -25,6 +29,8 @@ This function's parameters are documented below.
 | UUID | 128-bit UUID identifying the application |
 | Major version number | First number in your app's version |
 | Minor version number | Second number in your app's version |
+
+<br>
 
 ### Modify bleprph
 
@@ -74,6 +80,8 @@ by making the following to changes:
 
 * Call `ble_ibeacon_set_adv_data()` instead of `ble_gap_adv_set_fields()`.
 * Modify the call to `ble_gap_adv_start()` such that the device is non-discoverable and non-connectable.
+
+<br>
 
 ```c hl_lines="4 7 8 10 11 19"
 static void

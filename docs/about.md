@@ -18,40 +18,50 @@ Apache Mynewt's open-source embedded software is designed with the following com
         * Security Manager Protocol
         * LE Secure Connections
 
+<br>
+
+#Latest Release 
+
+The latest release is [Version 0.8.0](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-0.8.0-incubating) for which Release Notes are available [here](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating).
+
+For details on download and previous releases, check out [Download](https://mynewt.apache.org/download/).
+
+<br>
+
 #Roadmap
 
 
 Release Version | Descriptor | Date |Features 
 ------------ | ------------- |------|-------
-0.8.0 | pre-GA release #1  | late-April, 2016 | * HAL extensions in OS
-      |      |      | * Arduino DUE support
-      |      |      | * Image verification
-      |      |      | * Stats and logs enhancement
-      |      |      | * HAL additions: ADC, DAC, I2C, PWM, SPI
-      |      |      | * BLE 4.2: LE legacy pairing, no bonding
-      |      |      | * BLE 4.2: Code size optimization 
-0.9.0 | pre-GA release #2  | May, 2016 | * Support images in external flash
-      |      |      | * HAL for Nordic nRF52
+0.9.0 | pre-GA release | May, 2016 | * Support images in external flash
+      |      |      | * HAL for Nordic nRF52, STMicro
       |      |      | * Support for low power modes in multiple SoCs   
       |      |      | * BLE 4.2: LE Secure Connections Pairing, including bonding
       |      |      | * BLE 4.2: Host and Controller separation
       |      |      | * BLE 4.2: Random private resolvable addresses
-0.10.0| pre-GA release #3  | June, 2016 | * Test coverage improvements
+0.10.0| pre-GA release | June, 2016 | * Test coverage improvements
       |      |      | * System watchdog
       |      |      | * Support for additional Arduino boards
       |      |      | * BLE 4.2: Remote configuration, upgrade, factory reset over BLE 4.2
       |      |      | * BLE 4.2: Factory reset
       |      |      | * BLE 4.2: GATT based BLE profiles for Mynewt 
       |      |      | * BLE 4.2: Configurability improvements 
-
+0.11.0|pre-GA release | July, 2016 | * Wi-Fi support
+      |      |      | * Add second scripting module
+      |      |      | * C++ friendly external header files
+ 
 
 <font color="#F2853F"> The detailed roadmap is tracked on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel). </font>
+
+<br>
 
 #Feature Request
 
 The WISHLIST at the top of the roadmap on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel) features all the new ideas awaiting discussion and review. Once the community decides to go ahead with a request, it is scheduled into a release. Generally, effort is made to schedule a requested feature into a particular version no later than 6 weeks prior to the planned release date.
 
 If you have suggestions for a new feature, use case, or implementation improvements, file a JIRA ticket with Issue Type set to "Wish". Introduce it in the [dev@](dev@mynewt.incubator.apache.org) mailing list with a link to the JIRA ticket. This assumes you have signed up for an account on JIRA and submitted a request to the dev@ mailing list for your JIRA username to be added to the Apache Mynewt (MYNEWT) project. 
+
+<br>
 
 #FAQ
 
