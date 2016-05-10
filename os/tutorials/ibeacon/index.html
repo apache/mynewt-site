@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_sram_olimex/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/ibeacon/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Run Blinky from SRAM, no bootloader - Apache Mynewt</title>
+	<title>BLE iBeacon - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     </head>
 
 
-    <body class="Run Blinky from SRAM, no bootloader">
+    <body class="BLE iBeacon">
 
 
         <div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -273,8 +273,8 @@
               
                 
   
-    <li class="active">
-      Run Blinky from SRAM, no bootloader
+    <li>
+      <a href="../blinky_sram_olimex/">Run Blinky from SRAM, no bootloader</a>
     </li>
   
 
@@ -384,8 +384,8 @@
               
                 
   
-    <li>
-      <a href="../ibeacon/">BLE iBeacon</a>
+    <li class="active">
+      BLE iBeacon
     </li>
   
 
@@ -524,7 +524,7 @@
         
       
       
-        <li>&raquo; Run Blinky from SRAM, no bootloader</li>
+        <li>&raquo; BLE iBeacon</li>
       
     
     
@@ -533,153 +533,124 @@
                             </div>
                         </div>
                         
-                            <h2 id="run-blinky-from-sram-without-bootloader">Run Blinky from SRAM without bootloader<a class="headerlink" href="#run-blinky-from-sram-without-bootloader" title="Permanent link">&para;</a></h2>
-<h3 id="objective">Objective<a class="headerlink" href="#objective" title="Permanent link">&para;</a></h3>
-<p>To download an application image directly into the embedded SRAM in the microcontroller and run it without the bootloader. This tutorial describes how you do it on an Olimex STM32 board.</p>
-<h3 id="what-you-need">What you need<a class="headerlink" href="#what-you-need" title="Permanent link">&para;</a></h3>
-<ol>
-<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/ProductDetail/Olimex-Ltd/STM32-E407/?qs=UN6GZl1KCcit6Ye0xmPO4A%3D%3D">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
-<li>ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)</li>
-<li>USB A-B type cable to connect the debugger to your personal computer</li>
-<li>Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)</li>
-<li>An account on Github repository and <em>git</em> installed on your computer.</li>
-<li>It is assumed you have already installed newt tool. </li>
-<li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
-</ol>
-<p>Also, we assume that you're familiar with UNIX shells. Let's gets started!</p>
+                            <h2 id="ble-ibeacon">BLE iBeacon<a class="headerlink" href="#ble-ibeacon" title="Permanent link">&para;</a></h2>
 <p><br></p>
-<h3 id="prepare-the-software">Prepare the Software<a class="headerlink" href="#prepare-the-software" title="Permanent link">&para;</a></h3>
+<h3 id="ibeacon-protocol">iBeacon Protocol<a class="headerlink" href="#ibeacon-protocol" title="Permanent link">&para;</a></h3>
+<p>A beaconing device announces its presence to the world by broadcasting
+advertisements.  The iBeacon protocol is built on top of the standard BLE
+advertisement specification.  An iBeacon advertisement contains a single field:
+<em>Manufacturer Specific Data</em>; this field contains the iBeacon-specific
+sub-fields.  <a href="http://www.warski.org/blog/2014/01/how-ibeacons-work/">This page</a>
+provides a good summary of the iBeacon sub-fields.</p>
+<p><br></p>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<p>Use the following function to configure your NimBLE device to send iBeacons:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
+<span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*uuid128</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">major</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">minor</span>)
+</pre></div>
+
+
+<p>This function's parameters are documented below.</p>
+<table>
+<thead>
+<tr>
+<th><em>Parameter</em></th>
+<th><em>Purpose</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UUID</td>
+<td>128-bit UUID identifying the application</td>
+</tr>
+<tr>
+<td>Major version number</td>
+<td>First number in your app's version</td>
+</tr>
+<tr>
+<td>Minor version number</td>
+<td>Second number in your app's version</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h3 id="modify-bleprph">Modify bleprph<a class="headerlink" href="#modify-bleprph" title="Permanent link">&para;</a></h3>
+<p>To demonstrate how the above function is used, we will now modify the <em>bleprph</em>
+example application to send iBeacons.  For some background behind the <em>bleprph</em>
+app, we recommend you take a look at the <a href="../bleprph/bleprph_intro/">bleprph project
+tutorial</a>.  If you plan on making these modifications
+yourself, it might be a good idea to copy <em>bleprph</em> to your local repository
+and work with the copy.  In general, you should avoid changing a package that
+newt downloads, as you will lose your changes the next time you upgrade the
+package.</p>
+<p><em>bleprph</em> sets its advertisement data and begins advertising as follows (<em>main.c</em>):</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #177500">/* Set the advertisement data included in our advertisements. */</span>
+    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;fields</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">fields</span>);
+    <span style="color: #000000">fields</span>.<span style="color: #000000">name</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*</span>)<span style="color: #000000">bleprph_device_name</span>;
+    <span style="color: #000000">fields</span>.<span style="color: #000000">name_len</span> <span style="color: #000000">=</span> <span style="color: #000000">strlen</span>(<span style="color: #000000">bleprph_device_name</span>);
+    <span style="color: #000000">fields</span>.<span style="color: #000000">name_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_set_fields</span>(<span style="color: #000000">&amp;fields</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting advertisement data; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
+    }
+
+    <span style="color: #177500">/* Begin advertising. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_GAP_DISC_MODE_GEN</span>, <span style="color: #000000">BLE_GAP_CONN_MODE_UND</span>,
+                           <span style="color: #A90D91">NULL</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">bleprph_on_connect</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
+    }
+}
+</pre></div>
+
+
+<p>The call to <code>ble_gap_adv_set_fields()</code> configures the device with normal
+(non-iBeacon) advertisements; the call to <code>ble_gap_adv_start()</code> tells the
+NimBLE stack to start broadcasting.  We are now going to create an iBeacon app
+by making the following to changes:</p>
 <ul>
-<li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. </li>
+<li>Call <code>ble_ibeacon_set_adv_data()</code> instead of <code>ble_gap_adv_set_fields()</code>.</li>
+<li>Modify the call to <code>ble_gap_adv_start()</code> such that the device is non-discoverable and non-connectable.</li>
 </ul>
 <p><br></p>
-<h3 id="create-a-project">Create a project<a class="headerlink" href="#create-a-project" title="Permanent link">&para;</a></h3>
-<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
-<a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
-or just follow the commands below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
-    $ cd ~/dev
-    $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
-    Installing skeleton in myproj...
-    Project myproj successfully created.
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+{
+<span style="background-color: #ffffcc">    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
+</span>    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    $cd myproj
+<span style="background-color: #ffffcc">    <span style="color: #177500">/* Arbitrarily et the UUID to a string of 0x11 bytes. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">memset</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">0x11</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">uuid128</span>);
+</span>
+<span style="background-color: #ffffcc">    <span style="color: #177500">/* Major version=2; minor version=10. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
+</span>    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
+                    <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
+    }
 
-    $ newt install -v 
-    apache-mynewt-core
-    Downloading repository description for apache-mynewt-core... success!
-    ...
-    apache-mynewt-core successfully installed version 0.7.9-none
+    <span style="color: #177500">/* Begin advertising. */</span>
+<span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_GAP_DISC_MODE_NON</span>, <span style="color: #000000">BLE_GAP_CONN_MODE_NON</span>,
+</span>                           <span style="color: #A90D91">NULL</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">bleprph_on_connect</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
+    }
+}
 </pre></div>
 
 
-<p><br></p>
-<h3 id="create-a-target">Create a target<a class="headerlink" href="#create-a-target" title="Permanent link">&para;</a></h3>
-<p>Change directory to ~/dev/myproj directory and define the <em>blinky</em> target inside myproj, using the <em>newt</em> tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt target create blinky
-    $ newt target set blinky build_profile=debug
-    $ newt target set blinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-    $ newt target set blinky app=apps/blinky
-    $ newt target show blinky
-    targets/blinky
-        app=apps/blinky
-        bsp=hw/bsp/olimex_stm32-e407_devboard
-        build_profile=debug
-</pre></div>
-
-
-<p><br></p>
-<h3 id="build-the-image">Build the image<a class="headerlink" href="#build-the-image" title="Permanent link">&para;</a></h3>
-<p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>. </p>
-<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em> </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
-    $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-    (some diff will be displayed)
-    $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
-    $ cd ~/dev/myproj
-    $ newt build blinky
-    Compiling case.c
-    Compiling suite.c
-    ...
-    Linking blinky.elf
-    App successfully built:~/dev/myproj/bin/blinky/apps/blinky/blinky.elf
-    $ ls ~/dev/myproj/bin/blinky/apps/blinky/
-        blinky.elf      blinky.elf.bin     blinky.elf.cmd  
-        blinky.elf.lst  blinky.elf.map
-</pre></div>
-
-
-<p><br></p>
-<h3 id="prepare-the-hardware-to-boot-from-embedded-sram">Prepare the hardware to boot from embedded SRAM<a class="headerlink" href="#prepare-the-hardware-to-boot-from-embedded-sram" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Locate the boot jumpers on the board.</li>
-</ul>
-<p><br></p>
-<p><img alt="Alt Layout - Top View" src="../pics/topview.png" />
-<img alt="Alt Layout - Bottom View" src="../pics/bottomview.png" /></p>
-<p><br></p>
-<ul>
-<li>
-<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present. 
-To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering <strong>B0_1</strong> and <strong>B1_1</strong>.</p>
-</li>
-<li>
-<p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board). </p>
-</li>
-<li>
-<p>The red PWR LED should be lit. </p>
-</li>
-<li>
-<p>Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.</p>
-</li>
-</ul>
-<p><br></p>
-<h3 id="lets-go">Let's Go!<a class="headerlink" href="#lets-go" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Ensure that you are in the blinky project directory with the <em>blinky.elf</em> executable. Run the debug command in the <em>newt</em> tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an <code>-c "reset halt"</code> command.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt debug blinky
-    Debugging with ~/dev/core/hw/bsp/olimex_...
-    Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
-    GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
-    Copyright (C) 2014 Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 &lt;http://gnu.org/licenses/gpl.html&gt;
-    ...
-    (info)
-    ...
-    target state: halted
-    target halted due to debug-request, current mode: Thread 
-    xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
-    Info : accepting &#39;gdb&#39; connection on tcp/3333
-    Info : device id = 0x10036413
-    Info : flash size = 1024kbytes
-</pre></div>
-
-
-<p><br></p>
-<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) set $msp=0x10010000
-</pre></div>
-
-
-<p><br></p>
-<p>Now load the image and type "c" or "continue" from the GNU debugger. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
-    Loading section .text, size 0x16b88 lma 0x20000000
-    Loading section .ARM.exidx, size 0x18 lma 0x20016b88
-    Loading section .data, size 0x9ec lma 0x20016ba0
-    Start address 0x200004b8, load size 95628
-    Transfer rate: 74 KB/sec, 3825 bytes/write.
-    (gdb) c
-    Continuing.
-</pre></div>
-
-
-<ul>
-<li>Voilà! The board's LED should be blinking at 1 Hz. Success!</li>
-</ul>
-<p><br></p>
+<p>Now when you run this app on your board, you should be able to see it with all
+your iBeacon-aware devices.</p>
                         
                         <div class="row">
                             
@@ -689,16 +660,16 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../nRF52/>
+    <a href=../bleprph/bleprph-conn/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Blinky on nRF52
+        Previous: Connection Callbacks
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../add_repos/>
-        Next: Add repo to project
+    <a href=../../os_user_guide/>
+        Next: OS User Guide
         <span class="fa fa-arrow-right"></span>
     </a>
     
