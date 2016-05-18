@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_filelen</font>
 
-```no-highlight
+```c
 int fs_filelen(const struct fs_file *file, uint32_t *out_len)
 ```
 
@@ -8,7 +8,7 @@ Retrieves the current length of the specified open file.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | file |  Pointer to the file to query |
 | out\_len |  On success, the number of bytes in the file gets written here |
@@ -21,13 +21,13 @@ Retrieves the current length of the specified open file.
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
 #### Example
 
-```no-highlight
+```c
 int
 write_config(void)
 {

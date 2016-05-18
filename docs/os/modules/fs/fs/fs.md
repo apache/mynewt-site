@@ -18,7 +18,7 @@ pkg.deps:
 # [...]
 ```
 
-```no-highlight
+```c
 /* repos/apache-mynewt-core/apps/slinky/src/main.c */
 
 #include "nffs/nffs.h"
@@ -63,14 +63,14 @@ All `fs/fs` functions are thread safe.
 ###Header Files 
 All code which uses the `fs/fs` package needs to include the following header:
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
 ###Data Structures
 All `fs/fs` data structures are opaque to client code.
 
-```no-highlight
+```c
 struct fs_file;
 struct fs_dir;
 struct fs_dirent;

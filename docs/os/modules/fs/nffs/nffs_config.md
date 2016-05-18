@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">struct nffs\_config</font>
 
-```no-highlight
+```c
 struct nffs_config {
     /** Maximum number of inodes; default=1024. */
     uint32_t nc_num_inodes;
@@ -27,12 +27,12 @@ Any fields that are set to 0 (or not set at all) inherit the corresponding defau
 
 The global `struct nffs_config` instance is exposed in `nffs/nffs.h` as follows:
 
-```no-highlight
+```c
 extern struct nffs_config nffs_config;
 ```
 
 #### Header file
 
-```no-highlight
+```c
 #include "nffs/nffs.h"
 ```

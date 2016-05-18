@@ -22,7 +22,7 @@ The `fs/fs` package calls into the underlying file system via a collection of fu
 
 For example, `nffs` registers itself with `fs/fs` as follows (from `fs/nffs/src/nffs.c`):
 
-```no-highlight
+```c
 static const struct fs_ops nffs_ops = {
     .f_open = nffs_open,
     .f_close = nffs_close,
@@ -58,6 +58,6 @@ nffs_init(void)
 ### Header Files 
 To gain access to `fs/fs`'s registration interface, include the following header:
 
-```no-highlight
+```c
 #include "fs/fs_if.h"
 ```

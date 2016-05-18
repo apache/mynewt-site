@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_closedir</font>
 
-```no-highlight
+```c
 int fs_closedir(struct fs_dir *dir)
 ```
 
@@ -8,7 +8,7 @@ Closes the specified directory handle.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | dir       |  The name of the directory to close |
 
@@ -20,7 +20,7 @@ Closes the specified directory handle.
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -28,7 +28,7 @@ Closes the specified directory handle.
 
 This example iterates through the contents of a directory, printing the name of each child node.  When the traversal is complete, the code closes the directory handle.
 
-```no-highlight
+```c
 int
 traverse_dir(const char *dirname)
 {

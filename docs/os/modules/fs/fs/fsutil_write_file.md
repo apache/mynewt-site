@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fsutil\_write\_file</font>
 
-```no-highlight
+```c
 int fsutil_write_file(const char *path, const void *data, uint32_t len)
 ```
 
@@ -8,7 +8,7 @@ Calls fs\_open(), fs\_write(), and fs\_close() to open a file at the specified p
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | path |  Pointer to the file to write to |
 | data |  The data to write |
@@ -21,7 +21,7 @@ Calls fs\_open(), fs\_write(), and fs\_close() to open a file at the specified p
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -29,7 +29,7 @@ Calls fs\_open(), fs\_write(), and fs\_close() to open a file at the specified p
 
 This example creates a 4-byte file.
 
-```no-highlight
+```c
 int
 write_id(void)
 {

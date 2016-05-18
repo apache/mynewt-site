@@ -2,7 +2,7 @@
 ### Disk structure
 On disk, each area is prefixed with the following header:
 
-```no-highlight
+```c
 /** On-disk representation of an area header. */
 struct nffs_disk_area {
     uint32_t nda_magic[4];  /* NFFS_AREA_MAGIC{0,1,2,3} */
@@ -16,7 +16,7 @@ struct nffs_disk_area {
 
 Beyond its header, an area contains a sequence of disk objects, representing the contents of the file system.  There are two types of objects: *inodes* and *data blocks*.  An inode represents a file or directory; a data block represents part of a file's contents.
 
-```no-highlight
+```c
 /** On-disk representation of an inode (file or directory). */
 struct nffs_disk_inode {
     uint32_t ndi_magic;         /* NFFS_INODE_MAGIC */
@@ -36,7 +36,7 @@ An inode filename's length cannot exceed 256 bytes.  The filename is not null-te
 * /  (slash character)
 * \0 (NUL character)
 
-```no-highlight
+```c
 /** On-disk representation of a data block. */
 struct nffs_disk_block {
     uint32_t ndb_magic;     /* NFFS_BLOCK_MAGIC */
@@ -80,7 +80,7 @@ A valid nffs file system must contain a single "scratch area."  The scratch area
 
 Every object in the file system is stored in a 256-entry hash table.  An object's hash key is derived from its 32-bit ID.  Each list in the hash table is sorted by time of use; most-recently-used is at the front of the list. All objects are represented by the following structure:
 
-```no-highlight
+```c
 /**
  * What gets stored in the hash table.  Each entry represents a data block or
  * an inode.
@@ -96,7 +96,7 @@ For each data block, the above structure is all that is stored in RAM.  To acqui
 
 Inodes require a fuller RAM representation to capture the structure of the file system.  There are two types of inodes: *files* and *directories*.  Each inode hash entry is actually an instance of the following structure:
 
-```no-highlight
+```c
 /** Each inode hash entry is actually one of these. */
 struct nffs_inode_entry {
     struct nffs_hash_entry nie_hash_entry;
@@ -126,7 +126,7 @@ nffs requires both caches during normal operation, so it is not possible to disa
 
 The following data structures are used in the inode and data block caches.
 
-```no-highlight
+```c
 /** Full data block representation; not stored permanently in RAM. */
 struct nffs_block {
     struct nffs_hash_entry *nb_hash_entry;   /* Points to real block entry. */
@@ -139,7 +139,7 @@ struct nffs_block {
 };
 ```
 
-```no-highlight
+```c
 /** Represents a single cached data block. */
 struct nffs_cache_block {
     TAILQ_ENTRY(nffs_cache_block) ncb_link; /* Next / prev cached block. */
@@ -148,7 +148,7 @@ struct nffs_cache_block {
 };
 ```
 
-```no-highlight
+```c
 /** Full inode representation; not stored permanently in RAM. */
 struct nffs_inode {
     struct nffs_inode_entry *ni_inode_entry; /* Points to real inode entry. */
@@ -160,7 +160,7 @@ struct nffs_inode {
 };
 ```
 
-```no-highlight
+```c
 /** Doubly-linked tail queue of cached blocks; contained in cached inodes. */
 TAILQ_HEAD(nffs_block_cache_list, nffs_block_cache_entry);
 

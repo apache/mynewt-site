@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_opendir</font>
 
-```no-highlight
+```c
 int fs_opendir(const char *path, struct fs_dir **out_dir)
 ```
 
@@ -8,7 +8,7 @@ Opens the directory at the specified path.  The directory's contents can be read
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | path      | The name of the directory to open |
 | out\_dir  | On success, points to the directory handle |
@@ -28,7 +28,7 @@ Opens the directory at the specified path.  The directory's contents can be read
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -36,7 +36,7 @@ Opens the directory at the specified path.  The directory's contents can be read
 
 This example iterates through the contents of a directory, printing the name of each child node.  When the traversal is complete, the code closes the directory handle.
 
-```no-highlight
+```c
 int
 traverse_dir(const char *dirname)
 {

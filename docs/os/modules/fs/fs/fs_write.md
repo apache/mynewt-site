@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_write</font>
 
-```no-highlight
+```c
 int fs_write(struct fs_file *file, const void *data, int len)
 ```
 
@@ -8,7 +8,7 @@ Writes the supplied data to the current offset of the specified file handle.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | file |  Pointer to the file to write to |
 | data |  The data to write |
@@ -26,13 +26,13 @@ For files opened in append mode, the specified data is always written to the end
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
 #### Example
 
-```no-highlight
+```c
 int
 write_config(void)
 {

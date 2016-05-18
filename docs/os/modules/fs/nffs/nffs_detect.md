@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">nffs\_detect</font>
 
-```no-highlight
+```c
 int nffs_detect(const struct nffs_area_desc *area_descs)
 ```
 
@@ -8,7 +8,7 @@ Searches for a valid nffs file system among the specified areas.  This function 
 
 #### Arguments
 
-| Arguments     | Description                   |
+| *Argument* | *Description* |
 |---------------|-------------------------------|
 | area\_descs   | The set of areas to search.  This array must be terminated with a 0-length area. |
 
@@ -20,13 +20,13 @@ Searches for a valid nffs file system among the specified areas.  This function 
 
 #### Header file
 
-```no-highlight
+```c
 #include "nffs/nffs.h"
 ```
 
 #### Example
 
-```no-highlight
+```c
 /*** hw/hal/include/hal/flash_map.h */
 
 /*
@@ -39,7 +39,7 @@ Searches for a valid nffs file system among the specified areas.  This function 
 #define FLASH_AREA_NFFS                 4
 ```
 
-```no-highlight
+```c
 /*** project/slinky/src/main.c */
 
 int

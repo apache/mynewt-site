@@ -21,6 +21,6 @@ Functions in `fs/fs` that indicate success or failure do so with the following s
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
