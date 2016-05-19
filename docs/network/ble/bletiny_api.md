@@ -59,7 +59,7 @@ This is how you discover and then display the services of the peer you establish
 
 ```hl_lines="1 2"
 b disc svc conn=1
-b show svc
+b show chr
 [ts=132425ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
 [ts=132428ssb, mod=64 level=2]     start=1 end=5 uuid=0x1800
 [ts=132433ssb, mod=64 level=2]     start=6 end=16 uuid=0x1808
@@ -71,7 +71,7 @@ b show svc
 
 ### Discover characteristics for each service on peer
 
-The following examples show how to find the characteristics for each service available on the peer device across connection-1. The start and end values depend on the specific services discovered using the previous command `b show svc`. Continuing with the example above, you can discover the characteristics of the first service and display it using the following commands.
+The following examples show how to find the characteristics for each service available on the peer device across connection-1. The start and end values depend on the specific services discovered using the previous command `b show chr`. Continuing with the example above, you can discover the characteristics of the first service and display it using the following commands.
 
 ```hl_lines="1 2"
 b disc chr conn=1 start=1 end=5
