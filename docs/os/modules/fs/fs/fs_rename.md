@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_rename</font>
 
-```no-highlight
+```c
 int fs_rename(const char *from, const char *to)
 ```
 
@@ -8,7 +8,7 @@ Performs a rename and / or move of the specified source path to the specified de
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | from |  The source path |
 | to   | The destination path |
@@ -25,7 +25,7 @@ The source path can refer to either a file or a directory.  All intermediate dir
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -33,7 +33,7 @@ The source path can refer to either a file or a directory.  All intermediate dir
 
 This example demonstrates how to use fs\_rename() to perform a log rotation.  In this example, there is one primary log and three archived logs.  `FS_ENOENT` errors returned by `fs_rename()` are ignored; it is not an error if an archived log was never created.
 
-```no-highlight
+```c
 int
 rotate_logs(void)
 {

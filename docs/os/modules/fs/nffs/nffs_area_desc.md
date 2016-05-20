@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">struct nffs\_area\_desc</font>
 
-```no-highlight
+```c
 struct nffs_area_desc {
     uint32_t nad_offset;    /* Flash offset of start of area. */
     uint32_t nad_length;    /* Size of area, in bytes. */
@@ -27,6 +27,6 @@ Typically, a product's flash layout is exposed via its BSP-specific `bsp_flash_d
 
 #### Header file
 
-```no-highlight
+```c
 #include "nffs/nffs.h"
 ```

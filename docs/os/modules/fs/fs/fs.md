@@ -4,23 +4,22 @@ Mynewt provides a file system abstraction layer (`fs/fs`) to allow client code t
 
 ###Description
 
-Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the `fs/fs` package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the **project** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
+Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the `fs/fs` package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
 
-The following example illustrates how file system dependencies should be managed.  In the slinky application, the project is responsible for initializing the file system, so it depends on a concrete file system package called `fs/nffs` (Newtron Flash File System). The project explicitly initializes nffs via calls to `nffs_init()`, `nffs_detect()` and `nffs_format()`.
+The following example illustrates how file system dependencies should be managed.  In the slinky application, the app is responsible for initializing the file system, so it depends on a concrete file system package called `fs/nffs` (Newtron Flash File System). The app explicitly initializes nffs via calls to `nffs_init()`, `nffs_detect()` and `nffs_format()`.
 
 ```no-highlight
-# project/slinky/pkg.yml
+# repos/apache-mynewt-core/apps/slinky/pkg.yml
 
-pkg.name: project/slinky
-pkg.vers: 0.8.0
+pkg.name: repos/apache-mynewt-core/apps/slinky
 pkg.deps:
     - fs/nffs
 
 # [...]
 ```
 
-```no-highlight
-// project/slinky/src/main.c
+```c
+/* repos/apache-mynewt-core/apps/slinky/src/main.c */
 
 #include "nffs/nffs.h"
 
@@ -45,12 +44,11 @@ main(int argc, char **argv)
 }
 ```
 
-On the other hand, code which uses the file system after it has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main project has initialized the file system, and therefore only depends on the `fs/fs` package.
+On the other hand, code which uses the file system after it has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main app has initialized the file system, and therefore only depends on the `fs/fs` package.
 
 ```no-highlight
-# libs/imgmgr/pkg.yml
+# repos/apache-mynewt-core/libs/imgmgr/pkg.yml
 pkg.name: libs/imgmgr
-pkg.vers: 0.8.0
 pkg.deps:
     - fs/fs
 
@@ -65,14 +63,14 @@ All `fs/fs` functions are thread safe.
 ###Header Files 
 All code which uses the `fs/fs` package needs to include the following header:
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
 ###Data Structures
 All `fs/fs` data structures are opaque to client code.
 
-```no-highlight
+```c
 struct fs_file;
 struct fs_dir;
 struct fs_dirent;

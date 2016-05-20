@@ -1,13 +1,13 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_seek</font>
 
-```no-highlight
+```c
 int fs_seek(struct fs_file *file, uint32_t offset)
 ```
 Positions a file's read and write pointer at the specified offset.  The offset is expressed as the number of bytes from the start of the file (i.e., seeking to offset 0 places the pointer at the first byte in the file).
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | file |  Pointer to the file to reposition |
 | offset |  The 0-based file offset to seek to |
@@ -23,7 +23,7 @@ If a file is opened in append mode, its write pointer is always positioned at th
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -31,7 +31,7 @@ If a file is opened in append mode, its write pointer is always positioned at th
 
 The following example reads four bytes from a file, starting at an offset of eight.
 
-```no-highlight
+```c
 int
 read_part1_middle(void)
 {

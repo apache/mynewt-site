@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">nffs\_format</font>
 
-```no-highlight
+```c
 int nffs_format(const struct nffs_area_desc *area_descs)
 ```
 
@@ -8,7 +8,7 @@ Erases all the specified areas and initializes them with a clean nffs file syste
 
 #### Arguments
 
-| Arguments     | Description                   |
+| *Argument* | *Description* |
 |---------------|-------------------------------|
 | area\_descs   | The set of areas to format    |
 
@@ -19,13 +19,13 @@ Erases all the specified areas and initializes them with a clean nffs file syste
 
 #### Header file
 
-```no-highlight
+```c
 #include "nffs/nffs.h"
 ```
 
 #### Example
 
-```no-highlight
+```c
 /*** hw/hal/include/hal/flash_map.h */
 
 /*
@@ -38,7 +38,7 @@ Erases all the specified areas and initializes them with a clean nffs file syste
 #define FLASH_AREA_NFFS                 4
 ```
 
-```no-highlight
+```c
 /*** project/slinky/src/main.c */
 
 int

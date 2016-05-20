@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">fs\_register</font>
 
-```no-highlight
+```c
 int fs_register(const struct fs_ops *fops)
 ```
 
@@ -8,7 +8,7 @@ Registers a file system with the abstraction layer.  On success, all calls into 
 
 #### Arguments
 
-| Argument | Description |
+| *Argument* | *Description* |
 |----------|-------------|
 | fops     | A pointer to const [struct fs\_ops](fs_ops.md). Specifies which file system routines get mapped to the `fs/fs` API.  All function pointers must be filled in. |
 
@@ -23,6 +23,6 @@ Only one file system can be registered.  The registered file system is mounted i
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```

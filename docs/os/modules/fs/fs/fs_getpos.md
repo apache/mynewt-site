@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_getpos</font>
 
-```no-highlight
+```c
 uint32_t fs_getpos(const struct fs_file *file)
 ```
 
@@ -8,7 +8,7 @@ Retrieves the current read and write position of the specified open file.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | file |  Pointer to the file to query |
 
@@ -22,6 +22,6 @@ If a file is opened in append mode, its write pointer is always positioned at th
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```

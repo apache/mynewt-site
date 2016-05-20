@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_unlink</font>
 
-```no-highlight
+```c
 int fs_unlink(const char *filename)
 ```
 
@@ -8,7 +8,7 @@ Unlinks the file or directory at the specified path.  This is the function to us
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | filename  |  The path of the file or directory to unlink |
 
@@ -19,7 +19,7 @@ Unlinks the file or directory at the specified path.  This is the function to us
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -27,7 +27,7 @@ Unlinks the file or directory at the specified path.  This is the function to us
 
 The following example creates a file and then immediately unlinks it.  By unlinking the file, this function prevents other OS tasks from accessing it.  When the function closes the file, it is deleted from the disk.
 
-```no-highlight
+```c
 int
 process_data(void)
 {

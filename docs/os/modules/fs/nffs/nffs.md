@@ -38,7 +38,7 @@ Both methods require the user to describe how the flash memory should be divided
 
 Typically, a product's flash layout is exposed via its BSP-specific `bsp_flash_dev()` function.  This function retrieves the layout of the specified flash device resident in the BSP.  The result of this function can then be converted into the `struct nffs_area_desc[]` that nffs requires.  The below example, taken from the slinky project, illustrates the nffs initialization procedure.
 
-```no-highlight
+```c
 /*** hw/hal/include/hal/flash_map.h */
 
 /*
@@ -51,7 +51,7 @@ Typically, a product's flash layout is exposed via its BSP-specific `bsp_flash_d
 #define FLASH_AREA_NFFS                 4
 ```
 
-```no-highlight
+```c
 /*** project/slinky/src/main.c */
 
 int
@@ -93,7 +93,7 @@ The nffs file system is configured by populating fields in a global [struct nffs
 
 The global `struct nffs_config` instance is exposed in `nffs/nffs.h` as follows:
 
-```no-highlight
+```c
 extern struct nffs_config nffs_config;
 ```
 

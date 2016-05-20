@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_dirent\_is\_dir</font>
 
-```no-highlight
+```c
 int fs_dirent_is_dir(const struct fs_dirent *dirent)
 ```
 
@@ -8,7 +8,7 @@ Tells you whether the specified directory entry is a sub-directory or a regular 
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | dirent    |  Pointer to the directory entry to query |
 
@@ -20,7 +20,7 @@ Tells you whether the specified directory entry is a sub-directory or a regular 
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -28,7 +28,7 @@ Tells you whether the specified directory entry is a sub-directory or a regular 
 
 This example iterates through the contents of a directory, printing the name of each child node.  When the traversal is complete, the code closes the directory handle.
 
-```no-highlight
+```c
 int
 traverse_dir(const char *dirname)
 {

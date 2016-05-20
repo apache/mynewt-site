@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_close</font>
 
-```no-highlight
+```c
 int fs_close(struct fs_file *file)
 ```
 
@@ -8,7 +8,7 @@ Closes the specified file and invalidates the file handle.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | file      |  Pointer to the file to close  |
 
@@ -23,7 +23,7 @@ If the file has already been unlinked, and the file has no other open handles, t
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -31,7 +31,7 @@ If the file has already been unlinked, and the file has no other open handles, t
 
 The below code opens the file `/settings/config.txt` for reading, reads some data, and then closes the file.
 
-```no-highlight
+```c
 int
 read_config(void)
 {
