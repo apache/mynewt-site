@@ -29,18 +29,18 @@ The instructions assume the user is using a Bourne-compatible shell (e.g. bash o
 ### Install newt
 
 If you have not already installed `newt`, see the 
-[newt installation instructions](../../newt/install/newt_mac.md) and ensure newt is installed an in your path.
+[newt installation instructions](../get_started/get_started/) and ensure newt is installed an in your path.
 
 ### Install newtmgr
 
 If you have not already installed `newtmgr`, see the 
-[newtmgr installation instructions](../../newtmgr/installing.md) and ensure newtmgr is installed an in your path.
+[newtmgr installation instructions](../../newtmgr/installing/) and ensure newtmgr is installed an in your path.
 
 ### Create a new project
 
-Instructions for creating a project are located in the [Getting Started](../get_started/project_create.md) section of the [Mynewt OS Manual](../get_started/introduction.md).
+Instructions for creating a project are located in the [Basic Setup](../get_started/project_create/) section of the [Mynewt Documentation](../introduction.md).
 
-If you already completed [sim slinky](project-slinky.md) you can skip this step.
+If you already completed [Sim Slinky](project-slinky.md) you can skip this step.
 
 We will list only the steps here for brevity.  We will name the project
 `slinky`.

@@ -1,4 +1,4 @@
-#Roadmap
+###Roadmap
 
 
 Release Version | Descriptor | Date |Features 
@@ -25,7 +25,7 @@ Release Version | Descriptor | Date |Features
 
 <br>
 
-#Feature Request
+###Feature Request
 
 The WISHLIST at the top of the roadmap on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel) features all the new ideas awaiting discussion and review. Once the community decides to go ahead with a request, it is scheduled into a release. Generally, effort is made to schedule a requested feature into a particular version no later than 6 weeks prior to the planned release date.
 
@@ -33,7 +33,7 @@ If you have suggestions for a new feature, use case, or implementation improveme
 
 <br>
 
-#FAQ
+###FAQ
 
 <font color="#F2853F"> Questions? </font> Click [here](faq/answers.md)
 
