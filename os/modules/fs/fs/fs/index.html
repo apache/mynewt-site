@@ -46,6 +46,11 @@
 
         
 
+
+
+
+
+
 <nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
@@ -79,7 +84,9 @@
 >
                     <a href="/about/">About</a>
                 </li>
-                <li>
+                <li 
+  class="active"
+>
                     <a href="/os/introduction/">Documentation</a>
                 </li>
                 <li 
@@ -112,7 +119,7 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
         <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
@@ -513,12 +520,11 @@
                             <h1 id="file-system-abstraction">File System Abstraction</h1>
 <p>Mynewt provides a file system abstraction layer (<code>fs/fs</code>) to allow client code to be file system agnostic.  By accessing the file system via the <code>fs/fs</code> API, client code can perform file system operations without being tied to a particular implementation.  When possible, library code should use the <code>fs/fs</code> API rather than accessing the underlying file system directly.</p>
 <h3 id="description">Description</h3>
-<p>Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the <code>fs/fs</code> package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the <strong>project</strong> package must depend on a specific file system package, while <strong>library</strong> packages should only depend on <code>fs/fs</code>.</p>
-<p>The following example illustrates how file system dependencies should be managed.  In the slinky application, the project is responsible for initializing the file system, so it depends on a concrete file system package called <code>fs/nffs</code> (Newtron Flash File System). The project explicitly initializes nffs via calls to <code>nffs_init()</code>, <code>nffs_detect()</code> and <code>nffs_format()</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># project/slinky/pkg.yml
+<p>Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the <code>fs/fs</code> package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the <strong>app</strong> package must depend on a specific file system package, while <strong>library</strong> packages should only depend on <code>fs/fs</code>.</p>
+<p>The following example illustrates how file system dependencies should be managed.  In the slinky application, the app is responsible for initializing the file system, so it depends on a concrete file system package called <code>fs/nffs</code> (Newtron Flash File System). The app explicitly initializes nffs via calls to <code>nffs_init()</code>, <code>nffs_detect()</code> and <code>nffs_format()</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># repos/apache-mynewt-core/apps/slinky/pkg.yml
 
-pkg.name: project/slinky
-pkg.vers: 0.8.0
+pkg.name: repos/apache-mynewt-core/apps/slinky
 pkg.deps:
     - fs/nffs
 
@@ -526,36 +532,35 @@ pkg.deps:
 </pre></div>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">// project/slinky/src/main.c
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* repos/apache-mynewt-core/apps/slinky/src/main.c */</span>
 
-#include &quot;nffs/nffs.h&quot;
+<span style="color: #633820">#include &quot;nffs/nffs.h&quot;</span>
 
-int
-main(int argc, char **argv)
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
-    int rc;
-    int cnt;
-    struct nffs_area_desc descs[NFFS_AREA_MAX];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_area_desc</span> <span style="color: #000000">descs</span>[<span style="color: #000000">NFFS_AREA_MAX</span>];
 
-    rc = nffs_init();
-    assert(rc == 0);
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_init</span>();
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
-    cnt = NFFS_AREA_MAX;
-    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &amp;cnt, descs);
-    assert(rc == 0);
-    if (nffs_detect(descs) == FS_ECORRUPT) {
-        rc = nffs_format(descs);
-        assert(rc == 0);
+    <span style="color: #000000">cnt</span> <span style="color: #000000">=</span> <span style="color: #000000">NFFS_AREA_MAX</span>;
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">flash_area_to_nffs_desc</span>(<span style="color: #000000">FLASH_AREA_NFFS</span>, <span style="color: #000000">&amp;cnt</span>, <span style="color: #000000">descs</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">nffs_detect</span>(<span style="color: #000000">descs</span>) <span style="color: #000000">==</span> <span style="color: #000000">FS_ECORRUPT</span>) {
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_format</span>(<span style="color: #000000">descs</span>);
+        <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
     }
-    // [...]
+    <span style="color: #177500">// [...]</span>
 }
 </pre></div>
 
 
-<p>On the other hand, code which uses the file system after it has been initialized need only depend on <code>fs/fs</code>.  For example, the <code>libs/imgmgr</code> package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main project has initialized the file system, and therefore only depends on the <code>fs/fs</code> package.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># libs/imgmgr/pkg.yml
+<p>On the other hand, code which uses the file system after it has been initialized need only depend on <code>fs/fs</code>.  For example, the <code>libs/imgmgr</code> package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main app has initialized the file system, and therefore only depends on the <code>fs/fs</code> package.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># repos/apache-mynewt-core/libs/imgmgr/pkg.yml
 pkg.name: libs/imgmgr
-pkg.vers: 0.8.0
 pkg.deps:
     - fs/fs
 
@@ -568,15 +573,15 @@ pkg.deps:
 <p>All <code>fs/fs</code> functions are thread safe.</p>
 <h3 id="header-files">Header Files</h3>
 <p>All code which uses the <code>fs/fs</code> package needs to include the following header:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &quot;fs/fs.h&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs.h&quot;</span>
 </pre></div>
 
 
 <h3 id="data-structures">Data Structures</h3>
 <p>All <code>fs/fs</code> data structures are opaque to client code.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct fs_file;
-struct fs_dir;
-struct fs_dirent;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #000000">fs_dir</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #000000">fs_dirent</span>;
 </pre></div>
 
 

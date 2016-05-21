@@ -46,6 +46,11 @@
 
         
 
+
+
+
+
+
 <nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
@@ -79,7 +84,9 @@
 >
                     <a href="/about/">About</a>
                 </li>
-                <li>
+                <li 
+  class="active"
+>
                     <a href="/os/introduction/">Documentation</a>
                 </li>
                 <li 
@@ -112,7 +119,7 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
         <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
@@ -661,8 +668,8 @@
                         </div>
                         
                             <h2 id="fs95open"><font color="F2853F" style="font-size:24pt">fs_open</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">int fs_open(const char *filename, uint8_t access_flags,
-            struct fs_file **out_file)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">fs_open</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*filename</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">access_flags</span>,
+            <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span> <span style="color: #000000">**out_file</span>)
 </pre></div>
 
 
@@ -682,8 +689,8 @@ The mode strings passed to <code>fopen()</code> map to <code>fs_open()</code>'s 
 <table>
 <thead>
 <tr>
-<th>Argument</th>
-<th>Description</th>
+<th><em>Argument</em></th>
+<th><em>Description</em></th>
 </tr>
 </thead>
 <tbody>
@@ -716,37 +723,37 @@ The mode strings passed to <code>fopen()</code> map to <code>fs_open()</code>'s 
 </li>
 </ul>
 <h4 id="header-file">Header file</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &quot;fs/fs.h&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs.h&quot;</span>
 </pre></div>
 
 
 <h4 id="example">Example</h4>
 <p>The below code opens the file <code>/settings/config.txt</code> for reading, reads some data, and then closes the file.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">int
-read_config(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
+<span style="color: #000000">read_config</span>(<span style="color: #A90D91">void</span>)
 {
-    struct fs_file *file;
-    uint32_t bytes_read;
-    uint8_t buf[16];
-    int rc;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span> <span style="color: #000000">*file</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">bytes_read</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">buf</span>[<span style="color: #1C01CE">16</span>];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Open the file for reading. */
-    rc = fs_open(&quot;/settings/config.txt&quot;, FS_ACCESS_READ, &amp;file);
-    if (rc != 0) {
-        return -1;
+    <span style="color: #177500">/* Open the file for reading. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_open</span>(<span style="color: #C41A16">&quot;/settings/config.txt&quot;</span>, <span style="color: #000000">FS_ACCESS_READ</span>, <span style="color: #000000">&amp;file</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
     }
 
-    /* Read up to 16 bytes from the file. */
-    rc = fs_read(file, sizeof buf, buf, &amp;bytes_read);
-    if (rc == 0) {
-        /* buf now contains up to 16 bytes of file data. */
-        console_printf(&quot;read %u bytes\n&quot;, bytes_read)
+    <span style="color: #177500">/* Read up to 16 bytes from the file. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_read</span>(<span style="color: #000000">file</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">buf</span>, <span style="color: #000000">buf</span>, <span style="color: #000000">&amp;bytes_read</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #177500">/* buf now contains up to 16 bytes of file data. */</span>
+        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;read %u bytes\n&quot;</span>, <span style="color: #000000">bytes_read</span>)
     }
 
-    /* Close the file. */
-    fs_close(file);
+    <span style="color: #177500">/* Close the file. */</span>
+    <span style="color: #000000">fs_close</span>(<span style="color: #000000">file</span>);
 
-    return rc == 0 ? 0 : -1;
+    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
 }
 </pre></div>
                         
