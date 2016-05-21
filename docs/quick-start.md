@@ -1,6 +1,6 @@
 ### Get set
 
-Apache Mynewt currently offers two ways to quickly get set up, each appealing to different personal preference and familiarity with embedded systems. 
+Apache Mynewt currently offers two ways to quickly get set up, each appealing to different personal preferences and levels of familiarity with embedded systems. 
 
 <br>
 
