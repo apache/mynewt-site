@@ -133,7 +133,7 @@ Ah. Forgot to create an image out of the blinky binary. Note that every time you
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ newt create-image blink_f3 0.0.1
-App image succesfully generated: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img
+App image successfully generated: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img
 Build manifest: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/manifest.json
 [user@IsMyLaptop:~/src/air_quality]$ newt load blink_f3 0.0.1
 ```

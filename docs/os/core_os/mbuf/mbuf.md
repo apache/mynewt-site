@@ -148,7 +148,7 @@ mbuf_usage_example2(struct mbuf *rxpkt)
 	    }
 	}
 	
-	/* Free passed in packet (mbuf chain) since we dont need it anymore */
+	/* Free passed in packet (mbuf chain) since we don't need it anymore */
 	os_mbuf_free_chain(om);
 }
 

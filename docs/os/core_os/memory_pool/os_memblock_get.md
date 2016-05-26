@@ -4,7 +4,7 @@
 void *os_memblock_get(struct os_mempool *mp)
 ```
 
-Allocate an element from the memory pool. If succesful, you'll get a pointer to allocated element. If there are no elements available, you'll get NULL as response.
+Allocate an element from the memory pool. If successful, you'll get a pointer to allocated element. If there are no elements available, you'll get NULL as response.
 
 
 #### Arguments

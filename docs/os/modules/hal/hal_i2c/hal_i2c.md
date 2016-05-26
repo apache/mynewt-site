@@ -69,7 +69,7 @@ As an example, consider an  I²C  device address that looks like this:
 |MSB|   |   |   |   |   |   |LSB|
 
 In the HAL_I2C API you would communicate with this device with address 
-`0b1000110`, whic is hex 0x46 or decimal 70.  The I²C drive would add the R/W bit
+`0b1000110`, which is hex 0x46 or decimal 70.  The I²C drive would add the R/W bit
 and transmit it as hex 0x8D or 0x8D depending whether it was a read or
 write command.
 

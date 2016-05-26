@@ -28,7 +28,7 @@ cp -a site/ .
 
 echo ---
 echo --- You are now on the asf-site branch
-echo --- Review git diffs before commiting
+echo --- Review git diffs before committing
 echo ---
 git status
 
