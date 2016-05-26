@@ -118,7 +118,7 @@ You must sign and version your application image to download it using newt to th
 
 ```
 $ newt create-image blink_nordic 1.0.0
-App image succesfully generated: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.img
+App image successfully generated: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.img
 Build manifest: ~/dev/myproj/bin/blink_nordic/apps/blinky/manifest.json
 ```
 

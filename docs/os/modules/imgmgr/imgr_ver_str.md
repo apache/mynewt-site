@@ -5,7 +5,7 @@
    imgr_ver_str(struct image_version *ver, char *dst)
 ```
 
-  Takes the version string from `ver` and formats that into a printable string to `dst`. Caller must make sure that `dst` contains enough space to hold maximum lenght version string. The convenience defininition for max length version string is named `IMGMGR_MAX_VER_STR`.
+  Takes the version string from `ver` and formats that into a printable string to `dst`. Caller must make sure that `dst` contains enough space to hold maximum length version string. The convenience defininition for max length version string is named `IMGMGR_MAX_VER_STR`.
   
 
 #### Arguments

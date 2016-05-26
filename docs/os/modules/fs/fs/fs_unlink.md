@@ -4,7 +4,7 @@
 int fs_unlink(const char *filename)
 ```
 
-Unlinks the file or directory at the specified path.  This is the function to use if you want to delete a file or directory from the disk.  If the path refers to a directory, all the directory's descendants are recursively unlinked.  Any open file handles refering to an unlinked file remain valid, and can be read from and written to as long as they remain open.
+Unlinks the file or directory at the specified path.  This is the function to use if you want to delete a file or directory from the disk.  If the path refers to a directory, all the directory's descendants are recursively unlinked.  Any open file handles referring to an unlinked file remain valid, and can be read from and written to as long as they remain open.
 
 #### Arguments
 

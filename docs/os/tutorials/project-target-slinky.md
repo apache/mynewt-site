@@ -106,7 +106,7 @@ Give this image some arbitrary version number "1.2.3".
 
 ```no-highlight
 $ newt create-image stm32_slinky 1.2.3
-App image succesfully generated: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.img
+App image successfully generated: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.img
 Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/manifest.json
 ```
 

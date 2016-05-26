@@ -222,7 +222,7 @@ During detection, each indicated region of flash is checked for a valid area hea
 1. Verify the object's integrity via a crc16 check.  If invalid, the object is discarded and the procedure restarts on the next object in the area.
 2. Convert the disk object into its corresponding RAM representation and insert it into the hash table.  If the object is an inode, its reference count is initialized to 1, indicating ownership by its parent directory.
 3. If an object with the same ID is already present, then one supersedes the other.  Accept the object with the greater sequence number and discard the other.
-4. If the object references a nonexistant inode (parent directory in the case of an inode; owning file in the case of a data block), insert a temporary "dummy" inode into the hash table so that inter-object links can be maintained until the absent inode is eventually restored.  Dummy inodes are identified by a reference count of 0.
+4. If the object references a nonexistent inode (parent directory in the case of an inode; owning file in the case of a data block), insert a temporary "dummy" inode into the hash table so that inter-object links can be maintained until the absent inode is eventually restored.  Dummy inodes are identified by a reference count of 0.
 5. If a delete record for an inode is encountered, the inode's parent pointer is set to null to indicate that it should be removed from RAM.
 
 If nffs encounters an object that cannot be identified (i.e., its magic number is not valid), it scans the remainder of the flash area for the next valid magic number.  Upon encountering a valid object, nffs resumes the procedure described above.
@@ -308,7 +308,7 @@ Appended data can only be written to the end of the file.  That is, "holes" are 
 
 # Garbage collection
 
-When the file system is too full to accomodate a write operation, the system must perform garbage collection to make room.  The garbage collection procedure is described below:
+When the file system is too full to accommodate a write operation, the system must perform garbage collection to make room.  The garbage collection procedure is described below:
 
 * The non-scratch area with the lowest garbage collection sequence number is selected as the "source area."  If there are other areas with the same sequence number, the one with the smallest flash offset is selected. 
 * The source area's ID is written to the scratch area's header, transforming it into a non-scratch ID.  This former scratch area is now known as the "destination area."

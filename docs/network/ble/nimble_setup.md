@@ -203,7 +203,7 @@ App successfully built: /Users/wes/dev/my_proj1/bin/ble_tgt/apps/ble_app/ble_app
 
 You now have a fully functional BLE app (never mind the fact that it doesn't
 actually do anything yet!).  With all the necessary infrastructure in place,
-you can now start turning this into a real applicaiton.  Additional tutorials
+you can now start turning this into a real application.  Additional tutorials
 with focus on adding application-layer functionality to your Nimble application
 will be coming soon.  In the meantime, you might get some inspiration from
 apache-mynewt-core's example Nimble apps.  These apps can be found at the below locations, relative to your project's base directory:
