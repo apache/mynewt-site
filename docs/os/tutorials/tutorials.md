@@ -7,7 +7,7 @@ The full list of tutorials can be seen in the navigation bar on the left. New on
 ###Prerequisites:
 
 * You have installed Docker container of Newt tool and toolchains or you have installed them natively on your machine
-* You have created a new project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in ../get_started/project_create.
+* You have created a new project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](../get_started/project_create).
 
 ###Tutorial categories:
 
