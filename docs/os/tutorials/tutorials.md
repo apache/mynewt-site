@@ -20,7 +20,7 @@ The tutorials fall into a few broad categories. Some examples in each category a
     * [Blinky on nRF52 Development Kit from Nordic Semiconductor](nRF52.md) **Note:** This supports BLE.
     
 * Navigating the code and adding functionality  
-    * [Adding more repositories to your project](add_repos.md)
+    * [Adding more repositories to your project](repo/add_repos.md)
     * [Adding a unit test for a package](unit_test.md)
     * [Adding task to manage multiple events](event_queue.md)
 

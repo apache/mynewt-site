@@ -6,7 +6,7 @@ A repository is a version-ed Mynewt project, which is a collection of Mynewt pac
 
 What differentiates a repository from a Mynewt project is the presence of a
 `repository.yml` file describing the repository. This will be described 
-below. For a basic understanding of repositories you may read the [Newt Tool Manual](../../newt/newt_intro.md) and [How to create repos](create_repo.md).
+below. For a basic understanding of repositories you may read the [Newt Tool Manual](../../../newt/newt_intro.md) and [How to create repos](create_repo.md).
 
 **Note:** For the remainder of this document we'll use the term repo as shorthand for a Mynewt repository.
 

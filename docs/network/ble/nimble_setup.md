@@ -7,7 +7,7 @@ This tutorial assumes that you have already installed the newt tool and are fami
 
 ### Create the application directory
 
-You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/add_repos.md) for more on working with repos.
+You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/repo/add_repos.md) for more on working with repos.
 
 ```
 ~/dev$ newt new my_proj1
