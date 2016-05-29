@@ -38,10 +38,14 @@ apache-mynewt-core successfully installed version 0.7.9-none
 
 <br>
 
-### Create a target 
+### Create targets 
+
+You will create two targets - one for the bootloader, the other for the application.
 
 ```
 $ newt target create myble
+Target targets/myble successfully created
+$ newt target create nrf52_boot
 Target targets/myble successfully created
 $ newt target show
 targets/my_blinky_sim
@@ -49,11 +53,12 @@ targets/my_blinky_sim
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
 targets/myble
+targets/nrf52_boot
 ```
 
 <br>
 
-Define the target further. Note that you are using the example app `bletiny`. 
+Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively). 
 
 ```
 $ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
@@ -64,6 +69,19 @@ $ newt target set myble build_profile=optimized
 Target targets/myble successfully set target.build_profile to optimized
 $ newt target set myble cflags=-DSTATS_NAME_ENABLE
 Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
+```
+
+Use the same `newt target set` command to set the following definition for the bootloader target.
+
+```
+targets/nrf52_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    build_profile=optimized
+```
+You should have the following targets by the end of this step.
+
+```
 $ newt target show
 targets/my_blinky_sim
     app=apps/blinky
@@ -74,19 +92,38 @@ targets/myble
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
     cflags=-DSTATS_NAME_ENABLE 
+targets/nrf52_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    build_profile=optimized
 ```
 
-<br>
+### Build targets
 
-Then build the target.
+Then build the two targets.
 
 ```
+$ newt build nrf52_boot
+<snip>
+App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
 $ newt build myble
 Compiling hci_common.c
 Compiling util.c
 Archiving nimble.a
 Compiling os.c
 <snip>
+```
+
+<br>
+
+### Create the app image
+
+Generate a signed application image for the `myble` target. The version number is arbitrary.
+
+```
+$ newt create-image myble 1.0.0
+App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
+Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
 ```
 
 <br>
