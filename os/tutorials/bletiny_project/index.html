@@ -9,7 +9,7 @@
         <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/bletiny_project/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Use BLE app to check stats via console - Apache Mynewt</title>
+	<title>BLE app to check stats via console - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Use BLE app to check stats via console">
+    <body class="BLE app to check stats via console">
 
 
         
@@ -200,48 +200,11 @@
           
               
                 
-    <li >
-      <a href="../add_repos/">Add repo to project</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../create_repo/">Create a repo</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../upgrade_repo/">Upgrade a repo</a>
-    </li>
-
-              
-          
-              
-                
-    <li class="active">
-      <a href="./">Use BLE app to check stats via console</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../project-slinky/">Enable remote comms on sim device</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../project-target-slinky/">Enable remote comms on STM32 board</a>
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
     </li>
 
               
@@ -272,6 +235,30 @@
           
               
                 
+    <li >
+      <a href="../project-slinky/">Enable remote comms on sim device</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../project-target-slinky/">Enable remote comms on STM32 board</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">BLE app to check stats via console</a>
+    </li>
+
+              
+          
+              
+                
   
   
     <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
@@ -285,6 +272,14 @@
                 
     <li >
       <a href="../ibeacon/">BLE iBeacon</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../blehci_project/">BLE HCI interface</a>
     </li>
 
               
@@ -384,7 +379,7 @@
         
       
       
-        <li>&raquo; Use BLE app to check stats via console</li>
+        <li>&raquo; BLE app to check stats via console</li>
       
     
     
@@ -425,8 +420,11 @@ apache-mynewt-core successfully installed version 0.7.9-none
 
 
 <p><br></p>
-<h3 id="create-a-target">Create a target</h3>
+<h3 id="create-targets">Create targets</h3>
+<p>You will create two targets - one for the bootloader, the other for the application.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create myble
+Target targets/myble successfully created
+$ newt target create nrf52_boot
 Target targets/myble successfully created
 $ newt target show
 targets/my_blinky_sim
@@ -434,11 +432,12 @@ targets/my_blinky_sim
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
 targets/myble
+targets/nrf52_boot
 </pre></div>
 
 
 <p><br></p>
-<p>Define the target further. Note that you are using the example app <code>bletiny</code>. </p>
+<p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively). </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
 Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
@@ -447,7 +446,19 @@ $ newt target set myble build_profile=optimized
 Target targets/myble successfully set target.build_profile to optimized
 $ newt target set myble cflags=-DSTATS_NAME_ENABLE
 Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
-$ newt target show
+</pre></div>
+
+
+<p>Use the same <code>newt target set</code> command to set the following definition for the bootloader target.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">targets/nrf52_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    build_profile=optimized
+</pre></div>
+
+
+<p>You should have the following targets by the end of this step.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show
 targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
@@ -457,17 +468,33 @@ targets/myble
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
     cflags=-DSTATS_NAME_ENABLE 
+targets/nrf52_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    build_profile=optimized
 </pre></div>
 
 
-<p><br></p>
-<p>Then build the target.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build myble
+<h3 id="build-targets">Build targets</h3>
+<p>Then build the two targets.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot
+&lt;snip&gt;
+App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
+$ newt build myble
 Compiling hci_common.c
 Compiling util.c
 Archiving nimble.a
 Compiling os.c
 &lt;snip&gt;
+</pre></div>
+
+
+<p><br></p>
+<h3 id="create-the-app-image">Create the app image</h3>
+<p>Generate a signed application image for the <code>myble</code> target. The version number is arbitrary.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image myble 1.0.0
+App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
+Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
 </pre></div>
 
 
@@ -567,16 +594,16 @@ GAP procedure initiated: discovery; disc_mode=2 filter_policyLE advertising repo
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../upgrade_repo/>
+    <a href=../project-target-slinky/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Upgrade a repo
+        Previous: Enable remote comms on STM32 board
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../project-slinky/>
-        Next: Enable remote comms on sim device
+    <a href=../bleprph/bleprph-intro/>
+        Next: BLE peripheral project
         <span class="fa fa-arrow-right"></span>
     </a>
     

@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/create_repo/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blehci_project/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Create a repo - Apache Mynewt</title>
+	<title>BLE HCI interface - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Create a repo">
+    <body class="BLE HCI interface">
 
 
         
@@ -200,48 +200,11 @@
           
               
                 
-    <li >
-      <a href="../add_repos/">Add repo to project</a>
-    </li>
-
-              
-          
-              
-                
-    <li class="active">
-      <a href="./">Create a repo</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../upgrade_repo/">Upgrade a repo</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../bletiny_project/">Use BLE app to check stats via console</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../project-slinky/">Enable remote comms on sim device</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../project-target-slinky/">Enable remote comms on STM32 board</a>
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
     </li>
 
               
@@ -272,6 +235,30 @@
           
               
                 
+    <li >
+      <a href="../project-slinky/">Enable remote comms on sim device</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../project-target-slinky/">Enable remote comms on STM32 board</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../bletiny_project/">BLE app to check stats via console</a>
+    </li>
+
+              
+          
+              
+                
   
   
     <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
@@ -285,6 +272,14 @@
                 
     <li >
       <a href="../ibeacon/">BLE iBeacon</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">BLE HCI interface</a>
     </li>
 
               
@@ -384,7 +379,7 @@
         
       
       
-        <li>&raquo; Create a repo</li>
+        <li>&raquo; BLE HCI interface</li>
       
     
     
@@ -393,145 +388,157 @@
                             </div>
                         </div>
                         
-                            <h2 id="create-a-repo-out-of-a-project">Create a Repo out of a Project</h2>
-<p>In order to create a repository out of a project, all you need to do is create a <code>repository.yml</code> file, and check it into the master branch of your project.</p>
-<p><strong>NOTE:</strong> Currently only github source control service is supported by our package management system, but support for plain git will be added soon.</p>
-<p>The repository.yml defines all versions of the repository and the corresponding source control tags that these versions correspond to.  As an example, if the repository.yml file has the following content, it means there is one version of the apache-mynewt-core operating system available, which is <code>0.0.0</code> (implying we haven't released yet!). Such a version number corresponds to the "develop" branch in this repository. <code>0-latest</code> would also resolved to this same <code>0.0.0</code> version. The next section explains the versioning system a bit more.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more repository.yml
-repo.name: apache-mynewt-core
-repo.versions:
-     &quot;0.0.0&quot;: &quot;develop&quot;
-     &quot;0-latest&quot;: &quot;0.0.0&quot;
-</pre></div>
-
-
+                            <h2 id="use-hci-access-to-nimble-controller">Use HCI access to NimBLE controller</h2>
 <p><br></p>
-<h3 id="where-should-the-repositoryyml-file-be">Where should the repository.yml file be?</h3>
-<p>The <code>repository.yml</code> file lives only in the master branch of the git
-repository.  <code>Newt</code> will always fetch this file from the master branch and then
-use that to resolve the actual branch required depending on the version
-specified in the project.  <strong>Special care should be taken to ensure that this
-file exists only in the master branch.</strong></p>
-<p>Here is the <code>repository.yml</code> file from a certain snapshot of apache-Mynewt-core:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">repo.name: apache-mynewt-core
-repo.versions:
-    &quot;0.7.9&quot;: &quot;Mynewt_0_8_0_b2_tag&quot;
-    &quot;0-latest&quot;: &quot;0.7.9&quot;
-    &quot;0.8-latest&quot;: &quot;0.7.9&quot;
-</pre></div>
-
-
+<p>This tutorial explains how to use the example application <code>blehci</code> included in the NimBLE stack to talk to the Mynewt NimBLE controller via the Host Controller Interface. You may build the Mynewt image using a laptop running any OS of your choice - Mac, Linux, or Windows.</p>
+<p>The host used in this specific example is the BlueZ Bluetooth stack. Since BlueZ is a Bluetooth stack for Linux kernel-based family of operating system, the tutorial expects a computer running Linux OS and with BlueZ installed to talk to the board with the Mynewt image.</p>
 <p><br></p>
-<p>It contains the following:</p>
+<h3 id="pre-requisites">Pre-Requisites</h3>
 <ul>
-<li><strong>repo.name</strong> The external name that is used to include the library in 
-your <code>project.yml</code> file.   This is the name you in include in the <code>project.repositories</code> variable when adding this repository to your project.</li>
-<li><strong>repo.versions</strong> A description of what versions to give the user depending 
-on the settings in their <code>project.yml</code> file.  See below for a thorough description
-on versioning. Its a flexible mapping between version numbers and git branches.</li>
+<li>Ensure you have installed <a href="../../../newt/install/newt_mac/">newt</a> and that the 
+newt command is in your system path. </li>
+<li>You must have Internet connectivity to fetch remote Mynewt components.</li>
+<li>If you are not using the Docker container for newt and other tools, you must <a href="../../get_started/native_tools/">install the compiler tools</a> to 
+support native compiling to build the project this tutorial creates.  </li>
+<li>You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.</li>
+<li>USB TTL Serial Cable that supports hardware flow control such as ones found at <a href="http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm">http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm</a> to establish a serial USB connection between the board and the laptop.</li>
+<li>You have installed a BLE host such as BlueZ on a Linux machine to talk to the nrf52 board running Mynewt. Use <code>sudo apt-get install bluez</code> to install it on your Linux machine. </li>
 </ul>
 <p><br></p>
-<h3 id="repo-version-specification">Repo Version Specification</h3>
-<p>The version field argument for a repo has the following format:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">&lt;major_num&gt;.&lt;minor_num&gt;.&lt;revision_num&gt;
-</pre></div>
+<h3 id="create-a-project">Create a project</h3>
+<p>Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. Make sure the downloaded version is 0.9.0 or later.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt new blehciproj 
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in blehciproj ...
+Project blehciproj  successfully created.
+$ cd mblehciproj 
 
-
-<p>or</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">&lt;major_num&gt;.&lt;minor_num&gt;-&lt;stability string&gt;
-</pre></div>
-
-
-<p>or </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">&lt;major_num&gt;-&lt;stability string&gt;
-</pre></div>
-
-
-<p><br></p>
-<p>The stability string can be one of 3 pre-defined stability values.</p>
-<ol>
-<li>stable -- A stable release version of the repository</li>
-<li>dev    -- A development version from the repository</li>
-<li>latest -- The latest from the repository</li>
-</ol>
-<p>In your <code>project.yml</code> file you can specify different combinations of 
-the version number and stability value.  For example:</p>
-<ul>
-<li><code>0-latest</code>      -- The latest version with major number 0</li>
-<li><code>1.2-stable</code>    -- The latest stable version with major and minor number 1.2</li>
-<li><code>1.2-dev</code>       -- The development version from 1.2</li>
-<li><code>1.1.1</code>         -- a specific version 1.1.1</li>
-</ul>
-<p>You <strong>cannot</strong> specify a stability string with a fully numbered version, e.g.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">1.2.8-stable
+$ newt install -v 
+apache-mynewt-core
+Downloading repository description for apache-mynewt-core... success!
+...
+apache-mynewt-core successfully installed version 0.9.0-none
 </pre></div>
 
 
 <p><br></p>
-<h3 id="repo-version-resolution">Repo Version Resolution</h3>
-<p>A <code>repository.yml</code> file contains information to match this version request
-into a git branch to fetch for your project.</p>
-<p>It's up to you as the repository maintainer to map these to actual github branches of the repository.  For example, let's say in a fictitious repository the following are defined.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">repo.versions:
-    &quot;0.8.0&quot;: &quot;xxx_branch_0_8_0&quot;
-    &quot;1.0.0&quot;: &quot;xxx_branch_1_0_0&quot;
-    &quot;1.0.2&quot;: &quot;xxx_branch_1_0_2&quot;
-    &quot;1.1.1&quot;: &quot;xxx_branch_1_1_0&quot;
-    &quot;1.1.2&quot;: &quot;xxx_branch_1_1_2&quot;
-    &quot;1.2.0&quot;: &quot;xxx_branch_1_2_0&quot;
-    &quot;1.2.1&quot;: &quot;xxx_branch_1_2_1&quot;
-    &quot;1.2-dev&quot;: &quot;1.2.1&quot;
-    &quot;1-dev&quot;: &quot;1.2-dev&quot;
-    &quot;1.2-stable&quot;: &quot;1.2.0&quot;
-    &quot;0-latest&quot;: &quot;0.8.0&quot;
-    &quot;1-latest&quot;: &quot;1-dev&quot;
-    ....
+<h3 id="create-targets">Create targets</h3>
+<p>You will create two targets - one for the bootloader, the other for the application. Then you will add the definitions for them. Note that you are using the example app <code>blehci</code> for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create nrf52_boot
+$ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
+$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_boot build_profile=optimized
 </pre></div>
 
 
-<p>When the <code>project.yml</code> file asks for <code>1.2-stable</code> it will be resolved to version
-<code>1.2.0</code> which in turn will resolve to a specific branch <code>xxx_branch_1_2_0</code>.  This is the branch that <code>newt</code> will fetch into the project with that <code>project.yml</code> file.</p>
-<p><br></p>
-<h3 id="dependencies-on-other-repos">Dependencies on other repos</h3>
-<p>Repositories can also have dependencies on other repositories.  These 
-dependencies should be listed out on a per-tag basis.  So, for example, 
-if apache-mynewt-core were to depend on sterlys-little-repo, you might 
-have the following directives in the repository.yml:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">develop.repositories:
-    sterlys-little-repo:
-        type: github
-        vers: 0.8-latest
-        user: sterlinghughes
-        repo: sterlys-little-repo
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create myble2
+$ newt target set myble2 bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set myble2 app=@apache-mynewt-core/apps/blehci
+$ newt target set myble2 build_profile=optimized
 </pre></div>
 
 
 <p><br></p>
-<p>This would tell Newt that for anything that resolves to the develop 
-branch, this repository requires the sterlys-little-repo repository. </p>
-<p>Dependencies are resolved circularly by the newt tool, and every dependent repository is placed as a sibling in the repos directory. Currently, if two repositories have the same name, they will conflict and bad things will happen.</p>
-<p>When a repository is installed to the repos/ directory, the current 
-version of that repository is written to the "project.state" file.  The 
-project state file contains the currently installed version of any given 
-repository.  This way, the current set of repositories can be recreated 
-from the project.state file reliably, whereas the project.yml file can 
-have higher level directives (i.e. include 0.8-stable.)</p>
-<h3 id="resolving-dependencies">Resolving dependencies</h3>
-<p>At the moment, all dependencies must match, otherwise newt will provide 
-an error.  As an example, if you have a set of dependencies such that:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">apache-mynewt-core depends on sterlys-little-repo 0.6-stable
-apache-mynewt-core depends on sterlys-big-repo 0.5.1
-sterlys-big-repo-0.5.1 depends on sterlys-little-repo 0.6.2
+<p>Check that the targets are defined correctly.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show
+   targets/my_blinky_sim
+       app=apps/blinky
+       bsp=@apache-mynewt-core/hw/bsp/native
+       build_profile=debug
+   targets/myble2
+       app=@apache-mynewt-core/apps/blehci
+       bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+       build_profile=optimized
+   targets/nrf52_boot
+       app=@apache-mynewt-core/apps/boot
+       bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+       build_profile=optimized
 </pre></div>
 
 
 <p><br></p>
-<p>where 0.6-stable is 0.6.3, the newt tool will try and resolve the dependency to 
-sterlys-little-repo.  It will notice that there are two conflicting 
-versions of the same repository, and not perform installation.</p>
-<p>In the future Newt will be smarter about loading in all dependencies, 
-and then looking to satisfy those dependencies to the best match of all 
-potential options.</p>
+<h3 id="build-targets">Build targets</h3>
+<p>Then build the two targets.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot
+&lt;snip&gt;
+App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
+$ newt build myble2
+Compiling hci_common.c
+Compiling util.c
+Archiving nimble.a
+Compiling os.c
+&lt;snip&gt;
+</pre></div>
+
+
+<p><br></p>
+<h3 id="create-the-app-image">Create the app image</h3>
+<p>Generate a signed application image for the <code>myble2</code> target. The version number is arbitrary.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image myble2 1.0.0
+App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
+Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
+</pre></div>
+
+
+<p><br></p>
+<h3 id="load-the-image">Load the image</h3>
+<p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load myble
+</pre></div>
+
+
+<p><br></p>
+<h3 id="establish-serial-connection">Establish serial connection</h3>
+<p>Attach a serial port to your board by connecting the USB TTL Serial Cable. This should create /dev/ttyUSB0 (or similar) on your machine. </p>
+<p><strong>Note</strong> Certain Linux OS versions have been observed to detect the nrf52 board as a mass storage device and the console access doesn’t work properly. In that case try powering the nrf52 board from your monitor or something other than your Linux computer/laptop when you set up the serial port for HCI communication.</p>
+<p><br></p>
+<h3 id="open-bluetooth-monitor-btmon">Open Bluetooth monitor btmon</h3>
+<p><code>btmon</code> is a BlueZ test tool to display all HCI commands and events in a human readable format. Start the btmon tool in a terminal window. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo btmon
+[sudo] password for admin: 
+Bluetooth monitor ver 5.37
+</pre></div>
+
+
+<p><br></p>
+<h3 id="attach-the-blehci-device-to-bluez">Attach the blehci device to BlueZ</h3>
+<p>In a different terminal, attach the blehci device to the BlueZ daemon (substitute the correct /dev filename for ttyUSB0).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo btattach -B /dev/ttyUSB0 -S 115200 
+Attaching BR/EDR controller to /dev/ttyUSB0
+Switched line discipline from 0 to 15
+Device index 1 attached
+</pre></div>
+
+
+<p><br></p>
+<h3 id="start-btmgmt-to-send-commands">Start btmgmt to send commands</h3>
+<p>In a third terminal, start btmgmt.  This tool allows you to send commands to the blehci controller. Use the index number that shows up when you <code>btattach</code> in the previous step.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo btmgmt --index 1
+[sudo] password for admin: 
+</pre></div>
+
+
+<p>Set your device address (you can substitute any static random address here).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[hci1]# static-addr cc:11:11:11:11:11
+Static address successfully set
+</pre></div>
+
+
+<p>Initialize the controller.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[hci1]# power on
+hci1 Set Powered complete, settings: powered le static-addr 
+</pre></div>
+
+
+<p>Begin scanning.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[hci1]# find -l
+Discovery started
+hci1 type 6 discovering on
+hci1 dev_found: 58:EF:77:C8:8D:17 type LE Random rssi -78 flags 0x0000 
+AD flags 0x06 
+eir_len 23
+&lt;snip&gt;
+</pre></div>
                         
                         <div class="row">
                             
@@ -541,16 +548,16 @@ potential options.</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../add_repos/>
+    <a href=../ibeacon/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Add repo to project
+        Previous: BLE iBeacon
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../upgrade_repo/>
-        Next: Upgrade a repo
+    <a href=../../os_user_guide/>
+        Next: OS User Guide
         <span class="fa fa-arrow-right"></span>
     </a>
     
