@@ -1,24 +1,24 @@
 ###Roadmap
 
 
-Release Version | Descriptor | Date |Features 
------------- | ------------- |------|-------
-0.9.0 | pre-GA release | May, 2016 | * Support images in external flash
-      |      |      | * HAL for Nordic nRF52, STMicro
-      |      |      | * Support for low power modes in multiple SoCs   
-      |      |      | * BLE 4.2: LE Secure Connections Pairing, including bonding
-      |      |      | * BLE 4.2: Host and Controller separation
-      |      |      | * BLE 4.2: Random private resolvable addresses
-0.10.0| pre-GA release | June, 2016 | * Test coverage improvements
-      |      |      | * System watchdog
-      |      |      | * Support for additional Arduino boards
-      |      |      | * BLE 4.2: Remote configuration, upgrade, factory reset over BLE 4.2
-      |      |      | * BLE 4.2: Factory reset
-      |      |      | * BLE 4.2: GATT based BLE profiles for Mynewt 
-      |      |      | * BLE 4.2: Configurability improvements 
-0.11.0|pre-GA release | July, 2016 | * Wi-Fi support
-      |      |      | * Add second scripting module
-      |      |      | * C++ friendly external header files
+Release Version |  Date |Features 
+------------ |------|-------
+0.9.0 |  May, 2016 | * Support images in external flash
+      |       | * HAL for Nordic nRF52, STMicro
+      |       | * Support for low power modes in multiple SoCs   
+      |       | * BLE 4.2: LE Secure Connections Pairing, including bonding
+      |       | * BLE 4.2: Host and Controller separation
+      |       | * BLE 4.2: Random private resolvable addresses
+0.10.0|  June, 2016 | * Test coverage improvements
+      |       | * System watchdog
+      |       | * Support for additional Arduino boards
+      |       | * BLE 4.2: Remote configuration, upgrade, factory reset over BLE 4.2
+      |       | * BLE 4.2: Factory reset
+      |       | * BLE 4.2: GATT based BLE profiles for Mynewt 
+      |       | * BLE 4.2: Configurability improvements 
+0.11.0| July, 2016 | * Wi-Fi support
+      |       | * Add second scripting module
+      |       | * C++ friendly external header files
  
 
 <font color="#F2853F"> The detailed roadmap is tracked on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel). </font>

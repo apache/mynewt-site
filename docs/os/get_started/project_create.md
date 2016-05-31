@@ -192,15 +192,21 @@ App successfully built: /Users/sterling/dev/tmp/my_app/bin/my_blinky_sim/apps/bl
 
 <br>
 
+### Run the Project
+
 You can run the simulated version of your project and see the simulated LED
 blink.
 
 ```
-./bin/my_blinky_sim/apps/blinky/blinky.elf
-hal_gpio set pin  1 to 0
+$ newt run my_blinky_sim
+No download script for BSP hw/bsp/native
+Debugging /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf
+<snip>
+Reading symbols from /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf...done.
+(gdb)
 ```
 
-Just press _ctrl-c_ to exit.
+Type `r` at the `(gdb)` prompt to run the project. You will see an output indicating that the `hal_gpio` pin is toggling between 1 and 0 in a simulated blink. 
 
 <br>
 
