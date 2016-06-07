@@ -25,54 +25,54 @@ The main.c file resides in the apps/blinky/src directory in your project folder 
 Replace the line:
 
 
-``
+```c
 int g_led_pin;
-``
+```
 
 With the line:
 
-``
+```c
 int g_led_pins[8] = {LED_BLINK_PIN_1, LED_BLINK_PIN_2, LED_BLINK_PIN_3, LED_BLINK_PIN_4, LED_BLINK_PIN_5, LED_BLINK_PIN_6, LED_BLINK_PIN_7, LED_BLINK_PIN_8};
-``
+```
 
 So that you now have an array of all 8 LED Pins on the board.
 
 Delete the line:
 
-``
+```c
 g_led_pin = LED_BLINK_PIN;
-``
+```
 
 And in its place, add the following lines to initialize all the LED_PINS correctly:
 
-``
+```c
 int x;
 for(x = 0; x < 8; x++){
     hal_gpio_init_out(g_led_pins[x], 1);
 }
 int p = 0;
-``
+```
 
 We'll use that 'p' later. Next you'll want to change the line:
 
-``
+```c
 os_time_delay(1000);
-``
+```
 
 to a shorter time in order to make it a little more interesting. A full 1 second delay doesn't look great, so try 100 for starters and then you can adjust it to your liking.
 
 Finally, change the line:
 
-``
+```c
 hal_gpio_toggle(g_led_pin);
-``
+```
 
 to look like this:
 
-``
+```c
 hal_gpio_toggle(g_led_pins[p++]);
 p = (p > 7) ? 0 : p;
-``
+```
 
 <br>
 
