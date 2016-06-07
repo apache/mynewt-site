@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/nRF52/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/pin-wheel-mods/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Blinky on nRF52 - Apache Mynewt</title>
+	<title>Pinwheel Blinky - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Blinky on nRF52">
+    <body class="Pinwheel Blinky">
 
 
         
@@ -219,14 +219,28 @@
     <li ><a href="../STM32F303/">Blinky on STM32F303</a>
   
   
+    <ul>
+          
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Pinwheel Blinky</a>
+    </li>
+
+              
+          
+    </ul>
+  
     </li>
 
               
           
               
                 
-    <li class="active">
-      <a href="./">Blinky on nRF52</a>
+    <li >
+      <a href="../nRF52/">Blinky on nRF52</a>
     </li>
 
               
@@ -418,15 +432,15 @@
     
     
         
-          <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
-        
-      
-        
           <li>&raquo; <a href="../arduino_zero/">Project Blinky</a></li>
         
       
+        
+          <li>&raquo; <a href="../STM32F303/">Blinky on STM32F303</a></li>
+        
       
-        <li>&raquo; Blinky on nRF52</li>
+      
+        <li>&raquo; Pinwheel Blinky</li>
       
     
     
@@ -435,153 +449,78 @@
                             </div>
                         </div>
                         
-                            <h2 id="blinky-your-hello-world-on-nrf52">Blinky, your "Hello World!", on nRF52</h2>
+                            <h2 id="pin-wheel-modifications-to-blinky-on-stm32f3-discovery">Pin Wheel Modifications to "Blinky" on STM32F3 Discovery</h2>
 <p><br></p>
 <h3 id="objective">Objective</h3>
-<p>Learn how to use packages from a default application repository of Mynewt to build your first <em>Hello World</em> application (Blinky) on a target board. Once built using the <em>newt</em> tool, this application will blink the LED lights on the target board.</p>
-<p>Create a project with a simple app that blinks an LED on the nRF52 board from Nordic Semiconductors.  Download the application to the target and watch it blink!</p>
-<p>Note that there are several versions of the nRF52 in the market. The boards tested with this tutorial are listed under "Hardware needed" below.</p>
+<p>Learn how to modify an existing app -- the <a href="../STM32F303/">blinky</a> app -- to light all the LEDs on the STM32F3 Discovery board. </p>
 <p><br></p>
-<h3 id="hardware-needed">Hardware needed</h3>
+<h3 id="what-you-need">What you need</h3>
 <ul>
-<li>nRF52 Development Kit (one of the following)<ul>
-<li>Preview Kit from Nordic - PCA 10036</li>
-<li>Dev Kit from Nordic - PCA 10040</li>
-<li>Eval Kit from Rigado - BMD-300-EVAL-ES</li>
-</ul>
-</li>
-<li>Laptop running Mac OS</li>
-<li>It is assumed you have already installed newt tool. </li>
-<li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
+<li>Discovery kit with STM32F303VC MCU</li>
+<li>Laptop running Mac OSX. </li>
+<li>It is assumed you have already installed and run the <a href="../STM32F303/">blinky</a> app succesfully.</li>
 </ul>
 <p><br></p>
-<h3 id="install-jlinkexe">Install jlinkEXE</h3>
-<p>In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from <a href="https://www.segger.com/jlink-software.html">https://www.segger.com/jlink-software.html</a>. </p>
+<p>Since you've already successfully created your blinky app project, you'll need to modify only one file, main.c, in order to get this app working.</p>
 <p><br></p>
-<h3 id="create-a-project">Create a project.</h3>
-<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
-<a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
-or just follow the commands below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
-    $ cd ~/dev
-    $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
-    Installing skeleton in myproj...
-    Project myproj successfully created.
+<p>The main.c file resides in the apps/blinky/src directory in your project folder so you can edit it with your favorite editor. You'll make the following changes:</p>
+<p><br></p>
+<p>Replace the line:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">g_led_pin</span>;
+</pre></div>
 
-    $ cd myproj
 
-    $ newt install -v 
-    apache-mynewt-core
-    Downloading repository description for apache-mynewt-core... success!
-    ...
-    apache-mynewt-core successfully installed version 0.7.9-none
+<p>With the line:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">g_led_pins</span>[<span style="color: #1C01CE">8</span>] <span style="color: #000000">=</span> {<span style="color: #000000">LED_BLINK_PIN_1</span>, <span style="color: #000000">LED_BLINK_PIN_2</span>, <span style="color: #000000">LED_BLINK_PIN_3</span>, <span style="color: #000000">LED_BLINK_PIN_4</span>, <span style="color: #000000">LED_BLINK_PIN_5</span>, <span style="color: #000000">LED_BLINK_PIN_6</span>, <span style="color: #000000">LED_BLINK_PIN_7</span>, <span style="color: #000000">LED_BLINK_PIN_8</span>};
+</pre></div>
+
+
+<p>So that you now have an array of all 8 LED Pins on the board.</p>
+<p>Delete the line:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
+</pre></div>
+
+
+<p>And in its place, add the following lines to initialize all the LED_PINS correctly:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">x</span>;
+<span style="color: #A90D91">for</span>(<span style="color: #000000">x</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>; <span style="color: #000000">x</span> <span style="color: #000000">&lt;</span> <span style="color: #1C01CE">8</span>; <span style="color: #000000">x++</span>){
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pins</span>[<span style="color: #000000">x</span>], <span style="color: #1C01CE">1</span>);
+}
+<span style="color: #A90D91">int</span> <span style="color: #000000">p</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+</pre></div>
+
+
+<p>We'll use that 'p' later. Next you'll want to change the line:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">1000</span>);
+</pre></div>
+
+
+<p>to a shorter time in order to make it a little more interesting. A full 1 second delay doesn't look great, so try 100 for starters and then you can adjust it to your liking.</p>
+<p>Finally, change the line:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pin</span>);
+</pre></div>
+
+
+<p>to look like this:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pins</span>[<span style="color: #000000">p++</span>]);
+<span style="color: #000000">p</span> <span style="color: #000000">=</span> (<span style="color: #000000">p</span> <span style="color: #000000">&gt;</span> <span style="color: #1C01CE">7</span>) <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">p</span>;
 </pre></div>
 
 
 <p><br></p>
-<h3 id="create-the-targets">Create the targets</h3>
-<p>Create two targets - one for the bootloader and one for the nrf52 board.  </p>
-<p><font color="#F2853F">
-Note: The correct bsp must be chosen for the board you are using. </font></p>
-<ul>
-<li>For the Nordic Preview Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52pdk (as shown below)</li>
-<li>For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)</li>
-<li>For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create blink_nordic
-$ newt target set blink_nordic app=apps/blinky
-<span style="background-color: #ffffcc">$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
-</span>$ newt target set blink_nordic build_profile=debug
-
-$ newt target create nrf52_boot
-$ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-<span style="background-color: #ffffcc">$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
-</span>$ newt target set nrf52_boot build_profile=optimized
-
-$ newt target show 
-targets/blink_nordic
-    app=apps/blinky
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
-    build_profile=debug
-targets/nrf52_boot
-    app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
-    build_profile=optimized
+<h3 id="build-the-target-and-executables-and-download-the-images">Build the target and executables and download the images</h3>
+<p>Run the same commands you used on the blinky app to build and load this one:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image stmf3_blinky 1.2.3
+App image successfully generated: ~/dev/myproj/bin/stmf3_blinky/apps/blinky/blinky.img
+Build manifest:~/dev/myproj/bin/stmf3_blinky/apps/blinky/manifest.json
+$ newt -v load stmf3_boot
+$ newt -v load stmf3_blinky
 </pre></div>
 
 
 <p><br></p>
-<h3 id="build-the-target-executables">Build the target executables</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot
-...
-Compiling log_shell.c
-Archiving log.a
-Linking boot.elf
-App successfully built: ~/dev/myproj/bin/nrf52_boot/apps/boot/boot.elf
-</pre></div>
-
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build blink_nordic
-...
-Compiling main.c
-Archiving blinky.a
-Linking blinky.elf
-App successfully built: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.elf
-</pre></div>
-
-
-<p><br></p>
-<h3 id="sign-and-create-the-blinky-application-image">Sign and create the blinky application image</h3>
-<p>You must sign and version your application image to download it using newt to the board. Use the newt create-image command to perform this action. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image blink_nordic 1.0.0
-App image successfully generated: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.img
-Build manifest: ~/dev/myproj/bin/blink_nordic/apps/blinky/manifest.json
-</pre></div>
-
-
-<p><br></p>
-<h3 id="connect-the-board">Connect the board</h3>
-<p>Connect the evaluation board via micro-USB to your PC via USB cable.</p>
-<p><br></p>
-<h3 id="download-to-the-target">Download to the target</h3>
-<p>Download the bootloader first and then the blinky executable to the target platform. Don't forget to reset the board if you don't see the LED blinking right away!</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load nrf52_boot
-$ newt -v load blink_nordic
-</pre></div>
-
-
-<p><br></p>
-<p><strong>Note:</strong> If you want to erase the flash and load the image again, you can use JLinkExe to issue an <code>erase</code> command.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ JLinkExe -device nRF52 -speed 4000 -if SWD
-SEGGER J-Link Commander V5.12c (Compiled Apr 21 2016 16:05:51)
-DLL version V5.12c, compiled Apr 21 2016 16:05:45
-
-Connecting to J-Link via USB...O.K.
-Firmware: J-Link OB-SAM3U128-V2-NordicSemi compiled Mar 15 2016 18:03:17
-Hardware version: V1.00
-S/N: 682863966
-VTref = 3.300V
-
-
-Type &quot;connect&quot; to establish a target connection, &#39;?&#39; for help
-J-Link&gt;erase
-Cortex-M4 identified.
-Erasing device (0;?i?)...
-Comparing flash   [100%] Done.
-Erasing flash     [100%] Done.
-Verifying flash   [100%] Done.
-J-Link: Flash download: Total time needed: 0.363s (Prepare: 0.093s, Compare: 0.000s, Erase: 0.262s, Program: 0.000s, Verify: 0.000s, Restore: 0.008s)
-Erasing done.
-J-Link&gt;exit
-$
-</pre></div>
-
-
-<h3 id="conclusion">Conclusion</h3>
-<p>You have created, setup, compiled, loaded, and ran your first mynewt application
-for an nrf52 board.</p>
-<p>We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on <a href="../unit_test/">writing a test suite</a> or try enabling additional functionality such as <a href="../project-target-slinky/">remote comms</a> or <a href="../bletiny_project/">Bluetooth Low Energy</a> on your current board.</p>
+<h3 id="watch-the-leds-go-round-and-round">Watch the LEDs go round and round</h3>
+<p>The colored LEDs should now all light up in succession, and once they're all lit, they should then go off in the same order. This should repeat continuously.</p>
 <p>If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our <a href="../../../community/">Community Page</a>.</p>
 <p>Keep on hacking and blinking!</p>
                         
@@ -593,16 +532,16 @@ for an nrf52 board.</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../pin-wheel-mods/>
+    <a href=../STM32F303/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Pinwheel Blinky
+        Previous: Blinky on STM32F303
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../blinky_sram_olimex/>
-        Next: Run Blinky from SRAM, no bootloader
+    <a href=../nRF52/>
+        Next: Blinky on nRF52
         <span class="fa fa-arrow-right"></span>
     </a>
     
