@@ -1,8 +1,8 @@
 ### Latest Apache Mynewt OS Release 
 
-* Release Version: Mynewt 0.8.0-incubating
-* Release Date: May 5, 2016
-* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating) 
+* Release Version: Mynewt 0.9.0-incubating
+* Release Date: June 6, 2016
+* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating) 
 
 
 #### Fresh install 
