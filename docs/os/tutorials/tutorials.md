@@ -4,10 +4,14 @@ If the introduction to Mynewt has piqued your interest and you want to familiari
 
 The full list of tutorials can be seen in the navigation bar on the left. New ones are being constantly added and will show up there automatically.
 
+<br>
+
 ###Prerequisites:
 
 * You have installed Docker container of Newt tool and toolchains or you have installed them natively on your machine
 * You have created a new project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](../get_started/project_create).
+
+<br>
 
 ###Tutorial categories:
 
@@ -19,16 +23,29 @@ The tutorials fall into a few broad categories. Some examples in each category a
     * [Blinky on STM32F3 discovery kit from ST Micro](STM32F303.md)
     * [Blinky on nRF52 Development Kit from Nordic Semiconductor](nRF52.md) **Note:** This supports BLE.
     
+    <br>
+    
+* Tweaking available apps to customize behavior e.g. making a more exciting LED blink pattern
+    * [Pinwheel Blinky on STM32F3 discovery board](pin-wheel-mods.md)
+    
+    <br>
+    
 * Navigating the code and adding functionality  
     * [Adding more repositories to your project](repo/add_repos.md)
     * [Adding a unit test for a package](unit_test.md)
     * [Adding task to manage multiple events](event_queue.md)
 
+<br>
+
 * Bluetooth Low Energy
     * [Running the example BLE app included in the repo](bletiny_project.md)
 
+<br>
+
 * Using NewtMgr 
     * [Enabling remote communication with a device running Mynewt OS](project-slinky.md)
+
+<br>
 
 
 **Send us an email on the dev@ mailing list if you have comments or suggestions!** If you haven't joined the mailing list, you will find the links [here](../../community.md).
