@@ -7,7 +7,7 @@
 
 #### Fresh install 
 
-If you are brand new to Mynewt, go to [Quick Start](http://127.0.0.1:8000/os/get_started/get_started/). The Newt tool will automatically download the latest release.
+If you are brand new to Mynewt, go to [Quick Start](os/get_started/get_started/). The Newt tool will automatically download the latest release.
 
 If you have already installed the Newt tool but not started any project yet, go to [Create Your First Project](http://mynewt.apache.org/os/get_started/project_create/). The Newt tool will automatically download the latest release.
 

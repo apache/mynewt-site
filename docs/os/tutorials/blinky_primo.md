@@ -12,17 +12,43 @@ Note that the Mynewt OS will run on the nRF52 chip in the Arduino Primo board. H
 
 <br>
 
-### Hardware needed
+### Hardware and Software needed
 
 * Arduino Primo
 * Laptop running Mac OS
-* [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html) - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)
-* [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems
 * A micro USB 2.0 cable to power the Arduino primo board
 * It is assumed you have already installed newt tool. 
 * It is assumed you already installed native tools as described [here](../get_started/native_tools.md)
+* Debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.
 
 <br>
+
+##### Option 1
+
+* [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html) - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)
+* [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems
+
+##### Option 2
+
+* No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download [here](downloads/openocd-wnrf52.tgz). Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:
+
+```
+$./configure --enable-cmsis-dap --enable-openjtag_ftdi --enable-jlink --enable-stlink
+```
+
+Then run `make` and `sudo make install`. This step takes minutes, so be patient.
+
+```
+$ openocd -v
+Open On-Chip Debugger 0.10.0-dev-snapshot (2016-05-20-10:43)
+Licensed under GNU GPL v2
+For bug reports, read
+    http://openocd.org/doc/doxygen/bugs.html
+```
+You can now use openocd to upload to Arduino Primo board via the USB port itself.
+
+<br>
+
 
 ### Install jlinkEXE 
 
@@ -147,6 +173,8 @@ Connect the Segger J-Link debug probe to the JTAG port on the Primo board using 
 ![J-Link debug probe to Arduino](pics/primo-jlink.jpg "Connecting J-Link debug probe to Arduino Primo")
         
 <br>
+
+**Note:** If you are going the OpenOCD route, you do not need to attach this connector. 
 
 ### Download to the target
 
