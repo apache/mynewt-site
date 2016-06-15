@@ -450,16 +450,39 @@
 <p>Create a project with a simple app that blinks an LED on the Arduino Primo board.  Download the application to the target and watch it blink!</p>
 <p>Note that the Mynewt OS will run on the nRF52 chip in the Arduino Primo board. However, the board support package for the Arduino Primo is different from the nRF52 dev kit board support package.</p>
 <p><br></p>
-<h3 id="hardware-needed">Hardware needed</h3>
+<h3 id="hardware-and-software-needed">Hardware and Software needed</h3>
 <ul>
 <li>Arduino Primo</li>
 <li>Laptop running Mac OS</li>
-<li><a href="https://www.segger.com/jlink-debug-probes.html">Segger J-Link Debug Probe</a> - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)</li>
-<li><a href="https://www.segger.com/jlink-adapters.html#CM_9pin">J-Link 9 pin Cortex-M Adapter</a> that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems</li>
 <li>A micro USB 2.0 cable to power the Arduino primo board</li>
 <li>It is assumed you have already installed newt tool. </li>
 <li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
+<li>Debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.</li>
 </ul>
+<p><br></p>
+<h5 id="option-1">Option 1</h5>
+<ul>
+<li><a href="https://www.segger.com/jlink-debug-probes.html">Segger J-Link Debug Probe</a> - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)</li>
+<li><a href="https://www.segger.com/jlink-adapters.html#CM_9pin">J-Link 9 pin Cortex-M Adapter</a> that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems</li>
+</ul>
+<h5 id="option-2">Option 2</h5>
+<ul>
+<li>No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download <a href="../downloads/openocd-wnrf52.tgz">here</a>. Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:</li>
+</ul>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$./configure --enable-cmsis-dap --enable-openjtag_ftdi --enable-jlink --enable-stlink
+</pre></div>
+
+
+<p>Then run <code>make</code> and <code>sudo make install</code>. This step takes minutes, so be patient.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ openocd -v
+Open On-Chip Debugger 0.10.0-dev-snapshot (2016-05-20-10:43)
+Licensed under GNU GPL v2
+For bug reports, read
+    http://openocd.org/doc/doxygen/bugs.html
+</pre></div>
+
+
+<p>You can now use openocd to upload to Arduino Primo board via the USB port itself.</p>
 <p><br></p>
 <h3 id="install-jlinkexe">Install jlinkEXE</h3>
 <p>In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from <a href="https://www.segger.com/jlink-software.html">https://www.segger.com/jlink-software.html</a>. </p>
@@ -562,6 +585,7 @@ App successfully built: ~/dev/myproj/bin/primoblinky/apps/blinky/blinky.elf
 <p>Connect the Segger J-Link debug probe to the JTAG port on the Primo board using the Jlink 9-pin adapter and cable. Note that there are two JTAG ports on the board. Use the one nearest to the reset button as shown in the picture. Also use a micro USB 2.0 cable to connect the Primo board to one of your laptop's USB host ports.</p>
 <p><img alt="J-Link debug probe to Arduino" src="../pics/primo-jlink.jpg" title="Connecting J-Link debug probe to Arduino Primo" /></p>
 <p><br></p>
+<p><strong>Note:</strong> If you are going the OpenOCD route, you do not need to attach this connector. </p>
 <h3 id="download-to-the-target">Download to the target</h3>
 <p>Download the bootloader first and then the blinky executable to the target platform. Don't forget to reset the board if you don't see the LED blinking right away. If the reset button doesn't work, powercycle the board!</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load primo_boot
