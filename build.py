@@ -41,6 +41,7 @@ def build(site_branch):
 
     mygit.checkout(site_branch)
     print "Building site pages from: %s..." % (site_branch)
+    sh.rm('-rf', 'site')
     sh.mkdocs('build', '--clean')
 
     for version in cfg['extra']['versions']:
