@@ -26,6 +26,7 @@ When a new release of MyNewt occurs, the git `develop` branch of this repository
     * `git checkout master`
 1. Create a new _stanza_ in `mkdocs.yml` to reflect the new version.
     * and update the `latest` flag, only one release should be marked latest.
+    * **and update version to match the new branch name.**
 1. Commit this change.
 1. Create a branch from master to reflect this new version.
 1. Run: `./build.py`
