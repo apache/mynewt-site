@@ -1,6 +1,7 @@
 ###Roadmap
 
 
+<<<<<<< HEAD
 Release Version |  Date |Features 
 ------------ |------|-------
 0.9.0 |  May, 2016 | * Support images in external flash
@@ -29,13 +30,10 @@ Release Version |  Date |Features
 
 The WISHLIST at the top of the roadmap on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel) features all the new ideas awaiting discussion and review. Once the community decides to go ahead with a request, it is scheduled into a release. Generally, effort is made to schedule a requested feature into a particular version no later than 6 weeks prior to the planned release date.
 
-If you have suggestions for a new feature, use case, or implementation improvements, file a JIRA ticket with Issue Type set to "Wish". Introduce it in the [dev@](dev@mynewt.incubator.apache.org) mailing list with a link to the JIRA ticket. This assumes you have signed up for an account on JIRA and submitted a request to the dev@ mailing list for your JIRA username to be added to the Apache Mynewt (MYNEWT) project. 
+If you have suggestions for a new feature, use case, or implementation improvements, file a JIRA ticket with Issue Type set to "Wish". Introduce it in the [dev@](dev@mynewt.incubator.apache.org) mailing list with a link to the JIRA ticket. This assumes you have signed up for an account on JIRA and submitted a request to the dev@ mailing list for your JIRA username to be added to the Apache Mynewt (MYNEWT) project.
 
 <br>
 
 ###FAQ
 
-<font color="#F2853F"> Questions? </font> Click [here](faq/answers.md)
-
-
-
+<font color="#F2853F"> Questions? </font> Click [here](/DOCSLINK/faq/answers)
