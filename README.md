@@ -32,5 +32,10 @@ When a new release of MyNewt occurs, the git `develop` branch of this repository
 1. Run: `./build.py`
 
 ### Test
+1. Run: `./serve.py`
+1. Visit http://localhost:8000
 
 ### Deploy
+1. Run: `./deploy.sh`
+1. This will leave you on the `asf-site` branch.
+1. Commit & push the changes.
