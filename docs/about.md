@@ -35,4 +35,4 @@ If you have suggestions for a new feature, use case, or implementation improveme
 
 ###FAQ
 
-<font color="#F2853F"> Questions? </font> Click [here](http://mynewt.apache.org/latest/faq/answers)
+<font color="#F2853F"> Questions? </font> Click [here](/DOCSLINK/faq/answers)

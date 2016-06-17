@@ -2,9 +2,9 @@ The Apache MyNewt site is built using [MkDocs](http://www.mkdocs.org/).
 
 ## Setup
 ### For all contributors:
-* Install MkDocs on your system.
+* Install [MkDocs](http://www.mkdocs.org/) on your system.
 
-### Additionally for mynewt-site committers:
+### Additionally for committers:
 * `pip install GitPython`
 * `pip install sh`
 
@@ -18,7 +18,7 @@ The Apache MyNewt site is built using [MkDocs](http://www.mkdocs.org/).
 1. Submit a pull request.
 
 ## Releasing a versioned set of MyNewt documentation
-When a new release of MyNewt occurs, the git `develop` branch of this repository should be in sync with that released version.
+When a new release of MyNewt OS and its associated tools occurs, the documentation in the git `develop` branch of this repository should be in sync with the released version. The following steps will create a documentation branch for the release and make it available as the default documentation from the mynewt-site.
 
 ### Build
 1. Merge `develop` to `master`.
@@ -39,3 +39,7 @@ When a new release of MyNewt occurs, the git `develop` branch of this repository
 1. Run: `./deploy.sh`
 1. This will leave you on the `asf-site` branch.
 1. Commit & push the changes.
+
+## Links to Documentation
+
+For the deployed site a version prefix is added to the URL for each mkdocs page. When developing there is no version prefix. If you want to link from a _site page_ to a _documentation page_ you should prefix the URL with */DOCSLINK/* so that the user is taken to the correct location when browsing in production.

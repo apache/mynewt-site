@@ -5,18 +5,18 @@ import click
 import sh
 from git import Repo, Git
 from mkdocs import config
+import fileinput
 
 @click.command()
 @click.option('-s', '--site-branch', default='master', help='Use this branch as source for the top level pages')
-@click.option('--dirty', default=False, is_flag=True, help='Allow outstanding modifications in the working directory')
 
-def build(site_branch, dirty):
+def build(site_branch):
 
     # make sure there are no local mods outstanding
     repo = Repo(os.getcwd())
-    if not dirty and (repo.is_dirty() or repo.untracked_files):
+    if repo.is_dirty() or repo.untracked_files:
         print "ERROR: Your working directory has outstanding changes."
-        print "If you are sure this is ok run again with --dirty."
+        print "Commit or stash them."
         return
 
     mygit = Git(os.getcwd())
@@ -40,16 +40,37 @@ def build(site_branch, dirty):
             return
 
     mygit.checkout(site_branch)
-    print "Building the top level site pages (from %s)..." % (site_branch)
+    print "Building site pages from: %s..." % (site_branch)
     sh.mkdocs('build', '--clean')
 
     for version in cfg['extra']['versions']:
         mygit.checkout(version['branch'])
-        print 'Building docs for: %s...' % (version['branch'])
-        sh.mkdocs('build', '--site-dir', 'site/%s' % (version['branch']))
-        if version['latest']:
-            print 'Building latest...'
-            sh.mkdocs('build', '--site-dir', 'site/latest')
+        deployVersion(version)
+
+def deployVersion(version):
+    mygit.checkout(version['branch'])
+    buildTo(version['branch'])
+    if version['latest']:
+        buildTo('latest')
+
+def buildTo(branch):
+    print 'Building doc pages for: %s...' % (branch)
+    branchCfg = config.load_config()
+    if branchCfg['extra']['version'] != branch:
+        updateConfigVersion(branch)
+    sh.mkdocs('build', '--site-dir', 'site/%s' % (branch))
+    if branchCfg['extra']['version'] != branch:
+        sh.git('checkout', '--', 'mkdocs.yml')
+
+def updateConfigVersion(branch):
+    updated = False
+    for line in fileinput.input('mkdocs.yml', inplace=True):
+        line = line.rstrip()
+        if line.find("    version:") == 0:
+            line = "    version: '%s'" % (branch)
+            updated = True
+        print line
+    assert updated, "Could not fix the version field on %s" % (branch)
 
 if __name__ == '__main__':
     repo = Repo(os.getcwd())
