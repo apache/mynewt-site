@@ -1,6 +1,5 @@
 ### Latest Apache Mynewt OS Release
 
-<<<<<<< HEAD
 * Release Version: Mynewt 0.9.0-incubating
 * Release Date: June 6, 2016
 * [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating) 
@@ -8,7 +7,6 @@
 
 #### Fresh install
 
-<<<<<<< HEAD
 If you are brand new to Mynewt, go to [Quick Start](os/get_started/get_started/). The Newt tool will automatically download the latest release.
 
 If you have already installed the Newt tool but not started any project yet, go to [Create Your First Project](/DOCSLINK/os/get_started/project_create/). The Newt tool will automatically download the latest release.
