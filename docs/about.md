@@ -1,7 +1,6 @@
 ###Roadmap
 
 
-<<<<<<< HEAD
 Release Version |  Date |Features 
 ------------ |------|-------
 0.9.0 |  May, 2016 | * Support images in external flash
