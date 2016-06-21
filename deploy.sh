@@ -11,6 +11,9 @@ fi
 echo Remove unwanted html templates
 find site -name "*.html" | xargs grep '{%.*%}' -l | xargs rm
 
+echo Copy extra static pages into site
+cp -a extras/ site/
+
 echo Change git branch to asf-site
 git checkout asf-site
 
@@ -25,4 +28,3 @@ echo --- You are now on the asf-site branch
 echo --- Review git diffs before committing
 echo ---
 git status
-
