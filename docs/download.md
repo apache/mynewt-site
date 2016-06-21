@@ -53,6 +53,7 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 
 ### Release Archives
 
+* Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating)
 * Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating)
 
 <br>
