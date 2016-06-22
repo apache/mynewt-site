@@ -28,6 +28,7 @@ Scheduler has a CPU architecture specific component; this code is responsible fo
 The functions available in context_switch are:
 
 | **Function** | **Description** |
+|-----------|-------------|
 | [os_sched](os_sched.md) | Performs context switch if needed. |
 | [os_arch_ctx_sw](os_arch_ctx_sw.md) | Change the state of task given task to *running*. |
 | [os_sched_ctx_sw_hook](os_sched_ctx_sw_hook.md) | Performs task accounting when context switching. |
