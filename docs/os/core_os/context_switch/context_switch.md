@@ -27,14 +27,16 @@ Scheduler has a CPU architecture specific component; this code is responsible fo
 
 The functions available in context_switch are:
 
-* [os_sched](os_sched.md)
-* [os_arch_ctx_sw](os_arch_ctx_sw.md)
-* [os_sched_ctx_sw_hook](os_sched_ctx_sw_hook.md)
-* [os_sched_get_current_task](os_sched_get_current_task.md)
-* [os_sched_insert](os_sched_insert.md)
-* [os_sched_next_task](os_sched_next_task.md)
-* [os_sched_os_timer_exp](os_sched_os_timer_exp.md)
-* [os_sched_resort](os_sched_resort.md)
-* [os_sched_set_current_task](os_sched_set_current_task.md)
-* [os_sched_sleep](os_sched_sleep.md)
-* [os_sched_wakeup](os_sched_wakeup.md)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_sched](os_sched.md) | Performs context switch if needed. |
+| [os_arch_ctx_sw](os_arch_ctx_sw.md) | Change the state of task given task to *running*. |
+| [os_sched_ctx_sw_hook](os_sched_ctx_sw_hook.md) | Performs task accounting when context switching. |
+| [os_sched_get_current_task](os_sched_get_current_task.md) | Returns the pointer to task which is currently *running*. |
+| [os_sched_insert](os_sched_insert.md) | Insert task into scheduler's ready to run list. |
+| [os_sched_next_task](os_sched_next_task.md) | Returns the pointer to highest priority task from the list which are *ready to run*. |
+| [os_sched_os_timer_exp](os_sched_os_timer_exp.md) | Inform scheduler that OS time has moved forward. |
+| [os_sched_resort](os_sched_resort.md) | Inform scheduler that the priority of the given task has changed and the *ready to run* list should be re-sorted. |
+| [os_sched_set_current_task](os_sched_set_current_task.md) | Sets the given task to *running*. |
+| [os_sched_sleep](os_sched_sleep.md) | The given task's state is changed from *ready to run* to *sleeping*. |
+| [os_sched_wakeup](os_sched_wakeup.md) | Called to make task *ready to run*. If task is *sleeping*, it is woken up. |
