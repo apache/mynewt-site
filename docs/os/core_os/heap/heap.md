@@ -17,9 +17,11 @@ N/A
 
 The functions available in heap are:
 
-* [os_free](os_free)
-* [os_malloc](os_malloc)
-* [os_realloc](os_realloc)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_free](os_free) | Frees previously allocated memory back to the heap. |
+| [os_malloc](os_malloc) | Allocates the given number of bytes from heap and returns a pointer to it. |
+| [os_realloc](os_realloc) | Tries to resize previously allocated memory block, and returns pointer to resized memory. |
 
 
 
