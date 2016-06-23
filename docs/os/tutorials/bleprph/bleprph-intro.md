@@ -17,8 +17,8 @@ code.  This document builds on some concepts described elsewhere in the Apache
 Mynewt documentation.  Before proceeding with this tutorial, you might want to
 familiarize yourself with the following pages:
 
-* [Create Your First Mynewt Project](../get_started/project_create/)
-* [NimBLE Stack Initialization](../../network/ble/ini_stack/ble_ini_intro/)
+* [Create Your First Mynewt Project](../../get_started/project_create/)
+* [NimBLE Stack Initialization](../../../network/ble/ini_stack/ble_ini_intro/)
 
 <br>
 
