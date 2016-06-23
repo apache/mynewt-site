@@ -14,7 +14,9 @@ Note that no added descriptions on how to use the msys API are presented here (o
 
 The functions available in msys are:
 
-* [os_msys_get](os_msys_get.md)
-* [os_msys_get_pkthdr](os_msys_get_pkthdr.md)
-* [os_msys_register](os_msys_register.md)
-* [os_msys_reset](os_msys_reset.md)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_msys_get](os_msys_get.md) | Retrieve an mbuf from the system mbuf pools with the given number of bytes available in the mbuf. |
+| [os_msys_get_pkthdr](os_msys_get_pkthdr.md) | Retrieve a packet header mbuf from the system mbuf pools with the given number of bytes available for the user header in the mbuf. |
+| [os_msys_register](os_msys_register.md) | Register an mbuf pool for use as a system mbuf pool. |
+| [os_msys_reset](os_msys_reset.md) | Resets msys module. |

@@ -187,8 +187,10 @@ struct os_sanity_check {
 
 The functions available in sanity are:
 
-* [os_sanity_check_init](os_sanity_check_init.md)
-* [os_sanity_check_register](os_sanity_check_register.md)
-* [os_sanity_check_reset](os_sanity_check_reset.md)
-* [os_sanity_task_checkin](os_sanity_task_checkin.md)
-* [os_sanity_task_init](os_sanity_task_init.md)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_sanity_check_init](os_sanity_check_init.md) | Initialize the given sanity check. |
+| [os_sanity_check_register](os_sanity_check_register.md) | Register the given sanity check with the sanity task. |
+| [os_sanity_check_reset](os_sanity_check_reset.md) | Reset the given sanity check. |
+| [os_sanity_task_checkin](os_sanity_task_checkin.md) | Informs the sanity task that the given task is still alive and working normally. |
+| [os_sanity_task_init](os_sanity_task_init.md) | Initialize the os sanity task. |

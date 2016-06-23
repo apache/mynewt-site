@@ -53,9 +53,11 @@ Callout timer fires out just once. For periodic timer type of operation you need
 
 The functions available in callout are:
 
-* [os_callout_func_init](os_callout_func_init)
-* [os_callout_init](os_callout_init)
-* [os_callout_queued](os_callout_queued)
-* [os_callout_reset](os_callout_reset)
-* [os_callout_stop](os_callout_stop)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_callout_func_init](os_callout_func_init) | Initializes the given callout function struct. |
+| [os_callout_init](os_callout_init) | Initializes the given callout struct. |
+| [os_callout_queued](os_callout_queued) | Checks whether the given callout has been armed. |
+| [os_callout_reset](os_callout_reset) | Resets the callout to happen in the given number of OS ticks. |
+| [os_callout_stop](os_callout_stop) | Disarms a timer. |
 
