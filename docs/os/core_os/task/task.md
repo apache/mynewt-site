@@ -220,6 +220,7 @@ struct os_task_info {
 ## List of Functions
 
 The functions available in task are:
+
 | **Function** | **Description** |
 |-----------|-------------|
 | [os_task_init](os_task_init.md) | Called to create a task. This adds the task object to the list of ready to run tasks. |
