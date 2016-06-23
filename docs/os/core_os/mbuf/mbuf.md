@@ -220,14 +220,14 @@ The functions/macros available in mbuf are:
 
 | **Function/Macro** | **Description** |
 |-----------|-------------|
-| [OS_MBUF_PKTHDR](OS_MBUF_PKTHDR.md) | Macro used to get a pointer to the os mbuf packet header of an mbuf. |
-| [OS_MBUF_PKTHDR_TO_MBUF](OS_MBUF_PKTHDR_TO_MBUF.md) | Macro used to get a pointer to the mbuf given a pointer to the os mbuf packet header. |
-| [OS_MBUF_PKTLEN](OS_MBUF_PKTLEN.md) | Macro used to get the length of an entire mbuf chain. |
-| [OS_MBUF_DATA](OS_MBUF_DATA.md) | Macro used to cast the data pointer of an mbuf to a given type. |
-| [OS_MBUF_USRHDR](OS_MBUF_USRHDR.md) | Macro used to get a pointer to the user packet header of an mbuf. |
-| [OS_MBUF_USRHDR_LEN](OS_MBUF_USRHDR_LEN.md) | Macro used to retrieve the length of the user packet header in an mbuf. |
-| [OS_MBUF_LEADINGSPACE](OS_MBUF_LEADINGSPACE.md) | Macro used to get the amount of leading space in an mbuf (in bytes). |
-| [OS_MBUF_TRAILINGSPACE](OS_MBUF_TRAILINGSPACE.md) | Macro used to get the amount of trailing space in an mbuf (in bytes). |
+| [OS_MBUF_PKTHDR](OS_MBUF_PKTHDR.md) | Get a pointer to the os mbuf packet header of an mbuf. |
+| [OS_MBUF_PKTHDR_TO_MBUF](OS_MBUF_PKTHDR_TO_MBUF.md) | Get a pointer to the mbuf given a pointer to the os mbuf packet header. |
+| [OS_MBUF_PKTLEN](OS_MBUF_PKTLEN.md) | Get the length of an entire mbuf chain. |
+| [OS_MBUF_DATA](OS_MBUF_DATA.md) | Cast the data pointer of an mbuf to a given type. |
+| [OS_MBUF_USRHDR](OS_MBUF_USRHDR.md) | Get a pointer to the user packet header of an mbuf. |
+| [OS_MBUF_USRHDR_LEN](OS_MBUF_USRHDR_LEN.md) | Retrieve the length of the user packet header in an mbuf. |
+| [OS_MBUF_LEADINGSPACE](OS_MBUF_LEADINGSPACE.md) | Get the amount of leading space in an mbuf (in bytes). |
+| [OS_MBUF_TRAILINGSPACE](OS_MBUF_TRAILINGSPACE.md) | Get the amount of trailing space in an mbuf (in bytes). |
 | [os_mbuf_adj](os_mbuf_adj.md) | Trims the given number of bytes from either the head (if positive) or tail (if negative) of an mbuf chain. |
 | [os_mbuf_append](os_mbuf_append.md) | Appends a data buffer of the given length to the end of an mbuf chain. |
 | [os_mbuf_concat](os_mbuf_concat.md) | Attaches a second mbuf chain onto the end of the first. |
