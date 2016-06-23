@@ -46,11 +46,13 @@ struct os_timezone IST = { -330, 0 };
 
 The functions available in time are:
 
-* [os_time_delay](os_time_delay.md)
-* [os_time_get](os_time_get.md)
-* [os_time_tick](os_time_tick.md)
-* [os_settimeofday](os_settimeofday.md)
-* [os_gettimeofday](os_gettimeofday.md)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_time_delay](os_time_delay.md) | Put the current task to sleep for the given number of ticks. |
+| [os_time_get](os_time_get.md) | Get the current value of OS time. |
+| [os_time_tick](os_time_tick.md) | Increments the OS time tick for the system. |
+| [os_settimeofday](os_settimeofday.md) | Set the current time of day to the given time structs. |
+| [os_gettimeofday](os_gettimeofday.md) | Populate the given timeval and timezone structs with current time data. |
 
 ## List of Macros
 
