@@ -58,8 +58,10 @@ struct os_eventq {
 
 The functions available in event queue feature are:
 
-* [os_eventq_get](os_eventq_get.md)
-* [os_eventq_init](os_eventq_init.md)
-* [os_eventq_put](os_eventq_put.md)
-* [os_eventq_remove](os_eventq_remove.md)
+| **Function** | **Description** |
+|---------|-------------|
+| [os_eventq_get](os_eventq_get.md) | Fetches the first event from a queue. Task will sleep until something gets queued. |
+| [os_eventq_init](os_eventq_init.md) | Initializes the given event queue, making it ready for use. |
+| [os_eventq_put](os_eventq_put.md) | Queues an event to tail of the event queue. |
+| [os_eventq_remove](os_eventq_remove.md) | Removes an event which has been placed in a queue. |
 

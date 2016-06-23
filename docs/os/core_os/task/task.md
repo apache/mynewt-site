@@ -221,6 +221,8 @@ struct os_task_info {
 
 The functions available in task are:
 
-* [os_task_init](os_task_init.md)
-* [os_task_count](os_task_count.md)
-* [os_task_info_get_next](os_task_info_get_next.md)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_task_init](os_task_init.md) | Called to create a task. This adds the task object to the list of ready to run tasks. |
+| [os_task_count](os_task_count.md) | Returns the number of tasks that have been created. |
+| [os_task_info_get_next](os_task_info_get_next.md) | Populates the os task info structure given with task information. |

@@ -90,7 +90,9 @@ struct os_mqueue {
 
 The functions available in Mqueue are:
 
-* [os_mqueue_init](os_mqueue_init.md)
-* [os_mqueue_get](os_mqueue_get.md)
-* [os_mqueue_put](os_mqueue_put.md)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_mqueue_init](os_mqueue_init.md) | Initializes an mqueue. |
+| [os_mqueue_get](os_mqueue_get.md) | Retrieves a packet off an Mqueue. |
+| [os_mqueue_put](os_mqueue_put.md) | Adds a packet (i.e. packet header mbuf) to an mqueue. |
 
