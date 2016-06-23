@@ -41,7 +41,9 @@ struct os_mutex
 
 The functions available in this OS feature are:
 
-* [os_mutex_init](os_mutex_init)
-* [os_mutex_pend](os_mutex_pend)
-* [os_mutex_release](os_mutex_release)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_mutex_init](os_mutex_init) | Initialize the mutex. Must be called before the mutex can be used. |
+| [os_mutex_pend](os_mutex_pend) | Acquire ownership of a mutex. |
+| [os_mutex_release](os_mutex_release) | Release ownership of a mutex. |
 
