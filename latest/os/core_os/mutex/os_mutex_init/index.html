@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/mutex/mutex/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/mutex/os_mutex_init/">
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>toc - Apache Mynewt</title>
+	<title>os_mutex_init - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="toc">
+    <body class="os_mutex_init">
 
 
         
@@ -298,7 +298,7 @@
                 
   
   
-    <li class="active"><a href="./">Mutexes</a>
+    <li ><a href="../mutex/">Mutexes</a>
   
   
     <ul>
@@ -310,9 +310,37 @@
   
   
     <li><a href="
-  ../os_mutex_init/
+  ./
 ">Functions</a>
   
+  
+    <ul>
+          
+              
+                
+    <li class="active">
+      <a href="./">os_mutex_init</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../os_mutex_pend/">os_mutex_pend</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../os_mutex_release/">os_mutex_release</a>
+    </li>
+
+              
+          
+    </ul>
   
     </li>
 
@@ -607,17 +635,19 @@
                             <div class="col-sm-12">
                                 <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
-    <li><a href="/v0_9_0/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
-          <li>&raquo; <a href="../../mynewt_os/">OS Core</a></li>
+          <li>&raquo; <a href="../mutex/">Mutexes</a></li>
         
       
         
-          <li>&raquo; Mutexes</li>
+          <li>&raquo; Functions</li>
         
       
+      
+        <li>&raquo; os_mutex_init</li>
       
     
     
@@ -626,80 +656,41 @@
                             </div>
                         </div>
                         
-                            <h1 id="mutex">Mutex</h1>
-<p>Mutex is short for "mutual exclusion"; a mutex provides mutually exclusive access to a shared resource. A mutex provides <em>priority inheritance</em> in order to prevent <em>priority inversion</em>. Priority inversion occurs when a higher priority task is waiting on a resource owned by a lower priority task. Using a mutex, the lower priority task will inherit the highest priority of any task waiting on the mutex. </p>
-<h3 id="description">Description</h3>
-<p>The first order of business when using a mutex is to declare the mutex globally. The mutex needs to be initialized before it is used (see the examples). It is generally a good idea to initialize the mutex before tasks start running in order to avoid a task possibly using the mutex before it is initialized.</p>
-<p>When a task wants exclusive access to a shared resource it needs to obtain the mutex by calling <em>os_mutex_pend</em>. If the mutex is currently owned by a different task (a lower priority task), the requesting task will be put to sleep and the owners priority will be elevated to the priority of the requesting task. Note that multiple tasks can request ownership and the current owner is elevated to the highest priority of any task waitin on the mutex. When the task is done using the shared resource, it needs to release the mutex by called <em>os_mutex_release</em>. There needs to be one release per call to pend. Note that nested calls to <em>os_mutex_pend</em> are allowed but there needs to be one release per pend.</p>
-<p>The following example will illustrate how priority inheritance works. In this example, the task number is the same as its priority. Remember that the lower the number, the higher the priority (i.e. priority 0 is higher priority than priority 1). Suppose that task 5 gets ownership of a mutex but is preempted by task 4. Task 4 attempts to gain ownership of the mutex but cannot as it is owned by task 5. Task 4 is put to sleep and task 5 is temporarily raised to priority 4. Before task 5 can release the mutex, task 3 runs and attempts to acquire the mutex. At this point, both task 3 and task 4 are waiting on the mutex (sleeping). Task 5 now runs at priority 3 (the highest priority of all the tasks waiting on the mutex). When task 5 finally releases the mutex it will be preempted as two higher priority tasks are waiting for it. </p>
-<p>Note that when multiple tasks are waiting on a mutex owned by another task, once the mutex is released the highest priority task waiting on the mutex is run. </p>
-<h3 id="data-structures">Data structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mutex</span>
-{
-    <span style="color: #000000">SLIST_HEAD</span>(, <span style="color: #000000">os_task</span>) <span style="color: #000000">mu_head</span>;
-    <span style="color: #A90D91">uint8_t</span>     <span style="color: #000000">_pad</span>;
-    <span style="color: #A90D91">uint8_t</span>     <span style="color: #000000">mu_prio</span>;
-    <span style="color: #A90D91">uint16_t</span>    <span style="color: #000000">mu_level</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*mu_owner</span>;
-};
+                            <h2 id="os_mutex_init"><font color="#F2853F" style="font-size:24pt">os_mutex_init</font></h2>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">os_error_t</span> <span style="color: #000000">os_mutex_init</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mutex</span> <span style="color: #000000">*mu</span>)
 </pre></div>
 
 
+<p>Initialize the mutex. Must be called before the mutex can be used.</p>
+<h4 id="arguments">Arguments</h4>
 <table>
 <thead>
 <tr>
-<th>Element</th>
+<th>Arguments</th>
 <th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>mu_head</td>
-<td>Queue head for list of tasks waiting on mutex</td>
-</tr>
-<tr>
-<td>_pad</td>
-<td>Padding</td>
-</tr>
-<tr>
-<td>mu_prio</td>
-<td>Default priority of owner of mutex. Used to reset priority of task when mutex released</td>
-</tr>
-<tr>
-<td>mu_level</td>
-<td>Call nesting level (for nested calls)</td>
-</tr>
-<tr>
-<td>mu_owner</td>
-<td>Pointer to task structure which owns mutex</td>
+<td>*mu</td>
+<td>Pointer to mutex</td>
 </tr>
 </tbody>
 </table>
-<h3 id="list-of-functions">List of Functions</h3>
-<p><List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the words of the heading need to be connected with a dash for the anchor to work. Hence the word "function" and the function name is connected with a dash, not underscore! And the header has to have at least 2 words for the anchor to work - that's how it is.></p>
-<p>The functions available in this OS feature are:</p>
-<table>
-<thead>
-<tr>
-<th><strong>Function</strong></th>
-<th><strong>Description</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="../os_mutex_init">os_mutex_init</a></td>
-<td>Initialize the mutex. Must be called before the mutex can be used.</td>
-</tr>
-<tr>
-<td><a href="../os_mutex_pend">os_mutex_pend</a></td>
-<td>Acquire ownership of a mutex.</td>
-</tr>
-<tr>
-<td><a href="../os_mutex_release">os_mutex_release</a></td>
-<td>Release ownership of a mutex.</td>
-</tr>
-</tbody>
-</table>
+<h4 id="returned-values">Returned values</h4>
+<p>OS_INVALID_PARM: returned when *mu is NULL on entry.</p>
+<p>OS_OK: mutex initialized successfully.</p>
+<h4 id="notes">Notes</h4>
+<p><Any special feature/special benefit that we want to tout. 
+Does it need to be used with some other specific functions?
+Any caveats to be careful about (e.g. high memory requirements).></p>
+<h4 id="example">Example</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mutex</span> <span style="color: #000000">g_mutex1</span>;
+<span style="color: #A90D91">os_error_t</span> <span style="color: #000000">err</span>;
+
+<span style="color: #000000">err</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mutex_init</span>(<span style="color: #000000">&amp;g_mutex1</span>);
+<span style="color: #000000">assert</span>(<span style="color: #000000">err</span> <span style="color: #000000">==</span> <span style="color: #000000">OS_OK</span>);
+</pre></div>
                         
                         <div class="row">
                             
@@ -709,16 +700,16 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../semaphore/os_sem_release/>
+    <a href=../mutex/>
         <span class="fa fa-arrow-left"></span>
-        Previous: os_sem_release
+        Previous: Mutexes
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../os_mutex_init/>
-        Next: os_mutex_init
+    <a href=../os_mutex_pend/>
+        Next: os_mutex_pend
         <span class="fa fa-arrow-right"></span>
     </a>
     
