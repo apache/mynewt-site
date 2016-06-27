@@ -418,6 +418,7 @@ newt command is in your system path. </li>
 <li>You must have Internet connectivity to fetch remote Mynewt components.</li>
 <li>You must <a href="../../get_started/native_tools/">install the compiler tools</a> to 
 support native compiling to build the project this tutorial creates.  </li>
+<li>You must install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK package</a> to load your project on the board.</li>
 <li>You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.</li>
 <li>Cable to establish a serial USB connection between the board and the laptop</li>
 </ul>
@@ -456,7 +457,7 @@ targets/nrf52_boot
 
 
 <p><br></p>
-<p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively). </p>
+<p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52pdk version). </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
 Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
@@ -468,7 +469,7 @@ Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
 </pre></div>
 
 
-<p>Use the same <code>newt target set</code> command to set the following definition for the bootloader target.</p>
+<p>Use the same <code>newt target set</code> command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
@@ -520,13 +521,14 @@ Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
 <p><br></p>
 <h3 id="load-the-image">Load the image</h3>
 <p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load myble
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_boot
+$ newt load myble
 </pre></div>
 
 
 <p><br></p>
 <h3 id="establish-serial-connection">Establish serial connection</h3>
-<p>You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up.</p>
+<p>You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up. Pin PA.08 is RX and pin PA.06 is TX. Make sure TX from the NRF52 goes to RX on your Serial board, and that RX on the NRF52 goes to TX on your Serial Board.</p>
 <p><img alt="nRF52" src="../pics/nrf52.JPG" title="nRF52 Dev Board with a Serial Connection set up" /></p>
 <p><br></p>
 <p>You may use any terminal emulation program to communicate with the board. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your laptop, of course.</p>
@@ -604,6 +606,50 @@ GAP procedure initiated: discovery; disc_mode=2 filter_policyLE advertising repo
 5301327:[ts=5301327ssb, mod=64 level=2]     svc_data_uuid16=
 &lt;snip&gt;
 </pre></div>
+
+
+<p><br></p>
+<p>If you're still not seeing any output from the device, try running the debugger and see if you are seeing the program execute properly. </p>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt debug myble
+Debugging ./bin/myble/apps/bletiny/bletiny.elf
+GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20140731-cvs
+Copyright (C) 2013 Free Software Foundation, Inc.
+
+License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;
+and &quot;show warranty&quot; for details.
+This GDB was configured as &quot;--host=x86_64-apple-darwin10 --target=arm-none-eabi&quot;.
+For bug reporting instructions, please see:
+&lt;http://www.gnu.org/software/gdb/bugs/&gt;...
+Reading symbols from ./bin/myble/apps/bletiny/bletiny.elf...done.
+0x00002f08 in ?? ()
+(gdb) monitor reset
+Resetting target
+(gdb) c
+Continuing.
+^C
+Program received signal SIGTRAP, Trace/breakpoint trap.
+os_tick_idle (ticks=1000) at hal_os_tick.c:117
+117     if (ticks &gt; 0) {
+(gdb) p g_os_time
+$1 = 37991
+(gdb) c
+Continuing.
+^C
+Program received signal SIGTRAP, Trace/breakpoint trap.
+os_tick_idle (ticks=1000) at hal_os_tick.c:117
+117     if (ticks &gt; 0) {
+(gdb) p g_os_time
+$2 = 51888
+(gdb) c
+Continuing.
+</pre></div>
+
+
+<p><br></p>
+<p>You should see the g_os_time advancing as above, as each os time tick is 1ms. If the system ticks aren't advancing, then nothing's actually running.</p>
                         
                         <div class="row">
                             
