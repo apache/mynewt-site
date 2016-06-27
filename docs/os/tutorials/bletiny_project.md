@@ -13,6 +13,7 @@ newt command is in your system path.
 * You must have Internet connectivity to fetch remote Mynewt components.
 * You must [install the compiler tools](../get_started/native_tools.md) to 
 support native compiling to build the project this tutorial creates.  
+* You must install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
 * You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
 * Cable to establish a serial USB connection between the board and the laptop
 
@@ -58,7 +59,7 @@ targets/nrf52_boot
 
 <br>
 
-Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively). 
+Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52pdk version). 
 
 ```
 $ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
@@ -71,7 +72,7 @@ $ newt target set myble cflags=-DSTATS_NAME_ENABLE
 Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
 ```
 
-Use the same `newt target set` command to set the following definition for the bootloader target.
+Use the same `newt target set` command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..
 
 ```
 targets/nrf52_boot
@@ -79,6 +80,7 @@ targets/nrf52_boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
 ```
+
 You should have the following targets by the end of this step.
 
 ```
@@ -133,6 +135,7 @@ Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
 Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.
 
 ```
+$ newt load nrf52_boot
 $ newt load myble
 ```
 
@@ -140,7 +143,7 @@ $ newt load myble
 
 ### Establish serial connection
 
-You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up.
+You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up. Pin PA.08 is RX and pin PA.06 is TX. Make sure TX from the NRF52 goes to RX on your Serial board, and that RX on the NRF52 goes to TX on your Serial Board.
 
 ![nRF52](pics/nrf52.JPG "nRF52 Dev Board with a Serial Connection set up")
 
@@ -232,3 +235,50 @@ GAP procedure initiated: discovery; disc_mode=2 filter_policyLE advertising repo
 5301327:[ts=5301327ssb, mod=64 level=2]     svc_data_uuid16=
 <snip>
 ```
+
+<br>
+
+If you're still not seeing any output from the device, try running the debugger and see if you are seeing the program execute properly. 
+
+<br>
+
+```
+$ newt debug myble
+Debugging ./bin/myble/apps/bletiny/bletiny.elf
+GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20140731-cvs
+Copyright (C) 2013 Free Software Foundation, Inc.
+
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "--host=x86_64-apple-darwin10 --target=arm-none-eabi".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from ./bin/myble/apps/bletiny/bletiny.elf...done.
+0x00002f08 in ?? ()
+(gdb) monitor reset
+Resetting target
+(gdb) c
+Continuing.
+^C
+Program received signal SIGTRAP, Trace/breakpoint trap.
+os_tick_idle (ticks=1000) at hal_os_tick.c:117
+117	    if (ticks > 0) {
+(gdb) p g_os_time
+$1 = 37991
+(gdb) c
+Continuing.
+^C
+Program received signal SIGTRAP, Trace/breakpoint trap.
+os_tick_idle (ticks=1000) at hal_os_tick.c:117
+117	    if (ticks > 0) {
+(gdb) p g_os_time
+$2 = 51888
+(gdb) c
+Continuing.
+```
+
+<br>
+
+You should see the g_os_time advancing as above, as each os time tick is 1ms. If the system ticks aren't advancing, then nothing's actually running.
