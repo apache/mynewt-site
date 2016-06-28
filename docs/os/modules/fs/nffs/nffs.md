@@ -101,16 +101,20 @@ extern struct nffs_config nffs_config;
 
 The `fs/nffs` package exposes the following data structures:
 
-* [struct nffs\_area\_desc](nffs_area_desc.md)
-* [struct nffs\_config](nffs_config.md)
+| Struct | Description |
+|---------|-------------|
+| [struct nffs\_area\_desc](nffs_area_desc.md) | Descriptor for a single nffs area. |
+| [struct nffs\_config](nffs_config.md) | Configuration struct for nffs. |
 
 ###API
 
 The functions available in this OS feature are:
 
-* [nffs\_detect](nffs_detect.md)
-* [nffs\_format](nffs_format.md)
-* [nffs\_init](nffs_init.md)
+| Function | Description |
+|---------|-------------|
+| [nffs\_detect](nffs_detect.md) | Searches for a valid nffs file system among the specified areas. |
+| [nffs\_format](nffs_format.md) | rases all the specified areas and initializes them with a clean nffs file system. |
+| [nffs\_init](nffs_init.md) | Initializes internal nffs memory and data structures. |
 
 ###Miscellaneous measures
 

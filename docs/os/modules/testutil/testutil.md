@@ -82,10 +82,12 @@ This should be populated before `tu_init()` is called.
 
 The functions, and macros available in `testutil` are:
 
-* [tu_init](tu_init.md)
-* [TEST_ASSERT](test_assert.md)
-* [TEST_PASS](test_pass.md)
-* [TEST_SUITE](test_suite.md)
-* [TEST_CASE](test_case.md)
-* [TEST_CASE_DECL](test_decl.md)
-* [tu_restart](tu_restart.md)
+| Function | Description |
+|---------|-------------|
+| [tu_init](tu_init.md) | Initializes the test framework according to the contents of the tu_config struct. |
+| [TEST_ASSERT](test_assert.md) | Asserts that the specified condition is true. |
+| [TEST_PASS](test_pass.md) | Reports a success result for the current test. |
+| [TEST_SUITE](test_suite.md) | Declares a test suite function. |
+| [TEST_CASE](test_case.md) | Defines a test case function. |
+| [TEST_CASE_DECL](test_decl.md) | Declares a test case function. his is only required if the test case function exists in a different file than the test suite. |
+| [tu_restart](tu_restart.md) | This function is used when a system reset is necessary to proceed with testing. |
