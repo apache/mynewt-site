@@ -84,23 +84,28 @@ Functions in `fs/fs` that indicate success or failure do so with the following s
 
 The functions available in this OS feature are:
 
-* [fs\_close](fs_close.md)
-* [fs\_closedir](fs_closedir.md)
-* [fs\_dirent\_is\_dir](fs_dirent_is_dir.md)
-* [fs\_dirent\_name](fs_dirent_name.md)
-* [fs\_filelen](fs_filelen.md)
-* [fs\_getpos](fs_getpos.md)
-* [fs\_mkdir](fs_mkdir.md)
-* [fs\_open](fs_open.md)
-* [fs\_opendir](fs_opendir.md)
-* [fs\_read](fs_read.md)
-* [fs\_readdir](fs_readdir.md)
-* [fs\_rename](fs_rename.md)
-* [fs\_seek](fs_seek.md)
-* [fs\_unlink](fs_unlink.md)
-* [fs\_write](fs_write.md)
+| Function | Description |
+|---------|-------------|
+| [fs\_close](fs_close.md) | Closes the specified file and invalidates the file handle. |
+| [fs\_closedir](fs_closedir.md) | Closes the specified directory handle. |
+| [fs\_dirent\_is\_dir](fs_dirent_is_dir.md) | Tells you whether the specified directory entry is a sub-directory or a regular file. |
+| [fs\_dirent\_name](fs_dirent_name.md) | Retrieves the filename of the specified directory entry. |
+| [fs\_filelen](fs_filelen.md) | Retrieves the current length of the specified open file. |
+| [fs\_getpos](fs_getpos.md) | Retrieves the current read and write position of the specified open file. |
+| [fs\_mkdir](fs_mkdir.md) | Creates the directory represented by the specified path. |
+| [fs\_open](fs_open.md) | Opens a file at the specified path. |
+| [fs\_opendir](fs_opendir.md) | Opens the directory at the specified path. |
+| [fs\_read](fs_read.md) | Reads data from the specified file. |
+| [fs\_readdir](fs_readdir.md) | Reads the next entry in an open directory. |
+| [fs\_register](fs_register.md) | Registers a file system with the abstraction layer. |
+| [fs\_rename](fs_rename.md) | Performs a rename and/or move of the specified source path to the specified destination. |
+| [fs\_seek](fs_seek.md) | Positions a file's read and write pointer at the specified offset. |
+| [fs\_unlink](fs_unlink.md) | Unlinks the file or directory at the specified path. |
+| [fs\_write](fs_write.md) | Writes the supplied data to the current offset of the specified file handle. |
 
 Additional file system utilities that bundle some of the basic functions above are:
 
-* [fsutil\_read\_file](fsutil_read_file.md)
-* [fsutil\_write\_file](fsutil_write_file.md)
+| Function | Description |
+|---------|-------------|
+| [fsutil\_read\_file](fsutil_read_file.md) | Opens a file at the specified path, retrieve data from the file starting from the specified offset, and close the file and invalidate the file handle. |
+| [fsutil\_write\_file](fsutil_write_file.md) | Open a file at the specified path, write the supplied data to the current offset of the specified file handle, and close the file and invalidate the file handle. |
