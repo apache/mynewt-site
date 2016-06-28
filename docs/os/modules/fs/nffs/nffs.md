@@ -113,7 +113,7 @@ The functions available in this OS feature are:
 | Function | Description |
 |---------|-------------|
 | [nffs\_detect](nffs_detect.md) | Searches for a valid nffs file system among the specified areas. |
-| [nffs\_format](nffs_format.md) | rases all the specified areas and initializes them with a clean nffs file system. |
+| [nffs\_format](nffs_format.md) | Erases all the specified areas and initializes them with a clean nffs file system. |
 | [nffs\_init](nffs_init.md) | Initializes internal nffs memory and data structures. |
 
 ###Miscellaneous measures
