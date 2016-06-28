@@ -6,14 +6,27 @@ docker container. The container is all that's needed to run your Mynewt based
 application in the simulator.  Enabling USB2 with your docker installation will
 allow you to load your application on a supported device.
 
-The Docker is the only supported option if you are working on a Windows machine. If you are using Mac OS X or Linux, you have the choice of installing a Docker container of tools and toolchains or installing them natively. This chapter describes how to set up the Docker image for all three platforms.
+Docker is the only supported option if you are working on a Windows machine. If you are using Mac OS X or Linux, you have the choice of installing a Docker container of tools and toolchains or installing them natively. This chapter describes how to set up the Docker image for all three platforms.
 
 <br>
 
 ### Install Docker
-Install docker for your platform. [Mac OS X](https://docs.docker.com/mac/) / [Windows](https://docs.docker.com/windows/) / [Linux](https://docs.docker.com/linux/)
+Install docker for your platform. [Mac OS X](https://www.docker.com/products/docker-toolbox) / [Windows](https://www.docker.com/products/docker-toolbox) / [Linux](https://docs.docker.com/engine/installation/linux/)
 
-Make sure to double click the Docker Quickstart Terminal application if you're on Mac or Windows.
+#### Mac and Windows
+Mac and Windows require Docker Toolbox to interact with USB devices.  Docker
+for Mac and Docker for Windows do not support USB. Docker Toolbox uses
+VirtualBox and allows you to map USB devices into docker containers as
+described below.
+
+Make sure to double click the Docker Quickstart Terminal application if you're
+on Mac or Windows.
+
+#### Linux
+The docker daemon listens on a Unix domain socket on Linux.  That socket is
+owned by root, which means by default you must be root to start a container.
+Make sure to follow the optional step of adding yourself to the docker group so
+you can start the newt container as yourself.
 
 <br>
 
