@@ -108,11 +108,15 @@ This structure tells the decoder about a particular name/value pair. Structure m
 
 Functions for encoding:
 
-* [json_encode_object_start](json_encode_object_start.md)
-* [json_encode_object_key](json_encode_object_key.md)
-* [json_encode_object_entry](json_encode_object_entry.md)
-* [json_encode_object_finish](json_encode_object_finish.md)
+| Function | Description |
+|---------|-------------|
+| [json_encode_object_start](json_encode_object_start.md) | This function starts the encoded JSON object. |
+| [json_encode_object_key](json_encode_object_key.md) | This function writes out a name for a field, followed by ":" character. |
+| [json_encode_object_entry](json_encode_object_entry.md) | This function writes out a name for a field, followed by ":" character, and the value itself. |
+| [json_encode_object_finish](json_encode_object_finish.md) | This function finalizes the encoded JSON object. |
 
 Functions for decoding:
 
-* [json_read_object](json_read_object.md)
+| Function | Description |
+|---------|-------------|
+| [json_read_object](json_read_object.md) | This function reads in JSON data stream, while looking for name/value pairs described in given attribites. |

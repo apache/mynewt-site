@@ -111,7 +111,10 @@ struct shell_cmd {
 
 The functions available in this OS feature are:
 
-* [shell_task_init](shell_task_init.md)
-* [shell_cmd_register](shell_cmd_register.md)
-* [shell_nlip_input_register](shell_nlip_input_register.md)
-* [shell_nlip_output](shell_nlip_output.md)
+| Function | Description |
+|---------|-------------|
+| [shell_task_init](shell_task_init.md) | Initializes the shell package. This creates a task for shell, and registers few commands on its own. |
+| [shell_cmd_register](shell_cmd_register.md) | Registers a handler for incoming console commands. |
+| [shell_nlip_input_register](shell_nlip_input_register.md) | Registers a handler for incoming newtmgr messages. |
+| [shell_nlip_output](shell_nlip_output.md) | Queue outgoing newtmgr message for transmission. |
+
