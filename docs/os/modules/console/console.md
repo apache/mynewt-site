@@ -55,13 +55,15 @@ N/A
 
 The functions available in console are:
 
-* [console_blocking_mode](console_blocking_mode.md)
-* [console_echo](console_echo.md)
-* [console_init](console_init.md)
-* [console_is_init](console_is_init.md)
-* [console_printf](console_printf.md)
-* [console_read](console_read.md)
-* [console_write](console_write.md)
+| Function | Description |
+|---------|-------------|
+| [console_blocking_mode](console_blocking_mode.md) | Calls the `console_blocking_tx` function to flush the buffered console output (transmit) queue. |
+| [console_echo](console_echo.md) | Controls whether echoing is on or off for the console. |
+| [console_init](console_init.md) | Initialize the console. |
+| [console_is_init](console_is_init.md) | Returns whether console has been initialized or not. |
+| [console_printf](console_printf.md) | Writes a formatted message instead of raw output to the console. |
+| [console_read](console_read.md) | Copies up the to given number of bytes to the input string. |
+| [console_write](console_write.md) | Queues characters to console display over serial port. |
 
 
 
