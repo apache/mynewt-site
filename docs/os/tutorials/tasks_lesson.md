@@ -87,6 +87,7 @@ init_tasks(void)
 }
 ```
 
+#### Review
 Before we run our new app, let’s review what we need in order to create a task:
 
  **1)**   Define a new task, task stack, and priority
