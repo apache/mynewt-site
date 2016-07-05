@@ -86,13 +86,16 @@ struct fcb {
 
 The functions available in this OS feature are:
 
-* [fcb_init](fcb_init.md)
-* [fcb_append](fcb_append.md)
-* [fcb_append_finish](fcb_append_finish.md)
-* [fcb_walk](fcb_walk.md)
-* [fcb_getnext](fcb_getnext.md)
-* [fcb_rotate](fcb_rotate.md)
-* [fcb_append_to_scratch](fcb_append_to_scratch.md)
-* [fcb_is_empty](fcb_is_empty.md)
-* [fcb_offset_last_n](fcb_offset_last_n.md)
-* [fcb_clear](fcb_clear.md)
+| Function | Description |
+|---------|-------------|
+| [fcb_init](fcb_init.md) | Initializes the FCB. After calling this, you can start reading/writing data from FCB. |
+| [fcb_append](fcb_append.md) | Start writing a new element to flash. |
+| [fcb_append_finish](fcb_append_finish.md) | Finalizes the write of new element. FCB computes the checksum over the element and updates it in flash. |
+| [fcb_walk](fcb_walk.md) | Walks over all log entries in FCB. |
+| [fcb_getnext](fcb_getnext.md) | Fills given FCB location with information about next element. |
+| [fcb_rotate](fcb_rotate.md) | Erase the oldest sector in FCB. |
+| [fcb_append_to_scratch](fcb_append_to_scratch.md) | If FCB uses scratch blocks, use reserve blocks when FCB is filled. |
+| [fcb_is_empty](fcb_is_empty.md) | Returns 1 if there are no elements stored in FCB, otherwise returns 0. |
+| [fcb_offset_last_n](fcb_offset_last_n.md) | Returns the offset of n-th last element. |
+| [fcb_clear](fcb_clear.md) | Wipes out all data in FCB. |
+
