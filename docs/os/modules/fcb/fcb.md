@@ -4,11 +4,11 @@ Flash circular buffer provides an abstration through which you can treat flash l
 
 ###Description
 
-Elements in the flash contain the lenght of the element, the data within the element, and checksum over the element contents.
+Elements in the flash contain the length of the element, the data within the element, and checksum over the element contents.
 
 Storage of elements in flash is done in a FIFO fashion. When user requests space for the next element, space is located at the end of the used area. When user starts reading, the first element served is the oldest element in flash.
 
-Elements can be appended to the of the area until storage space is exhausted. User has control over what happens next; either erase oldest block of data, thereby freeing up some space, or stop writing new data until existing data has been collected. FCB treats underlying storage as an array of flash sectors; when it erases old data, it does this a sector at a time.
+Elements can be appended to the end of the area until storage space is exhausted. User has control over what happens next; either erase oldest block of data, thereby freeing up some space, or stop writing new data until existing data has been collected. FCB treats underlying storage as an array of flash sectors; when it erases old data, it does this a sector at a time.
 
 Elements in the flash are checksummed. That is how FCB detects whether writing element to flash completed ok. It will skip over entries which don't have a valid checksum.
 
@@ -50,7 +50,7 @@ struct fcb_entry {
 | fe_data_len | Number of bytes in the element.  |
 
 
-The following data structure describes the FCB itself. First part should be filled in by the user before calling fcb_init(). The second part is used by FCB for it's internal bookkeeping.
+The following data structure describes the FCB itself. First part should be filled in by the user before calling fcb_init(). The second part is used by FCB for its internal bookkeeping.
 ```c
 struct fcb {
     /* Caller of fcb_init fills this in */
@@ -73,13 +73,13 @@ struct fcb {
 |---------|-------------|
 | f_magic | Magic number in the beginning of FCB flash sector. FCB uses this when determining whether sector contains valid data or not. |
 | f_version | Current version number of the data. Also stored in flash sector header. |
-| f_sector_cnt | Number of elements it the f_sectors array. |
+| f_sector_cnt | Number of elements in the f_sectors array. |
 | f_scratch_cnt | Number of sectors to keep empty. This can be used if you need to have scratch space for garbage collecting when FCB fills up. |
 | f_sectors | Array of entries describing flash sectors to use. |
 | f_mtx | Lock protecting access to FCBs internal data. |
 | f_oldest | Pointer to flash sector containing the oldest data. This is where data is served when read is started. |
 | f_active | Flash location where the newest data is. This is used by fcb_append() to figure out where the data should go to. |
-| f_active_id | Flash sectors are assigned ever-increasing serial number. This is how FCB figures out where oldest data is on system restart. |
+| f_active_id | Flash sectors are assigned ever-increasing serial numbers. This is how FCB figures out where oldest data is on system restart. |
 | f_align | Some flashes have restrictions on alignment for writes. FCB keeps a copy of this number for the flash here. |
 
 ###List of Functions

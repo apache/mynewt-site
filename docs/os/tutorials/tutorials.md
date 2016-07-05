@@ -39,6 +39,7 @@ The tutorials fall into a few broad categories. Some examples in each category a
 
 * Bluetooth Low Energy
     * [Running the example BLE app included in the repo](bletiny_project.md)
+    * [Working with another example BLE app for a peripheral device](bleprph/bleprph-intro.md)
 
 <br>
 
