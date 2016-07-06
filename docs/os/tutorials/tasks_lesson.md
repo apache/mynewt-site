@@ -59,8 +59,7 @@ work_task_handler(void *arg)
 }
 ```
 
-The task function is called when the task is initially put into the
-*running* state by the scheduler. We use an infinite loop to ensure that the task function never returns and assert that the current task’s function is correct before doing any work.
+The task function is called when the task is initially put into the *running* state by the scheduler. We use an infinite loop to ensure that the task function never returns. Our assertion that the current task's handler is the same as our task handler is for illustration purposes only and does not need to be in most task functions.
 
 ### Task Priority
 As a preemptive, multitasking RTOS, Mynewt decides which tasks to run based on which has a higher priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we must choose a priority defined as a macro variable.
@@ -87,34 +86,42 @@ init_tasks(void)
 }
 ```
 
-#### Review
-Before we run our new app, let’s review what we need in order to create a task:
+And that’s it! Now run your application using the newt run command.
+```
+$ newt run arduino_blinky 0.0.0
+```
+When GDB appears press C then Enter to continue and … *wait, why doesn't our LED blink anymore?*
 
- **1)**   Define a new task, task stack, and priority
+
+#### Review
+Before we run our new app, let’s review what we need in order to create a task. This is a general case for a new task called mytask:
+
+ **1)**   Define a new task, task stack, and priority:
 ```c
 /* My Task */
-os_task mytask
+struct os_task mytask
 /* My Task Stack */
 #define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)
 os_stack_t mytask_stack[MYTASK_STACK_SIZE];
 /* My Task Priority */
 #define MYTASK_PRIO (0)
 ```
-**2)** Define task function
+**2)** Define task function:
 ```c
 void 
 mytask_handler(void *arg)
 {
-    /* ... */
+  while (1) {
+      /* ... */
+  }
 }
 ```
-**3)** Initialize task before calling `os_start()`
+**3)** Initialize task before calling `os_start()`:
 ```c
 os_task_init(&mytask, "mytask", mytask_handler, NULL, 
             MYTASK_PRIO, OS_WAIT_FOREVER, mytask_stack,
             MYTASK_STACK_SIZE);
 ```
-And that’s it! Run your application and … *wait, why doesn't our LED blink anymore?*
 
 ##Task Priority, Preempting, and Context Switching
 A preemptive RTOS is one in which a higher priority task that is *ready to run* will preempt (i.e. take the place of) the lower priority task which is *running*. When a lower priority task is preempted by a higher priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new task is switched in.
@@ -136,7 +143,7 @@ work_task_handler(void *arg)
         /* Do work... */
         int i;
         for(i = 0; i < 1000000; ++i) {
-            //simulate doing a noticeable amount of work
+            /* Simulate doing a noticeable amount of work */
             hal_gpio_set(g_led_pin);
         }
         os_time_delay(3*OS_TICKS_PER_SECOND);
@@ -146,12 +153,12 @@ work_task_handler(void *arg)
 
 In order to notice the LED changing, modify the time delay in `blinky_task_handler()` to blink at a higher frequency.
 ```c
-os_time_delay(100);
+os_time_delay(OS_TICKS_PER_SEC/10);
 ```
-Before we run the app, let’s predict the behavior. With the newest
-additions to `work_task_handler()`, our first action will be to sleep for three seconds. This will allow `blinky_task` to take over the CPU and blink to its heart’s content. After three seconds, `work_task` will wake up and be made *ready to run*, causing it to preempt `blinky_task`. The LED will then remain lit for a short period while `work_task` loops, then blink again for another three seconds while `work_task` sleeps. 
+Before we run the app, let’s predict the behavior. With the newest additions to `work_task_handler()`, our first action will be to sleep for three seconds. This will allow `blinky_task` to take over the CPU and blink to its heart’s content. After three seconds, `work_task` will wake up and be made *ready to run*, causing it to preempt `blinky_task`. The LED will then remain lit for a short period while `work_task` loops, then blink again for another three seconds while `work_task` sleeps. 
 
-Viola, you should see that our prediction was correct! What would happen when both priorities are the same? Try it out for yourself!
+Voila, you should see that our prediction was correct! 
+
 
 ###Priority Management Considerations
 When projects grow in scope, from blinking LEDs into more sophisticated applications, the number of tasks needed increases alongside complexity. It remains important, then, that each of our tasks is capable of doing its work within a reasonable amount of time.
@@ -163,6 +170,8 @@ The diagram below showcases the different scheduling patterns we. would expect f
 ![Task Scheduling](pics/task_lesson.png)
 
 In the second case where `blinky_task` has a higher priority, the “work” done by `work_task` would be executed during the millisecond delays in `blinky_task`, saving us idle time compared to the first case.
+
+**Note:** Defining the same priority for two tasks leads to somewhat undefined behavior and should be avoided.
 
 ##Comparing Priority Strategies
 
@@ -227,7 +236,7 @@ If you see minicom welcome you, you’re ready to move on!
 
 ### Output Analysis
 
-Run our new target, task_sim, and you should see an output similar to this:
+Run our new target, task_tgt, and you should see an output similar to this:
 
 ```
 Starting First Simulation...
