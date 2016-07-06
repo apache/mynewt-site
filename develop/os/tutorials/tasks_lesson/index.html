@@ -481,8 +481,7 @@
 </pre></div>
 
 
-<p>The task function is called when the task is initially put into the
-<em>running</em> state by the scheduler. We use an infinite loop to ensure that the task function never returns and assert that the current task’s function is correct before doing any work.</p>
+<p>The task function is called when the task is initially put into the <em>running</em> state by the scheduler. We use an infinite loop to ensure that the task function never returns. Our assertion that the current task's handler is the same as our task handler is for illustration purposes only and does not need to be in most task functions.</p>
 <h3 id="task-priority">Task Priority</h3>
 <p>As a preemptive, multitasking RTOS, Mynewt decides which tasks to run based on which has a higher priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we must choose a priority defined as a macro variable.</p>
 <p>Let’s set the priority of <code>work_task</code> to 0, because everyone knows that work is more important than blinking.</p>
@@ -506,11 +505,17 @@
 </pre></div>
 
 
+<p>And that’s it! Now run your application using the newt run command.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt run arduino_blinky 0.0.0
+</pre></div>
+
+
+<p>When GDB appears press C then Enter to continue and … <em>wait, why doesn't our LED blink anymore?</em></p>
 <h4 id="review">Review</h4>
-<p>Before we run our new app, let’s review what we need in order to create a task:</p>
-<p><strong>1)</strong>   Define a new task, task stack, and priority</p>
+<p>Before we run our new app, let’s review what we need in order to create a task. This is a general case for a new task called mytask:</p>
+<p><strong>1)</strong>   Define a new task, task stack, and priority:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* My Task */</span>
-<span style="color: #000000">os_task</span> <span style="color: #000000">mytask</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">mytask</span>
 <span style="color: #177500">/* My Task Stack */</span>
 <span style="color: #633820">#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)</span>
 <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">mytask_stack</span>[<span style="color: #000000">MYTASK_STACK_SIZE</span>];
@@ -519,23 +524,24 @@
 </pre></div>
 
 
-<p><strong>2)</strong> Define task function</p>
+<p><strong>2)</strong> Define task function:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> 
 <span style="color: #000000">mytask_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    <span style="color: #177500">/* ... */</span>
+  <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+      <span style="color: #177500">/* ... */</span>
+  }
 }
 </pre></div>
 
 
-<p><strong>3)</strong> Initialize task before calling <code>os_start()</code></p>
+<p><strong>3)</strong> Initialize task before calling <code>os_start()</code>:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;mytask</span>, <span style="color: #C41A16">&quot;mytask&quot;</span>, <span style="color: #000000">mytask_handler</span>, <span style="color: #A90D91">NULL</span>, 
             <span style="color: #000000">MYTASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">mytask_stack</span>,
             <span style="color: #000000">MYTASK_STACK_SIZE</span>);
 </pre></div>
 
 
-<p>And that’s it! Run your application and … <em>wait, why doesn't our LED blink anymore?</em></p>
 <h2 id="task-priority-preempting-and-context-switching">Task Priority, Preempting, and Context Switching</h2>
 <p>A preemptive RTOS is one in which a higher priority task that is <em>ready to run</em> will preempt (i.e. take the place of) the lower priority task which is <em>running</em>. When a lower priority task is preempted by a higher priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new task is switched in.</p>
 <p>In our example, <code>work_task</code> has a higher priority than <code>blinky_task</code> and, because it is never put into a <em>sleep</em> state, holds the processor focus on its context. Let’s give <code>work_task</code> a delay and some simulated work to keep it busy. Because the delay is measured in os ticks, the actual number of ticks per second is dependent on the board. Therefore, we multiply <code>OS_TICKS_PER_SEC</code>, which is defined in the MCU, by the number of seconds we wish to delay.</p>
@@ -553,7 +559,7 @@
         <span style="color: #177500">/* Do work... */</span>
         <span style="color: #A90D91">int</span> <span style="color: #000000">i</span>;
         <span style="color: #A90D91">for</span>(<span style="color: #000000">i</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>; <span style="color: #000000">i</span> <span style="color: #000000">&lt;</span> <span style="color: #1C01CE">1000000</span>; <span style="color: #000000">++i</span>) {
-            <span style="color: #177500">//simulate doing a noticeable amount of work</span>
+            <span style="color: #177500">/* Simulate doing a noticeable amount of work */</span>
             <span style="color: #000000">hal_gpio_set</span>(<span style="color: #000000">g_led_pin</span>);
         }
         <span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">3</span><span style="color: #000000">*OS_TICKS_PER_SECOND</span>);
@@ -563,19 +569,19 @@
 
 
 <p>In order to notice the LED changing, modify the time delay in <code>blinky_task_handler()</code> to blink at a higher frequency.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">100</span>);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC/</span><span style="color: #1C01CE">10</span>);
 </pre></div>
 
 
-<p>Before we run the app, let’s predict the behavior. With the newest
-additions to <code>work_task_handler()</code>, our first action will be to sleep for three seconds. This will allow <code>blinky_task</code> to take over the CPU and blink to its heart’s content. After three seconds, <code>work_task</code> will wake up and be made <em>ready to run</em>, causing it to preempt <code>blinky_task</code>. The LED will then remain lit for a short period while <code>work_task</code> loops, then blink again for another three seconds while <code>work_task</code> sleeps. </p>
-<p>Viola, you should see that our prediction was correct! What would happen when both priorities are the same? Try it out for yourself!</p>
+<p>Before we run the app, let’s predict the behavior. With the newest additions to <code>work_task_handler()</code>, our first action will be to sleep for three seconds. This will allow <code>blinky_task</code> to take over the CPU and blink to its heart’s content. After three seconds, <code>work_task</code> will wake up and be made <em>ready to run</em>, causing it to preempt <code>blinky_task</code>. The LED will then remain lit for a short period while <code>work_task</code> loops, then blink again for another three seconds while <code>work_task</code> sleeps. </p>
+<p>Voila, you should see that our prediction was correct! </p>
 <h3 id="priority-management-considerations">Priority Management Considerations</h3>
 <p>When projects grow in scope, from blinking LEDs into more sophisticated applications, the number of tasks needed increases alongside complexity. It remains important, then, that each of our tasks is capable of doing its work within a reasonable amount of time.</p>
 <p>Some tasks, such as the Shell task, execute quickly and require almost instantaneous response. Therefore, the Shell task should be given a high priority. On the other hand, tasks which may be communicating over a network, or processing data, should be given a low priority in order to not hog the CPU.</p>
 <p>The diagram below showcases the different scheduling patterns we. would expect from swapping blinky and work tasks priorities.</p>
 <p><img alt="Task Scheduling" src="../pics/task_lesson.png" /></p>
 <p>In the second case where <code>blinky_task</code> has a higher priority, the “work” done by <code>work_task</code> would be executed during the millisecond delays in <code>blinky_task</code>, saving us idle time compared to the first case.</p>
+<p><strong>Note:</strong> Defining the same priority for two tasks leads to somewhat undefined behavior and should be avoided.</p>
 <h2 id="comparing-priority-strategies">Comparing Priority Strategies</h2>
 <p>Instead of stepping through a bunch of changes to our blinky app, clone my task lesson application from github and copy an existing target.</p>
 <p>Change directory into apps and clone the repository to get our new
@@ -648,7 +654,7 @@ $ git checkout develop
 
 <p>If you see minicom welcome you, you’re ready to move on!</p>
 <h3 id="output-analysis">Output Analysis</h3>
-<p>Run our new target, task_sim, and you should see an output similar to this:</p>
+<p>Run our new target, task_tgt, and you should see an output similar to this:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">Starting First Simulation...
 1:     Task B: 0% 
 78:     Task B: 1% 
