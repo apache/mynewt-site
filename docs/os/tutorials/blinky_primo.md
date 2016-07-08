@@ -45,7 +45,19 @@ Licensed under GNU GPL v2
 For bug reports, read
     http://openocd.org/doc/doxygen/bugs.html
 ```
+Next, make sure that you have checked out the newt develop branch and rebuilt newt.
+```
+$ cd $GOPATH/src/mynewt.apache.org/newt
+$ git checkout develop
+$ git pull
+$ cd newt
+$ go install
+```
+**Note:** This step can be removed once the changes have been pushed to master.
+
 You can now use openocd to upload to Arduino Primo board via the USB port itself.
+
+
 
 <br>
 
@@ -110,7 +122,6 @@ Would you like to upgrade repository apache-mynewt-core from 0.9.0-none to 0.0.0
 
 Create two targets - one for the bootloader and one for the Primo board.  
 
-
 ```
 $ newt target create primoblinky
 $ newt target set primoblinky app=@apache-mynewt-core/apps/blinky bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=debug
@@ -131,6 +142,13 @@ targets/primoblinky
     app=@apache-mynewt-core/apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
     build_profile=optimized
+```
+
+If you are using openocd you must set the openocd_debug feature for both primo_boot and primoblinky.
+
+```
+$ newt target set primo_boot features=openocd_debug
+$ newt target set primoblinky features=openocd_debug
 ```
 
 <br>
