@@ -133,7 +133,7 @@ The precise meaning of each of these error codes depends on the function that re
 ```
 
 | NimBLE Value | Formal Value | Name   | Condition   |
-|-------|----------------|----------------------------------------------|
+|--------------|--------------|--------|-------------|
 | 0x0101  | 0x01  |  BLE\_ATT\_ERR\_INVALID\_HANDLE          | The attribute handle given was not valid on this server. |
 | 0x0102  | 0x02  |  BLE\_ATT\_ERR\_READ\_NOT\_PERMITTED      | The attribute cannot be read. |
 | 0x0103  | 0x03  |  BLE\_ATT\_ERR\_WRITE\_NOT\_PERMITTED     | The attribute cannot be written. |
@@ -162,7 +162,7 @@ The precise meaning of each of these error codes depends on the function that re
 ```
 
 | NimBLE Value | Formal Value | Name   | Condition   |
-|-------|----------------|----------------------------------------------|
+|--------------|--------------|--------|-------------|
 | 0x0201  | 0x01  | BLE\_ERR\_UNKNOWN\_HCI\_CMD       | Unknown HCI Command |
 | 0x0202  | 0x02  | BLE\_ERR\_UNK\_CONN\_ID           | Unknown Connection Identifier |
 | 0x0203  | 0x03  | BLE\_ERR\_HW\_FAIL                | Hardware Failure |
@@ -234,7 +234,7 @@ The precise meaning of each of these error codes depends on the function that re
 ```
 
 | NimBLE Value | Formal Value | Name   | Condition   |
-|-------|----------------|----------------------------------------------|
+|--------------|--------------|--------|-------------|
 | 0x0300  | 0x00  | BLE\_L2CAP\_SIG\_ERR\_CMD\_NOT\_UNDERSTOOD    | Invalid or unsupported incoming L2CAP sig command. |
 | 0x0301  | 0x01  | BLE\_L2CAP\_SIG\_ERR\_MTU\_EXCEEDED           | Incoming packet too large. |
 | 0x0302  | 0x02  | BLE\_L2CAP\_SIG\_ERR\_INVALID\_CID            | No channel with specified ID. |
@@ -247,8 +247,8 @@ The precise meaning of each of these error codes depends on the function that re
 #include "host/ble_sm.h"
 ```
 
-| NimBLE Value    | Formal Value | Name   | Condition   |
-|-------|----------------|----------------------------------------------|
+| NimBLE Value | Formal Value | Name   | Condition   |
+|--------------|--------------|--------|-------------|
 | 0x0401  | 0x01  | BLE\_SM\_ERR\_PASSKEY             | The user input of passkey failed, for example, the user cancelled the operation. |
 | 0x0402  | 0x02  | BLE\_SM\_ERR\_OOB                 | The OOB data is not available. |
 | 0x0403  | 0x03  | BLE\_SM\_ERR\_AUTHREQ             | The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices. |
@@ -272,8 +272,8 @@ The precise meaning of each of these error codes depends on the function that re
 #include "host/ble_sm.h"
 ```
 
-| NimBLE Value    | Formal Value | Name   | Condition   |
-|-----------------|--------------|--------|-------------|
+| NimBLE Value | Formal Value | Name   | Condition   |
+|--------------|--------------|--------|-------------|
 | 0x0501          | 0x01         | BLE\_SM\_ERR\_PASSKEY             | The user input of passkey failed, for example, the user cancelled the operation. |
 | 0x0502          | 0x02         | BLE\_SM\_ERR\_OOB                 | The OOB data is not available. |
 | 0x0503          | 0x03         | BLE\_SM\_ERR\_AUTHREQ             | The pairing procedure cannot be performed as authentication requirements cannot be met due to IO capabilities of one or both devices. |
