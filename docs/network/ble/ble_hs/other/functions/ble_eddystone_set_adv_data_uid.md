@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_eddystone_set_adv_data_uid(struct ble_hs_adv_fields *adv_fields, void *uid)
+ble_eddystone_set_adv_data_uid(
+    struct ble_hs_adv_fields *adv_fields,
+                        void *uid
+)
 ```
 
 ### Description
@@ -23,4 +26,4 @@ Configures the device to advertise eddystone UID beacons.
 | 0 | Success. |
 | BLE\_HS\_EBUSY | Advertising is in progress. |
 | BLE\_HS\_EMSGSIZE | The specified data is too large to fit in an advertisement. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

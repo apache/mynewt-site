@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_gatts_find_svc(const void *uuid128, uint16_t *out_handle)
+ble_gatts_find_svc(
+    const void *uuid128,
+      uint16_t *out_handle
+)
 ```
 
 ### Description

@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_hs_init(struct os_eventq *app_evq, struct ble_hs_cfg *cfg)
+ble_hs_init(
+     struct os_eventq *app_evq,
+    struct ble_hs_cfg *cfg
+)
 ```
 
 ### Description
@@ -21,4 +24,4 @@ Initializes the NimBLE host.  This function must be called before the OS is star
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

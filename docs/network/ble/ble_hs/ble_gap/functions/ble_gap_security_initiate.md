@@ -22,4 +22,4 @@ Initiates the GAP encryption procedure.
 | 0 | Success. |
 | BLE\_HS\_ENOTCONN | The there is no connection with the specified handle. |
 | BLE\_HS\_EALREADY | An encrpytion procedure for this connection is already in progress. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

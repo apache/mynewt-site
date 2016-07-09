@@ -2,8 +2,10 @@
 
 ```c
 int
-ble_gap_wl_set(const struct ble_gap_white_entry *white_list,
-               uint8_t white_list_count)
+ble_gap_wl_set(
+    const struct ble_gap_white_entry *white_list,
+                             uint8_t  white_list_count
+)
 ```
 
 ### Description
@@ -22,4 +24,4 @@ Overwrites the controller's white list with the specified contents.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

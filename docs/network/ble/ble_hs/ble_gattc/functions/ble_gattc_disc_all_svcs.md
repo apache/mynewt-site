@@ -2,8 +2,11 @@
 
 ```c
 int
-ble_gattc_disc_all_svcs(uint16_t conn_handle, ble_gatt_disc_svc_fn *cb,
-                        void *cb_arg)
+ble_gattc_disc_all_svcs(
+                uint16_t  conn_handle,
+    ble_gatt_disc_svc_fn *cb,
+                    void *cb_arg
+)
 ```
 
 ### Description

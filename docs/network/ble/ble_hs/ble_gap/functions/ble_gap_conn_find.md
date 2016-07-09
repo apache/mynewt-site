@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_gap_conn_find(uint16_t handle, struct ble_gap_conn_desc *out_desc)
+ble_gap_conn_find(
+                    uint16_t  handle,
+    struct ble_gap_conn_desc *out_desc
+)
 ```
 
 ### Description

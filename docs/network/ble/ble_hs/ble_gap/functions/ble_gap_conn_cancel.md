@@ -18,4 +18,4 @@ None
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

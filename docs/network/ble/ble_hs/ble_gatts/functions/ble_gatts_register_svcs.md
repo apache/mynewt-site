@@ -2,8 +2,11 @@
 
 ```c
 int
-ble_gatts_register_svcs(const struct ble_gatt_svc_def *svcs,
-                        ble_gatt_register_fn *cb, void *cb_arg)
+ble_gatts_register_svcs(
+    const struct ble_gatt_svc_def *svcs,
+             ble_gatt_register_fn *cb,
+                             void *cb_arg
+)
 ```
 
 ### Description

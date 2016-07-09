@@ -2,9 +2,13 @@
 
 ```c
 int
-ble_gattc_find_inc_svcs(uint16_t conn_handle, uint16_t start_handle,
-                        uint16_t end_handle,
-                        ble_gatt_disc_svc_fn *cb, void *cb_arg)
+ble_gattc_find_inc_svcs(
+                uint16_t  conn_handle,
+                uint16_t  start_handle,
+                uint16_t  end_handle,
+    ble_gatt_disc_svc_fn *cb,
+                    void *cb_arg
+)
 ```
 
 ### Description
@@ -26,4 +30,4 @@ Initiates GATT procedure: Find Included Services.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

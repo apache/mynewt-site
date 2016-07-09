@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_gap_terminate(uint16_t conn_handle, uint8_t hci_reason)
+ble_gap_terminate(
+    uint16_t conn_handle,
+     uint8_t hci_reason
+)
 ```
 
 ### Description
@@ -22,4 +25,4 @@ Terminates an established connection.
 |---------|-------------|
 | 0 | Success. |
 | BLE\_HS\_ENOTCONN | There is no connection with the specified handle. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

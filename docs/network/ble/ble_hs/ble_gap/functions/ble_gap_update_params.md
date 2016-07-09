@@ -2,8 +2,10 @@
 
 ```c
 int
-ble_gap_update_params(uint16_t conn_handle,
-                      const struct ble_gap_upd_params *params)
+ble_gap_update_params(
+                           uint16_t  conn_handle,
+    const struct ble_gap_upd_params *params
+)
 ```
 
 ### Description
@@ -24,4 +26,4 @@ Initiates a connection parameter update procedure.
 | 0 | Success. |
 | BLE\_HS\_ENOTCONN | The there is no connection with the specified handle. |
 | BLE\_HS\_EALREADY | A connection update procedure for this connection is already in progress. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

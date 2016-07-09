@@ -2,7 +2,11 @@
 
 ```c
 int
-ble_ibeacon_set_adv_data(void *uuid128, uint16_t major, uint16_t minor)
+ble_ibeacon_set_adv_data(
+        void *uuid128,
+    uint16_t  major,
+    uint16_t  minor
+)
 ```
 
 ### Description
@@ -23,4 +27,4 @@ Configures the device to advertise iBeacons.
 |---------|-------------|
 | 0 | Success. |
 | BLE\_HS\_EBUSY | Advertising is in progress. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

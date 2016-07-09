@@ -2,8 +2,14 @@
 
 ```c
 int
-ble_gattc_write(uint16_t conn_handle, uint16_t attr_handle, const void *value,
-                uint16_t value_len, ble_gatt_attr_fn *cb, void *cb_arg)
+ble_gattc_write(
+            uint16_t  conn_handle,
+            uint16_t  attr_handle,
+          const void *value,
+            uint16_t  value_len,
+    ble_gatt_attr_fn *cb,
+                void *cb_arg
+)
 ```
 
 ### Description
@@ -26,4 +32,4 @@ Initiates GATT procedure: Write Characteristic Value.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

@@ -22,4 +22,4 @@ Configures the data to include in subsequent advertisements.
 | 0 | Success. |
 | BLE\_HS\_EBUSY | Advertising is in progress. |
 | BLE\_HS\_EMSGSIZE | The specified data is too large to fit in an advertisement. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

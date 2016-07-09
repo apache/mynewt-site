@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_uuid_16_to_128(uint16_t uuid16, void *out_uuid128)
+ble_uuid_16_to_128(
+    uint16_t  uuid16,
+        void *out_uuid128
+)
 ```
 
 ### Description

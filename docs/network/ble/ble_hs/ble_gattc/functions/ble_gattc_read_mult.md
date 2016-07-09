@@ -2,9 +2,13 @@
 
 ```c
 int
-ble_gattc_read_mult(uint16_t conn_handle, const uint16_t *handles,
-                    uint8_t num_handles, ble_gatt_attr_fn *cb,
-                    void *cb_arg)
+ble_gattc_read_mult(
+            uint16_t  conn_handle,
+      const uint16_t *handles,
+             uint8_t  num_handles,
+    ble_gatt_attr_fn *cb,
+                void *cb_arg
+)
 ```
 
 ### Description
@@ -26,4 +30,4 @@ Initiates GATT procedure: Read Multiple Characteristic Values.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_gattc_notify(uint16_t conn_handle, uint16_t chr_val_handle)
+ble_gattc_notify(
+    uint16_t conn_handle,
+    uint16_t chr_val_handle
+)
 ```
 
 ### Description
@@ -21,4 +24,4 @@ Sends a characteristic notification.  The content of the message is read from th
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

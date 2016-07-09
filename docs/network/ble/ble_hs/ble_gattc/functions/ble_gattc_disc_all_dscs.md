@@ -2,9 +2,13 @@
 
 ```c
 int
-ble_gattc_disc_all_dscs(uint16_t conn_handle, uint16_t chr_def_handle,
-                        uint16_t chr_end_handle,
-                        ble_gatt_dsc_fn *cb, void *cb_arg)
+ble_gattc_disc_all_dscs(
+           uint16_t  conn_handle,
+           uint16_t  chr_def_handle,
+           uint16_t  chr_end_handle,
+    ble_gatt_dsc_fn *cb,
+               void *cb_arg
+)
 ```
 
 ### Description
@@ -26,4 +30,4 @@ Initiates GATT procedure: Discover All Characteristic Descriptors.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

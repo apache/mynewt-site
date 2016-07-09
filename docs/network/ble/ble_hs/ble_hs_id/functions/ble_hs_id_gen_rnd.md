@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_hs_id_gen_rnd(int nrpa, uint8_t *out_addr)
+ble_hs_id_gen_rnd(
+        int  nrpa,
+    uint8_t *out_addr
+)
 ```
 
 ### Description
@@ -21,4 +24,4 @@ Generates a new random address.  This function does not configure the device wit
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

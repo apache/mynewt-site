@@ -2,8 +2,12 @@
 
 ```c
 int
-ble_gatts_find_dsc(const void *svc_uuid128, const void *chr_uuid128,
-                   const void *dsc_uuid128, uint16_t *out_handle)
+ble_gatts_find_dsc(
+    const void *svc_uuid128,
+    const void *chr_uuid128,
+    const void *dsc_uuid128,
+      uint16_t *out_handle
+)
 ```
 
 ### Description

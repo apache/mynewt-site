@@ -2,9 +2,13 @@
 
 ```c
 int
-ble_gap_disc(uint8_t own_addr_type, int32_t duration_ms,
-             const struct ble_gap_disc_params *disc_params,
-             ble_gap_event_fn *cb, void *cb_arg)
+ble_gap_disc(
+                             uint8_t  own_addr_type,
+                             int32_t  duration_ms,
+    const struct ble_gap_disc_params *disc_params,
+                    ble_gap_event_fn *cb,
+                                void *cb_arg
+)
 ```
 
 ### Description
@@ -26,4 +30,4 @@ Performs the Limited or General Discovery Procedures.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

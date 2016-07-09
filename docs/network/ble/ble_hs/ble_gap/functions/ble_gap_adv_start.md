@@ -2,10 +2,15 @@
 
 ```c
 int
-ble_gap_adv_start(uint8_t own_addr_type, uint8_t peer_addr_type,
-                  const uint8_t *peer_addr, int32_t duration_ms,
-                  const struct ble_gap_adv_params *adv_params,
-                  ble_gap_event_fn *cb, void *cb_arg)
+ble_gap_adv_start(
+                            uint8_t  own_addr_type,
+                            uint8_t  peer_addr_type,
+                      const uint8_t *peer_addr,
+                            int32_t  duration_ms,
+    const struct ble_gap_adv_params *adv_params,
+                   ble_gap_event_fn *cb,
+                               void *cb_arg
+)
 ```
 
 ### Description
@@ -29,4 +34,4 @@ Initiates advertising.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

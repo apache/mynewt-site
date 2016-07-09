@@ -2,7 +2,11 @@
 
 ```c
 int
-ble_gattc_exchange_mtu(uint16_t conn_handle, ble_gatt_mtu_fn *cb, void *cb_arg)
+ble_gattc_exchange_mtu(
+           uint16_t  conn_handle,
+    ble_gatt_mtu_fn *cb,
+               void *cb_arg
+)
 ```
 
 ### Description
@@ -22,4 +26,4 @@ Initiates GATT procedure: Exchange MTU.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

@@ -2,8 +2,12 @@
 
 ```c
 int
-ble_gattc_notify_custom(uint16_t conn_handle, uint16_t chr_val_handle,
-                        const void *attr_data, uint16_t attr_data_len)
+ble_gattc_notify_custom(
+      uint16_t  conn_handle,
+      uint16_t  chr_val_handle,
+    const void *attr_data,
+      uint16_t  attr_data_len
+)
 ```
 
 ### Description
@@ -24,4 +28,4 @@ Sends a "free-form" characteristic notification.  The content of the message is 
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

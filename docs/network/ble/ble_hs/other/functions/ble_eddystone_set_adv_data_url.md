@@ -2,9 +2,13 @@
 
 ```c
 int
-ble_eddystone_set_adv_data_url(struct ble_hs_adv_fields *adv_fields,
-                               uint8_t url_scheme, char *url_body,
-                               uint8_t url_body_len, uint8_t url_suffix)
+ble_eddystone_set_adv_data_url(
+    struct ble_hs_adv_fields *adv_fields,
+                     uint8_t  url_scheme,
+                        char *url_body,
+                     uint8_t  url_body_len,
+                     uint8_t  url_suffix
+)
 ```
 
 ### Description
@@ -28,4 +32,4 @@ Configures the device to advertise eddystone URL beacons.
 | 0 | Success. |
 | BLE\_HS\_EBUSY | Advertising is in progress. |
 | BLE\_HS\_EMSGSIZE | The specified data is too large to fit in an advertisement. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

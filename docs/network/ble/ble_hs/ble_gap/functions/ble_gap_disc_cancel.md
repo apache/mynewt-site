@@ -19,4 +19,4 @@ None
 |---------|-------------|
 | 0 | Success. |
 | BLE\_HS\_EALREADY | There is no discovery procedure to cancel. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

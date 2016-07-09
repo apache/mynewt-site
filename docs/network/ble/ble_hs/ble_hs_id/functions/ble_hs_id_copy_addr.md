@@ -2,8 +2,11 @@
 
 ```c
 int
-ble_hs_id_copy_addr(uint8_t id_addr_type, uint8_t *out_id_addr,
-                    int *out_is_nrpa)
+ble_hs_id_copy_addr(
+    uint8_t  id_addr_type,
+    uint8_t *out_id_addr,
+        int *out_is_nrpa
+)
 ```
 
 ### Description

@@ -2,10 +2,13 @@
 
 ```c
 int
-ble_gattc_write_reliable(uint16_t conn_handle,
-                         const struct ble_gatt_attr *attrs,
-                         int num_attrs, ble_gatt_reliable_attr_fn *cb,
-                         void *cb_arg)
+ble_gattc_write_reliable(
+                      uint16_t  conn_handle,
+    const struct ble_gatt_attr *attrs,
+                           int  num_attrs,
+     ble_gatt_reliable_attr_fn *cb,
+                          void *cb_arg
+)
 ```
 
 ### Description

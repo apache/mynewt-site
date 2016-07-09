@@ -2,7 +2,10 @@
 
 ```c
 int
-ble_gap_conn_rssi(uint16_t conn_handle, int8_t *out_rssi)
+ble_gap_conn_rssi(
+    uint16_t  conn_handle,
+      int8_t *out_rssi
+)
 ```
 
 ### Description
@@ -21,5 +24,5 @@ Retrieves the most-recently measured RSSI for the specified connection.  A conne
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host HCI return code](../../ble_hs_return_codes/#return-codes-hci) | The controller rejected the request. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [HCI return code](../../ble_hs_return_codes/#return-codes-hci) | The controller rejected the request. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

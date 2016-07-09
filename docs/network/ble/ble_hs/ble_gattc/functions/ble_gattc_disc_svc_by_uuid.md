@@ -2,8 +2,12 @@
 
 ```c
 int
-ble_gattc_disc_svc_by_uuid(uint16_t conn_handle, const void *svc_uuid128,
-                           ble_gatt_disc_svc_fn *cb, void *cb_arg)
+ble_gattc_disc_svc_by_uuid(
+                uint16_t  conn_handle,
+              const void *svc_uuid128,
+    ble_gatt_disc_svc_fn *cb,
+                    void *cb_arg
+)
 ```
 
 ### Description
@@ -24,4 +28,4 @@ Initiates GATT procedure: Discover Primary Service by Service UUID.
 | *Value* | *Condition* |
 |---------|-------------|
 | 0 | Success. |
-| [BLE host core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
+| [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
