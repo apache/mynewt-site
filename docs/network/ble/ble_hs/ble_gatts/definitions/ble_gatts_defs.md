@@ -1,4 +1,4 @@
-## <font color="#F2853F" style="font-size:24pt">GATT Client Definitions/font>
+## <font color="#F2853F" style="font-size:24pt">GATT Server Definitions</font>
 
 ```c
 typedef int ble_gatt_access_fn(uint16_t conn_handle, uint16_t attr_handle,

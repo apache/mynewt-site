@@ -24,7 +24,7 @@ A return code of 0 indicates success.  For failure conditions, the return codes 
 | Core | Errors detected internally by the NimBLE host. |
 | ATT | The ATT server has reported a failure via the transmission of an ATT Error Response.  The return code corresponds to the value of the Error Code field in the response. |
 | HCI | The controller has reported an error to the host via a command complete or command status HCI event.  The return code corresponds to the value of the Status field in the event.
-| L2CAP | An L2CAP signalling procedure has failed and an L2CAP Command Reject was sent as a result.  The return code corresponds to the value of the Reason field in the command.
+| L2CAP | An L2CAP signaling procedure has failed and an L2CAP Command Reject was sent as a result.  The return code corresponds to the value of the Reason field in the command.
 | Security manager (us) | The host detected an error during a security manager procedure and sent a Pairing Failed command to the peer.  The return code corresponds to the value of the Reason field in the Pairing Failed command. |
 | Security manager (peer) | A security manager procedure failed because the peer sent us a Pairing Failed command.  The return code corresponds to the value of the Reason field in the Pairing Failed command. |
 

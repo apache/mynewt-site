@@ -2,7 +2,7 @@
 
 ### Introduction
 
-At a high level, the NimBLE stack is is divided into two components:
+At a high level, the NimBLE stack is divided into two components:
 
 * Host
 * Controller

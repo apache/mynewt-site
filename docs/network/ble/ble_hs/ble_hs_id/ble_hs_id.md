@@ -1,4 +1,4 @@
-## <font color="F2853F" style="font-size:24pt">NimBLE Host GAP Reference</font>
+## <font color="F2853F" style="font-size:24pt">NimBLE Host Identity Reference</font>
 
 ### Introduction
 
@@ -6,7 +6,7 @@ The identity API provides facilities for querying and configuring your device's 
 
 BLE defines four address types:
 
-| Type                          | Description                                                                                     | Identity? | Configured with                             |
+| Type    | Description  | Identity? | Configured with    |
 |-------------------------------|-------------------------------------------------------------------------------------------------|-----------|---------------------------------------------|
 | Public                        | Address assigned by manufacturer; the three most significant bytes form the manufacturer's OUI. | Yes       | N/A; read from controller at startup.       |
 | Static random                 | Randomly generated address.                                                                     | Yes       | *ble_hs_id_set_rnd()*                       |

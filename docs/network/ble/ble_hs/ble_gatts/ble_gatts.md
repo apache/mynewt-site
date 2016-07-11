@@ -1,4 +1,4 @@
-## <font color="F2853F" style="font-size:24pt">NimBLE Host GATT Client Reference</font>
+## <font color="F2853F" style="font-size:24pt">NimBLE Host GATT Server Reference</font>
 
 ### Introduction
 

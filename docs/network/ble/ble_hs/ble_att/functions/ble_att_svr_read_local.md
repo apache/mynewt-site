@@ -11,7 +11,7 @@ ble_att_svr_read_local(
 
 ### Description
 
-Reads a locally registered attribute.  If the specified attribute handle coresponds to a GATT characteristic value or descriptor, the read is performed by calling the registered GATT access callback. 
+Reads a locally registered attribute.  If the specified attribute handle corresponds to a GATT characteristic value or descriptor, the read is performed by calling the registered GATT access callback. 
 
 ### Parameters
 
@@ -25,5 +25,6 @@ Reads a locally registered attribute.  If the specified attribute handle corespo
 
 | *Value* | *Condition* |
 |---------|-------------|
-| 0 | Success nimble host att return code if the attribute access callback reports failure. |
+| 0 | Success |
+| [ATT return code](../../ble_hs_return_codes/#return-codes-att) | NimBLE host ATT return code if the attribute access callback reports failure. |
 | [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |
