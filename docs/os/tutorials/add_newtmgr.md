@@ -25,6 +25,14 @@ Since all we're doing is adding newtmgr capability to a project, we assume that 
 For this example, we'll be modifying the [ble_tiny](bletiny_project.md) project to enable newtmgr connectivity. We'll be calling our app myble as in that project as well. 
 Feel free to use whatever project you'd like though.
 
+The first thing you'll need to add is a new dependency for your app. In the repo for the bletiny app you'll need to add the following line to the pkg.yml file:
+
+```
+ - libs/newtmgr
+ ```
+ 
+so that the application will know to pull in the newtmgr code.
+
 <br>
 
 ###Modify the source
