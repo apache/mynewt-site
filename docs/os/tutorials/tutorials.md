@@ -8,6 +8,14 @@ The full list of tutorials can be seen in the navigation bar on the left. New on
 
 * You have installed Docker container of Newt tool and toolchains or you have installed them natively on your machine
 * You have created a new project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](../get_started/project_create).
+* You have at least one of the supported development boards: 
+    * [STM32F3 discovery kit from ST Micro](STM32F303.md)
+    * [Arduino Zero hardware](arduino_zero.md)
+    * [Olimex/STM32F407ZGT6 Cortex-M4 hardware](olimex.md)
+    * [nRF52 Development Kit from Nordic Semiconductor](nRF52.md)
+    
+The Nordic nrf52 developer kit supports Bluetooth Low Energy. We are always looking to add new hardware to the list, so if you want to develop the required Board Support Package (bsp) and/or Hardware Abstraction Layer (HAL) for a new board, you can look [here](../../core_os/porting/port_os/) to get started.
+    
 
 ###Tutorial categories:
 
