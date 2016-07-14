@@ -1,9 +1,13 @@
-## Project Slinky 
+## Project Slinky using STM32 board
 
 
-### Objective
+<br>
 
-The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr). We will do this through a project with Mynewt called Slinky that runs on the STM32-E407 board.
+The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr) by leveraging a sample app "Slinky" included under the /apps directory in the repository. In this project we will define a target for the STM32-E407 board and assign the app "Slinky" to it.
+
+If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md). 
+
+<br>
 
 ### What you need
 

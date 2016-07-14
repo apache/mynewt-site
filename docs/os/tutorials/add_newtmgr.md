@@ -1,8 +1,8 @@
-##Enabling the Newt Manager (newtmgr) in a project
+##Enabling Newt Manager (newtmgr) in a project
 
 <br>
 
-This tutorial explains how to add the newtmgr task to a project so that you can interact with your project over newtmgr
+This tutorial explains how to add the newtmgr task to a project so that you can interact with your project over newtmgr.
 
 <br>
 
@@ -29,9 +29,9 @@ The first thing you'll need to add is a new dependency for your app. In the repo
 
 ```
  - libs/newtmgr
- ```
+```
  
-so that the application will know to pull in the newtmgr code.
+Now the application will know to pull in the newtmgr code.
 
 <br>
 
