@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/network/ble/ble_hs/ble_att/definitions/ble_att_defs/">
+        <link rel="canonical" href="http://mynewt.apache.org/network/ble/ble_hs/other/functions/ble_hs_mbuf_from_flat/">
         <link rel="shortcut icon" href="../../../../../../img/favicon.ico">
 
-	<title>Definitions - Apache Mynewt</title>
+	<title>ble_hs_mbuf_from_flat - Apache Mynewt</title>
 
         <link href="../../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Definitions">
+    <body class="ble_hs_mbuf_from_flat">
 
 
         
@@ -339,17 +339,9 @@
                 
   
   
-    <li ><a href="../../ble_att/">ATT</a>
+    <li ><a href="../../../ble_att/ble_att/">ATT</a>
   
   
-    <ul>
-          
-              
-          
-              
-                
-    <li class="active">
-      <a href="./">Definitions</a>
     </li>
 
               
@@ -358,11 +350,84 @@
                 
   
   
+    <li ><a href="../../other/">Other</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
     <li><a href="
-  ../../functions/ble_att_svr_write_local/
+  ../ble_eddystone_set_adv_data_uid/
 ">Functions</a>
   
   
+    <ul>
+          
+              
+                
+    <li >
+      <a href="../ble_eddystone_set_adv_data_uid/">ble_eddystone_set_adv_data_uid</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ble_eddystone_set_adv_data_url/">ble_eddystone_set_adv_data_url</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ble_hs_mbuf_att_pkt/">ble_hs_mbuf_att_pkt</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">ble_hs_mbuf_from_flat</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ble_hs_mbuf_to_flat/">ble_hs_mbuf_to_flat</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ble_ibeacon_set_adv_data/">ble_ibeacon_set_adv_data</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ble_uuid_128_to_16/">ble_uuid_128_to_16</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ble_uuid_16_to_128/">ble_uuid_16_to_128</a>
     </li>
 
               
@@ -373,12 +438,7 @@
 
               
           
-              
-                
-  
-  
-    <li ><a href="../../../other/other/">Other</a>
-  
+    </ul>
   
     </li>
 
@@ -464,15 +524,15 @@
     
     
         
-          <li>&raquo; <a href="../../../ble_hs/">NimBLE Host API</a></li>
+          <li>&raquo; <a href="../../other/">Other</a></li>
         
       
         
-          <li>&raquo; <a href="../../ble_att/">ATT</a></li>
+          <li>&raquo; <a href="../ble_eddystone_set_adv_data_uid/">Functions</a></li>
         
       
       
-        <li>&raquo; Definitions</li>
+        <li>&raquo; ble_hs_mbuf_from_flat</li>
       
     
     
@@ -481,81 +541,55 @@
                             </div>
                         </div>
                         
-                            <h2 id="att-definitions"><font color="#F2853F" style="font-size:24pt">ATT Definitions</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
-<span style="color: #177500"> * Context for an access to an ATT attribute.  When a client reads or writes a</span>
-<span style="color: #177500"> * locally registered attribute, an instance of this struct gets passed to the</span>
-<span style="color: #177500"> * access callback.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_att_svr_access_ctxt</span> {
-    <span style="color: #177500">/**</span>
-<span style="color: #177500">     * The ATT operation being performed dictates which field in this union is</span>
-<span style="color: #177500">     * valid.  If a read is being performed, the read field is valid.</span>
-<span style="color: #177500">     * Otherwise, a write is being performed, in which case the write field is</span>
-<span style="color: #177500">     * valid.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #A90D91">union</span> {
-        <span style="color: #177500">/** Context for reads of ATT attributes. */</span>
-        <span style="color: #A90D91">struct</span> {
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (stack --&gt; app)</span>
-<span style="color: #177500">             * The offset within the attribute that the client is reading from.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">offset</span>;
-
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (stack --&gt; app)</span>
-<span style="color: #177500">             * Maximum number of data bytes the stack can send in the read</span>
-<span style="color: #177500">             * response.  This is based on the connection&#39;s ATT MTU.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">max_data_len</span>;
-
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (stack --&gt; app)</span>
-<span style="color: #177500">             * A buffer that the app can use to write the characteristic</span>
-<span style="color: #177500">             * response value to.  This buffer can hold up to max_data_len</span>
-<span style="color: #177500">             * bytes.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*buf</span>;
-
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (app --&gt; stack)</span>
-<span style="color: #177500">             * App points this at the characteristic data to respond with.</span>
-<span style="color: #177500">             * Initially this points to &quot;buf&quot;.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">const</span> <span style="color: #A90D91">void</span> <span style="color: #000000">*data</span>;
-
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (app --&gt; stack)</span>
-<span style="color: #177500">             * App fills this with the number of data bytes contained in</span>
-<span style="color: #177500">             * characteristic response.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">len</span>;
-        } <span style="color: #000000">read</span>;
-
-        <span style="color: #177500">/** Context for writes of ATT attributes. */</span>
-        <span style="color: #A90D91">struct</span> {
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (stack --&gt; app)</span>
-<span style="color: #177500">             * The data that the peer is writing to the characteristic.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">const</span> <span style="color: #A90D91">void</span> <span style="color: #000000">*data</span>;
-
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (stack --&gt; app)</span>
-<span style="color: #177500">             * The offset within the attribute that the client is writing to.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">offset</span>;
-
-            <span style="color: #177500">/**</span>
-<span style="color: #177500">             * (stack --&gt; app)</span>
-<span style="color: #177500">             * The number of bytes of characteristic data being written.</span>
-<span style="color: #177500">             */</span>
-            <span style="color: #A90D91">int</span> <span style="color: #000000">len</span>;
-        } <span style="color: #000000">write</span>;
-    };
-};
+                            <h2 id="ble95hs95mbuf95from95flat"><font color="#F2853F" style="font-size:24pt">ble_hs_mbuf_from_flat</font></h2>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*</span>
+<span style="color: #000000">ble_hs_mbuf_from_flat</span>(
+    <span style="color: #A90D91">const</span> <span style="color: #A90D91">void</span> <span style="color: #000000">*buf</span>,
+      <span style="color: #A90D91">uint16_t</span>  <span style="color: #000000">len</span>
+)
 </pre></div>
+
+
+<h3 id="description">Description</h3>
+<p>Allocates a an mbuf and fills it with the contents of the specified flat buffer.</p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><em>Parameter</em></th>
+<th><em>Description</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>buf</td>
+<td>The flat buffer to copy from.</td>
+</tr>
+<tr>
+<td>len</td>
+<td>The length of the flat buffer.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="returned-values">Returned values</h3>
+<table>
+<thead>
+<tr>
+<th><em>Value</em></th>
+<th><em>Condition</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A newly-allocated mbuf</td>
+<td>Success.</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>Memory exhaustion.</td>
+</tr>
+</tbody>
+</table>
                         
                         <div class="row">
                             
@@ -565,16 +599,16 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../ble_att/>
+    <a href=../ble_hs_mbuf_att_pkt/>
         <span class="fa fa-arrow-left"></span>
-        Previous: ATT
+        Previous: ble_hs_mbuf_att_pkt
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../functions/ble_att_svr_write_local/>
-        Next: ble_att_svr_write_local
+    <a href=../ble_hs_mbuf_to_flat/>
+        Next: ble_hs_mbuf_to_flat
         <span class="fa fa-arrow-right"></span>
     </a>
     
