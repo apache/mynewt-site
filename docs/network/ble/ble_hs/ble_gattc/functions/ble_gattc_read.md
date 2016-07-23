@@ -12,7 +12,7 @@ ble_gattc_read(
 
 ### Description
 
-Initiates GATT procedure: Read Characteristic Value. 
+Initiates GATT procedure: Read Characteristic Value.
 
 ### Parameters
 

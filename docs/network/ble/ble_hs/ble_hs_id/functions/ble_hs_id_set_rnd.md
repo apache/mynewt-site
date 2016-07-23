@@ -7,7 +7,7 @@ ble_hs_id_set_rnd(const uint8_t *rnd_addr)
 
 ### Description
 
-Sets the device's random address.  The address type (static vs. non-resolvable private) is inferred from the most-significant byte of the address.  The address is specified in host byte order (little-endian!). 
+Sets the device's random address.  The address type (static vs. non-resolvable private) is inferred from the most-significant byte of the address.  The address is specified in host byte order (little-endian!).
 
 ### Parameters
 

@@ -4,7 +4,7 @@
 int
 ble_gattc_disc_all_dscs(
            uint16_t  conn_handle,
-           uint16_t  chr_def_handle,
+           uint16_t  chr_val_handle,
            uint16_t  chr_end_handle,
     ble_gatt_dsc_fn *cb,
                void *cb_arg
@@ -13,14 +13,14 @@ ble_gattc_disc_all_dscs(
 
 ### Description
 
-Initiates GATT procedure: Discover All Characteristic Descriptors. 
+Initiates GATT procedure: Discover All Characteristic Descriptors.
 
 ### Parameters
 
 | *Parameter* | *Description* |
 |-------------|---------------|
 | conn\_handle | The connection over which to execute the procedure. |
-| chr\_def\_handle | The handle of the characteristic definition attribute. |
+| chr\_val\_handle | The handle of the characteristic value attribute. |
 | chr\_end\_handle | The last handle in the characteristic definition. |
 | cb | The function to call to report procedure status updates; null for no callback. |
 | cb\_arg | The optional argument to pass to the callback function. |

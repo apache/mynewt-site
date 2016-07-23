@@ -3,16 +3,15 @@
 ```c
 int
 ble_gattc_notify_custom(
-      uint16_t  conn_handle,
-      uint16_t  chr_val_handle,
-    const void *attr_data,
-      uint16_t  attr_data_len
+          uint16_t   conn_handle,
+          uint16_t   chr_val_handle,
+    struct os_mbuf **txom
 )
 ```
 
 ### Description
 
-Sends a "free-form" characteristic notification.  The content of the message is specified in the attr parameter. 
+Sends a "free-form" characteristic notification.  This function consumes the supplied mbuf regardless of the outcome.
 
 ### Parameters
 
@@ -20,8 +19,7 @@ Sends a "free-form" characteristic notification.  The content of the message is 
 |-------------|---------------|
 | conn\_handle | The connection over which to execute the procedure. |
 | chr\_val\_handle | The attribute handle to indicate in the outgoing notification. |
-| attr\_data | The characteristic value to include in the outgoing notification. |
-| attr\_data\_len | The number of bytes of attribute data to include in the notification. |
+| txom | The value to write to the characteristic. Double indirection is used to effect a transfer of ownership from the caller. |
 
 ### Returned values
 

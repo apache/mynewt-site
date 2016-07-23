@@ -11,7 +11,7 @@ ble_gatts_register_svcs(
 
 ### Description
 
-Registers a set of services, characteristics, and descriptors to be accessed by GATT clients. 
+Registers a set of services, characteristics, and descriptors to be accessed by GATT clients.
 
 ### Parameters
 

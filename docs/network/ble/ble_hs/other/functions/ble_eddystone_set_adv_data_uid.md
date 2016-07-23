@@ -10,7 +10,7 @@ ble_eddystone_set_adv_data_uid(
 
 ### Description
 
-Configures the device to advertise eddystone UID beacons. 
+Configures the device to advertise eddystone UID beacons.
 
 ### Parameters
 

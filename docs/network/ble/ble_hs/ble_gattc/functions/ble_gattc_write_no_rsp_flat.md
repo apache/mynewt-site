@@ -1,11 +1,12 @@
-## <font color="#F2853F" style="font-size:24pt">ble\_gattc\_write\_no\_rsp</font>
+## <font color="#F2853F" style="font-size:24pt">ble\_gattc\_write\_no\_rsp\_flat</font>
 
 ```c
 int
-ble_gattc_write_no_rsp(
-          uint16_t   conn_handle,
-          uint16_t   attr_handle,
-    struct os_mbuf **txom
+ble_gattc_write_no_rsp_flat(
+      uint16_t  conn_handle,
+      uint16_t  attr_handle,
+    const void *data,
+      uint16_t  data_len
 )
 ```
 
@@ -19,7 +20,8 @@ Initiates GATT procedure: Write Without Response.  This function consumes the su
 |-------------|---------------|
 | conn\_handle | The connection over which to execute the procedure. |
 | attr\_handle | The handle of the characteristic value to write to. |
-| txom | The value to write to the characteristic. Double indirection is used to effect a transfer of ownership from the caller. |
+| value | The value to write to the characteristic. |
+| value\_len | The number of bytes to write. |
 
 ### Returned values
 

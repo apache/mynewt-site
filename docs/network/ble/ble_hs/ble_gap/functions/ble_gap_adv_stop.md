@@ -7,7 +7,7 @@ ble_gap_adv_stop(void)
 
 ### Description
 
-Stops the currently-active advertising procedure.  A success return code indicates that advertising has been fully aborted; a new advertising procedure can be initiated immediately. 
+Stops the currently-active advertising procedure.  A success return code indicates that advertising has been fully aborted; a new advertising procedure can be initiated immediately.
 
 ### Parameters
 

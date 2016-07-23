@@ -7,7 +7,7 @@ ble_gap_adv_active(void)
 
 ### Description
 
-Indicates whether an advertisement procedure is currently in progress. 
+Indicates whether an advertisement procedure is currently in progress.
 
 ### Parameters
 

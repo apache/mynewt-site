@@ -10,7 +10,7 @@ ble_uuid_16_to_128(
 
 ### Description
 
-Expands a 16-bit UUID into its 128-bit form. 
+Expands a 16-bit UUID into its 128-bit form.
 
 ### Parameters
 

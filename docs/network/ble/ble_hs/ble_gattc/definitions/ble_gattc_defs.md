@@ -19,8 +19,7 @@ struct ble_gatt_svc {
 struct ble_gatt_attr {
     uint16_t handle;
     uint16_t offset;
-    uint16_t value_len;
-    const void *value;
+    struct os_mbuf *om;
 };
 ```
 
@@ -54,16 +53,26 @@ typedef int ble_gatt_disc_svc_fn(uint16_t conn_handle,
 ```
 
 ```c
+/**
+ * The host will free the attribute mbuf automatically after the callback is
+ * executed.  The application can take ownership of the mbuf and prevent it
+ * from being freed by assigning NULL to attr->om.
+ */
 typedef int ble_gatt_attr_fn(uint16_t conn_handle,
                              const struct ble_gatt_error *error,
-                             const struct ble_gatt_attr *attr,
+                             struct ble_gatt_attr *attr,
                              void *arg);
 ```
 
 ```c
+/**
+ * The host will free the attribute mbufs automatically after the callback is
+ * executed.  The application can take ownership of the mbufs and prevent them
+ * from being freed by assigning NULL to each attribute's om field.
+ */
 typedef int ble_gatt_reliable_attr_fn(uint16_t conn_handle,
                                       const struct ble_gatt_error *error,
-                                      const struct ble_gatt_attr *attrs,
+                                      struct ble_gatt_attr *attrs,
                                       uint8_t num_attrs, void *arg);
 ```
 

@@ -1,19 +1,20 @@
-## <font color="#F2853F" style="font-size:24pt">ble\_gattc\_write\_long</font>
+## <font color="#F2853F" style="font-size:24pt">ble\_gattc\_write\_flat</font>
 
 ```c
 int
-ble_gattc_write_long(
-            uint16_t   conn_handle,
-            uint16_t   attr_handle,
-      struct os_mbuf **txom,
-    ble_gatt_attr_fn  *cb,
-                void  *cb_arg
+ble_gattc_write_flat(
+            uint16_t  conn_handle,
+            uint16_t  attr_handle,
+          const void *data,
+            uint16_t  data_len,
+    ble_gatt_attr_fn *cb,
+                void *cb_arg
 )
 ```
 
 ### Description
 
-Initiates GATT procedure: Write Long Characteristic Values.  This function consumes the supplied mbuf regardless of the outcome.
+Initiates GATT procedure: Write Characteristic Value (flat buffer version).
 
 ### Parameters
 
@@ -21,7 +22,8 @@ Initiates GATT procedure: Write Long Characteristic Values.  This function consu
 |-------------|---------------|
 | conn\_handle | The connection over which to execute the procedure. |
 | attr\_handle | The handle of the characteristic value to write to. |
-| txom | The value to write to the characteristic. Double indirection is used to effect a transfer of ownership from the caller. |
+| value | The value to write to the characteristic. |
+| value\_len | The number of bytes to write. |
 | cb | The function to call to report procedure status updates; null for no callback. |
 | cb\_arg | The optional argument to pass to the callback function. |
 

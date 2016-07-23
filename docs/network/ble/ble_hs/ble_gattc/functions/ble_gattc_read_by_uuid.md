@@ -14,7 +14,7 @@ ble_gattc_read_by_uuid(
 
 ### Description
 
-Initiates GATT procedure: Read Using Characteristic UUID. 
+Initiates GATT procedure: Read Using Characteristic UUID.
 
 ### Parameters
 

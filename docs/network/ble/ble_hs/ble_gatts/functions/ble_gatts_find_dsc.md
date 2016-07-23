@@ -12,7 +12,7 @@ ble_gatts_find_dsc(
 
 ### Description
 
-Retrieves the attribute handle associated with a local GATT descriptor. 
+Retrieves the attribute handle associated with a local GATT descriptor.
 
 ### Parameters
 

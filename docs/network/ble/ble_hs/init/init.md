@@ -19,4 +19,5 @@ This section is a reference on initializing and configuring the NimBLE host.
 | Function | Description |
 |----------|-------------|
 | [ble_hs_init](functions/ble_hs_init.md) | Initializes the NimBLE host. |
+| [ble_hs_rx_data](functions/ble_hs_rx_data.md) | Called when a data packet is received from the controller. |
 | [ble_hs_start](functions/ble_hs_start.md) | Synchronizes the host with the controller by sending a sequence of HCI commands. |

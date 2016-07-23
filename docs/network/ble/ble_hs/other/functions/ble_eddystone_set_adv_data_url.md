@@ -13,7 +13,7 @@ ble_eddystone_set_adv_data_url(
 
 ### Description
 
-Configures the device to advertise eddystone URL beacons. 
+Configures the device to advertise eddystone URL beacons.
 
 ### Parameters
 

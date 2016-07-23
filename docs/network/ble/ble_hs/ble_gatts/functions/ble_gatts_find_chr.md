@@ -12,7 +12,7 @@ ble_gatts_find_chr(
 
 ### Description
 
-Retrieves the pair of attribute handles associated with a local GATT characteristic. 
+Retrieves the pair of attribute handles associated with a local GATT characteristic.
 
 ### Parameters
 

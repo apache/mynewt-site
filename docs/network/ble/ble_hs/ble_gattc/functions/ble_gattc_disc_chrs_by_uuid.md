@@ -14,7 +14,7 @@ ble_gattc_disc_chrs_by_uuid(
 
 ### Description
 
-Initiates GATT procedure: Discover Characteristics by UUID. 
+Initiates GATT procedure: Discover Characteristics by UUID.
 
 ### Parameters
 

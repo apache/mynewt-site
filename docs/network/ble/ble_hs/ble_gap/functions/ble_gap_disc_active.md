@@ -7,7 +7,7 @@ ble_gap_disc_active(void)
 
 ### Description
 
-Indicates whether a discovery procedure is currently in progress. 
+Indicates whether a discovery procedure is currently in progress.
 
 ### Parameters
 

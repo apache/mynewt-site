@@ -10,7 +10,7 @@ ble_gap_conn_rssi(
 
 ### Description
 
-Retrieves the most-recently measured RSSI for the specified connection.  A connection's RSSI is updated whenever a data channel PDU is received. 
+Retrieves the most-recently measured RSSI for the specified connection.  A connection's RSSI is updated whenever a data channel PDU is received.
 
 ### Parameters
 

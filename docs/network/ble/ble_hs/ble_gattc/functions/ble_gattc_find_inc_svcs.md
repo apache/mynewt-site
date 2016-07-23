@@ -13,7 +13,7 @@ ble_gattc_find_inc_svcs(
 
 ### Description
 
-Initiates GATT procedure: Find Included Services. 
+Initiates GATT procedure: Find Included Services.
 
 ### Parameters
 

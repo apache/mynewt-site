@@ -7,7 +7,7 @@ ble_gap_security_initiate(uint16_t conn_handle)
 
 ### Description
 
-Initiates the GAP encryption procedure. 
+Initiates the GAP encryption procedure.
 
 ### Parameters
 

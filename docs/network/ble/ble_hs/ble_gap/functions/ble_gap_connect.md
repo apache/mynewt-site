@@ -6,6 +6,7 @@ ble_gap_connect(
                              uint8_t  own_addr_type,
                              uint8_t  peer_addr_type,
                        const uint8_t *peer_addr,
+                             int32_t  duration_ms,
     const struct ble_gap_conn_params *conn_params,
                     ble_gap_event_fn *cb,
                                 void *cb_arg
@@ -14,7 +15,7 @@ ble_gap_connect(
 
 ### Description
 
-Initiates a connect procedure. 
+Initiates a connect procedure.
 
 ### Parameters
 

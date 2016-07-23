@@ -13,7 +13,7 @@ ble_gap_disc(
 
 ### Description
 
-Performs the Limited or General Discovery Procedures. 
+Performs the Limited or General Discovery Procedures.
 
 ### Parameters
 

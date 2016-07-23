@@ -11,7 +11,7 @@ ble_ibeacon_set_adv_data(
 
 ### Description
 
-Configures the device to advertise iBeacons. 
+Configures the device to advertise iBeacons.
 
 ### Parameters
 

@@ -7,7 +7,7 @@ ble_gap_conn_cancel(void)
 
 ### Description
 
-Aborts a connect procedure in progress. 
+Aborts a connect procedure in progress.
 
 ### Parameters
 
