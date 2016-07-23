@@ -12,7 +12,7 @@ ble_gattc_read_long(
 
 ### Description
 
-Initiates GATT procedure: Read Long Characteristic Values. 
+Initiates GATT procedure: Read Long Characteristic Values.
 
 ### Parameters
 

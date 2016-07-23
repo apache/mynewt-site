@@ -15,7 +15,7 @@ ble_gap_adv_start(
 
 ### Description
 
-Initiates advertising. 
+Initiates advertising.
 
 ### Parameters
 

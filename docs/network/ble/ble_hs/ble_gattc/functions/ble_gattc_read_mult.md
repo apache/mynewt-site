@@ -13,7 +13,7 @@ ble_gattc_read_mult(
 
 ### Description
 
-Initiates GATT procedure: Read Multiple Characteristic Values. 
+Initiates GATT procedure: Read Multiple Characteristic Values.
 
 ### Parameters
 

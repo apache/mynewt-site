@@ -10,7 +10,7 @@ ble_gap_conn_find(
 
 ### Description
 
-Searches for a connection with the specified handle.  If a matching connection is found, the supplied connection descriptor is filled correspondingly. 
+Searches for a connection with the specified handle.  If a matching connection is found, the supplied connection descriptor is filled correspondingly.
 
 ### Parameters
 

@@ -10,7 +10,7 @@ ble_gap_wl_set(
 
 ### Description
 
-Overwrites the controller's white list with the specified contents. 
+Overwrites the controller's white list with the specified contents.
 
 ### Parameters
 

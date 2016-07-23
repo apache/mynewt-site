@@ -10,7 +10,7 @@ ble_gap_update_params(
 
 ### Description
 
-Initiates a connection parameter update procedure. 
+Initiates a connection parameter update procedure.
 
 ### Parameters
 

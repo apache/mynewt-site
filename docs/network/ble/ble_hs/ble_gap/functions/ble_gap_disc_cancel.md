@@ -7,7 +7,7 @@ ble_gap_disc_cancel(void)
 
 ### Description
 
-Cancels the discovery procedure currently in progress.  A success return code indicates that scanning has been fully aborted; a new discovery or connect procedure can be initiated immediately. 
+Cancels the discovery procedure currently in progress.  A success return code indicates that scanning has been fully aborted; a new discovery or connect procedure can be initiated immediately.
 
 ### Parameters
 

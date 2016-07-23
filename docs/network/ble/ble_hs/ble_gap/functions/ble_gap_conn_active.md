@@ -7,7 +7,7 @@ ble_gap_conn_active(void)
 
 ### Description
 
-Indicates whether a connect procedure is currently in progress. 
+Indicates whether a connect procedure is currently in progress.
 
 ### Parameters
 

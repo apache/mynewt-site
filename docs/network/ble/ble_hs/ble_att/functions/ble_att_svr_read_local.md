@@ -3,28 +3,26 @@
 ```c
 int
 ble_att_svr_read_local(
-      uint16_t   attr_handle,
-    const void **out_data,
-      uint16_t  *out_attr_len
+          uint16_t   attr_handle,
+    struct os_mbuf **out_om
 )
 ```
 
 ### Description
 
-Reads a locally registered attribute.  If the specified attribute handle corresponds to a GATT characteristic value or descriptor, the read is performed by calling the registered GATT access callback. 
+Reads a locally registered attribute.  If the specified attribute handle coresponds to a GATT characteristic value or descriptor, the read is performed by calling the registered GATT access callback.
 
 ### Parameters
 
 | *Parameter* | *Description* |
 |-------------|---------------|
 | attr\_handle | The 16-bit handle of the attribute to read. |
-| out\_data | On success, this points to the attribute data just read. |
-| out\_attr\_len | On success, this points to the number of bytes of attribute data just read. |
+| out\_om | On success, this is made to point to a newly-allocated mbuf containing the attribute data read. |
 
 ### Returned values
 
 | *Value* | *Condition* |
 |---------|-------------|
-| 0 | Success |
-| [ATT return code](../../ble_hs_return_codes/#return-codes-att) | NimBLE host ATT return code if the attribute access callback reports failure. |
+| 0 | Success. |
+| [ATT return code](../../ble_hs_return_codes/#return-codes-att) | The attribute access callback reports failure. |
 | [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

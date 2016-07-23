@@ -1,8 +1,8 @@
-## <font color="#F2853F" style="font-size:24pt">ble\_gattc\_notify</font>
+## <font color="#F2853F" style="font-size:24pt">ble\_gattc\_indicate</font>
 
 ```c
 int
-ble_gattc_notify(
+ble_gattc_indicate(
     uint16_t conn_handle,
     uint16_t chr_val_handle
 )
@@ -10,14 +10,14 @@ ble_gattc_notify(
 
 ### Description
 
-Sends a characteristic notification.  The content of the message is read from the specified characteristic.
+Sends a characteristic indication.  The content of the message is read from the specified characteristic.
 
 ### Parameters
 
 | *Parameter* | *Description* |
 |-------------|---------------|
 | conn\_handle | The connection over which to execute the procedure. |
-| chr\_val\_handle | The value attribute handle of the characteristic to include in the outgoing notification. |
+| chr\_val\_handle | The value attribute handle of the characteristic to include in the outgoing indication. |
 
 ### Returned values
 

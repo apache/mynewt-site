@@ -26,6 +26,7 @@ The Generic Access Profile (GAP) is responsible for all connecting, advertising,
 | [ble_gap_conn_active](functions/ble_gap_conn_active.md) | Indicates whether a connect procedure is currently in progress. |
 | [ble_gap_conn_cancel](functions/ble_gap_conn_cancel.md) | Aborts a connect procedure in progress. |
 | [ble_gap_conn_find](functions/ble_gap_conn_find.md) | Searches for a connection with the specified handle. |
+| [ble_gap_conn_rssi](functions/ble_gap_conn_rssi.md) | Retrieves the most-recently measured RSSI for the specified connection. |
 | [ble_gap_connect](functions/ble_gap_connect.md) | Initiates a connect procedure. |
 | [ble_gap_disc](functions/ble_gap_disc.md) | Performs the Limited or General Discovery Procedures. |
 | [ble_gap_disc_active](functions/ble_gap_disc_active.md) | Indicates whether a discovery procedure is currently in progress. |
@@ -33,4 +34,4 @@ The Generic Access Profile (GAP) is responsible for all connecting, advertising,
 | [ble_gap_security_initiate](functions/ble_gap_security_initiate.md) | Initiates the GAP encryption procedure. |
 | [ble_gap_terminate](functions/ble_gap_terminate.md) | Terminates an established connection. |
 | [ble_gap_update_params](functions/ble_gap_update_params.md) | Initiates a connection parameter update procedure. |
- [ble_gap_wl_set](functions/ble_gap_wl_set.md) | Overwrites the controller's white list with the specified contents. |
+| [ble_gap_wl_set](functions/ble_gap_wl_set.md) | Overwrites the controller's white list with the specified contents. |

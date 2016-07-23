@@ -7,7 +7,7 @@ ble_uuid_128_to_16(const void *uuid128)
 
 ### Description
 
-Attempts to convert the supplied 128-bit UUID into its shortened 16-bit form. 
+Attempts to convert the supplied 128-bit UUID into its shortened 16-bit form.
 
 ### Parameters
 
@@ -19,5 +19,5 @@ Attempts to convert the supplied 128-bit UUID into its shortened 16-bit form.
 
 | *Value* | *Condition* |
 |---------|-------------|
-| other | Positive 16-bit unsigned integer on success. |
+| A positive 16-bit unsigned integer | Success. |
 | 0 | The uuid cannot be represented in 16 bits. |

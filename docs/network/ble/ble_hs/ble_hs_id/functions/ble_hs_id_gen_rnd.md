@@ -10,7 +10,7 @@ ble_hs_id_gen_rnd(
 
 ### Description
 
-Generates a new random address.  This function does not configure the device with the new address; the caller can use the address in subsequent operations. 
+Generates a new random address.  This function does not configure the device with the new address; the caller can use the address in subsequent operations.
 
 ### Parameters
 

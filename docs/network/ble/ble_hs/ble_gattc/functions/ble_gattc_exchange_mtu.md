@@ -11,7 +11,7 @@ ble_gattc_exchange_mtu(
 
 ### Description
 
-Initiates GATT procedure: Exchange MTU. 
+Initiates GATT procedure: Exchange MTU.
 
 ### Parameters
 

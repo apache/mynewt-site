@@ -12,7 +12,7 @@ ble_gattc_disc_svc_by_uuid(
 
 ### Description
 
-Initiates GATT procedure: Discover Primary Service by Service UUID. 
+Initiates GATT procedure: Discover Primary Service by Service UUID.
 
 ### Parameters
 

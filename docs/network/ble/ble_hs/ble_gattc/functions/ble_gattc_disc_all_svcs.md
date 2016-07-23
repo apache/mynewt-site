@@ -11,7 +11,7 @@ ble_gattc_disc_all_svcs(
 
 ### Description
 
-Initiates GATT procedure: Discover All Primary Services. 
+Initiates GATT procedure: Discover All Primary Services.
 
 ### Parameters
 

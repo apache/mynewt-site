@@ -13,7 +13,7 @@ ble_gattc_disc_all_chrs(
 
 ### Description
 
-Initiates GATT procedure: Discover All Characteristics of a Service. 
+Initiates GATT procedure: Discover All Characteristics of a Service.
 
 ### Parameters
 

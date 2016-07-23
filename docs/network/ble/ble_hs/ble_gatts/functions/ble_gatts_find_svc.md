@@ -10,7 +10,7 @@ ble_gatts_find_svc(
 
 ### Description
 
-Retrieves the attribute handle associated with a local GATT service. 
+Retrieves the attribute handle associated with a local GATT service.
 
 ### Parameters
 

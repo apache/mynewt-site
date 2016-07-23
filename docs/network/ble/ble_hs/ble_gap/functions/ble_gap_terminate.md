@@ -10,7 +10,7 @@ ble_gap_terminate(
 
 ### Description
 
-Terminates an established connection. 
+Terminates an established connection.
 
 ### Parameters
 

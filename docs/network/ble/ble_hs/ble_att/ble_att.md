@@ -14,12 +14,11 @@ Most ATT functionality is not interesting to an application.  Rather than use AT
 
 ### Definitions
 
-[BLE host ATT definitions](definitions/ble_att_defs.md)
-
-### Functions
+None.
 
 | Function | Description |
 |----------|-------------|
-| [ble_att_set_preferred_mtu](functions/ble_att_set_preferred_mtu.md) | Sets the preferred ATT MTU; the device will indicate this value in all subsequent ATT MTU exchanges. |
+| [ble_att_mtu](functions/ble_att_mtu.md) | Retrieves the ATT MTU of the specified connection. |
+| [ble_att_set_preferred_mtu](functions/ble_att_set_preferred_mtu.md) | Sets the preferred ATT MTU; the device will indicate this value in all subseqeunt ATT MTU exchanges. |
 | [ble_att_svr_read_local](functions/ble_att_svr_read_local.md) | Reads a locally registered attribute. |
 | [ble_att_svr_write_local](functions/ble_att_svr_write_local.md) | Writes a locally registered attribute. |

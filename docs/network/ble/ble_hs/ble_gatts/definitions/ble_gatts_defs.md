@@ -2,8 +2,7 @@
 
 ```c
 typedef int ble_gatt_access_fn(uint16_t conn_handle, uint16_t attr_handle,
-                               uint8_t op, struct ble_gatt_access_ctxt *ctxt,
-                               void *arg);
+                               struct ble_gatt_access_ctxt *ctxt, void *arg);
 ```
 
 ```c
@@ -77,41 +76,6 @@ struct ble_gatt_svc_def {
 ```
 
 ```c
-/**
- * Context for an access to a GATT characteristic or descriptor.  When a client
- * reads or writes a locally registered characteristic or descriptor, an
- * instance of this struct gets passed to the application callback.
- */
-struct ble_gatt_access_ctxt {
-    /**
-     * The GATT operation being performed dictates which field in this union is
-     * valid.  If a characteristic is being accessed, the chr field is valid.
-     * Otherwise, a descriptor is being accessed, in which case the dsc field
-     * is valid.
-     */
-    union {
-        /**
-         * The characteristic definition corresponding to the characteristic
-         * being accessed.  This is what the app registered at startup.
-         */
-        const struct ble_gatt_chr_def *chr;
-
-        /**
-         * The descriptor definition corresponding to the descriptor being
-         * accessed.  This is what the app registered at startup.
-         */
-        const struct ble_gatt_dsc_def *dsc;
-    };
-
-    /**
-     * Context describing the underlying ATT access.  Specifies additional
-     * details about the read or write being performed.
-     */
-    struct ble_att_svr_access_ctxt *att;
-};
-```
-
-```c
 struct ble_gatt_dsc_def {
     /**
      * The first element in a uint8_t[16]; use the BLE_UUID16 macro for 16-bit
@@ -127,6 +91,56 @@ struct ble_gatt_dsc_def {
 
     /** Optional argument for callback. */
     void *arg;
+};
+```
+
+```c
+/**
+ * Context for an access to a GATT characteristic or descriptor.  When a client
+ * reads or writes a locally registered characteristic or descriptor, an
+ * instance of this struct gets passed to the application callback.
+ */
+struct ble_gatt_access_ctxt {
+    /**
+     * Indicates the gatt operation being performed.  This is equal to one of
+     * the following values:
+     *     o  BLE_GATT_ACCESS_OP_READ_CHR
+     *     o  BLE_GATT_ACCESS_OP_WRITE_CHR
+     *     o  BLE_GATT_ACCESS_OP_READ_DSC
+     *     o  BLE_GATT_ACCESS_OP_WRITE_DSC
+     */
+    uint8_t op;
+
+    /**
+     * A container for the GATT access data.
+     *     o For reads: The application populates this with the value of the
+     *       characteristic or descriptor being read.
+     *     o For writes: This is already populated with the value being written
+     *       by the peer.  If the application wishes to retain this mbuf for
+     *       later use, the access callback must set this pointer to NULL to
+     *       prevent the stack from freeing it.
+     */
+    struct os_mbuf *om;
+
+    /**
+     * The GATT operation being performed dictates which field in this union is
+     * valid.  If a characteristic is being accessed, the chr field is valid.
+     * Otherwise a descriptor is being accessed, in which case the dsc field
+     * is valid.
+     */
+    union {
+        /**
+         * The characteristic definition corresponding to the characteristic
+         * being accessed.  This is what the app registered at startup.
+         */
+        const struct ble_gatt_chr_def *chr;
+
+        /**
+         * The descriptor definition corresponding to the descriptor being
+         * accessed.  This is what the app registered at startup.
+         */
+        const struct ble_gatt_dsc_def *dsc;
+    };
 };
 ```
 
@@ -199,4 +213,34 @@ union ble_gatt_register_ctxt {
 typedef void ble_gatt_register_fn(uint8_t op,
                                   union ble_gatt_register_ctxt *ctxt,
                                   void *arg);
+```
+
+```c
+/**
+ * Contains counts of resources required by the GATT server.  The contents of
+ * this struct are generally used to populate a configuration struct before
+ * the host is initialized.
+ */
+struct ble_gatt_resources {
+    /** Number of services. */
+    uint16_t svcs;
+
+    /** Number of included services. */
+    uint16_t incs;
+
+    /** Number of characteristics. */
+    uint16_t chrs;
+
+    /** Number of descriptors. */
+    uint16_t dscs;
+
+    /**
+     * Number of client characteristic configuration descriptors.  Each of
+     * these also contributes to the total descriptor count.
+     */
+    uint16_t cccds;
+
+    /** Total number of ATT attributes. */
+    uint16_t attrs;
+};
 ```

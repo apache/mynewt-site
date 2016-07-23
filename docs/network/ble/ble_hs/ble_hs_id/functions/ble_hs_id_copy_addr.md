@@ -11,7 +11,7 @@ ble_hs_id_copy_addr(
 
 ### Description
 
-Retrieves one of the device's identity addresses.  The device can have two identity addresses: one public and one random.  The id\_addr\_type argument specifies which of these two addresses to retrieve. 
+Retrieves one of the device's identity addresses.  The device can have two identity addresses: one public and one random.  The id\_addr\_type argument specifies which of these two addresses to retrieve.
 
 ### Parameters
 
