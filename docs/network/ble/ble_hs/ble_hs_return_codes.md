@@ -90,13 +90,17 @@ encrypt_connection(uint16_t conn_handle)
 
 ### Return Code Reference
 
-#### Return codes - Core
+#### Header
 
-The precise meaning of each of these error codes depends on the function that returns it.  The API reference for a particular function indicates the conditions under which each of these codes are returned.
+All NimBLE host return codes are made accessible by including the following header:
 
 ```c
 #include "host/ble_hs.h"
 ```
+
+#### Return codes - Core
+
+The precise meaning of each of these error codes depends on the function that returns it.  The API reference for a particular function indicates the conditions under which each of these codes are returned.
 
 | Value | Name           | Condition                                    |
 |-------|----------------|----------------------------------------------|
@@ -126,12 +130,6 @@ The precise meaning of each of these error codes depends on the function that re
 
 #### Return codes - ATT
 
-
-```c
-#include "host/ble_hs.h"
-#include "host/ble_att.h"
-```
-
 | NimBLE Value | Formal Value | Name   | Condition   |
 |--------------|--------------|--------|-------------|
 | 0x0101  | 0x01  |  BLE\_ATT\_ERR\_INVALID\_HANDLE          | The attribute handle given was not valid on this server. |
@@ -154,12 +152,6 @@ The precise meaning of each of these error codes depends on the function that re
 
 
 #### Return codes - HCI
-
-
-```c
-#include "host/ble_hs.h"
-#include "nimble/ble.h"
-```
 
 | NimBLE Value | Formal Value | Name   | Condition   |
 |--------------|--------------|--------|-------------|
@@ -227,12 +219,6 @@ The precise meaning of each of these error codes depends on the function that re
 
 #### Return codes - L2CAP
 
-
-```c
-#include "host/ble_hs.h"
-#include "host/ble_l2cap.h"
-```
-
 | NimBLE Value | Formal Value | Name   | Condition   |
 |--------------|--------------|--------|-------------|
 | 0x0300  | 0x00  | BLE\_L2CAP\_SIG\_ERR\_CMD\_NOT\_UNDERSTOOD    | Invalid or unsupported incoming L2CAP sig command. |
@@ -240,12 +226,6 @@ The precise meaning of each of these error codes depends on the function that re
 | 0x0302  | 0x02  | BLE\_L2CAP\_SIG\_ERR\_INVALID\_CID            | No channel with specified ID. |
 
 #### Return codes - Security manager (us)
-
-
-```c
-#include "host/ble_hs.h"
-#include "host/ble_sm.h"
-```
 
 | NimBLE Value | Formal Value | Name   | Condition   |
 |--------------|--------------|--------|-------------|
@@ -265,12 +245,6 @@ The precise meaning of each of these error codes depends on the function that re
 | 0x040e  | 0x0e  | BLE\_SM\_ERR\_CROSS\_TRANS        | Indicates that the BR/EDR Link Key generated on the BR/EDR transport cannot be used to derive and distribute keys for the LE transport. |
 
 #### Return codes - Security manager (peer)
-
-
-```c
-#include "host/ble_hs.h"
-#include "host/ble_sm.h"
-```
 
 | NimBLE Value | Formal Value | Name   | Condition   |
 |--------------|--------------|--------|-------------|
