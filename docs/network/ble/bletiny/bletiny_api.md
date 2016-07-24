@@ -2,13 +2,13 @@
 
 "bletiny" is one of the sample applications that come with Mynewt. It is a simple shell application which provides a basic interface to the host-side of the BLE stack. "bletiny" includes all the possible roles (Central/Peripheral) and they may be run simultaneously. You can run bletiny on a board and issue commands that make it behave as a central or a peripheral with different peers. 
 
-Highlighted below are some of the ways you can use the API to establish connections and discover services and characteristics from peer devices. For descriptions of the full API, go to the next sections on [GAP in bletiny](bletiny/bletiny_GAP.md) and [GATT in bletiny](bletiny/bletiny_GATT.md).
+Highlighted below are some of the ways you can use the API to establish connections and discover services and characteristics from peer devices. For descriptions of the full API, go to the next sections on [GAP in bletiny](bletiny_GAP.md) and [GATT in bletiny](bletiny_GATT.md).
 
 <br>
 
 ### Set device public address.
 
-Currently the device public address is hardcoded to `0a:0b:0c:0d:0e:0f` in `bletiny` app but you can change it by going into its source code and initializing it to the desired value as described in the section on how to [initialize device addr](ini_stack/ble_devadd.md). 
+Currently the device public address is hardcoded to `0a:0b:0c:0d:0e:0f` in `bletiny` app but you can change it by going into its source code and initializing it to the desired value as described in the section on how to [initialize device addr](../ini_stack/ble_devadd.md). 
 
 <br>
 
