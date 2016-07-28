@@ -3,8 +3,8 @@
 ```c
 int
 ble_att_svr_write_local(
-          uint16_t   attr_handle,
-    struct os_mbuf **om
+          uint16_t  attr_handle,
+    struct os_mbuf *om
 )
 ```
 
@@ -17,7 +17,7 @@ Writes a locally registered attribute.  This function consumes the supplied mbuf
 | *Parameter* | *Description* |
 |-------------|---------------|
 | attr\_handle | The 16-bit handle of the attribute to write. |
-| om | The value to write to the attribute.  Double indirection is used to effect a transfer of ownership from the caller. |
+| om | The value to write to the attribute. |
 
 ### Returned values
 
