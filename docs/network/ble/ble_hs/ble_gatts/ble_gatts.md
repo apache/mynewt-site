@@ -18,6 +18,7 @@ The Generic Attribute Profile (GATT) manages all activities involving services, 
 
 | Function | Description |
 |----------|-------------|
+| [ble_gatts_add_svcs](functions/ble_gatts_add_svcs.md) | Queues a set of service definitions for registration. |
 | [ble_gatts_count_resources](functions/ble_gatts_count_resources.md) | Accumulates counts of each resource type required by the specified service definition array. |
 | [ble_gatts_find_chr](functions/ble_gatts_find_chr.md) | Retrieves the pair of attribute handles associated with a local GATT characteristic. |
 | [ble_gatts_find_dsc](functions/ble_gatts_find_dsc.md) | Retrieves the attribute handle associated with a local GATT descriptor. |

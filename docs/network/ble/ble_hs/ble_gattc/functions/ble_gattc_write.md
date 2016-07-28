@@ -3,11 +3,11 @@
 ```c
 int
 ble_gattc_write(
-            uint16_t   conn_handle,
-            uint16_t   attr_handle,
-      struct os_mbuf **txom,
-    ble_gatt_attr_fn  *cb,
-                void  *cb_arg
+            uint16_t  conn_handle,
+            uint16_t  attr_handle,
+      struct os_mbuf *txom,
+    ble_gatt_attr_fn *cb,
+                void *cb_arg
 )
 ```
 
@@ -21,7 +21,7 @@ Initiates GATT procedure: Write Characteristic Value.  This function consumes th
 |-------------|---------------|
 | conn\_handle | The connection over which to execute the procedure. |
 | attr\_handle | The handle of the characteristic value to write to. |
-| txom | The value to write to the characteristic. Double indirection is used to effect a transfer of ownership from the caller. |
+| txom | The value to write to the characteristic. |
 | cb | The function to call to report procedure status updates; null for no callback. |
 | cb\_arg | The optional argument to pass to the callback function. |
 
