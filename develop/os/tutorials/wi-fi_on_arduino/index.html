@@ -6,10 +6,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/arduino_zero/">
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/wi-fi_on_arduino/">
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Blinky on Arduino Zero - Apache Mynewt</title>
+	<title>Enable Wi-Fi on Arduino Zero - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Blinky on Arduino Zero">
+    <body class="Enable Wi-Fi on Arduino Zero">
 
 
         
@@ -209,64 +209,9 @@
   
   
     <li><a href="
-  ./
+  ../arduino_zero/
 ">Project Blinky</a>
   
-  
-    <ul>
-          
-              
-                
-    <li class="active">
-      <a href="./">Blinky on Arduino Zero</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../blinky_primo/">Blinky on Arduino Primo</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../olimex/">Blinky on Olimex</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../STM32F303/">Blinky on STM32F303</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../nRF52/">Blinky on nRF52</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../blinky_sram_olimex/">Run Blinky from SRAM, no bootloader</a>
-    </li>
-
-              
-          
-    </ul>
   
     </li>
 
@@ -298,8 +243,8 @@
           
               
                 
-    <li >
-      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino Zero</a>
+    <li class="active">
+      <a href="./">Enable Wi-Fi on Arduino Zero</a>
     </li>
 
               
@@ -471,15 +416,15 @@
     
     
         
+          <li>&raquo; <a href="../../introduction/">Mynewt Documentation</a></li>
+        
+      
+        
           <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
         
       
-        
-          <li>&raquo; Project Blinky</li>
-        
       
-      
-        <li>&raquo; Blinky on Arduino Zero</li>
+        <li>&raquo; Enable Wi-Fi on Arduino Zero</li>
       
     
     
@@ -488,40 +433,58 @@
                             </div>
                         </div>
                         
-                            <h2 id="blinky-your-hello-world-on-arduino-zero">Blinky, your "Hello World!", on Arduino Zero</h2>
-<p>Learn how to use packages from a default application repository of Mynewt to build your first <em>Hello World</em> application (Blinky) on a target board. Once built using the <em>newt</em> tool, this application will blink the LED lights on the target board.</p>
-<p>This tutorial describes how to run Mynewt OS on Arduino Zero. Follow these simple steps and your board will be blinking in no time!</p>
+                            <h2 id="start-wi-fi-on-arduino-zero">Start Wi-Fi on Arduino Zero</h2>
+<p>This tutorial walks you through the steps to get your Arduino board on a Wi-Fi network. </p>
+<p><strong>Note:</strong> Wi-Fi support is currently available in the <code>develop</code> branch of Mynewt only. It will be merged into <code>master</code> branch when version 0.10 is released.</p>
 <h3 id="prerequisites">Prerequisites</h3>
 <p>Before tackling this tutorial, it's best to read about Mynewt in the <a href="../../get_started/introduction">Introduction</a> section of this documentation.</p>
 <h3 id="equipment">Equipment</h3>
 <p>You will need the following equipment</p>
 <ul>
-<li>An Arduino Zero board.  NOTE: There are many flavors of Arduino. Ensure that 
-you have an Arduino Zero. See below for the versions of Arduino Zero that are
-compatible with this tutorial</li>
-<li>A computer that can connect to the Arduino Zero over USB</li>
-<li>A USB cable (Type A to micro B) that can connect the computer to the Arduino</li>
+<li>An Arduino Zero, Zero Pro or M0 Pro.<br />
+<strong>Note:</strong> Mynewt has not been tested on Arduino M0 which has no internal debugger support.</li>
+<li>An Arduino Wi-Fi Shield 101</li>
+<li>A computer that can connect to the Arduino board over USB</li>
+<li>A local Wi-Fi network that the computer is connected to and which the Arduino board can join.</li>
+<li>A USB cable (Type A to micro B) that can connect the computer to the Arduino (or a USB hub between the computer and the Arduino board)</li>
 <li>The Mynewt Release</li>
 </ul>
-<p>This tutorial has been tested on the following three Arduino Zero boards - Zero, M0 Pro, and Zero-Pro.</p>
-<p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 390px;"/>
-<img src="http://www.arduino.org/images/products/Arduino-M0Pro-flat.jpg" alt="Drawing" style="width: 310px;"/>
-<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 310px;"/></p>
-<p>Mynewt has not been tested on Arduino M0 which has no internal debugger support.</p>
 <h3 id="install-mynewt-and-newt">Install Mynewt and Newt</h3>
 <ul>
-<li>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a></li>
+<li>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a>. </li>
+<li>If you installed Newt previously but need to update it, go to the newt git repo directory, pull the latest code from <code>develop</code> branch, and install the updated code.</li>
+</ul>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   user@~/dev$ cd $GOPATH/src/mynewt.apache.org/newt
+   user@~/dev/go/src/mynewt.apache.org/newt$ git remote -v
+   origin   https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git (fetch)
+   origin   https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git (push)
+   user@~/dev/go/src/mynewt.apache.org/newt$ git pull origin develop
+   remote: Counting objects: 59, done.
+   &lt;snip&gt;
+   user@~/dev/go/src/mynewt.apache.org/newt$ cd newt
+   user@~/dev/go/src/mynewt.apache.org/newt/newt$ go install
+   user@~/dev$ cd ~/dev
+</pre></div>
+
+
+<ul>
 <li>If you have not already done so, create a project as shown in the Quick Start guide on how to <a href="../../get_started/project_create/">Create Your First Project</a>. Skip the testing and building the project steps in that tutorial since you will be defining a target for your Arduino board in this tutorial.</li>
 </ul>
+<p>Let's say your new project is named <code>arduinowifi</code>. You will henceforth be working in that project directory.</p>
 <p><br></p>
-<h3 id="fetch-external-packages">Fetch External Packages</h3>
+<h3 id="fetch-external-packages-set-correct-version-to-download">Fetch External Packages, Set correct version to download</h3>
 <p>Mynewt uses source code provided directly from the chip manufacturer for 
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.</p>
 <p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add 
-the repository to the <code>project.yml</code> file in your base project directory.</p>
+the repository to the <code>project.yml</code> file in your base project directory (<code>arduinowifi</code>).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">user@~/dev/arduinowifi$ vi project.yml
+</pre></div>
+
+
 <p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
 added. The sections with <code>mynewt_arduino_zero</code> that need to be added to 
-your project file are highlighted.</p>
+your project file are highlighted. </p>
+<p>Also highlighted is the <code>0-dev</code> version for both the repositories to ensure code is downloaded from the <code>develop</code> branch.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more project.yml 
 project.name: &quot;my_project&quot;
 
@@ -531,13 +494,13 @@ project.repositories:
 </span>
 repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
-    user: apache
+<span style="background-color: #ffffcc">    vers: 0-dev
+</span>    user: apache
     repo: incubator-mynewt-core
 
 <span style="background-color: #ffffcc">repository.mynewt_arduino_zero:
 </span><span style="background-color: #ffffcc">    type: github
-</span><span style="background-color: #ffffcc">    vers: 0-latest
+</span><span style="background-color: #ffffcc">    vers: 0-dev
 </span><span style="background-color: #ffffcc">    user: runtimeinc
 </span><span style="background-color: #ffffcc">    repo: mynewt_arduino_zero
 </span>$ 
@@ -555,8 +518,6 @@ $
 </pre></div>
 
 
-<p><br></p>
-<p><strong>NOTE:</strong> If there has been a new release of a repo used in your project since you last installed it, the <code>0-latest</code> version for the repo in the <code>project.yml</code> file will refer to the new release and will not match the installed files. In that case you will get an error message saying so and you will need to run <code>newt upgrade</code> to overwrite the existing files with the latest codebase.</p>
 <p><br></p>
 <h3 id="create-your-bootloader-target">Create your bootloader target</h3>
 <p>Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
@@ -581,34 +542,17 @@ $ newt target set arduino_boot build_profile=optimized
 
 
 <p><br></p>
-<p>These commands do a few things: </p>
-<ul>
-<li>Create a target named <code>arduino_boot</code>, in order to build the Arduino Zero Bootloader.</li>
-<li>Set the application for the <code>arduino_boot</code> target to the default Apache Mynewt 
-    bootloader (<code>@apache-mynewt-core/apps/boot</code>)</li>
-<li>Set the board support package for the target to 
-    <code>@mynewt_arduino_zero/hw/bsp/arduino_zero</code>.  This is a reference to the downloaded 
-    Arduino Zero support from Github.</li>
-<li>Use the "optimized" build profile for the <code>arduino_boot</code> target.  This
-    instructs Newt to generate smaller and more efficient code for this target.
-    This setting is necessary due to the bootloader's strict size constraints.</li>
-<li>Tells the Board Support Package to enable support for the Arduino Zero Pro or the Arduino Zero. Set it to <code>arduino_zero</code> or <code>arduino_zero_pro</code> depending on the board you have.</li>
-</ul>
-<p><br></p>
 <h3 id="build-your-bootloader">Build your bootloader</h3>
 <p>Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the <code>newt build</code> command:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_boot 
-Compiling asprintf.c
-Compiling atoi.c
-Compiling atol.c
-Compiling atoll.c
-Compiling bsearch.c
-Compiling bzero.c
-Compiling calloc.c
-Compiling fgets.c
-Compiling inline.c
+Compiling boot.c
+Archiving boot.a
+Compiling fs_cli.c
+Compiling fs_dirent.c
+Compiling fs_file.c
+Compiling fs_mkdir.c
 &lt;snip&gt;
-App successfully built: myproject/bin/arduino_boot/apps/boot/boot.elf
+App successfully built: ~/dev/arduinowifi/bin/arduino_boot/apps/boot/boot.elf
 </pre></div>
 
 
@@ -617,51 +561,39 @@ bootloader, and the next step is to build your application for the Arduino
 board.</p>
 <p><br></p>
 <h3 id="build-your-blinky-app">Build your blinky app</h3>
-<p>To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the default application that comes with your project, <code>apps/blinky</code>:</p>
+<p>To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the Wi-Fi application that comes in the arduino repository, <code>apps/winc1500_wifi</code>:</p>
 <p><strong>Note</strong>: Remember to set features to <code>arduino_zero</code> if your board is Arduino Zero and not a Pro!</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_blinky 
-Target targets/arduino_blinky successfully created
-$ newt target set arduino_blinky app=apps/blinky 
-Target targets/arduino_blinky successfully set target.app to apps/blinky
-$ newt target set arduino_blinky bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-Target targets/arduino_blinky successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
-$ newt target set arduino_blinky build_profile=debug 
-Target targets/arduino_blinky successfully set target.build_profile to debug
-<span style="background-color: #ffffcc">$ newt target set arduino_blinky features=arduino_zero_pro 
-</span>Target targets/arduino_blinky successfully set pkg.features to arduino_zero_pro
-$ 
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_wifi 
+$ newt target set arduino_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
+$ newt target set arduino_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
+$ newt target set arduino_wifi build_profile=debug 
+<span style="background-color: #ffffcc">$ newt target set arduino_wifi features=arduino_zero_pro 
+</span></pre></div>
 
 
 <p><br></p>
 <p>You can now build the target, with <code>newt build</code>: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_blinky 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_wifi 
+Building target targets/arduino_wifi
 Compiling main.c
-Archiving blinky.a
-Compiling cons_fmt.c
-Compiling cons_tty.c
-Archiving full.a
-Compiling case.c
-Compiling suite.c
-Compiling testutil.c
-Archiving testutil.a
+Archiving winc1500_wifi.a
+Compiling fs_cli.c
+Compiling fs_dirent.c
+Compiling fs_file.c
+Compiling fs_mkdir.c
 &lt;snip&gt;
-App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf
+Linking winc1500_wifi.elf
+App successfully built: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/winc1500_wifi.elf
 </pre></div>
 
 
-<p><font color="#FF0000"> Congratulations! </font> You have successfully built your application. Now it's time to load both the bootloader and application onto the target.</p>
+<p><font color="#FF0000"> Congratulations! </font> You have successfully built your Wi-Fi application. Now it's time to load both the bootloader and application onto the target.</p>
 <p><br></p>
 <h3 id="connect-the-target">Connect the Target</h3>
-<p>Connect your computer to the Arduino Zero (from now on we'll call this the 
-target) with the Micro-USB cable through the Programming Port as shown below. 
-Mynewt will download and debug the target through this port. You should see a 
-little green LED come on. That means the board has power.</p>
-<p>No external debugger is required.  The Arduino Zero comes with an internal
-debugger that can be accessed by Mynewt.</p>
-<p>A image below shows the Arduino Zero Programming Port.</p>
-<p><img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
-<img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/></p>
+<p>Place the Wi-Fi shield on top of the Arduino board and push it in place, making sure the pins and pinholes are properly aligned. Connect your computer to the Arduino board with the Micro-USB cable through the Programming Port as shown below. Mynewt will download and debug the target through this port. You should see a little green LED come on. That means the board has power.</p>
+<p>No external debugger is required.  The Arduino boards listed in this tutorial come with an internal debugger that can be accessed by Mynewt.</p>
+<p>The picture below shows the setup.</p>
+<p><img alt="Arduino with Wi-Fi shield" src="../pics/arduino_wifi.png" title="WifiShield" /></p>
 <p><br></p>
 <h3 id="download-the-bootloader">Download the Bootloader</h3>
 <p>Execute the command to download the bootloader. </p>
@@ -674,73 +606,68 @@ successfully loaded onto the target.</p>
 <p><br></p>
 <p><font color="#FF0000"> Reminder if you are using Docker: </font> When working with actual hardware, remember that each board has an ID. If you swap boards and do not refresh the USB Device Filter on the VirtualBox UI, the ID might be stale and the Docker instance may not be able to see the board correctly. For example, you may see an error message like <code>Error: unable to find CMSIS-DAP device</code> when you try to load or run an image on the board. In that case, you need to click on the USB link in VirtualBox UI, remove the existing USB Device Filter (e.g. "Atmel Corp. EDBG CMSIS-DAP[0101]") by clicking on the "Removes selected USB filter" button, and add a new filter by clicking on the "Adds new USB filter" button.</p>
 <p><br></p>
-<h3 id="run-the-image">Run the Image</h3>
-<p>Now that the bootloader is downloaded to the target, the next step is to load 
-your image onto the Arduino Zero.  The easiest way to do this, is to use the 
-<code>newt run</code> command.  <code>newt run</code> will automatically rebuild your program
-(if necessary), create an image, and load it onto the target device.</p>
-<p>Here, we will load our <code>arduino_blinky</code> target onto the device, and we 
-should see it run:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt run arduino_blinky 0.0.0 
-Debugging myproject/bin/arduino_blinky/apps/blinky/blinky.elf
-Open On-Chip Debugger 0.9.0 (2015-09-23-21:46)
-Licensed under GNU GPL v2
-For bug reports, read
-    http://openocd.org/doc/doxygen/bugs.html
-Info : only one transport option; autoselect &#39;swd&#39;
-adapter speed: 500 kHz
-adapter_nsrst_delay: 100
-cortex_m reset_config sysresetreq
-Info : CMSIS-DAP: SWD  Supported
-Info : CMSIS-DAP: JTAG Supported
-Info : CMSIS-DAP: Interface Initialised (SWD)
-Info : CMSIS-DAP: FW Version = 01.1F.0118
-Info : SWCLK/TCK = 1 SWDIO/TMS = 1 TDI = 1 TDO = 1 nTRST = 0 nRESET = 1
-Info : CMSIS-DAP: Interface ready
-Info : clock speed 500 kHz
-Info : SWD IDCODE 0x0bc11477
-Info : at91samd21g18.cpu: hardware has 4 breakpoints, 2 watchpoints
-GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
-Copyright (C) 2014 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;
-and &quot;show warranty&quot; for details.
-This GDB was configured as &quot;--host=x86_64-apple-darwin10 --target=arm-none-eabi&quot;.
-Type &quot;show configuration&quot; for configuration details.
-For bug reporting instructions, please see:
-&lt;http://www.gnu.org/software/gdb/bugs/&gt;.
-Find the GDB manual and other documentation resources online at:
-&lt;http://www.gnu.org/software/gdb/documentation/&gt;.
-For help, type &quot;help&quot;.
-Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...
-Reading symbols from myproject/bin/arduino_blinky/apps/blinky/blinky.elf...done.
-target state: halted
-target halted due to debug-request, current mode: Thread 
-xPSR: 0x21000000 pc: 0x0000030e msp: 0x20008000
-Info : accepting &#39;gdb&#39; connection on tcp/3333
-Info : SAMD MCU: SAMD21G18A (256KB Flash, 32KB RAM)
-0x0000030e in ?? ()
-(gdb) r
-The &quot;remote&quot; target does not support &quot;run&quot;.  Try &quot;help target&quot; or &quot;continue&quot;.
-(gdb) c
-Continuing.
+<h3 id="load-the-application-image">Load the Application Image</h3>
+<p>Now that the bootloader is downloaded to the target, the next steps are to create an image and load it onto the target device.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image arduino_wifi 1.0.0
+App image succesfully generated: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/winc1500_wifi.img
+Build manifest: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/manifest.json
+$ newt load arduino_wifi
+Loading image
+$
 </pre></div>
 
 
 <p><br></p>
-<p><strong>NOTE:</strong> The 0.0.0 specified after the target name to <code>newt run</code> is the version 
-of the image to load.  If you are not providing remote upgrade, and are just 
-developing locally, you can provide 0.0.0 for every image version.</p>
-<p>If you want the image to run without the debugger connected, simply quit the 
-debugger and restart the board.  The image you programmed will come and run on the Arduino on next boot!  </p>
-<p><br></p>
-<h3 id="watch-the-led-blink">Watch the LED blink</h3>
-<p>Congratulations! You have created a Mynewt operating system running on the 
-Arduino Zero. The LED right next to the power LED should be blinking. It is toggled by one task running on the Mynewt OS.   </p>
-<p>We have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like <a href="../nRF52/">tutorials</a> or try enabling additional functionality such as <a href="../project-target-slinky/">remote comms</a> on the current board.</p>
-<p>If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our <a href="../../../community/">Community Page</a>.</p>
-<p>Keep on hacking and blinking!</p>
+<h3 id="start-wi-fi-via-console">Start Wi-Fi via console</h3>
+<p>Use a terminal emulation program to communicate with the board over the serial port. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your computer/laptop (<code>ls /dev</code>) and specify it as the -D flag value. Type <code>wifi start</code> to start Wi-Fi.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ minicom -D /dev/tty.usbmodem141122 -b 115200
+
+
+Welcome to minicom 2.7
+
+OPTIONS: 
+Compiled on Nov 24 2015, 16:14:21.
+Port /dev/tty.usbmodem141122, 10:11:40
+
+Press Meta-Z for help on special keys
+
+<span style="background-color: #ffffcc">wifi start
+</span>119470:(APP)(INFO)Chip ID 1502b1
+(APP)(INFO)Firmware ver   : 19.4.4
+(APP)(INFO)Min driver ver : 19.3.0
+(APP)(INFO)Curr driver ver: 19.3.0                                              
+wifi_init : 0                        
+</pre></div>
+
+
+<p>Connect to the local Wi-Fi network. Then start network services. The commands to be issued are highlighted below. In the example below, the network interface on the Arduino board gets an IP address of <code>192.168.0.117</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">wifi connect &lt;Wi-Fi network name&gt; &lt;password&gt; 
+</span>16906:wifi_request_scan : 0
+17805:scan_results 16: 0
+17816:wifi_connect : 0
+18813:connect_done : 0
+18821:dhcp done 192.168.0.117
+18932:get sys time response 2016.8.2-18.4.43
+<span style="background-color: #ffffcc">net service
+</span></pre></div>
+
+
+<h3 id="establish-tcp-connection-and-talk">Establish TCP connection and talk!</h3>
+<p>From a terminal on your computer/laptop, try telneting to ports 7, 9, or 19 using the IP address your board has been assigned. Type something on this terminal and see the console output (on minicom). Can you see the difference in the behaviors?</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ telnet 192.168.0.117 7
+Trying 192.168.0.117...
+Connected to 192.168.0.117.
+Escape character is &#39;^]&#39;.
+hello
+hello
+^]
+telnet&gt; q
+$
+</pre></div>
+
+
+<p>One port echoes whatever is typed, one discards everything it gets, and the third spews out bits constantly. Type <code>wifi stop</code> to disable WiFi on the Arduino board.</p>
+<p>Hope you had fun!</p>
                         
                         <div class="row">
                             
@@ -750,16 +677,16 @@ Arduino Zero. The LED right next to the power LED should be blinking. It is togg
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../tutorials/>
+    <a href=../tasks_lesson/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Tutorials
+        Previous: Lesson Unit on Tasks and Priority Management
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../blinky_primo/>
-        Next: Blinky on Arduino Primo
+    <a href=../unit_test/>
+        Next: Write a Test Suite for a Package
         <span class="fa fa-arrow-right"></span>
     </a>
     
