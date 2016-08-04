@@ -56,6 +56,8 @@ The tutorials fall into a few broad categories. Some examples in each category a
 
 <br>
 
+* Additional network connectivity
+    * [Connect Arduino to a Wi-Fi network](wi-fi_on_arduino.md)
 
 **Send us an email on the dev@ mailing list if you have comments or suggestions!** If you haven't joined the mailing list, you will find the links [here](../../community.md).
 
