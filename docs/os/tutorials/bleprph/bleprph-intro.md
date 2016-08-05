@@ -8,9 +8,10 @@
 
 *bleprph* is an example app included in the apache-mynewt-core repository.  This app implements a simple BLE peripheral with the following properties:
 
-* Supports three services: GAP, GATT, and alert notification service (ANS).
 * Supports a single concurrent connection.
 * Automatically advertises connectability when not connected to a central device.
+* Supports pairing and bonding.
+* Supports five services.
 
 This tutorial aims to provide a guided tour through the *bleprph* app source
 code.  This document builds on some concepts described elsewhere in the Apache
@@ -32,5 +33,3 @@ these concepts, you will probably want to check out this
 from the Bluetooth Developer's site before proceeding.
 
 Now let's dig in to some C code.
-<br>
-
