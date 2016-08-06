@@ -84,15 +84,6 @@ The Connection parameter definitions can be found in Section 7.8.12 of the BLUET
 | Maximum_CE_Length | Informative parameter providing the Controller with the expected maximum length of the connection event  | max_ce_len |
 | Duration | Number of milliseconds before aborting the connect attempt | dur |
 
-### Advertisement Filter Policies
-
-| *bletiny string* |
-| -----------------|
-| none |
-| scan |
-| conn |
-| both |
-
 ### Advertisment Parameters
 
 | *bletiny string* | *Description* | *Notes* | *Default* |
@@ -108,3 +99,13 @@ The Connection parameter definitions can be found in Section 7.8.12 of the BLUET
 | itvl_max         | | units=0.625ms | non: 150ms; und/dir: 60ms |
 | hd               | Whether to use high-duty-cycle | 0/1 | 0 |
 | dur              | | Milliseconds | Forever |
+
+### Advertisement Filter Policies
+
+| *bletiny string* | *Description* | *Notes* |
+| -----------------|---------------|---------|
+| none | No filtering. No whitelist used. | Default |
+| scan | Process all connection requests but only scans from white list. | |
+| conn | Process all scan request but only connection requests from white list. | |
+| both | Ignore all scan and connection requests unless in white list. | |
+
