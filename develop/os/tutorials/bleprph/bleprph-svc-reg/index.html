@@ -340,7 +340,7 @@
               
                 
     <li >
-      <a href="../bleprph-conn/">Connection Callbacks</a>
+      <a href="../bleprph-gap-event/">GAP Event Callbacks</a>
     </li>
 
               
@@ -477,29 +477,32 @@
 <h4 id="attribute-set">Attribute Set</h4>
 <p>The NimBLE host uses a table-based design for GATT server configuration.  The
 set of supported attributes are expressed as a series of tables that resides in
-your C code.  When possible, we recommend using a single monolithic table, as
-it results in code that is simpler and less error prone.  Multiple tables
-can be used if it is impractical for the entire attribute set to live in one
-place in your code.</p>
-<p><em>bleprph</em> uses a single attribute table located in the <em>gatt_svr.c</em> file,
-so let's take a look at that now.  The attribute table is called
-<code>gatt_svr_svcs</code>; here are the first several lines from this table:</p>
+your C code.</p>
+<p><em>bleprph</em> supports the following services:</p>
+<ul>
+<li>GAP</li>
+<li>GATT</li>
+<li>newtmgr</li>
+<li>Alert Notification</li>
+<li>Security Test</li>
+</ul>
+<p>The first two services (GAP and GATT) are mandatory services that all BLE peripherals must support.  These are implemented in a separate package which the <em>bleprph</em> app depends on.  Later, we will see how the <em>main()</em> function initializes and registers this package.  Your app will follow the same procedure when using GATT service libraries.</p>
+<p>The third service, newtmgr, is vendor-specific service supported by most Mynewt devices.  This service is used for remote configuration, status queries, and firmware updates.  As with GAP and GATT, this service is implemented in a package separate from the <em>bleprph</em> app.</p>
+<p>The final two services, <em>Alert Notification</em> and <em>Security Test</em>, are not implemented in separate libraries.  Rather, these services are specific to the app, so they are implemented the <em>bleprph</em> app itself.  The attribute table used to express these services is located in the <em>gatt_svr.c</em> file, so let's take a look at that now.  The attribute table is called <code>gatt_svr_svcs</code>; here are the first several lines from this table:</p>
 <p><br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
     {
-        <span style="color: #177500">/*** Service: GAP. */</span>
-        .<span style="color: #000000">type</span>               <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
-        .<span style="color: #000000">uuid128</span>            <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">BLE_GAP_SVC_UUID16</span>),
-        .<span style="color: #000000">characteristics</span>    <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
-            <span style="color: #177500">/*** Characteristic: Device Name. */</span>
-            .<span style="color: #000000">uuid128</span>            <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">BLE_GAP_CHR_UUID16_DEVICE_NAME</span>),
-            .<span style="color: #000000">access_cb</span>          <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_gap</span>,
-            .<span style="color: #000000">flags</span>              <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
+        <span style="color: #177500">/*** Alert Notification Service. */</span>
+        .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
+        .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_SVC_ALERT_UUID</span>),
+        .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
+            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>),
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
         }, {
-            <span style="color: #177500">/*** Characteristic: Appearance. */</span>
-            .<span style="color: #000000">uuid128</span>            <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">BLE_GAP_CHR_UUID16_APPEARANCE</span>),
-            .<span style="color: #000000">access_cb</span>          <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_gap</span>,
-            .<span style="color: #000000">flags</span>              <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
+            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_NEW_ALERT</span>),
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
         }, {
     <span style="color: #177500">// [...]</span>
 </pre></div>
@@ -508,10 +511,8 @@ so let's take a look at that now.  The attribute table is called
 <p><br></p>
 <p>As you can see, the table is an array of service definitions (
 <code>struct ble_gatt_svc_def</code>).  This code excerpt contains a small part of the
-<em>GAP service</em>.  The GAP service exposes generic information about a device,
-such as its name and appearance.  Support for the GAP service is mandatory for
-all BLE peripherals.  Let's now consider the contents of this table in more
-detail.</p>
+Alert Notification service.  Let's now consider the contents of this table in
+more detail.</p>
 <p>A service definition consists of the following fields:</p>
 <table>
 <thead>
@@ -560,7 +561,7 @@ definition consists of the following fields:</p>
 <tr>
 <td>access_cb</td>
 <td>A callback function that gets executed whenever a peer device accesses this characteristic.</td>
-<td><em>For reads:</em> this function generates the value that gets sent back to the peer.<br><em>For writes:</em> this function provides the written value as an argument.</td>
+<td><em>For reads:</em> this function generates the value that gets sent back to the peer.<br><em>For writes:</em> this function receives the written value as an argument.</td>
 </tr>
 <tr>
 <td>flags</td>
@@ -569,7 +570,7 @@ definition consists of the following fields:</p>
 </tr>
 </tbody>
 </table>
-<p>The access callback is what implements the characteristic's behavior.  Access
+<p>A characteristic's access callback implements its behavior.  Access
 callbacks are described in detail in the next section:
 <a href="../bleprph-chr-access/">BLE Peripheral - Characteristic Access</a>.</p>
 <p>The service definition array and each characteristic definition array is
@@ -578,86 +579,56 @@ shows the last service in the array, including terminating zeros for the
 characteristic array and service array.</p>
 <p><br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    {
-        <span style="color: #177500">/*** Alert Notification Service. */</span>
+        <span style="color: #177500">/*** Service: Security test. */</span>
         .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
-        .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_SVC_ALERT_UUID</span>),
+        .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_svc_sec_test_uuid</span>,
         .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>),
-            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
-            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
+            <span style="color: #177500">/*** Characteristic: Random number generator. */</span>
+            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_sec_test_rand_uuid</span>,
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span> <span style="color: #000000">|</span> <span style="color: #000000">BLE_GATT_CHR_F_READ_ENC</span>,
         }, {
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_NEW_ALERT</span>),
-            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
-            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
+            <span style="color: #177500">/*** Characteristic: Static value. */</span>
+            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_sec_test_static_uuid</span>,
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span> <span style="color: #000000">|</span>
+                     <span style="color: #000000">BLE_GATT_CHR_F_WRITE</span> <span style="color: #000000">|</span> <span style="color: #000000">BLE_GATT_CHR_F_WRITE_ENC</span>,
         }, {
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_SUP_UNR_ALERT_CAT_UUID</span>),
-            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
-            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
-        }, {
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_UNR_ALERT_STAT_UUID</span>),
-            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
-            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
-        }, {
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_ALERT_NOT_CTRL_PT</span>),
-            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
-            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_WRITE</span>,
-        }, {
-<span style="background-color: #ffffcc">            <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more characteristics in this service. */</span>
-</span>        } },
+            <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more characteristics in this service. */</span>
+        } },
     },
 
     {
-<span style="background-color: #ffffcc">        <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more services. */</span>
-</span>    },
+        <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more services. */</span>
+    },
 </pre></div>
 
 
 <p><br></p>
 <h4 id="registration-function">Registration function</h4>
-<p>After you have created your service table, your app needs to register it with the NimBLE stack.  This is done by calling the following function:</p>
+<p>After you have created your service table, your app needs to register it with the NimBLE stack.  This is done by calling the <a href="../../../../network/ble/ble_hs/ble_gatts/functions/ble_gatts_add_svcs/">ble_gatts_add_svcs()</a> function.  There is a small complication, though.  The NimBLE host needs to allocate sufficient resources upfront to accommodate all of your peripheral's services.  You can ensure your GATT services are accounted for in the host configuration object by calling the <a href="../../../../network/ble/ble_hs/ble_gatts/functions/ble_gatts_count_cfg/">ble_gatts_count_cfg()</a> function.</p>
+<p>The <em>bleprph</em> app registers its services in <em>gatt_svr.c</em> as follows:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">ble_gatts_register_svcs</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svcs</span>,
-                        <span style="color: #000000">ble_gatt_register_fn</span> <span style="color: #000000">*cb</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*cb_arg</span>)
+<span style="color: #000000">gatt_svr_init</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_cfg</span> <span style="color: #000000">*cfg</span>)
+{
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gatts_count_cfg</span>(<span style="color: #000000">gatt_svr_svcs</span>, <span style="color: #000000">cfg</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    }
+
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gatts_add_svcs</span>(<span style="color: #000000">gatt_svr_svcs</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    }
+
+    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+}
 </pre></div>
 
 
-<p>The function parameters are documented below.</p>
-<table>
-<thead>
-<tr>
-<th><em>Parameter</em></th>
-<th><em>Meaning</em></th>
-<th><em>Notes</em></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>svcs</td>
-<td>The table of services to register.</td>
-<td></td>
-</tr>
-<tr>
-<td>cb</td>
-<td>A callback that gets executed each time a service, characteristic, or descriptor is registered.</td>
-<td>Optional; pass NULL if you don't want to be notified.</td>
-</tr>
-<tr>
-<td>cb_arg</td>
-<td>An argument that gets passed to the callback function on each invocation.</td>
-<td>Optional; pass NULL if there is no callback or if you don't need a special argument.</td>
-</tr>
-</tbody>
-</table>
-<p>The <code>ble_gatts_register_svcs()</code> function returns 0 on success, or a
-<em>BLE_HS_E[...]</em> error code on failure.</p>
-<p>More detailed information about the registration callback function can be found
-in the <a href="../../../../network/ble/ble_intro/">BLE User Guide</a> (TBD).</p>
-<p>The <em>bleprph</em> app registers its services as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gatts_register_svcs</span>(<span style="color: #000000">gatt_svr_svcs</span>, <span style="color: #000000">gatt_svr_register_cb</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
-</pre></div>
-
-
+<p>You application will perform the above two-step process for each service definition array that you wish to register.  Libraries that implement GATT services will generally expose an initialization function which does this for you.</p>
 <p><br></p>
 <h4 id="descriptors-and-included-services">Descriptors and Included Services</h4>
 <p>Your peripheral can also expose descriptors and included services.  These are
