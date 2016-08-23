@@ -373,7 +373,7 @@
 <a href="../../../newt/install/newt_mac/"><code>newt</code> tutorials pages</a>, install it. </p>
 <p><br></p>
 <h3 id="install-gcclibc">Install gcc/libc</h3>
-<p>OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator, you will need a different compiler: gcc.</p>
+<p>OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install gcc
 ...
 ...
@@ -382,6 +382,36 @@
 </pre></div>
 
 
+<p><br></p>
+<p>Check the gcc version you have installed (either using brew or previously installed). If the gcc version is 6.1 rather the expected 5.x by the default .yml configuration file, you have to modify the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file to change the default <code>gcc v-5</code> defined there.</p>
+<p>Replace the lines shown highlighted below:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># OS X.
+<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
+</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
+</span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
+compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
+compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
+</pre></div>
+
+
+<p>with the following:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6&quot;
+compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6 -x assembler-with-cpp”
+</pre></div>
+
+
+<p><br></p>
+<p>In case you wish to use Clang, you can change your <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> to use Clang. Delete the gcc-5 DARWIN.OVERWRITE lines highlighted below.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># OS X.
+<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
+</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
+</span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
+compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
+compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
+</pre></div>
+
+
+<p><strong>Note:</strong> Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.</p>
 <p><br></p>
 <h3 id="install-gdb">Install gdb</h3>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install gdb
