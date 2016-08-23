@@ -17,7 +17,7 @@ If you have not already installed Homebrew from the
 
 ###Install gcc/libc 
 
-OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator, you will need a different compiler: gcc.
+OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.
 
 ```no-highlight
 $ brew install gcc
@@ -26,6 +26,42 @@ $ brew install gcc
 ==> Summary
 🍺  /usr/local/Cellar/gcc/5.2.0: 1353 files, 248M
 ```
+
+<br>
+
+Check the gcc version you have installed (either using brew or previously installed). If the gcc version is 6.1 rather the expected 5.x by the default .yml configuration file, you have to modify the `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file to change the default `gcc v-5` defined there.
+
+Replace the lines shown highlighted below:
+
+```hl_lines="2 3"
+# OS X.
+compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
+compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
+compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
+```
+with the following:
+
+```no-highlight
+compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6"
+compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6 -x assembler-with-cpp”
+```
+
+<br>
+
+In case you wish to use Clang, you can change your `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` to use Clang. Delete the gcc-5 DARWIN.OVERWRITE lines highlighted below.
+
+```hl_lines="2 3"
+# OS X.
+compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
+compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
+compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
+```
+
+**Note:** Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.
 
 <br>
 
