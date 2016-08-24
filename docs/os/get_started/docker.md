@@ -38,7 +38,12 @@ Use the newt wrapper script to invoke newt.  Create the following file, name it
 ```bash
 #!/bin/bash
 
-docker run -e NEWT_USER=$(id -u) -e NEWT_GROUP=$(id -g) -e NEWT_HOST=$(uname) -ti --rm --device=/dev/bus/usb --privileged -v $(pwd):/workspace -w /workspace mynewt/newt:latest /newt "$@"
+if [ "$1" = "debug" ] || [ "$1" = "run" ]
+then
+    ti="-ti"
+fi
+
+docker run -e NEWT_USER=$(id -u) -e NEWT_GROUP=$(id -g) -e NEWT_HOST=$(uname) $ti --rm --device=/dev/bus/usb --privileged -v $(pwd):/workspace -w /workspace mynewt/newt:latest /newt "$@"
 ```
 
 <br>
