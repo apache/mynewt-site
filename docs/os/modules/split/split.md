@@ -134,7 +134,7 @@ Special symbol and link features are designed as follows:
 
 #### newt create-image
 
-Create image uses two different methods to compute the image hash for standard and split images.  For split images, the hash is computed starting with the 32-byte hash of the loader, then continuing with the hashing algorithm used by the standard application.  This ensures that the split app can be "validated" against a loader image specifically.
+`create-image` uses two different methods to compute the image hash for standard and split images.  For split images, the hash is computed starting with the 32-byte hash of the loader, then continuing with the hashing algorithm used by the standard application.  This ensures that the split app can be "validated" against a loader image specifically.
 
 #### newt errors
 
