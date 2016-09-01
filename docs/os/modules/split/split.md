@@ -15,7 +15,7 @@ The goal of split images is to allow a larger application to run along with larg
 
 ## Concept
 
-In a typical mynewt application, an application is contained wholly within an image slot.  Typically there are at least two image slots since the image runs from one slot while uploading new code into the second slot.  Each image is capable of erasing and uploading another image.  Each image is completely stand-alone; that is, each image contains all of the libraries and components that it needs.   
+In a typical mynewt application, an application is contained wholly within an image slot.  Typically there are at least two image slots since the image runs from one slot while uploading new code into the second slot.  Each image is capable of erasing and uploading another image.  Each image is completely stand-alone; that is, each image contains all of the libraries and components that it needs.
 
 On a typical 256 kbyte flash, a flash layout might look like this:
 
@@ -35,7 +35,7 @@ Now, suppose the desired image contains:
 |  os  | 6 k  |
 |  logging  |  3 k |
 |  imagemgr | 3 k  |
-| config | 3 k | 
+| config | 3 k |
 | nffs | 15 k |
 | newtmgr | 7 k |
 
@@ -51,7 +51,7 @@ If your application fits into the available image slots, there is no advantage t
 
 ## How do I tell Newt I am building a split image?
 
-Newt looks for the variable `loader` in your target file. If it finds `loader` variable, it will build a split image.  For example, 
+Newt looks for the variable `loader` in your target file. If it finds `loader` variable, it will build a split image.  For example,
 
 ```
 targets/app
@@ -66,7 +66,12 @@ shows an application called splitty which uses slinky as its loader.
 
 Split image requires BSP support.  The following BSPs support split images:
 
-* nrf52dk
+* hw/bsp/arduino_primo_nrf52
+* hw/bsp/bmd300eval
+* hw/bsp/nrf51-blenano
+* hw/bsp/nrf51dk
+* hw/bsp/nrf51dk-16kbram
+* hw/bsp/nrf52dk
 
 ## Loaders
 
@@ -90,15 +95,15 @@ First newt builds the `app` and `loader` images separately to ensure they are co
 
 Then newt collects the symbols used by both `app` and `loader` in two ways.  It collects the set of symbols from the `.elf` files. It also collects all the possible symbols from the `.a` files for each application.
 
-Newt builds the set of packages that the two applications share.  It ensures that all the symbols used in those packages are matching.  NOTE: because of features and #ifdefs, its possible for the two package to have symbols that are not the same.  In this case newt generates an error and will not build a split image.  
+Newt builds the set of packages that the two applications share.  It ensures that all the symbols used in those packages are matching.  NOTE: because of features and #ifdefs, its possible for the two package to have symbols that are not the same.  In this case newt generates an error and will not build a split image.
 
 Then newt creates the list of symbols that the two applications share from those packages (using the .elf files).
 
-Newt re-links the loader to ensure all of these symbols are present in the loader application (by forcing the linker to include them in the `.elf`).  
+Newt re-links the loader to ensure all of these symbols are present in the loader application (by forcing the linker to include them in the `.elf`).
 
 Newt builds a special copy of the loader.elf with only these symbols (and the handful of symbols discussed in the linking section above).
 
-Finally, newt links the application, replacing the common .a libraries with the special loader.elf image during the link. 
+Finally, newt links the application, replacing the common .a libraries with the special loader.elf image during the link.
 
 ## Design
 
@@ -122,22 +127,22 @@ During normal single-image builds, the `targetBuilder` initializes and builds th
 
 Special symbol and link features are designed as follows:
 
-* Newt uses objdump to parse the symbol maps in the `.a` and `.elf` files. 
+* Newt uses objdump to parse the symbol maps in the `.a` and `.elf` files.
 * Newt uses the `--undefined=` option of the linker to force the loader to keep symbols used by the app (but not used by the linker)
 * Newt uses objcopy with the `-K` (keep) option when building the special linker `.elf`.
-* Newt uses the `--just-symbols` option of the linker to link against the loader `.elf` file.  
+* Newt uses the `--just-symbols` option of the linker to link against the loader `.elf` file.
 
 #### newt create-image
 
-Create image uses two different methods to compute the image hash for standard and split images.  For split images, the hash is computed starting with the 32-byte hash of the loader, then continuing with the hashing algorithm used by the standard application.  This ensures that the split app can be "validated" against a loader image specifically.  
+Create image uses two different methods to compute the image hash for standard and split images.  For split images, the hash is computed starting with the 32-byte hash of the loader, then continuing with the hashing algorithm used by the standard application.  This ensures that the split app can be "validated" against a loader image specifically.
 
 #### newt errors
 
-Newt has several new build errors when building split images.  
+Newt has several new build errors when building split images.
 
 * Linker script undefined.  If the BSP for your application does not define a split image linker script the build will fail.
 
-If newt finds that the same library (for example libs/os) has a different implementaiton in the loader and app, it will generate an error and fail to build.  These differences can arise when `#ifdef` or features are included in one app and not the other.  For example, it the loader includes `libs/console/stubs` and the app includes `libs/console/full` this may change implementations of certain functions within other packages.  
+If newt finds that the same library (for example libs/os) has a different implementaiton in the loader and app, it will generate an error and fail to build.  These differences can arise when `#ifdef` or features are included in one app and not the other.  For example, it the loader includes `libs/console/stubs` and the app includes `libs/console/full` this may change implementations of certain functions within other packages.
 
 ### Image manifest
 
@@ -151,7 +156,7 @@ newt builds a single manifest for split images, adding extra tags to the manifes
 		]
 ```
 
-The manifest lists packages in both the loader and app.  The app package list only contains those packages that reside in the app image itself.  
+The manifest lists packages in both the loader and app.  The app package list only contains those packages that reside in the app image itself.
 
 ### libs/bootutil
 
@@ -161,7 +166,7 @@ Bootutil has been expanded to include a function that looks for a split app imag
 
 A small split image library was created to provide newtmgr commands for split image and to hold the configuration for split image. See newtmgr below for details.
 
-It also contains the function used by a loader to validate and boot a split image.  
+It also contains the function used by a loader to validate and boot a split image.
 
 ### apps/slinky
 
@@ -177,7 +182,7 @@ A BSP needs additional components to be "split image ready".
 
 The split image requires a special linker script. The split image needs to run from the second image partition (since it's using the loader library that is linked to be placed in the first partition).  It needs to reserve space for RAM used by the loader.  It also does not need to include the vector table (just a bit of it).
 
-The startup of the split image is different than a typical image.  It needs to copy `.data` from the loader image, and zero the loader image bss.  For this, it must reference symbols defined in the linker script of the loader. It has a special entry symbol that differentiates it from the entry symbol in the loader application.  
+The startup of the split image is different than a typical image.  It needs to copy `.data` from the loader image, and zero the loader image bss.  For this, it must reference symbols defined in the linker script of the loader. It has a special entry symbol that differentiates it from the entry symbol in the loader application.
 
 Several of the bsp scripts need to handle additional agruments to deal with the two images produced by newt when building split images - mainly download and debug.
 
@@ -187,6 +192,7 @@ Add the following components to enable your BSP for split images:
 2. A startup file for the split image
 3. A property in the pkg.yml file to tell newt what linker script to use for partition 2 images.  The property is defined as `pkg.part2linkerscript: "split-nrf52dk.ld` for example.
 4. Modified download script
+5. Modified sbrk functionality
 
 An example can be found in the `/hw/bsp/nrf52dk`
 
@@ -194,13 +200,23 @@ An example can be found in the `/hw/bsp/nrf52dk`
 
 The split image linker script must have the following.
 
+The split linker must be linked to run from the second flash image slot. For example:
+
+```
+MEMORY
+{
+  FLASH (rx) : ORIGIN =  0x00042000, LENGTH = 0x3a000
+  RAM  (rwx) : ORIGIN =  0x20000000, LENGTH = 0x10000
+}
+```
+
 The split linker must define the entry symbol as Reset_Handler_split.   For example:
 
 ```
 ENTRY(Reset_Handler_split)
 ```
 
-The split linker must define the first two words in the vector table (initial SP and Reset Vector). The additional vector entries are part of the loader. The bootloader accesses these entries at the beginning of the image slot (first 2 words). For example:
+The split linker must define the first two words in the vector table (initial SP and Reset Vector). The additional vector entries are part of the loader and are not needed in the split image. The bootloader accesses these entries at the beginning of the image slot (first 2 words). For example:
 
 ```
     .text :
@@ -223,7 +239,7 @@ The split linker must ensure that it doesn't overwrite the BSS and DATA sections
 The split app linker can use `__HeapBase_loader` to skip RAM used by the loader as follows.
 
 ```
-    /* save RAM used by the split image. This assumes that 
+    /* save RAM used by the split image. This assumes that
      * the loader uses all the RAM up to its HeapBase  */
     .loader_ram_contents :
     {
@@ -241,19 +257,40 @@ The split application needs separate startup code to intialize the split image b
 
 The split app startup code must have the following.
 
-1. A definition of the split image vector table (first two words). 
+1. A definition of the split image vector table (first two words).
 2. The entry point function to start the code `Reset_Handler_split`
 3. Code that copies the .data section for the loader from Flash to RAM
 4. Code that zeros the .bss section for the loader.
-5. Code that calls _sbrkInit to set the heap pointers for the application
+5. Code that calls _sbrkInit to set the heap pointers for the application (see below)
+6. Code that calls the `bsp_slot_init_split_application` function (see below)
 
 An example can be found in the `/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52_split.s`
+
+### Download script
+
+The download script needs to be modified to include support for passing the image slot number in the build.  Image slots are referenced as 0 and 1. Loading bootloaders ignore the image slot numbers.
+
+See and example in `/hw/bsp/bmd300eval/bmd300eval_download.sh`.
+
+### Sbrk functionality
+
+Split image (either a loader or app) references a single set of heap managment functions.  But the heap location and size is different depending which image is running.  Special functionality is needed to handle the dynamic setting of the heap base and limit.
+
+Instead of hard-coding the heap base and limit at link time (depending on the size of data and bss), sbrk needs to be dynamically initialized with these values from the startup code.
+
+See an example in `/hw/bsp/bmd300eval/src/sbrk.c` in the core repository.  The function `_sbrkInit` must be called from the startup code of the split image and normal image startup code with the appropriate values of heap base and limit.
+
+### Slot Init
+
+A global variable tells mynewt whether the split image is runnning as just a stand-alone loader, or as the combined loader/app image.  Its the responsibility of the startup code to set this global variable.
+
+See `hw/bsp/bmd300eval/src/os_bsp.c` for and implementation of the functionality.
 
 ## newtmgr and split Images
 
 newtmgr has support for split images.
 
-`newtmgr image list2` lists the current images in the flash.  Its clear from the output that some images are non-bootable.  For example.
+`newtmgr image list` lists the current images in the flash.  Its clear from the output that some images are non-bootable.  For example.
 
 ```
 Images:
@@ -267,7 +304,7 @@ Images:
     hash=1697bd1658f7e902e0191094c5f729446c9dd790c00a58e2bb37f56d6fcb72fe
 ```
 
-The bootloader is unable to boot split app images (of course it can boot the loader images), so do not use the `boot2` command to instruct mynewt to boot slot 2.  
+The bootloader is unable to boot split app images (of course it can boot the loader images), so do not use the `boot2` command to instruct mynewt to boot slot 2.
 
 Instead, use the new `split status` command to see the status of split images and to set their boot status.  The split status command with no arguments returns status of the split image.  The Split Value tells the loader how to boot the split app. Options are:
 
@@ -278,7 +315,7 @@ Instead, use the new `split status` command to see the status of split images an
 The split status command also verified the hash of the split application (using the hash of the loader as shown above) and returns the status of the check (matching or non-matching).
 
 ```
-newtmgr -c connection split status 
+newtmgr -c connection split status
   Split value is none
   Split status is matching
 ```
@@ -286,7 +323,7 @@ newtmgr -c connection split status
 When the split image application is running, the active hash in the boot2 command will match the hash of the split application (in slot 2). For example:
 
 ```
-prompt$ newtmgr -c foo1 image boot2
+prompt$ newtmgr -c foo1 image boot
    Test image: 55e254f133bedf640fc7be7b5bfe3e5fb387cf5e29ecd0d4ea02b5ba617e27e0
    Main image: 55e254f133bedf640fc7be7b5bfe3e5fb387cf5e29ecd0d4ea02b5ba617e27e0
    Active img: 1697bd1658f7e902e0191094c5f729446c9dd790c00a58e2bb37f56d6fcb72fe
@@ -309,6 +346,6 @@ When running via newtmgr a sequence of commands is required to upgrade.  Assumin
 9. newtmgr boot2 (check status to ensure new app is running)
 10. newtmgr split status run
 
-This upgrade is robust.  In all steps there is a loader image that is capable of upgrading (or reverting) images.  
+This upgrade is robust.  In all steps there is a loader image that is capable of upgrading (or reverting) images.
 
 
