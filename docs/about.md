@@ -7,6 +7,7 @@ Some upcoming features:
 * HAL redesign to abstract across a diverse set of chip peripherals ([View discussion thread](http://mail-archives.apache.org/mod_mbox/incubator-mynewt-dev/201606.mbox/%3C06CB0682-8F67-4C3F-93E4-6A20444487A1%40apache.org%3E))
 * HAL for SPI access (master and slave)
 * Ability for drivers to turn on/off low power settings automatically
+* Support for Wi-Fi controllers via a socket interface
 
 
 <font color="#F2853F"> The detailed roadmap is tracked on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel). </font>
