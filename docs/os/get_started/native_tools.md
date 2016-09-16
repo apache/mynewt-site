@@ -29,9 +29,7 @@ $ brew install gcc
 
 <br>
 
-Check the gcc version you have installed (either using brew or previously installed). If the gcc version is 6.1 rather the expected 5.x by the default .yml configuration file, you have to modify the `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file to change the default `gcc v-5` defined there.
-
-Replace the lines shown highlighted below:
+Check the gcc version you have installed (either using brew or previously installed). The brew-installed version can be checked using `brew list gcc`. The default compiler.yml configuration file in Mynewt expects version 5.x for Mac users, so if the installed version is 6.x and you wish to continue with this newer version, modify the `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file to change the default `gcc-5` defined there to `gcc-6`. In other words, replace the lines shown highlighted below:
 
 ```hl_lines="2 3"
 # OS X.
@@ -61,7 +59,28 @@ compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
 compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
 ```
 
-**Note:** Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.
+<br>
+
+**NOTE:** Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.
+
+<br>
+
+**FURTHER NOTE:** Mynewt developers mostly use gcc 5.x for sim builds; so it may take a little while to fix issues reported by the newer compiler. One option is to **disable warnings**. To do that, remove the `-Werror` flag as an option for the compiler in the  `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file as shown below. 
+
+```hl_lines="2"
+compiler.flags.base: >
+    -m32 -Wall -ggdb
+```
+
+You may alternatively choose to **specify the precise warnings to ignore** depending on the error thrown by the compiler. For example, if you see a `[-Werror=misleading-indentation]` error while building the sim image, add `-Wno-misleading-indentation]` as a compiler flag in the same line from the `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file.
+
+```hl_lines="2"
+compiler.flags.base: >
+    -m32 -Wall -Werror -ggdb -Wno-misleading-indentation
+```
+
+
+A third option is to simply **downgrade to gcc 5.x**.
 
 <br>
 
