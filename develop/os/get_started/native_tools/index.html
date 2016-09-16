@@ -383,8 +383,7 @@
 
 
 <p><br></p>
-<p>Check the gcc version you have installed (either using brew or previously installed). If the gcc version is 6.1 rather the expected 5.x by the default .yml configuration file, you have to modify the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file to change the default <code>gcc v-5</code> defined there.</p>
-<p>Replace the lines shown highlighted below:</p>
+<p>Check the gcc version you have installed (either using brew or previously installed). The brew-installed version can be checked using <code>brew list gcc</code>. The default compiler.yml configuration file in Mynewt expects version 5.x for Mac users, so if the installed version is 6.x and you wish to continue with this newer version, modify the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file to change the default <code>gcc-5</code> defined there to <code>gcc-6</code>. In other words, replace the lines shown highlighted below:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># OS X.
 <span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
 </span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
@@ -411,7 +410,22 @@ compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
 </pre></div>
 
 
-<p><strong>Note:</strong> Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.</p>
+<p><br></p>
+<p><strong>NOTE:</strong> Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.</p>
+<p><br></p>
+<p><strong>FURTHER NOTE:</strong> Mynewt developers mostly use gcc 5.x for sim builds; so it may take a little while to fix issues reported by the newer compiler. One option is to <strong>disable warnings</strong>. To do that, remove the <code>-Werror</code> flag as an option for the compiler in the  <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file as shown below. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">compiler.flags.base: &gt;
+<span style="background-color: #ffffcc">    -m32 -Wall -ggdb
+</span></pre></div>
+
+
+<p>You may alternatively choose to <strong>specify the precise warnings to ignore</strong> depending on the error thrown by the compiler. For example, if you see a <code>[-Werror=misleading-indentation]</code> error while building the sim image, add <code>-Wno-misleading-indentation]</code> as a compiler flag in the same line from the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">compiler.flags.base: &gt;
+<span style="background-color: #ffffcc">    -m32 -Wall -Werror -ggdb -Wno-misleading-indentation
+</span></pre></div>
+
+
+<p>A third option is to simply <strong>downgrade to gcc 5.x</strong>.</p>
 <p><br></p>
 <h3 id="install-gdb">Install gdb</h3>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install gdb
