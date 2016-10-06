@@ -14,7 +14,7 @@ The Apache MyNewt site is built using [MkDocs](http://www.mkdocs.org/).
 1. Work on the `develop` branch.
 1. Preview your changes using MkDocs.
     * `mkdocs serve`
-    * visit http://localhost:8000
+    * visit [http://localhost:8000](http://localhost:8000)
 1. Submit a pull request.
 
 ## Releasing a versioned set of MyNewt documentation
@@ -33,7 +33,7 @@ When a new release of MyNewt OS and its associated tools occurs, the documentati
 
 ### Test
 1. Run: `./serve.py`
-1. Visit http://localhost:8000
+1. Visit [http://localhost:8000](http://localhost:8000)
 
 ### Deploy
 1. Run: `./deploy.sh`
