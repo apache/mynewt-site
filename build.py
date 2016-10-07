@@ -9,9 +9,14 @@ import fileinput
 
 @click.command()
 @click.option('-s', '--site-branch', default='master', help='Use this branch as source for the top level pages')
+@click.option('-t', '--test-build', is_flag=True, help='Test the build using only the working directory (good for testing for broken links)')
+def build(site_branch, test_build):
+    if test_build:
+        buildForTest()
+    else:
+        buildForReal(site_branch)
 
-def build(site_branch):
-
+def buildForReal(site_branch):
     # make sure there are no local mods outstanding
     repo = Repo(os.getcwd())
     if repo.is_dirty() or repo.untracked_files:
@@ -48,8 +53,18 @@ def build(site_branch):
         mygit.checkout(version['branch'])
         deployVersion(version)
 
+def buildForTest():
+    print "Building site pages..."
+    updateConfigVersion('develop')
+    sh.rm('-rf', 'site')
+    sh.mkdocs('build', '--clean')
+    sh.git('checkout', '--', 'mkdocs.yml')
+
+    cfg = config.load_config()
+    for version in cfg['extra']['versions']:
+        deployVersion(version)
+
 def deployVersion(version):
-    mygit.checkout(version['branch'])
     buildTo(version['branch'])
     if version['latest']:
         buildTo('latest')

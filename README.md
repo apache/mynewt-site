@@ -44,5 +44,9 @@ When a new release of MyNewt OS and its associated tools occurs, the documentati
 
 For the deployed site a version prefix is added to the URL for each mkdocs page. When developing there is no version prefix. If you want to link from a _site page_ to a _documentation page_ you should prefix the URL with */DOCSLINK/* so that the user is taken to the correct location when browsing in production.
 
+## Link Checking
 
-
+1. Grab a link checking tool like [Integrity](http://peacockmedia.software/mac/integrity/free.html)
+1. Run: `./build.py --test-build`
+1. Run: `./serve.py`
+1. point the link checker at http://localhost:8000/
