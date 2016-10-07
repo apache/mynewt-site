@@ -1,13 +1,13 @@
 ## Start Wi-Fi on Arduino Zero
 
-This tutorial walks you through the steps to get your Arduino board on a Wi-Fi network. 
+This tutorial walks you through the steps to get your Arduino board on a Wi-Fi network.
 
 **Note:** Wi-Fi support is currently available in the `develop` branch of Mynewt only. It will be merged into `master` branch when version 0.10 is released.
 
 
 ### Prerequisites
 
-Before tackling this tutorial, it's best to read about Mynewt in the [Introduction](../get_started/introduction) section of this documentation.
+Before tackling this tutorial, it's best to read about Mynewt in the [Introduction](../get_started/get_started) section of this documentation.
 
 ### Equipment
 
@@ -24,7 +24,7 @@ You will need the following equipment
 
 ### Install Mynewt and Newt
 
-* If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/install/newt_mac.md). 
+* If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/install/newt_mac.md).
 * If you installed Newt previously but need to update it, go to the newt git repo directory, pull the latest code from `develop` branch, and install the updated code.
 
 ```
@@ -49,10 +49,10 @@ Let's say your new project is named `arduinowifi`. You will henceforth be workin
 
 ### Fetch External Packages, Set correct version to download
 
-Mynewt uses source code provided directly from the chip manufacturer for 
+Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.
 
-To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add 
+To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
 the repository to the `project.yml` file in your base project directory (`arduinowifi`).
 
 ```
@@ -60,13 +60,13 @@ user@~/dev/arduinowifi$ vi project.yml
 ```
 
 Here is an example ```project.yml``` file with the Arduino Zero repository
-added. The sections with ```mynewt_arduino_zero``` that need to be added to 
-your project file are highlighted. 
+added. The sections with ```mynewt_arduino_zero``` that need to be added to
+your project file are highlighted.
 
 Also highlighted is the `0-dev` version for both the repositories to ensure code is downloaded from the `develop` branch.
 
 ```hl_lines="6 10 14 15 16 17 18"
-$ more project.yml 
+$ more project.yml
 project.name: "my_project"
 
 project.repositories:
@@ -84,17 +84,17 @@ repository.mynewt_arduino_zero:
     vers: 0-dev
     user: runtimeinc
     repo: mynewt_arduino_zero
-$ 
+$
 ```
 
 <br>
 
-Once you've edited your ```project.yml``` file, the next step is to install the 
-project dependencies, this can be done with the ```newt install``` command 
-(to see more output, provide the ```-v``` verbose option.): 
+Once you've edited your ```project.yml``` file, the next step is to install the
+project dependencies, this can be done with the ```newt install``` command
+(to see more output, provide the ```-v``` verbose option.):
 
 ```no-highlight
-$ newt install 
+$ newt install
 apache-mynewt-core
 mynewt_arduino_zero
 $
@@ -104,15 +104,15 @@ $
 
 ### Create your bootloader target
 
-Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
+Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to
 generate both a bootloader, and an image target.
 
-To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability. 
+To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability.
 
 ```no-highlight
-$ newt target create arduino_boot 
-$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero 
-$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
+$ newt target create arduino_boot
+$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
+$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
 $ newt target set arduino_boot build_profile=optimized
 ```
 
@@ -121,13 +121,13 @@ $ newt target set arduino_boot build_profile=optimized
 If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:
 
 ```
-$ newt target set arduino_boot features=arduino_zero_pro 
+$ newt target set arduino_boot features=arduino_zero_pro
 ```
 
 If you have an Arduino Zero, you have to set the following instead:
 
 ```
-$ newt target set arduino_boot features=arduino_zero 
+$ newt target set arduino_boot features=arduino_zero
 ```
 
 <br>
@@ -138,7 +138,7 @@ $ newt target set arduino_boot features=arduino_zero
 Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the ```newt build``` command:
 
 ```no-highlight
-$ newt build arduino_boot 
+$ newt build arduino_boot
 Compiling boot.c
 Archiving boot.a
 Compiling fs_cli.c
@@ -149,32 +149,32 @@ Compiling fs_mkdir.c
 App successfully built: ~/dev/arduinowifi/bin/arduino_boot/apps/boot/boot.elf
 ```
 
-If this command finishes successfully, you have successfully built the Arduino 
-bootloader, and the next step is to build your application for the Arduino 
+If this command finishes successfully, you have successfully built the Arduino
+bootloader, and the next step is to build your application for the Arduino
 board.
 
 <br>
 
-### Build your blinky app 
+### Build your blinky app
 
 To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the Wi-Fi application that comes in the arduino repository, `apps/winc1500_wifi`:
 
 **Note**: Remember to set features to `arduino_zero` if your board is Arduino Zero and not a Pro!
 
 ```hl_lines="5"
-$ newt target create arduino_wifi 
+$ newt target create arduino_wifi
 $ newt target set arduino_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
 $ newt target set arduino_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-$ newt target set arduino_wifi build_profile=debug 
-$ newt target set arduino_wifi features=arduino_zero_pro 
+$ newt target set arduino_wifi build_profile=debug
+$ newt target set arduino_wifi features=arduino_zero_pro
 ```
 
 <br>
 
-You can now build the target, with ```newt build```: 
+You can now build the target, with ```newt build```:
 
 ```no-highlight
-$ newt build arduino_wifi 
+$ newt build arduino_wifi
 Building target targets/arduino_wifi
 Compiling main.c
 Archiving winc1500_wifi.a
@@ -204,13 +204,13 @@ The picture below shows the setup.
 
 ### Download the Bootloader
 
-Execute the command to download the bootloader. 
+Execute the command to download the bootloader.
 
 ```c
     $ newt load arduino_boot
 ```
 
-If the newt tool finishes without error, that means the bootloader has been 
+If the newt tool finishes without error, that means the bootloader has been
 successfully loaded onto the target.
 
 <br>
@@ -219,7 +219,7 @@ successfully loaded onto the target.
 
 <br>
 
-### Load the Application Image 
+### Load the Application Image
 
 Now that the bootloader is downloaded to the target, the next steps are to create an image and load it onto the target device.
 
@@ -246,7 +246,7 @@ $ minicom -D /dev/tty.usbmodem141122 -b 115200
 
 Welcome to minicom 2.7
 
-OPTIONS: 
+OPTIONS:
 Compiled on Nov 24 2015, 16:14:21.
 Port /dev/tty.usbmodem141122, 10:11:40
 
@@ -263,7 +263,7 @@ wifi_init : 0
 Connect to the local Wi-Fi network. Then start network services. The commands to be issued are highlighted below. In the example below, the network interface on the Arduino board gets an IP address of `192.168.0.117`.
 
 ```hl_lines="1 8"
-wifi connect <Wi-Fi network name> <password> 
+wifi connect <Wi-Fi network name> <password>
 16906:wifi_request_scan : 0
 17805:scan_results 16: 0
 17816:wifi_connect : 0

@@ -37,7 +37,7 @@ This function's parameters are documented below.
 To demonstrate how the above function is used, we will now modify the *bleprph*
 example application to send iBeacons.  For some background behind the *bleprph*
 app, we recommend you take a look at the [bleprph project
-tutorial](bleprph/bleprph_intro/).  If you plan on making these modifications
+tutorial](bleprph/bleprph-intro/).  If you plan on making these modifications
 yourself, it might be a good idea to copy *bleprph* to your local repository
 and work with the copy.  In general, you should avoid changing a package that
 newt downloads, as you will lose your changes the next time you upgrade the
