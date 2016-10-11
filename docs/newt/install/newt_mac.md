@@ -139,3 +139,28 @@ If you want to build the *newt* tool from its source code, follow the following 
         Use "newt help [command]" for more information about a command.
 ```
 
+<br>
+
+#### 5. Updating the Newt tool
+
+* You will update the newt tool in the same place as you initially installed the newt tool.
+* Start by updating the git repository of the newt tool (you can change to a different branch using git checkout [branch] if you need to)
+* Then update each of the tools newt, newtmgr and newtvm as needed
+
+```no-highlight
+        $ cd $GOPATH/src/mynewt.apache.org/newt
+        $ git pull
+        $ cd newt
+        $ go install
+        $ cd ../newtmgr
+        $ go install
+        $ cd ../newtvm
+        $ go install
+        $ ls "$GOPATH"/bin/
+        newt newtmgr newtvm
+```
+
+That should have updated your newt, newtmgr and newtvm to the latest versions based on the git repository you used.
+
+<br>
+
