@@ -6,7 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_sram_olimex/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_sram_olimex/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
 	<title>Run Blinky from SRAM, no bootloader - Apache Mynewt</title>
@@ -493,23 +494,23 @@
 <p>To download an application image directly into the embedded SRAM in the microcontroller and run it without the bootloader. This tutorial describes how you do it on an Olimex STM32 board.</p>
 <h3 id="what-you-need">What you need</h3>
 <ol>
-<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/ProductDetail/Olimex-Ltd/STM32-E407/?qs=UN6GZl1KCcit6Ye0xmPO4A%3D%3D">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
+<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/search/ProductDetail.aspx?R=0virtualkey0virtualkeySTM32-E407">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
 <li>ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)</li>
 <li>USB A-B type cable to connect the debugger to your personal computer</li>
 <li>Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)</li>
 <li>An account on Github repository and <em>git</em> installed on your computer.</li>
-<li>It is assumed you have already installed newt tool. </li>
+<li>It is assumed you have already installed newt tool.</li>
 <li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
 </ol>
 <p>Also, we assume that you're familiar with UNIX shells. Let's gets started!</p>
 <p><br></p>
 <h3 id="prepare-the-software">Prepare the Software</h3>
 <ul>
-<li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. </li>
+<li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory.</li>
 </ul>
 <p><br></p>
 <h3 id="create-a-project">Create a project</h3>
-<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
+<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in
 <a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
 or just follow the commands below.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
@@ -521,7 +522,7 @@ or just follow the commands below.</p>
 
     $cd myproj
 
-    $ newt install -v 
+    $ newt install -v
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
@@ -546,8 +547,8 @@ or just follow the commands below.</p>
 
 <p><br></p>
 <h3 id="build-the-image">Build the image</h3>
-<p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>. </p>
-<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em> </p>
+<p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>.</p>
+<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
     $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
     (some diff will be displayed)
@@ -576,14 +577,14 @@ or just follow the commands below.</p>
 <p><br></p>
 <ul>
 <li>
-<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present. 
+<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present.
 To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering <strong>B0_1</strong> and <strong>B1_1</strong>.</p>
 </li>
 <li>
-<p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board). </p>
+<p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board).</p>
 </li>
 <li>
-<p>The red PWR LED should be lit. </p>
+<p>The red PWR LED should be lit.</p>
 </li>
 <li>
 <p>Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.</p>
@@ -604,7 +605,7 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
     (info)
     ...
     target state: halted
-    target halted due to debug-request, current mode: Thread 
+    target halted due to debug-request, current mode: Thread
     xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
     Info : accepting &#39;gdb&#39; connection on tcp/3333
     Info : device id = 0x10036413
@@ -613,13 +614,13 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 
 
 <p><br></p>
-<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, </p>
+<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example,</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) set $msp=0x10010000
 </pre></div>
 
 
 <p><br></p>
-<p>Now load the image and type "c" or "continue" from the GNU debugger. </p>
+<p>Now load the image and type "c" or "continue" from the GNU debugger.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
     Loading section .text, size 0x16b88 lma 0x20000000
     Loading section .ARM.exidx, size 0x18 lma 0x20016b88

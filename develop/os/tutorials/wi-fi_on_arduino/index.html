@@ -6,7 +6,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/wi-fi_on_arduino/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/wi-fi_on_arduino/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
 	<title>Enable Wi-Fi on Arduino Zero - Apache Mynewt</title>
@@ -434,10 +435,10 @@
                         </div>
                         
                             <h2 id="start-wi-fi-on-arduino-zero">Start Wi-Fi on Arduino Zero</h2>
-<p>This tutorial walks you through the steps to get your Arduino board on a Wi-Fi network. </p>
+<p>This tutorial walks you through the steps to get your Arduino board on a Wi-Fi network.</p>
 <p><strong>Note:</strong> Wi-Fi support is currently available in the <code>develop</code> branch of Mynewt only. It will be merged into <code>master</code> branch when version 0.10 is released.</p>
 <h3 id="prerequisites">Prerequisites</h3>
-<p>Before tackling this tutorial, it's best to read about Mynewt in the <a href="../../get_started/introduction">Introduction</a> section of this documentation.</p>
+<p>Before tackling this tutorial, it's best to read about Mynewt in the <a href="../../get_started/get_started">Introduction</a> section of this documentation.</p>
 <h3 id="equipment">Equipment</h3>
 <p>You will need the following equipment</p>
 <ul>
@@ -451,7 +452,7 @@
 </ul>
 <h3 id="install-mynewt-and-newt">Install Mynewt and Newt</h3>
 <ul>
-<li>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a>. </li>
+<li>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a>.</li>
 <li>If you installed Newt previously but need to update it, go to the newt git repo directory, pull the latest code from <code>develop</code> branch, and install the updated code.</li>
 </ul>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   user@~/dev$ cd $GOPATH/src/mynewt.apache.org/newt
@@ -473,19 +474,19 @@
 <p>Let's say your new project is named <code>arduinowifi</code>. You will henceforth be working in that project directory.</p>
 <p><br></p>
 <h3 id="fetch-external-packages-set-correct-version-to-download">Fetch External Packages, Set correct version to download</h3>
-<p>Mynewt uses source code provided directly from the chip manufacturer for 
+<p>Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.</p>
-<p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add 
+<p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
 the repository to the <code>project.yml</code> file in your base project directory (<code>arduinowifi</code>).</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">user@~/dev/arduinowifi$ vi project.yml
 </pre></div>
 
 
 <p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
-added. The sections with <code>mynewt_arduino_zero</code> that need to be added to 
-your project file are highlighted. </p>
+added. The sections with <code>mynewt_arduino_zero</code> that need to be added to
+your project file are highlighted.</p>
 <p>Also highlighted is the <code>0-dev</code> version for both the repositories to ensure code is downloaded from the <code>develop</code> branch.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more project.yml 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more project.yml
 project.name: &quot;my_project&quot;
 
 project.repositories:
@@ -503,15 +504,15 @@ repository.apache-mynewt-core:
 </span><span style="background-color: #ffffcc">    vers: 0-dev
 </span><span style="background-color: #ffffcc">    user: runtimeinc
 </span><span style="background-color: #ffffcc">    repo: mynewt_arduino_zero
-</span>$ 
+</span>$
 </pre></div>
 
 
 <p><br></p>
-<p>Once you've edited your <code>project.yml</code> file, the next step is to install the 
-project dependencies, this can be done with the <code>newt install</code> command 
-(to see more output, provide the <code>-v</code> verbose option.): </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt install 
+<p>Once you've edited your <code>project.yml</code> file, the next step is to install the
+project dependencies, this can be done with the <code>newt install</code> command
+(to see more output, provide the <code>-v</code> verbose option.):</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt install
 apache-mynewt-core
 mynewt_arduino_zero
 $
@@ -520,31 +521,31 @@ $
 
 <p><br></p>
 <h3 id="create-your-bootloader-target">Create your bootloader target</h3>
-<p>Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
+<p>Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to
 generate both a bootloader, and an image target.</p>
-<p>To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_boot 
-$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero 
-$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
+<p>To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_boot
+$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
+$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
 $ newt target set arduino_boot build_profile=optimized
 </pre></div>
 
 
 <p><br></p>
 <p>If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set arduino_boot features=arduino_zero_pro 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set arduino_boot features=arduino_zero_pro
 </pre></div>
 
 
 <p>If you have an Arduino Zero, you have to set the following instead:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set arduino_boot features=arduino_zero 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set arduino_boot features=arduino_zero
 </pre></div>
 
 
 <p><br></p>
 <h3 id="build-your-bootloader">Build your bootloader</h3>
 <p>Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the <code>newt build</code> command:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_boot 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_boot
 Compiling boot.c
 Archiving boot.a
 Compiling fs_cli.c
@@ -556,24 +557,24 @@ App successfully built: ~/dev/arduinowifi/bin/arduino_boot/apps/boot/boot.elf
 </pre></div>
 
 
-<p>If this command finishes successfully, you have successfully built the Arduino 
-bootloader, and the next step is to build your application for the Arduino 
+<p>If this command finishes successfully, you have successfully built the Arduino
+bootloader, and the next step is to build your application for the Arduino
 board.</p>
 <p><br></p>
 <h3 id="build-your-blinky-app">Build your blinky app</h3>
 <p>To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the Wi-Fi application that comes in the arduino repository, <code>apps/winc1500_wifi</code>:</p>
 <p><strong>Note</strong>: Remember to set features to <code>arduino_zero</code> if your board is Arduino Zero and not a Pro!</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_wifi 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_wifi
 $ newt target set arduino_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
 $ newt target set arduino_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-$ newt target set arduino_wifi build_profile=debug 
-<span style="background-color: #ffffcc">$ newt target set arduino_wifi features=arduino_zero_pro 
+$ newt target set arduino_wifi build_profile=debug
+<span style="background-color: #ffffcc">$ newt target set arduino_wifi features=arduino_zero_pro
 </span></pre></div>
 
 
 <p><br></p>
-<p>You can now build the target, with <code>newt build</code>: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_wifi 
+<p>You can now build the target, with <code>newt build</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_wifi
 Building target targets/arduino_wifi
 Compiling main.c
 Archiving winc1500_wifi.a
@@ -596,12 +597,12 @@ App successfully built: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/wi
 <p><img alt="Arduino with Wi-Fi shield" src="../pics/arduino_wifi.png" title="WifiShield" /></p>
 <p><br></p>
 <h3 id="download-the-bootloader">Download the Bootloader</h3>
-<p>Execute the command to download the bootloader. </p>
+<p>Execute the command to download the bootloader.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">load</span> <span style="color: #000000">arduino_boot</span>
 </pre></div>
 
 
-<p>If the newt tool finishes without error, that means the bootloader has been 
+<p>If the newt tool finishes without error, that means the bootloader has been
 successfully loaded onto the target.</p>
 <p><br></p>
 <p><font color="#FF0000"> Reminder if you are using Docker: </font> When working with actual hardware, remember that each board has an ID. If you swap boards and do not refresh the USB Device Filter on the VirtualBox UI, the ID might be stale and the Docker instance may not be able to see the board correctly. For example, you may see an error message like <code>Error: unable to find CMSIS-DAP device</code> when you try to load or run an image on the board. In that case, you need to click on the USB link in VirtualBox UI, remove the existing USB Device Filter (e.g. "Atmel Corp. EDBG CMSIS-DAP[0101]") by clicking on the "Removes selected USB filter" button, and add a new filter by clicking on the "Adds new USB filter" button.</p>
@@ -625,7 +626,7 @@ $
 
 Welcome to minicom 2.7
 
-OPTIONS: 
+OPTIONS:
 Compiled on Nov 24 2015, 16:14:21.
 Port /dev/tty.usbmodem141122, 10:11:40
 
@@ -641,7 +642,7 @@ wifi_init : 0
 
 
 <p>Connect to the local Wi-Fi network. Then start network services. The commands to be issued are highlighted below. In the example below, the network interface on the Arduino board gets an IP address of <code>192.168.0.117</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">wifi connect &lt;Wi-Fi network name&gt; &lt;password&gt; 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">wifi connect &lt;Wi-Fi network name&gt; &lt;password&gt;
 </span>16906:wifi_request_scan : 0
 17805:scan_results 16: 0
 17816:wifi_connect : 0
