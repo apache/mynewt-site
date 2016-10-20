@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fsutil\_read\_file</font>
 
-```no-highlight
+```c
 int fsutil_read_file(const char *path, uint32_t offset, uint32_t len,
                      void *dst, uint32_t *out_len)
 ```
@@ -9,7 +9,7 @@ Calls fs\_open(), fs\_read(), and fs\_close() to open a file at the specified pa
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | path |  Pointer to the directory entry to query |
 | offset |  Position of the file's read pointer |
@@ -28,7 +28,7 @@ This is a convenience function. It is useful when the amount of data to be read 
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -36,7 +36,7 @@ This is a convenience function. It is useful when the amount of data to be read 
 
 This example demonstrates reading a small text file in its entirety and printing its contents to the console.
 
-```no-highlight
+```c
 int
 print_status(void)
 {

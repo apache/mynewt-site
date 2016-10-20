@@ -165,7 +165,7 @@ At this point, you can add contents to your test and verify that
 the test suites pass.  For now, lets just add a simple failure to show
 what it would look like when running from Newt.
 
-* Edit `test_json_simple.c` and add a `TEST_ASSERT` to a test funtion. The
+* Edit `test_json_simple.c` and add a `TEST_ASSERT` to a test function. The
 test assert will fail if its argument is `false`.
 
 

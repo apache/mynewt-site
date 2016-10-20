@@ -148,7 +148,7 @@ mbuf_usage_example2(struct mbuf *rxpkt)
 	    }
 	}
 	
-	/* Free passed in packet (mbuf chain) since we dont need it anymore */
+	/* Free passed in packet (mbuf chain) since we don't need it anymore */
 	os_mbuf_free_chain(om);
 }
 
@@ -218,27 +218,29 @@ struct os_mbuf {
 
 The functions/macros available in mbuf are:
 
-* [OS_MBUF_PKTHDR](OS_MBUF_PKTHDR.md)
-* [OS_MBUF_PKTHDR_TO_MBUF](OS_MBUF_PKTHDR_TO_MBUF.md)
-* [OS_MBUF_PKTLEN](OS_MBUF_PKTLEN.md)
-* [OS_MBUF_DATA](OS_MBUF_DATA.md)
-* [OS_MBUF_USRHDR](OS_MBUF_USRHDR.md)
-* [OS_MBUF_USRHDR_LEN](OS_MBUF_USRHDR_LEN.md)
-* [OS_MBUF_LEADINGSPACE](OS_MBUF_LEADINGSPACE.md)
-* [OS_MBUF_TRAILINGSPACE](OS_MBUF_TRAILINGSPACE.md)
-* [os_mbuf_adj](os_mbuf_adj.md)
-* [os_mbuf_append](os_mbuf_append.md)
-* [os_mbuf_concat](os_mbuf_concat.md)
-* [os_mbuf_copydata](os_mbuf_copydata.md)
-* [os_mbuf_copyinto](os_mbuf_copyinto.md)
-* [os_mbuf_dup](os_mbuf_dup.md)
-* [os_mbuf_extend](os_mbuf_extend.md)
-* [os_mbuf_free_chain](os_mbuf_free_chain.md)
-* [os_mbuf_get](os_mbuf_get.md)
-* [os_mbuf_get_pkthdr](os_mbuf_get_pkthdr.md)
-* [os_mbuf_memcmp](os_mbuf_memcmp.md)
-* [os_mbuf_off](os_mbuf_off.md)
-* [os_mbuf_pool_init](os_mbuf_pool_init.md)
-* [os_mbuf_prepend](os_mbuf_prepend.md)
-* [os_mbuf_pullup](os_mbuf_pullup.md)
+| **Function/Macro** | **Description** |
+|-----------|-------------|
+| [OS_MBUF_PKTHDR](OS_MBUF_PKTHDR.md) | Get a pointer to the os mbuf packet header of an mbuf. |
+| [OS_MBUF_PKTHDR_TO_MBUF](OS_MBUF_PKTHDR_TO_MBUF.md) | Get a pointer to the mbuf given a pointer to the os mbuf packet header. |
+| [OS_MBUF_PKTLEN](OS_MBUF_PKTLEN.md) | Get the length of an entire mbuf chain. |
+| [OS_MBUF_DATA](OS_MBUF_DATA.md) | Cast the data pointer of an mbuf to a given type. |
+| [OS_MBUF_USRHDR](OS_MBUF_USRHDR.md) | Get a pointer to the user packet header of an mbuf. |
+| [OS_MBUF_USRHDR_LEN](OS_MBUF_USRHDR_LEN.md) | Retrieve the length of the user packet header in an mbuf. |
+| [OS_MBUF_LEADINGSPACE](OS_MBUF_LEADINGSPACE.md) | Get the amount of leading space in an mbuf (in bytes). |
+| [OS_MBUF_TRAILINGSPACE](OS_MBUF_TRAILINGSPACE.md) | Get the amount of trailing space in an mbuf (in bytes). |
+| [os_mbuf_adj](os_mbuf_adj.md) | Trims the given number of bytes from either the head (if positive) or tail (if negative) of an mbuf chain. |
+| [os_mbuf_append](os_mbuf_append.md) | Appends a data buffer of the given length to the end of an mbuf chain. |
+| [os_mbuf_concat](os_mbuf_concat.md) | Attaches a second mbuf chain onto the end of the first. |
+| [os_mbuf_copydata](os_mbuf_copydata.md) | Copy data from an mbuf chain. |
+| [os_mbuf_copyinto](os_mbuf_copyinto.md) | Copies the contents of a flat buffer into an mbuf chain. |
+| [os_mbuf_dup](os_mbuf_dup.md) | Duplicate a chain of mbufs. |
+| [os_mbuf_extend](os_mbuf_extend.md) | Increases the length of an mbuf chain by the specified amount. |
+| [os_mbuf_free_chain](os_mbuf_free_chain.md) | Frees a chain of mbufs. |
+| [os_mbuf_get](os_mbuf_get.md) | Get an mbuf from the mbuf pool. |
+| [os_mbuf_get_pkthdr](os_mbuf_get_pkthdr.md) | Allocates a packet header mbuf from the given mbuf pool. Adds a user header to the packet header mbuf. |
+| [os_mbuf_memcmp](os_mbuf_memcmp.md) | Performs a memory compare of the specified region of an mbuf chain against a flat buffer. |
+| [os_mbuf_off](os_mbuf_off.md) | Given an offset in the packet, return the mbuf and the offset in that mbuf where byte 'off' is located. |
+| [os_mbuf_pool_init](os_mbuf_pool_init.md) | nitialize an mbuf pool. |
+| [os_mbuf_prepend](os_mbuf_prepend.md) | Increases the length of an mbuf chain by adding data to the front. |
+| [os_mbuf_pullup](os_mbuf_pullup.md) | Rearrange an mbuf chain so that the given length of bytes are contiguous and in the data area of an mbuf. |
 

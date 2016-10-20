@@ -38,7 +38,7 @@ Both methods require the user to describe how the flash memory should be divided
 
 Typically, a product's flash layout is exposed via its BSP-specific `bsp_flash_dev()` function.  This function retrieves the layout of the specified flash device resident in the BSP.  The result of this function can then be converted into the `struct nffs_area_desc[]` that nffs requires.  The below example, taken from the slinky project, illustrates the nffs initialization procedure.
 
-```no-highlight
+```c
 /*** hw/hal/include/hal/flash_map.h */
 
 /*
@@ -51,7 +51,7 @@ Typically, a product's flash layout is exposed via its BSP-specific `bsp_flash_d
 #define FLASH_AREA_NFFS                 4
 ```
 
-```no-highlight
+```c
 /*** project/slinky/src/main.c */
 
 int
@@ -93,7 +93,7 @@ The nffs file system is configured by populating fields in a global [struct nffs
 
 The global `struct nffs_config` instance is exposed in `nffs/nffs.h` as follows:
 
-```no-highlight
+```c
 extern struct nffs_config nffs_config;
 ```
 
@@ -101,16 +101,20 @@ extern struct nffs_config nffs_config;
 
 The `fs/nffs` package exposes the following data structures:
 
-* [struct nffs\_area\_desc](nffs_area_desc.md)
-* [struct nffs\_config](nffs_config.md)
+| Struct | Description |
+|---------|-------------|
+| [struct nffs\_area\_desc](nffs_area_desc.md) | Descriptor for a single nffs area. |
+| [struct nffs\_config](nffs_config.md) | Configuration struct for nffs. |
 
 ###API
 
 The functions available in this OS feature are:
 
-* [nffs\_detect](nffs_detect.md)
-* [nffs\_format](nffs_format.md)
-* [nffs\_init](nffs_init.md)
+| Function | Description |
+|---------|-------------|
+| [nffs\_detect](nffs_detect.md) | Searches for a valid nffs file system among the specified areas. |
+| [nffs\_format](nffs_format.md) | Erases all the specified areas and initializes them with a clean nffs file system. |
+| [nffs\_init](nffs_init.md) | Initializes internal nffs memory and data structures. |
 
 ###Miscellaneous measures
 

@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_read</font>
 
-```no-highlight
+```c
 int fs_read(struct fs_file *file, uint32_t len, void *out_data, uint32_t *out_len)
 ```
 
@@ -8,7 +8,7 @@ Reads data from the specified file.  If more data is requested than remains in t
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | file |  Pointer to the the file to read from  |
 | len |  The number of bytes to attempt to read |
@@ -22,7 +22,7 @@ Reads data from the specified file.  If more data is requested than remains in t
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -30,7 +30,7 @@ Reads data from the specified file.  If more data is requested than remains in t
 
 The below code opens the file `/settings/config.txt` for reading, reads some data, and then closes the file.
 
-```no-highlight
+```c
 int
 read_config(void)
 {

@@ -95,7 +95,8 @@ newt build boot_f3
 ....
 Linking boot.elf
 App successfully built: /Users/user/src/air_quality/bin/boot_f3/apps/boot/boot.elf
-[user@IsMyLaptop:~/src/air_quality]$ newt load boot_f3
+[user@IsMyLaptop:~/src/air_quality]
+$ newt load boot_f3
 ```
 
 Next you must download the targets to board, and see that the LED actually blinks. You plug in the STM32F3 discovery board to your laptop, and say:
@@ -133,7 +134,7 @@ Ah. Forgot to create an image out of the blinky binary. Note that every time you
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ newt create-image blink_f3 0.0.1
-App image succesfully generated: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img
+App image successfully generated: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img
 Build manifest: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/manifest.json
 [user@IsMyLaptop:~/src/air_quality]$ newt load blink_f3 0.0.1
 ```
@@ -381,6 +382,8 @@ senseair_shell_func(int argc, char **argv)
 ```
 
 Then you build this, download to target, and start minicom on your console port.
+
+You'll need to wire up your Board to a Serial converter first. On the STM32F3-Discovery Board pin PA9 is TX and pin PA10 is RX so wire PA9 to RX on your serial board, and PA10 to TX on your serial board.
 
 ```no-highlight
     [user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2

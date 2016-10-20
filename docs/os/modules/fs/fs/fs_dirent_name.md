@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_dirent\_name</font>
 
-```no-highlight
+```c
 int fs_dirent_name(const struct fs_dirent *dirent, size_t max_len,
                    char *out_name, uint8_t *out_name_len)
 ```
@@ -9,7 +9,7 @@ Retrieves the filename of the specified directory entry.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | dirent |  Pointer to the directory entry to query |
 | max\_len | Size of the "out\_name" character buffer  |
@@ -28,7 +28,7 @@ The retrieved filename is always null-terminated.  To ensure enough space to hol
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -36,7 +36,7 @@ The retrieved filename is always null-terminated.  To ensure enough space to hol
 
 This example iterates through the contents of a directory, printing the name of each child node.  When the traversal is complete, the code closes the directory handle.
 
-```no-highlight
+```c
 int
 traverse_dir(const char *dirname)
 {

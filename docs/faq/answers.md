@@ -1,5 +1,7 @@
 ### How do I submit a bug?
 
+<br>
+
 If you do not have a JIRA account sign up for an account on [JIRA](https://issues.apache.org/jira/secure/Signup!default.jspa).
 
 Submit a request to the @dev mailing list for your JIRA username to be added to the Apache Mynewt (MYNEWT) project. You can view the issues on JIRA for the MYNEWT project without an account but you need to log in for reporting a bug. 
@@ -7,6 +9,8 @@ Submit a request to the @dev mailing list for your JIRA username to be added to 
 Log in. Choose the "MYNEWT" project. Click on the "Create" button to create a ticket. Choose "Bug" as the Issue Type. Fill in the bug description, how it is triggered, and other details. 
 
 ### How do I request a feature?
+
+<br>
 
 If you do not have a JIRA account sign up for an account on [JIRA](https://issues.apache.org/jira/secure/Signup!default.jspa).
 
@@ -18,18 +22,38 @@ If you are not a committer and you wish to work on it, someone who is on the com
 
 ### I am not on the committer list. How do I submit a patch? 
 
-You submit your proposed changes for your peers with committer status to review and merge. 
+<br>
 
-You may choose to submit patches in one of the two following ways:
+**You submit your proposed changes for your peers with committer status to review and merge.**
 
-1\. Go to the [Mynewt OS mirror](https://github.com/apache/incubator-mynewt-larva) or [Newt Tool mirror](https://github.com/apache/incubator-mynewt-newt) on github.com, as appropriate. Click on the "Fork" button to create your own instance of the repo on github.com. Clone the forked repository into a local branch on your machine and make your changes. Push that branch to your fork on github. Then submit a pull request from that branch on your github repo.
+The "develop" branch on Mynewt's repository contains the most recent changes made by the community of developers. Contributions from you need to go into this branch. The essential steps to setting up your project space for working with the latest code from "develop" and make pull requests into "develop" to get your code added are the following:
 
-In the comment for the pull request, include a description of the changes you have made and why. Github will automatically notify everyone on the commits@mynewt.incubator.apache.org mailing list about the newly opened pull requests. You can open a pull request even if you don't think the code is ready for merging but want some discussion on the matter.
-Upon receiving notification, one or more committers will review your work, ask for edits or clarifications, and merge when your proposed changes are ready.
 
-2\.Use the `git format-patch` command to produce a patch file. Submit the patch (your code changes along with a diff from the old code) via email to the @dev mailing list. Summarize the issue and your work in the email. Regular project members will review your suggested patch and add it to the repository, acknowledging your contribution by referencing your name in the commit message.
+**Step 1:** Create a fork of the entire Mynewt repository on github.com.
+**Step 2:** Setup repository on your laptop to use code in “develop” branch. You then create a new branch “mybranch” using “git checkout –b”. You also add a remote handle named “fork” that points to the github fork you created in Step 1.
+```    $ newt new devproject    $ cd devproject    $ vi project.yml        # change version to 0-dev for repository.apache-mynewt-core    $ newt install    $ cd repos/apache-mynewt-core    $ git status        On branch develop        Your branch is up-to-date with 'origin/develop'.        nothing to commit, working directory clean    $ git checkout –b mybranch    $ git remote -v        origin https://github.com/apache/incubator-mynewt-core.git (fetch) 
+        origin https://github.com/apache/incubator-mynewt-core.git (push)    $ git remote add fork https://github.com/<user>/incubator-mynewt-core 
+    $ git remote -v        origin https://github.com/apache/incubator-mynewt-core.git (fetch) 
+        origin https://github.com/apache/incubator-mynewt-core.git (push)        fork https://github.com/<user>/incubator-mynewt-core (fetch) 
+        fork https://github.com/<user>/incubator-mynewt-core (push)
+```**Step 3:** Check you are in “mybranch”. Write code. Stage and commit your changes(example shows adding all).
+```   $ git checkout mybranch   $ git add .   $ git commit –m “your message about your code changes”
+```
+**Step 4:** Always pull the latest from develop on Apache mirror to “mybranch” before pushing any changes to remotes. If you see merge conflicts, resolve them first.
+```   $ git pull --rebase origin develop
+```
+**Step 5:** Push your changes to “mybranch” branch on your github fork. If “mybranch” does not exist yet on your github fork, the command automa;cally creates it.
+```   $ git push fork mybranch
+```
+**￼Step 6:** Generate a pull request from “mybranch” in your fork to “develop” in Mynewt using the "New pull request" button on github.com.
 
+
+![Mynewt Dev Cycle](mynewt_dev_cycle.jpg)
+    
+    
 ### I would like to make some edits to the documentation. What do I do?
+
+<br>
 
 You submit your proposed changes for your peers with committer status to review and merge. 
 
@@ -46,6 +70,8 @@ Upon receiving notification, one or more committers will review your work, ask f
 If you want to withdraw the pull request simply go to your fork `https://github.com/<your github username>/incubator-mynewt-site` and click on "branches". You should see your branch under "Your branches". Click on the delete icon.
 
 ### I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?
+
+<br>
 
 You submit your proposed changes for your peers with committer status to review and merge. 
 

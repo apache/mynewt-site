@@ -35,8 +35,10 @@ struct os_sem
 
 The functions available in semaphore are:
 
-* [os_sem_init](os_sem_init)
-* [os_sem_pend](os_sem_pend)
-* [os_sem_release](os_sem_release)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_sem_init](os_sem_init) | Initialize a semaphore with a given number of tokens. |
+| [os_sem_pend](os_sem_pend) | Wait for a semaphore for a given amount of time. |
+| [os_sem_release](os_sem_release) | Release a semaphore that you are holding. This adds a token to the semaphore. |
 
 

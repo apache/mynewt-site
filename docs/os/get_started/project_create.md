@@ -254,6 +254,8 @@ App successfully built: /Users/dsimmons/myproj/bin/my_blinky_sim/apps/blinky/bli
 
 <br>
 
+### Run the Project
+
 You can run the simulated version of your project and see the simulated LED
 blink.
 
@@ -261,8 +263,6 @@ blink.
 $ ./bin/my_blinky_sim/apps/blinky/blinky.elf
 hal_gpio set pin  1 to 0
 ```
-
-Just press _ctrl-c_ to exit.
 
 <br>
 

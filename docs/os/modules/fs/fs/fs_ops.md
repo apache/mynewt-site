@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">struct fs\_ops</font>
 
-```no-highlight
+```c
 struct fs_ops {
     int (*f_open)(const char *filename, uint8_t access_flags,
               struct fs_file **out_file);
@@ -35,6 +35,6 @@ The required behavior of each corresponding function is documented in the [file 
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs_if.h"
 ```

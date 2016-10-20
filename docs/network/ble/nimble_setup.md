@@ -7,7 +7,7 @@ This tutorial assumes that you have already installed the newt tool and are fami
 
 ### Create the application directory
 
-You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/add_repos.md) for more on working with repos.
+You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/repo/add_repos.md) for more on working with repos.
 
 ```
 ~/dev$ newt new my_proj1
@@ -203,7 +203,7 @@ App successfully built: /Users/wes/dev/my_proj1/bin/ble_tgt/apps/ble_app/ble_app
 
 You now have a fully functional BLE app (never mind the fact that it doesn't
 actually do anything yet!).  With all the necessary infrastructure in place,
-you can now start turning this into a real applicaiton.  Additional tutorials
+you can now start turning this into a real application.  Additional tutorials
 with focus on adding application-layer functionality to your Nimble application
 will be coming soon.  In the meantime, you might get some inspiration from
 apache-mynewt-core's example Nimble apps.  These apps can be found at the below locations, relative to your project's base directory:

@@ -1,14 +1,14 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_unlink</font>
 
-```no-highlight
+```c
 int fs_unlink(const char *filename)
 ```
 
-Unlinks the file or directory at the specified path.  This is the function to use if you want to delete a file or directory from the disk.  If the path refers to a directory, all the directory's descendants are recursively unlinked.  Any open file handles refering to an unlinked file remain valid, and can be read from and written to as long as they remain open.
+Unlinks the file or directory at the specified path.  This is the function to use if you want to delete a file or directory from the disk.  If the path refers to a directory, all the directory's descendants are recursively unlinked.  Any open file handles referring to an unlinked file remain valid, and can be read from and written to as long as they remain open.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | filename  |  The path of the file or directory to unlink |
 
@@ -19,7 +19,7 @@ Unlinks the file or directory at the specified path.  This is the function to us
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -27,7 +27,7 @@ Unlinks the file or directory at the specified path.  This is the function to us
 
 The following example creates a file and then immediately unlinks it.  By unlinking the file, this function prevents other OS tasks from accessing it.  When the function closes the file, it is deleted from the disk.
 
-```no-highlight
+```c
 int
 process_data(void)
 {

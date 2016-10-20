@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs\_mkdir</font>
 
-```no-highlight
+```c
 int fs_mkdir(const char *path)
 ```
 
@@ -8,7 +8,7 @@ Creates the directory represented by the specified path.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | path      |  The name of the directory to create |
 
@@ -24,7 +24,7 @@ All intermediate directories must already exist.  The specified path must start 
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -32,7 +32,7 @@ All intermediate directories must already exist.  The specified path must start 
 
 This example demonstrates creating a series of nested directories.
 
-```no-highlight
+```c
 int
 create_path(void)
 {

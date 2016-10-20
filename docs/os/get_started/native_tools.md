@@ -17,7 +17,7 @@ If you have not already installed Homebrew from the
 
 ###Install gcc/libc 
 
-OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator, you will need a different compiler: gcc.
+OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.
 
 ```no-highlight
 $ brew install gcc
@@ -26,6 +26,61 @@ $ brew install gcc
 ==> Summary
 🍺  /usr/local/Cellar/gcc/5.2.0: 1353 files, 248M
 ```
+
+<br>
+
+Check the gcc version you have installed (either using brew or previously installed). The brew-installed version can be checked using `brew list gcc`. The default compiler.yml configuration file in Mynewt expects version 5.x for Mac users, so if the installed version is 6.x and you wish to continue with this newer version, modify the `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file to change the default `gcc-5` defined there to `gcc-6`. In other words, replace the lines shown highlighted below:
+
+```hl_lines="2 3"
+# OS X.
+compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
+compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
+compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
+```
+with the following:
+
+```no-highlight
+compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6"
+compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6 -x assembler-with-cpp”
+```
+
+<br>
+
+In case you wish to use Clang, you can change your `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` to use Clang. Delete the gcc-5 DARWIN.OVERWRITE lines highlighted below.
+
+```hl_lines="2 3"
+# OS X.
+compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
+compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
+compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
+```
+
+<br>
+
+**NOTE:** Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.
+
+<br>
+
+**FURTHER NOTE:** Mynewt developers mostly use gcc 5.x for sim builds; so it may take a little while to fix issues reported by the newer compiler. One option is to **disable warnings**. To do that, remove the `-Werror` flag as an option for the compiler in the  `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file as shown below. 
+
+```hl_lines="2"
+compiler.flags.base: >
+    -m32 -Wall -ggdb
+```
+
+You may alternatively choose to **specify the precise warnings to ignore** depending on the error thrown by the compiler. For example, if you see a `[-Werror=misleading-indentation]` error while building the sim image, add `-Wno-misleading-indentation]` as a compiler flag in the same line from the `<mynewt-src-directory>/repos/apache-mynewt-core/compiler/sim/compiler.yml` file.
+
+```hl_lines="2"
+compiler.flags.base: >
+    -m32 -Wall -Werror -ggdb -Wno-misleading-indentation
+```
+
+
+A third option is to simply **downgrade to gcc 5.x**.
 
 <br>
 

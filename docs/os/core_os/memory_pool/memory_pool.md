@@ -61,14 +61,16 @@ struct os_mempool {
 | name | Name for the memory block |
   
   
-### List of Functions
+### List of Functions/Macros
 
-The functions available in mem_pool are:
+The functions/macros available in mem_pool are:
 
-* [os_memblock_get](os_memblock_get)
-* [os_mempool_init](os_mempool_init)
-* [os_memblock_put](os_memblock_put)
-* [OS_MEMPOOL_BYTES](OS_MEMPOOL_BYTES)
-* [OS_MEMPOOL_SIZE](OS_MEMPOOL_SIZE)
+| **Function** | **Description** |
+|-----------|-------------|
+| [os_memblock_get](os_memblock_get) | Allocate an element from the memory pool. |
+| [os_mempool_init](os_mempool_init) | Initializes the memory pool. |
+| [os_memblock_put](os_memblock_put) | Releases previously allocated element back to the pool. |
+| [OS_MEMPOOL_BYTES](OS_MEMPOOL_BYTES) | Calculates how many bytes of memory is used by n number of elements, when individual element size is blksize bytes. |
+| [OS_MEMPOOL_SIZE](OS_MEMPOOL_SIZE) | Calculates the number of os_membuf_t elements used by n blocks of size blksize bytes. |
 
 

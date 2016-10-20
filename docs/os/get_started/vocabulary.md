@@ -114,7 +114,7 @@ Dependencies and APIs to the rest of the system.
 ### Target
 
 A target in Apache Mynewt is very similar to a target in *make*.  It is the collection
-of parameters that must be passed to Newt in order to generate a reproducable build.  A 
+of parameters that must be passed to Newt in order to generate a reproducible build.  A 
 target represents the top of the build tree, and any packages or parameters specified at 
 the target level, cascade down to all dependencies.
 

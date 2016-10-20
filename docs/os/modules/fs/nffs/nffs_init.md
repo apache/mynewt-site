@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">nffs\_init</font>
 
-```no-highlight
+```c
 int nffs_init(void)
 ```
 
@@ -13,6 +13,6 @@ Initializes internal nffs memory and data structures.  This must be called befor
 
 #### Header file
 
-```no-highlight
+```c
 #include "nffs/nffs.h"
 ```

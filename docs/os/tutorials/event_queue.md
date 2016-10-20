@@ -20,7 +20,7 @@ You will  use inputs from 3 sources to toggle 3 GPIO outputs on my STM32F3discov
 
 #### Create project
 
-You start by creating a project and populating it with repositories incubator-mynewt-core and mynewt_stm32f3. See [STM32F3 tutorial](STM32F303.md) if you need help with this. You can also read the tutorial on [Additional Repositories](add_repos.md) for a more thorough understanding. 
+You start by creating a project and populating it with repositories incubator-mynewt-core and mynewt_stm32f3. See [STM32F3 tutorial](STM32F303.md) if you need help with this. You can also read the tutorial on [Additional Repositories](repo/add_repos.md) for a more thorough understanding. 
 
 <br> 
 

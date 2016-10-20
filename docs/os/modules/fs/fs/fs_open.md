@@ -1,6 +1,6 @@
 ## <font color="F2853F" style="font-size:24pt">fs\_open</font>
 
-```no-highlight
+```c
 int fs_open(const char *filename, uint8_t access_flags,
             struct fs_file **out_file)
 ```
@@ -21,7 +21,7 @@ The mode strings passed to `fopen()` map to `fs_open()`'s access flags as follow
 
 #### Arguments
 
-| Argument | Description |
+| *Argument* | *Description* |
 |----------|-------------|
 | filename | Null-terminated string indicating the full path of the file to open |
 | access\_flags | Flags controlling file access; see above table   |
@@ -40,7 +40,7 @@ The mode strings passed to `fopen()` map to `fs_open()`'s access flags as follow
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -48,7 +48,7 @@ The mode strings passed to `fopen()` map to `fs_open()`'s access flags as follow
 
 The below code opens the file `/settings/config.txt` for reading, reads some data, and then closes the file.
 
-```no-highlight
+```c
 int
 read_config(void)
 {

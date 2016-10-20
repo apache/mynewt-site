@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">fs_readdir</font>
 
-```no-highlight
+```c
 int fs_readdir(struct fs_dir *dir, struct fs_dirent **out_dirent);
 ```
 
@@ -8,7 +8,7 @@ Reads the next entry in an open directory.
 
 #### Arguments
 
-| Arguments | Description |
+| *Argument* | *Description* |
 |-----------|-------------|
 | dir |  The directory handle to read from |
 | out\_dirent  | On success, points to the next child entry in the specified directory |
@@ -22,7 +22,7 @@ Reads the next entry in an open directory.
 
 #### Header file
 
-```no-highlight
+```c
 #include "fs/fs.h"
 ```
 
@@ -30,7 +30,7 @@ Reads the next entry in an open directory.
 
 This example iterates through the contents of a directory, printing the name of each child node.  When the traversal is complete, the code closes the directory handle.
 
-```no-highlight
+```c
 int
 traverse_dir(const char *dirname)
 {
