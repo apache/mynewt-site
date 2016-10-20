@@ -46,6 +46,10 @@ relies upon.
 * ```repository.apache-mynewt-core```: Defines the repository information for 
 the ```apache-mynewt-core``` repository.
 
+* ```vers=0-latest```: Defines the repository version. This string will use the 
+latest code in the 'Master' github branch. To use the latest version in the 
+develop branch, just change it to ```vers=0-dev```
+
 Repositories are versioned collections of packages.  
 
 Projects can rely on remote repositories for functionality, and the newt tool 
@@ -131,32 +135,28 @@ you can find more information about these by issuing:
 
 ```no-highlight
 $ newt target
-
-Usage: 
+Usage:
   newt target [flags]
   newt target [command]
 
-Available Commands: 
-  show        View target configuration variables
-  set         Set target configuration variable
+Available Commands:
+  copy        Copy target
   create      Create a target
   delete      Delete target
-  copy        Copy target
+  set         Set target configuration variable
+  show        View target configuration variables
   vars        Show variable names
 
 Flags:
-  -h, --help=false: help for target
+  -h, --help   help for target
 
 Global Flags:
-  -l, --loglevel="WARN": Log level, defaults to WARN.
-  -o, --outfile="": Filename to tee log output to
-  -q, --quiet=false: Be quiet; only display error output.
-  -s, --silent=false: Be silent; don't output anything.
-  -v, --verbose=false: Enable verbose output when executing commands.
+  -l, --loglevel string   Log level (default "WARN")
+  -o, --outfile string    Filename to tee output to
+  -q, --quiet             Be quiet; only display error output
+  -s, --silent            Be silent; don't output anything
+  -v, --verbose           Enable verbose output when executing commands
 
-Additional help topics:
-
-
-Use "newt help [command]" for more information about a command.
+Use "newt target [command] --help" for more information about a command.
 $ 
 ```
