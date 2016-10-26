@@ -187,7 +187,18 @@ pkg.deps:
 <br>
 
 
+### Autocompletion in Bash
 
+Newt has the ability to autocomplete within `bash`.  The following instructions allow MAC users to enable autocomplete within `bash`.
+
+1. Install the autocomplete tools for bash via `brew install bash-completion`
+2. Tell your shell to use newt for autocompletion of newt via `complete -C "newt complete" newt`.  You can add this to your .bashrc or other init file to have it automatically set for all bash shells.
+
+Notes:
+
+1. Autocomplete will give you flag hints, but only if you type a '-'.  
+2. Autocomplete will not give you completion hints for the flag arguments (those optional things after the flag like `-l DEBUG`)
+3. Autocomplete uses newt to parse the project to find targets and libs.
 
 
 

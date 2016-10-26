@@ -1,1 +1,1 @@
-Apache Mynewt is a real-time, modular operating system for connected IoT devices that need to operate for long periods of time under power, memory, and storage constraints. The first connectivity stack offered is BLE 4.2.
+[//]: # (This is not used - see landing.html for content)

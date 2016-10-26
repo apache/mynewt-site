@@ -1,13 +1,17 @@
-## Project Slinky 
+## Project Slinky using STM32 board
 
 
-### Objective
+<br>
 
-The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr). We will do this through a project with Mynewt called Slinky that runs on the STM32-E407 board.
+The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr) by leveraging a sample app "Slinky" included under the /apps directory in the repository. In this project we will define a target for the STM32-E407 board and assign the app "Slinky" to it.
+
+If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md).
+
+<br>
 
 ### What you need
 
-1. STM32-E407 development board from Olimex. You can order it from [http://www.mouser.com](http://www.mouser.com/ProductDetail/Olimex-Ltd/STM32-E407/?qs=UN6GZl1KCcit6Ye0xmPO4A%3D%3D), [http://www.digikey.com](http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951), and other places.
+1. STM32-E407 development board from Olimex. You can order it from [http://www.mouser.com](http://www.mouser.com/search/ProductDetail.aspx?R=0virtualkey0virtualkeySTM32-E407), [http://www.digikey.com](http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951), and other places.
 2. ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
 3. USB A-B type cable to connect the debugger to your personal computer
 4. A USB to TTL Serial Cable with female wiring harness. An example is [http://www.amazon.com/JBtek®-WINDOWS-Supported-Raspberry-Programming/dp/B00QT7LQ88/ref=lp_464404_1_9?s=pc&ie=UTF8&qid=1454631303&sr=1-9](http://www.amazon.com/JBtek®-WINDOWS-Supported-Raspberry-Programming/dp/B00QT7LQ88/ref=lp_464404_1_9?s=pc&ie=UTF8&qid=1454631303&sr=1-9)
@@ -22,18 +26,18 @@ The instructions assume the user is using a Bourne-compatible shell (e.g. bash o
 * Install dependencies
 * Define a target using the newt tool
 * Build executables for the targets using the newt tool
-* Set up serial connection with the targets 
+* Set up serial connection with the targets
 * Create a connection profile using the newtmgr tool
 * Use the newtmgr tool to communicate with the targets
 
 ### Install newt
 
-If you have not already installed `newt`, see the 
+If you have not already installed `newt`, see the
 [newt installation instructions](../get_started/get_started/) and ensure newt is installed an in your path.
 
 ### Install newtmgr
 
-If you have not already installed `newtmgr`, see the 
+If you have not already installed `newtmgr`, see the
 [newtmgr installation instructions](../../newtmgr/installing/) and ensure newtmgr is installed an in your path.
 
 ### Create a new project
@@ -112,11 +116,11 @@ Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/man
 
 <br>
 
-### Using newtmgr with a remote target 
+### Using newtmgr with a remote target
 
-* First make sure the USB A-B type cable is connected to the ARM-USB-TINY-H debugger connector on the Olimex board. 
+* First make sure the USB A-B type cable is connected to the ARM-USB-TINY-H debugger connector on the Olimex board.
 
-     Next go the to project directory and download the slinky project image to the flash of the Olimex board. 
+     Next go the to project directory and download the slinky project image to the flash of the Olimex board.
 
 ```no-highlight
 $ newt load stm32_bootloader
@@ -132,8 +136,8 @@ You can now disconnect the debugging cable from the board. You should see the gr
     ![Alt Layout - Serial Connection](pics/serial_conn.png)
 
 
-	* Connect the female RX pin of the USB-TTL serial cable to the TX of the UEXT connector on the board. 
-	* Connect the female TX pin of the USB-TTL serial cable to the RX of the UEXT connector on the board. 
+	* Connect the female RX pin of the USB-TTL serial cable to the TX of the UEXT connector on the board.
+	* Connect the female TX pin of the USB-TTL serial cable to the RX of the UEXT connector on the board.
 	* Connect the GND pin of the USB-TTL serial cable to the GND of the UEXT connector on the board.
 
 <br>
@@ -141,7 +145,7 @@ You can now disconnect the debugging cable from the board. You should see the gr
 * Locate the serial connection established in the /dev directory of your computer. It should be of the type `tty.usbserial-<some identifier>`.
 
 ```no-highlight
-        $ ls /dev/tty.usbserial-AJ03HAQQ 
+        $ ls /dev/tty.usbserial-AJ03HAQQ
         /dev/tty.usbserial-AJ03HAQQ
 ```
 
@@ -152,17 +156,17 @@ You can now disconnect the debugging cable from the board. You should see the gr
 ```no-highlight
         $ pwd
         /Users/<user>/dev/larva/project/slinky
-        $ newtmgr conn add olimex01 type=serial connstring=/dev/tty.usbserial-AJ03HAQQ 
+        $ newtmgr conn add olimex01 type=serial connstring=/dev/tty.usbserial-AJ03HAQQ
         Connection profile olimex01 successfully added
         $ newtmgr conn show
-        Connection profiles: 
+        Connection profiles:
           sim1: type=serial, connstring='/dev/ttys007'
           olimex01: type=serial, connstring='/dev/tty.usbserial-AJ03HAQQ'
 ```
 
 <br>
 
-* Now go ahead and query the Olimex board to get responses back. The simplest command is the `echo` command to ask it to respond with the text you send it. 
+* Now go ahead and query the Olimex board to get responses back. The simplest command is the `echo` command to ask it to respond with the text you send it.
 
 ```no-highlight
     $ newtmgr echo -c olimex01 hello
@@ -178,13 +182,3 @@ You can now disconnect the debugging cable from the board. You should see the gr
       idle (prio=255 tid=0 runtime=299916 cswcnt=313 stksize=32 stkusage=18 last_checkin=0 next_checkin=0)
       shell (prio=3 tid=1 runtime=1 cswcnt=20 stksize=384 stkusage=60 last_checkin=0 next_checkin=0)
 ```
-
-
-
-
-
-
-
-
-
-

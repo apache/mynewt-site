@@ -5,12 +5,21 @@
 
 This part defines the advertisement data fields used in the `bletiny` app. For a complete list of all data types and formats used for Extended Inquiry Response (EIR), Advertising Data (AD), and OOB data blocks, refer to the Supplement to the Bluetooth Core Specification, CSSv6, available for download [here](https://www.bluetooth.org/DocMan/handlers/DownloadDoc.ashx?doc_id=302735&_ga=1.133090766.1368218946.1444779486). 
 
-<br>
-|**Name** | **Definition** | **Details** ||----|---------|---------------|
-|  uuids16 |16-bit Bluetooth Service UUIDs | Indicates the Service UUID list is incomplete i.e. more 16-bit Service UUIDs available. 16 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.  || uuids16_is_complete  | 16-bit Bluetooth Service UUIDs | Indicates the Service UUID list is complete. 16 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.  |
-|  uuids32 | 32-bit Bluetooth Service UUIDs   | Indicates the Service UUID list is incomplete i.e. more 32-bit Service UUIDs available. 32 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.   || uuids32_is_complete  | 32-bit Bluetooth Service UUIDs   |  Indicates the Service UUID list is complete. 32 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG. |
-| uuids128  | Global 128-bit Service UUIDs   | More 128-bit Service UUIDs available.  || uuids128_is_complete  |  Global 128-bit Service UUIDs  | Complete list of 128-bit Service UUIDs  |
-| tx_pwr_lvl  | TX Power Level   | Indicates the transmitted power level of the packet containing the data type. The TX Power Level data type may be used to calculate path loss on a received packet using the following equation: <br> <br> pathloss = Tx Power Level – RSSI <br> <br> where “RSSI” is the received signal strength, in dBm, of the packet received.  |
+
+<br>
+
+
+
+|**Name** | **Definition** | **Details** | **bletiny Notes** |
+|----|---------|---------------|--|
+| flags | Indicates basic information about the advertiser. | Flags used over the LE physical channel are: <br> * Limited Discoverable Mode <br> * General Discoverable Mode <br> * BR/EDR Not Supported <br> * Simultaneous LE and BR/EDR to Same Device Capable (Controller) <br> * Simultaneous LE and BR/EDR to Same Device Capable (Host) | NimBLE will auto-calculate if set to 0. |
+| uuids16 |16-bit Bluetooth Service UUIDs | Indicates the Service UUID list is incomplete i.e. more 16-bit Service UUIDs available. 16 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.  | Set repeatedly for multiple service UUIDs. |
+| uuids16_is_complete  | 16-bit Bluetooth Service UUIDs | Indicates the Service UUID list is complete. 16 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.  |
+| uuids32 | 32-bit Bluetooth Service UUIDs   | Indicates the Service UUID list is incomplete i.e. more 32-bit Service UUIDs available. 32 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG.   | Set repeatedly for multiple service UUIDs. |
+| uuids32_is_complete  | 32-bit Bluetooth Service UUIDs   |  Indicates the Service UUID list is complete. 32 bit UUIDs shall only be used if they are assigned by the Bluetooth SIG. |
+| uuids128  | Global 128-bit Service UUIDs   | More 128-bit Service UUIDs available.  | Set repeatedly for multiple service UUIDs. |
+| uuids128_is_complete  |  Global 128-bit Service UUIDs  | Complete list of 128-bit Service UUIDs  |
+| tx_pwr_lvl  | TX Power Level   | Indicates the transmitted power level of the packet containing the data type. The TX Power Level data type may be used to calculate path loss on a received packet using the following equation: <br> <br> pathloss = Tx Power Level – RSSI <br> <br> where “RSSI” is the received signal strength, in dBm, of the packet received.  | NimBLE will auto-calculate if set to -128. |
 | device_class  |  Class of device  | Size: 3 octets  |
 | slave_itvl_range | Slave Connection Interval Range   | Contains the Peripheral’s preferred connection interval range, for all logical connections. Size: 4 Octets . The first 2 octets defines the minimum value for the connection interval in the following manner: <br> <br> connIntervalmin = Conn_Interval_Min * 1.25 ms <br> <br> Conn_Interval_Min range: 0x0006 to 0x0C80 <br> Value of 0xFFFF indicates no specific minimum. <br> <br> The other 2 octets defines the maximum value for the connection interval in the following manner: <br> <br> connIntervalmax = Conn_Interval_Max * 1.25 ms <br> Conn_Interval_Max range: 0x0006 to 0x0C80 <br> Conn_Interval_Max shall be equal to or greater than the Conn_Interval_Min. <br> Value of 0xFFFF indicates no specific maximum.|
 | svc_data_uuid16  |  Service Data - 16 bit UUID  | Size: 2 or more octets <br> The first 2 octets contain the 16 bit Service UUID followed by additional service data |
@@ -22,5 +31,8 @@ This part defines the advertisement data fields used in the `bletiny` app. For a
 | svc_data_uuid32  | Service Data - 32 bit UUID  | Size: 4 or more octets <br> The first 4 octets contain the 32 bit Service UUID followed by additional service data |
 | svc_data_uuid128  | Service Data - 128 bit UUID   | Size: 16 or more octets <br> The first 16 octets contain the 128 bit Service UUID followed by additional service data  |
 | uri  |  Uniform Resource Identifier (URI) | Scheme name string and URI as a UTF-8 string  |
-| mfg_data |   Manufacturer Specific data | Size: 2 or more octets <br> The first 2 octets contain the Company Identifier Code followed by additional manufacturer specific data |<br>
-
+| mfg_data |   Manufacturer Specific data | Size: 2 or more octets <br> The first 2 octets contain the Company Identifier Code followed by additional manufacturer specific data |
+| eddystone_url | | |
+
+<br>
+
