@@ -45,8 +45,9 @@ def build(site_branch):
     sh.mkdocs('build', '--clean')
 
     for version in cfg['extra']['versions']:
-        mygit.checkout(version['branch'])
+        sh.git('checkout', version['branch'], '--', 'docs', 'mkdocs.yml')
         deployVersion(version)
+    sh.git('checkout', '--', 'docs', 'mkdocs.yml')
 
 def deployVersion(version):
     mygit.checkout(version['branch'])
