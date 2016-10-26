@@ -11,15 +11,14 @@
         {% if favicon %}<link rel="shortcut icon" href="{{ favicon }}">
         {% else %}<link rel="shortcut icon" href="{{ base_url }}/img/favicon.ico">{% endif %}
 
-	<title>{% if page_title %}{{ page_title }} - {% endif %}{{ site_name }}</title>
+	    <title>{% if page_title %}{{ page_title }} - {% endif %}{{ site_name }}</title>
 
         <link href="{{ base_url }}/css/bootstrap-3.0.3.min.css" rel="stylesheet">
-        <link href="{{ base_url }}/css/font-awesome-4.0.3.css" rel="stylesheet">
         <link rel="stylesheet" href="{{ base_url }}/css/highlight.css">
         <link href="{{ base_url }}/css/base.css" rel="stylesheet">
         <link href="{{ base_url }}/css/custom.css" rel="stylesheet">
         <link href="{{ base_url }}/css/v2.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         {%- for path in extra_css %}
         <link href="{{ path }}" rel="stylesheet">
@@ -50,15 +49,21 @@
     <body class="home">
 {% endif %}
 
+        {% include 'main-banner.html' %}
+
         {% include "nav.html" %}
 
-        {% set full_width_page_titles = [None, 'Quick Start', 'About', 'Documentation', 'Download', 'Community', 'Events'] %}
+        {% set full_width_page_titles = [None, 'Quick Start', 'About', 'Talks', 'Documentation', 'Download', 'Community', 'Events'] %}
 
         <div class="container">
             {% if page_title == None %}
                 {% include "landing.html" %}
+            {% elif meta and meta.html %}
+                {% include meta.html[0] %}
             {% elif page_title == 'About' %}
                 {% include "about.html" %}
+            {% elif page_title == 'Talks' %}
+                {% include "talks.html" %}
             {% elif page_title == 'Quick Start' %}
                 {% include "quick-start.html" %}
             {% elif page_title == 'Documentation' %}
@@ -71,17 +76,11 @@
                 {% include "events.html" %}
             {% else %}
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar">{% include "toc.html" %}</div>
-
-                    <div class="show-sidebar-container">
-                        <button class="show-sidebar">Docs Menu</button>
-                    </div>
+                    <div class="col-md-3 v2-sidebar sidebar-container">{% include "toc.html" %}</div>
 
                     <div class="col-md-9" role="main">
-                        <div class="row doc-header">
-                            <div class="col-sm-12">
-                                {% include 'breadcrumbs.html' %}
-                            </div>
+                        <div class="doc-header">
+                            {% include 'breadcrumbs.html' %}
                         </div>
                         {% block content %}
                             {{ content }}
@@ -89,16 +88,12 @@
                         <div class="row">
                             {% include 'next_prev_links.html' %}
                         </div>
-                        <div class="row">
-                            {% include 'footer.html' %}
-                        </div>
+                        {% include 'footer.html' %}
                     </div>
                 </div>
             {% endif %}
-            {% if page_title in full_width_page_titles %}
-            <div class="row">
+            {% if page_title in full_width_page_titles or (meta and meta.html) %}
                 {% include 'footer.html' %}
-            </div>
             {% endif %}
         </div>
 
