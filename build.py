@@ -50,8 +50,9 @@ def buildForReal(site_branch):
     sh.mkdocs('build', '--clean')
 
     for version in cfg['extra']['versions']:
-        mygit.checkout(version['branch'])
+        sh.git('checkout', version['branch'], '--', 'docs', 'mkdocs.yml')
         deployVersion(version)
+    sh.git('checkout', '--', 'docs', 'mkdocs.yml')
 
 def buildForTest():
     print "Building site pages..."
