@@ -51,6 +51,6 @@ You will then run the built-in webserver from the root of the documentation dire
         docs		images		mkdocs.yml
         $ mkdocs serve
 ```
-Then go to [http://127.0.0.1:8000](http://127.0.0.1:8000) to preview your pages and see how they will look on the website. **Remember that the Myself website itself will not be updated.**
+Then go to [http://127.0.0.1:8000](http://127.0.0.1:8000) to preview your pages and see how they will look on the website. **Remember that the [MyNewt website](https://mynewt.apache.org) itself will not be updated.**
         
 For more information on MkDocs go to [http://www.mkdocs.org](http://www.mkdocs.org). 
