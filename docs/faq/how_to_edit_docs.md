@@ -19,9 +19,8 @@ If you are not a committer, you may follow the proposed non-committer workflow t
 
 ### Editing an existing page
 
-* Create a fork on the [github mirror](https://github.com/apache/incubator-mynewt-site). 
-* 
-* Then create a new branch to work on your documentation and move to that branch.
+* Create a fork on the [github mirror](https://github.com/apache/incubator-mynewt-site).
+* Create a new branch to work on your documentation and move to that branch.
 ```
         $ git checkout -b <your-branch-name>
 ```
