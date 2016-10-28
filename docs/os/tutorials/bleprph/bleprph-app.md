@@ -32,15 +32,13 @@ $ newt target set myperiph app=@apache-mynewt-core/apps/bleprph
 Target targets/myperiph successfully set target.app to @apache-mynewt-core/apps/bleprph
 $ newt target set myperiph build_profile=optimized
 Target targets/myperiph successfully set target.build_profile to optimized
-$ newt target set myperiph cflags=-DSTATS_NAME_ENABLE
-Target targets/myperiph successfully set pkg.cflags to -DSTATS_NAME_ENABLE
 $ newt build blerph
 Building target targets/myperiph
 ...
-Linking /Users/dsimmons/dev/nrf52dk/bin/targets/myperiph/app/apps/bleprph/bleprph.elf
+Linking ~/dev/nrf52dk/bin/targets/myperiph/app/apps/bleprph/bleprph.elf
 Target successfully built: targets/myperiph
 $ newt create-image myperiph 1.0.0
-App image succesfully generated: /Users/dsimmons/dev/nrf52dk/bin/targets/myperiph/app/apps/bleprph/bleprph.img
+App image succesfully generated: ~/dev/nrf52dk/bin/targets/myperiph/app/apps/bleprph/bleprph.img
 $ newt load myperiph
 Loading app image into slot 1
 ```

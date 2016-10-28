@@ -72,8 +72,6 @@ $ newt target set myble app=@apache-mynewt-core/apps/bletiny
 Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
 $ newt target set myble build_profile=optimized
 Target targets/myble successfully set target.build_profile to optimized
-$ newt target set myble cflags=-DSTATS_NAME_ENABLE
-Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
 ```
 
 Use the same `newt target set` command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..
@@ -103,6 +101,21 @@ targets/nrf52_boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
 ```
+
+Since we're interested in seeing the stats, we'll need to enable the stats module for the target. By default, the stats module is not enabled, so we will have to override the default behavior.
+To do this, you'll need to create a configuration file `syscfg.yml` in the app directory. from the target definition above, you can see that the app is in `apache-mynewt-core/apps/bletiny`
+so that is where you'll put your configuration file. 
+
+```
+# Package: apps/bletiny
+
+syscfg.vals:
+    SHELL_TASK: 1
+    STATS_NAMES: 1
+    STATS_CLI: 1
+```
+
+The first configuration value turns on the Shell Task, and we'll need this to get to the shell. The next 2 enable the names for the various stats, and then turns on the stats CLI option.
 
 ### Build targets
 
@@ -194,6 +207,8 @@ prompt set >
 You'll notice that there is an ever-increasing counter before the prompt (and before any output to the terminal).
 This is just a counter kept by the MCU.
 
+**Note**: If you want to have a shell prompt by default, simply add the line: `CONSOLE_PROMPT: 1` to your `syscfg.yml` file and it will be turned on by default.
+
 <br>
 
 Try the `tasks` command. 
@@ -213,19 +228,19 @@ Tasks:
 Try specifying a BLE related stat, for example `ble_ll`. You should see some HCI (Host Controller Interface) command counts. 
 
 ```hl_lines="1"
-stat ble_ll
-4986297:hci_cmds: 5
-4986297:hci_cmd_errs: 0
-4986299:hci_events_sent: 5
-4986301:bad_ll_state: 0
-4986303:bad_acl_hdr: 0
-4986306:rx_adv_pdu_crc_ok: 0
-4986308:rx_adv_pdu_crc_err: 0
-4986311:rx_adv_bytes_crc_ok: 0
-4986314:rx_adv_bytes_crc_err: 0
-4986317:rx_data_pdu_crc_ok: 0
-4986319:rx_data_pdu_crc_err: 0
-4986322:rx_data_bytes_crc_ok: 0
+241133: > stat ble_ll
+hci_cmds: 11
+241888:hci_cmd_errs: 0
+241888:hci_events_sent: 11
+241890:bad_ll_state: 0
+241890:bad_acl_hdr: 0
+241891:no_bufs: 0
+241891:rx_adv_pdu_crc_ok: 0
+241892:rx_adv_pdu_crc_err: 0
+241893:rx_adv_bytes_crc_ok: 0
+241894:rx_adv_bytes_crc_err: 0
+241895:rx_data_pdu_crc_ok: 0
+241895:rx_data_pdu_crc_err: 0
 <snip>
 ```
 
