@@ -133,8 +133,8 @@ Targets can also have additional items specified, including:
 In order to create and manipulate targets, the *newt* tool offers a set of helper commands,
 you can find more information about these by issuing:
 
-```no-highlight
 $ newt target
+```no-highligh
 Usage:
   newt target [flags]
   newt target [command]
@@ -183,3 +183,9 @@ $ newt target config <target-name>
 ...
 $
 ```
+
+Keep in mind that this will only show the configuration options for any packages that are included in your applicaiton. 
+
+If you really want to see **all** the available configuration options, you can go rough each package and look at the
+`syscfg.yml` file in each. 
+

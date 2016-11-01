@@ -1,6 +1,6 @@
 # Mynewt Core OS 
 
-The Mynewt Core OS is a multitasking, preemptive real-time operating system combining a scheduler with typical RTOS features such as mutexes, semaphores, memory pools, etc. The Mynewt Core OS also provides a number of useful utilities such as a task watchdog, networking stack memory buffers and time management API. Each of these features is described in detail in its own section of the manual.
+The Mynewt Core OS is a multitasking, preemptive real-time operating system combining a scheduler with typical RTOS features such as mutexes, semaphores, memory pools, etc. The Mynewt Core OS also provides a number of useful utilities such as a task watchdog, networking stack, memory buffers and time management API. Each of these features is described in detail in its own section of the manual.
 
 A multitasking, preemptive operating system is one in which a number of different tasks can be instantiated and assigned a priority, with higher priority tasks running before lower priority tasks. Furthermore, if a lower priority task is running and a higher priority task wants to run, the lower priority task is halted and the higher priority task is allowed to run. In other words, the lower priority task is preempted by the higher priority task.
 
@@ -41,9 +41,9 @@ Consider the sequence of events when the OS is started. The scheduler starts run
 One way to avoid initialization issues like the one described above is to perform task initializations prior to starting the OS. The code example shown below illustrates this concept. The application initializes the OS, calls an application specific "task initialization" function, and then starts the OS. The application task initialization function is responsible for initializing all the data objects that each task exposes to the other tasks. The tasks themselves are also initialized at this time (by calling `os_task_init()`). 
 
 
-In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called os_sem_init() for task2_sem inside task2_handler(), task 1 would have called os_sem_pend() using task2_sem before task2_sem was initialized.
+In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called `os_sem_init()` for task2_sem inside `task2_handler()`, task 1 would have called `os_sem_pend()` using task2_sem before task2_sem was initialized.
 
-
+```c
     /* Task 1 handler function */
     void
     task1_handler(void *arg)
@@ -145,7 +145,7 @@ In the example, each task works in a ping-pong like fashion: task 1 wakes up, ad
 
         return rc;
     }
-
+```
 
 ###OS Functions
 

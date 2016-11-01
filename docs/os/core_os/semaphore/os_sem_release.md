@@ -11,15 +11,15 @@ Release a semaphore that you are holding. This adds a token to the semaphore.
 
 | Arguments | Description |
 |-----------|-------------|
-| *sem |  Pointer to semaphore  |
+| `*sem` |  Pointer to semaphore  |
 
 #### Returned values
 
-OS_NOT_STARTED: Called before os has been started.
+`OS_NOT_STARTED`: Called before os has been started.
 
-OS_INVALID_PARM: returned when *sem is NULL on entry.
+`OS_INVALID_PARM`: returned when `*sem` is **NULL** on entry.
 
-OS_OK: semaphore released successfully.
+`OS_OK`: semaphore released successfully.
 
 #### Notes 
 

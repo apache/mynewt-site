@@ -12,7 +12,7 @@ Register an mbuf pool for use as a system mbuf pool. The pool should be initiali
 
 | Arguments | Description |
 |-----------|-------------|
-| new_pool | Pointer to mbuf pool to add to system mbuf pools |
+| `new_pool` | Pointer to mbuf pool to add to system mbuf pools |
 
 <br>
 

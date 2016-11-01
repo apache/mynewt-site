@@ -13,7 +13,7 @@ Macro used to get a pointer to the user packet header of an mbuf.
 
 | Arguments | Description |
 |-----------|-------------|
-| __om |  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf) |
+| `__om` |  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf) |
 
 
 <br>

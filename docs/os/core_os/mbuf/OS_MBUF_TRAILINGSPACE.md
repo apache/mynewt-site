@@ -14,13 +14,13 @@ Macro used to get the amount of trailing space in an mbuf (in bytes).
 
 | Arguments | Description |
 |-----------|-------------|
-| __om |  Pointer to mbuf (struct os_mbuf *)  |
+| `__om` |  Pointer to mbuf (struct os_mbuf *)  |
 
 
 <br>
 
 #### Notes
-This macro works on both normal mbufs and packet header mbufs. The amount of trailing space is the number of bytes between the current om_data pointer of the mbuf and the end of the mbuf.
+This macro works on both normal mbufs and packet header mbufs. The amount of trailing space is the number of bytes between the current `om_data` pointer of the mbuf and the end of the mbuf.
 
 <br>
 

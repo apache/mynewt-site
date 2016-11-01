@@ -10,22 +10,22 @@ Wait for a semaphore for a given amount of time.
 
 | Arguments | Description |
 |-----------|-------------|
-| *sem |  Pointer to semaphore  |
-| timeout |  Amount of time, in os ticks, to wait for semaphore. A value of 0 means no wait. A value of 0xFFFFFFFF means wait forever.  |
+| `*sem` |  Pointer to semaphore  |
+| `timeout` |  Amount of time, in os ticks, to wait for semaphore. A value of 0 means no wait. A value of 0xFFFFFFFF means wait forever.  |
 
 #### Returned values
 
-OS_INVALID_PARM: returned when *sem is NULL on entry.
+`OS_INVALID_PARM`: returned when `*sem` is **NULL** on entry.
 
-OS_OK: semaphore acquired successfully.
+`OS_OK`: semaphore acquired successfully.
 
-OS_TIMEOUT: the semaphore was not available within the timeout specified.
+`OS_TIMEOUT`: the semaphore was not available within the timeout specified.
 
-OS_NOT_STARTED: Attempt to release a semaphore before os started.
+`OS_NOT_STARTED:` Attempt to release a semaphore before os started.
 
 #### Notes 
 
-If a timeout of 0 is used and the function returns OS_TIMEOUT, the semaphore was not available and was not acquired. No release of the semaphore should occur and the calling task does not own the semaphore.
+If a timeout of 0 is used and the function returns `OS_TIMEOUT`, the semaphore was not available and was not acquired. No release of the semaphore should occur and the calling task does not own the semaphore.
 
 #### Example
 

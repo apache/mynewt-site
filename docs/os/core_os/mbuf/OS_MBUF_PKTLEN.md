@@ -14,7 +14,7 @@ Macro used to get the length of an entire mbuf chain.
 
 | Arguments | Description |
 |-----------|-------------|
-| __om |  Pointer to mbuf (struct os_mbuf *)  |
+| `__om` |  Pointer to mbuf (struct os_mbuf *)  |
 
 
 <br>
