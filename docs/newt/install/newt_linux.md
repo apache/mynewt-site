@@ -13,6 +13,8 @@ If you want to build the *newt* tool from its source code, follow the following 
         $ sudo apt-get install libcurl4-gnutls-dev 
 ```
 
+**NOTE:** On 64-bit host, you may also need to install gcc-multilib, if you encounter compilation errors related to 'sys/cdefs.h'
+
 <br>
 
 #### 2. Install Go, the programming language
