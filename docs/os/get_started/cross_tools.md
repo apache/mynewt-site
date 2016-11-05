@@ -58,11 +58,11 @@ lrwxr-xr-x  1 <user>  admin  36 Sep 17 16:22 /usr/local/bin/openocd -> ../Cellar
 
 On a Debian-based Linux distribution, gcc 4.9.3 for ARM can be installed with
 apt-get as documented below. The steps are explained in depth at
-[https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded](https://launchpad.net/~terry.guo/+archive/ubuntu/gcc-arm-embedded).
+[https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa](https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa).
 
 ```no-highlight
 $ sudo apt-get remove binutils-arm-none-eabi gcc-arm-none-eabi 
-$ sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded 
+$ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa
 $ sudo apt-get update 
 $ sudo apt-get install gcc-arm-none-eabi
 $ sudo apt-get install gdb-arm-none-eabi
