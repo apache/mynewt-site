@@ -5,15 +5,15 @@ void
 os_eventq_put(struct os_eventq *evq, struct os_event *ev)
 ```
 
-Queues an event to tail of the event queue.
+Queues an event to the tail of the event queue.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| evq |  Queue where event is being placed  |
-| ev |  Event which is being queued  |
+| `evq` |  Queue where event is being placed  |
+| `ev` |  Event which is being queued  |
 
 
 #### Returned values

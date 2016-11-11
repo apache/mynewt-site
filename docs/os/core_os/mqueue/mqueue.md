@@ -1,14 +1,14 @@
 # Mqueue
 
-Mqueue (Mbuf event queue) is a set of API built on top of the mbuf and event queue code. A typical networking stack operation is to put a packet on a queue and post an event to the task handling that queue. Mqueue was designed to provide a common API so that individual packages would not each have to create similar code.
+Mqueue (Mbuf event queue) is a set of APIs built on top of the mbuf and event queue code. A typical networking stack operation is to put a packet on a queue and post an event to the task handling that queue. Mqueue was designed to provide a common API so that individual packages would not each have to create similar code.
 
-The mqueue data structure consists of a queue head pointer (a "stailq" queue; a singly linked list with head structure having a pointer to the start and end of the list) and an os event structure. Packets (packet header mbufs) are added to the queue using the *omp_next* pointer in the `os_mbuf_pkthdr` structure of the mbuf. The event is used to post to the task an event of type OS_EVENT_T_MQUEUE_DATA. 
+The mqueue data structure consists of a queue head pointer (a "stailq" queue; a singly linked list with head structure having a pointer to the start and end of the list) and an os event structure. Packets (packet header mbufs) are added to the queue using the `omp_next` pointer in the `os_mbuf_pkthdr` structure of the mbuf. The event is used to post to the task an event of type `OS_EVENT_T_MQUEUE_DATA`. 
 
 <br>  
 
 ### Using Mqueue
 
-The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call my_task_rx_data_func. Presumably, some other code will call this API. 
+The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call `my_task_rx_data_func`. Presumably, some other code will call this API. 
 
 <br>
 

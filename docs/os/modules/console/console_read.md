@@ -1,18 +1,18 @@
 ## <font color="#F2853F" style="font-size:24pt"> console_read </font>
 
-```no-highlight
-  int
-  console_read(char *str, int cnt)
+```c
+int console_read(char *str, int cnt)
 ```
 
-Copies up to *cnt* bytes of received data to buffer pointed by *str*. Function tries to break the input into separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.
+Copies up to `cnt` bytes of received data to buffer pointed by `str`. Function tries to break the input into 
+separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| str |  Buffer where data is copied to.  |
-| cnt |  Maximum number of characters to copy.  |
+| `str` |  Buffer where data is copied to.  |
+| `cnt` |  Maximum number of characters to copy.  |
 
 #### Returned values
 
@@ -22,7 +22,7 @@ available, or if the first received character was '\n'.
 
 #### Example
 
-```no-highlight
+```c
 void
 task1_loop(void *arg)
 {
@@ -39,4 +39,8 @@ task1_loop(void *arg)
                     if (!strncmp(rx_msg, "reset", rx_len)) {
                             assert(0);
                     }
+            }
+        }
+    }
+}    
 ```

@@ -6,7 +6,7 @@ void os_sched_ctx_sw_hook(struct os_task *next_t)
 
 Performs task accounting when context switching.
 
-This function must be called from the architecture specific context switching routine *os_arch_ctx_sw()* before resuming execution of the *running* task.
+This function must be called from the architecture specific context switching routine `os_arch_ctx_sw()` before resuming execution of the *running* task.
 
 #### Arguments
 

@@ -22,9 +22,10 @@ SoC within your target platform
 * **BSP Dependencies** -- Specific code or configuration to accommodate the
 specific layout and functionality of your target platform
 
-###BSP Dependency
+###Board Support Package (BSP) Dependency
 
-With all of the functionality provided by the core, MCU, and MCU HAL (Hardware Abstraction Layer), there are still some things that must be specified for your particular system. This
+With all of the functionality provided by the core, MCU, and MCU HAL (Hardware Abstraction Layer), 
+there are still some things that must be specified for your particular system. This
 is provided in Mynewt to allow you the flexibility to design for the exact
 functionality, peripherals and features that you require in your product.  
 
@@ -51,25 +52,38 @@ However some MCUs have a pin multiplexor that allows the UART to be mapped to
 several different pins.  For these MCUs, the BSP must specify if and where
 the UART pins should appear to match the hardware layout of your system.
 
-* If your BSP is already supported my Mynewt, there is no additional BSP work involved in porting to your platform.  You need only to set the `bsp` attribute in your Mynewt target using the [newt command tool](../../../newt/newt_intro).
-* If your BSP is not yet supported by Mynewt, you can add support following the instructions on [how to add BSP support to Mynewt](port_bsp.md)
+* If your BSP is already supported my Mynewt, there is no additional BSP work involved in porting to your platform.  
+You need only set the `bsp` attribute in your Mynewt target using the [newt command tool](../../../newt/newt_intro).
+* If your BSP is not yet supported by Mynewt, you can add support by following the instructions on [how to add BSP support to Mynewt](port_bsp.md)
 
 ###MCU Dependency
 
-Some OS code depends on the MCU or SoC that the system contains. For example, the MCU may specify the potential memory map of the system - where code and data can reside.
+Some OS code depends on the MCU or SoC that the system contains. For example, the MCU may specify 
+the potential memory map of the system - where code and data can reside.
 
-* If your MCU is already supported my Mynewt, there is no additional MCU work involved in porting to your platform.  You need only to set the `arch` attribute in your Mynewt target using the [newt command tool](../../../newt/newt_intro).
-* If your MCU is not yet supported by Mynewt, you can add support following the instructions on[how to add MCU support to Mynewt](port_mcu.md)
+* If your MCU is already supported by Mynewt, there is no additional MCU work involved in 
+porting to your platform.  You need only set the `arch` attribute in your Mynewt target 
+using the [newt command tool](../../../newt/newt_intro).
+* If your MCU is not yet supported by Mynewt, you can add support by following the 
+instructions on [how to add MCU support to Mynewt](port_mcu.md)
 
 
-### MCU HAL
+### MCU Hardware Abstraction Layer (HAL)
 
-Mynewt's architecture supports a hardware abstraction layer (HAL) for common on or off-chip MCU peripherals such as GPIO, UARTs, flash memory etc.  Even if your MCU is supported for the core OS, you may find that you need to implement the HAL functionality for a new peripheral.   For a description of the HAL abstraction and implementation information,
+Mynewt's architecture supports a hardware abstraction layer (HAL) for common on or off-chip MCU peripherals 
+such as GPIO, UARTs, flash memory etc.  Even if your MCU is supported for the core OS, 
+you may find that you need to implement the HAL functionality for a new peripheral. 
+For a description of the HAL abstraction and implementation information,
 see the [HAL API](../../modules/hal/hal.md)
 
 ###CPU Core Dependency
 
-Some OS code depends on the CPU core that your system is using.  For example, a given CPU core has a specific assembly language instruction set, and may require special cross compiler or compiler settings to use the appropriate instruction set.  
+Some OS code depends on the CPU core that your system is using.  For example, a given CPU core 
+has a specific assembly language instruction set, and may require special cross compiler or 
+compiler settings to use the appropriate instruction set.  
 
-* If your CPU architecture is already supported my Mynewt, there is no CPU core work involved in porting to your platform.  You need only to set the  `arch` and `compiler` attributes in your Mynewt target using the [newt command tool](../../../newt/newt_intro).
-* If your CPU architecture is not supported by Mynewt, you can add support following the instructions on [how to add CPU architecture support to Mynewt](port_cpu.md)
+* If your CPU architecture is already supported by Mynewt, there is no CPU core work involved 
+in porting to your platform.  You need only set the  `arch` and `compiler` attributes in your 
+Mynewt target using the [newt command tool](../../../newt/newt_intro).
+* If your CPU architecture is not supported by Mynewt, you can add support by following the 
+instructions on [how to add CPU architecture support to Mynewt](port_cpu.md)

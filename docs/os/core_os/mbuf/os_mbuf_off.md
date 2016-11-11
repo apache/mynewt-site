@@ -4,7 +4,7 @@
 struct os_mbuf *os_mbuf_off(struct os_mbuf *om, int off, int *out_off)
 ```
 
-Given an offset in the packet (i.e. user data byte offset in the mbuf chain), return the mbuf and the offset in that mbuf where byte 'off' is located. Note that the offset is 'returned' in *out_off*.
+Given an offset in the packet (i.e. user data byte offset in the mbuf chain), return the mbuf and the offset in that mbuf where byte 'off' is located. Note that the offset is *returned* in `out_off`.
 
 <br>
 
@@ -12,21 +12,21 @@ Given an offset in the packet (i.e. user data byte offset in the mbuf chain), re
 
 | Arguments | Description |
 |-----------|-------------|
-| om | Pointer to mbuf |
-| off | Location in mbuf chain of desired byte offset |
-| out_off | Pointer to storage for the relative offset of the absolute location in the returned mbuf |
+| `om` | Pointer to mbuf |
+| `off` | Location in mbuf chain of desired byte offset |
+| `out_off` | Pointer to storage for the relative offset of the absolute location in the returned mbuf |
 
 <br>
 
 #### Returned values
-NULL if the offset is not within the mbuf chain or *om* points to NULL.
+**NULL** if the offset is not within the mbuf chain or `om` points to **NULL**.
 
 <br>
 
 #### Notes
 The user is allowed to call this function with the length of the mbuf chain but no greater. This allows the user to get the mbuf and offset (in that mbuf) where the next user data byte should be written.
 
-While this api is provided to the user, other API are expected to be used by the applciation developer (i.e. `os_mbuf_append()` or `os_mbuf_copyinto()`).
+While this api is provided to the user, other APIs are expected to be used by the applciation developer (i.e. `os_mbuf_append()` or `os_mbuf_copyinto()`).
 <br>
 
 #### Example

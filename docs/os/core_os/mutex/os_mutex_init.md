@@ -10,13 +10,13 @@ Initialize the mutex. Must be called before the mutex can be used.
 
 | Arguments | Description |
 |-----------|-------------|
-| *mu|  Pointer to mutex  |
+| `*mu`|  Pointer to mutex  |
 
 #### Returned values
 
-OS_INVALID_PARM: returned when *mu is NULL on entry.
+`OS_INVALID_PARM`: returned when `*mu` is **NULL** on entry.
 
-OS_OK: mutex initialized successfully.
+`OS_OK`: mutex initialized successfully.
 
 #### Notes 
 

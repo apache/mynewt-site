@@ -11,23 +11,23 @@ Acquire ownership of a mutex.
 
 | Arguments | Description |
 |-----------|-------------|
-| *mu |  Pointer to mutex  |
-| timeout | Timeout, in os ticks. A value of 0 means no timeout. A value of 0xFFFFFFFF means to wait forever.   |
+| `*mu` |  Pointer to mutex  |
+| `timeout` | Timeout, in os ticks. A value of 0 means no timeout. A value of 0xFFFFFFFF means to wait forever.   |
 
 #### Returned values
 
-OS_INVALID_PARM: returned when *mu is NULL on entry.
+`OS_INVALID_PARM`: returned when `*mu` is **NULL** on entry.
 
-OS_OK: mutex was successfully acquired.
+`OS_OK`: mutex was successfully acquired.
 
-OS_TIMEOUT: the mutex was not available within the timeout specified.
+`OS_TIMEOUT`: the mutex was not available within the timeout specified.
 
-OS_NOT_STARTED: Attempt to release a mutex before the os has been started.
+`OS_NOT_STARTED`: Attempt to release a mutex before the os has been started.
 
 
 #### Notes 
 
-If the mutex is owned by another task and the timeout is 0 the function returns immediately with the error code OS_TIMEOUT. The calling task *does not* own the mutex when this occurs.
+If the mutex is owned by another task and the timeout is 0 the function returns immediately with the error code `OS_TIMEOUT`. The calling task *does not* own the mutex when this occurs.
 
 #### Example
 

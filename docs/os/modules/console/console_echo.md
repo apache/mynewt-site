@@ -1,7 +1,7 @@
 ## <font color="#F2853F" style="font-size:24pt"> console_echo </font>
 
-```no-highlight
-   void console_echo(int on)
+```c
+void console_echo(int on)
 ```
 
 Controls whether echoing is on or off for the console. When echoing is on, all characters received are transmitted back.
@@ -10,7 +10,7 @@ Controls whether echoing is on or off for the console. When echoing is on, all c
 
 | Arguments | Description |
 |-----------|-------------|
-| on |  1 turns on echoing, 0 turns it off  |
+| `on` |  1 turns on echoing, 0 turns it off  |
 
 
 #### Returned values
@@ -19,11 +19,14 @@ None
 
 #### Notes
 
+None
+              
 #### Example
 
-Here is an example where newtmgr protocol handler is controlling whether echoing is on or off. Newtmgr, the tool, turns echoing off when it's transmitting large chunks of data to target board.
+Here is an example where newtmgr protocol handler is controlling whether echoing is on or off. [Newtmgr](../../../newtmgr/overview.md)
+turns echoing off when it is transmitting large chunks of data to a target board.
 
-```no-highlight
+```c
 static int
 nmgr_def_console_echo(struct nmgr_jbuf *njb)
 {
