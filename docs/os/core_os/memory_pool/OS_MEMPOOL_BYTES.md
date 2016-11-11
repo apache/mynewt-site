@@ -4,22 +4,22 @@
 OS_MEMPOOL_BYTES(n,blksize)
 ```
 
-Calculates how many bytes of memory is used by *n* number of elements, when individual element size is *blksize* bytes.
+Calculates how many bytes of memory is used by `n` number of elements, when individual element size is `blksize` bytes.
 
 <br>
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| n |  Number of elements  |
-| blksize |  Size of an element is number of bytes  |
+| `n` |  Number of elements  |
+| `blksize` |  Size of an element is number of bytes  |
 
 #### Returned values
 The number of bytes used by the memory pool.
 
 <br>
 #### Notes
-OS_MEMPOOL_BYTES is a macro and not a function.
+`OS_MEMPOOL_BYTES` is a macro and not a function.
 
 <br>
 #### Example

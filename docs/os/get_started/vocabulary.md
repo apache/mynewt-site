@@ -133,22 +133,19 @@ Targets can also have additional items specified, including:
 In order to create and manipulate targets, the *newt* tool offers a set of helper commands,
 you can find more information about these by issuing:
 
-```no-highlight
 $ newt target
+```no-highligh
 Usage:
   newt target [flags]
   newt target [command]
 
 Available Commands:
+  config      View target system configuration
   copy        Copy target
   create      Create a target
   delete      Delete target
   set         Set target configuration variable
   show        View target configuration variables
-  vars        Show variable names
-
-Flags:
-  -h, --help   help for target
 
 Global Flags:
   -l, --loglevel string   Log level (default "WARN")
@@ -160,3 +157,35 @@ Global Flags:
 Use "newt target [command] --help" for more information about a command.
 $ 
 ```
+
+###Configuration
+
+There are a lot of configuration options available when building your application in MyNewt. System Configuration options are set in 
+a file called `syscfg.yml` and you will find these configuration files throughout the MyNewt packages. While you can edit these
+files directly to change some default settings, it is best to override the default settings in a `syscfg.yml` file in your project
+directory rather than editing the package configurations directly.
+
+To see all **all** the system configuration settings, simply type
+
+```no-highlight
+$ newt target config <target-name>
+...
+* PACKAGE: sys/stats
+  * Setting: STATS_CLI
+    * Description: Expose the "stat" shell command.
+    * Value: 0
+  * Setting: STATS_NAMES
+    * Description: Include and report the textual name of each statistic.
+    * Value: 0
+  * Setting: STATS_NEWTMGR
+    * Description: Expose the "stat" newtmgr command.
+    * Value: 0
+...
+$
+```
+
+Keep in mind that this will only show the configuration options for any packages that are included in your applicaiton. 
+
+If you really want to see **all** the available configuration options, you can go rough each package and look at the
+`syscfg.yml` file in each. 
+

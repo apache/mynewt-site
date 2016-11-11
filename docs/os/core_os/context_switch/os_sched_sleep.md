@@ -5,18 +5,18 @@ int
 os_sched_sleep(struct os_task *t, os_time_t nticks)
 ```
 
-Task 't' state is changed from *ready to run* to *sleeping*. Sleep time will be specified in *nticks*.
+Task `t` state is changed from *ready to run* to *sleeping*. Sleep time will be specified in `nticks`.
 
-Task will be woken up after sleep timer expires, unless there are other signals causing  it to wake up.
+Task will be woken up after sleep timer expires, unless there are other signals causing it to wake up.
 
-If *nticks* is set to *OS_TIMEOUT_NEVER*, task never wakes up with a sleep timer.
+If `nticks` is set to `OS_TIMEOUT_NEVER`, task never wakes up with a sleep timer.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| t | Pointer to task |
-| nticks | Number of ticks to sleep in OS ticks |
+| `t` | Pointer to task |
+| `nticks` | Number of ticks to sleep in OS ticks |
 
 #### Returned values
 

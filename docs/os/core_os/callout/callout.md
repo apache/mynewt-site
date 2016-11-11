@@ -20,34 +20,36 @@ Callout timer fires out just once. For periodic timer type of operation you need
 
 ### Data structures
 
+```c
     struct os_callout {
         struct os_event c_ev;
         struct os_eventq *c_evq;
         uint32_t c_ticks;
         TAILQ_ENTRY(os_callout) c_next;
     };
-
+```
 
 | Element | Description |
 |---------|-------------|
-| c_ev | Event structure of this callout |
-| c_evq | Event queue where this callout is placed on timer expiry |
-| c_ticks | OS tick amount when timer fires |
-| c_next | Linkage to other unexpired callouts |
+| `c_ev` | Event structure of this callout |
+| `c_evq` | Event queue where this callout is placed on timer expiry |
+| `c_ticks` | OS tick amount when timer fires |
+| `c_next` | Linkage to other unexpired callouts |
 
-
+```c
     struct os_callout_func {
         struct os_callout cf_c;
         os_callout_func_t cf_func;
         void *cf_arg;
     };
+```
 
 
 | Element | Description |
 |---------|-------------|
-| cf_c | struct os_callout. See above |
-| cf_func | Function pointer which should be called by event queue processing |
-| cf_arg | Generic void * argument to that function |
+| `cf_c` | struct os_callout. See above |
+| `cf_func` | Function pointer which should be called by event queue processing |
+| `cf_arg` | Generic void * argument to that function |
 
 ### List of Functions
 

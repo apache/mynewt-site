@@ -59,17 +59,19 @@ targets/nrf52_boot
 
 <br>
 
-Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52pdk version). 
+Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp 
+
+**NOTE:** The preview version, nrf52pdk, is no longer supported. If you do not see PCA100040 on the top of your board, you have a preview version of the board and will need to upgrade your developer board before continuing.
+
+<br>
 
 ```
-$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
-Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
 Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
 $ newt target set myble build_profile=optimized
 Target targets/myble successfully set target.build_profile to optimized
-$ newt target set myble cflags=-DSTATS_NAME_ENABLE
-Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
 ```
 
 Use the same `newt target set` command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..
@@ -77,7 +79,7 @@ Use the same `newt target set` command to set the following definition for the b
 ```
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
 ```
 
@@ -91,14 +93,29 @@ targets/my_blinky_sim
     build_profile=debug
 targets/myble
     app=@apache-mynewt-core/apps/bletiny
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
     cflags=-DSTATS_NAME_ENABLE 
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
 ```
+
+Since we're interested in seeing the stats, we'll need to enable the stats module for the target. By default, the stats module is not enabled, so we will have to override the default behavior.
+To do this, you'll need to create a configuration file `syscfg.yml` in the app directory. from the target definition above, you can see that the app is in `apache-mynewt-core/apps/bletiny`
+so that is where you'll put your configuration file. 
+
+```
+# Package: apps/bletiny
+
+syscfg.vals:
+    SHELL_TASK: 1
+    STATS_NAMES: 1
+    STATS_CLI: 1
+```
+
+The first configuration value turns on the Shell Task, and we'll need this to get to the shell. The next 2 enable the names for the various stats, and then turns on the stats CLI option.
 
 ### Build targets
 
@@ -170,26 +187,40 @@ Port /dev/tty.usbserial-AJ03HAQQ, 09:57:17
 Press Meta-Z for help on special keys
 
 ?
-4828455:log     echo    ?       tasks   mempools        date 
-4828457:stat    b 
+4754:Commands:
+4754:     echo         ?    prompt     tasks  mempools      date
+4756:        b
 ```
 
 <br>
 
-Try the `stat` command. 
+If you'd like a shell prompt, try the `prompt` command.
+```hl_lines="1"
+prompt
+14025:Usage: prompt [set|show] [prompt_char]
+prompt set >
+15086:Prompt set to: >
+15086:Usage: prompt [set|show] [prompt_char]
+15087: >
+```
+
+You'll notice that there is an ever-increasing counter before the prompt (and before any output to the terminal).
+This is just a counter kept by the MCU.
+
+**Note**: If you want to have a shell prompt by default, simply add the line: `CONSOLE_PROMPT: 1` to your `syscfg.yml` file and it will be turned on by default.
+
+<br>
+
+Try the `tasks` command. 
 
 ```hl_lines="1"
-stat
-4973017:Must specify a statistic name to dump, possible names are:
-4973021:        stat
-4973022:        ble_l2cap
-4973024:        ble_att
-4973026:        ble_gap
-4973027:        ble_gattc
-4973029:        ble_gatts
-4973031:        ble_hs
-4973032:        ble_ll_conn
-4973034:        ble_ll
+27365: > tasks
+Tasks:
+28330:  idle (prio: 255, tid: 0, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 64, susage: 34, cswcnt: 233, tot_run_time: 28330ms)
+28333:  ble_ll (prio: 0, tid: 1, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 80, susage: 60, cswcnt: 11, tot_run_time: 0ms)
+28336:  shell (prio: 1, tid: 2, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 512, susage: 115, cswcnt: 18, tot_run_time: 0ms)
+28339:  bletiny (prio: 1, tid: 3, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 512, susage: 138, cswcnt: 456, tot_run_time: 0ms)
+28342: >
 ```
 
 <br>
@@ -197,19 +228,19 @@ stat
 Try specifying a BLE related stat, for example `ble_ll`. You should see some HCI (Host Controller Interface) command counts. 
 
 ```hl_lines="1"
-stat ble_ll
-4986297:hci_cmds: 5
-4986297:hci_cmd_errs: 0
-4986299:hci_events_sent: 5
-4986301:bad_ll_state: 0
-4986303:bad_acl_hdr: 0
-4986306:rx_adv_pdu_crc_ok: 0
-4986308:rx_adv_pdu_crc_err: 0
-4986311:rx_adv_bytes_crc_ok: 0
-4986314:rx_adv_bytes_crc_err: 0
-4986317:rx_data_pdu_crc_ok: 0
-4986319:rx_data_pdu_crc_err: 0
-4986322:rx_data_bytes_crc_ok: 0
+241133: > stat ble_ll
+hci_cmds: 11
+241888:hci_cmd_errs: 0
+241888:hci_events_sent: 11
+241890:bad_ll_state: 0
+241890:bad_acl_hdr: 0
+241891:no_bufs: 0
+241891:rx_adv_pdu_crc_ok: 0
+241892:rx_adv_pdu_crc_err: 0
+241893:rx_adv_bytes_crc_ok: 0
+241894:rx_adv_bytes_crc_err: 0
+241895:rx_data_pdu_crc_ok: 0
+241895:rx_data_pdu_crc_err: 0
 <snip>
 ```
 
@@ -218,21 +249,18 @@ stat ble_ll
 For a more exciting output, try scanning your surroundings for BLE adverstisements. The HCI command shown below specifies a scan duration in ms, sets discovery mode to general (as opposed to limited), the filter to no-whitelist, and type of scan to passive. You should see some scan data flying by!
 
 ```hl_lines="1"
-b scan dur=10000 disc=gen filt=no_wl type=passive
-
-5301227:[ts=5301227ssb, mod=4 level=1] host_hci_cmd_send: ogf=0x08 ocf=0x0b len=7
-5301233:[ts=5301233ssb, mod=4 level=1] Command Complete: cmd_pkts=1 ogf=0x8 ocf=0xb status=0
-5301241:[ts=5301241ssb, mod=4 level=1] host_hci_cmd_send: ogf=0x08 ocf=0x0c len=2
-5301248:[ts=5301248ssb, mod=4 level=1] Command Complete: cmd_pkts=1 ogf=0x8 ocf=0xc status=0
-GAP procedure initiated: discovery; disc_mode=2 filter_policyLE advertising report. len=38 num=1 evtype=3 addr9
-5301270:[ts=5301270ssb, mod=4 level=1] 02 01 06 03 03 aa fe 12 
-5301276:[ts=5301276ssb, mod=4 level=1] 16 aa fe 10 f6 02 67 2e 
-5301281:[ts=5301281ssb, mod=4 level=1] 63 6f 2f 62 65 61 63 6f 
-5301287:[ts=5301287ssb, mod=4 level=1] 6e 73 
-5301291:[ts=5301291ssb, mod=64 level=2] received advertisement; event_type=3 addr_type=1 addr=0xa0:0x0d:0xec:0:
-5301316:[ts=5301316ssb, mod=64 level=2]     flags=0x06
-5301321:[ts=5301321ssb, mod=64 level=2]     uuids16(complete)=0xfeaa 
-5301327:[ts=5301327ssb, mod=64 level=2]     svc_data_uuid16=
+139088: > b scan dur=10000 disc=gen filt=no_wl type=passive
+...
+146055:received advertisement; event_type=0 addr_type=1 addr=6b:aa:49:b7:46:e6 length_data=24 rssi=-42 data=0x02:0x01:0x1a:0x14:0xff:0x4c:0x00:0x01:0x00:0x00:0x00:0x00:0x04:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00 fields:
+146061:    flags=0x1a
+146062:    mfg_data=0x4c:0x00:0x01:0x00:0x00:0x00:0x00:0x04:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00
+146065:
+146065:received advertisement; event_type=0 addr_type=0 addr=ac:bc:32:ac:4f:e4 length_data=11 rssi=-36 data=0x02:0x01:0x06:0x07:0xff:0x4c:0x00:0x10:0x02:0x0b:0x00 fields:
+146069:    flags=0x06
+146070:    mfg_data=0x4c:0x00:0x10:0x02:0x0b:0x00
+146071:
+146072:scanning finished
+...
 <snip>
 ```
 

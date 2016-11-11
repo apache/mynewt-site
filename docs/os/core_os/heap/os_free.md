@@ -11,7 +11,7 @@ Frees previously allocated memory back to the heap.
 
 | Arguments | Description |
 |-----------|-------------|
-| mem |  Pointer to memory being released  |
+| `mem` |  Pointer to memory being released  |
 
 #### Returned values
 
@@ -19,7 +19,7 @@ N/A
 
 #### Notes 
 
-Calls C-library *free()* behind the covers.
+Calls C-library `free()` under the covers.
 
 #### Example
 
