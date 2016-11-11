@@ -149,11 +149,10 @@ You will now look for some BLE related stats over a serial connection and see th
 
 <br>
 
-You may use any terminal emulation program to communicate with the board. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your laptop, of course.
-
+You may use any terminal emulation program to communicate with the board, but you should connect to the nRF52's serial port using a baudrate of 115200, 8N1, and hardware/software flow control both off. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your laptop, of course.
 
 ```
-$ minicom -D /dev/tty.usbserial-AJ03HAQQ
+$ minicom -D /dev/tty.usbserial-AJ03HAQQ -b 115200
 ```
 
 <br>
