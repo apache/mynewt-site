@@ -38,7 +38,7 @@ Create a newt target for your test project for the BSP. To learn how to create a
 see this **howto** [Tutorial](../../get_started/project_create). Once you are familiar 
 with creating targets, move on below to create a target to use to test your BSP.
 
-It is recommended that you use a simple project like [blinky](../tutorials/blinky_primo.md) to minimize the time 
+It is recommended that you use a simple project like [blinky](../../tutorials/blinky_primo.md) to minimize the time 
 to get a working Mynewt system.  For this document, we will assume the *target* is called *myboard_blinky* 
 and uses project *blinky*.  
 
