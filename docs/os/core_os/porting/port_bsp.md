@@ -1,5 +1,5 @@
 
-#Create a BSP for your Target
+#Create a BSP for your Target 
 
 ###Introduction
 
@@ -24,8 +24,8 @@ Select a name for your BSP.  For the remainder of this document, we'll assume th
 
 Create a directory `hw/bsp/myboard` using the name chosen above. Within this BSP directory, create the following subdirectories:
 
-Select a name for your BSP.  For the remainder of this document,
-well assume the bsp is named `myboard`. In general its best to select a
+Select a name for your BSP.  For the remainder of this document, 
+well assume the bsp is named `myboard`. In general its best to select a 
 name that describes the board/system you are creating.
 
 * `include`
@@ -34,7 +34,7 @@ name that describes the board/system you are creating.
 
 ###Create a Target using Mynewt
 
-Create a newt target for your test project for the BSP. To learn how to create a target, see this **howto** [Tutorial](../../get_started/project_create). Once you are familiar with creating targets, move on below to create a target to use to test your BSP.
+Create a newt target for your test project for the BSP. To learn how to create a target, see this **howto** [Tutorial](../../get_started/project1). Once you are familiar with creating targets, move on below to create a target to use to test your BSP.
 
 It is recommended that you use a simple `project` like `blinky` to minimize time to get a working Mynewt system.  For this document, we will assume the `target` is called `myboard_blinky` and uses project `blinky`.  
 
@@ -43,7 +43,7 @@ Set the `bsp` of the project to `/hw/bsp/myboard`. While creating your target, y
 When you are complete, your `target` may look similar to this.
 
 ```c
-    $newt target show
+    $newt target show 
         myboard_blinky
             arch=cortex_m0
             bsp=hw/bsp/myboard
@@ -80,7 +80,7 @@ Optionally, create these files as necessary to provide all functionality from My
 
 ###Fill Out your Package File
 
-Edit the package file to describe your BSP.
+Edit the package file to describe your BSP. 
 
 The package file must contain:
 
@@ -102,7 +102,7 @@ The package file typically contains:
     pkg.linkerscript.bootloader.OVERWRITE: "myboard_boot.ld"
     pkg.downloadscript: "myboard_download.sh"
     pkg.debugscript: "myboard_debug.sh"
-    pkg.deps:
+    pkg.deps: 
     - hw/mcu/mymcu/variant
 ```
 where `mymcu/variant` should be replaced with the specific MCU and variant used in your design.
@@ -160,7 +160,7 @@ Create an alternate linker script for the bootloader since it is typically linke
 
 ###Add Functions and Defines
 
-At this point, it will be possible to run the `newt` tool to build your target.
+At this point, it will be possible to run the `newt` tool to build your target. 
 
 You may run into complaints from the linker script that a few Mynewt specific functions are missing.  We will describe these below.
 
@@ -173,7 +173,7 @@ There are also several libc definitions that can be stubbed in your first BSP. E
 
 | **Function** | **Description** |
 |-----------|-------------|
-| _sbrk | Returns memory from heap (used by malloc) |
+| _sbrk | Returns memory from heap (used by malloc) | 
 
 * Implement `_sbrk()`
 
@@ -232,5 +232,5 @@ The `LICENSE` file is an ASCII text file that describes the source license for t
 package.
 
 The `README.md` is a [markdown](https://en.wikipedia.org/wiki/Markdown)
- file that contains any documentation you
+ file that contains any documentation you 
 want to provide for the BSP.

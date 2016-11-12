@@ -1,13 +1,9 @@
 ## Project Sim Slinky  
 
 
-<br>
+### Objective
 
-The goal of the project is to use a sample app called "Slinky" included in the Mynewt repository to enable remote communications with a device running the Mynewt OS. The protocol for remote communications is called newt manager (newtmgr). In this tutorial we will create a target for a simulated device and define it with the sample app "Slinky". 
-
-If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md). 
-
-<br>
+The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr). We will do this through building a project with Mynewt called Slinky that runs via the native platform. 
 
 ### What you need
 
