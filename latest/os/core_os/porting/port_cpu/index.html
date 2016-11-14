@@ -6,18 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/porting/port_cpu/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/porting/port_cpu/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>CPU Porting - Apache Mynewt</title>
+	    <title>CPU Porting - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
-        <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
         <link href="../../../../css/base.css" rel="stylesheet">
         <link href="../../../../css/custom.css" rel="stylesheet">
         <link href="../../../../css/v2.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="../../../../extra.css" rel="stylesheet">
 
@@ -44,6 +44,16 @@
     <body class="CPU Porting">
 
 
+        <div class="container">
+    <div class="row v2-main-banner">
+        <div class="col-xs-12 v2-vcenter">
+            <a href="/"><img class="logo" src="/img/logo.png"></a>
+
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+    </div>
+</div>
+
         
 
 
@@ -51,7 +61,7 @@
 
 
 
-<nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
         <div class="navbar-header">
@@ -72,7 +82,7 @@
                 <li 
   class=""
 >
-                    <a href="/">Home</a>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
                 </li>
                 <li 
   class="important"
@@ -83,6 +93,11 @@
   class=""
 >
                     <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
                 </li>
                 <li 
   class="active"
@@ -119,9 +134,8 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
-        <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
             <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
                 <div class="form-group">
@@ -136,20 +150,24 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
-      Version: develop
+      Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
-      Version: 0.9.0 (latest)
+      Version: 0.9.0
     </option>
     
 </select>
 </li>
+      
+        
+      
+        
       
         
       
@@ -293,6 +311,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -373,6 +402,17 @@
   
   
     <li ><a href="../../../modules/json/json/">JSON</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -464,14 +504,9 @@
     </ul>
 </div></div>
 
-                    <div class="show-sidebar-container">
-                        <button class="show-sidebar">Docs Menu</button>
-                    </div>
-
                     <div class="col-md-9" role="main">
-                        <div class="row doc-header">
-                            <div class="col-sm-12">
-                                <div role="navigation" aria-label="breadcrumbs navigation">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
     <li><a href="/latest/os/introduction">Docs</a></li>
     
@@ -491,7 +526,6 @@
     
   </ul>
 </div>
-                            </div>
                         </div>
                         
                             <h1 id="porting-mynewt-to-a-new-cpu-architecture">Porting Mynewt to a new CPU Architecture</h1>
@@ -503,9 +537,12 @@
 </ul>
 <p>These are discussed below:</p>
 <h3 id="create-a-new-compiler">Create A New Compiler</h3>
-<p>NOTE: Newt does not automatically install the compilers require to build all platforms.  Its up to the user using their local machines package manager to install the compilers.  The step described here just registers the compiler with newt.  </p>
+<p>NOTE: Newt does not automatically install the compilers require to build all platforms. 
+It's up to the user using their local machines package manager to install the compilers. 
+The steps described here just registers the compiler with newt.  </p>
 <p>Create a new directory (named after the compiler you are adding). Copy the <code>pkg.yml</code> file from another compiler.  </p>
-<p>Edit the <code>pkg.yml</code> file and change the configuration attributes to match your compiler.  Most are self-explanatory paths to different compiler and linker tools.  There are a few configuration attributes worth noting.</p>
+<p>Edit the <code>pkg.yml</code> file and change the configuration attributes to match your compiler. 
+Most are self-explanatory paths to different compiler and linker tools. There are a few configuration attributes worth noting.</p>
 <table>
 <thead>
 <tr>
@@ -515,25 +552,26 @@
 </thead>
 <tbody>
 <tr>
-<td>pkg.keywords</td>
+<td><code>pkg.keywords</code></td>
 <td>Specific keywords to help others search for this using newt</td>
 </tr>
 <tr>
-<td>compiler.flags.default</td>
+<td><code>compiler.flags.default</code></td>
 <td>default compiler flags for this architecture</td>
 </tr>
 <tr>
-<td>compiler.flags.optimized</td>
+<td><code>compiler.flags.optimized</code></td>
 <td>additional flags when the newt tool builds an optimized image</td>
 </tr>
 <tr>
-<td>compiler.flags.debug</td>
+<td><code>compiler.flags.debug</code></td>
 <td>additional flags when the newt tool builds a debug image</td>
 </tr>
 </tbody>
 </table>
-<h3 id="implement-architecture-specific-os-code">Implement architecture-specific OS code</h3>
-<p>There are several architecture-specific code functions that are required when implementing a new architecture.  You can find examples in the <code>sim</code> architecture within Mynewt.</p>
+<h3 id="implement-architecture-specific-os-code">Implement Architecture-specific OS code</h3>
+<p>There are several architecture-specific code functions that are required when implementing a 
+new architecture. You can find examples in the <code>sim</code> architecture within Mynewt.</p>
 <p>When porting to a new CPU architecture, use the existing architectures as samples when writing your implementation.</p>
 <p>Please contact the Mynewt development list for help and advice portingto new MCU.</p>
                         
@@ -561,34 +599,22 @@
     </li>
 </ul>
                         </div>
-                        <div class="row">
-                            <footer>
-    <div class="row">
-        <div class="col-md-12">
-            
-                <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.<br>The Apache Software Foundation Apache Incubator</p>
-            
-        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.</p>
+        
     </div>
-    <div class="copyright-logos">
-        <div class="row">
-            <div class="col-xs-6 text-left">
-                <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
-            </div>
-            <div class="col-xs-6 text-right">
-                <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             <small class="footnote">
                 MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
             </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
         </div>
     </div>
 </footer>
-                        </div>
                     </div>
                 </div>
             

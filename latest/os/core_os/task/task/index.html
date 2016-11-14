@@ -6,18 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/task/task/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/task/task/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>toc - Apache Mynewt</title>
+	    <title>toc - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
-        <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
         <link href="../../../../css/base.css" rel="stylesheet">
         <link href="../../../../css/custom.css" rel="stylesheet">
         <link href="../../../../css/v2.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="../../../../extra.css" rel="stylesheet">
 
@@ -44,6 +44,16 @@
     <body class="toc">
 
 
+        <div class="container">
+    <div class="row v2-main-banner">
+        <div class="col-xs-12 v2-vcenter">
+            <a href="/"><img class="logo" src="/img/logo.png"></a>
+
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+    </div>
+</div>
+
         
 
 
@@ -51,7 +61,7 @@
 
 
 
-<nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
         <div class="navbar-header">
@@ -72,7 +82,7 @@
                 <li 
   class=""
 >
-                    <a href="/">Home</a>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
                 </li>
                 <li 
   class="important"
@@ -83,6 +93,11 @@
   class=""
 >
                     <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
                 </li>
                 <li 
   class="active"
@@ -119,9 +134,8 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
-        <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
             <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
                 <div class="form-group">
@@ -136,20 +150,24 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
-      Version: develop
+      Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
-      Version: 0.9.0 (latest)
+      Version: 0.9.0
     </option>
     
 </select>
 </li>
+      
+        
+      
+        
       
         
       
@@ -427,6 +445,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -507,6 +536,17 @@
   
   
     <li ><a href="../../../modules/json/json/">JSON</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -598,14 +638,9 @@
     </ul>
 </div></div>
 
-                    <div class="show-sidebar-container">
-                        <button class="show-sidebar">Docs Menu</button>
-                    </div>
-
                     <div class="col-md-9" role="main">
-                        <div class="row doc-header">
-                            <div class="col-sm-12">
-                                <div role="navigation" aria-label="breadcrumbs navigation">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
     <li><a href="/latest/os/introduction">Docs</a></li>
     
@@ -623,16 +658,14 @@
     
   </ul>
 </div>
-                            </div>
                         </div>
                         
                             <h1 id="task">Task</h1>
 <p>A task, along with the scheduler, forms the basis of the Mynewt OS. A task 
 consists of two basic elements: a task stack and a task function. The task 
 function is basically a forever loop, waiting for some "event" to wake it up. 
-There are two methods used to signal a task that it has work to do: event queues 
-and semaphores (see the appropriate manual sections for descriptions of these 
-features).</p>
+There are two methods used to signal a task that it has work to do: <a href="../../event_queue/event_queue/">event queues</a> 
+and <a href="../../semaphore/semaphore/">semaphores</a> .</p>
 <p>The Mynewt OS is a multi-tasking, preemptive OS. Every task is assigned a task 
 priority (from 0 to 255), with 0 being the highest priority task. If a higher 
 priority task than the current task wants to run, the scheduler preempts the 
@@ -641,17 +674,17 @@ just a fancy way of saying that the processor stack pointer now points to the
 stack of the higher priority task and the task resumes execution where it left 
 off.</p>
 <p>Tasks run to completion unless they are preempted by a higher priority task. The 
-developer must insure that tasks eventually "sleep"; otherwise lower priority 
+developer must ensure that tasks eventually "sleep"; otherwise lower priority 
 tasks will never get a chance to run (actually, any task lower in priority than 
 the task that never sleeps). A task will be put to sleep in the following cases: 
-it puts itself to sleep using <code>os_time_delay()</code>, it waits on an event queue 
-which is empty or attempts to obtain a mutex or a semaphore that is currently 
+it puts itself to sleep using <code>os_time_delay()</code>, it waits on an <a href="../../event_queue/event_queue/">event queue</a><br />
+which is empty or attempts to obtain a mutex or a <a href="../../semaphore/semaphore/">semaphore</a>  that is currently 
 owned by another task.</p>
 <p>Note that other sections of the manual describe these OS features in more 
 detail.</p>
 <h2 id="description">Description</h2>
 <p>In order to create a task two data structures need to be defined: the task 
-object (struct os_task) and its associated stack. Determining the stack size can 
+object (<code>struct os_task</code>) and its associated stack. Determining the stack size can 
 be a bit tricky; generally developers should not declare large local variables 
 on the stack so that task stacks can be of limited size. However, all 
 applications are different and the developer must choose the stack size 
@@ -667,7 +700,7 @@ scheduler, the <code>os_task_init()</code> function is called. Once <code>os_tas
 called, the task is made ready to run and is added to the active task list. Note 
 that a task can be initialized (started) before or after the os has started 
 (i.e. before <code>os_start()</code> is called) but must be initialized after the os has 
-been initialized (i.e. 'os_init' has been called). In most of the examples and 
+been initialized (i.e. 'os_init()' has been called). In most of the examples and 
 current Mynewt projects, the os is initialized, tasks are initialized, and the 
 the os is started. Once the os has started, the highest priority task will be 
 the first task set to run.</p>
@@ -984,34 +1017,22 @@ task simply toggles an LED at a one second interval.</p>
     </li>
 </ul>
                         </div>
-                        <div class="row">
-                            <footer>
-    <div class="row">
-        <div class="col-md-12">
-            
-                <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.<br>The Apache Software Foundation Apache Incubator</p>
-            
-        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.</p>
+        
     </div>
-    <div class="copyright-logos">
-        <div class="row">
-            <div class="col-xs-6 text-left">
-                <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
-            </div>
-            <div class="col-xs-6 text-right">
-                <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             <small class="footnote">
                 MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
             </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
         </div>
     </div>
 </footer>
-                        </div>
                     </div>
                 </div>
             

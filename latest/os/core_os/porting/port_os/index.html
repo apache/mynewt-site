@@ -6,18 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/porting/port_os/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/porting/port_os/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>toc - Apache Mynewt</title>
+	    <title>toc - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
-        <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
         <link href="../../../../css/base.css" rel="stylesheet">
         <link href="../../../../css/custom.css" rel="stylesheet">
         <link href="../../../../css/v2.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="../../../../extra.css" rel="stylesheet">
 
@@ -44,6 +44,16 @@
     <body class="toc">
 
 
+        <div class="container">
+    <div class="row v2-main-banner">
+        <div class="col-xs-12 v2-vcenter">
+            <a href="/"><img class="logo" src="/img/logo.png"></a>
+
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+    </div>
+</div>
+
         
 
 
@@ -51,7 +61,7 @@
 
 
 
-<nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
         <div class="navbar-header">
@@ -72,7 +82,7 @@
                 <li 
   class=""
 >
-                    <a href="/">Home</a>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
                 </li>
                 <li 
   class="important"
@@ -83,6 +93,11 @@
   class=""
 >
                     <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
                 </li>
                 <li 
   class="active"
@@ -119,9 +134,8 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
-        <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
             <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
                 <div class="form-group">
@@ -136,20 +150,24 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
-      Version: develop
+      Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
-      Version: 0.9.0 (latest)
+      Version: 0.9.0
     </option>
     
 </select>
 </li>
+      
+        
+      
+        
       
         
       
@@ -293,6 +311,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -373,6 +402,17 @@
   
   
     <li ><a href="../../../modules/json/json/">JSON</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -464,14 +504,9 @@
     </ul>
 </div></div>
 
-                    <div class="show-sidebar-container">
-                        <button class="show-sidebar">Docs Menu</button>
-                    </div>
-
                     <div class="col-md-9" role="main">
-                        <div class="row doc-header">
-                            <div class="col-sm-12">
-                                <div role="navigation" aria-label="breadcrumbs navigation">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
     <li><a href="/latest/os/introduction">Docs</a></li>
     
@@ -489,46 +524,46 @@
     
   </ul>
 </div>
-                            </div>
                         </div>
                         
                             <h1 id="porting-mynewt-os">Porting Mynewt OS</h1>
-<p>This chapter describes how to adapt the Mynewt OS to different platforms. </p>
+<p>This chapter describes how to adapt the Mynewt OS to different platforms.</p>
 <h3 id="description">Description</h3>
-<p>The Mynewt OS is a complete multi-tasking environment with scheduler, time 
-control, buffer management, and synchronization objects. it also includes 
-libraries and services like console, command shell, image manager, 
+<p>The Mynewt OS is a complete multi-tasking environment with scheduler, time
+control, buffer management, and synchronization objects. it also includes
+libraries and services like console, command shell, image manager,
 bootloader, and file systems etc.</p>
 <p>Thee majority of this software is platform independent and requires no
-intervention to run on your platform, but some of the components require 
-support from the underlying platform. </p>
+intervention to run on your platform, but some of the components require
+support from the underlying platform.</p>
 <p>The platform dependency of these components can fall into several categories:</p>
 <ul>
-<li><strong>CPU Core Dependencies</strong> -- Specific code or 
+<li><strong>CPU Core Dependencies</strong> -- Specific code or
 configuration to operate the CPU core within your target platform</li>
-<li><strong>MCU Dependencies</strong> -- Specific code or configuration to operate the MCU or 
+<li><strong>MCU Dependencies</strong> -- Specific code or configuration to operate the MCU or
 SoC within your target platform</li>
-<li><strong>BSP Dependencies</strong> -- Specific code or configuration to accommodate the 
-specific layout and functionality of your target platform </li>
+<li><strong>BSP Dependencies</strong> -- Specific code or configuration to accommodate the
+specific layout and functionality of your target platform</li>
 </ul>
-<h3 id="bsp-dependency">BSP Dependency</h3>
-<p>With all of the functionality provided by the core, MCU, and MCU HAL (Hardware Abstraction Layer), there are still some things that must be specified for your particular system. This 
+<h3 id="board-support-package-bsp-dependency">Board Support Package (BSP) Dependency</h3>
+<p>With all of the functionality provided by the core, MCU, and MCU HAL (Hardware Abstraction Layer), 
+there are still some things that must be specified for your particular system. This
 is provided in Mynewt to allow you the flexibility to design for the exact
 functionality, peripherals and features that you require in your product.  </p>
-<p>In Mynewt, these settings/components are included in a Board Support Package 
-(BSP).  The BSP contains the information specific to running Mynewt on a target 
+<p>In Mynewt, these settings/components are included in a Board Support Package
+(BSP).  The BSP contains the information specific to running Mynewt on a target
 platform or hardware board.  Mynewt supports some common open source hardware as well
 as the development boards for some common MCUs.  These development systems
 might be enough for you to get your prototype up and running, but when building
 a product you are likely going to have your own board which is slightly different
 from those already supported by Mynewt.</p>
 <p>For example, you might decide on your system that 16 Kilobytes of flash space
-in one flash device is reserved for a flash file system.  Or on your system 
+in one flash device is reserved for a flash file system.  Or on your system
 you may decide that GPIO pin 5 of the MCU is connected to the system LED. Or
 you may decide that the OS Tick (the underlying time source for the OS) should
-run slower than the defaults to conserve battery power.  These types of 
+run slower than the defaults to conserve battery power.  These types of
 behaviors are specified in the BSP.  </p>
-<p>The information provided in the BSP (what you need to specify to get a 
+<p>The information provided in the BSP (what you need to specify to get a
 complete executable) can vary depending on the MCU and its underlying core
 architecture.  For example, some MCUs have dedicated pins for UART, SPI etc,
 so there is no configuration required in the BSP when using these peripherals.
@@ -536,23 +571,36 @@ However some MCUs have a pin multiplexor that allows the UART to be mapped to
 several different pins.  For these MCUs, the BSP must specify if and where
 the UART pins should appear to match the hardware layout of your system.</p>
 <ul>
-<li>If your BSP is already supported my Mynewt, there is no additional BSP work involved in porting to your platform.  You need only to set the <code>bsp</code> attribute in your Mynewt target using the <a href="../../../../../newt/newt_intro">newt command tool</a>. </li>
-<li>If your BSP is not yet supported by Mynewt, you can add support following the instructions on <a href="../port_bsp/">how to add BSP support to Mynewt</a></li>
+<li>If your BSP is already supported my Mynewt, there is no additional BSP work involved in porting to your platform.<br />
+You need only set the <code>bsp</code> attribute in your Mynewt target using the <a href="../../../../newt/newt_intro">newt command tool</a>.</li>
+<li>If your BSP is not yet supported by Mynewt, you can add support by following the instructions on <a href="../port_bsp/">how to add BSP support to Mynewt</a></li>
 </ul>
 <h3 id="mcu-dependency">MCU Dependency</h3>
-<p>Some OS code depends on the MCU or SoC that the system contains. For example, the MCU may specify the potential memory map of the system - where code and data can reside.</p>
+<p>Some OS code depends on the MCU or SoC that the system contains. For example, the MCU may specify 
+the potential memory map of the system - where code and data can reside.</p>
 <ul>
-<li>If your MCU is already supported my Mynewt, there is no additional MCU work involved in porting to your platform.  You need only to set the <code>arch</code> attribute in your Mynewt target using the <a href="../../../../../newt/newt_intro">newt command tool</a>. </li>
-<li>If your MCU is not yet supported by Mynewt, you can add support following the instructions on<a href="../port_mcu/">how to add MCU support to Mynewt</a></li>
+<li>If your MCU is already supported by Mynewt, there is no additional MCU work involved in 
+porting to your platform.  You need only set the <code>arch</code> attribute in your Mynewt target 
+using the <a href="../../../../newt/newt_intro">newt command tool</a>.</li>
+<li>If your MCU is not yet supported by Mynewt, you can add support by following the 
+instructions on <a href="../port_mcu/">how to add MCU support to Mynewt</a></li>
 </ul>
-<h3 id="mcu-hal">MCU HAL</h3>
-<p>Mynewt's architecture supports a hardware abstraction layer (HAL) for common on or off-chip MCU peripherals such as GPIO, UARTs, flash memory etc.  Even if your MCU is supported for the core OS, you may find that you need to implement the HAL functionality for a new peripheral.   For a description of the HAL abstraction and implementation information,
+<h3 id="mcu-hardware-abstraction-layer-hal">MCU Hardware Abstraction Layer (HAL)</h3>
+<p>Mynewt's architecture supports a hardware abstraction layer (HAL) for common on or off-chip MCU peripherals 
+such as GPIO, UARTs, flash memory etc.  Even if your MCU is supported for the core OS, 
+you may find that you need to implement the HAL functionality for a new peripheral. 
+For a description of the HAL abstraction and implementation information,
 see the <a href="../../../modules/hal/hal/">HAL API</a></p>
 <h3 id="cpu-core-dependency">CPU Core Dependency</h3>
-<p>Some OS code depends on the CPU core that your system is using.  For example, a given CPU core has a specific assembly language instruction set, and may require special cross compiler or compiler settings to use the appropriate instruction set.  </p>
+<p>Some OS code depends on the CPU core that your system is using.  For example, a given CPU core 
+has a specific assembly language instruction set, and may require special cross compiler or 
+compiler settings to use the appropriate instruction set.  </p>
 <ul>
-<li>If your CPU architecture is already supported my Mynewt, there is no CPU core work involved in porting to your platform.  You need only to set the  <code>arch</code> and <code>compiler</code> attributes in your Mynewt target using the <a href="../../../../../newt/newt_intro">newt command tool</a>. </li>
-<li>If your CPU architecture is not supported by Mynewt, you can add support following the instructions on <a href="../port_cpu/">how to add CPU architecture support to Mynewt</a></li>
+<li>If your CPU architecture is already supported by Mynewt, there is no CPU core work involved 
+in porting to your platform.  You need only set the  <code>arch</code> and <code>compiler</code> attributes in your 
+Mynewt target using the <a href="../../../../newt/newt_intro">newt command tool</a>.</li>
+<li>If your CPU architecture is not supported by Mynewt, you can add support by following the 
+instructions on <a href="../port_cpu/">how to add CPU architecture support to Mynewt</a></li>
 </ul>
                         
                         <div class="row">
@@ -579,34 +627,22 @@ see the <a href="../../../modules/hal/hal/">HAL API</a></p>
     </li>
 </ul>
                         </div>
-                        <div class="row">
-                            <footer>
-    <div class="row">
-        <div class="col-md-12">
-            
-                <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.<br>The Apache Software Foundation Apache Incubator</p>
-            
-        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.</p>
+        
     </div>
-    <div class="copyright-logos">
-        <div class="row">
-            <div class="col-xs-6 text-left">
-                <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
-            </div>
-            <div class="col-xs-6 text-right">
-                <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             <small class="footnote">
                 MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
             </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
         </div>
     </div>
 </footer>
-                        </div>
                     </div>
                 </div>
             

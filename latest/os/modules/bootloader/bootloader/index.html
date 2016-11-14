@@ -6,18 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/bootloader/bootloader/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/bootloader/bootloader/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	<title>toc - Apache Mynewt</title>
+	    <title>toc - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
-        <link href="../../../../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
         <link href="../../../../css/base.css" rel="stylesheet">
         <link href="../../../../css/custom.css" rel="stylesheet">
         <link href="../../../../css/v2.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="../../../../extra.css" rel="stylesheet">
 
@@ -44,6 +44,16 @@
     <body class="toc">
 
 
+        <div class="container">
+    <div class="row v2-main-banner">
+        <div class="col-xs-12 v2-vcenter">
+            <a href="/"><img class="logo" src="/img/logo.png"></a>
+
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+    </div>
+</div>
+
         
 
 
@@ -51,7 +61,7 @@
 
 
 
-<nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
         <div class="navbar-header">
@@ -72,7 +82,7 @@
                 <li 
   class=""
 >
-                    <a href="/">Home</a>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
                 </li>
                 <li 
   class="important"
@@ -83,6 +93,11 @@
   class=""
 >
                     <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
                 </li>
                 <li 
   class="active"
@@ -119,9 +134,8 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
-        <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
             <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
                 <div class="form-group">
@@ -136,20 +150,24 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
-      Version: develop
+      Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
-      Version: 0.9.0 (latest)
+      Version: 0.9.0
     </option>
     
 </select>
 </li>
+      
+        
+      
+        
       
         
       
@@ -253,6 +271,17 @@
   
   
     <li ><a href="../../shell/shell/">Shell</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../split/split/">Split Images</a>
   
   
     </li>
@@ -372,6 +401,17 @@
                 
   
   
+    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../stats/stats/">Stats</a>
   
   
@@ -453,14 +493,9 @@
     </ul>
 </div></div>
 
-                    <div class="show-sidebar-container">
-                        <button class="show-sidebar">Docs Menu</button>
-                    </div>
-
                     <div class="col-md-9" role="main">
-                        <div class="row doc-header">
-                            <div class="col-sm-12">
-                                <div role="navigation" aria-label="breadcrumbs navigation">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
     <li><a href="/latest/os/introduction">Docs</a></li>
     
@@ -478,46 +513,157 @@
     
   </ul>
 </div>
-                            </div>
                         </div>
                         
                             <h1 id="bootloader">Bootloader</h1>
-<p>Insert synopsis here</p>
-<h3 id="description">Description</h3>
-<p>Describe module here, special features, how pieces fit together etc.</p>
-<h3 id="data-structures">Data structures</h3>
-<p>Replace this with the list of data structures used, why, any neat features</p>
+<p>The "bootloader" is the code that loads the Mynewt OS image into memory and conducts some checks before allowing the OS to be run. The bootloader in the Apache Mynewt project verifies the cryptographic signature of the firmware image before running it. It maintains a detailed status log for each stage of the boot process. For verification of the authenticity of the OS image, it:</p>
+<ul>
+<li>Calculates hash of the image.</li>
+<li>Uses public key to uncover hash value from included signature. </li>
+<li>Compares the calculated and uncovered hashes for a match.</li>
+</ul>
+<p>The "secure bootloader" should be placed in protected memory on a given microcontroller.</p>
+<p>The Mynewt code is structured so that the generic bootutil library performs most of the functions of a boot loader. The final step of actually jumping to the main image is kept out of the bootutil library.  This last step should instead be implemented in an
+architecture-specific project.  Boot loader functionality is separated in this
+manner for the following two reasons:</p>
+<ol>
+<li>By keeping architecture-dependent code separate, the bootutil library can be
+   reused among several boot loaders.</li>
+<li>By excluding the last boot step from the library, the rest of the code can
+   be tested in a sim environment.</li>
+</ol>
+<h3 id="limitations">Limitations</h3>
+<p>The boot loader currently only supports images with the following
+characteristics:</p>
+<ul>
+<li>Built to run from flash.</li>
+<li>Build to run from a fixed location (i.e., position-independent).</li>
+</ul>
+<h3 id="image-format">Image Format</h3>
+<p>The following definitions describe the image header format.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define IMAGE_MAGIC                 0x96f3b83c</span>
+<span style="color: #633820">#define IMAGE_MAGIC_NONE            0xffffffff</span>
+
+<span style="color: #A90D91">struct</span> <span style="color: #000000">image_version</span> {
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">iv_major</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">iv_minor</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">iv_revision</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">iv_build_num</span>;
+};
+
+<span style="color: #177500">/** Image header.  All fields are in little endian byte order. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">image_header</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ih_magic</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ih_tlv_size</span>; <span style="color: #177500">/* Trailing TLVs */</span>
+    <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">ih_key_id</span>;
+    <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">_pad1</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ih_hdr_size</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">_pad2</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ih_img_size</span>; <span style="color: #177500">/* Does not include header. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ih_flags</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">image_version</span> <span style="color: #000000">ih_ver</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">_pad3</span>;
+};
+</pre></div>
+
+
+<p>The <code>ih_hdr_size</code> field indicates the length of the header, and therefore the
+offset of the image itself.  This field provides for backwards compatibility in
+case of changes to the format of the image header.</p>
+<p>The following are the image header flags available.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define IMAGE_F_PIC                   0x00000001</span>
+<span style="color: #633820">#define IMAGE_F_SHA256                0x00000002    </span><span style="color: #177500">/* Image contains hash TLV */</span><span style="color: #633820"></span>
+<span style="color: #633820">#define IMAGE_F_PKCS15_RSA2048_SHA256 0x00000004 </span><span style="color: #177500">/* PKCS15 w/RSA and SHA */</span><span style="color: #633820"></span>
+<span style="color: #633820">#define IMAGE_F_ECDSA224_SHA256       0x00000008  </span><span style="color: #177500">/* ECDSA256 over SHA256 */</span><span style="color: #633820"></span>
+<span style="color: #633820">#define IMAGE_F_NON_BOOTABLE          0x00000010</span>
+<span style="color: #633820">#define IMAGE_HEADER_SIZE           32</span>
+</pre></div>
+
+
+<p>Security data gets added as a footer at the end of the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*</span>
+<span style="color: #177500"> * Image trailer TLV types.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #633820">#define IMAGE_TLV_SHA256            1   </span><span style="color: #177500">/* SHA256 of image hdr and body */</span><span style="color: #633820"></span>
+<span style="color: #633820">#define IMAGE_TLV_RSA2048           2   </span><span style="color: #177500">/* RSA2048 of hash output */</span><span style="color: #633820"></span>
+<span style="color: #633820">#define IMAGE_TLV_ECDSA224          3   </span><span style="color: #177500">/* ECDSA of hash output */</span><span style="color: #633820"></span>
+</pre></div>
+
+
+<h3 id="flash-areas">Flash Areas</h3>
+<p>Bootutil uses the same concept of "flash areas" as the nffs file system.
+Briefly, an area is a region of disk with the following properties:
+1. An area can be fully erased without affecting any other areas.
+2. A write to one area does not restrict writes to other areas.</p>
+<p>The areas used for image data must not be used for anything else.  In
+particular, these areas must be kept separate from the nffs file system.</p>
+<h3 id="image-slots">Image Slots</h3>
+<p>A portion of the flash memory is partitioned into two image slots: a primary
+slot and a secondary slot.  The boot loader will only run an image from the
+primary slot, so images must be built such that they can run from that fixed
+location in flash.  If the boot loader needs to run the image resident in the
+secondary slot, it must swap the two images in flash prior to booting.</p>
+<p>In addition to the two image slots, the boot loader requires a scratch area to
+allow for reliable image swapping.</p>
+<p>All areas used by image data (including the scratch area) must be the same
+size.</p>
+<h3 id="boot-vector">Boot Vector</h3>
+<p>If a vector file contains a version which doesn't correspond to an image
+actually present in flash, the boot loader deletes the file and procedes as
+though the file was not present.</p>
+<h3 id="boot-status">Boot Status</h3>
+<p>The boot status record allows the boot loader to recover in case it was reset
+while in the middle of an image swap operation.  Image swapping is discussed
+later in this document. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">boot_status_table</span> {
+    <span style="color: #177500">/**</span>
+<span style="color: #177500">     * For each field, a value of 0 means &quot;any&quot;.</span>
+<span style="color: #177500">     */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">bst_magic_slot0</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">bst_magic_scratch</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">bst_copy_done_slot0</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">bst_status_source</span>;
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">boot_status</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">idx</span>;       <span style="color: #177500">/* Which area we&#39;re operating on */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">state</span>;      <span style="color: #177500">/* Which part of the swapping process are we at */</span>
+};
+</pre></div>
+
+
+<h3 id="image-swapping">Image Swapping</h3>
+<p>If the boot vector indicates that the image in the secondary slot should be
+run, the boot loader needs to copy it to the primary slot.  The image currently
+in the primary slot also needs to be retained in flash so that it can be used
+later.  Furthermore, both images need to be recoverable if the boot loader
+resets in the middle of the process.  The two images are swapped according to
+the following procedure:</p>
+<h3 id="verifying-integrity-of-image">Verifying integrity of image</h3>
+<h3 id="reset-recovery">Reset Recovery</h3>
+<p>If the boot loader resets in the middle of a swap operation, the two images may
+be discontiguous in flash.  Bootutil recovers from this condition by using the
+boot status file to determine how the image parts are placed in flash.</p>
+<p>If the boot status file indicates that the images are not contiguous, bootutil
+completes the swap operation that was in progress when the system was reset.
+In other words, it applies the procedure defined in the previous section,
+moving image 1 into slot 0 and image 0 into slot 1.  If the boot status file
+indicates that an image part is present in the scratch area, this part is
+copied into the correct location by starting at step e or step h in the
+area-swap procedure, depending on whether the part belongs to image 0 or image
+1.</p>
+<p>After the swap operation has been completed, the boot loader proceeds as though
+it had just been started.</p>
+<h3 id="api">API</h3>
+<h3 id="example">Example</h3>
+<h3 id="dependencies">Dependencies</h3>
+<p>The bootloader depends on the following OS kernel functions:</p>
+<p>The bootloader does not depend on any flash file system.</p>
 <h3 id="list-of-functions">List of Functions</h3>
 <p><Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.></p>
 <p>The functions available in bootloader are:</p>
-<ul>
-<li><a href="../boot_build_status/">boot_build_status</a></li>
-<li><a href="../boot_build_status_one/">boot_build_status_one</a></li>
-<li><a href="../boot_clear_status/">boot_clear_status</a></li>
-<li><a href="../boot_copy_area/">boot_copy_area</a></li>
-<li><a href="../boot_copy_image/">boot_copy_image</a></li>
-<li><a href="../boot_erase_area/">boot_erase_area</a></li>
-<li><a href="../boot_fill_slot/">boot_fill_slot</a></li>
-<li><a href="../boot_find_image_area_idx/">boot_find_image_area_idx</a></li>
-<li><a href="../boot_find_image_part/">boot_find_image_part</a></li>
-<li><a href="../boot_find_image_slot/">boot_find_image_slot</a></li>
-<li><a href="../boot_go/">boot_go</a></li>
-<li><a href="../boot_init_flash/">boot_init_flash</a></li>
-<li><a href="../boot_move_area/">boot_move_area</a></li>
-<li><a href="../boot_read_image_header/">boot_read_image_header</a></li>
-<li><a href="../boot_read_image_headers/">boot_read_image_headers</a></li>
-<li><a href="../boot_read_status/">boot_read_status</a></li>
-<li><a href="../boot_select_image_slot/">boot_select_image_slot</a></li>
-<li><a href="../boot_slot_addr/">boot_slot_addr</a></li>
-<li><a href="../boot_slot_to_area_idx/">boot_slot_to_area_idx</a></li>
-<li><a href="../boot_swap_areas/">boot_swap_areas</a></li>
-<li><a href="../boot_vect_delete_main/">boot_vect_delete_main</a></li>
-<li><a href="../boot_vect_delete_test/">boot_vect_delete_test</a></li>
-<li><a href="../boot_vect_read_main/">boot_vect_read_main</a></li>
-<li><a href="../boot_vect_read_one/">boot_vect_read_one</a></li>
-<li><a href="../boot_vect_read_test/">boot_vect_read_test</a></li>
-<li><a href="../boot_write_status/">boot_write_status</a></li>
-</ul>
                         
                         <div class="row">
                             
@@ -527,9 +673,9 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../shell/shell_nlip_output/>
+    <a href=../../split/split/>
         <span class="fa fa-arrow-left"></span>
-        Previous: shell_nlip_output
+        Previous: Split Images
     </a>
     
     </li>
@@ -543,34 +689,22 @@
     </li>
 </ul>
                         </div>
-                        <div class="row">
-                            <footer>
-    <div class="row">
-        <div class="col-md-12">
-            
-                <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.<br>The Apache Software Foundation Apache Incubator</p>
-            
-        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.</p>
+        
     </div>
-    <div class="copyright-logos">
-        <div class="row">
-            <div class="col-xs-6 text-left">
-                <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
-            </div>
-            <div class="col-xs-6 text-right">
-                <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             <small class="footnote">
                 MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
             </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
         </div>
     </div>
 </footer>
-                        </div>
                     </div>
                 </div>
             

@@ -6,18 +6,18 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         
         
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_sram_olimex/">
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_sram_olimex/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	<title>Run Blinky from SRAM, no bootloader - Apache Mynewt</title>
+	    <title>Run Blinky from SRAM, no bootloader - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
-        <link href="../../../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
         <link href="../../../css/base.css" rel="stylesheet">
         <link href="../../../css/custom.css" rel="stylesheet">
         <link href="../../../css/v2.css" rel="stylesheet">
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900,300,100' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="../../../extra.css" rel="stylesheet">
 
@@ -44,6 +44,16 @@
     <body class="Run Blinky from SRAM, no bootloader">
 
 
+        <div class="container">
+    <div class="row v2-main-banner">
+        <div class="col-xs-12 v2-vcenter">
+            <a href="/"><img class="logo" src="/img/logo.png"></a>
+
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+    </div>
+</div>
+
         
 
 
@@ -51,7 +61,7 @@
 
 
 
-<nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
     <div class="container">
         <!-- Collapsed navigation -->
         <div class="navbar-header">
@@ -72,7 +82,7 @@
                 <li 
   class=""
 >
-                    <a href="/">Home</a>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
                 </li>
                 <li 
   class="important"
@@ -83,6 +93,11 @@
   class=""
 >
                     <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
                 </li>
                 <li 
   class="active"
@@ -119,9 +134,8 @@
         <div class="container">
             
                 <div class="row">
-                    <div class="col-md-3 v2-sidebar"><div id="docSidebar" class="hidden-print" role="complementary">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
-        <img class="hidden-xs hidden-sm logo-small" src="/img/logo.svg" alt="MyNewt" title="MyNewt">
         <div role="search">
             <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
                 <div class="form-group">
@@ -136,20 +150,24 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
-      Version: develop
+      Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
-      Version: 0.9.0 (latest)
+      Version: 0.9.0
     </option>
     
 </select>
 </li>
+      
+        
+      
+        
       
         
       
@@ -285,6 +303,27 @@
           
               
                 
+  
+  
+    <li><a href="
+  ../tasks_lesson/
+">A Sample Lesson</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino Zero</a>
+    </li>
+
+              
+          
+              
+                
     <li >
       <a href="../unit_test/">Write a Test Suite for a Package</a>
     </li>
@@ -309,8 +348,13 @@
           
               
                 
-    <li >
-      <a href="../project-slinky/">Enable remote comms on sim device</a>
+  
+  
+    <li><a href="
+  ../project-slinky/
+">Project Slinky for remote comms</a>
+  
+  
     </li>
 
               
@@ -318,7 +362,7 @@
               
                 
     <li >
-      <a href="../project-target-slinky/">Enable remote comms on STM32 board</a>
+      <a href="../add_newtmgr/">Enable newtmgr in any app</a>
     </li>
 
               
@@ -432,14 +476,9 @@
     </ul>
 </div></div>
 
-                    <div class="show-sidebar-container">
-                        <button class="show-sidebar">Docs Menu</button>
-                    </div>
-
                     <div class="col-md-9" role="main">
-                        <div class="row doc-header">
-                            <div class="col-sm-12">
-                                <div role="navigation" aria-label="breadcrumbs navigation">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
     <li><a href="/latest/os/introduction">Docs</a></li>
     
@@ -459,7 +498,6 @@
     
   </ul>
 </div>
-                            </div>
                         </div>
                         
                             <h2 id="run-blinky-from-sram-without-bootloader">Run Blinky from SRAM without bootloader</h2>
@@ -467,23 +505,23 @@
 <p>To download an application image directly into the embedded SRAM in the microcontroller and run it without the bootloader. This tutorial describes how you do it on an Olimex STM32 board.</p>
 <h3 id="what-you-need">What you need</h3>
 <ol>
-<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/ProductDetail/Olimex-Ltd/STM32-E407/?qs=UN6GZl1KCcit6Ye0xmPO4A%3D%3D">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
+<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/search/ProductDetail.aspx?R=0virtualkey0virtualkeySTM32-E407">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
 <li>ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)</li>
 <li>USB A-B type cable to connect the debugger to your personal computer</li>
 <li>Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)</li>
 <li>An account on Github repository and <em>git</em> installed on your computer.</li>
-<li>It is assumed you have already installed newt tool. </li>
+<li>It is assumed you have already installed newt tool.</li>
 <li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
 </ol>
 <p>Also, we assume that you're familiar with UNIX shells. Let's gets started!</p>
 <p><br></p>
 <h3 id="prepare-the-software">Prepare the Software</h3>
 <ul>
-<li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory. </li>
+<li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory.</li>
 </ul>
 <p><br></p>
 <h3 id="create-a-project">Create a project</h3>
-<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
+<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in
 <a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
 or just follow the commands below.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
@@ -495,7 +533,7 @@ or just follow the commands below.</p>
 
     $cd myproj
 
-    $ newt install -v 
+    $ newt install -v
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
@@ -520,8 +558,8 @@ or just follow the commands below.</p>
 
 <p><br></p>
 <h3 id="build-the-image">Build the image</h3>
-<p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>. </p>
-<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em> </p>
+<p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>.</p>
+<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
     $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
     (some diff will be displayed)
@@ -550,14 +588,14 @@ or just follow the commands below.</p>
 <p><br></p>
 <ul>
 <li>
-<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present. 
+<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present.
 To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering <strong>B0_1</strong> and <strong>B1_1</strong>.</p>
 </li>
 <li>
-<p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board). </p>
+<p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board).</p>
 </li>
 <li>
-<p>The red PWR LED should be lit. </p>
+<p>The red PWR LED should be lit.</p>
 </li>
 <li>
 <p>Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.</p>
@@ -578,7 +616,7 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
     (info)
     ...
     target state: halted
-    target halted due to debug-request, current mode: Thread 
+    target halted due to debug-request, current mode: Thread
     xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
     Info : accepting &#39;gdb&#39; connection on tcp/3333
     Info : device id = 0x10036413
@@ -587,13 +625,13 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 
 
 <p><br></p>
-<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, </p>
+<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example,</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) set $msp=0x10010000
 </pre></div>
 
 
 <p><br></p>
-<p>Now load the image and type "c" or "continue" from the GNU debugger. </p>
+<p>Now load the image and type "c" or "continue" from the GNU debugger.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
     Loading section .text, size 0x16b88 lma 0x20000000
     Loading section .ARM.exidx, size 0x18 lma 0x20016b88
@@ -634,34 +672,22 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
     </li>
 </ul>
                         </div>
-                        <div class="row">
-                            <footer>
-    <div class="row">
-        <div class="col-md-12">
-            
-                <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.<br>The Apache Software Foundation Apache Incubator</p>
-            
-        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.</p>
+        
     </div>
-    <div class="copyright-logos">
-        <div class="row">
-            <div class="col-xs-6 text-left">
-                <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
-            </div>
-            <div class="col-xs-6 text-right">
-                <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             <small class="footnote">
                 MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
             </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
         </div>
     </div>
 </footer>
-                        </div>
                     </div>
                 </div>
             
