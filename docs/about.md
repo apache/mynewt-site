@@ -2,13 +2,11 @@
 
 Some upcoming features:
 
-* Host-only BLE stack
-* Serial upgrade of image in bootloader
-* HAL redesign to abstract across a diverse set of chip peripherals ([View discussion thread](http://mail-archives.apache.org/mod_mbox/incubator-mynewt-dev/201606.mbox/%3C06CB0682-8F67-4C3F-93E4-6A20444487A1%40apache.org%3E))
-* HAL for SPI access (master and slave)
-* Ability for drivers to turn on/off low power settings automatically
-* Support for Wi-Fi controllers via a socket interface
-
+* Full IP support
+* Low power support with ability for drivers to turn on/off low power settings automatically
+* Sensor API, see [discussion thread](https://lists.apache.org/list.html?dev@mynewt.apache.org:dfr=June%201|dto=2016-11-14:%22Sensor%20Drivers%22)
+* Support for MIPS architecture
+* Support for additional boards
 
 <font color="#F2853F"> The detailed roadmap is tracked on [JIRA for Mynewt](https://issues.apache.org/jira/browse/MYNEWT/?selectedTab=com.atlassian.jira.jira-projects-plugin:roadmap-panel). </font>
 
