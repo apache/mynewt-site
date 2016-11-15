@@ -77,6 +77,20 @@ targets.
 **NOTE:** the actual code and package files are not installed 
 (except the template for `main.c`).  See the next step for installing the packages.
 
+**NOTE:** By default newt uses the code in the master branch. This is the latest stable
+code for newt. If you need to use a different branch, you can set this in the project.yml
+file. 
+
+```no-highlight
+repository.apache-mynewt-core:
+    type: github
+    vers: 0-latest
+    user: apache
+    repo: incubator-mynewt-core
+```
+Changing to 0-dev will put you on the develop branch. **The Develop Branch may not be stable and 
+you may encounter bugs or other problems.**
+
 <br>
 
 ### Newt Install
@@ -100,8 +114,32 @@ Once _newt install_ has successfully finished, the contents of _apache-mynewt-co
 
 ```no-highlight
 $ tree -L 2 repos/apache-mynewt-core/
-.
-<snip>
+repos/apache-mynewt-core/
+├── CODING_STANDARDS.md
+├── DISCLAIMER
+├── LICENSE
+├── NOTICE
+├── README.md
+├── RELEASE_NOTES.md
+├── apps
+│   ├── blecent
+│   ├── blehci
+│   ├── bleprph
+│   ├── bletest
+│   ├── bletiny
+│   ├── bleuart
+│   ├── blinky
+│   ├── boot
+│   ├── ffs2native
+│   ├── luatest
+│   ├── slinky
+│   └── test
+├── compiler
+│   ├── arm-none-eabi-m0
+│   ├── arm-none-eabi-m4
+│   └── sim
+├── drivers
+│   └── uart_bitbang
 ├── fs
 │   ├── fs
 │   └── nffs
@@ -111,12 +149,16 @@ $ tree -L 2 repos/apache-mynewt-core/
 │   └── mcu
 ├── libs
 │   ├── baselibc
+│   ├── bleuart
+│   ├── boot_serial
 │   ├── bootutil
 │   ├── cmsis-core
 │   ├── console
+│   ├── crash_test
 │   ├── elua
 │   ├── flash_test
 │   ├── imgmgr
+│   ├── inet_def_service
 │   ├── json
 │   ├── mbedtls
 │   ├── newtmgr
@@ -124,10 +166,26 @@ $ tree -L 2 repos/apache-mynewt-core/
 │   ├── shell
 │   ├── testreport
 │   ├── testutil
-│   └── util
+│   ├── tinycrypt
+│   ├── util
+│   └── wifi_mgmt
 ├── net
 │   └── nimble
-<snip>
+├── project.yml
+├── repository.yml
+├── sys
+│   ├── config
+│   ├── coredump
+│   ├── fcb
+│   ├── id
+│   ├── log
+│   ├── mn_socket
+│   ├── reboot
+│   └── stats
+└── targets
+    └── unittest
+
+61 directories, 8 files
 ```
 
 As you can see, the core of the Apache Mynewt operating system has been brought 
@@ -150,6 +208,13 @@ Compiling flash_map.c
 <snip>
 ```
 
+**NOTE:** If you've installed the latest gcc using homebrew on your Mac, you should downgrade to gcc-5 in order to use MyNewt.
+
+```
+$ brew uninstall gcc-6
+$ brew link gcc-5
+```
+
 <br>
 
 To test all the packages in a project, specify `all` instead of the package name.
@@ -158,10 +223,11 @@ To test all the packages in a project, specify `all` instead of the package name
 $ newt test all
 ...lots of compiling and testing...
 ...about 2 minutes later ...
-Archiving bootutil.a
-Linking test_bootutil
-Executing test: /myproj/bin/unittest/libs/bootutil/test_bootutil
-Passed tests: [net/nimble/host fs/nffs libs/os hw/hal libs/mbedtls libs/util sys/config libs/bootutil]
+Compiling mn_sock_test.c
+Archiving mn_socket.a
+Linking test_mn_socket
+Executing test: /Users/dsimmons/myproj/bin/unittest/sys/mn_socket/test_mn_socket
+Passed tests: [libs/json libs/util libs/mbedtls net/nimble/host hw/hal libs/bootutil sys/log sys/config sys/fcb fs/nffs libs/os libs/boot_serial sys/mn_socket]
 All tests passed
 ```
 
@@ -173,21 +239,17 @@ To build and run your new application, simply issue the following command:
 
 ```
 $ newt build my_blinky_sim 
-Compiling base64.c
-Compiling cbmem.c
-Compiling datetime.c
-Compiling tpq.c
-Archiving util.a
+Building target targets/my_blinky_sim
 Compiling main.c
 Archiving blinky.a
+Compiling hal_bsp.c
+Compiling os_bsp.c
+Compiling sbrk.c
+Archiving native.a
 Compiling flash_map.c
-Compiling hal_flash.c
-Archiving hal.a
-Compiling cons_fmt.c
-Compiling cons_tty.c
 <snip>
 Linking blinky.elf
-App successfully built: /Users/sterling/dev/tmp/my_app/bin/my_blinky_sim/apps/blinky/blinky.elf
+App successfully built: /Users/dsimmons/myproj/bin/my_blinky_sim/apps/blinky/blinky.elf
 ```
 
 <br>
@@ -198,15 +260,9 @@ You can run the simulated version of your project and see the simulated LED
 blink.
 
 ```
-$ newt run my_blinky_sim
-No download script for BSP hw/bsp/native
-Debugging /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf
-<snip>
-Reading symbols from /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf...done.
-(gdb)
+$ ./bin/my_blinky_sim/apps/blinky/blinky.elf
+hal_gpio set pin  1 to 0
 ```
-
-Type `r` at the `(gdb)` prompt to run the project. You will see an output indicating that the `hal_gpio` pin is toggling between 1 and 0 in a simulated blink. 
 
 <br>
 

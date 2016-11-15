@@ -4,7 +4,7 @@
 int os_mbuf_copydata(const struct os_mbuf *m, int off, int len, void *dst)
 ```
 
-Copy data from an mbuf chain starting *off* bytes from the beginning, continuing for *len* bytes, into the indicated buffer.
+Copy data from an mbuf chain starting `off` bytes from the beginning, continuing for `len` bytes, into the indicated buffer.
 
 <br>
 
@@ -12,10 +12,10 @@ Copy data from an mbuf chain starting *off* bytes from the beginning, continuing
 
 | Arguments | Description |
 |-----------|-------------|
-| m |  Pointer to mbuf chain |
-| off | Start copy offset, in bytes, from beginning of mbuf chain |
-| len | Number of bytes to copy |
-| dst | Data buffer to copy into |
+| `m` |  Pointer to mbuf chain |
+| `off` | Start copy offset, in bytes, from beginning of mbuf chain |
+| `len` | Number of bytes to copy |
+| `dst` | Data buffer to copy into |
 
 <br>
 

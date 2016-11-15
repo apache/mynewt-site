@@ -14,8 +14,8 @@ Macro used to cast the data pointer of an mbuf to a given type.
 
 | Arguments | Description |
 |-----------|-------------|
-| __om |  Pointer to mbuf (struct os_mbuf *)  |
-| __type |  Type to cast  |
+| `__om` |  Pointer to mbuf (struct os_mbuf *)  |
+| `__type` |  Type to cast  |
 
 
 <br>

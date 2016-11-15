@@ -12,18 +12,18 @@ Increases the length of an mbuf chain by adding data to the front.  If there is 
 
 | Arguments | Description |
 |-----------|-------------|
-| om | Pointer to mbuf |
-| len | Length, in bytes, to prepend |
+| `om` | Pointer to mbuf |
+| `len` | Length, in bytes, to prepend |
 
 <br>
 
 #### Returned values
-Pointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate *len*.
+Pointer to mbuf at head of chain; **NULL** if not enough mbufs were available to accommodate `len`.
 
 <br>
 
 #### Notes
-If *om* is a packet header mbuf, the total length of the packet is adjusted by *len*. Note that the returned mbuf may not point to *om* if insufficient leading space was available in *om*.
+If `om` is a packet header mbuf, the total length of the packet is adjusted by `len`. Note that the returned mbuf may not point to `om` if insufficient leading space was available in `om`.
 
 <br>
 

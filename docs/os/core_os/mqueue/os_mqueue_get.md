@@ -4,7 +4,7 @@
 struct os_mbuf *os_mqueue_get(struct os_mqueue *mq)
 ```
 
-Retrieves a packet off an Mqueue. Returns a pointer to the mbuf at the head of the mbuf chain. NULL if no packets are on the queue.
+Retrieves a packet off an Mqueue. Returns a pointer to the mbuf at the head of the mbuf chain. **NULL** if no packets are on the queue.
 
 <br>
 
@@ -12,13 +12,13 @@ Retrieves a packet off an Mqueue. Returns a pointer to the mbuf at the head of t
 
 | Arguments | Description |
 |-----------|-------------|
-| mq | Pointer to Mqueue structure  |
+| `mq` | Pointer to Mqueue structure  |
 
 <br>
 
 #### Returned values
 
-The packet at the head of the queue or NULL if no packets are on the queue.
+The packet at the head of the queue or **NULL** if no packets are on the queue.
 
 <br>
 

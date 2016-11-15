@@ -95,24 +95,15 @@ generate both a bootloader, and an image target.
 To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability. 
 
 ```no-highlight
-$ newt target create arduino_boot 
-$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero 
-$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
+$ newt target create arduino_boot
+$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
+Target targets/arduino_boot successfully created
+$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
+Target targets/arduino_boot successfully set target.app to @apache-mynewt-core/apps/boot
 $ newt target set arduino_boot build_profile=optimized
-```
-
-<br>
-
-If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:
-
-```
-$ newt target set arduino_boot features=arduino_zero_pro 
-```
-
-If you have an Arduino Zero, you have to set the following instead:
-
-```
-$ newt target set arduino_boot features=arduino_zero 
+Target targets/arduino_boot successfully set target.build_profile to optimized
+$ newt target set arduino_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
+Target targets/arduino_boot successfully set target.syscfg to BSP_ARDUINO_ZERO_PRO=1
 ```
 
 <br>
@@ -129,6 +120,29 @@ These commands do a few things:
     instructs Newt to generate smaller and more efficient code for this target.
     This setting is necessary due to the bootloader's strict size constraints.
   * Tells the Board Support Package to enable support for the Arduino Zero Pro or the Arduino Zero. Set it to `arduino_zero` or `arduino_zero_pro` depending on the board you have.
+
+<br>
+
+If you'd rather, you can also take care of that last part by editing the `syscfg.yml` file 
+for the target to set options -- at least one that is *required*.
+Look in the directory for the target, as defined by the target (in this case `targets/arduino_boot`)
+and edit the syscfg.yml file. It should look like this when you're done:
+
+```no-highlight
+### Package: targets/arduino_boot
+
+syscfg.vals:
+    BSP_ARDUINO_ZERO_PRO: 1
+
+            
+```
+
+If you have an Arduino Zero Pro or M0 Pro, you'll want `BSP_ARDUINO_ZEZRO_PRO: 1`. If you have the Arduino Zero, 
+you'll want `BSP_ARDUINO_ZERO: 1` instead.
+
+For more information on setting options, see the section on [Concepts](../get_started/vocabulary.md).
+
+For now, we're not going to set any more options or enable any more features of Mynewt OS.
 
 <br>
 
@@ -159,7 +173,8 @@ board.
 
 ### Build your blinky app 
 
-To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the default application that comes with your project, ```apps/blinky```:
+To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  
+In this tutorial,  we will use the default application that comes with your project, ```apps/blinky```:
 
 **Note**: Remember to set features to `arduino_zero` if your board is Arduino Zero and not a Pro!
 
@@ -226,6 +241,55 @@ Execute the command to download the bootloader.
 
 If the newt tool finishes without error, that means the bootloader has been 
 successfully loaded onto the target.
+
+If, on the other hand, you get errors like the following:
+
+```
+$ newt load arduino_boot -v
+Loading bootloader
+Error: Downloading ~/dev/arduino_zero/bin/targets/arduino_boot/app/apps/boot/boot.elf.bin to 0x0
+Open On-Chip Debugger 0.9.0 (2015-11-15-05:39)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : only one transport option; autoselect 'swd'
+adapter speed: 500 kHz
+adapter_nsrst_delay: 100
+cortex_m reset_config sysresetreq
+Info : CMSIS-DAP: SWD  Supported
+Info : CMSIS-DAP: JTAG Supported
+Info : CMSIS-DAP: Interface Initialised (SWD)
+Info : CMSIS-DAP: FW Version = 01.1F.0118
+Info : SWCLK/TCK = 1 SWDIO/TMS = 1 TDI = 1 TDO = 1 nTRST = 0 nRESET = 1
+Info : CMSIS-DAP: Interface ready
+Info : clock speed 500 kHz
+Info : SWD IDCODE 0x0bc11477
+Info : at91samd21g18.cpu: hardware has 4 breakpoints, 2 watchpoints
+Error: Target not halted
+```
+
+Then you'll need to erase your board first before downloading the `arduino_boot` application. Here's how you do that using gdb,
+the GNU Debugger. 
+
+```gdb
+$ newt debug arduino_blinky
+
+(gdb) mon at91samd chip-erase
+chip erased
+chip erased
+(gdb) x/32wx 0
+0x0:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x10:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x20:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x30:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x40:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x50:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x60:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+0x70:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
+(gdb) q
+```
+
+Once the chip is erased, go back and download the `arduino_boot` image to the board as above. 
 
 <br>
 
@@ -296,18 +360,23 @@ Continuing.
 of the image to load.  If you are not providing remote upgrade, and are just 
 developing locally, you can provide 0.0.0 for every image version.
 
-If you want the image to run without the debugger connected, simply quit the 
-debugger and restart the board.  The image you programmed will come and run on the Arduino on next boot!  
+If you want the image to run without the debugger connected, simply quit the
+debugger and restart the board.  The image you programmed will come up and run on 
+the Arduino on the next boot!  
 
 <br>
 
 ### Watch the LED blink
 
-Congratulations! You have created a Mynewt operating system running on the 
-Arduino Zero. The LED right next to the power LED should be blinking. It is toggled by one task running on the Mynewt OS.   
+Congratulations! You have created a Mynewt operating system running on the
+Arduino Zero. The LED right next to the power LED should be blinking. It is toggled 
+by one task running on the Mynewt OS.   
 
-We have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like [tutorials](../tutorials/nRF52.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) on the current board.
+We have more fun tutorials for you to get your hands dirty. Be bold and try other 
+Blinky-like [tutorials](../tutorials/nRF52.md) or try enabling additional functionality 
+such as [remote comms](project-target-slinky.md) on the current board.
 
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
+If you see anything missing or want to send us feedback, please do so by signing up for 
+appropriate mailing lists on our [Community Page](../../community.md).
 
 Keep on hacking and blinking!

@@ -13,7 +13,7 @@ Macro used to retrieve the length of the user packet header in an mbuf.
 
 | Arguments | Description |
 |-----------|-------------|
-| __om |  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf) |
+| `__om` |  Pointer to mbuf (struct os_mbuf *). Must be head of chain (i.e. a packet header mbuf) |
 
 
 <br>

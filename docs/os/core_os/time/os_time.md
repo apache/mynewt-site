@@ -17,18 +17,20 @@ Time is stored in Mynewt as an `os_time_t` value.
 
 Wallclock time is represented using the `struct os_timeval` and `struct os_timezone` tuple.
 
-`struct os_timeval` represents the number of seconds elapsed since 00:00:00 Jan 1, 1970 UTC.
-<pre>
+`struct os_timeval` represents the number of seconds elapsed since the epoch (00:00:00 Jan 1, 1970 UTC).
+
+```c
 struct os_timeval {
     int64_t tv_sec;  /* seconds since Jan 1 1970 UTC */
     int32_t tv_usec; /* fractional seconds */
 };
 
 struct os_timeval tv = { 1457400000, 0 };  /* 01:20:00 Mar 8 2016 UTC */
-</pre>
+```
 
 `struct os_timezone` is used to specify the offset of local time from UTC and whether daylight savings is in effect. Note that `tz_minuteswest` is a positive number if the local time is *behind* UTC and a negative number if the local time is *ahead* of UTC.
-<pre>
+
+```c
 struct os_timezone {
     int16_t tz_minuteswest;
     int16_t tz_dsttime;
@@ -40,7 +42,7 @@ struct os_timezone PDT = { 480, 1 };
 
 /* Indian Standard Time is 05:30 hours east of UTC */
 struct os_timezone IST = { -330, 0 };
-</pre>
+```
 
 ## List of Functions
 

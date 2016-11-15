@@ -8,7 +8,7 @@ void os_time_delay(int32_t ticks)
 
 | Arguments | Description |
 |-----------|-------------|
-| ticks |  Number of ticks to delay. Less than or equal to zero means no delay  |
+| `ticks` |  Number of ticks to delay. Less than or equal to zero means no delay  |
 
 #### Returned values
 

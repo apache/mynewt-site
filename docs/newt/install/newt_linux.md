@@ -13,11 +13,13 @@ If you want to build the *newt* tool from its source code, follow the following 
         $ sudo apt-get install libcurl4-gnutls-dev 
 ```
 
+**NOTE:** On 64-bit host, you may also need to install gcc-multilib, if you encounter compilation errors related to 'sys/cdefs.h'
+
 <br>
 
 #### 2. Install Go, the programming language
 
-* Go language environment dictates a directory structure. Known in Go parlanace as workspace, it must contain three sibling directories with the directory names src, pkg and bin, as explained below. 
+* Go language environment dictates a directory structure. Known in Go parlance as a workspace, it must contain three sibling directories with the directory names src, pkg and bin, as explained below. 
 
     * src contains Go source files organized into packages (one package per directory),
 

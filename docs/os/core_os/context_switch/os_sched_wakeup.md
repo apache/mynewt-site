@@ -12,7 +12,7 @@ Called to make task *ready to run*. If task is *sleeping*, it is woken up.
 
 | Arguments | Description |
 |-----------|-------------|
-| t | Pointer to task |
+| `t` | Pointer to task |
 
 #### Returned values
 

@@ -12,8 +12,8 @@ Removes an event which has been placed in a queue.
 
 | Arguments | Description |
 |-----------|-------------|
-| evq |  Queue where event is being removed from |
-| ev |  Event which is being removed  |
+| `evq` |  Queue where event is being removed from |
+| `ev` |  Event which is being removed  |
 
 
 #### Returned values
@@ -26,7 +26,7 @@ N/A
 #### Example
 
 <Add text to set up the context for the example here>
-This is from os_callout_stop(). User wants to stop a callout from getting passed to a task. If the event has already been queued, then remove it before it is seen.
+This is from `os_callout_stop()`. User wants to stop a callout from getting passed to a task. If the event has already been queued, then remove it before it is seen.
 
 ```c
     if (c->c_evq) {
