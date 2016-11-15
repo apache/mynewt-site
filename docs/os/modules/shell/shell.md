@@ -1,20 +1,16 @@
 # Shell
 
-The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing 
-[newtmgr](../../../newtmgr/overview.md) line protocol over serial line. Shell runs in its own task.
+The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing newtmgr line protocol over serial line. Shell runs on its own task.
 
 ###Description
 
-* Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string 
-and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.
+* Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.
 
-    * Subsystems register their command handlers using `shell_cmd_register()`. When shell calls the command handler, it passes the other tokens as arguments.
+    Subsystems register their command handlers using `shell_cmd_register()`. When shell calls the command handler, it passes the other tokens as arguments.
 
-    * A few commands are currently available in the shell - `tasks`, `log`, `echo`, `date` and `prompt`.
+    A few commands are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
 
-* Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. 
-Protocol handler (libs/newtmgr) registers itself using `shell_nlip_input_register()`, and shell calls the registered 
-handler for every frame. Outgoing frames for the protocol are sent using `shell_nlip_output()`.
+* Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using `shell_nlip_input_register()`, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using `shell_nlip_output()`.
 
 <br>
 
@@ -85,12 +81,8 @@ tasks
 217953:  os_sanity (prio: 254, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
 218010:  task2 (prio: 2, nw: 217709, flags: 0x3, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
 
-
-prompt
-Usage: prompt [set|show] [prompt_char]
-prompt set >
-Prompt set to: >
-229370: >
+stat stat
+229881:s0: 1
 
 ```
 
@@ -99,7 +91,7 @@ Prompt set to: >
 
 This data structure is used in holding information about registered command handlers.
 
-```c
+```no-highlight
 struct shell_cmd {
     char *sc_cmd;
     shell_cmd_func_t sc_cmd_func;
@@ -109,9 +101,9 @@ struct shell_cmd {
 
 | Element | Description |
 |---------|-------------|
-| `sc_cmd` | Character string of the command |
-| `sc_cmd_func` | Pointer to the command handler |
-| `sc_next` | Bookkeeping linkage internal for shell |
+| sc_cmd | Character string of the command |
+| sc_cmd_func | Pointer to the command handler |
+| sc_next | Bookkeeping linkage internal for shell |
 
 ###List of Functions
 

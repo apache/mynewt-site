@@ -12,13 +12,13 @@ Duplicate a chain of mbufs.  Return the start of the duplicated chain.
 
 | Arguments | Description |
 |-----------|-------------|
-| `om` |  Pointer to mbuf chain to duplicate |
+| om |  Pointer to mbuf chain to duplicate |
 
 <br>
 
 #### Returned values
 
-Pointer to the duplicated chain or **NULL** if not enough mbufs were available to duplicate the chain.
+Pointer to the duplicated chain or NULL if not enough mbufs were available to duplicate the chain.
 
 <br>
 

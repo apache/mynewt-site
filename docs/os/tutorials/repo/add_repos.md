@@ -105,7 +105,7 @@ after `github.com` in the repo path.  Consider the repository
 
 * **repo** -- The name of the repo.  On github, this is the name after
 the username described above.  Consider the repository 
-`https://github.com/apache/incubator-mynewt-core`. It has path 
+`https://github.com/apache/incubator-mynewt-core`. It has username 
 `incubator-mynewt-core`.  This is a path to the source control
 and should not be confused with the name of the repo that you used in the 
 `repository.<name>` declaration above.   That name is contained elsewhere
@@ -182,15 +182,9 @@ Here is the `repository.yml` file from the apache-Mynewt-core:
 ```no-highlight
 repo.name: apache-mynewt-core
 repo.versions:
-    "0.0.0": "develop"
-    "0.7.9": "mynewt_0_8_0_b2_tag"
-    "0.8.0": "mynewt_0_8_0_tag"
-    "0.9.0": "mynewt_0_9_0_tag"
-    "0.9.1": "master"
-    "0-latest": "0.9.0"
-    "0-dev": "0.9.1"
-    "0.8-latest": "0.8.0"
-    "0.9-latest": "0.9.0"
+    "0.7.9": "Mynewt_0_8_0_b2_tag"
+    "0-latest": "0.7.9"
+    "0.8-latest": "0.7.9"
 ```
 
 <br>

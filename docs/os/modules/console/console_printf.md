@@ -1,21 +1,19 @@
 ## <font color="F2853F" style="font-size:24pt"> console_printf</font>
 
-```c
-void console_printf(const char *fmt, ...)
+```no-highlight
+    void
+    console_printf(const char *fmt, ...)
 ```
 
-Writes a formatted message instead of raw output to the console. It first composes a C string containing 
-the text specified as arguments to the function or containing the elements in the variable argument list 
-passed to it using `snprintf` or `vsnprintf`, respectively. It then uses the function `console_write` to 
-output the formatted data (messages) on the console.
+Writes a formatted message instead of raw output to the console. It first composes a C string containing text specified as arguments to the function or containing the elements in the variable argument list passed to it using snprintf or vsnprintf, respectively. It then uses function `console_write` to output the formatted data (messages) on the console.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `fmt` |  Pointer to C string that contains a format string that follows the same specifications as format in printf. The string is printed to console.          |
-| ... | Depending on the format string, the function may expect either a sequence of additional arguments to be used to replace a format specifier in the format string or a variable arguments list. `va_list` is a special type defined in <cstdarg> in `stdarg.h`. |
+| fmt |  Pointer to C string that contains a format string that follows the same specifications as format in printf. The string is printed to console.          |
+| ... | Depending on the format string, the function may expect either a sequence of additional arguments to be used to replace a format specifier in the format string or a variable arguments list. va_list is a special type defined in <cstdarg> in stdarg.h. |
 
 #### Returned values
 
@@ -23,14 +21,12 @@ None
 
 #### Notes
 
-While `console_printf`, with its well understood formatting options in C, is more convenient and easy on the 
-eyes than the raw output of `console_write`, the associated code size is considerably larger.
+While `console_printf`, with its well understood formatting options in C, is more convenient and easy on the eyes than the raw output of `console_write`, the associated code size is considerably larger.
 
 #### Example
-        
 Example #1:
 
-```c
+```no-highlight
 char adv_data_buf[32];
 
 void
@@ -44,7 +40,7 @@ task()
 
 Example #2:
 
-```c
+```no-highlight
 struct exception_frame {
     uint32_t r0;
     uint32_t r1;

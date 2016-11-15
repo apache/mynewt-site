@@ -12,7 +12,7 @@ Macro used to get a pointer to the mbuf given a pointer to the os mbuf packet he
 
 | Arguments | Description |
 |-----------|-------------|
-| `__hdr` |  Pointer to os mbuf packet header (struct os_mbuf_pkthdr *)  |
+| __hdr |  Pointer to os mbuf packet header (struct os_mbuf_pkthdr *)  |
 
 <br>
 

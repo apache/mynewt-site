@@ -1,20 +1,32 @@
 ## BLE Introduction
 
-Apache Mynewt offers the world's first fully open-source Bluetooth Low Energy (BLE) or Bluetooth Smart stack fully compliant with BLE 4.2 specifications. It is called NimBLE. 
+Apache Mynewt offers the world's first fully open-source Bluetooth Low Energy (BLE) or Bluetooth Smart stack. It is called NimBLE. 
 
 BLE technology operates in the unlicensed industrial, scientific and medical (ISM) band at 2.4 to 2.485 GHz which is available in most countries. It uses a spread spectrum, frequency hopping, full-duplex signal. BLE FHSS employs 40 2-MHz-wide channels to ensure greater reliability over longer distances. It also features 0-dBm (1 mW) power output and a typical maximum range of 50 meters. Note that BLE is not compatible with standard Bluetooth.
 
 <br>
 
-### Feature Support
+### Features
 
 NimBLE complies with Bluetooth Core Specification 4.2 which introduces several new features that make it an ideal wireless technology for the Internet of Things (IoT).
 
-* LE Privacy 1.2 for frequent changes to the device address to make it difficult to track for outsiders
-* LE Secure Connections featuring FIPS-compliant algorithms.
-* LE Data Length Extension for higher throughput
-* **Coming Soon**: Assigning an Internet Protocol (IP) address (complaint with the IPv6 or 6LoWPAN standard) to a Bluetooth device through Internet Protocol Support Profile (IPSP)
+* LE Privacy 1.2 for frequent changes to the device address to make it difficult to track for outsiders **Roadmap**
+* LE Secure Connections featuring FIPS-compliant algorithms. **Roadmap**
+* LE Data Length Extension for higher throughput **Available now**
+* Enables users to assign an Internet Protocol (IP) address (complaint with the IPv6 or 6LoWPAN standard) to a Bluetooth device through Internet Protocol Support Profile (IPSP) **Roadmap**
 
+NimBLE supports features from older specifications including,
+
+* Support multiple roles (master(central)/slave(peripheral), server/client) simultaneously
+* Support simultaneous advertising and scanning
+* Support being slave to multiple masters simultaneously (subject to memory and scheduling constraints)
+* Low Duty Cycle Directed Advertising
+* Connection parameters request procedure
+* LE Ping
+* 32 bits UUID
+* L2CAP Connection Oriented Channels
+<br>
+
 ### Components
 
 A Bluetooth low energy stack (NimBLE included) consists of two components with several subcomponents:* **Controller**    * **Physical Layer**: adaptive frequency-hopping Gaussian Frequency Shift Keying (GFSK) radio using 40 RF channels (0-39), with 2 MHz spacing.    * **Link Layer**: with one of five states (Standby, Advertising, Scanning, Initiating, Connection states) active at any time    * **Host**    * **Logical Link Control and Adaptation Protocol (L2CAP)**: provides logical channels, named L2CAP channels, which are multiplexed over one or more logical links to provide packet segmentation and reassembly, flow control, error control, streaming, QoS etc.     * **Security Manager (SM)**: uses Security Manager Protocol (SMP) for pairing and transport specific key distribution for securing radio communication     * **Attribute protocol (ATT)**: allows a device (*Server*) to expose certain pieces of data, known as *Attributes*, to another device (*Client*)
@@ -28,22 +40,9 @@ Subsequent chapters in this manual will go into the details of the implementatio
 
 ### Example NimBLE projects
 
-Mynewt comes with several built-in projects or applications using NimBLE. These allow users to try out NimBLE, understand how to use available services, and build their own applications using one or more of the examples as seed.
+Mynewt comes with two built-in projects that allow users to play with NimBLE, try the tutorials out with, and see how to use available services.
 
-1. **bletiny** : A simple shell application which provides a basic interface to the host-side of the BLE stack. Supported operations include GAP, GATT, and L2CAP.
-
+1. **bletiny** : A simple shell application which provides a basic interface to the host-side of the BLE stack. 
 2. **bleprph**: A basic peripheral device with no user interface. It advertises automatically on startup, and resumes advertising whenever a connection is terminated. It supports a maximum of one connection.
-
-3. **blecent**: A basic central device with no user interface.  This application scans for a peripheral that supports the alert notification service (ANS).  Upon discovering such a peripheral, blecent connects and performs the following actions:
-
-    * Reads the ANS Supported New Alert Category characteristic.
-    * Writes the ANS Alert Notification Control Point characteristic.
-    * Subscribes to notifications for the ANS Unread Alert Status characteristic.
-
-
-4. **blehci**: Implements a BLE controller-only application.  A separate host-only implementation, such as Linux's BlueZ, can interface with this application via HCI over UART.
-
-5. **bleuart**:  Implements a simple BLE peripheral that supports the Nordic
-[UART / Serial Port Emulation service](https://developer.nordicsemi.com/nRF5_SDK/nRF51_SDK_v8.x.x/doc/8.0.0/s110/html/a00072.html)
 
 <br>

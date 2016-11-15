@@ -12,12 +12,12 @@ Fetches the first event from a queue. Task will sleep until something gets queue
 
 | Arguments | Description |
 |-----------|-------------|
-| `evq` |  Queue to wait on  |
+| evq |  Queue to wait on  |
 
 
 #### Returned values
 
-Will return with a pointer to first `struct event` which is in the queue.
+Will return with a pointer to first *struct event* which is in the queue.
 
 #### Notes 
 

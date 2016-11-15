@@ -7,19 +7,19 @@ Scheduler's job is to maintain the list of tasks and decide which one should be 
 
 Task states can be *running*, *ready to run* or *sleeping*.
 
-When a task is *running*, the CPU is executing in that task's context. The program counter (PC) is pointing to instructions that task wants to execute and the stack pointer (SP) is pointing to that task's stack.
+When task is *running*, CPU is executing in that task's context. The program counter (PC) is pointing to instructions task wants to execute and stack pointer (SP) is pointing to task's stack.
 
-A task which is *ready to run* wants to get on the CPU to do its work.
+Task which is *ready to run* wants to get on the CPU to do its work.
 
-A task which is *sleeping* has no more work to do. It's waiting for someone or something else to wake it up.
+Task which is *sleeping* has no more work to do. It's waiting for someone else to wake it up.
 
-The Scheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's `t_prio` field), and make its state *running*.
+Scheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's t_prio field), and make its state *running*.
 
-Tasks which are either *running* or *ready to run* are kept in a linked list `g_os_run_list`. This list is ordered by priority.
+Tasks which are either *running* or *ready to run* are kept in linked list `g_os_run_list`. This list is ordered by priority.
 
-Tasks which are *sleeping* are kept in a linked list `g_os_sleep_list`.
+Tasks which are *sleeping* are kept in linked list `g_os_sleep_list`.
 
-The scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be *running*. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently *running* task is stored and the new task is swapped in.
+Scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be *running*. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently *running* task is stored and the new task is swapped in.
 
 
 ## List of Functions
@@ -30,10 +30,10 @@ The functions available in context_switch are:
 | **Function** | **Description** |
 |-----------|-------------|
 | [os_sched](os_sched.md) | Performs context switch if needed. |
-| [os_arch_ctx_sw](os_arch_ctx_sw.md) | Change the state of a given task to *running*. |
+| [os_arch_ctx_sw](os_arch_ctx_sw.md) | Change the state of task given task to *running*. |
 | [os_sched_ctx_sw_hook](os_sched_ctx_sw_hook.md) | Performs task accounting when context switching. |
-| [os_sched_get_current_task](os_sched_get_current_task.md) | Returns the pointer to the task which is currently *running*. |
-| [os_sched_insert](os_sched_insert.md) | Insert a task into scheduler's *ready to run* list. |
+| [os_sched_get_current_task](os_sched_get_current_task.md) | Returns the pointer to task which is currently *running*. |
+| [os_sched_insert](os_sched_insert.md) | Insert task into scheduler's ready to run list. |
 | [os_sched_next_task](os_sched_next_task.md) | Returns the pointer to highest priority task from the list which are *ready to run*. |
 | [os_sched_os_timer_exp](os_sched_os_timer_exp.md) | Inform scheduler that OS time has moved forward. |
 | [os_sched_resort](os_sched_resort.md) | Inform scheduler that the priority of the given task has changed and the *ready to run* list should be re-sorted. |

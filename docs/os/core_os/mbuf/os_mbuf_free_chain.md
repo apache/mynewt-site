@@ -12,7 +12,7 @@ Frees a chain of mbufs
 
 | Arguments | Description |
 |-----------|-------------|
-| `om` | Pointer to mbuf chain |
+| om | Pointer to mbuf chain |
 
 <br>
 
