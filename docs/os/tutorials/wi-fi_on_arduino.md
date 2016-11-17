@@ -15,7 +15,7 @@ You will need the following equipment
 
 * An Arduino Zero, Zero Pro or M0 Pro.  
 **Note:** Mynewt has not been tested on Arduino M0 which has no internal debugger support.
-* An Arduino Wi-Fi Shield 101
+* An [Arduino Wi-Fi Shield 101](https://www.adafruit.com/product/2891)
 * A computer that can connect to the Arduino board over USB
 * A local Wi-Fi network that the computer is connected to and which the Arduino board can join.
 * A USB cable (Type A to micro B) that can connect the computer to the Arduino (or a USB hub between the computer and the Arduino board)
