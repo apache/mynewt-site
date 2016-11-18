@@ -442,9 +442,15 @@
                         
                             <h1 id="core-os-lesson-tasks-and-priority-management">Core OS Lesson: Tasks and Priority Management</h1>
 <p><strong>Target Platform: Arduino M0 Pro</strong> (or legacy Arduino Zero or Zero Pro, but not Arduino M0)</p>
-<p>This lesson is designed to teach core OS concepts and strategies encountered when building applications using Mynewt. Specifically, this lesson will cover tasks, simple multitasking, and priority management running on an Arduino M0 Pro.</p>
+<p>This lesson is designed to teach core OS concepts and strategies encountered when 
+building applications using Mynewt. Specifically, this lesson will cover tasks, 
+simple multitasking, and priority management running on an Arduino M0 Pro.</p>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>Before starting, you should read about Mynewt in the <a href="http://mynewt.apache.org/os/introduction/"><em>Introduction</em></a> section and complete the <a href="http://mynewt.apache.org/os/get_started/get_started/"><em>QuickStart</em></a> guide and the <a href="http://mynewt.apache.org/os/tutorials/arduino_zero/"><em>Blinky</em></a> tutorial. Furthermore, it may be helpful to take a peek at the <a href="http://mynewt.apache.org/os/core_os/task/task/"><em>task documentation</em></a> for additional insights.</p>
+<p>Before starting, you should read about Mynewt in the <a href="http://mynewt.apache.org/os/introduction/"><em>Introduction</em></a> 
+section and complete the <a href="http://mynewt.apache.org/os/get_started/get_started/"><em>QuickStart</em></a> 
+guide and the <a href="http://mynewt.apache.org/os/tutorials/arduino_zero/"><em>Blinky</em></a> tutorial. 
+Furthermore, it may be helpful to take a peek at the <a href="http://mynewt.apache.org/os/core_os/task/task/"><em>task documentation</em></a> 
+for additional insights.</p>
 <h2 id="equipment">Equipment</h2>
 <p>You will need the following equipment:</p>
 <ul>
@@ -453,17 +459,28 @@
 <li>USB to Micro USB Cable</li>
 </ul>
 <h2 id="build-your-application">Build Your Application</h2>
-<p>To save time, we will simply modify the Blinky app as it has the basic task structure already implemented. Follow the <a href="http://mynewt.apache.org/os/tutorials/arduino_zero/"><em>Arduino Zero Blinky tutorial</em></a> to create a new project and build your bootloader and application. Finally, build and load the application to your Arduino to verify that everything is in order. Now let’s get started!</p>
+<p>To save time, we will simply modify the Blinky app. We'll add the Task Management code to
+the Blinky app. Follow the <a href="http://mynewt.apache.org/os/tutorials/arduino_zero/"><em>Arduino Zero Blinky tutorial</em></a> 
+to create a new project and build your bootloader and application. Finally, build and 
+load the application to your Arduino to verify that everything is in order. Now let’s get started!</p>
 <h2 id="create-a-new-task">Create a New Task</h2>
-<p>The purpose of this section is to give an introduction to the important aspects of tasks and how to properly initialize them. First, let’s define a second task called <code>work_task</code> in main.c (located in apps/blinky/src):</p>
+<p>The purpose of this section is to give an introduction to the important aspects of tasks 
+and how to properly initialize them. First, let’s define a second task called <code>work_task</code> 
+in main.c (located in apps/blinky/src):</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">work_task</span>;
 </pre></div>
 
 
-<p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a>  struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two main elements, a task function (also known as a task handler) and a task stack.</p>
+<p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a><br />
+struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two 
+main elements, a task function (also known as a task handler) and a task stack.</p>
 <p>Next, let’s take a look at what is required to initialize our new task.</p>
 <h3 id="task-stack">Task Stack</h3>
-<p>The task stack is an array of type <code>os_stack_t</code> which holds the program stack frames. Mynewt gives us the ability to set the stack size for a task giving the application developer room to optimize memory usage. Since we’re not short on memory, our <code>blinky_stack</code> and <code>work_stack</code> are plenty large for the purpose of this lesson. Notice that the elements in our task stack are of type <code>os_stack_t</code> which are generally 32 bits, making our entire stack 1024 Bytes.</p>
+<p>The task stack is an array of type <code>os_stack_t</code> which holds the program stack frames. Mynewt gives 
+us the ability to set the stack size for a task giving the application developer room to optimize 
+memory usage. Since we’re not short on memory, our <code>blinky_stack</code> and <code>work_stack</code> are plenty large 
+for the purpose of this lesson. Notice that the elements in our task stack are of type <code>os_stack_t</code> 
+which are generally 32 bits, making our entire stack 1024 Bytes.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #633820">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
   <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">work_stack</span>[<span style="color: #000000">WORK_STACK_SIZE</span>];
 </pre></div>
@@ -471,7 +488,10 @@
 
 <p>Note: The <code>OS_STACK_ALIGN</code> macro is used to align the stack based on the hardware architecture.</p>
 <h3 id="task-function">Task Function</h3>
-<p>The task function is essentially an infinite loop which waits for some “event” to wake it up. In our Blinky app the task function, named <code>blinky_task_handler()</code>, is initially called when we call <code>os_start()</code> in <code>main()</code>. In general, the task function is where the majority of work is done by a task. Let’s write a task function for <code>work_task</code> called <code>work_task_handler()</code>:</p>
+<p>The task function is essentially an infinite loop which waits for some “event” to wake it up. In our 
+Blinky app the task function, named <code>blinky_task_handler()</code>, is initially called when we call <code>os_start()</code> 
+in <code>main()</code>. In general, the task function is where the majority of work is done by a task. Let’s write 
+a task function for <code>work_task</code> called <code>work_task_handler()</code>:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
 <span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
@@ -489,16 +509,23 @@
 </pre></div>
 
 
-<p>The task function is called when the task is initially put into the <em>running</em> state by the scheduler. We use an infinite loop to ensure that the task function never returns. Our assertion that the current task's handler is the same as our task handler is for illustration purposes only and does not need to be in most task functions.</p>
+<p>The task function is called when the task is initially put into the <em>running</em> state by the scheduler. 
+We use an infinite loop to ensure that the task function never returns. Our assertion that the current 
+task's handler is the same as our task handler is for illustration purposes only and does not need to 
+be in most task functions.</p>
 <h3 id="task-priority">Task Priority</h3>
-<p>As a preemptive, multitasking RTOS, Mynewt decides which tasks to run based on which has a higher priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we must choose a priority defined as a macro variable.</p>
+<p>As a preemptive, multitasking RTOS, Mynewt decides which tasks to run based on which has a higher 
+priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we 
+must choose a priority defined as a macro variable.</p>
 <p>Let’s set the priority of <code>work_task</code> to 0, because everyone knows that work is more important than blinking.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #633820">#define WORK_TASK_PRIO (0)</span>
 </pre></div>
 
 
 <h3 id="initialization">Initialization</h3>
-<p>To initialize a new task we use <a href="http://mynewt.apache.org/os/core_os/task/os_task_init/"><em>os_task_init()</em></a> which takes a number of arguments including our new task function, stack, and priority. Much like <code>blinky_task</code>, we’re going to initialize <code>work_task</code> inside <code>init_tasks</code> to keep our main function clean.</p>
+<p>To initialize a new task we use <a href="http://mynewt.apache.org/os/core_os/task/os_task_init/"><em>os_task_init()</em></a> 
+which takes a number of arguments including our new task function, stack, and priority. Much like <code>blinky_task</code>, 
+we’re going to initialize <code>work_task</code> inside <code>init_tasks</code> to keep our main function clean.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
 <span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
@@ -551,8 +578,15 @@
 
 
 <h2 id="task-priority-preempting-and-context-switching">Task Priority, Preempting, and Context Switching</h2>
-<p>A preemptive RTOS is one in which a higher priority task that is <em>ready to run</em> will preempt (i.e. take the place of) the lower priority task which is <em>running</em>. When a lower priority task is preempted by a higher priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new task is switched in.</p>
-<p>In our example, <code>work_task</code> has a higher priority than <code>blinky_task</code> and, because it is never put into a <em>sleep</em> state, holds the processor focus on its context. Let’s give <code>work_task</code> a delay and some simulated work to keep it busy. Because the delay is measured in os ticks, the actual number of ticks per second is dependent on the board. Therefore, we multiply <code>OS_TICKS_PER_SEC</code>, which is defined in the MCU, by the number of seconds we wish to delay.</p>
+<p>A preemptive RTOS is one in which a higher priority task that is <em>ready to run</em> will preempt (i.e. take the 
+place of) the lower priority task which is <em>running</em>. When a lower priority task is preempted by a higher 
+priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new 
+task is switched in.</p>
+<p>In our example, <code>work_task</code> has a higher priority than <code>blinky_task</code> and, because it is never put into a 
+<em>sleep</em> state, holds the processor focus on its context. Let’s give <code>work_task</code> a delay and some simulated 
+work to keep it busy. Because the delay is measured in os ticks, the actual number of ticks per second is 
+dependent on the board. Therefore, we multiply <code>OS_TICKS_PER_SEC</code>, which is defined in the MCU, by the 
+number of seconds we wish to delay.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
 <span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
@@ -581,17 +615,28 @@
 </pre></div>
 
 
-<p>Before we run the app, let’s predict the behavior. With the newest additions to <code>work_task_handler()</code>, our first action will be to sleep for three seconds. This will allow <code>blinky_task</code> to take over the CPU and blink to its heart’s content. After three seconds, <code>work_task</code> will wake up and be made <em>ready to run</em>, causing it to preempt <code>blinky_task</code>. The LED will then remain lit for a short period while <code>work_task</code> loops, then blink again for another three seconds while <code>work_task</code> sleeps. </p>
+<p>Before we run the app, let’s predict the behavior. With the newest additions to <code>work_task_handler()</code>, 
+our first action will be to sleep for three seconds. This will allow <code>blinky_task</code> to take over the CPU 
+and blink to its heart’s content. After three seconds, <code>work_task</code> will wake up and be made <em>ready to run</em>, 
+causing it to preempt <code>blinky_task</code>. The LED will then remain lit for a short period while <code>work_task</code> 
+loops, then blink again for another three seconds while <code>work_task</code> sleeps. </p>
 <p>Voila, you should see that our prediction was correct! </p>
 <h3 id="priority-management-considerations">Priority Management Considerations</h3>
-<p>When projects grow in scope, from blinking LEDs into more sophisticated applications, the number of tasks needed increases alongside complexity. It remains important, then, that each of our tasks is capable of doing its work within a reasonable amount of time.</p>
-<p>Some tasks, such as the Shell task, execute quickly and require almost instantaneous response. Therefore, the Shell task should be given a high priority. On the other hand, tasks which may be communicating over a network, or processing data, should be given a low priority in order to not hog the CPU.</p>
-<p>The diagram below showcases the different scheduling patterns we. would expect from swapping blinky and work tasks priorities.</p>
+<p>When projects grow in scope, from blinking LEDs into more sophisticated applications, the number of 
+tasks needed increases alongside complexity. It remains important, then, that each of our tasks is 
+capable of doing its work within a reasonable amount of time.</p>
+<p>Some tasks, such as the Shell task, execute quickly and require almost instantaneous response. Therefore, 
+the Shell task should be given a high priority. On the other hand, tasks which may be communicating over 
+a network, or processing data, should be given a low priority in order to not hog the CPU.</p>
+<p>The diagram below showcases the different scheduling patterns we. would expect from swapping blinky and 
+work tasks priorities.</p>
 <p><img alt="Task Scheduling" src="../pics/task_lesson.png" /></p>
-<p>In the second case where <code>blinky_task</code> has a higher priority, the “work” done by <code>work_task</code> would be executed during the millisecond delays in <code>blinky_task</code>, saving us idle time compared to the first case.</p>
+<p>In the second case where <code>blinky_task</code> has a higher priority, the “work” done by <code>work_task</code> would be 
+executed during the millisecond delays in <code>blinky_task</code>, saving us idle time compared to the first case.</p>
 <p><strong>Note:</strong> Defining the same priority for two tasks leads to somewhat undefined behavior and should be avoided.</p>
 <h2 id="comparing-priority-strategies">Comparing Priority Strategies</h2>
-<p>Instead of stepping through a bunch of changes to our blinky app, clone my task lesson application from github and copy an existing target.</p>
+<p>Instead of stepping through a bunch of changes to our blinky app, clone my task lesson application from 
+github and copy an existing target.</p>
 <p>Change directory into apps and clone the repository to get our new
 files:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd apps
@@ -609,28 +654,38 @@ $ git clone https://github.com/bgiori/mynewt_tasks_lesson.git
 </pre></div>
 
 
-<p>Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead choosing to use the <a href="http://mynewt.apache.org/latest/os/modules/console/console/"><em>console</em></a> and <a href="http://mynewt.apache.org/latest/os/modules/shell/shell/"><em>shell</em></a> to follow our tasks through execution.</p>
+<p>Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead choosing t
+o use the <a href="http://mynewt.apache.org/latest/os/modules/console/console/"><em>console</em></a> and <a href="http://mynewt.apache.org/latest/os/modules/shell/shell/"><em>shell</em></a> 
+to follow our tasks through execution.</p>
 <p>Additionally, we have a number of different tasks:</p>
 <ul>
 <li>
 <p><strong>Task A</strong> (<code>a_task</code>):</p>
 <ul>
 <li><strong>Priority</strong>: 3 → 2</li>
-<li><strong>Description</strong>: Task A is supposed to represent a task which frequently does a small amount of work, such as one which rapidly polls a sensor for data. Much like <code>blinky_task</code>, Task A will loop 10,000 times then wait 1 millisecond. Priority is changed by <code>timer_task</code> after the first simulation.</li>
+<li><strong>Description</strong>: Task A is supposed to represent a task which frequently does a small amount 
+of work, such as one which rapidly polls a sensor for data. Much like <code>blinky_task</code>, Task A will 
+loop 10,000 times then wait 1 millisecond. Priority is changed by <code>timer_task</code> after the first simulation.</li>
 </ul>
 </li>
 <li>
 <p><strong>Task B</strong> (<code>b_task</code>):</p>
 <ul>
 <li><strong>Priority</strong>: 2 → 3</li>
-<li><strong>Description</strong>: Task B is supposed to represent a task which does a large amount of work relatively infrequently, such as one which sends/receives data from the cloud. Like work_task, Task B will loop 1,000,000 times then wait 3 seconds. Priority is changed by timer_task after the first simulation.</li>
+<li><strong>Description</strong>: Task B is supposed to represent a task which does a large amount of work 
+relatively infrequently, such as one which sends/receives data from the cloud. Like work_task, 
+Task B will loop 1,000,000 times then wait 3 seconds. Priority is changed by timer_task after 
+the first simulation.</li>
 </ul>
 </li>
 <li>
 <p><strong>Timer Task</strong> (<code>timer_task</code>):</p>
 <ul>
 <li><strong>Priority</strong>: 1</li>
-<li><strong>Description</strong>: With default settings, Timer Task will wait 20 seconds then print the first simulations data for Task A and B. Timer task will then swap A and B’s priorities and restart the simulation. After the second simulation, timer will again print simulation data then compare the two and calculate a final speedup (simulation2 / simulation1).</li>
+<li><strong>Description</strong>: With default settings, Timer Task will wait 20 seconds then print the first 
+simulations data for Task A and B. Timer task will then swap A and B’s priorities and restart the 
+simulation. After the second simulation, timer will again print simulation data then compare the 
+two and calculate a final speedup (simulation2 / simulation1).</li>
 </ul>
 </li>
 <li>
@@ -642,7 +697,9 @@ $ git clone https://github.com/bgiori/mynewt_tasks_lesson.git
 </li>
 </ul>
 <h3 id="connecting-to-the-serial-console">Connecting to the Serial Console</h3>
-<p>Before running our new app, we must first connect to the serial console. First make sure the mynewt_arduino_zero repository is set to the develop branch. (Remove once changes have been moved to master). </p>
+<p>Before running our new app, we must first connect to the serial console. First make sure the 
+mynewt_arduino_zero repository is set to the develop branch. (Remove once changes have been 
+moved to master). </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd repos/mynewt_arduino_zero
 $ git checkout develop
 </pre></div>
@@ -655,7 +712,8 @@ $ git checkout develop
 </pre></div>
 
 
-<p>In the same window, connect to the serial port using a serial communication program. In this case I’ll be using mincom as it can scroll through output.</p>
+<p>In the same window, connect to the serial port using a serial communication program. 
+In this case I’ll be using mincom as it can scroll through output.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">$</span> <span style="color: #000000">minicom</span> <span style="color: #000000">-D</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">usbmodem14132</span> <span style="color: #000000">-b</span> <span style="color: #1C01CE">115200</span>
 </pre></div>
 
@@ -726,16 +784,49 @@ $ git checkout develop
 </pre></div>
 
 
-<p>The console output reaffirms our previous prediction and makes both the scheduling differences and subsequent efficiency boost far more apparent. Let’s take a look at scheduling differences before we delve into efficiency.</p>
-<p>In the first case, where Task B’s priority is higher than that of Task A, we see A get starved by Task B’s long execution time. <strong>Starvation</strong> occurs when one task hogs the processor, essentially “starving” other tasks which also need to run. At the end of the first 20 second simulation period, Task A has only run for 1.4 seconds compared to task B’s 17 second running time – ouch. As explained before, processes which are expected to run for long periods of time (e.g. network communication, data processing) should be given higher priorities in order to combat starvation.</p>
-<p>In the second simulation with priorities swapped, we can see Task B only running during the millisecond delays when Task A is <em>sleeping</em>. Although having Task B only run during these delays slows its execution time, we benefit from un-starving Task A and using the processor at a higher efficiency.</p>
-<p>The bottom line speedup gives us an immediate and clear indication that we have improved our ability to process work (i.e throughput). In our second run, we processed an additional 400,000 loop iterations, equating to a 26% increase in efficiency. On a standard multi-core processor found in every modern PC, a 1.26 speedup would be an ok result to adding multithreading capabilities to a serial program. However, we accomplished this by simply setting priorities on a single core processor – not bad!</p>
-<p>NOTE: Usually the the term “speedup” is used within a parallel programming context and refers to the change in execution time between a serial and parallel program executing over the same problem. In this case we’re using the term loosely to illustrate the priority change’s effect on scheduling and throughput in our specific context.</p>
+<p>The console output reaffirms our previous prediction and makes both the scheduling differences 
+and subsequent efficiency boost far more apparent. Let’s take a look at scheduling differences 
+before we delve into efficiency.</p>
+<p>In the first case, where Task B’s priority is higher than that of Task A, we see A get starved 
+by Task B’s long execution time. <strong>Starvation</strong> occurs when one task hogs the processor, essentially 
+“starving” other tasks which also need to run. At the end of the first 20 second simulation period, 
+Task A has only run for 1.4 seconds compared to task B’s 17 second running time – ouch. As explained 
+before, processes which are expected to run for long periods of time (e.g. network communication, 
+data processing) should be given higher priorities in order to combat starvation.</p>
+<p>In the second simulation with priorities swapped, we can see Task B only running during the 
+millisecond delays when Task A is <em>sleeping</em>. Although having Task B only run during these 
+delays slows its execution time, we benefit from un-starving Task A and using the processor 
+at a higher efficiency.</p>
+<p>The bottom line speedup gives us an immediate and clear indication that we have improved our 
+ability to process work (i.e throughput). In our second run, we processed an additional 400,000 
+loop iterations, equating to a 26% increase in efficiency. On a standard multi-core processor 
+found in every modern PC, a 1.26 speedup would be an ok result to adding multithreading capabilities 
+to a serial program. However, we accomplished this by simply setting priorities on a single core 
+processor – not bad!</p>
+<p>NOTE: Usually the the term “speedup” is used within a parallel programming context and refers 
+to the change in execution time between a serial and parallel program executing over the same 
+problem. In this case we’re using the term loosely to illustrate the priority change’s effect 
+on scheduling and throughput in our specific context.</p>
 <h3 id="efficiency-isnt-everything">Efficiency Isn’t Everything</h3>
-<p>Using the processor during every OS tick isn’t always the best course of action. If we modify Task A’s delay to a tenth of a millisecond and turn off the console output, we can boost our speedup to 1.44. This, however, reduces our ability to process work from Task B who ends up only completing 18% of its work cycle after the second simulation. That would mean, at that rate, Task B would take over a minute to finish one cycle.</p>
+<p>Using the processor during every OS tick isn’t always the best course of action. If we modify 
+Task A’s delay to a tenth of a millisecond and turn off the console output, we can boost our 
+speedup to 1.44. This, however, reduces our ability to process work from Task B who ends up 
+only completing 18% of its work cycle after the second simulation. That would mean, at that 
+rate, Task B would take over a minute to finish one cycle.</p>
 <p>Feel free to play around with the testing parameters to study the different changes yourself!</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Moving forward, tasks are just the tip of the iceberg. The <a href="http://mynewt.apache.org/latest/os/core_os/context_switch/context_switch/"><em>scheduler</em></a>, <a href="http://mynewt.apache.org/latest/os/core_os/event_queue/event_queue/"><em>event queues</em></a>, <a href="http://mynewt.apache.org/latest/os/core_os/semaphore/semaphore/"><em>semaphores</em></a>, and <a href="http://mynewt.apache.org/latest/os/core_os/mutex/mutex/"><em>mutexes</em></a> also add to tasks functionality, increasing our ability as the developer to control greater numbers of tasks more intricately. For example, when we switch the tasks priority, we have to tell the scheduler that our tasks priorities have changed, allowing us us to use priorities dynamically. When running multiple tasks, logging through either the built-in <a href="http://mynewt.apache.org/latest/os/modules/logs/logs/"><em>Logs</em></a> module (not covered in this lesson) or through the serial console/shell can be very useful for debugging your application. In the end, the way you manage your tasks depends on the context of your application. You should assign priorities based on execution time, urgency, and frequency, among other things.</p>
+<p>Moving forward, tasks are just the tip of the iceberg. The <a href="http://mynewt.apache.org/latest/os/core_os/context_switch/context_switch/"><em>scheduler</em></a>, 
+<a href="http://mynewt.apache.org/latest/os/core_os/event_queue/event_queue/"><em>event queues</em></a>, 
+<a href="http://mynewt.apache.org/latest/os/core_os/semaphore/semaphore/"><em>semaphores</em></a>, and 
+<a href="http://mynewt.apache.org/latest/os/core_os/mutex/mutex/"><em>mutexes</em></a> also add to tasks functionality, 
+increasing our ability as the developer to control greater numbers of tasks more intricately. For 
+example, when we switch the tasks priority, we have to tell the scheduler that our tasks priorities 
+have changed, allowing us us to use priorities dynamically. When running multiple tasks, logging 
+through either the built-in <a href="http://mynewt.apache.org/latest/os/modules/logs/logs/"><em>Logs</em></a> module 
+(not covered in this lesson) or through the serial console/shell can be very useful for debugging 
+your application. In the end, the way you manage your tasks depends on the context of your 
+application. You should assign priorities based on execution time, urgency, and frequency, among 
+other things.</p>
 <p>Keep blinking and happy hacking!</p>
                         
                         <div class="row">

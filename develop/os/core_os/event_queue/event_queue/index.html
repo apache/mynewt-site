@@ -306,7 +306,7 @@
   
   
     <li><a href="
-  ../os_eventq_get/
+  ../os_eventq_init/
 ">Functions</a>
   
   
@@ -661,21 +661,25 @@
                         </div>
                         
                             <h1 id="event-queues">Event Queues</h1>
-<p>Event queue is a way of serializing events arring to a task. This makes it easy to queue processing to happen inside task's context. This would be done either from an interrupt handler, or from another task.</p>
-<p>Events arrive in a form of a data structure <code>struct os_event</code>.</p>
+<p>Event queue is a way for a task to serialize events sent to it. This makes it easy to process events required to happen inside the task's context. Events may arrive either from an interrupt handler, or from another task.</p>
 <h3 id="description">Description</h3>
-<p>Events are in form of a data structure <code>struct os_event</code>, and they are queued to data structure <code>struct os_eventq</code>.</p>
-<p>Queue must be initialized before trying to add events to it. This is done using <code>os_eventq_init()</code>.</p>
-<p>Common way of using event queues is to have a task loop while calling <code>os_eventq_get()</code>, waiting for work to do.
-Other tasks (or interrupts) then call <code>os_eventq_put()</code> to wake it up. Once event has been queued task waiting on that queue is woken up, and will get a pointer to queued event structure.
-Processing task would then act according to event type.</p>
+<p>Events arrive in form the of a data structure <code>struct os_event</code> and 
+they are queued to another data structure <code>struct os_eventq</code>.</p>
+<p>The Event Queue must be initialized before trying to add events to 
+it. This is done using <code>os_eventq_init()</code>.</p>
+<p>A common way of using event queues is to have a task loop while calling <code>os_eventq_get()</code>, 
+waiting for work to do. Other tasks (or interrupts) then call <code>os_eventq_put()</code> 
+to wake it up. Once an event has been queued, the task waiting on that queue is woken up. The event dispatching logic is built into each event via a callback function pointer. The task handler can simply pull events
+off the queue and call its callback handler. The processing task would then act according to the event type. </p>
 <p>When <code>os_event</code> is queued, it should not be freed until processing task is done with it.</p>
 <p>It is assumed that there is only one task consuming events from an event queue. Only one task should be sleeping on a particular <code>os_eventq</code> at a time.</p>
 <p>Note that <a href="../../callout/callout/">os_callout</a> subsystem assumes that event queue is used as the wakeup mechanism.</p>
 <h3 id="data-structures">Data structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">typedef</span> <span style="color: #A90D91">void</span> <span style="color: #000000">os_event_fn</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> {
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ev_queued</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ev_type</span>;
+    <span style="color: #000000">os_event_fn</span> <span style="color: #000000">*ev_cb</span>;
     <span style="color: #A90D91">void</span> <span style="color: #000000">*ev_arg</span>;
     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_event</span>) <span style="color: #000000">ev_next</span>;
 };
@@ -691,23 +695,56 @@ Processing task would then act according to event type.</p>
 </thead>
 <tbody>
 <tr>
-<td>ev_queued</td>
+<td><code>ev_queued</code></td>
 <td>Internal field, which tells whether event is linked into an <em>os_eventq</em> already</td>
 </tr>
 <tr>
-<td>ev_type</td>
-<td>Type of an event. This should be unique, as it should be used by processing task to figure out what the event means</td>
+<td><code>ev_cb</code></td>
+<td>A callback function pointer that is called when a new event arrives on the queue</td>
 </tr>
 <tr>
-<td>ev_arg</td>
+<td><code>ev_arg</code></td>
 <td>Can be used further as input to task processing this event</td>
 </tr>
 <tr>
-<td>ev_next</td>
+<td><code>ev_next</code></td>
 <td>Linkage attaching this event to an event queue</td>
 </tr>
 </tbody>
 </table>
+<p>With the callback function pointer, the dispatch logic gets built into each event. The task handler simply pulls an event off its queue and blindly calls its callback function.  A helper function was added to do just this: 
+<code>os_eventq_run()</code>.  As an example, the task handler for the bleprph application is below:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">bleprph_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*unused</span>)
+{
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">&amp;bleprph_evq</span>);
+    }
+}
+</pre></div>
+
+
+<p>The callback associated with an event is specified when the event gets
+initialized.  For example, here are some statically-initialized events
+in the NimBLE host:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">ble_hs_event_tx_notify</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">ble_hs_event_reset</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+
+<span style="color: #177500">/** OS event - triggers tx of pending notifications and indications. */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">ble_hs_ev_tx_notifications</span> <span style="color: #000000">=</span> {
+    .<span style="color: #000000">ev_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_event_tx_notify</span>,
+};
+
+<span style="color: #177500">/** OS event - triggers a full reset. */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">ble_hs_ev_reset</span> <span style="color: #000000">=</span> {
+    .<span style="color: #000000">ev_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_event_reset</span>,
+};
+</pre></div>
+
+
+<p>The callback function receives a single parameter: a
+pointer to the event being processed.  If the event is allocated
+dynamically, the callback function should free the event.   </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*evq_task</span>;
     <span style="color: #000000">STAILQ_HEAD</span>(, <span style="color: #000000">os_event</span>) <span style="color: #000000">evq_list</span>;
@@ -724,11 +761,11 @@ Processing task would then act according to event type.</p>
 </thead>
 <tbody>
 <tr>
-<td>evq_task</td>
+<td><code>evq_task</code></td>
 <td>Pointer to task if there is task sleeping on <em>os_eventq_get()</em></td>
 </tr>
 <tr>
-<td>evq_list</td>
+<td><code>evq_list</code></td>
 <td>Queue head for list of events in this queue</td>
 </tr>
 </tbody>
@@ -744,20 +781,32 @@ Processing task would then act according to event type.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../os_eventq_get/">os_eventq_get</a></td>
-<td>Fetches the first event from a queue. Task will sleep until something gets queued.</td>
-</tr>
-<tr>
-<td><a href="../os_eventq_init/">os_eventq_init</a></td>
+<td><a href="../os_eventq_init/"><code>os_eventq_init</code></a></td>
 <td>Initializes the given event queue, making it ready for use.</td>
 </tr>
 <tr>
-<td><a href="../os_eventq_put/">os_eventq_put</a></td>
+<td><a href="../os_eventq_inited/"><code>os_eventq_inited</code></a></td>
+<td>Has the event queue been initialized.</td>
+</tr>
+<tr>
+<td><a href="../os_eventq_get/"><code>os_eventq_get</code></a></td>
+<td>Fetches the first event from a queue. Task will sleep until something gets queued.</td>
+</tr>
+<tr>
+<td><a href="../os_eventq_put/"><code>os_eventq_put</code></a></td>
 <td>Queues an event to tail of the event queue.</td>
 </tr>
 <tr>
-<td><a href="../os_eventq_remove/">os_eventq_remove</a></td>
+<td><a href="../os_eventq_remove/"><code>os_eventq_remove</code></a></td>
 <td>Removes an event which has been placed in a queue.</td>
+</tr>
+<tr>
+<td><a href="../os_eventq_dflt_set/"><code>os_eventq_dflt_set</code></a></td>
+<td>Set the default event queue.</td>
+</tr>
+<tr>
+<td><a href="../os_eventq_dflt_get/"><code>os_eventq_dflt_get</code></a></td>
+<td>Get the default event queue.</td>
 </tr>
 </tbody>
 </table>
@@ -778,8 +827,8 @@ Processing task would then act according to event type.</p>
     </li>
     <li class="pull-right">
     
-    <a href=../os_eventq_get/>
-        Next: os_eventq_get
+    <a href=../os_eventq_init/>
+        Next: os_eventq_init
         <span class="fa fa-arrow-right"></span>
     </a>
     
