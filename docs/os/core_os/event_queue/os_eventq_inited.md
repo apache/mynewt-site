@@ -5,7 +5,7 @@
     os_eventq_inited(const struct os_eventq *evq)
 ```
 
-Check if event queue `const struct os_eventq`, is it ready for use.
+Check if event queue `const struct os_eventq` is ready for use.
 
 #### Arguments
 

@@ -22,7 +22,7 @@ You will need the following equipment:
 
 ##Build Your Application
 To save time, we will simply modify the Blinky app. We'll add the Task Management code to
-the Blinky App. Follow the [*Arduino Zero Blinky tutorial*](http://mynewt.apache.org/os/tutorials/arduino_zero/) 
+the Blinky app. Follow the [*Arduino Zero Blinky tutorial*](http://mynewt.apache.org/os/tutorials/arduino_zero/) 
 to create a new project and build your bootloader and application. Finally, build and 
 load the application to your Arduino to verify that everything is in order. Now let’s get started!
 

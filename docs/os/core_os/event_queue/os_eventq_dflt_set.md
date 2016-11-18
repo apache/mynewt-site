@@ -5,7 +5,7 @@
     os_eventq_dflt_set(struct os_eventq *evq)
 ```
 
-Sets `struct os_eventq`, as te default event queue
+Sets `struct os_eventq` as the default event queue
 
 #### Arguments
 
