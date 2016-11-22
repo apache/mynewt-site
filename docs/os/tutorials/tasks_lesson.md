@@ -35,7 +35,7 @@ in main.c (located in apps/blinky/src):
 struct os_task work_task;
 ```
 
-A task is represented by the [*os_task*](http://mynewt.apache.org/os/core_os/task/task/#data-structures)  
+A task is represented by the [*os_task*](http://mynewt.apache.org/os/core_os/task/task/#data-structures) 
 struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two 
 main elements, a task function (also known as a task handler) and a task stack.
 
@@ -50,7 +50,6 @@ which are generally 32 bits, making our entire stack 1024 Bytes.
 
 ```c
   #define WORK_STACK_SIZE OS_STACK_ALIGN(256)
-  os_stack_t work_stack[WORK_STACK_SIZE];
 ```
 
 
@@ -97,13 +96,17 @@ Let’s set the priority of `work_task` to 0, because everyone knows that work i
 ### Initialization
 To initialize a new task we use [*os_task_init()*](http://mynewt.apache.org/os/core_os/task/os_task_init/) 
 which takes a number of arguments including our new task function, stack, and priority. Much like `blinky_task`, 
-we’re going to initialize `work_task` inside `init_tasks` to keep our main function clean.
+we’re going to initialize `work_task` inside `init_tasks` to keep our main function clean. We'll set the task stack here and pass it to the `os_task_init()` function as well.
 
 ```c
 int
 init_tasks(void)
 {
     /* … */
+    os_stack_t *work_stack;
+    work_stack = malloc(sizeof(os_stack_t)*WORK_STACK_SIZE);
+    
+    assert(pstack);
     os_task_init(&work_task, "work", work_task_handler, NULL,
             WORK_TASK_PRIO, OS_WAIT_FOREVER, work_stack,
             WORK_STACK_SIZE);
@@ -151,6 +154,7 @@ os_task_init(&mytask, "mytask", mytask_handler, NULL,
 ```
 
 ##Task Priority, Preempting, and Context Switching
+
 A preemptive RTOS is one in which a higher priority task that is *ready to run* will preempt (i.e. take the 
 place of) the lower priority task which is *running*. When a lower priority task is preempted by a higher 
 priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new 
@@ -237,9 +241,9 @@ Set a new app location.
 $ newt target set task_tgt app=apps/mynewt_tasks_lesson
 ```
 
-Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead choosing t
-o use the [*console*](http://mynewt.apache.org/latest/os/modules/console/console/) and [*shell*](http://mynewt.apache.org/latest/os/modules/shell/shell/) 
-to follow our tasks through execution.
+Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead 
+choosing to use the [*console*](http://mynewt.apache.org/latest/os/modules/console/console/) 
+and [*shell*](http://mynewt.apache.org/latest/os/modules/shell/shell/) to follow our tasks through execution.
 
 Additionally, we have a number of different tasks:
 
@@ -398,7 +402,8 @@ rate, Task B would take over a minute to finish one cycle.
 
 Feel free to play around with the testing parameters to study the different changes yourself!
 
-##Conclusion
+###Conclusion
+
 Moving forward, tasks are just the tip of the iceberg. The [*scheduler*](http://mynewt.apache.org/latest/os/core_os/context_switch/context_switch/), 
 [*event queues*](http://mynewt.apache.org/latest/os/core_os/event_queue/event_queue/), 
 [*semaphores*](http://mynewt.apache.org/latest/os/core_os/semaphore/semaphore/), and 
