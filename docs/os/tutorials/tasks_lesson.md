@@ -281,20 +281,8 @@ $ cd repos/mynewt_arduino_zero
 $ git checkout develop
 ```
 
-Open a new terminal window and list your serial connections to find our Arduino.
-```c
-$ ls /dev/tty.*
-
-/dev/tty.Bluetooth-Incoming-Port /dev/tty.usbmodem14132
-```
-
-In the same window, connect to the serial port using a serial communication program. 
-In this case I’ll be using mincom as it can scroll through output.
-```c
-$ minicom -D /dev/tty.usbmodem14132 -b 115200
-```
-
-If you see minicom welcome you, you’re ready to move on!
+You should already be familiar with the [Serial Port Setup and Configuration](../get_started/serial_access.md), but if
+you're not, you can go there now and then come back. 
 
 ### Output Analysis
 
