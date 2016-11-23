@@ -103,12 +103,31 @@ So let's connect to it:
 $ screen /dev/tty.usbserial-0020124 115200
 ```
 
+To exit out of `screen` you'll type `control-A` followed by `control-\` and you'll
+be back to a terminal prompt.
+
+If you'd like to use Minicom:
+
+```
+$ minicom -D /dev/tty.usbserial-0020124
+
+```
+Welcome to minicom 2.7
+
+OPTIONS: 
+Compiled on Nov 24 2015, 16:14:21.
+Port /dev/tty.usbserial-0020124, 09:57:17
+
+Press Meta-Z for help on special keys
+```
+
+<br>
+
 If there's no Mynewt app running, or the Mynewt app doesn't have the Shell and Console
 enabled, you won't see anything there, but you can always refer back to this page
 from later tutorials if you need to.
 
-To exit out of `screen` you'll type `control-A` followed by `control-\` and you'll
-be back to a terminal prompt.
+
 
 Now that you know how to communicate with your mynewt application, let's move on to
 creating one!

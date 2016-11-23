@@ -160,13 +160,13 @@ $ newt load myble
 
 ### Establish serial connection
 
-You will now look for some BLE related stats over a serial connection and see the radio is actually working. The picture below shows a serial connector set up. Pin PA.08 is RX and pin PA.06 is TX. Make sure TX from the NRF52 goes to RX on your Serial board, and that RX on the NRF52 goes to TX on your Serial Board.
-
-![nRF52](pics/nrf52.JPG "nRF52 Dev Board with a Serial Connection set up")
+You will now look for some BLE related stats over a serial connection and see the radio is actually working. 
+If you haven't done so already, make sure you're familiar with the [Serial Port Setup and Configuration](../get_started/serial_access.md)
+section. 
 
 <br>
 
-You may use any terminal emulation program to communicate with the board. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your laptop, of course.
+You may use any terminal emulation program to communicate with the board. This tutorial shows a Minicom set up. 
 
 
 ```
