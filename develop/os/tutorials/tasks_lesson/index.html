@@ -310,6 +310,14 @@
               
                 
     <li >
+      <a href="../add_shell/">Enable the OS Shell and Console</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../bletiny_project/">BLE app to check stats via console</a>
     </li>
 
@@ -471,7 +479,7 @@ in main.c (located in apps/blinky/src):</p>
 </pre></div>
 
 
-<p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a><br />
+<p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a> 
 struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two 
 main elements, a task function (also known as a task handler) and a task stack.</p>
 <p>Next, let’s take a look at what is required to initialize our new task.</p>
@@ -482,7 +490,6 @@ memory usage. Since we’re not short on memory, our <code>blinky_stack</code> a
 for the purpose of this lesson. Notice that the elements in our task stack are of type <code>os_stack_t</code> 
 which are generally 32 bits, making our entire stack 1024 Bytes.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #633820">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
-  <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">work_stack</span>[<span style="color: #000000">WORK_STACK_SIZE</span>];
 </pre></div>
 
 
@@ -525,11 +532,15 @@ must choose a priority defined as a macro variable.</p>
 <h3 id="initialization">Initialization</h3>
 <p>To initialize a new task we use <a href="http://mynewt.apache.org/os/core_os/task/os_task_init/"><em>os_task_init()</em></a> 
 which takes a number of arguments including our new task function, stack, and priority. Much like <code>blinky_task</code>, 
-we’re going to initialize <code>work_task</code> inside <code>init_tasks</code> to keep our main function clean.</p>
+we’re going to initialize <code>work_task</code> inside <code>init_tasks</code> to keep our main function clean. We'll set the task stack here and pass it to the <code>os_task_init()</code> function as well.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
 <span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #177500">/* … */</span>
+    <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">*work_stack</span>;
+    <span style="color: #000000">work_stack</span> <span style="color: #000000">=</span> <span style="color: #000000">malloc</span>(<span style="color: #A90D91">sizeof</span>(<span style="color: #A90D91">os_stack_t</span>)<span style="color: #000000">*WORK_STACK_SIZE</span>);
+
+    <span style="color: #000000">assert</span>(<span style="color: #000000">pstack</span>);
     <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;work_task</span>, <span style="color: #C41A16">&quot;work&quot;</span>, <span style="color: #000000">work_task_handler</span>, <span style="color: #A90D91">NULL</span>,
             <span style="color: #000000">WORK_TASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">work_stack</span>,
             <span style="color: #000000">WORK_STACK_SIZE</span>);
@@ -654,9 +665,9 @@ $ git clone https://github.com/bgiori/mynewt_tasks_lesson.git
 </pre></div>
 
 
-<p>Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead choosing t
-o use the <a href="http://mynewt.apache.org/latest/os/modules/console/console/"><em>console</em></a> and <a href="http://mynewt.apache.org/latest/os/modules/shell/shell/"><em>shell</em></a> 
-to follow our tasks through execution.</p>
+<p>Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead 
+choosing to use the <a href="http://mynewt.apache.org/latest/os/modules/console/console/"><em>console</em></a> 
+and <a href="http://mynewt.apache.org/latest/os/modules/shell/shell/"><em>shell</em></a> to follow our tasks through execution.</p>
 <p>Additionally, we have a number of different tasks:</p>
 <ul>
 <li>
@@ -705,20 +716,8 @@ $ git checkout develop
 </pre></div>
 
 
-<p>Open a new terminal window and list your serial connections to find our Arduino.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">$</span> <span style="color: #000000">ls</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">*</span>
-
-<span style="color: #000000">/dev/tty</span>.<span style="color: #000000">Bluetooth-Incoming-Port</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">usbmodem14132</span>
-</pre></div>
-
-
-<p>In the same window, connect to the serial port using a serial communication program. 
-In this case I’ll be using mincom as it can scroll through output.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">$</span> <span style="color: #000000">minicom</span> <span style="color: #000000">-D</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">usbmodem14132</span> <span style="color: #000000">-b</span> <span style="color: #1C01CE">115200</span>
-</pre></div>
-
-
-<p>If you see minicom welcome you, you’re ready to move on!</p>
+<p>You should already be familiar with the <a href="../../get_started/serial_access/">Serial Port Setup and Configuration</a>, but if
+you're not, you can go there now and then come back. </p>
 <h3 id="output-analysis">Output Analysis</h3>
 <p>Run our new target, task_tgt, and you should see an output similar to this:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">Starting First Simulation...
@@ -814,7 +813,7 @@ speedup to 1.44. This, however, reduces our ability to process work from Task B 
 only completing 18% of its work cycle after the second simulation. That would mean, at that 
 rate, Task B would take over a minute to finish one cycle.</p>
 <p>Feel free to play around with the testing parameters to study the different changes yourself!</p>
-<h2 id="conclusion">Conclusion</h2>
+<h3 id="conclusion">Conclusion</h3>
 <p>Moving forward, tasks are just the tip of the iceberg. The <a href="http://mynewt.apache.org/latest/os/core_os/context_switch/context_switch/"><em>scheduler</em></a>, 
 <a href="http://mynewt.apache.org/latest/os/core_os/event_queue/event_queue/"><em>event queues</em></a>, 
 <a href="http://mynewt.apache.org/latest/os/core_os/semaphore/semaphore/"><em>semaphores</em></a>, and 
@@ -839,7 +838,7 @@ other things.</p>
     
     <a href=../repo/create_repo/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Turn project into a repo
+        Previous: Turn project into a Repo
     </a>
     
     </li>

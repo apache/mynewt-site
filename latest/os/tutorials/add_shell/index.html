@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/add_shell/"> -->
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+	    <title>Enable the OS Shell and Console - Apache Mynewt</title>
+
+        <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../css/highlight.css">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link href="../../../css/custom.css" rel="stylesheet">
+        <link href="../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-72162311-1', 'auto');
+                ga('send', 'pageview');
+            </script>
+        
+    </head>
+
+
+    <body class="Enable the OS Shell and Console">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <div class="col-xs-12 v2-vcenter">
+            <a href="/"><img class="logo" src="/img/logo.png"></a>
+
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/latest/os/introduction">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version">
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+    
+    <option
+      value="/develop/os/introduction"
+      selected="selected"
+    >
+      Version: develop (latest)
+    </option>
+    
+    <option
+      value="/v0_9_0/os/introduction"
+      
+    >
+      Version: 0.9.0
+    </option>
+    
+</select>
+</li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../get_started/vocabulary/">Concepts</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../tutorials/">Tutorials</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../arduino_zero/
+">Project Blinky</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../tasks_lesson/">Tasks and Priority Management</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino Zero</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../unit_test/">Write a Test Suite for a Package</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../air_quality_sensor/">Air-quality Sensor project</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../event_queue/">Add task to manage multiple events</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../project-slinky/
+">Project Slinky for remote comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../add_newtmgr/">Enable newtmgr in any app</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Enable the OS Shell and Console</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../bletiny_project/">BLE app to check stats via console</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ibeacon/">BLE iBeacon</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../blehci_project/">BLE HCI interface</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../faq/how_to_edit_docs/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs pull-right">
+    <li><a href="/latest/os/introduction">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="../../introduction/">Mynewt Documentation</a></li>
+        
+      
+        
+          <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
+        
+      
+      
+        <li>&raquo; Enable the OS Shell and Console</li>
+      
+    
+    
+  </ul>
+</div>
+                        </div>
+                        
+                            <h2 id="enabling-the-console-and-shell-in-a-project">Enabling The Console and Shell in a project</h2>
+<p><br></p>
+<p>This tutorial explains how to add the Console and Shell task to a project so that you 
+can interact with your project over a serial line connection.</p>
+<p><br></p>
+<h3 id="pre-requisites">Pre-Requisites</h3>
+<ul>
+<li>Ensure you have installed <a href="../../../newt/install/newt_mac/">newt</a> and that the 
+newt command is in your system path. </li>
+<li>You must have Internet connectivity to fetch remote Mynewt components.</li>
+<li>You must <a href="../../get_started/native_tools/">install the compiler tools</a> to 
+support native compiling to build the project this tutorial creates.  </li>
+<li>You must install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK package</a> to 
+load your project on the board.</li>
+<li>Cable to establish a serial USB connection between the board and the laptop</li>
+</ul>
+<p><br></p>
+<h3 id="use-an-existing-project">Use an existing project</h3>
+<p>Since all we're doing is adding the shell and console capability to a project, we assume 
+that you have worked through at least some of the other tutorials, and have an existing project.
+For this example, we'll be modifying the <a href="../bletiny_project/">ble_tiny</a> project to enable 
+the shell and console connectivity. We'll be calling our app myble as in that project as well. 
+Feel free to use whatever project you'd like though.</p>
+<p><br></p>
+<h3 id="modify-the-dependencies-and-configuration">Modify the Dependencies and Configuration</h3>
+<p>The first thing you'll need to add is a few new dependencies for your app. To add shell support to 
+your app make sure the following <code>pkg.deps</code> are defined in your target's pkg.yml file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
+    - &quot;@apache-mynewt-core/sys/console/full&quot;
+    - &quot;@apache-mynewt-core/sys/shell&quot;
+    - &quot;@apache-mynewt-core/sys/sysinit&quot;
+</pre></div>
+
+
+<p>This lets the newt system know that it needs to pull in the code for the console and the shell.</p>
+<p>Now we'll need to modify the settings for the app to turn on the shell, etc. by modifying the
+<code>syscfg.yml</code> file for your target. (Remember, these files are in the targets/<app-name> directory.)
+If there isn't a <code>syscfg.yml</code> file in your target's directory, you will need to create one.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># Package: apps/bletiny
+
+syscfg.vals:
+    # Enable the shell task.
+    SHELL_TASK: 1
+    # Enable Console OS Ticks
+    CONSOLE_TICKS: 1
+    # Enable Console Prompt
+    CONSOLE_PROMPT: 1 
+</pre></div>
+
+
+<h3 id="build-targets">Build targets</h3>
+<p>We're not going to build the bootloader here since we are assuming that you have already
+built and loaded it during previous tutorials.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build myble
+Archiving cbmem.a
+Compiling crc16.c
+Compiling crc8.c
+Archiving crc.a
+Compiling mem.c
+Archiving mem.a
+Linking ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+Target successfully built: targets/myble
+</pre></div>
+
+
+<p><br></p>
+<h3 id="create-the-app-image">Create the app image</h3>
+<p>Generate a signed application image for the <code>myble</code> target. The version number is arbitrary.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image myble 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.img
+</pre></div>
+
+
+<p><br></p>
+<h3 id="load-the-image">Load the image</h3>
+<p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load myble
+</pre></div>
+
+
+<p><br></p>
+<h3 id="set-up-serial-connection">Set up Serial connection</h3>
+<p>You'll need a Serial connection to see the output of your program. You can reference the <a href="../../get_started/serial_access/">Serial Port Setup</a> 
+Tutorial for more information on setting up your serial communications.</p>
+<p><br></p>
+<h3 id="connecting-with-your-app">Connecting with your app</h3>
+<p>Once you have a connection set up, you can connect to your device with <code>minicom -D /dev/tty.usbmodem&lt;port&gt; -b 115200</code> to run connect
+to the console of your app. </p>
+<p>To test and make sure that the Shell is running, first just hit <return>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3534: &gt;
+</pre></div>
+
+
+<p>Remember, we turned the CONSOLE_PROMPT and the CONSOLE_TICKS on earlier. You can try some commands now:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3609: &gt; ?
+Commands:
+8841:     echo         ?    prompt     ticks     tasks  mempools
+8843:     date         b
+8844: &gt; ticks off
+ Console Ticks off
+ &gt; prompt off
+ Prompt now off.
+ticks on
+33383: Console Ticks on
+
+33568:
+prompt on
+39108: Prompt now on.
+39108: &gt;
+</pre></div>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    <a href=../add_newtmgr/>
+        <span class="fa fa-arrow-left"></span>
+        Previous: Enable newtmgr in any app
+    </a>
+    
+    </li>
+    <li class="pull-right">
+    
+    <a href=../bletiny_project/>
+        Next: BLE app to check stats via console
+        <span class="fa fa-arrow-right"></span>
+    </a>
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Copyright &copy; 2015 The Apache Software Foundation, Licensed under the Apache License, Version 2.0 Apache and the Apache feather logo are trademarks of The Apache Software Foundation.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+                MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+            </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../js/highlight.pack.js"></script>
+        <script src="../../../js/base.js"></script>
+        <script src="../../../js/custom.js"></script>
+
+    </body>
+</html>
