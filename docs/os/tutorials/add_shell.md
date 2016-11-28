@@ -102,7 +102,7 @@ $ newt load myble
 
 ### Set up Serial connection
 
-You'll need a Serial connection to see the output of your program. You can see the instructions in the [Tasks and Priority Management](tasks_lesson.md) 
+You'll need a Serial connection to see the output of your program. You can reference the [Serial Port Setup](../get_started/serial_access.md) 
 Tutorial for more information on setting up your serial communications.
 
 <br>
