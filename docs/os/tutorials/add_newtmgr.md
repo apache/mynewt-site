@@ -110,7 +110,7 @@ $ newt load myble
 
 ### Set up newtmgr connection
 
-Newtmgr reqwiures a connection profile in order to connect to your board. If you haven't yet, follow the [instructions](../../newtmgr/overview.md) for setting up your connection profile.
+Newtmgr requires a connection profile in order to connect to your board. If you haven't yet, follow the [instructions](../../newtmgr/overview.md) for setting up your connection profile.
 
 <br>
 
