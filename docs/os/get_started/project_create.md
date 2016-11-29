@@ -46,6 +46,7 @@ $ tree
 │   └── blinky
 │       ├── pkg.yml
 │       └── src
+│           └── main.c
 ├── project.yml
 └── targets
     ├── my_blinky_sim
@@ -55,7 +56,7 @@ $ tree
         ├── pkg.yml
         └── target.yml
 
-6 directories, 10 files
+6 directories, 11 files
 ```
 
 <br>
@@ -74,7 +75,7 @@ build a version of myproj.  Use `newt target show` to see available build
 targets.
 4. A non-buildable target called `unittest`.  This is used internally by `newt` and is not a formal build target.
 
-**NOTE:** the actual code and package files are not installed 
+**NOTE:** The actual code and package files are not installed 
 (except the template for `main.c`).  See the next step for installing the packages.
 
 **NOTE:** By default newt uses the code in the master branch. This is the latest stable
@@ -110,10 +111,11 @@ use the _-v_ (verbose) option to install.
 
 <br>
 
-Once _newt install_ has successfully finished, the contents of _apache-mynewt-core_ will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project:
+Once _newt install_ has successfully finished, the contents of _apache-mynewt-core_ will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project. The actual output will depend on what is in the latest 'master' branch you have pulled from.
 
 ```no-highlight
 $ tree -L 2 repos/apache-mynewt-core/
+repos/apache-mynewt-core/
 repos/apache-mynewt-core/
 ├── CODING_STANDARDS.md
 ├── DISCLAIMER
@@ -125,67 +127,94 @@ repos/apache-mynewt-core/
 │   ├── blecent
 │   ├── blehci
 │   ├── bleprph
+│   ├── bleprph_oic
 │   ├── bletest
 │   ├── bletiny
 │   ├── bleuart
-│   ├── blinky
 │   ├── boot
 │   ├── ffs2native
-│   ├── luatest
+│   ├── ocf_sample
 │   ├── slinky
-│   └── test
+│   ├── slinky_oic
+│   ├── spitest
+│   ├── splitty
+│   ├── test
+│   └── timtest
+├── boot
+│   ├── boot_serial
+│   ├── bootutil
+│   └── split
 ├── compiler
 │   ├── arm-none-eabi-m0
 │   ├── arm-none-eabi-m4
+│   ├── gdbmacros
 │   └── sim
-├── drivers
-│   └── uart_bitbang
+├── crypto
+│   ├── mbedtls
+│   └── tinycrypt
+├── docs
+│   └── doxygen.xml
+├── encoding
+│   ├── base64
+│   ├── cborattr
+│   ├── json
+│   └── tinycbor
 ├── fs
+│   ├── fcb
 │   ├── fs
 │   └── nffs
 ├── hw
 │   ├── bsp
-│   ├── hal
-│   └── mcu
-├── libs
-│   ├── baselibc
-│   ├── bleuart
-│   ├── boot_serial
-│   ├── bootutil
 │   ├── cmsis-core
-│   ├── console
-│   ├── crash_test
-│   ├── elua
-│   ├── flash_test
+│   ├── drivers
+│   ├── hal
+│   ├── mcu
+│   └── scripts
+├── kernel
+│   └── os
+├── libc
+│   └── baselibc
+├── mgmt
 │   ├── imgmgr
-│   ├── inet_def_service
-│   ├── json
-│   ├── mbedtls
+│   ├── mgmt
 │   ├── newtmgr
-│   ├── os
-│   ├── shell
-│   ├── testreport
-│   ├── testutil
-│   ├── tinycrypt
-│   ├── util
-│   └── wifi_mgmt
+│   └── oicmgr
 ├── net
-│   └── nimble
+│   ├── ip
+│   ├── nimble
+│   ├── oic
+│   └── wifi
 ├── project.yml
 ├── repository.yml
 ├── sys
 │   ├── config
+│   ├── console
 │   ├── coredump
-│   ├── fcb
+│   ├── defs
+│   ├── flash_map
 │   ├── id
 │   ├── log
-│   ├── mn_socket
+│   ├── mfg
 │   ├── reboot
-│   └── stats
-└── targets
-    └── unittest
+│   ├── shell
+│   ├── stats
+│   └── sysinit
+├── targets
+│   └── unittest
+├── test
+│   ├── crash_test
+│   ├── flash_test
+│   ├── runtest
+│   ├── testreport
+│   └── testutil
+├── time
+│   └── datetime
+└── util
+    ├── cbmem
+    ├── crc
+    └── mem
 
-61 directories, 8 files
+87 directories, 9 files
 ```
 
 As you can see, the core of the Apache Mynewt operating system has been brought 
@@ -198,17 +227,16 @@ into your local directory.
 You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the `libs/os` package in the `apache-mynewt-core` repo, call newt as shown below.
 
 ```
-$ newt test @apache-mynewt-core/libs/os
-Testing package @apache-mynewt-core/libs/os
-Compiling hal_bsp.c
-Compiling os_bsp.c
-Compiling sbrk.c
-Archiving native.a
-Compiling flash_map.c
+$ newt test @apache-mynewt-core/sys/config
+Testing package @apache-mynewt-core/sys/config/test-fcb
+Compiling bootutil_misc.c
+Compiling image_ec.c
+Compiling image_rsa.c
+Compiling image_validate.c
 <snip>
 ```
 
-**NOTE:** If you've installed the latest gcc using homebrew on your Mac, you should downgrade to gcc-5 in order to use MyNewt.
+**NOTE:** If you've installed the latest gcc using homebrew on your Mac, you will likely be running gcc-6. Make sure you have adjusted the compiler.yml configuration to reflect that as noted in [Native Install Option](native_tools.md). You can choose to downgrade to gcc-5 in order to use the default gcc compiler configuration for MyNewt.
 
 ```
 $ brew uninstall gcc-6
