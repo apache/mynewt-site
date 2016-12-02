@@ -358,7 +358,7 @@ If you build, load and run this application now, you will see all those Services
 advertised, and you will even be able to read the "Sensor Type" String via the ADC_SNS_TYPE
 Characteristic, but when you subscribe to the ADC_SNS_VALUE Characteristic, you
 aren't getting any data. That's because we haven't set up the ADC Sensor yet, or
-created an task to update the value.
+created a task to update the value.
 
 <br>
 
@@ -425,6 +425,66 @@ Now that we have this all done, you can actually run this app and see the
 'sensor' value increase when you're subscribed to it.
 
 <br>
+
+### Implementing an Analog to Digital Converter (ADC)
+
+So far we have a functioning BLE Peripheral device that will update a counter
+and send that counter's value to any connected device that asks for it. It's
+a lot, but it's still a far cry from useful. What we realy need is to add a
+real sensor! The sensor we're using, the eTape Liquid Level Sensor, is a
+pretty basic Analog Sensor. As the fluid level changes, the voltage output
+of the sensor changes. In order to read this value, we'll need to access
+the ADC on the nrf52dk, and that's going to take a bit of work. 
+
+First, we'll need to make sure that the ADC pin is properly defined. If you
+look on the board itself, you'll see Pin 3 (P0.03) is labeled as 'ADC' so
+that's the one we're after. The first step is to go into `syscfg.yml` and
+add the following:
+
+```no-highlight
+    ADC_0:
+        description: 'NRF52 ADC input 0'
+        value: 3
+    ADC_0_RESOLUTION:
+        description: 'Resolution of the ADC'
+        value: 8
+    ADC_0_OVERSAMPLE:
+        description: 'Oversampling'
+        value: 0
+    ADC_0_INTERRUPT_PRIORITY:
+        description: 'Interrupt Priority'
+        value: 1
+```
+
+Those are the settings that are required for the ADC. 
+
+Next we'll need to go into `hw/bsp/nrf52dk/src/hal_bsp.c`
+and make sure the proper device-creation takes place:
+
+```c
+#if MYNEWT_VAL(ADC_0)
+static struct adc_dev os_bsp_adc0;
+static nrf_drv_saadc_config_t os_bsp_adc0_config = {
+    .resolution         = MYNEWT_VAL(ADC_0_RESOLUTION),
+    .oversample         = MYNEWT_VAL(ADC_0_OVERSAMPLE),
+    .interrupt_priority = MYNEWT_VAL(ADC_0_INTERRUPT_PRIORITY),
+};
+#endif
+```
+
+And also make sure that it gets properly initialized by adding to the 
+`hal_bsp_init()` function:
+
+```
+#if MYNEWT_VAL(ADC_0)
+    rc = os_dev_create((struct os_dev *) &os_bsp_adc0, "adc0",
+            OS_DEV_INIT_KERNEL, OS_DEV_INIT_PRIO_DEFAULT,
+            nrf52_adc_dev_init, &os_bsp_adc0_config);
+    assert(rc == 0);
+#endif
+```
+
+
 
 ### Adding the eTape Water Sensor
 
