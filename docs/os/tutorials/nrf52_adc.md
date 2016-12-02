@@ -431,6 +431,32 @@ Now that we have this all done, you can actually run this app and see the
 Now that we have a fully functioning BLE App that we can subscribe to sensor
 values from, it's time to turn that incrementing-counter into an actual sensor value!
 
+As previous;y mentioned, we're going to be using an eTape Water Level Sensor. You can 
+get one from [Adafruit](https://www.adafruit.com/products/1786). 
+
+We're going to use the sensor as a resistive sensor, and the setup is very simple. 
+I'll be using a 'breadboard` to put this all together for illustrative purposes. 
+First, attach a jumper-wire from the 5v output on the board to the breadboard.
+Next, attach a jumper wire from pin P0.03 on the board to the breadboard. This will be
+our ADC-in. The sensor should have come with a 560 ohm resistor, so plug that
+into the baord between the 5v and ADC-in holes. Finally, attach a jumper from
+GND on the board to your breadboard. At this point, your breadboard should look
+like this:
+
+![Bread Board Setup](pics/breadboard.png)
+
+Now attach one of the middle 2 leads from the sensor to ground on the breadboad and 
+the other middle lead to the ADC-in on the breadboard. Your breadboard should now look
+like this:
+
+![Bread Board Final](pics/adc-demo-1.png)
+
+And yhour eTape Sensor should look like this (at least if you have it mounted in a
+graduated cylinder as I do).
+
+![eTape Sensor Setup](pics/adc-demo-2.png)
+
+
 ### Conclusion
 
 You have created, setup, compiled, loaded, and ran your first mynewt application
