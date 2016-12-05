@@ -12,8 +12,8 @@ Attaches a second mbuf chain onto the end of the first. If the first chain conta
 
 | Arguments | Description |
 |-----------|-------------|
-| `first` |  Pointer to first mbuf chain |
-| `second` | Pointer to second mbuf chain |
+| first |  Pointer to first mbuf chain |
+| second | Pointer to second mbuf chain |
 
 <br>
 

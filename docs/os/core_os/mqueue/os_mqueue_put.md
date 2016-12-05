@@ -4,7 +4,7 @@
 int os_mqueue_put(struct os_mqueue *mq, struct os_eventq *evq, struct os_mbuf *m)
 ```
 
-Adds a packet (i.e. packet header mbuf) to an mqueue. Post event to `evq`. 
+Adds a packet (i.e. packet header mbuf) to an mqueue. Post event to *evq*. 
 
 <br>
 
@@ -12,9 +12,9 @@ Adds a packet (i.e. packet header mbuf) to an mqueue. Post event to `evq`.
 
 | Arguments | Description |
 |-----------|-------------|
-| `mq` |  Pointer to mqueue  |
-| `evq` | Pointer to event queue where mqueue event should get posted |
-| `m` | Pointer to packet header mbuf |
+| mq |  Pointer to mqueue  |
+| evq | Pointer to event queue where mqueue event should get posted |
+| m | Pointer to packet header mbuf |
 
 <br>
 
@@ -22,7 +22,7 @@ Adds a packet (i.e. packet header mbuf) to an mqueue. Post event to `evq`.
 
 0: success
 
-`OS_EINVAL`: the mbuf is not a packet header mbuf.
+OS_EINVAL: the mbuf is not a packet header mbuf.
 
 <br>
 

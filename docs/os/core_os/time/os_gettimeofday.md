@@ -8,8 +8,8 @@ int os_gettimeofday(struct os_timeval *utctime, struct os_timezone *timezone);
 
 | Arguments | Description |
 |-----------|-------------|
-| `utctime` | UTC time corresponding to wallclock time  |
-| `timezone` | Timezone to convert UTC time to wallclock time |
+| utctime | UTC time corresponding to wallclock time  |
+| timezone | Timezone to convert UTC time to wallclock time |
 
 #### Returned values
 

@@ -11,16 +11,16 @@ Release ownership of a mutex
 
 | Arguments | Description |
 |-----------|-------------|
-| `*mu`|  Pointer to mutex  |
+| *mu|  Pointer to mutex  |
 
 #### Returned values
-`OS_INVALID_PARM`: returned when `*mu` is **NULL** on entry.
+OS_INVALID_PARM: returned when *mu is NULL on entry.
 
-`OS_OK`: mutex initialized successfully.
+OS_OK: mutex initialized successfully.
 
-`OS_BAD_MUTEX`: The mutex was not owned by the task attempting to release it.
+OS_BAD_MUTEX: The mutex was not owned by the task attempting to release it.
 
-`OS_NOT_STARTED`: Attempt to release a mutex before the os has been started.
+OS_NOT_STARTED: Attempt to release a mutex before the os has been started.
 
 
 #### Example

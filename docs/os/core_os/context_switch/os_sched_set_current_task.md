@@ -5,15 +5,15 @@ void
 os_sched_set_current_task(struct os_task *t)
 ```
 
-Sets the currently running task to `t`.
+Sets the currently running task to 't'.
 
-This is called from architecture specific context switching code to update scheduler state. Call is made when state of the task `t` is made *running*.
+This is called from architecture specific context switching code to update scheduler state. Call is made when state of the task 't' is made *running*.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `t` | Pointer to a task |
+| t | Pointer to a task |
 
 #### Returned values
 

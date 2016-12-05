@@ -5,13 +5,13 @@
     os_eventq_init(struct os_eventq *evq)
 ```
 
-Initializes `struct os_eventq`, making it ready for use.
+Initializes *struct os_eventq*, making it ready for use.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `evq` |  Pointer to event queue getting initialized  |
+| evq |  Pointer to event queue getting initialized  |
 
 #### Returned values
 

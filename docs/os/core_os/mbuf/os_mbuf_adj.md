@@ -4,7 +4,7 @@
 void os_mbuf_adj(struct os_mbuf *mp, int req_len);
 ```
 
-Trims `req_len` bytes from either the head (if positive) or tail (if negative) of an mbuf chain. Adjusts the packet length of the mbuf chain if `mp` points to a packet header mbuf. When trimming from the head, no mbufs are freed. When trimming from the tail, any mbufs of zero length left at the end of the chain are freed.
+Trims *req_len* bytes from either the head (if positive) or tail (if negative) of an mbuf chain. Adjusts the packet length of the mbuf chain if *mp* points to a packet header mbuf. When trimming from the head, no mbufs are freed. When trimming from the tail, any mbufs of zero length left at the end of the chain are freed.
 
 <br>
 
@@ -12,8 +12,8 @@ Trims `req_len` bytes from either the head (if positive) or tail (if negative) o
 
 | Arguments | Description |
 |-----------|-------------|
-| `mp` |  Pointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf  |
-| `req_len` | Number of bytes to trim from head or tail of mbuf
+| mp |  Pointer to mbuf. Can be head of a chain of mbufs, a single mbuf or a packet header mbuf  |
+| req_len | Number of bytes to trim from head or tail of mbuf
 
 
 <br>
