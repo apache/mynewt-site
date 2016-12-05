@@ -148,7 +148,7 @@ err:
 In the above example, every time the custom sanity check 
 `mymodule_perform_sanity_check` returns successfully (0), 
 the sanity check is reset.  In the `OS_SANITY_CHECK_SETFUNC` macro,
-the sanity checkin interval is specified as 50 * `SANITY_TASK_INTERVAL` 
+the sanity checkin interval is specified as 50 * SANITY_TASK_INTERVAL 
 (which is the interval at which the sanity task runs.)  This means 
 that the `mymodule_perform_sanity_check()` function needs to fail
 50 times consecutively before the sanity task will crash the system.

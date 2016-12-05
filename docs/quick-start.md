@@ -18,7 +18,7 @@ Start a new project as explained under [Create Your First Project](/DOCSLINK/os/
 
 * When you [Create Your First Project](/DOCSLINK/os/get_started/project_create/) you define a simulated target and run Project Blinky, the Hello World equivalent in the embedded world.
 
-* If you have one of the supported [boards](/), you can make real LEDs blink in [Project Blinky](/DOCSLINK/os/tutorials/arduino_zero/). Simply choose the appropriate tutorial for the board and proceed.
+* If you have one of the supported [boards](../), you can make real LEDs blink in [Project Blinky](/DOCSLINK/os/tutorials/arduino_zero/). Simply choose the appropriate tutorial for the board and proceed.
 
 <br>
 

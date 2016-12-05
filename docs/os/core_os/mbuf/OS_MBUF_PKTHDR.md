@@ -14,7 +14,7 @@ Macro used to get a pointer to the os mbuf packet header of an mbuf.
 
 | Arguments | Description |
 |-----------|-------------|
-| `__om` |  Pointer to mbuf (struct os_mbuf *)  |
+| __om |  Pointer to mbuf (struct os_mbuf *)  |
 
 
 <br>

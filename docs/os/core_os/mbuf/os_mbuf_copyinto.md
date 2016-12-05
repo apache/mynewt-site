@@ -12,10 +12,10 @@ Copies the contents of a flat buffer into an mbuf chain, starting at the specifi
 
 | Arguments | Description |
 |-----------|-------------|
-| `om` |  Pointer to mbuf chain |
-| `off` | Start copy offset, in bytes, from beginning of mbuf chain |
-| `src` | Address from which bytes are copied |
-| `len` | Number of bytes to copy from src |
+| om |  Pointer to mbuf chain |
+| off | Start copy offset, in bytes, from beginning of mbuf chain |
+| src | Address from which bytes are copied |
+| len | Number of bytes to copy from src |
 
 <br>
 

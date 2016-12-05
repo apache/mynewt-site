@@ -1,10 +1,10 @@
 ## <font color="F2853F" style="font-size:24pt">os_time_tick</font>
 
 ```c
-void os_time_tick(void)
+void os_time_tick(void) 
 ```
 
-Increments the OS time tick for the system.  Typically, this is called in one place by the architecture specific OS code (`libs/os/arch`) `timer_handler` which is in turn called by the BSP specific code assigned to drive the OS timer tick. See [Porting Mynewt OS](../porting/port_os) for details.
+Increments the OS time tick for the system.  Typically, this is called in one place by the architecture specific OS code (`libs/os/arch`) `timer_handler` which is in turn called by the BSP specific code assigned to drive the OS timer tick. See [Porting Mynewt OS](../port_os) for details.
 
 #### Arguments
 
@@ -14,7 +14,7 @@ N/A
 
 N/A
 
-#### Notes
+#### Notes 
 
 Called for every single tick by the architecture specific functions.
 
@@ -25,3 +25,5 @@ Called for every single tick by the architecture specific functions.
 ```c
    os_time_tick();
 ```
+
+

@@ -12,16 +12,16 @@ Increases the length of an mbuf chain by the specified amount.  If there is not 
 
 | Arguments | Description |
 |-----------|-------------|
-| `om` | Pointer to mbuf chain |
-| `len` | Number of bytes to increase packet header |
+| om | Pointer to mbuf chain |
+| len | Number of bytes to increase packet header |
 
 <br>
 
 #### Returned values
 
-Pointer to start of extended data. Caller is guaranteed that there are at least `len` bytes from this pointer to the end of the mbuf.
+Pointer to start of extended data. Caller is guaranteed that there are at least *len* bytes from this pointer to the end of the mbuf.
 
-Returns **NULL** if extension fails due to insufficient mbufs or `len` too large.
+Returns NULL if extension fails due to insufficient mbufs or *len* too large.
 <br>
 
 

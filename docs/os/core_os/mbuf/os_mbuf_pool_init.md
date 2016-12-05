@@ -13,10 +13,10 @@ Initialize an mbuf pool
 
 | Arguments | Description |
 |-----------|-------------|
-| `omp` | Pointer to mbuf pool to initialize |
-| `mp` | Pointer to memory pool used by mbuf pool |
-| `buf_len` | The size of the memory blocks in the memory pool used by the mbuf pool |
-| `nbufs` | The number of mbufs in the pool |
+| omp | Pointer to mbuf pool to initialize |
+| mp | Pointer to memory pool used by mbuf pool |
+| buf_len | The size of the memory blocks in the memory pool used by the mbuf pool |
+| nbufs | The number of mbufs in the pool |
 
 <br>
 
@@ -26,7 +26,7 @@ Initialize an mbuf pool
 <br>
 
 #### Notes
-The parameter `buf_len` is the total size of the memory block. This must accommodate the `os_mbuf` structure, the `os_mbuf_pkthdr` structure, any user headers plus the desired amount of user data.
+The parameter *buf_len* is the total size of the memory block. This must accommodate the os_mbuf structure, the os_mbuf_pkthdr structure, any user headers plus the desired amount of user data.
 
 <br>
 

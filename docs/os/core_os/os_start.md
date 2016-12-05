@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">os_start</font>
 
-```c
+```no-highlight
 void os_start(void)
 ```
 
@@ -23,5 +23,5 @@ None (does not return).
 
 #### Notes
 
-Once `os_start()` has been called, context is switched to the highest priority task that was initialized prior to calling `os_start()`.
+Once os_start has been called, context is switched to the highest priority task that was initialized prior to calling os_start.
 

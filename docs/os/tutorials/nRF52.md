@@ -15,6 +15,7 @@ Note that there are several versions of the nRF52 in the market. The boards test
 ### Hardware needed
 
 * nRF52 Development Kit (one of the following)
+    * Preview Kit from Nordic - PCA 10036
     * Dev Kit from Nordic - PCA 10040
     * Eval Kit from Rigado - BMD-300-EVAL-ES
 * Laptop running Mac OS
@@ -49,7 +50,7 @@ or just follow the commands below.
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
-    apache-mynewt-core successfully installed version 0.9.0-none
+    apache-mynewt-core successfully installed version 0.7.9-none
 ``` 
 
 <br>
@@ -61,6 +62,7 @@ Create two targets - one for the bootloader and one for the nrf52 board.
 <font color="#F2853F">
 Note: The correct bsp must be chosen for the board you are using. </font>
 
+* For the Nordic Preview Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52pdk (as shown below)
 * For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)
 * For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)
 
@@ -68,22 +70,22 @@ Note: The correct bsp must be chosen for the board you are using. </font>
 ```hl_lines="3 8"
 $ newt target create blink_nordic
 $ newt target set blink_nordic app=apps/blinky
-$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
 $ newt target set blink_nordic build_profile=debug
 
 $ newt target create nrf52_boot
 $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
 $ newt target set nrf52_boot build_profile=optimized
 
 $ newt target show 
 targets/blink_nordic
     app=apps/blinky
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=debug
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
 ```
 
@@ -94,8 +96,8 @@ targets/nrf52_boot
 ```
 $ newt build nrf52_boot
 ...
-Compiling boot.c
-Archiving boot.a
+Compiling log_shell.c
+Archiving log.a
 Linking boot.elf
 App successfully built: ~/dev/myproj/bin/nrf52_boot/apps/boot/boot.elf
 ```

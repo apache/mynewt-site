@@ -11,14 +11,14 @@ Initialize a semaphore with a given number of tokens. Should be called before th
 
 | Arguments | Description |
 |-----------|-------------|
-| `*sem` |  Pointer to semaphore  |
-| `tokens` |  Initial number of tokens allocated to semaphore  |
+| *sem |  Pointer to semaphore  |
+| tokens |  Initial number of tokens allocated to semaphore  |
 
 #### Returned values
 
-`OS_INVALID_PARM`: returned when `*sem` is **NULL** on entry.
+OS_INVALID_PARM: returned when *sem is NULL on entry.
 
-`OS_OK`: semaphore initialized successfully.
+OS_OK: semaphore initialized successfully.
 
 #### Notes 
 

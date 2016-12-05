@@ -12,10 +12,10 @@ Performs a memory compare of the specified region of an mbuf chain against a fla
 
 | Arguments | Description |
 |-----------|-------------|
-| `om` | Pointer to mbuf |
-| `off` | Offset, in bytes, from start of mbuf to start of comparison |
-| `data` | Pointer to flat data buffer to compare |
-| `len` | Number of bytes to compare |
+| om | Pointer to mbuf |
+| off | Offset, in bytes, from start of mbuf to start of comparison |
+| data | Pointer to flat data buffer to compare |
+| len | Number of bytes to compare |
 
 <br>
 
@@ -25,7 +25,7 @@ A value of zero means the memory regions are identical; all other values represe
 <br>
 
 #### Notes
-This function will compare bytes starting from `off` bytes from the start of the mbuf chain with a data buffer.
+This function will compare bytes starting from *off* bytes from the start of the mbuf chain with a data buffer.
 
 <br>
 

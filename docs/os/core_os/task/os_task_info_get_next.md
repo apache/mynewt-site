@@ -3,27 +3,27 @@
 ```c
 struct os_task *os_task_info_get_next(const struct os_task *prev, struct os_task_info *oti);
 ```
-Populates the os task info structure pointed to by `oti` with task information. 
-The task populating the `oti` structure is either the first task on the task 
-list if `prev` is **NULL**, or the next task in the task list (the next pointer of 
-`prev`).
+Populates the os task info structure pointed to by *oti* with task information. 
+The task populating the *oti* structure is either the first task on the task 
+list if *prev* is NULL, or the next task in the task list (the next pointer of 
+*prev*).
  
-If there are no tasks initialized, **NULL** is returned. Otherwise, the task 
-structure used to populate `oti` is returned.
+If there are no tasks initialized, NULL is returned. Otherwise, the task 
+structure used to populate *oti* is returned.
 
 <br>
 #### Arguments
 
 | Arguments | Description | 
 |-----------|-------------| 
-| `prev` | Pointer to previous task in task list. If NULL, use first task on list |
-| `oti` |  Pointer to `os_task_info` structure where task information will be stored | 
+| prev | Pointer to previous task in task list. If NULL, use first task on list |
+| oti |  Pointer to `os_task_info` structure where task information will be stored | 
 
 <br>
 #### Returned values
 
 Returns a pointer to the os task structure that was used to populate the task 
-information structure. **NULL** means that no tasks were created.
+information structure. NULL means that no tasks were created.
 
 <br>
 #### Example

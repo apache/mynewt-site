@@ -4,7 +4,7 @@
 struct os_mbuf *os_mbuf_pullup(struct os_mbuf *om, uint16_t len)
 ```
 
-Rearrange an mbuf chain so that len bytes are contiguous, and in the data area of an mbuf (so that `OS_MBUF_DATA()` will  work on a structure of size `len`.)  Returns the resulting mbuf chain on success, free's it and returns **NULL** on failure.
+Rearrange an mbuf chain so that len bytes are contiguous, and in the data area of an mbuf (so that OS_MBUF_DATA() will  work on a structure of size len.)  Returns the resulting mbuf chain on success, free's it and returns NULL on failure.
 
 <br>
 
@@ -12,13 +12,13 @@ Rearrange an mbuf chain so that len bytes are contiguous, and in the data area o
 
 | Arguments | Description |
 |-----------|-------------|
-| `om` | Pointer to mbuf |
-| `len` | Length, in bytes, to pullup (make contiguous in mbuf) |
+| om | Pointer to mbuf |
+| len | Length, in bytes, to pullup (make contiguous in mbuf) |
 
 <br>
 
 #### Returned values
-Pointer to mbuf at head of chain; **NULL** if not enough mbufs were available to accommodate `len` or if the requested pullup size was too large.
+Pointer to mbuf at head of chain; NULL if not enough mbufs were available to accommodate *len* or if the requested pullup size was too large.
 
 <br>
 

@@ -1,20 +1,20 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_callout_func_init </font>
 
-```c
-    void os_callout_func_init(struct os_callout_func *cf, struct os_eventq *evq, os_callout_func_t timo_func, void *ev_arg)
-```
 
-Initializes the given `struct os_callout_func`. Data structure is filled in with elements given as argument.
+    void os_callout_func_init(struct os_callout_func *cf, struct os_eventq *evq, os_callout_func_t timo_func, void *ev_arg)
+
+
+Initializes the given *struct os_callout_func*. Data structure is filled in with elements given as argument.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `cf` | Pointer to os_callout_func being initialized |
-| `evq` | Event queue where this gets delivered to |
-| `timo_func` | Timeout function. Event processing should call this |
-| `ev_arg` | Generic argument for the event |
+| cf | Pointer to os_callout_func being initialized |
+| evq | Event queue where this gets delivered to |
+| timo_func | Timeout function. Event processing should call this |
+| ev_arg | Generic argument for the event |
 
 #### Returned values
 
@@ -22,13 +22,13 @@ N/A
 
 #### Notes
 
-The same notes as with [`os_callout_init()`](os_callout_init.md).
+The same notes as with *os_callout_init()*.
 
 #### Example
 
 <Add text to set up the context for the example here>
 
-```c
+
     struct os_callout_func g_native_cputimer;
     struct os_eventq g_native_cputime_evq;
     void native_cputimer_cb(void *arg);
@@ -38,7 +38,7 @@ The same notes as with [`os_callout_init()`](os_callout_init.md).
                          &g_native_cputime_evq,
                          native_cputimer_cb,
                          NULL);
-```
+
 
 
 

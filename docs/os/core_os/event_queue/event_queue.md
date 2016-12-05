@@ -3,10 +3,11 @@
 
 Event queue is a way of serializing events arring to a task. This makes it easy to queue processing to happen inside task's context. This would be done either from an interrupt handler, or from another task.
 
-Events arrive in a form of a data structure `struct os_event`.
+Events arrive in a form of a data structure *struct os_event*.
 
 ### Description
 
+<<<<<<< HEAD
 Events are in form the of a data structure `struct os_event` and 
 they are queued to another data structure `struct os_eventq`.
 
@@ -24,12 +25,21 @@ Mynewt has moved the event dispatching logic out of the task handler and instead
 logic is built in to each event via a callback function pointer. The task handler no longer
 needs to dispatch events based on their types but instead can simply pull events
 off the queue and call it's callback handler. 
+=======
+Events are in form of a data structure *struct os_event*, and they are queued to data structure *struct os_eventq*.
 
-When `os_event` is queued, it should not be freed until processing task is done with it.
+Queue must be initialized before trying to add events to it. This is done using *os_eventq_init()*.
 
-It is assumed that there is only one task consuming events from an event queue. Only one task should be sleeping on a particular `os_eventq` at a time.
+Common way of using event queues is to have a task loop while calling *os_eventq_get()*, waiting for work to do.
+Other tasks (or interrupts) then call *os_eventq_put()* to wake it up. Once event has been queued task waiting on that queue is woken up, and will get a pointer to queued event structure.
+Processing task would then act according to event type.
+>>>>>>> apache/master
 
-Note that [os_callout](../callout/callout.md) subsystem assumes that event queue is used as the wakeup mechanism.
+When *os_event* is queued, it should not be freed until processing task is done with it.
+
+It is assumed that there is only one task consuming events from an event queue. Only one task should be sleeping on a particular *os_eventq* at a time.
+
+Note that os_callout subsystem assumes that event queue is used as the wakeup mechanism.
 
 ### Data structures
 

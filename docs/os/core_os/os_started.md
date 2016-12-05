@@ -1,6 +1,6 @@
-##<font color="#F2853F" style="font-size:24pt">os_started</font>
+## <font color="#F2853F" style="font-size:24pt">os_started</font>
 
-```c
+```no-highlight
 int os_started(void)
 ```
 
@@ -15,5 +15,5 @@ None
 <br>
 
 #### Returned values
-Integer value with 0 meaning the OS has not been started and 1 indicating the OS has been started (i.e. `os_start()` has been called).
+Integer value with 0 meaning the OS has not been started and 1 indicating the OS has been started (i.e. os_start() has been called).
 

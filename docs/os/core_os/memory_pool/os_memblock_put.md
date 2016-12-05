@@ -11,14 +11,14 @@ Releases previously allocated element back to the pool.
 
 | Arguments | Description |
 |-----------|-------------|
-| `mp` |  Pointer to memory pool from which block was allocated  |
-| `block_addr` | Pointer to element getting freed |
+| mp |  Pointer to memory pool from which block was allocated  |
+| block_addr | Pointer to element getting freed |
 
 <br>
 #### Returned values
 
-`OS_OK`: operation was a success:  
-`OS_INVALID_PARAM`: If either `mp` or `block_addr` were **NULL**, or the block being freed was outside the range of the memory buffer or not on a true block size boundary.
+OS_OK: operation was a success:  
+OS_INVALID_PARAM: If either mp or block_addr were NULL, or the block being freed was outside the range of the memory buffer or not on a true block size boundary.
 
 <br>
 #### Example

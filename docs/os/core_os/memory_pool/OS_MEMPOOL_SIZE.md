@@ -4,31 +4,31 @@
 OS_MEMPOOL_SIZE(n,blksize)
 ```
 
-Calculates the number of `os_membuf_t` elements used by `n` blocks of size `blksize` bytes.
+Calculates the number of os_membuf_t elements used by *n* blocks of size *blksize* bytes.
 
-Note that `os_membuf_t` is used so that memory blocks are aligned on `OS_ALIGNMENT` boundaries.
+Note that os_membuf_t is used so that memory blocks are aligned on OS_ALIGNMENT boundaries.
 
-The `blksize` variable is the minimum number of bytes required for each block; the actual block size is padded so that each block is aligned on `OS_ALIGNMENT` boundaries.  
+The *blksize* variable is the minimum number of bytes required for each block; the actual block size is padded so that each block is aligned on OS_ALIGNMENT boundaries.  
 
 <br>
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `n` |  Number of elements  |
-| `blksize` |  Size of an element is number of bytes  |
+| n |  Number of elements  |
+| blksize |  Size of an element is number of bytes  |
 
 #### Returned values
-The number of `os_membuf_t` elements used by the memory pool. Note that `os_membuf_t` is defined to be a unsigned, 32-bit integer when `OS_ALIGNMENT` is 4 and an unsigned, 64-bit integer when `OS_ALIGNMENT` is 8.
+The number of os_membuf_t elements used by the memory pool. Note that os_membuf_t is defined to be a unsigned, 32-bit integer when OS_ALIGNMENT is 4 and an unsigned, 64-bit integer when OS_ALIGNMENT is 8.
 
 <br>
 #### Notes
-`OS_MEMPOOL_SIZE` is a macro and not a function.
+OS_MEMPOOL_SIZE is a macro and not a function.
 
 <br>
 #### Example
 
-Here we define a memory buffer to be used by a memory pool using `OS_MEMPOOL_SIZE`
+Here we define a memory buffer to be used by a memory pool using OS_MEMPOOL_SIZE
 
 ```c
 #define NUM_BLOCKS      (16)

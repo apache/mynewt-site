@@ -6,12 +6,9 @@ The depth of work depends on the amount of HAL (Hardware Abstraction Layer) supp
 
 To get started:
 
-* Create a `hw/mcu/mymcu` directory where `mymcu` is the MCU you are porting to. 
-Replace the name `mymcu` with a description of the MCU you are using.
-* Create a `hw/mcu/mymcu/variant` directory where the variant is the specific 
-variant of the part you are usuing. Many MCU parts have variants with different capabilities 
-(RAM, FLASH etc) or different pinouts. Replace `variant` with a description of the variant of the part you are using.
-* Create a `hw/mcu/mymcu/variant/pkg.yml` file. Copy from another mcu and fill out the relevant information
+* Create a `hw/mcu/mymcu` directory where `mymcu` is the MCU you are porting to. Replace the name `mymcu` with a description of the MCU you are using.
+* Create a `hw/mcu/mymcu/variant` directory where the variant is the specific variant of the part you are usuing.  Many MCU parts have variants with different capabilities (RAM, FLASH etc) or different pinouts.  Replace `variant` with a description of the variant of the part you are using.
+* Create a `hw/mcu/mymcu/variant/pkg.yml` file.  Copy from another mcu and fill out the relevant information
 * Create  `hw/mcu/mymcu/variant/include`,`hw/mcu/mymcu/variant/include/mcu`, and 
 `hw/mcu/mymcu/variant/src` directories to contain the code for your mcu.
 

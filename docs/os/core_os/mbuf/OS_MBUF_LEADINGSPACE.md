@@ -14,13 +14,13 @@ Macro used to get the amount of leading space in an mbuf (in bytes).
 
 | Arguments | Description |
 |-----------|-------------|
-| `__om` |  Pointer to mbuf (struct os_mbuf *)  |
+| __om |  Pointer to mbuf (struct os_mbuf *)  |
 
 
 <br>
 
 #### Notes
-This macro works on both normal mbufs and packet header mbufs. The amount of leading space is the number of bytes between the current `om_data` pointer of the mbuf and the start of the mbuf user data buffer.
+This macro works on both normal mbufs and packet header mbufs. The amount of leading space is the number of bytes between the current om_data pointer of the mbuf and the start of the mbuf user data buffer.
 
 <br>
 
