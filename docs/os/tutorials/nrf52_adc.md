@@ -36,7 +36,6 @@ or just follow the commands below.
     Downloading project skeleton from apache/incubator-mynewt-blinky...
     Installing skeleton in myadc...
     Project myadc successfully created.
-    
     $ cd myadc
     
 ``` 
@@ -238,12 +237,12 @@ static const uint8_t gatt_svr_svc_sns_uuid[16] = {
 #define ADC_SNS_VAL           0xBEEF
 #define ADC_SNS_STRING "eTape Water Level Sensor"
 
-uint8_t gatt_adc_val; 
+uint16_t gatt_adc_val; 
 ```
 
 The first is the UUID of the service, followed by the 2 characteristics we are going to offer.
 The first characteristic is going to advertise the *type* of sensor we are advertising, and
-it will be a read-only characteristic. The secnd characteristic will be the sensor value
+it will be a read-only characteristic. The second characteristic will be the sensor value
 itself, and we will allow connected devices to 'subscribe' to it in order to get 
 constantly-updated values.
 
@@ -368,7 +367,22 @@ In order for the application to send new sensor readings to a connected device, 
 to create a new OS Task to gather values and update them. If you've worked through the
 [Add tasks](task_lesson.md) tutorial, this should look familiar to you at this point.
 
-First, in `main.c` we'll define all the task-related requirements:
+First, in `main.c` we'll define all the ADC-related things we'll need:
+
+```c
+/* ADC */
+#include "nrf.h"
+#include "app_util_platform.h"
+#include "app_error.h"
+#include <adc/adc.h>
+#include <adc_nrf52/adc_nrf52.h>
+#include <adc_nrf52/adc_nrf52.h>
+#include "nrf_drv_saadc.h"
+
+nrf_drv_saadc_config_t adc_config = NRF_DRV_SAADC_DEFAULT_CONFIG;
+```
+
+Next we need to add the task-related requirements:
 
 ```c
 /* ADC Task settings */
@@ -436,29 +450,29 @@ pretty basic Analog Sensor. As the fluid level changes, the voltage output
 of the sensor changes. In order to read this value, we'll need to access
 the ADC on the nrf52dk, and that's going to take a bit of work. 
 
-First, we'll need to make sure that the ADC pin is properly defined. If you
-look on the board itself, you'll see Pin 3 (P0.03) is labeled as 'ADC' so
-that's the one we're after. The first step is to go into `syscfg.yml` and
-add the following:
+If we look at the configuration for the project by running `newt target config nrf52_adc`
+you'll see the configuration of the ADC:
 
 ```no-highlight
-    ADC_0:
-        description: 'NRF52 ADC input 0'
-        value: 3
-    ADC_0_RESOLUTION:
-        description: 'Resolution of the ADC'
-        value: 8
-    ADC_0_OVERSAMPLE:
-        description: 'Oversampling'
-        value: 0
-    ADC_0_INTERRUPT_PRIORITY:
-        description: 'Interrupt Priority'
-        value: 1
+* PACKAGE: hw/bsp/nrf52dk
+  * Setting: ADC_0
+    * Description: TBD
+    * Value: 1
+  * Setting: ADC_0_INTERRUPT_PRIORITY
+    * Description: TBD
+    * Value: SAADC_CONFIG_IRQ_PRIORITY
+  * Setting: ADC_0_OVERSAMPLE
+    * Description: TBD
+    * Value: SAADC_CONFIG_OVERSAMPLE
+  * Setting: ADC_0_RESOLUTION
+    * Description: TBD
+    * Value: SAADC_CONFIG_RESOLUTION
+  * Setting: BSP_NRF52
+    * Description: TBD
+    * Value: 1
 ```
 
-Those are the settings that are required for the ADC. 
-
-Next we'll need to go into `hw/bsp/nrf52dk/src/hal_bsp.c`
+Next we can look in `hw/bsp/nrf52dk/src/hal_bsp.c`
 and make sure the proper device-creation takes place:
 
 ```c
@@ -472,7 +486,7 @@ static nrf_drv_saadc_config_t os_bsp_adc0_config = {
 #endif
 ```
 
-And also make sure that it gets properly initialized by adding to the 
+And also make sure that it gets properly initialized in the 
 `hal_bsp_init()` function:
 
 ```
@@ -485,7 +499,6 @@ And also make sure that it gets properly initialized by adding to the
 ```
 
 
-
 ### Adding the eTape Water Sensor
 
 Now that we have a fully functioning BLE App that we can subscribe to sensor
@@ -496,10 +509,10 @@ get one from [Adafruit](https://www.adafruit.com/products/1786).
 
 We're going to use the sensor as a resistive sensor, and the setup is very simple. 
 I'll be using a 'breadboard` to put this all together for illustrative purposes. 
-First, attach a jumper-wire from the 5v output on the board to the breadboard.
+First, attach a jumper-wire from Vdd on the board to the breadboard.
 Next, attach a jumper wire from pin P0.03 on the board to the breadboard. This will be
 our ADC-in. The sensor should have come with a 560 ohm resistor, so plug that
-into the baord between the 5v and ADC-in holes. Finally, attach a jumper from
+into the baord between Vdd and ADC-in holes. Finally, attach a jumper from
 GND on the board to your breadboard. At this point, your breadboard should look
 like this:
 
@@ -516,17 +529,128 @@ graduated cylinder as I do).
 
 ![eTape Sensor Setup](pics/adc-demo-2.png)
 
+That concludes the hardware portion. Easy!
+
+<br>
+
+### Reading the eTape Water Sensor Values
+
+This is the meat of the application. We've got our BLE application broadcasting and we can connect
+to it and get notified when sensor values change. And we've got our sensor all wired
+up correctly. So let's now make sure the correct values get sent.
+
+First we'll make some changes to the `adc_task_handler()` function to properly initialize
+the ADC.
+
+```c
+    struct adc_dev *adc;
+    nrf_saadc_channel_config_t cc =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1);
+    cc.gain = NRF_SAADC_GAIN1_6;
+    cc.reference = NRF_SAADC_REFERENCE_INTERNAL;
+    adc = (struct adc_dev *) os_dev_open("adc0", 0, &adc_config);
+    assert(adc != NULL);
+    
+    adc_chan_config(adc, 0, &cc);
+    
+    sample_buffer1 = malloc(adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    sample_buffer2 = malloc(adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    memset(sample_buffer1, 0, adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    memset(sample_buffer2, 0, adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    
+    adc_buf_set(adc, sample_buffer1, sample_buffer2,
+            adc_buf_size(adc, ADC_NUMBER_CHANNELS, ADC_NUMBER_SAMPLES));
+    adc_event_handler_set(adc, adc_read_event, (void *) NULL);
+```
+
+A few things need to be said about this part, as it is the most confusing. First, 
+we're using a **default** configuration for the ADC Channel via the `NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE`
+macro. The important part here is that we're actually using `AIN1`. I know what you're thinking, "But 
+we want ADC-0!" and that's true. The board is actually labelled 'A0, A1, A2' etc., and the actual pin 
+numbers are also listed on the board, which seems handy. At first. But it gets messy very
+quickly.
+
+If you try to use AIN0, and then go poke around in the registers while this is running, 
+
+```
+(gdb) p/x {NRF_SAADC_Type}0x40007000
+...
+ CH = {{
+      PSELP = 0x1,
+      PSELN = 0x0,
+      CONFIG = 0x20000,
+      LIMIT = 0x7fff8000
+    }, 
+```
+
+You'll see that the pin for channel 0 is set to 1, which corresponts to AIN0, but that's **NOT**
+the same as A0 -- pin P0.03, the one we're using. For that, you use AIN1, which would set the
+pin value to 2. Messy. 
+
+
+The only other thing to note here is that we're using the internal reference voltage, rather than
+setting our own. There's nothing wrong with that, but since we are, we'll have to crank up
+the gain a bit by using `NRF_SAADC_GAIN1_6`.
+
+So, since that's all clear, our task-loop in the `adc_task_handler()` function is extremely simple:
+
+```c
+while (1) {
+    adc_sample(adc);
+    /* Wait 2 second */
+    os_time_delay(OS_TICKS_PER_SEC * 2);
+}
+```
+
+We'll just sample the ADC every 2 seconds or so.
+
+If you noticed above the call to `adc_event_handler_set()` then you'll also know that we'd 
+better define that callback function we set `adc_read_event()`
+
+```c
+int
+adc_read_event(struct adc_dev *dev, void *arg, uint8_t etype,
+        void *buffer, int buffer_len)
+{
+    int i;
+    int adc_result;
+    uint16_t chr_val_handle;
+    int rc;
+    for (i = 0; i < ADC_NUMBER_SAMPLES; i++) {
+        rc = adc_buf_read(dev, buffer, buffer_len, i, &adc_result);
+        if (rc != 0) {
+            goto err;
+        }
+        
+        gatt_adc_val = adc_result_mv(dev, 0, adc_result);
+        rc = ble_gatts_find_chr(gatt_svr_svc_sns_uuid, BLE_UUID16(ADC_SNS_VAL), NULL, &chr_val_handle);
+        assert(rc == 0);
+        ble_gatts_chr_updated(chr_val_handle);
+    }
+
+    adc_buf_release(dev, buffer, buffer_len);
+    return (0);
+err:
+    return (rc);
+}
+```
+
+Whenever the ADC has a sample for us in its buffer, we'll run through the samples available, convert them
+to millivolts, and then update the NOTIFY value so that any connected devices get the updated
+sensor values.
+
+<br>
 
 ### Conclusion
 
-You have created, setup, compiled, loaded, and ran your first mynewt application
-for an nrf52 board.
+Congratulations, you've now completed both a hardware project and a software project by connecting a
+sensor to your device and using Mynewt to read data from that sensor and send it via Bluetooth
+to a connected device. That's no small feat!
 
-We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on [writing a test suite](unit_test.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) or [Bluetooth Low Energy](bletiny_project.md) on your current board.
+If you see anything missing or want to send us feedback, please do so by signing up for 
+appropriate mailing lists on our [Community Page](../../community.md).
 
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
+Keep on hacking and sensing!
 
 
 
