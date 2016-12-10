@@ -328,14 +328,6 @@
           
               
                 
-    <li >
-      <a href="../hal_architecture/">Architecture</a>
-    </li>
-
-              
-          
-              
-                
   
   
     <li><a href="
@@ -364,6 +356,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../drivers/driver/">Drivers</a>
+  
   
     </li>
 
@@ -545,172 +548,17 @@
 <h2 id="hal-api">HAL API</h2>
 <p>A HAL always includes header file with function declarations 
 for the HAL functionality in <code>/hw/hal/include/hal</code>.
-The first argument of all functions in the interface include the virtual 
+The first argument of all functions in the interface typically include the virtual 
 device_id of the device you are controlling.  </p>
-<p>For example, in <a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h"><code>hal_gpio.h</code></a> 
-the device enumeration is the first argument to all methods and called <code>pin</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void hal_gpio_set(int pin);
+<p>For example, in <a href="https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_gpio.h"><code>hal_gpio.h</code></a> 
+the device enumeration is the first argument to most methods and called <code>pin</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void hal_gpio_write(int pin, int val);
 </pre></div>
 
 
 <p>The device_id (in this case called <code>pin</code>) is not a physical device 
 (actual hardware pin), but a virtual pin which is defined by the 
-implementation of the HAL (and documented in the implementation of the HAL)</p>
-<p>Below this, there are two different paradigms for HAL interface.  They are 
-discussed below.</p>
-<h2 id="direct-hal-interface">Direct HAL Interface</h2>
-<p>In one HAL paradigm called <strong>direct HAL</strong>, the header file is the only component 
-of the HAL interface.   Implementers of this HAL would create a source file
-that implements these methods.  </p>
-<p>This has the advantage of being simple, small, and low execution overhead.</p>
-<p>It has the disadvantage that its not possible to have two different implementations
-of the same <strong>direct HAL</strong> within the same image. Said another way, if I create
-a <strong>direct HAL</strong> <code>hal_foo.h</code>, there can be many implementations of 
-<code>xxx/hal_foo.c</code> but only one can be included in a project.  </p>
-<p>For example, support there is an ADC attached directly to the MCU and an ADC
-that is attached via SPI.  There would be no way in this simple paradigm
-to use both these devices from the HAL API at the same time.</p>
-<p>Current Direct HAL interfaces include:</p>
-<table>
-<thead>
-<tr>
-<th><strong>Hal Name</strong></th>
-<th><strong> Interface File </strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>[hal_gpio]</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h">hal_gpio.h</a></td>
-</tr>
-<tr>
-<td>[hal_uart]</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_uart.h">hal_uart.h</a></td>
-</tr>
-<tr>
-<td>[hal_cputime]</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h">hal_cputime.h</a></td>
-</tr>
-</tbody>
-</table>
-<p>This brings up the second paradigm.</p>
-<h2 id="indirect-hal-interface">Indirect HAL Interface</h2>
-<p>The second paradigm, <strong>indirect HAL</strong>  preserves the simple function 
-API with enumerated device_id but adds a small layer of code in the 
-HAL to allow different implementations to connect at runtime.</p>
-<p>The abstract interface contains three components:</p>
-<ul>
-<li>A header file <code>hal_foo.h</code> that includes the API above with a <code>device_id</code></li>
-<li>An implementation <code>hal/hal_foo.c</code> which maps the <code>device_id</code> to 
-a driver interface structure.  </li>
-<li>A driver interface structure that is defined for the underlying implementation</li>
-</ul>
-<p>Using this simple model, the user can be exposed to a simple function 
-interface (without structures or function pointers) and the system can provide
-a different software implementation for each device id.</p>
-<p>Although the GPIO interface for Mynewt uses the <strong>direct HAL</strong>, we can describe
-what it might look like for an indirect HAL.  </p>
-<p>The API <code>hal_gpio.h</code> is identical with a direct or indirect HAL.</p>
-<p>In the indirect HAL there is an additional header file <code>hal_gpio_int.h</code>
- which describes the driver interface for underlying implementations.  It 
-looks similar to the HAL API except is driven by function pointers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct hal_gpio_funcs {
-    void (*hgpio_set)(void);
-    . . .
-};
-
-struct hal_gpio_int {
-    struct hal_gpio_funcs funcs;
-}
-
-const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin);
-</pre></div>
-
-
-<p>The BSP specific function is what will map the specific pin (device_id) 
-to its implementation.</p>
-<p>This is different than the <strong>direct HAL</strong> which maps this virtual/physical 
-device pairing in the MCU implementation.  For the <strong>indirect HAL</strong> the 
-mapping has to be done in the BSP since that is the place where multiple 
-disparate devices can be enumerated into a single <code>device_id</code> space.</p>
-<p>An interface file <code>hal/hal_gpio.c</code> would perform the mapping as 
-follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void hal_gpio_set(int pin) {
-        const struct hal_gpio_int *pgpio;
-        pgpio = bsp_get_gpio_device(pin);
-        if(pgpio) {
-            pgpio-&gt;funcs.set();
-        }
-    }
-</pre></div>
-
-
-<p>The implementer of GPIO functionality (say in <code>mcu/xxx/hal_gpio.c</code>) would 
-implement the structure and provide the function pointers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void xxx_hal_gpio_set(void) {
-    /* implementation for this particular gpio device */
-    . . .
-}
-
-struct hal_gpio_int xxx_hal_gpio = {
-    .funcs.hgpio_set = xxx_hal_gpio_set;
-}
-</pre></div>
-
-
-<p>This leaves the BSP implementation to complete the function </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
-    switch(pin) {
-        case 0:
-            return &amp;xxx_hal_gpio;
-        case 1:
-            return &amp;yyy_hal_gpio;
-    }
-    return NULL;
-}
-</pre></div>
-
-
-<p><strong>NOTE</strong>: In this example there could be 10s of GPIO. It may be memory inefficient
-to have that many <code>hal_gpio_int</code> structures around to basically call the 
-same functions.  In Mynewt today, the hal_gpio is a <strong>direct HAL</strong> and does 
-not have this overhead. More HAL paradigms may be added in the future to address 
-the flexibility of the <strong>indirect HAL</strong> with the memory efficiency of the <strong>direct HAL</strong></p>
-<p>Current Indirect HAL interfaces include:</p>
-<table>
-<thead>
-<tr>
-<th><strong>Hal Name</strong></th>
-<th><strong> Interface File </strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>hal_adc_int</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_adc_int.h">hal_adc_int.h</a></td>
-</tr>
-<tr>
-<td>hal_dac</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_dac_int.h">hal_dac_int.h</a></td>
-</tr>
-<tr>
-<td>hal_flash_int</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_flash_int.h">hal_flash_int.h</a></td>
-</tr>
-<tr>
-<td>hal_pwm_int</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm_int.h">hal_pwm_int.h</a></td>
-</tr>
-<tr>
-<td>hal_i2c_int</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_i2c_int.h">hal_i2c_int.h</a></td>
-</tr>
-<tr>
-<td>hal_spi_int</td>
-<td><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_spi_int.h">hal_spi_int.h</a></td>
-</tr>
-</tbody>
-</table>
+implementation of the HAL (and documented in the implementation of the HAL).</p>
                         
                         <div class="row">
                             
@@ -728,8 +576,8 @@ the flexibility of the <strong>indirect HAL</strong> with the memory efficiency 
     </li>
     <li class="pull-right">
     
-    <a href=../../testutil/testutil/>
-        Next: Test Utilities
+    <a href=../../drivers/driver/>
+        Next: Drivers
         <span class="fa fa-arrow-right"></span>
     </a>
     

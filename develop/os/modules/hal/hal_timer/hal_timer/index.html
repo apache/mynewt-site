@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_adc/hal_adc/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_timer/hal_timer/"> -->
         <link rel="shortcut icon" href="../../../../../img/favicon.ico">
 
-	    <title>ADC - Apache Mynewt</title>
+	    <title>Timer - Apache Mynewt</title>
 
         <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="ADC">
+    <body class="Timer">
 
 
         <div class="container">
@@ -328,14 +328,6 @@
           
               
                 
-    <li >
-      <a href="../../hal_architecture/">Architecture</a>
-    </li>
-
-              
-          
-              
-                
   
   
     <li><a href="
@@ -355,24 +347,8 @@
           
               
                 
-    <li class="active">
-      <a href="./">ADC</a>
-    </li>
-
-              
-          
-              
-                
     <li >
-      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_dac/hal_dac/">DAC</a>
+      <a href="../../hal_bsp/hal_bsp/">BSP</a>
     </li>
 
               
@@ -409,7 +385,7 @@
               
                 
     <li >
-      <a href="../../hal_pwm/hal_pwm/">PWM</a>
+      <a href="../../hal_os_tick/hal_os_tick/">OS Tick</a>
     </li>
 
               
@@ -432,8 +408,24 @@
           
               
                 
+    <li class="active">
+      <a href="./">Timer</a>
+    </li>
+
+              
+          
+              
+                
     <li >
       <a href="../../hal_uart/hal_uart/">UART</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../hal_watchdog/hal_watchdog/">Watchdog</a>
     </li>
 
               
@@ -461,6 +453,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../drivers/driver/">Drivers</a>
+  
   
     </li>
 
@@ -618,7 +621,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
-    <li><a href="/latest/os/introduction">Docs</a></li>
+    <li><a href="/develop/os/introduction">Docs</a></li>
     
     
         
@@ -630,7 +633,7 @@
         
       
       
-        <li>&raquo; ADC</li>
+        <li>&raquo; Timer</li>
       
     
     
@@ -638,46 +641,25 @@
 </div>
                         </div>
                         
-                            <h1 id="hal_adc">hal_adc</h1>
-<p>The hardware independent interface to Analog To Digital Controllers</p>
+                            <h1 id="hal_timer">hal_timer</h1>
+<p>The hardware independent timer structure and API to configure, initialize, and run timers.</p>
 <h3 id="description">Description</h3>
-<p>Analog to Digital converters (ADCs) read analog values (voltage) and convert
-them to digital values to be used in your applications.  For a description
-of ADC, see <a href="https://en.wikipedia.org/wiki/Analog-to-digital_converter">wikipedia</a></p>
+<p>The HAL timer structure is shown below. The user can declare as many of these structures as required. They are enqueued on a particular HW timer queue when the user calls the hal_timer_start or hal_timer_start_at API. The user must have called hal_timer_set_cb before starting a timer.</p>
+<p>NOTE: the user should not have to modify/examine the contents of this structure; the hal timer API should be used.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">hal_timer</span>
+{
+    <span style="color: #A90D91">void</span>                <span style="color: #000000">*bsp_timer</span>; <span style="color: #177500">/* Internal platform specific pointer */</span>
+    <span style="color: #000000">hal_timer_cb</span>        <span style="color: #000000">cb_func</span>;    <span style="color: #177500">/* Callback function */</span>
+    <span style="color: #A90D91">void</span>                <span style="color: #000000">*cb_arg</span>;    <span style="color: #177500">/* Callback argument */</span>
+    <span style="color: #A90D91">uint32_t</span>            <span style="color: #000000">expiry</span>;     <span style="color: #177500">/* Tick at which timer should expire */</span>
+    <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">hal_timer</span>) <span style="color: #000000">link</span>;    <span style="color: #177500">/* Queue linked list structure */</span>
+};
+</pre></div>
+
+
 <h3 id="definition">Definition</h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_adc.h">hal_adc.h</a></p>
-<h3 id="hal_adcs-theory-of-operation">HAL_ADCs Theory Of Operation</h3>
-<p>ADCs have different conversion rates, resolution (bits) and reference voltages.</p>
-<p>The HAL_ADC has APIs to allow the application or library to query the capabilities
-of a specific ADC.</p>
-<table>
-<thead>
-<tr>
-<th><strong>Method Name</strong></th>
-<th><strong> Description </strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>hal_adc_get_bits</td>
-<td>gets the resolution of the ADC in bits.  For example if the ADC is 10 bits, a read will return a value from 0 through 2^10 - 1 = 1023.</td>
-</tr>
-<tr>
-<td>hal_adc_get_ref_mv</td>
-<td>gets the underlying reference voltage for the ADC in millivolts.  For example, if the ADC is 10 bits and the reference voltage is 5000 mV a ADC reading of 1023 corresponds to 5V; a ADC reading of 0 corresponds to 0 volts.</td>
-</tr>
-</tbody>
-</table>
-<p>Given this information, the application or library could convert any reading
-to millivolts.  Since this is a common operation, the HAL_ADC API has a helper
-function to perform this function: <code>hal_adc_to_mv()</code>.</p>
-<p>The current HAL_ADC API provides a blocking read command to initiate an ADC
-conversion, and return the result of that conversion.  Conversion time is
-hardware dependent, but this is not an instantaneous operation.  Libraries
-can use the <a href="../../hal_cputime/hal_cpu_timer/">hal_cputime</a> APIs to 
-time conversions if that is relevant to the application.</p>
-<p>Future HAL_ADC APIs will include periodic ADC conversion, non-blocking ADC
-conversion and direct-to-memory DMA conversion. </p>
+<p><a href="https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_timer.h">hal_timer.h</a></p>
+<h3 id="examples">Examples</h3>
                         
                         <div class="row">
                             
@@ -687,16 +669,16 @@ conversion and direct-to-memory DMA conversion. </p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../hal_api/>
+    <a href=../../hal_system/hal_sys/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Summary
+        Previous: System
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../hal_cputime/hal_cpu_timer/>
-        Next: CPU timer
+    <a href=../../hal_uart/hal_uart/>
+        Next: UART
         <span class="fa fa-arrow-right"></span>
     </a>
     

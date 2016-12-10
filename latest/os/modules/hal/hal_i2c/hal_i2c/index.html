@@ -328,14 +328,6 @@
           
               
                 
-    <li >
-      <a href="../../hal_architecture/">Architecture</a>
-    </li>
-
-              
-          
-              
-                
   
   
     <li><a href="
@@ -356,23 +348,7 @@
               
                 
     <li >
-      <a href="../../hal_adc/hal_adc/">ADC</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_dac/hal_dac/">DAC</a>
+      <a href="../../hal_bsp/hal_bsp/">BSP</a>
     </li>
 
               
@@ -409,7 +385,7 @@
               
                 
     <li >
-      <a href="../../hal_pwm/hal_pwm/">PWM</a>
+      <a href="../../hal_os_tick/hal_os_tick/">OS Tick</a>
     </li>
 
               
@@ -433,7 +409,23 @@
               
                 
     <li >
+      <a href="../../hal_timer/hal_timer/">Timer</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../../hal_uart/hal_uart/">UART</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../hal_watchdog/hal_watchdog/">Watchdog</a>
     </li>
 
               
@@ -461,6 +453,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../drivers/driver/">Drivers</a>
+  
   
     </li>
 
@@ -648,7 +651,7 @@ and often peripherals devices located off the circuit board.</p>
 to send data between devices.  </p>
 <p>For a detailed description of I2C, see the <a href="https://en.wikipedia.org/wiki/I²C">I²C wikipedia page</a></p>
 <h3 id="definition">Definition</h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_i2c.h">hal_i2c.h</a></p>
+<p><a href="https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_i2c.h">hal_i2c.h</a></p>
 <h3 id="hal_i2c-theory-of-operation">HAL_I2C Theory Of Operation</h3>
 <p>An I²C transaction typically involves acquiring the bus, sending and/or receiving
 data and release the bus.  The bus acquisition portion is important because
@@ -656,20 +659,27 @@ the bus is typically multi-master so other devices may be trying to read/write
 the same peripheral.  </p>
 <p>HAL_I2C implements a master interface to the I²C bus.  Typical usage of the 
 interface would involve the following steps.</p>
-<ol>
-<li>initialize an I²C device using <code>hal_i2c_init</code></li>
-<li>when you want to perform an I²C transaction:<ol>
-<li>Issue the <code>hal_i2c_begin()</code> command.    </li>
-<li>Issue one or more  <code>hal_i2c_read</code> and/or <code>hal_i2c_write</code> commands</li>
-<li>Issue the <code>hal_i2c_end()</code> command.</li>
-</ol>
-</li>
-</ol>
+<p>Initialize an i2c device with:
+    hal_i2c_init()</p>
+<p>When you wish to perform an i2c transaction, you call one or both of:
+    hal_i2c_master_write();
+    hal_i2c_master_read();</p>
+<p>These functions will issue a START condition, followed by the device's
+7-bit I2C address, and then send or receive the payload based on the data
+provided. This will cause a repeated start on the bus, which is valid in
+I2C specification, and the decision to use repeated starts was made to
+simplify the I2C HAL. To set the STOP condition at an appropriate moment,
+you set the <code>last_op</code> field to a <code>1</code> in either function.</p>
+<p>For example, in an I2C memory access you might write a register address and
+then read data back via:
+    hal_i2c_write(); -- write to a specific register on the device
+    hal_i2c_read(); --- read back data, setting 'last_op' to '1'</p>
 <p>An addition API was added called <code>hal_i2c_probe</code>.  This command combines
 <code>hal_i2c_begin()</code>, <code>hal_i2c_read</code>, and <code>hal_i2c_end()</code> to try to read 0-bytes
 from a specific bus address.  its intended to provide an easy way to probe
 the bus for a specific device.  NOTE: if the device is write-only, it will 
 not appear with this command.</p>
+<p>A slave API is pending for further release.</p>
 <h3 id="hal_i2c-data">HAL_I2C Data</h3>
 <p>Data to read/write is passed to the hal_i2c APIs via the </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct hal_i2c_master_data {
@@ -725,7 +735,7 @@ in the data structure and ensure that address is a value between 0-127.</p>
 </table>
 <p>In the HAL_I2C API you would communicate with this device with address 
 <code>0b1000110</code>, which is hex 0x46 or decimal 70.  The I²C drive would add the R/W bit
-and transmit it as hex 0x8D or 0x8D depending whether it was a read or
+and transmit it as hex 0x8C (binary 10001100) or 0x8D (binary 10001101) depending whether it was a read or
 write command.</p>
                         
                         <div class="row">
@@ -744,8 +754,8 @@ write command.</p>
     </li>
     <li class="pull-right">
     
-    <a href=../../hal_pwm/hal_pwm/>
-        Next: PWM
+    <a href=../../hal_os_tick/hal_os_tick/>
+        Next: OS Tick
         <span class="fa fa-arrow-right"></span>
     </a>
     

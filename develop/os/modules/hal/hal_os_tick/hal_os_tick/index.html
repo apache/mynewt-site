@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_pwm/hal_pwm/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/hal/hal_os_tick/hal_os_tick/"> -->
         <link rel="shortcut icon" href="../../../../../img/favicon.ico">
 
-	    <title>PWM - Apache Mynewt</title>
+	    <title>OS Tick - Apache Mynewt</title>
 
         <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="PWM">
+    <body class="OS Tick">
 
 
         <div class="container">
@@ -328,14 +328,6 @@
           
               
                 
-    <li >
-      <a href="../../hal_architecture/">Architecture</a>
-    </li>
-
-              
-          
-              
-                
   
   
     <li><a href="
@@ -356,23 +348,7 @@
               
                 
     <li >
-      <a href="../../hal_adc/hal_adc/">ADC</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_dac/hal_dac/">DAC</a>
+      <a href="../../hal_bsp/hal_bsp/">BSP</a>
     </li>
 
               
@@ -409,7 +385,7 @@
               
                 
     <li class="active">
-      <a href="./">PWM</a>
+      <a href="./">OS Tick</a>
     </li>
 
               
@@ -433,7 +409,23 @@
               
                 
     <li >
+      <a href="../../hal_timer/hal_timer/">Timer</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../../hal_uart/hal_uart/">UART</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../hal_watchdog/hal_watchdog/">Watchdog</a>
     </li>
 
               
@@ -461,6 +453,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../drivers/driver/">Drivers</a>
+  
   
     </li>
 
@@ -618,7 +621,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
-    <li><a href="/latest/os/introduction">Docs</a></li>
+    <li><a href="/develop/os/introduction">Docs</a></li>
     
     
         
@@ -630,7 +633,7 @@
         
       
       
-        <li>&raquo; PWM</li>
+        <li>&raquo; OS Tick</li>
       
     
     
@@ -638,65 +641,24 @@
 </div>
                         </div>
                         
-                            <h1 id="hal_pwm">hal_pwm</h1>
-<p>The hardware independent interface to Pulse Width Modulators</p>
+                            <h1 id="hal_os_tick">hal_os_tick</h1>
+<p>The hardware independent interface to set up interrupt timers or halt CPU in terms of OS ticks.</p>
 <h3 id="description">Description</h3>
-<p>Pulse Width Modulators (PWMs) are hardware devices that output digital waveforms
-with programmable duty cycle and frequency.  They use a digital waveform
-but can contiuously adjust the amount of power delivered to their load via
-duty cycle.  They are often used to create analog waveforms via low pass filter, 
-drive LEDs at various intensities, and control DC or servo motors.</p>
-<p>For a description of PSM, see <a href="https://en.wikipedia.org/wiki/Pulse-width_modulation">wikipedia</a></p>
+<p>Set up the periodic timer to interrupt at a frequency of 'os_ticks_per_sec' using the following function call where 'prio' is the cpu-specific priority of the periodic timer interrupt. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> <span style="color: #000000">os_tick_init</span>(<span style="color: #A90D91">uint32_t</span> <span style="color: #000000">os_ticks_per_sec</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">prio</span>);
+</pre></div>
+
+
+<p>You can halt CPU for up to <code>n</code> ticks:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> <span style="color: #000000">os_tick_idle</span>(<span style="color: #A90D91">os_time_t</span> <span style="color: #000000">n</span>);
+</pre></div>
+
+
+<p>The function implementations are in the mcu-specific directories such as <code>hw/mcu/nordic/nrf51xxx/src/hal_os_tick.c</code>.</p>
 <h3 id="definition">Definition</h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm.h">hal_pwm.h</a></p>
-<h3 id="hal_pwm-theory-of-operation">HAL_PWM Theory Of Operation</h3>
-<p>The HAL_PWM interface was designed with some specific use cases in mind.  It
-was also designed to exploit a subset of the functionality provided by 
-common PWM controllers.</p>
-<p>Fundamentally, a PWM has at it root an N-bit COUNTER, a CLOCK source, one or 
-more CAPTURE registers, and sometimes a TOP register.</p>
-<p>The clock source feeds the COUNTER register which is continuously counting
-(up or down), When the COUNTER is less than the value of the CAPTURE
-register, the PWM outputs a logic HIGH.  When the counter is greater than
-the CAPTURE register the PWM outputs logic LOW. When the counter reaches the TOP
-register, it wraps back to zero.  If the PWM has no TOP register, it simply
-wraps back to zero after reaching 2^N-1.</p>
-<p>The HAL_PWM abstracts this implementation and provides methods to set the
-PWM frequency and duty cycle.  The frequency is the rate at which the counter
-wraps back to zero.  The duty cycle is the fraction of time the PWM is in 
-logic HIGH state.</p>
-<p>The HAL_PWM API provides a few methods to get information on the PWM.</p>
-<table>
-<thead>
-<tr>
-<th><strong>Method Name</strong></th>
-<th><strong> Description </strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>hal_pwm_get_source_clock_freq</td>
-<td>gets the frequency of the CLOCK that is driving the COUNTER</td>
-</tr>
-<tr>
-<td>hal_pwm_get_resolution_bits</td>
-<td>gets the number of bits in the COUNTER</td>
-</tr>
-</tbody>
-</table>
-<p>To use a PWM via HAL_PWM, follow these simple steps.</p>
-<p>1) initialize a PWM using <code>hal_pwm_init</code> -- this binds the driver to the device
-for the specific PWM you are using
-2) Optionally set the frequency of the PWM using <code>hal_pwm_set_frequency</code>
--- PWMs that support a TOP register have fine control over their frequency 
-settings.  If this command is not supported by the PWM it will return an error 
-and its likely that there is no TOP register; the frequency resolution is not 
-finely adjustable.  See the BSP for coarse adjustment of the PWM frequency.<br />
-3) Enable the PWM to output a specific duty cycle using the 
-<code>hal_pwm_enable_duty_cycle</code> API</p>
-<p>To change the duty cycle dynamically, just issue another 
-<code>hal_pwm_enable_duty_cycle</code> command.</p>
-<p>To disable the PWM waveform, use <code>hal_pwm_disable</code>.</p>
+<p><a href="https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_os_tick.h">hal_os_tick.h</a></p>
+<h3 id="examples">Examples</h3>
+<p>An example of the API being used by the OS kernel for the Cortex M0 architecture to initialize and start the system clock timer can be seen in <a href="https://github.com/apache/incubator-mynewt-core/blob/master/kernel/os/src/arch/cortex_m0/os_arch_arm.c">kernel/os/src/arch/cortex_m0/os_arch_arm.c</a>.</p>
                         
                         <div class="row">
                             
