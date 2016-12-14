@@ -12,8 +12,8 @@ The "secure bootloader" should be placed in protected memory on a given microcon
  
 The Mynewt bootloader comprises two packages:
 
-    * The bootutil library (boot/bootutil)
-    * The boot application (apps/boot)
+* The bootutil library (boot/bootutil)
+* The boot application (apps/boot)
 
 The Mynewt code is thus structured so that the generic bootutil library performs most of the functions of a boot loader. The final step of actually jumping to the main image is kept out of the bootutil library.  This last step should instead be implemented in an
 architecture-specific project.  Boot loader functionality is separated in this
@@ -134,7 +134,7 @@ secondary slot, it must swap the two images in flash prior to booting.
 In addition to the two image slots, the boot loader requires a scratch area to
 allow for reliable image swapping.
 
-*** BOOT STATES
+###Boot States
 
 Logically, you can think of a pair of flags associated with each image slot:
 pending and confirmed.  On startup, the boot loader determines the state of the
@@ -310,7 +310,7 @@ purposes; they are not actually present in the boot vector.
     -----------------------------------'
 
 
-*** HIGH-LEVEL OPERATION
+###High-level Operation
 
 With the terms defined, we can now explore the boot loader's operation.  First,
 a high-level overview of the boot process is presented.  Then, the following
@@ -390,7 +390,7 @@ reverted:
         o Write slot0.image_ok = 1
         (should now be in state IV)
 
-*** SWAP STATUS
+###Swap Status
 
 The swap status region allows the boot loader to recover in case it restarts in
 the middle of an image swap operation.  The swap status region consists of a
@@ -463,7 +463,7 @@ example, if a slot uses 64 sectors, the first sector index that gets swapped is
 63, which corresponds to the exact halfway point within the region.
 
 
-*** RESET RECOVERY
+###Reset Recovery
 
 If the boot loader resets in the middle of a swap operation, the two images may
 be discontiguous in flash.  Bootutil recovers from this condition by using the
@@ -524,7 +524,7 @@ area-swap procedure, depending on whether the part belongs to image 0 or image
 After the swap operation has been completed, the boot loader proceeds as though
 it had just been started.
 
-*** INTEGRITY CHECK
+###Integrity Check
 
 An image is checked for integrity immediately before it gets copied into the
 primary slot.  If the boot loader doesn't perform an image swap, then it
@@ -538,7 +538,7 @@ an image:
     * Image *may* contain a signature TLV.  If it does, its contents must be
       verifiable using a key embedded in the boot loader.
 
-*** IMAGE SIGNING AND VERIFICATION
+###Image Signing and Verification
 
 As indicated above, the final step of the integrity check is signature
 verification.  The boot loader can have one or more public keys embedded in it
