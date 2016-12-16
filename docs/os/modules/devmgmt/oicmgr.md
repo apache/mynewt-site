@@ -1,24 +1,6 @@
-## Newt Manager
+## Using the OIC framework
 
-Newt Manager enables your Mynewt application to communicate with the newtmgr application tool and process 
-newtmgr commands.  Two Newt Manager implementations are provided: newtmgr and oicmgr. You can build one of 
-the two into your application. The one that you select may depend on memory constraints for your application 
-and whether your application supports the OIC (Open Interconnect Consortium) interoperability standard.  
-
-To reduce your application code size, you can customize Newt Manager (newtmgr or oicmgr) to only 
-process the newtmgr commands that your application uses.
-
-### newtmgr
-The newtmgr application tool uses a simple request and response message format to send commands to newtmgr.  A message 
-consists of an eight byte header and the message payload.  The message header specifies the newtmgr command. 
-The message payload contains the newtmgr request/response data and is encoded in 
-CBOR (Concise Binary Object Representation) format.  newtmgr supports BLE and serial connections.
-
-newtmgr has a smaller code size and memory footprint than oicmgr but does not support open connectivity.
-
-### oicmgr
-oicmgr supports the OIC interoperability standard.  Mynewt defines and exposes oicmgr as an OIC Server 
-resource with the following identity and properties: 
+Apache Mynewt includes support for the OIC interoperability standard through the `oicmgr` framework.  Mynewt defines and exposes oicmgr as an OIC Server resource with the following identity and properties: 
 <br>
 <table style="width:50%" align="center">
 <tr> 
@@ -38,27 +20,20 @@ resource with the following identity and properties:
 </table>
 The newtmgr application tool uses CoAP (Constrained Application Protocol) requests to send commands to oicmgr.  
 It sends a CoAP request for **/omgr** as follows:
-<ul>
-<li> 
-Specifies the newtmgr command to execute in the URI query string. 
-</li>
-<li> 
-Uses a GET method for newtmgr commands that retreive information 
-from your application, for example, the ```taskstats``` and ```mpstats``` commands. 
-</li>
-<li> 
-Uses a PUT method for newtmgr commands that send data to or modify the state of your application,
-for example, the ```echo``` or ```datetime``` commands. 
-</li>
-<li>
-Sends the CBOR-encoded command request data in the CoAP message payload.
-</li>
-</ul>
-oicmgr supports BLE, serial, and UDP connections.
 
-### Customize Newt Manager with mgmt
-The **mgmt** package enables you to customize Newt Manager (newtmgr or oicmgr) to only process the
-commands that your application uses.  newtmgr commands are divided into management groups.
+* Specifies the newtmgr command to execute in the URI query string. 
+* Uses a GET method for newtmgr commands that retreive information 
+from your application, for example, the ```taskstats``` and ```mpstats``` commands. 
+* Uses a PUT method for newtmgr commands that send data to or modify the state of your application,
+for example, the ```echo``` or ```datetime``` commands. 
+* Sends the CBOR-encoded command request data in the CoAP message payload.
+
+The `oicmgr` framework supports transport over BLE, serial, and IP connections to the device.
+
+### Customize Newt Manager usage with mgmt
+
+The **mgmt** package enables you to customize Newt Manager (in either the newtmgr or oicmgr framerwork) to only process the
+commands that your application uses. The newtmgr commands are divided into management groups.
 A manager package implements the commands for a group.  It implements the handlers that 
 process the commands for the group and registers the handlers with mgmt. 
 When newtmgr or oicmgr receives a newtmgr command, 
