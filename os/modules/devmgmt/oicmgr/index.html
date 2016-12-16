@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_init/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/devmgmt/oicmgr/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	    <title>console_init - Apache Mynewt</title>
+	    <title>Using Newt Manager in OIC framework - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="console_init">
+    <body class="Using Newt Manager in OIC framework">
 
 
         <div class="container">
@@ -259,87 +259,8 @@
                 
   
   
-    <li ><a href="../console/">Console</a>
+    <li ><a href="../../console/console/">Console</a>
   
-  
-    <ul>
-          
-              
-          
-              
-                
-  
-  
-    <li><a href="
-  ../console_blocking_mode/
-">Functions</a>
-  
-  
-    <ul>
-          
-              
-                
-    <li >
-      <a href="../console_blocking_mode/">console_blocking_mode</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../console_echo/">console_echo</a>
-    </li>
-
-              
-          
-              
-                
-    <li class="active">
-      <a href="./">console_init</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../console_is_init/">console_is_init</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../console_printf/">console_printf</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../console_read/">console_read</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../console_write/">console_write</a>
-    </li>
-
-              
-          
-    </ul>
-  
-    </li>
-
-              
-          
-    </ul>
   
     </li>
 
@@ -409,8 +330,22 @@
                 
   
   
-    <li ><a href="../../devmgmt/newtmgr/">Device Management with Newt Manager</a>
+    <li ><a href="../newtmgr/">Device Management with Newt Manager</a>
   
+  
+    <ul>
+          
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Using Newt Manager in OIC framework</a>
+    </li>
+
+              
+          
+    </ul>
   
     </li>
 
@@ -550,15 +485,15 @@
     
     
         
-          <li>&raquo; <a href="../console/">Console</a></li>
+          <li>&raquo; <a href="../../../os_user_guide/">OS User Guide</a></li>
         
       
         
-          <li>&raquo; <a href="../console_blocking_mode/">Functions</a></li>
+          <li>&raquo; <a href="../newtmgr/">Device Management with Newt Manager</a></li>
         
       
       
-        <li>&raquo; console_init</li>
+        <li>&raquo; Using Newt Manager in OIC framework</li>
       
     
     
@@ -566,46 +501,89 @@
 </div>
                         </div>
                         
-                            <h2 id="console_init"><font color="#F2853F" style="font-size:24pt"> console_init </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   int
-   console_init(console_rx_cb rx_cb)
-</pre></div>
-
-
-<p>Initializes console receive buffer and calls hal funtions <code>hal_uart_init_cbs</code> and <code>hal_uart_config</code> to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
-<p>Caller registers a function pointer of <code>type void (*console_rx_cb)(int full_line)</code>. This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.</p>
-<h4 id="arguments">Arguments</h4>
-<table>
-<thead>
-<tr>
-<th>Arguments</th>
-<th>Description</th>
+                            <h2 id="using-the-oic-framework">Using the OIC framework</h2>
+<p>Apache Mynewt includes support for the OIC interoperability standard through the <code>oicmgr</code> framework.  Mynewt defines and exposes oicmgr as an OIC Server resource with the following identity and properties: 
+<br>
+<table style="width:50%" align="center">
+<tr> 
+<td><strong>URI</strong></td> 
+<td>/omgr</td>
 </tr>
-</thead>
-<tbody>
 <tr>
-<td>rx_cb</td>
-<td>Function pointer, which gets called input is received.</td>
+<td><strong>Resource Type</strong>(rt)</td>
+<td>x.mynewt.nmgr</td> 
 </tr>
-</tbody>
+<td><strong>Interface</strong>(if)</td>
+<td>oic.if_rw (default), oic.if.baseline</td>
+</tr>
+<td><strong>Discoverable</strong></td>
+<td>Yes</td>
+</tr>
 </table>
-<h4 id="returned-values">Returned values</h4>
-<p>Returns 0 on success.
-Non-zero if HAL UART function calls fail.</p>
-<h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">int
-main(int argc, char **argv)
-{
-    ....
-
-    /* Init tasks */
-    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,
-                         SHELL_MAX_INPUT_LEN);
-    console_init(shell_console_rx_cb);
-
-    ....
-}
-</pre></div>
+The newtmgr application tool uses CoAP (Constrained Application Protocol) requests to send commands to oicmgr.<br />
+It sends a CoAP request for <strong>/omgr</strong> as follows:</p>
+<ul>
+<li>Specifies the newtmgr command to execute in the URI query string. </li>
+<li>Uses a GET method for newtmgr commands that retreive information 
+from your application, for example, the <code>taskstats</code> and <code>mpstats</code> commands. </li>
+<li>Uses a PUT method for newtmgr commands that send data to or modify the state of your application,
+for example, the <code>echo</code> or <code>datetime</code> commands. </li>
+<li>Sends the CBOR-encoded command request data in the CoAP message payload.</li>
+</ul>
+<p>The <code>oicmgr</code> framework supports transport over BLE, serial, and IP connections to the device.</p>
+<h3 id="customize-newt-manager-usage-with-mgmt">Customize Newt Manager usage with mgmt</h3>
+<p>The <strong>mgmt</strong> package enables you to customize Newt Manager (in either the newtmgr or oicmgr framerwork) to only process the
+commands that your application uses. The newtmgr commands are divided into management groups.
+A manager package implements the commands for a group.  It implements the handlers that 
+process the commands for the group and registers the handlers with mgmt. 
+When newtmgr or oicmgr receives a newtmgr command, 
+it looks up the handler for the command (by management group id and command id) from mgmt and calls the 
+handler to process the command.   </p>
+<p>The system level management groups are listed in following table:
+<table style="width:90%" align="center">
+<tt>
+<td>Management Group</td>
+<td>newtmgr Commands</td>
+<td>Package</td>
+</tt>
+<tr>
+<td>MGMT_GROUP_ID_DEFAULT</td>
+<td><code>echo</code> <code>taskstats</code> <code>mpstats</code> <code>datetime</code> <code>reset</code></td>
+<td>mgmt/newtmgr/nmgr_os</td>
+</tr>
+<tr>
+<td>MGMT_GROUP_ID_IMAGE</td>
+<td><code>image</code> </td>
+<td>mgmt/imgmgr</td>
+</tr>
+<tr>
+<td>MGMT_GROUP_ID_STATS</td>
+<td><code>stat</code> </td>
+<td>sys/stats</td>
+</tr>
+<tr>
+<td>MGMT_GROUP_ID_CONFIG</td>
+<td><code>config</code></td>
+<td>sys/config</td>
+</tr>
+<tr>
+<td>MGMT_GROUP_ID_LOGS</td>
+<td><code>log</code></td>
+<td>sys/log</td>
+</tr>
+<tr>
+<td>MGMT_GROUP_ID_CRASH</td>
+<td><code>crash</code></td>
+<td>test/crash_test</td>
+</tr>
+<tr>
+<td>MGMT_GROUP_ID_RUNTEST</td>
+<td><code>runtest</code></td>
+<td>test/runtest</td>
+</tr>
+</table>
+Both newtmgr and ocimgr process the MGMT_GROUP_ID_DEFAULT commands by default.  You can also
+use mgmt to add user defined management group commands. </p>
                         
                         <div class="row">
                             
@@ -615,16 +593,16 @@ main(int argc, char **argv)
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../console_echo/>
+    <a href=../newtmgr/>
         <span class="fa fa-arrow-left"></span>
-        Previous: console_echo
+        Previous: Device Management with Newt Manager
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../console_is_init/>
-        Next: console_is_init
+    <a href=../../imgmgr/imgmgr/>
+        Next: Image Manager
         <span class="fa fa-arrow-right"></span>
     </a>
     
