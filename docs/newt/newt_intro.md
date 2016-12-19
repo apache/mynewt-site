@@ -97,10 +97,11 @@ bin
 
 Once a target has been built, Newt allows additional operations on the target.  
 
-* **download**: Download built target to board
+* **load**: Download built target to board
 * **debug**: Open debugger session to target
 * **size**: Get size of target components
 * **create-image**: Add image header to the binary image
+* **run**: Build, create image, load, and finally open a debug session with the target
 
 For more details on how Newt works, go to [Newt - Theory of Operations](newt_operation.md).
 
