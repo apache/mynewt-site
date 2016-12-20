@@ -88,7 +88,23 @@ os_eventq_dflt_set(&sys_evq);
 ```
 
 This will initialize the task, initialize the event queue, and then set the new event queue as
-the default event queue.        
+the default event queue.       
+
+Finally, we need to add the task handler for the event queue:
+
+```c
+/**
+ * This task serves as a container for the shell and newtmgr packages.  These
+ * packages enqueue timer events when they need this task to do work.
+ */
+static void
+sysevq_handler(void *arg)
+{
+    while (1) {
+        os_eventq_run(&sys_evq);
+    }
+}
+```
 
 ### Build targets
 
