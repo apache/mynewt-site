@@ -46,10 +46,16 @@
 
         <div class="container">
     <div class="row v2-main-banner">
-        <div class="col-xs-12 v2-vcenter">
-            <a href="/"><img class="logo" src="/img/logo.png"></a>
-
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
             <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.0.0-b1</a> released (Dec 13, 2016)
+            </div>
         </div>
     </div>
 </div>
@@ -370,28 +376,35 @@
 <p>When Newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
 <p><br></p>
 <h4 id="apps-package-directory">"apps" Package Directory</h4>
-<p><code>apps</code> is where applications are stored, and applications are where the main() function is contained.  Along with the <code>targets</code> directory, <code>apps</code> represents the top-level of the build tree, and define the dependencies and features for the rest of the system.</p>
-<p>The app definition is contained in a <code>pkg.yml</code> file. An example of blinky's <code>pkg.yml</code> file is:</p>
+<p><code>apps</code> is where applications are stored, and applications are where the main() function is contained.  The base project directory comes with one simple app called <code>blinky</code> in the <code>apps</code> directory. The core repository <code>@apache-mynewt-core</code> comes with many additional sample apps in its <code>apps</code> directory. At the time of this writing, there are several example BLE apps, the boot app, slinky app for using newt manager protocol, and more in that directory.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">@~/dev/myproj$ ls repos/apache-mynewt-core/apps/
+blecent     bleprph_oic bleuart     ffs2native  slinky_oic  test
+blehci      bletest     boot        ocf_sample  spitest     timtest
+bleprph     bletiny     fat2native  slinky      splitty
+</pre></div>
+
+
+<p>Along with the <code>targets</code> directory, <code>apps</code> represents the top-level of the build tree for the particular project, and define the dependencies and features for the rest of the system. Mynewt users and developers can add their own apps to the project's <code>apps</code> directory.   </p>
+<p>The app definition is contained in a <code>pkg.yml</code> file. For example, blinky's <code>pkg.yml</code> file is:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more apps/blinky/pkg.yml
 &lt;snip&gt;
 pkg.name: apps/blinky
-pkg.vers: 0.8.0
+pkg.type: app
 pkg.description: Basic example application which blinks an LED.
 pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;
 pkg.homepage: &quot;http://mynewt.apache.org/&quot;
-pkg.repository:
 pkg.keywords:
 
 pkg.deps:
-     - &quot;@apache-mynewt-core/libs/os&quot;
-     - &quot;@apache-mynewt-core/hw/hal&quot;
-     - &quot;@apache-mynewt-core/libs/console/full&quot;
+    - &quot;@apache-mynewt-core/kernel/os&quot;
+    - &quot;@apache-mynewt-core/hw/hal&quot;
+    - &quot;@apache-mynewt-core/sys/console/full&quot;
 </pre></div>
 
 
 <p><br></p>
 <p>This file says that the name of the package is apps/blinky, and it 
-depends on libs/os, hw/hal and libs/console/full packages.</p>
+depends on kernel/os, hw/hal and sys/console/full packages.</p>
 <p><strong>NOTE:</strong> @apache-mynewt-core is a repository descriptor, and this will be 
 covered in the "repository" section. </p>
 <p><br></p>
@@ -403,23 +416,27 @@ covered in the "repository" section. </p>
 <li>bsp: The board support package to combine with that application</li>
 <li>build_profile: Either debug or optimized.</li>
 </ul>
-<p>The <code>my_blinky_sim</code> target in the example below has the following settings:</p>
+<p>The <code>my_blinky_sim</code> target that is included by default has the following settings:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show
 targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
-$ ls my_blinky_sim/
+$ ls targets/my_blinky_sim/
 pkg.yml     target.yml
 </pre></div>
 
 
+<p>There are helper functions to aid the developer specify parameters for a target. </p>
+<ul>
+<li><strong>vals</strong>: Displays all valid values for the specified parameter type (e.g. bsp for a target)</li>
+<li><strong>target show</strong>: Displays the build artifacts for specified or all targets</li>
+</ul>
 <p>In general, the three basic parameters of a target (<code>app</code>, <code>bsp</code>, and <code>build_profile</code>) are stored in the <code>target.yml</code> file in that target's build directory under <code>targets</code>. You will also see a <code>pkg.yml</code> file in the same directory. Since targets are packages, a <code>pkg.yml</code> is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:</p>
 <ul>
 <li>Cflags: Any additional compiler flags you might want to specify to the build</li>
 <li>Aflags: Any additional assembler flags you might want to specify to the build</li>
 <li>Lflags: Any additional linker flags you might want to specify to the build</li>
-<li>features: Any system level features you want to enable.</li>
 </ul>
 <p><br></p>
 <h3 id="resolving-dependencies">Resolving dependencies</h3>
@@ -493,21 +510,10 @@ newt structure must always be prefixed by the package name. For example, libs/os
 
 <p><br></p>
 <ul>
-<li>
-<p>API requirements are validated.  Packages can export APIs they 
+<li>API requirements are validated.  Packages can export APIs they 
 implement, (i.e. pkg.api: hw-hal-impl), and other packages can require 
-those APIs (i.e. pkg.req_api: hw-hal-impl).</p>
-</li>
-<li>
-<p>"Features" options are supported.  Packages can change what dependencies 
-they have, or what flags they are using based upon what features are enabled in the system.  As an example, many packages will add additional software, based on whether the shell package is present.  To do this, they can overwrite cflags or deps based upon the shell "feature."</p>
-</li>
+those APIs (i.e. pkg.req_api: hw-hal-impl).</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.cflags.SHELL: -DSHELL_PRESENT
-</pre></div>
-
-
-<p><br></p>
 <p>In order to properly resolve all dependencies in the build system, Newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.</p>
 <p>Newt then goes through this package list, and builds every package into 
 an archive file.</p>
@@ -556,45 +562,36 @@ bin/
 <p>Once a target has been build, there are a number of helper functions 
 that work on the target.  These are:</p>
 <ul>
-<li><strong>download</strong>     Download built target to board</li>
+<li><strong>load</strong>     Download built target to board</li>
 <li><strong>debug</strong>        Open debugger session to target</li>
-<li>size         Size of target components</li>
-<li>create-image Add image header to target binary</li>
+<li><strong>size</strong>         Size of target components</li>
+<li><strong>create-image</strong>  Add image header to target binary</li>
+<li><strong>run</strong>  The equivalent of build, create-image, load, and debug on specified target</li>
 </ul>
-<p>Download and debug handles driving GDB and the system debugger.  These 
+<p><code>load</code> and <code>debug</code> handles driving GDB and the system debugger.  These 
 commands call out to scripts that are defined by the BSP.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more repos/apache-mynewt-core/hw/bsp/nrf52pdk/nrf52pdk_debug.sh
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh
 &lt;snip&gt;
-#
-if [ $# -lt 1 ]; then
-     echo &quot;Need binary to download&quot;
-     exit 1
+. $CORE_PATH/hw/scripts/jlink.sh
+
+FILE_NAME=$BIN_BASENAME.elf
+
+if [ $# -gt 2 ]; then
+    SPLIT_ELF_NAME=$3.elf
+    # TODO -- this magic number 0x42000 is the location of the second image
+    # slot. we should either get this from a flash map file or somehow learn
+    # this from the image itself
+    EXTRA_GDB_CMDS=&quot;add-symbol-file $SPLIT_ELF_NAME 0x8000 -readnow&quot;
 fi
 
-FILE_NAME=$2.elf
-GDB_CMD_FILE=.gdb_cmds
+JLINK_DEV=&quot;nRF52&quot;
 
-echo &quot;Debugging&quot; $FILE_NAME
-
-# Monitor mode. Background process gets it&#39;s own process group.
-set -m
-JLinkGDBServer -device nRF52 -speed 4000 -if SWD -port 3333 -singlerun &amp;
-set +m
-
-echo &quot;target remote localhost:3333&quot; &gt; $GDB_CMD_FILE
-
-arm-none-eabi-gdb -x $GDB_CMD_FILE $FILE_NAME
-
-rm $GDB_CMD_FILE
+jlink_debug
 </pre></div>
 
 
 <p>The idea is that every BSP will add support for the debugger environment 
 for that board.  That way common tools can be used across various development boards and kits.</p>
-<p><strong>NOTE:</strong> Both for compiler definitions and debugger scripts, the plan is to 
-create Dockerizable containers of these toolchains.  This should make 
-things much easier to support across Mac OS X, Linux and Windows.  Newt 
-will know how to call out to Docker to perform these processes.</p>
                         
                         <div class="row">
                             
