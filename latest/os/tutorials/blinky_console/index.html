@@ -591,7 +591,22 @@ we'll have to modify the source for the app in order to add one. </p>
 
 
 <p>This will initialize the task, initialize the event queue, and then set the new event queue as
-the default event queue.        </p>
+the default event queue.       </p>
+<p>Finally, we need to add the task handler for the event queue:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
+<span style="color: #177500"> * This task serves as a container for the shell and newtmgr packages.  These</span>
+<span style="color: #177500"> * packages enqueue timer events when they need this task to do work.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">sysevq_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+{
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">&amp;sys_evq</span>);
+    }
+}
+</pre></div>
+
+
 <h3 id="build-targets">Build targets</h3>
 <p>We're not going to build the bootloader here since we are assuming that you have already
 built and loaded it during previous tutorials.</p>
