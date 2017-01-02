@@ -10,35 +10,38 @@ For instance, in the example below, the *newt* command has the subcommand `targe
 
 Global flags work uniformly across *newt* commands. Consider the flag `-v, --verbose,` It works both for command and subcommands, to generate verbose output. Likewise, the help flag `-h` or  `--help,`  to print helpful messsages.
 
-A command may additionally take flags specific to it. For example, the `-b ` flag instructs `newt pkg install` to install the pkg from a git `branch.`
+A command may additionally take flags specific to it. For example, the `-n ` flag instructs `newt debug` not to start GDB from command line.
 
 ```no-highlight
-    newt pkg install -b <branchname> <eggname>
+    newt debug <target-name> -n
 ```
 In addition to the [Newt Tool Manual](newt_intro.md) in docs, command-line help is available for each command (and subcommand), through the `-h` or `--help` options. 
 
 ```no-highlight
-    $ newt target export --help
-    Export build targets from the current nest, and print them to 
-    standard output. If the -a (or -export-all) option is specified, 
-    then all targets will be exported. Otherwise, <target-name> 
-    must be specified, and only that target will be exported.
-
-    Usage: 
-      newt target export [flags]
-
-    Examples:
-      newt target export [-a -export-all] [<target-name>]
-      newt target export -a > my_exports.txt
-      newt target export my_target > my_target_export.txt
-
-    Flags:
-      -a, --export-all=false: If present, export all targets
-      -h, --help=false: help for export
-
+    newt target  --help
+    Command for manipulating targets
+    
+    Usage:
+      newt target [flags]
+      newt target [command]
+    
+    Available Commands:
+      config      View target system configuration
+      copy        Copy target
+      create      Create a target
+      delete      Delete target
+      dep         View target's dependency graph
+      revdep      View target's reverse-dependency graph
+      set         Set target configuration variable
+      show        View target configuration variables
+    
     Global Flags:
-      -l, --loglevel="WARN": Log level, defaults to WARN.
-      -q, --quiet=false: Be quiet; only display error output.
-      -s, --silent=false: Be silent; don't output anything.
-      -v, --verbose=false: Enable verbose output when executing commands.
+      -l, --loglevel string   Log level (default "WARN")
+      -o, --outfile string    Filename to tee output to
+      -q, --quiet             Be quiet; only display error output
+      -s, --silent            Be silent; don't output anything
+      -v, --verbose           Enable verbose output when executing commands
+    
+    Use "newt target [command] --help" for more information about a command.
+
 ```
