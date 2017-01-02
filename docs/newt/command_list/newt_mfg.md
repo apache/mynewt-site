@@ -101,3 +101,4 @@ Creating a manufacturing image from the following files:
 Generated the following files:
 <snip>
 $
+```
