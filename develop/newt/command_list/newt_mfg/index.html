@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/newt/command_list/newt_upgrade/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/newt/command_list/newt_mfg/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>newt upgrade - Apache Mynewt</title>
+	    <title>newt mfg - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="newt upgrade">
+    <body class="newt mfg">
 
 
         <div class="container">
@@ -356,8 +356,8 @@
           
               
                 
-    <li >
-      <a href="../newt_mfg/">newt mfg</a>
+    <li class="active">
+      <a href="./">newt mfg</a>
     </li>
 
               
@@ -404,8 +404,8 @@
           
               
                 
-    <li class="active">
-      <a href="./">newt upgrade</a>
+    <li >
+      <a href="../newt_upgrade/">newt upgrade</a>
     </li>
 
               
@@ -467,7 +467,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
-    <li><a href="/latest/os/introduction">Docs</a></li>
+    <li><a href="/develop/os/introduction">Docs</a></li>
     
     
         
@@ -479,7 +479,7 @@
         
       
       
-        <li>&raquo; newt upgrade</li>
+        <li>&raquo; newt mfg</li>
       
     
     
@@ -487,19 +487,28 @@
 </div>
                         </div>
                         
-                            <h2 id="newt-upgrade"><font color="#F2853F" style="font-size:24pt">newt upgrade </font></h2>
-<p>Upgrade project dependencies</p>
+                            <h2 id="newt-mfg"><font color="#F2853F" style="font-size:24pt">newt mfg </font></h2>
+<p>Provides commands to create, build, and upload manufacturing image. </p>
 <h4 id="usage">Usage:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    newt pkg [command][flag] input1 input2
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    newt mfg [flags]
+    newt mfg [command]
+</pre></div>
+
+
+<h4 id="available-commands">Available Commands:</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    create      Create a manufacturing flash image
+    deploy      Builds and uploads a manufacturing image (build + load)
+    load        Load a manufacturing flash image onto a device
 </pre></div>
 
 
 <h4 id="flags">Flags:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    -f, --force   Force upgrade of the repositories to latest state in project.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    -h, --help=false: help for mfg
+</pre></div>
 
-#### Global Flags:
 
-    -l, --loglevel=&quot;WARN&quot;: Log level, defaults to WARN.
+<h4 id="global-flags">Global Flags:</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    -l, --loglevel=&quot;WARN&quot;: Log level, defaults to WARN.
     -o, --outfile string    Filename to tee log output to
     -q, --quiet=false: Be quiet; only display error output.
     -s, --silent=false: Be silent; don&#39;t output anything.
@@ -517,11 +526,74 @@
 </thead>
 <tbody>
 <tr>
-<td>upgrade</td>
-<td>If you have changed the project.yml description for the project, you need to run this command to update all the package dependencies.</td>
+<td>create</td>
+<td>A manufacturing image specifies 1) a boot loader target, and 2) one or more image targets. Assuming the manufacturing entity has been created and defined in the <code>mfgs/&lt;mfg image name&gt;/</code> package(see Examples below), this command collects the manufacturing related files in the newly created <code>bin/mfgs/&lt;mfg image name&gt;</code> directory. The collection includes manifests with the image build time, version, manufacturing package build time, image ID (or hash) etc. It is essentially a snapshot of the image data and metadata uploaded to the device flash at manufacturing time. Note that the command expects the targets and images to have already been built using <code>newt build</code> and <code>newt create-image</code> commands.</td>
+</tr>
+<tr>
+<td>deploy</td>
+<td>A combination of build and load commands to put together and upload manufacturing image on to the device.</td>
+</tr>
+<tr>
+<td>load</td>
+<td>Loads the manufacturing package onto to the flash of the connected device.</td>
 </tr>
 </tbody>
 </table>
+<h4 id="examples">Examples</h4>
+<p>Suppose you have created two targets (one for the bootloader and one for the <code>blinky</code> app). </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show
+targets/my_blinky_sim
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/native
+    build_profile=debug
+targets/rb_blinky
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/rb-nano2
+    build_profile=debug
+targets/rb_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/rb-nano2
+    build_profile=optimized
+</pre></div>
+
+
+<p>Build the bootloader and app images.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build rb_boot
+$ newt build rb_boot
+$ newt create-image rb_blinky 0.0.1
+</pre></div>
+
+
+<p>Create the directory and package to hold the manufacturing images.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ mkdir -p mfgs/rb_blinky_rsa
+</pre></div>
+
+
+<p>The <code>rb_blinky_rsa</code> package needs a pkg.yml file. In addition it is needs a mfg.yml file where the two constituent targets are defined. An example of each file is shown below.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$  more mfgs/rb_blinky_rsa/pkg.yml 
+pkg.name: &quot;mfgs/rb_blinky_rsa&quot;
+pkg.type: &quot;mfg&quot;
+pkg.description: 
+pkg.author: 
+pkg.homepage: 
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$  more mfgs/rb_blinky_rsa/mfg.yml 
+mfg.bootloader: &#39;targets/rb_boot&#39;
+mfg.images:
+    - &#39;targets/rb_blinky&#39;
+</pre></div>
+
+
+<p>Run the <code>newt mfg create</code> command to collect all the manufacturing snapshot files.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt mfg create rb_blinky_rsa
+Creating a manufacturing image from the following files:
+&lt;snip&gt;
+Generated the following files:
+&lt;snip&gt;
+$
+</pre></div>
                         
                         <div class="row">
                             
@@ -531,16 +603,16 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../newt_test/>
+    <a href=../newt_load/>
         <span class="fa fa-arrow-left"></span>
-        Previous: newt test
+        Previous: newt load
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../newt_version/>
-        Next: newt version
+    <a href=../newt_new/>
+        Next: newt new
         <span class="fa fa-arrow-right"></span>
     </a>
     

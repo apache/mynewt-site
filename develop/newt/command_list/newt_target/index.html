@@ -301,6 +301,14 @@
               
                 
     <li >
+      <a href="../newt_complete/">newt complete</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../newt_create_image/">newt create-image</a>
     </li>
 
@@ -342,6 +350,14 @@
                 
     <li >
       <a href="../newt_load/">newt load</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../newt_mfg/">newt mfg</a>
     </li>
 
               
@@ -479,12 +495,14 @@
 
 
 <h4 id="available-commands">Available Commands:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    show        View target configuration variables
-    set         Set target configuration variable
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    config      View target system configuration
+    copy        Copy target
     create      Create a target
     delete      Delete target
-    copy        Copy target
-    vars        Show variable names possible for a target
+    dep         View target&#39;s dependency graph
+    revdep      View target&#39;s reverse-dependency graph
+    set         Set target configuration variable
+    show        View target configuration variables
 </pre></div>
 
 
@@ -512,20 +530,12 @@
 </thead>
 <tbody>
 <tr>
-<td>show</td>
-<td>Shows what variables (attributes) are set on the specified target <code>input1</code>. If no <code>input1</code> is specified then show the configuration for all the targets defined so far.</td>
+<td>config</td>
+<td>Displays the specified target's system configuration. The configuration for any package is listed in its <code>syscfg.yml</code> file. A target build consists of several packages. The command lists the settings for the config variables from all the included packages. If the default values have not been changed then the default values will be seen.</td>
 </tr>
 <tr>
-<td>set</td>
-<td>Set variables (attributes) of the target named via <code>input1</code>. Currently the list of possible attributes (variables) are:<code>app</code>, <code>bsp</code>, <code>build_profile</code>, <code>features</code>, <code>cflags</code>, <code>lflags</code>. For a simulated target, e.g. for software testing purposes, <code>bsp</code> is set to <code>@apache-mynewt-core/hw/bsp/native</code>.</td>
-</tr>
-<tr>
-<td></td>
-<td>To display all the existing values for a target variable (attribute), you can simply hit return after that variable. For example, <code>newt target set input1 app</code> displays the valid values available for the variable <code>app</code> for a target named <code>input11</code>.</td>
-</tr>
-<tr>
-<td></td>
-<td>Currently, the only two values available for <code>build_profile</code> are <code>optimized</code> and <code>debug</code>.</td>
+<td>copy</td>
+<td>Set variables (attributes) of the target named via <code>input1</code>. Currently the list of possible attributes (variables) are:<code>app</code>, <code>bsp</code>, <code>build_profile</code>, <code>cflags</code>, <code>lflags</code>. For a simulated target, e.g. for software testing purposes, <code>bsp</code> is set to <code>@apache-mynewt-core/hw/bsp/native</code>.</td>
 </tr>
 <tr>
 <td>create</td>
@@ -533,15 +543,31 @@
 </tr>
 <tr>
 <td>delete</td>
-<td>Deletes only the description for the target. Does not delete the target directory with associated binaries. If you want to clean out the binaries, list files, and executables use<code>newt target clean &lt;target-name&gt;</code> <strong>before</strong> deleting the target!</td>
+<td>Deletes only the description for the target. Does not delete the target directory with associated binaries. If you want to clean out the binaries, list files, and executables use<code>newt clean &lt;target-name&gt;</code> <strong>before</strong> deleting the target!</td>
 </tr>
 <tr>
-<td>copy</td>
-<td>Creates a new target by the name of <code>input2</code> by cloning the definition of an existing target named <code>input1</code>.</td>
+<td>dep</td>
+<td>Creates dependency tree for packages in the code for a target. Display shows each package followed by the list of libraries or packages that it depends on.</td>
 </tr>
 <tr>
-<td>vars</td>
-<td>Shows what variables (attributes) are available to set on the target</td>
+<td>revdep</td>
+<td>Creates the reverse dependency tree for packages in the code for a target. Display shows each package followed by the list of libraries or packages that depend on it.</td>
+</tr>
+<tr>
+<td>set</td>
+<td>Set variables (attributes) of the target named via <code>input1</code>. Currently the list of possible attributes (variables) are:<code>app</code>, <code>bsp</code>, <code>build_profile</code>, <code>features</code>, <code>cflags</code>, <code>lflags</code>. For a simulated target, e.g. for software testing purposes, <code>bsp</code> is set to <code>@apache-mynewt-core/hw/bsp/native</code>.</td>
+</tr>
+<tr>
+<td></td>
+<td>To display all the existing values for a target variable (attribute), you can issue a <code>newt vals &lt;variable-name&gt;</code> command. For example, <code>newt vals app</code> displays the valid values available for the variable <code>app</code> for any target.</td>
+</tr>
+<tr>
+<td></td>
+<td>Currently, the only two values available for <code>build_profile</code> are <code>optimized</code> and <code>debug</code>.</td>
+</tr>
+<tr>
+<td>show</td>
+<td>Shows what variables (attributes) are set on the specified target <code>input1</code>. If no <code>input1</code> is specified then show the configuration for all the targets defined so far.</td>
 </tr>
 </tbody>
 </table>
@@ -556,6 +582,21 @@
 </thead>
 <tbody>
 <tr>
+<td>config</td>
+<td>newt target config rb_blinky</td>
+<td>Shows all the system configuration settings for all the packages in the target named <code>rb_blinky</code>.</td>
+</tr>
+<tr>
+<td>copy</td>
+<td>newt target copy rb_blinky rb_bletiny</td>
+<td>Clones the target settings in <code>rb_blinky</code> to the destination target <code>rb_bletiny</code></td>
+</tr>
+<tr>
+<td>create</td>
+<td>newt target create target1</td>
+<td>Creates an empty target by the name <code>target1</code></td>
+</tr>
+<tr>
 <td>show</td>
 <td>newt target show myble</td>
 <td>Shows all variable settings for the target named "myble" i.e. what app, bsp, build_profile, features, cflags are set to. Note that all variables are not required to be set in order to successfully define a target.</td>
@@ -569,16 +610,6 @@
 <td>set</td>
 <td>newt target set myble app=@apache-mynewt-core/apps/bletiny</td>
 <td>Assign <code>bletiny</code> to be the application to be included in the build for the target named <code>myble</code>.</td>
-</tr>
-<tr>
-<td>copy</td>
-<td>newt target copy my_blinky_sim test1</td>
-<td>Creates a new target by the name <code>test1</code> by copying the attributes from <code>my_blinky_sim</code></td>
-</tr>
-<tr>
-<td>vars</td>
-<td>newt target vars</td>
-<td>Shows all the variables newt recognizes - app, bsp, build_profile, features</td>
 </tr>
 </tbody>
 </table>
