@@ -1,14 +1,17 @@
 # Mqueue
 
-Mqueue (Mbuf event queue) is a set of APIs built on top of the mbuf and event queue code. A typical networking stack operation is to put a packet on a queue and post an event to the task handling that queue. Mqueue was designed to provide a common API so that individual packages would not each have to create similar code.
+The mqueue construct allows a task to wake up when it receives data.  Typically, this data is in the form of packets received over a network.  A common networking stack operation is to put a packet on a queue and post an event to the task monitoring that queue. When the task handles the event, it processes each packet on the packet queue.
 
-The mqueue data structure consists of a queue head pointer (a "stailq" queue; a singly linked list with head structure having a pointer to the start and end of the list) and an os event structure. Packets (packet header mbufs) are added to the queue using the `omp_next` pointer in the `os_mbuf_pkthdr` structure of the mbuf. The event is used to post to the task an event of type `OS_EVENT_T_MQUEUE_DATA`. 
-
-<br>  
+<br>
 
 ### Using Mqueue
 
-The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call `my_task_rx_data_func`. Presumably, some other code will call this API. 
+The following code sample demonstrates how to use an mqueue.  In this example:
+
+* packets are put on a receive queue
+* a task processes each packet on the queue (increments a receive counter)
+
+Not shown in the code example is a call `my_task_rx_data_func`. Presumably, some other code will call this API. 
 
 <br>
 
@@ -18,23 +21,29 @@ uint32_t pkts_rxd;
 struct os_mqueue rxpkt_q;
 struct os_eventq my_task_evq;
 
+/**
+ * Removes each packet from the receive queue and processes it.
+ */
 void
 process_rx_data_queue(void)
 {
     struct os_mbuf *om;
 
-	/* Drain all packets off queue and process them */
     while ((om = os_mqueue_get(&rxpkt_q)) != NULL) {
         ++pkts_rxd;
         os_mbuf_free_chain(om);
     }
 }
 
+/**
+ * Called when a packet is received.
+ */
 int
 my_task_rx_data_func(struct os_mbuf *om)
 {
     int rc;
 
+    /* Enqueue the received packet and wake up the listening task. */
     rc = os_mqueue_put(&rxpkt_q, &my_task_evq, om);
     if (rc != 0) {
         return -1;
@@ -56,24 +65,14 @@ my_task_handler(void *arg)
 	/* Initialize mqueue */
     os_mqueue_init(&rxpkt_q, NULL);
 
+    /* Process each event posted to our eventq.  When there are no events to
+     * process, sleep until one arrives.
+     */
     while (1) {
-        ev = os_eventq_get(&my_task_evq);
-        switch (ev->ev_type) {
-        
-        case OS_EVENT_T_MQUEUE_DATA:
-            process_rx_data_queue();
-            break;
-
-        default:
-            assert(0);
-            break;
-        }
+        os_eventq_run(&my_task_evq);
     }
 }
-    
 ```
-
-
 
 ### Data Structures
 
@@ -95,4 +94,3 @@ The functions available in Mqueue are:
 | [os_mqueue_init](os_mqueue_init.md) | Initializes an mqueue. |
 | [os_mqueue_get](os_mqueue_get.md) | Retrieves a packet off an Mqueue. |
 | [os_mqueue_put](os_mqueue_put.md) | Adds a packet (i.e. packet header mbuf) to an mqueue. |
-
