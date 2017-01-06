@@ -39,6 +39,7 @@ for the package. `defs` is a mapping (or associative array) of system configurat
 has the following syntax:  
  
 ```no-highlight
+
 syscfg.defs:
     PKGA_SYSCFG_NAME1:
        description:
@@ -50,6 +51,7 @@ syscfg.defs:
        value:
        type:
        restrictions:
+
 ```
 Each system configuration setting definition consists of the following key-value mapping:  
 
@@ -70,7 +72,7 @@ following table:
 <td>Describes the usage for the setting. This field is optional.</td>
 <tr>
 <td><code>value<code></td>
-<td>Specifies the default value for the setting. This field is required. The value depends on the <code>type</code> that you specify. 
+<td>Specifies the default value for the setting. This field is required. The value depends on the <code>type</code> that you specify and can be the empty string. 
 <tr>
 <td><code>type</code></td>
 <td>Specifies the data type for the <code>value</code> field. This field is optional. You can specify one of three types:
@@ -84,20 +86,19 @@ newt alphabetically orders all system configuration settings of this type and as
 task priority number to each setting. </li>
 </ul>
 </li>
-<li><code>flash_owner</code> - Specifies a flash area. 
-<br>
-<b>CHRIS - what is the format for this? The syscfg.yml files that use this type do not specify a value.</b> 
+<li><code>flash_owner</code> - Specifies a flash area. The <code>value</code> should be the name of a flash area 
+defined in the BSP flash map for your target board. 
 </li>
 </ul>
 </td>
 </tr>
 <tr>
 <td><code>restrictions</code></td>
-<td>Specifies restrictions on the setting value. This is an optional field. You can specify two formats:
+<td>Specifies a list of restrictions on the setting value. This is an optional field. You can specify two formats:
 <ul>
-<li><code>$notnull</code> - Specifies that <code>value</code> cannot be the empty string.
+<li><code>$notnull</code> - Specifies that the setting cannot have the empty string for a value. A package must 
+override the value when the default <code>value</code> is the empty string. 
 <br>
-<b>CHRIS: Do we still need this since we are now requiring a default value? </b> 
 </li>
 <li><code>expression</code> - Specifies a boolean expression of the form <code>[!]&ltrequired-setting>[if &ltbase-value>]</code>
 <br>Examples:
@@ -112,7 +113,9 @@ task priority number to each setting. </li>
 </table>
 **Examples**
 
-This is an example excerpt from the `sys/log` package `syscfg.yml` file:
+The following example is an excerpt from the `sys/log` package `syscfg.yml` file. It defines the 
+`LOG_LEVEL` configuration setting to specify the log level and the `LOG_NEWTMGR` configuration setting to specify whether
+to enable or disable the newtmgr logging feature.
 
 ```no-highlight
 
@@ -130,7 +133,8 @@ syscfg.defs:
 
 ```
 
-The following example excerpt from the `net/nimble/controller` package `syscfg.yml` file uses the `task_priority` type:
+The following example excerpt from the `net/nimble/controller` package `syscfg.yml` file defines the `BLE_LL_PRIO` 
+configuration setting with a `task_priority` type and assigns task priority 0 to the BLE link layer task.
 
 ```no-highlight
 
@@ -142,7 +146,24 @@ syscfg.defs:
 
 ```
 
+The following example excerpt from the `fs/nffs` package `syscfg.yml` file defines the `NFFS_FLASH_AREA` 
+configuration setting with a `flash_owner` type to specify the flash area to use for the Newtron Flash File System. 
+It also indicates that the setting must have a value so a higher priority package must set the value.
+
+```no-highlight
+
+syscfg.defs:
+    NFFS_FLASH_AREA:
+        description: 'The flash area to use for the Newtron Flash File System'
+        type: flash_owner
+        value:
+        restrictions:
+            - $notnull
+
+```
+
 ####Overriding System Configuration Setting Values
+
 You use the `vals` parameter in `syscfg.yml` files to override the system configuration setting default values defined
 by other packages.  This mechanism allows:
 
@@ -155,11 +176,13 @@ by other packages.  This mechanism allows:
 `vals` specifies the mappings of system configuration setting name-value pairs as follows: 
 
 ```no-highlight
+
 syscfg.vals:
     PKGA_SYSCFG_NAME1: VALUE1
     PKGA_SYSCFG_NAME2: VALUE2
               ...
     PKGN_SYSCFG_NAME1: VALUEN
+
 ```
 newt ignores overrides of undefined system configuration settings.  
 
@@ -169,9 +192,8 @@ newt uses package priorities to determine whether a package can override a value
 to resolve conflicts when multiple packages override the same system configuration setting. 
 The following rules apply:
 
-* A package can only override the system configuration settings values that 
-  are defined by packages with the same or lower priority. 
-   ** CHRIS - Can LIB packages override the setting values of other LIB packages? The sysconfig email said yes but it looks like the current code does not allow it.**
+* A package can only override the default values of system configuration settings that 
+  are defined by lower priority packages.
 * When packages with different priorities override the same system configuration setting value, newt uses 
    the value from the highest priority package.
 * Packages of equal priority cannot override the same system configuration setting with different values. 
@@ -188,13 +210,14 @@ The following package types are listed from highest to lowest priority:
 It is recommended that you override defaults at the target level instead of updating individual 
 package `syscfg.yml` files.
 
-**Example** 
+**Examples** 
 
-This example is an excerpt from the `apps/slinky` package `syscfg.yml` file.  The package overrides, 
+The following example is an excerpt from the `apps/slinky` package `syscfg.yml` file.  The package overrides, 
 in addition to other packages, the `sys/log` package system configuration settings defined in the 
 previous example. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
 
 ```no-highlight
+
 syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
@@ -204,14 +227,45 @@ syscfg.vals:
     # Enable newtmgr commands.
     STATS_NEWTMGR: 1
     LOG_NEWTMGR: 1
+
 ```
 
+The following example are excerpts from the `hw/bsp/native` package `bsp.yml` and `syscfg.yml` files. 
+The package defines the flash areas for the BSP flash map in the `bsp.yml` file, and sets the `NFFS_FLASH_AREA` 
+configuration setting value to use the flash area named `FLASH_AREA_NFFS` in the `syscfg.yml` file.
+
+```no-highlight
+
+bsp.flash_map:
+    areas:
+        # System areas.
+        FLASH_AREA_BOOTLOADER:
+            device: 0
+            offset: 0x00000000
+            size: 16kB
+
+             ...
+
+        # User areas.
+        FLASH_AREA_REBOOT_LOG:
+            user_id: 0
+            device: 0
+            offset: 0x00004000
+            size: 16kB
+        FLASH_AREA_NFFS:
+            user_id: 1
+            device: 0
+            offset: 0x00008000
+            size: 32kB
+
+
+syscfg.vals:
+    NFFS_FLASH_AREA: FLASH_AREA_NFFS
+
+```
 
 ####Generated syscfg.h
 
-**CHRIS - Please confirm that newt no longer generates #define for packages that are part of the 
-build and #define for exported APIs in syscfg.h**
- 
 newt processes all the package `syscfg.yml` files and generates the
 `<target-path>/generated/include/syscfg/syscfg.h` include file with `#define` statements for each system configuration 
 setting definition.  newt creates a `#define` for a system configuration setting name as follows: 
@@ -234,6 +288,7 @@ the `sys/log` package definitions and also indicates that `app/slinky` changed t
 for the `LOG_NEWTMGR` settings.  
 
 ```no-highlight
+
 #ifndef H_MYNEWT_SYSCFG_
 #define H_MYNEWT_SYSCFG_
 
@@ -267,7 +322,6 @@ for the `LOG_NEWTMGR` settings.
 ```
 
 ### System Initialization
-**CHRIS do we need to document sysinit_loader() for split images.**
 
 An application's `main()` function must first call the Mynewt `sysinit()` function to 
 initialize the software before it performs any other processing.
@@ -277,7 +331,9 @@ initialization function that `sysinit_app()` calls to initialize a package.
 A package init function must have the following prototype:
 
 ```no-highlight
+
 void init_func_name(void)
+
 ```
 Package init functions are called in stages to ensure that lower priority packages 
 are initialized before higher priority packages.
@@ -298,16 +354,16 @@ You specify an init function in the `pkg.yml` file for a package as follows:
        package init functions.  Mynewt calls the package init functions in increasing stage number order
        and in alphabetic order of init function names for functions in the same stage.
        Note: The init function will be called at stage 0 if `pkg.init_stage` is not specified.
-
-       ** CHRIS - Are there guidelines on how to select the stage number? Are there specific stage numbers assigned
-        to packages? **
  
+Note: You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
+
 #### Generated sysinit_app() Function
 newt processes the `init_function` and `init_stage` parameters in all the pkg.yml files for a target,
 generates the `sysinit_app()` function in the `<target-path>/generated/src/<target-name>-sysinit_app.c` file, and 
 includes the file in the build. Here is an example `sysinit_app()` function:
 
 ```no-highlight
+
 /**
  * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
  */
@@ -361,12 +417,14 @@ sysinit_app(void)
 ```
 
 ###Conditional Configurations
-You can use the system configuration settings values to conditionally specify parameter values
+You can use the system configuration setting values to conditionally specify parameter values
 in `pkg.yml` and `syscfg.yml` files. The syntax is:
 
 ```no-highlight
+
 parameter_name.PKGA_SYSCFG_NAME:
      parameter_value
+
 ```
 This specifies that `parameter_value` is only set for `parameter_name` if the `PKGA_SYSCFG_NAME` configuration setting value 
 is non-zero. Here is an example from the `libs/os` package `pkg.yml` file:
