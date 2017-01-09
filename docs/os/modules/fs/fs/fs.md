@@ -6,12 +6,11 @@ Mynewt provides a file system abstraction layer (`fs/fs`) to allow client code t
 
 Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the
 `fs/fs` package.
-In terms of the Mynewt hierarchy, the **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
+In terms of the Mynewt hierarchy, an **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
 
-Applications wanting to access a filesystem are required to responsible for
-including the necessary packages in their applications pkg.yml file.
-
-the file system, so it depends on a concrete file system package called `fs/nffs` (Newtron Flash File System).
+Applications wanting to access a filesystem are required to include the necessary packages in their applications pkg.yml file.
+In the following example, the [`Newtron Flash File System`](../nffs/nffs.md)
+is used.
 
 ```no-highlight
 # repos/apache-mynewt-core/apps/slinky/pkg.yml
@@ -28,12 +27,12 @@ pkg.deps:
  # Package: apps/<example app>
 # [...]
     CONFIG_NFFS: 1  # initialize and configure NFFS into the system
-# Consult the documentation for nffs for a broader explanation of NFFS_DETECT_FAIL
 #   NFFS_DETECT_FAIL: 1   # Ignore NFFS detection issues 
 #   NFFS_DETECT_FAIL: 2   # Format a new NFFS file system on failure to detect
 
 # [...]
 ```
+Consult the documentation for [`nffs`](../nffs/nffs.md) for a more detailed explanation of NFFS_DETECT_FAIL
 
 Code which uses the file system after the system has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the system has been initialized, and therefore only depends on the `fs/fs` package.
 
