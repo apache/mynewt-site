@@ -4,47 +4,38 @@ Mynewt provides a file system abstraction layer (`fs/fs`) to allow client code t
 
 ###Description
 
-Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the `fs/fs` package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
+Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the
+`fs/fs` package.
+In terms of the Mynewt hierarchy, the **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
 
-The following example illustrates how file system dependencies should be managed.  In the slinky application, the app is responsible for initializing the file system, so it depends on a concrete file system package called `fs/nffs` (Newtron Flash File System). The app explicitly initializes nffs via calls to `nffs_init()`, `nffs_detect()` and `nffs_format()`.
+Applications wanting to access a filesystem are required to responsible for
+including the necessary packages in their applications pkg.yml file.
+
+the file system, so it depends on a concrete file system package called `fs/nffs` (Newtron Flash File System).
 
 ```no-highlight
 # repos/apache-mynewt-core/apps/slinky/pkg.yml
 
 pkg.name: repos/apache-mynewt-core/apps/slinky
 pkg.deps:
-    - fs/nffs
+    - fs/fs         # include the file operations interfaces
+    - fs/nffs       # include the NFFS filesystem implementation
+```
+
+```
+# repos/apache-mynewt-core/apps/slinky/syscfg.yml
+# [...]
+ # Package: apps/<example app>
+# [...]
+    CONFIG_NFFS: 1  # initialize and configure NFFS into the system
+# Consult the documentation for nffs for a broader explanation of NFFS_DETECT_FAIL
+#   NFFS_DETECT_FAIL: 1   # Ignore NFFS detection issues 
+#   NFFS_DETECT_FAIL: 2   # Format a new NFFS file system on failure to detect
 
 # [...]
 ```
 
-```c
-/* repos/apache-mynewt-core/apps/slinky/src/main.c */
-
-#include "nffs/nffs.h"
-
-int
-main(int argc, char **argv)
-{
-    int rc;
-    int cnt;
-    struct nffs_area_desc descs[NFFS_AREA_MAX];
-
-    rc = nffs_init();
-    assert(rc == 0);
-
-    cnt = NFFS_AREA_MAX;
-    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &cnt, descs);
-    assert(rc == 0);
-    if (nffs_detect(descs) == FS_ECORRUPT) {
-        rc = nffs_format(descs);
-        assert(rc == 0);
-    }
-    // [...]
-}
-```
-
-On the other hand, code which uses the file system after it has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main app has initialized the file system, and therefore only depends on the `fs/fs` package.
+Code which uses the file system after the system has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the system has been initialized, and therefore only depends on the `fs/fs` package.
 
 ```no-highlight
 # repos/apache-mynewt-core/libs/imgmgr/pkg.yml
