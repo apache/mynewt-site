@@ -71,4 +71,4 @@ For the deployed site a version prefix is added to the URL for each mkdocs page.
 1. Grab a link checking tool like [Integrity](http://peacockmedia.software/mac/integrity/free.html)
 1. Run: `./build.py --test-build`
 1. Run: `./serve.py`
-1. point the link checker at http://localhost:8000/
+1. Point the link checker at http://localhost:8000/
