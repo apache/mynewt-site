@@ -6,7 +6,7 @@ The split image mechanism divides a target into two separate images: one
 capable of image upgrade; the other containing application code.  By isolating
 upgrade functionality to a separate image, the application can support
 over-the-air upgrade without dedicating flash space to network stack and
-management code.
+management code. 
 
 ## Concept
 
@@ -50,7 +50,7 @@ among these two images as follows:
 
 1. Loader: 
     * Mynewt OS.
-    * BLE stack.
+    * Network stack for connectivity during upgrade e.g. BLE stack.
     * Anything else required for image upgrade.
 
 2. Application:
@@ -120,9 +120,7 @@ Building target targets/bleprph-nrf51dk
 Target successfully built: targets/bleprph-nrf51dk
 ```
 
-With our target built, we can view a code size breakdown using the `newt size
-<target>` command.  In the interest of brevity, the smaller entries are
-excluded from the below output:
+With our target built, we can view a code size breakdown using the `newt size <target>` command.  In the interest of brevity, the smaller entries are excluded from the below output:
 
 ```
 [~/tmp/myproj2]$ newt size bleprph-nrf51dk
@@ -154,7 +152,7 @@ objsize
 
 ```
 
-The full image text size is about 103kB.  With an image slot size of 110kB,
+The full image text size is about 103kB (where 1kB = 1024 bytes).  With an image slot size of 110kB,
 this leaves only about 7kB of flash for additional application code and data.
 Not good.  This is the situation we would be facing if we were using the
 Unified setup.
@@ -252,8 +250,7 @@ example, if your application needs bluetooth functionality, it can use the BLE
 stack present in the loader instead of containing its own copy.
 
 Finally, let's deploy the split image to our nRF51dk board.  The procedure here
-is the same as if we were using the Unified setup, i.e., via either the `newt
-load` or `newt run` command.
+is the same as if we were using the Unified setup, i.e., via either the `newt load` or `newt run` command.
 
 ```
 [~/repos/mynewt/core]$ newt load split-nrf51dk 0
@@ -367,11 +364,11 @@ below:
 4. Upload new loader to slot 1 (`newtmgr image upload <filename>`).
 5. Tell device to "test out" the new loader on next boot (`newtmgr image test <new-loader-hash>`).
 6. Reboot device (`newtmgr reset`).
-7. Make above change permanent (`newtmgr image confirm`).
+7. Make above change of loader permanent (`newtmgr image confirm`).
 8. Upload new application to slot 1 (`newtmgr image upload <filename>`).
 9. Tell device to "test out" the new application on next boot (`newtmgr image test <new-application-hash>`).
 10. Reboot device (`newtmgr reset`).
-11. Make above change permanent (`newtmgr image confirm`).
+11. Make above change of application permanent (`newtmgr image confirm`).
 
 When performing this process manually, it may be helpful to use `image list` to
 check the image management state as you go.

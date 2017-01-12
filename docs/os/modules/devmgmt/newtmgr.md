@@ -7,7 +7,7 @@ Newt Manager is the protocol that enables your Mynewt application to communicate
 
 ### Invoking Newt Manager commands
 
-The diagram below indicates the two options available to the application developer to issue Newt Manager commands ('newtmgr commmands`) on a Mynewt device. The application may leverage the `newtmgr` framework or the `oicmgr` framework to call the newtmgr commands. The latter is described in the next chapter.
+The diagram below indicates the two options available to the application developer to issue Newt Manager commands (`newtmgr commmands`) on a Mynewt device. The application may leverage the `newtmgr` framework or the `oicmgr` framework to call the newtmgr commands. The latter is described in the next chapter.
 
 ![Device Management](./device-mgmt.png)
 
