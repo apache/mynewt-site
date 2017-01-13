@@ -494,6 +494,17 @@ The sensor has a serial port connection, and that's how you are going to connect
 We're using one for our shell/console. It also has a second UART set up as a 'bit-bang' UART but since the SenseAir only needs to
 communicate at 9600 baud, this bit-banged uart is plenty fast enough.
 
+You'll have to make a small change to the `syscfg.yml` file in the hw/bsp/arduino_primo_nrf52 directory to chang the pin definitions 
+for this second UART. Those changes are as follows:
+
+```no-highlight
+    UART_0_PIN_TX:
+        description: 'New Pin Assignment'
+        value: 23
+    UART_0_PIN_RX:
+        description: 'New Pin Assignment'
+        value: 24
+```
 
 With this in place, you can refer to serial port where your SenseAir sensor is by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.
 
@@ -797,10 +808,7 @@ main(int argc, char **argv)
     ....
     }
 ```
-<<<<<<< HEAD
 
-=======
->>>>>>> Updated to work with Arduino Primo
 You can see from the code that you are using the HAL interface to open a UART port, and using OS 
 semaphore as a way of blocking the task when waiting for read response to come back from the sensor.
 
