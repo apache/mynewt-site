@@ -1,6 +1,10 @@
 ## Air quality sensor project via Bluetooth
 
+<<<<<<< HEAD
 This is a follow-on project to the [Basic Air Quality Sensor](air_quality_esnsor.md) project so it is
+=======
+This is a follow-on project to the [Basic Air Quality Sensor](air_quality_sensor.md) project so it is
+>>>>>>> Updated to work with Arduino Primo
 assumed that you have worked through that project and have your CO2 sensor working properly with
 your Arduino Primo board. 
 

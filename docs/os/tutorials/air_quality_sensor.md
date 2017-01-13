@@ -502,7 +502,6 @@ for this second UART. Those changes are as follows:
     UART_0_PIN_RX: 24
 ```
 
-
 With this in place, you can refer to serial port where your SenseAir sensor by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.
 
 You will now see what the driver code ends up looking like. Here's the header file, filled in from the stub you created earlier.
