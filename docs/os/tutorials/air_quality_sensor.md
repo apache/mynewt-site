@@ -494,19 +494,15 @@ The sensor has a serial port connection, and that's how you are going to connect
 We're using one for our shell/console. It also has a second UART set up as a 'bit-bang' UART but since the SenseAir only needs to
 communicate at 9600 baud, this bit-banged uart is plenty fast enough.
 
-You'll have to make a small change to the `syscfg.yml` file in the hw/bsp/arduino_primo_nrf52 directory to chang the pin definitions 
+You'll have to make a small change to the `syscfg.yml` file in your project's target directory to chang the pin definitions 
 for this second UART. Those changes are as follows:
 
 ```no-highlight
-    UART_0_PIN_TX:
-        description: 'New Pin Assignment'
-        value: 23
-    UART_0_PIN_RX:
-        description: 'New Pin Assignment'
-        value: 24
+    UART_0_PIN_TX: 23
+    UART_0_PIN_RX: 24
 ```
 
-With this in place, you can refer to serial port where your SenseAir sensor is by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.
+With this in place, you can refer to serial port where your SenseAir sensor by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.
 
 You will now see what the driver code ends up looking like. Here's the header file, filled in from the stub you created earlier.
 
@@ -534,8 +530,6 @@ You will now see what the driver code ends up looking like. Here's the header fi
 
 enum senseair_read_type {
         SENSEAIR_CO2,
-        SENSEAIR_TEMPERATURE,
-        SENSEAIR_HUMIDITY
 };
 
 int senseair_init(int uartno);
@@ -582,12 +576,6 @@ And here is the source for the driver.
     
 static const uint8_t cmd_read_co2[] = {
     0xFE, 0X44, 0X00, 0X08, 0X02, 0X9F, 0X25
-};
-static const uint8_t cmd_read_temp[] = {
-    0xFE, 0X44, 0X00, 0X12, 0X02, 0X94, 0X45
-};
-static const uint8_t cmd_read_humidity[] = {
-    0xFE, 0x44, 0x00, 0x14, 0x02, 0x97, 0xE5
 };
     
 static int senseair_shell_func(int argc, char **argv);
@@ -715,14 +703,6 @@ senseair_read(enum senseair_read_type type)
         cmd = cmd_read_co2;
         cmd_len = sizeof(cmd_read_co2);
         break;
-    case SENSEAIR_TEMPERATURE:
-        cmd = cmd_read_temp;
-        cmd_len = sizeof(cmd_read_temp);
-        break;
-    case SENSEAIR_HUMIDITY:
-        cmd = cmd_read_humidity;
-        cmd_len = sizeof(cmd_read_humidity);
-        break;
     default:
         return -1;
     }
@@ -745,15 +725,11 @@ senseair_shell_func(int argc, char **argv)
     
     if (argc < 2) {
 usage:
-        console_printf("%s <co2|temp|humidity>\n", argv[0]);
+        console_printf("%s co2\n", argv[0]);
         return 0;
     }
     if (!strcmp(argv[1], "co2")) {
         type = SENSEAIR_CO2;
-    } else if (!strcmp(argv[1], "temp")) {
-        type = SENSEAIR_TEMPERATURE;
-    } else if (!strcmp(argv[1], "humidity")) {
-        type = SENSEAIR_HUMIDITY;
     } else {
         goto usage;
     }
@@ -868,7 +844,7 @@ user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
     1382:     stat      echo         ?    prompt     ticks     tasks
     1390: mempools      date  senseair
     1395: > senseair
-    senseair <co2|temp|humidity>
+    senseair co2
     2143: > senseair co2
     Got 973
     
