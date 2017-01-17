@@ -212,7 +212,9 @@ earlier. This one just reads and updates the CO2 value and sends that over BLE t
 connected clients. 
 
 We can now build, create-image and load the app onto our Arduino Primo board, and then 
-connect and see the updated values!
+connect and see the updated values! The image below shows the results using MyNewt Sensor Reader,
+a Mac OS X app developed for conecting to MyNewt devices over Bluetooth but you can also use LightBlue
+or any other application that can conect to, and read, Bluetooth data.
 
 ![MyNewt Sensor Reader](pics/MyNewtSensorReader.jpg)
 
