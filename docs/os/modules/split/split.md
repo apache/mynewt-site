@@ -1,104 +1,398 @@
-
 #Split Images
-
 
 ## Description
 
-Split images allow the user to build the application content separate from the library content by 
-splitting an application into two pieces:
-
-* A "loader" which contains a separate application that can perform upgrades and manage split images. 
-The "loader" resides in slot 1.
-* A "split app" which contains the main application content and references the libraries in the loader 
-by static linkage. The "split app" resides in slot 2.
-
-## Goals
-
-The goal of split images is to allow a larger application to run along with large components of 
-mynewt such as [nimble BLE stack](../../../network/ble/ble_intro/) and [neutron flash file system(nffs)](../fs/nffs/nffs.md).
+The split image mechanism divides a target into two separate images: one
+capable of image upgrade; the other containing application code.  By isolating
+upgrade functionality to a separate image, the application can support
+over-the-air upgrade without dedicating flash space to network stack and
+management code. 
 
 ## Concept
 
-In a typical mynewt application, an application is contained wholly within an image slot.  Typically 
-there are at least two image slots since the image runs from one slot while uploading new code into 
-the second slot.  Each image is capable of erasing and uploading another image.  Each image is completely 
-stand-alone; that is, each image contains all of the libraries and components that it needs.
+Mynewt supports three image setups:
 
-On a typical 256 kbyte flash, a flash layout might look like this:
+| Setup     | Description |
+|-----------|-------------|
+| Single    | One large image; upgrade not supported.   |
+| Unified   | Two standalone images.                    |
+| Split     | Kernel in slot 0; application in slot 1.  |
 
-| Name  | Size  |
-|---|---|
-| bootloader  | 16 k  |
-| image slot 1  | 108 k  |
-| image slot 2  | 108 k  |
-| scratch  | 8 k  |
-| Flash file system  | 16 k  |
+Each setup has its tradeoffs.  The Single setup gives you the most flash space,
+but doesn't allow you to upgrade after manufacturing.  The Unified setup allows
+for a complete failover in case a bad image gets uploaded, but requires a lot
+of redundancy in each image, limiting the amount of flash available to the
+application.  The Split setup sits somewhere between these two options.
 
-Now, suppose the desired image contains:
+Before exploring the split setup in more detail, it might be helpful to get a
+basic understanding of the Mynewt boot sequence.  The boot process is
+summarized below.
 
-|  Package | Size  |
-|---|---|
-|  nimble |  69 k |
-|  os  | 6 k  |
-|  logging  |  3 k |
-|  imagemgr | 3 k  |
-| config | 3 k |
-| nffs | 15 k |
-| newtmgr | 7 k |
+#### Boot Sequence - Single
 
+In the Single setup, there is no boot loader.  Instead, the image is placed at
+address 0.  The hardware boots directly into the image code.  Upgrade is not
+possible because there is no boot loader to move an alternate image into place.
 
-which total 106k.  With an image slot size of 108k this leaves only a small amount of code space 
-remaining for the application.
+#### Boot Sequence - Unified
 
-However, we can see that these packages contain everything you need to upgrade and configure, so 
-if we build a stand-alone loader with these components, we can build the app as a split image and 
-get the entire second image slot to store application code and constant data.
+In the Unified setup, the boot loader is placed at address 0.  At startup, the
+boot loader arranges for the correct image to be in image slot 0, which may
+entail swapping the contents of the two image slots.  Finally, the boot loader
+jumps to the image in slot 0.
 
+#### Boot Sequence - Split
 
-## When do I use split images
+The Split setup differs from the other setups mainly in that a target is not
+fully contained in a single image.  Rather, the target is partitioned among two
+separate images: the _loader_, and the _application_.  Functionality is divided
+among these two images as follows:
 
-If your application fits into the available image slots, there is no advantage to using split 
-images.  In general, split images are harder to debug and more complicated to upload. However 
-for a larger application, there may not be enough flash space to have two copies of the entire 
-application. This is when split image becomes necessary.
+1. Loader: 
+    * Mynewt OS.
+    * Network stack for connectivity during upgrade e.g. BLE stack.
+    * Anything else required for image upgrade.
 
-## How do I tell Newt I am building a split image?
+2. Application:
+    * Parts of Mynewt not required for image upgrade.
+    * Application-specific code.
 
-Newt looks for the variable `loader` in your target file. If it finds `loader` variable, it 
-will build a split image.  For example,
+The loader image serves three purposes:
+
+1. *Second-stage boot loader:* it jumps into the application image at
+   start up.
+2. *Image upgrade server:* the user can upgrade to a new loader + application
+   combo, even if an application image is not currently running.
+3. *Functionality container:* the application image can directly access all the
+   code present in the loader image
+
+From the perspective of the boot loader, a loader image is identical to a plain
+unified image.  What makes a loader image different is a change to its start up
+sequence: rather than starting the Mynewt OS, it jumps to the application image
+in slot 1 if one is present.
+
+## Tutorial
+
+### Building a Split Image
+
+We will be referring to the nRF51dk for examples in this document.  Let's take
+a look at this board's flash map (defined in `hw/bsp/nrf51dk/bsp.yml`):
+
+| Name                  | Offset        | Size (kB) |
+|-----------------------|---------------|-----------|
+| Boot loader           | 0x00000000    | 16        |
+| Reboot log            | 0x00004000    | 16        |
+| Image slot 0          | 0x00008000    | 110       |
+| Image slot 1          | 0x00023800    | 110       |
+| Image scratch         | 0x0003f000    | 2         |
+| Flash file system     | 0x0003f800    | 2         |
+
+The application we will be building is [bleprph](../../tutorials/bleprph).
+First, we create a target to tie our BSP and application together.
 
 ```
-targets/app
-    app=@apache-mynewt-core/apps/splitty
-    loader=@apache-mynewt-core/apps/slinky
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+newt target create bleprph-nrf51dk
+newt target set bleprph-nrf51dk                     \
+    app=@apache-mynewt-core/apps/bleprph            \
+    bsp=@apache-mynewt-core/hw/bsp/nrf51dk          \
+    build_profile=optimized                         \
+    syscfg=BLE_LL_CFG_FEAT_LE_ENCRYPTION=0:BLE_SM_LEGACY=0
+```
+The two syscfg settings disable bluetooth security and keep the code size down.
+
+We can verify the target using the `target show` command:
+
+```
+[~/tmp/myproj2]$ newt target show bleprph-nrf51dk
+targets/bleprph-nrf51dk
+    app=@apache-mynewt-core/apps/bleprph
+    bsp=@apache-mynewt-core/hw/bsp/nrf51dk
     build_profile=optimized
+    syscfg=BLE_LL_CFG_FEAT_LE_ENCRYPTION=0:BLE_SM_LEGACY=0
 ```
-shows an application called splitty which uses slinky as its loader.
 
-## Platforms
+Next, build the target:
 
-Split image requires BSP support.  The following BSPs support split images:
+```
+[~/tmp/myproj2]$ newt build bleprph-nrf51dk
+Building target targets/bleprph-nrf51dk
+# [...]
+Target successfully built: targets/bleprph-nrf51dk
+```
 
-* hw/bsp/arduino_primo_nrf52
-* hw/bsp/bmd300eval
-* hw/bsp/nrf51-blenano
-* hw/bsp/nrf51dk
-* hw/bsp/nrf51dk-16kbram
-* hw/bsp/nrf52dk
+With our target built, we can view a code size breakdown using the `newt size <target>` command.  In the interest of brevity, the smaller entries are excluded from the below output:
+
+```
+[~/tmp/myproj2]$ newt size bleprph-nrf51dk
+Size of Application Image: app
+  FLASH     RAM
+   2446    1533 apps_bleprph.a
+   1430     104 boot_bootutil.a
+   1232       0 crypto_mbedtls.a
+   1107       0 encoding_cborattr.a
+   2390       0 encoding_tinycbor.a
+   1764       0 fs_fcb.a
+   2959     697 hw_drivers_nimble_nrf51.a
+   4126     108 hw_mcu_nordic_nrf51xxx.a
+   8161    4049 kernel_os.a
+   2254      38 libc_baselibc.a
+   2612       0 libgcc.a
+   2232      24 mgmt_imgmgr.a
+   1499      44 mgmt_newtmgr_nmgr_os.a
+  23918    1930 net_nimble_controller.a
+  28537    2779 net_nimble_host.a
+   2207     205 sys_config.a
+   1074     197 sys_console_full.a
+   3268      97 sys_log.a
+   1296       0 time_datetime.a
+
+objsize
+   text    data     bss     dec     hex filename
+ 105592    1176   13392  120160   1d560 /home/me/tmp/myproj2/bin/targets/bleprph-nrf51dk/app/apps/bleprph/bleprph.elf
+
+```
+
+The full image text size is about 103kB (where 1kB = 1024 bytes).  With an image slot size of 110kB,
+this leaves only about 7kB of flash for additional application code and data.
+Not good.  This is the situation we would be facing if we were using the
+Unified setup.
+
+The Split setup can go a long way in solving our problem.  Our unified bleprph
+image consists mostly of components that get used during an image upgrade.  By
+using the Split setup, we turn the unified image into two separate images: the
+loader and the application.  The functionality related to image upgrade can be
+delegated to the loader image, freeing up a significant amount of flash in the
+application image slot.
+
+Let's create a new target to use with the Split setup.  We designate a target
+as a split target by setting the `loader` variable.  In our example, we are
+going to use `bleprph` as the loader, and `splitty` as the application.
+`bleprph` makes sense as a loader because it contains the BLE stack and
+everything else required for an image upgrade.
+
+```
+newt target create split-nrf51dk
+newt target set split-nrf51dk                       \
+    loader=@apache-mynewt-core/apps/bleprph         \
+    app=@apache-mynewt-core/apps/splitty            \
+    bsp=@apache-mynewt-core/hw/bsp/nrf51dk          \
+    build_profile=optimized                         \
+    syscfg=BLE_LL_CFG_FEAT_LE_ENCRYPTION=0:BLE_SM_LEGACY=0
+```
+
+Verify that the target looks correct:
+
+```
+[~/tmp/myproj2]$ newt target show split-nrf51dk
+targets/split-nrf51dk
+    app=@apache-mynewt-core/apps/splitty
+    bsp=@apache-mynewt-core/hw/bsp/nrf51dk
+    build_profile=optimized
+    loader=@apache-mynewt-core/apps/bleprph
+    syscfg=BLE_LL_CFG_FEAT_LE_ENCRYPTION=0:BLE_SM_LEGACY=0
+```
+
+Now, let's build the new target:
+
+```
+[~/tmp/myproj2]$ newt build split-nrf51dk
+Building target targets/split-nrf51dk
+# [...]
+Target successfully built: targets/split-nrf51dk
+```
+
+And look at the size breakdown (again, smaller entries are removed):
+
+```
+[~/tmp/myproj2]$ newt size split-nrf51dk
+Size of Application Image: app
+  FLASH     RAM
+   3064     251 sys_shell.a
+
+objsize
+   text    data     bss     dec     hex filename
+   4680     112   17572   22364    575c /home/me/tmp/myproj2/bin/targets/split-nrf51dk/app/apps/splitty/splitty.elf
+
+Size of Loader Image: loader
+  FLASH     RAM
+   2446    1533 apps_bleprph.a
+   1430     104 boot_bootutil.a
+   1232       0 crypto_mbedtls.a
+   1107       0 encoding_cborattr.a
+   2390       0 encoding_tinycbor.a
+   1764       0 fs_fcb.a
+   3168     705 hw_drivers_nimble_nrf51.a
+   4318     109 hw_mcu_nordic_nrf51xxx.a
+   8285    4049 kernel_os.a
+   2274      38 libc_baselibc.a
+   2612       0 libgcc.a
+   2232      24 mgmt_imgmgr.a
+   1491      44 mgmt_newtmgr_nmgr_os.a
+  25169    1946 net_nimble_controller.a
+  31397    2827 net_nimble_host.a
+   2259     205 sys_config.a
+   1318     202 sys_console_full.a
+   3424      97 sys_log.a
+   1053      60 sys_stats.a
+   1296       0 time_datetime.a
+
+objsize
+   text    data     bss     dec     hex filename
+ 112020    1180   13460  126660   1eec4 /home/me/tmp/myproj2/bin/targets/split-nrf51dk/loader/apps/bleprph/bleprph.elf
+```
+
+The size command shows two sets of output: one for the application, and another
+for the loader.  The addition of the split functionality did make bleprph
+slightly bigger, but notice how small the application is: 4.5 kB!  Where before
+we only had 7 kB left, now we have 105.5 kB.  Furthermore, all the
+functionality in the loader is available to the application at any time.  For
+example, if your application needs bluetooth functionality, it can use the BLE
+stack present in the loader instead of containing its own copy.
+
+Finally, let's deploy the split image to our nRF51dk board.  The procedure here
+is the same as if we were using the Unified setup, i.e., via either the `newt load` or `newt run` command.
+
+```
+[~/repos/mynewt/core]$ newt load split-nrf51dk 0
+Loading app image into slot 2
+Loading loader image into slot 1
+```
+
+### Image Management
+
+#### Retrieve Current State (image list)
+
+Image management in the split setup is a bit more complicated than in the
+unified setup.  You can determine a device's image management state with the
+`newtmgr image list` command.  Here is how a device responds to this command
+after our loader + application combo has been deployed:
+
+```
+[~/tmp/myproj2]$ newtmgr -c A600ANJ1 image list
+Images:
+ slot=0
+    version: 0.0.0
+    bootable: true
+    flags: active confirmed
+    hash: 948f118966f7989628f8f3be28840fd23a200fc219bb72acdfe9096f06c4b39b
+ slot=1
+    version: 0.0.0
+    bootable: false
+    flags:
+    hash: 78e4d263eeb5af5635705b7cae026cc184f14aa6c6c59c6e80616035cd2efc8f
+Split status: matching
+```
+
+There are several interesting things about this response:
+
+1. *Two images:*  This is expected; we deployed both a loader image and an
+application image.
+2. *bootable flag:* Notice slot 0's bootable flag is set, while slot 1's is
+not.  This tells us that slot 0 contains a loader and slot 1 contains an
+application.  If an image is bootable, it can be booted directly from the boot
+loader.  Non-bootable images can only be started from a loader image.
+3. *flags:* Slot 0 is `active` and `confirmed`; none of slot 1's flags are set.
+The `active` flag indicates that the image is currently running; the
+`confirmed` flag indicates that the image will continue to be used on
+subsequent reboots.  Slot 1's lack of enabled flags indicates that the image is
+not being used at all.
+4. *Split status:* The split status field tells you if the loader and
+application are compatible.  A loader + application combo is compatible only if
+both images were built at the same time with `newt`.  If the loader and
+application are not compatible, the loader will not boot into the application.
+
+### Enabling a Split Application
+
+By default, the application image in slot 1 is disabled.  This is indicated in
+the `image list` response above. When you deploy a loader / application combo
+to your device, the application image won't actually run.  Instead, the loader
+will act as though an application image is not present and remain in "loader
+mode".  Typically, a device in loader mode simply acts as an image management
+server, listening for an image upgrade or a request to activate the application
+image.
+
+Use the following command sequence to enable the split application image:
+
+1. Tell device to "test out" the application image on next boot (`newtmgr image test <application-image-hash>`).
+2. Reboot device (`newtmgr reset`).
+3. Make above change permanent (`newtmgr image confirm`).
+
+After the above sequence, a `newtmgr image list` command elicits the following response:
+
+```
+[~/tmp/myproj2]$ newtmgr -c A600ANJ1 image confirm
+Images:
+ slot=0
+    version: 0.0.0
+    bootable: true
+    flags: active confirmed
+    hash: 948f118966f7989628f8f3be28840fd23a200fc219bb72acdfe9096f06c4b39b
+ slot=1
+    version: 0.0.0
+    bootable: false
+    flags: active confirmed
+    hash: 78e4d263eeb5af5635705b7cae026cc184f14aa6c6c59c6e80616035cd2efc8f
+Split status: matching
+```
+
+The `active confirmed` flags value on both slots indicates that both images are
+permanently running.
+
+### Image Upgrade
+
+First, let's review of the image upgrade process for the Unified setup.  The
+user upgrades to a new image in this setup with the following steps:
+
+#### Image Upgrade - Unified
+
+1. Upload new image to slot 1 (`newtmgr image upload <filename>`).
+2. Tell device to "test out" the new image on next boot (`newtmgr image test <image-hash>`).
+3. Reboot device (`newtmgr reset`).
+4. Make new image permanent (`newtmgr image confirm`).
+
+#### Image Upgrade - Split
+
+The image upgrade process is a bit more complicated in the Split setup.  It is
+more complicated because two images need to be upgraded (loader and
+application) rather than just one.  The split upgrade process is described
+below:
+
+1. Disable split functionality; we need to deactivate the application image in
+   slot 1 (`newtmgr image test <current-loader-hash>`).
+2. Reboot device (`newtmgr reset`).
+3. Make above change permanent (`newtmgr image confirm`).
+4. Upload new loader to slot 1 (`newtmgr image upload <filename>`).
+5. Tell device to "test out" the new loader on next boot (`newtmgr image test <new-loader-hash>`).
+6. Reboot device (`newtmgr reset`).
+7. Make above change of loader permanent (`newtmgr image confirm`).
+8. Upload new application to slot 1 (`newtmgr image upload <filename>`).
+9. Tell device to "test out" the new application on next boot (`newtmgr image test <new-application-hash>`).
+10. Reboot device (`newtmgr reset`).
+11. Make above change of application permanent (`newtmgr image confirm`).
+
+When performing this process manually, it may be helpful to use `image list` to
+check the image management state as you go.
+
+## Syscfg
+
+Syscfg is Mynewt's system-wide configuration mechanism.  In a split setup,
+there is a single umbrella syscfg configuration that applies to both the loader
+and the application.  Consequently, overriding a value in an application-only
+package potentially affects the loader (and vice-versa).
 
 ## Loaders
 
-The following applications have been enabled as loaders. You may choose to build your own loader 
-application, and these can serve as samples.
+The following applications have been enabled as loaders. You may choose to
+build your own loader application, and these can serve as samples.
 
 * @apache-mynewt-core/apps/slinky
 * @apache-mynewt-core/apps/bleprph
 
 ## Split Apps
 
-The following applications have been enabled as split applications. If you choose to build your own 
-split application these can serve as samples. Note that slinky can be either a loader image or a split app image.
+The following applications have been enabled as split applications. If you
+choose to build your own split application these can serve as samples. Note
+that slinky can be either a loader image or an application image.
 
 * @apache-mynewt-core/apps/slinky
 * @apache-mynewt-core/apps/splitty
@@ -107,314 +401,28 @@ split application these can serve as samples. Note that slinky can be either a l
 
 A split image is built as follows:
 
-First newt builds the `app` and `loader` images separately to ensure they are consistent (no errors) and 
-to generate elf files which can inform newt of the symbols used by each part.
-
-Then newt collects the symbols used by both `app` and `loader` in two ways.  It collects the set of 
-symbols from the `.elf` files. It also collects all the possible symbols from the `.a` files for 
-each application.
-
-Newt builds the set of packages that the two applications share.  It ensures that all the symbols 
-used in those packages are matching.  NOTE: because of features and #ifdefs, its possible for the 
-two package to have symbols that are not the same.  In this case newt generates an error and will 
-not build a split image.
-
-Then newt creates the list of symbols that the two applications share from those packages (using the .elf files).
-
-Newt re-links the loader to ensure all of these symbols are present in the loader application (by 
-forcing the linker to include them in the `.elf`).
-
-Newt builds a special copy of the loader.elf with only these symbols (and the handful of symbols 
-discussed in the linking section above).
-
-Finally, newt links the application, replacing the common .a libraries with the special loader.elf 
-image during the link.
-
-## Design
-
-### Bootloader
-
-The [bootloader](../bootloader/bootloader.md) has been modified to support "non bootable" images like split app images.  A flag in 
-the image header denotes the image as "non-bootable". When this flag is set, the bootloader will 
-not boot the split app image, nor will it copy it to the slot 1 location. Loader images are bootable, 
-split app images are not.
-
-### Newt
-
-Newt builds a split image when the token `loader=@apache-mynewt-core/apps/slinky` is present in the target file.
-
-Newt has a `Builder` object that is responsible for building an image.  This features a `targetBuilder` 
-object that contains two builders (one for the app and one for the loader).
-
-The `Builder` object has been expanded to include options for building as part of a split image.
-* Ability to specify the linker file during the link
-* Ability to specify a set of keep_symbols during the link
-
-Newt commands like download, size, create-image have been expanded to perform operations twice 
-(once for loader and once for app) if the loader target is present.
-
-During normal single-image builds, the `targetBuilder` initializes and builds the application 
-`builder`. During the split image build, the `targetBuilder` performs the steps outlined in the 
-section above using the two `builder`s for the loader and app.
-
-Special symbol and link features are designed as follows:
-
-* Newt uses objdump to parse the symbol maps in the `.a` and `.elf` files.
-* Newt uses the `--undefined=` option of the linker to force the loader to keep symbols used by 
-the app (but not used by the linker)
-* Newt uses objcopy with the `-K` (keep) option when building the special linker `.elf`.
-* Newt uses the `--just-symbols` option of the linker to link against the loader `.elf` file.
-
-#### newt create-image
-
-`create-image` uses two different methods to compute the image hash for standard and split images.  
-For split images, the hash is computed starting with the 32-byte hash of the loader, then continuing 
-with the hashing algorithm used by the standard application.  This ensures that the split app can be "validated" against a loader image specifically.
-
-#### newt errors
-
-Newt has several new build errors when building split images.
-
-* Linker script undefined.  If the BSP for your application does not define a split image linker script 
-the build will fail.
-
-If newt finds that the same library (for example libs/os) has a different implementaiton in the loader 
-and app, it will generate an error and fail to build.  These differences can arise when `#ifdef` or features 
-are included in one app and not the other.  For example, it the loader includes `libs/console/stubs` and the 
-app includes `libs/console/full` this may change implementations of certain functions within other packages.
-
-### Image manifest
-
-newt builds a single manifest for split images, adding extra tags to the manifest when the image is a split image.
-
-```
-  "loader": "slinky.img",
-  "loader_hash": "55e254f133bedf640fc7be7b5bfe3e5fb387cf5e29ecd0d4ea02b5ba617e27e0",
-    "loader_pkgs": [
-		...
-		]
-```
-
-The manifest lists packages in both the loader and app.  The app package list only contains those 
-packages that reside in the app image itself.
-
-### libs/bootutil
-
-Bootutil has been expanded to include a function that looks for a split app image in slot 2, verifies 
-that it matches the loader image in slot 1 and then fetches the entry information for the split app.
-
-### libs/split
-
-A small split image library was created to provide newtmgr commands for split image and to hold the 
-configuration for split image. See newtmgr below for details.
-
-It also contains the function used by a loader to validate and boot a split image.
-
-### apps/slinky
-
-A sample app that can be built as a split image with slinky.
-
-## Tips when Building Split images
-
-**To be added**
-
-## Adding BSP support for split images
-
-A BSP needs additional components to be "split image ready".
-
-The split image requires a special linker script. The split image needs to run from the second image 
-partition (since it's using the loader library that is linked to be placed in the first partition).  
-It needs to reserve space for RAM used by the loader.  It also does not need to include the vector table (just a bit of it).
-
-The startup of the split image is different than a typical image.  It needs to copy `.data` from the 
-loader image, and zero the loader image bss.  For this, it must reference symbols defined in the linker 
-script of the loader. It has a special entry symbol that differentiates it from the entry symbol in the 
-loader application.
-
-Several of the bsp scripts need to handle additional agruments to deal with the two images produced 
-by newt when building split images - mainly download and debug.
-
-Add the following components to enable your BSP for split images:
-
-1. A split image linker file
-2. A startup file for the split image
-3. A property in the pkg.yml file to tell newt what linker script to use for partition 2 images. The property is defined as `pkg.part2linkerscript: "split-nrf52dk.ld` for example.
-4. Modified download script
-5. Modified sbrk functionality
-
-An example can be found in the `/hw/bsp/nrf52dk`
-
-### split image linker script
-
-The split image linker script must have the following.
-
-The split linker must be linked to run from the second flash image slot. For example:
-
-```c
-MEMORY
-{
-  FLASH (rx) : ORIGIN =  0x00042000, LENGTH = 0x3a000
-  RAM  (rwx) : ORIGIN =  0x20000000, LENGTH = 0x10000
-}
-```
-
-The split linker must define the entry symbol as Reset_Handler_split.   For example:
-
-```c
-ENTRY(Reset_Handler_split)
-```
-
-The split linker must define the first two words in the vector table (initial SP and Reset Vector). The additional 
-vector entries are part of the loader and are not needed in the split image. The bootloader accesses these 
-entries at the beginning of the image slot (first 2 words). For example:
-
-```
-    .text :
-    {
-        __split_isr_vector_start = .;
-        KEEP(*(.isr_vector_split))
-        __split_isr_vector_end = .;
-		...	
-    }	
-```
-
-The split linker must ensure that it doesn't overwrite the BSS and DATA sections of the loader (they are 
-both using RAM).  Note, the two apps don't run at the same time, but the loader has global data that its 
-libraries use.  This cannot be overwritten by the application. An example linker section that accomplishes 
-this can be found in `/hw/bsp/nrf52dk/split-nrf52dk.ld`. When linking against the loader, the loader exports 
-the following symbosl which can be used by the split app code:
-
-* `__HeapBase_loader`
-* `__bss_start___loader`
-* `__bss_end___loader`
-* `__etext_loader`
-* `__data_start___loader`
-* `__data_end___loader`
-
-The split app linker can use `__HeapBase_loader` to skip RAM used by the loader as follows.
-
-```c
-    /* save RAM used by the split image. This assumes that
-     * the loader uses all the RAM up to its HeapBase  */
-    .loader_ram_contents :
-    {
-        _loader_ram_start = .;
-
- 	/* this symbol comes from the loader linker */
-	. = . + (ABSOLUTE(__HeapBase_loader) - _loader_ram_start);
-        _loader_ram_end = .;
-    } > RAM
-```
-
-### split image startup code
-
-The split application needs separate startup code to intialize the split image before running main.  The 
-split image is specially linked so that `_start` and `main` are included individually for the loader and split app.
-
-The split app startup code must have the following.
-
-1. A definition of the split image vector table (first two words).
-2. The entry point function to start the code `Reset_Handler_split`
-3. Code that copies the `.data` section for the loader from Flash to RAM
-4. Code that zeros the `.bss` section for the loader.
-5. Code that calls `_sbrkInit` to set the heap pointers for the application (see below)
-6. Code that calls the `bsp_slot_init_split_application` function (see below)
-
-An example can be found in the `/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52_split.s`
-
-### Download script
-
-The download script needs to be modified to include support for passing the image slot number in the build.  
-Image slots are referenced as 0 and 1. Loading bootloaders ignore the image slot numbers.
-
-See and example in `/hw/bsp/bmd300eval/bmd300eval_download.sh`.
-
-### Sbrk functionality
-
-Split image (either a loader or app) references a single set of heap managment functions.  But the heap location and 
-size is different depending which image is running.  Special functionality is needed to handle the dynamic 
-setting of the heap base and limit.
-
-Instead of hard-coding the heap base and limit at link time (depending on the size of data and bss), sbrk 
-needs to be dynamically initialized with these values from the startup code.
-
-See an example in `/hw/bsp/bmd300eval/src/sbrk.c` in the core repository.  The function `_sbrkInit` must be 
-called from the startup code of the split image and normal image startup code with the appropriate 
-values of heap base and limit.
-
-### Slot Init
-
-A global variable tells Mynewt whether the split image is runnning as just a stand-alone loader, or as 
-the combined loader/app image.  Its the responsibility of the startup code to set this global variable.
-
-See `hw/bsp/bmd300eval/src/os_bsp.c` for and implementation of the functionality.
-
-## newtmgr and split Images
-
-newtmgr has support for split images.
-
-`newtmgr image list` lists the current images in the flash.  Its clear from the output that some images are non-bootable.  For example.
-
-```
-Images:
- slot=1
-    version=1.2.3
-    bootable=true
-    hash=55e254f133bedf640fc7be7b5bfe3e5fb387cf5e29ecd0d4ea02b5ba617e27e0
- slot=2
-    version=1.2.3
-    bootable=false
-    hash=1697bd1658f7e902e0191094c5f729446c9dd790c00a58e2bb37f56d6fcb72fe
-```
-
-The bootloader is unable to boot split app images (of course it can boot the loader images), so do not use the `boot2` 
-command to instruct mynewt to boot slot 2.
-
-Instead, use the new `split status` command to see the status of split images and to set their boot status.  
-The split status command with no arguments returns status of the split image.  The Split Value tells the loader 
-how to boot the split app. Options are:
-
-* `none` Don't boot the split application. Just remain running in the loader.
-* `test` Boot the split application, but revert back to the loader on the next reset.
-* `run` Boot the split application.
-
-The split status command also verified the hash of the split application (using the hash of the loader 
-as shown above) and returns the status of the check (matching or non-matching).
-
-```
-newtmgr -c connection split status
-  Split value is none
-  Split status is matching
-```
-
-When the split image application is running, the active hash in the `boot2` command will match the 
-hash of the split application (in slot 2). For example:
-
-```
-prompt$ newtmgr -c foo1 image boot
-   Test image: 55e254f133bedf640fc7be7b5bfe3e5fb387cf5e29ecd0d4ea02b5ba617e27e0
-   Main image: 55e254f133bedf640fc7be7b5bfe3e5fb387cf5e29ecd0d4ea02b5ba617e27e0
-   Active img: 1697bd1658f7e902e0191094c5f729446c9dd790c00a58e2bb37f56d6fcb72fe
-```
-
-## Upgrading a split image with newtmgr
-
-When running via newt, the `newt load` command will load both parts of a split image, the loader and application.
-
-When running via newtmgr a sequence of commands is required to upgrade.  Assuming you are running the 
-split app in `run` mode the following sequence will upgrade
-
-1. newtmgr split status none
-2. newtmgr reboot
-3. newtmgr image upload <filename of new loader>
-4. newtmgr image boot2 <hash of new loader>
-5. newtmgr reboot
-6. newtmgr image upload <filename of new split app>
-7. newtmgr split status test
-8. newtmgr reboot
-9. newtmgr boot2 (check status to ensure new app is running)
-10. newtmgr split status run
-
-This upgrade is robust.  In all steps there is a loader image that is capable of upgrading (or reverting) images.
-
-
+First newt builds the application and loader images separately to ensure they
+are consistent (no errors) and to generate elf files which can inform newt of
+the symbols used by each part.
+
+Then newt collects the symbols used by both application and loader in two ways.
+It collects the set of symbols from the `.elf` files. It also collects all the
+possible symbols from the `.a` files for each application.
+
+Newt builds the set of packages that the two applications share.  It ensures
+that all the symbols used in those packages are matching.  NOTE: because of
+features and #ifdefs, its possible for the two package to have symbols that are
+not the same.  In this case newt generates an error and will not build a split
+image.
+
+Then newt creates the list of symbols that the two applications share from
+those packages (using the .elf files).
+
+Newt re-links the loader to ensure all of these symbols are present in the
+loader application (by forcing the linker to include them in the `.elf`).
+
+Newt builds a special copy of the loader.elf with only these symbols (and the
+handful of symbols discussed in the linking section above).
+
+Finally, newt links the application, replacing the common .a libraries with the
+special loader.elf image during the link.
