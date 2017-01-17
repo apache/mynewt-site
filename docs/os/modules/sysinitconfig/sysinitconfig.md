@@ -1,5 +1,4 @@
-
-#System Configuration and Initialization
+##System Configuration and Initialization
 
 This guide describes how Mynewt manages system configuration and initialization. It shows you how to 
 tell Mynewt to use default or customized values to initialize packages that you develop or use to build a target. This guide:
@@ -56,7 +55,7 @@ syscfg.defs:
 Each setting definition consists of the following key-value mapping:  
 
 * A setting name for the key, such as `PKGA_SYSCFG_NAME1` in the syntax example above.
-Note: A system configuration setting name must be unique.  The newt tool aborts the build 
+**Note:** A system configuration setting name must be unique.  The newt tool aborts the build 
 when multiple packages define the same setting. 
 * A mapping of fields for the value.  Each field itself is a key-value pair of attributes.  The field keys are `description`, `value`, `type`, and `restrictions`. They are described in 
 following table:
@@ -101,8 +100,8 @@ defined in the BSP flash map for your target board.
 <li><code>expression</code> - Specifies a boolean expression of the form <code>[!]&ltrequired-setting>[if &ltbase-value>]</code>
 <br>Examples:
 <ul>
-<li><code>restrictions: !LOG_FCB</code> - Can only enable this setting when <code>LOG_FCB</code> is false.
-<li><code>restrictions: LOG_FCB if 0 </code> - Can only disable this setting when <code>LOG_FCB</code> is true.
+<li><code>restrictions: !LOG_FCB</code> - When this setting is enabled, <code>LOG_FCB</code> must be disabled.
+<li><code>restrictions: LOG_FCB if 0 </code> - When this setting is disabled, <code>LOG_FCB</code> must be enabled.
 </ul>
 </li>
 </ul>
@@ -112,7 +111,7 @@ defined in the BSP flash map for your target board.
 
 <br>
 
-####Examples of configuration settings
+####Examples of Configuration Settings
 
 **Example 1:** The following example is an excerpt from the `sys/log` package `syscfg.yml` file. It defines the 
 `LOG_LEVEL` configuration setting to specify the log level and the `LOG_NEWTMGR` configuration setting to specify whether
@@ -208,7 +207,7 @@ syscfg.vals:
     PKGN_SYSCFG_NAME1: VALUEN
 
 ```
-Note: The newt tool ignores overrides of undefined system configuration settings.  
+**Note**: The newt tool ignores overrides of undefined system configuration settings.  
 
 <br>
 
@@ -229,7 +228,7 @@ The following package types are listed from highest to lowest priority:
 * App
 * unittest - A target can include either an app or unit test package, but not both.
 * BSP
-* Lib - Includes all other system level packages such as os, lib, sdk, and compiler.
+* Lib - Includes all other system level packages such as os, lib, sdk, and compiler. (Note that a Lib package cannot override other Lib package settings.)
 
 It is recommended that you override defaults at the target level instead of updating individual 
 package `syscfg.yml` files.
@@ -239,7 +238,7 @@ package `syscfg.yml` files.
 ####Examples of Overrides
 
 **Example 4:** The following example is an excerpt from the `apps/slinky` package `syscfg.yml` file.  The application package overrides, 
-in addition to other packages, the `sys/log` package system configuration settings defined in *Example 1*. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
+in addition to other packages, the `sys/log` package system configuration settings defined in **Example 1**. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
 
 ```no-highlight
 
@@ -291,31 +290,51 @@ syscfg.vals:
 
 <br>
 
-###Generated syscfg.h
+###Generated syscfg.h and Referencing System Configuration Settings 
 
 The newt tool processes all the package `syscfg.yml` files and generates the
 `<target-path>/generated/include/syscfg/syscfg.h` include file with `#define` statements for each system configuration 
-setting defined.  newt creates a `#define` for a setting name as follows: 
+setting defined.  Newt creates a `#define` for a setting name as follows: 
 
 * Adds the prefix `MYNEWT_VAL_`.
 * Replaces all occurrences of "/", "-", and " " in the setting name with "_".
 * Converts all characters to upper case.
 
-For example, the #define for `my-config-name` setting name  is `MYNEWT_VAL_MY_CONFIG_NAME`.
+For example, the #define for my-config-name setting name is MYNEWT_VAL_MY_CONFIG_NAME.
 
 Newt groups the settings in `syscfg.h` by the packages that defined them. It also indicates the 
 package that changed a system configuration setting value.  
 
+You must use the `MYNEWT_VAL()` macro to reference a #define of a setting name in your header and source files. 
+For example, to reference the `my-config-name` setting name,  you use `MYNEWT_VAL(MY_CONFIG_NAME)`.
+
 **Note:** You only need to include `syscfg/syscfg.h` in your source files to access the `syscfg.h` file.  The newt tool sets the correct include path to build your target. 
 
-Here is an excerpt from a sample `syscfg.h` file generated for an app/slinky target.  It lists 
-the `sys/log` package definitions and also indicates that `app/slinky` changed the value 
-for the `LOG_NEWTMGR` settings.  
+####Example of syscfg.h and How to Reference a Setting Name
+**Example 6**: The following example are excerpts from a sample `syscfg.h` file generated for an app/slinky target and 
+from the `sys/log` package `log.c` file that shows how to reference a setting name.
+
+The `syscfg.h` file shows the `sys/log` package definitions and also indicates that `app/slinky` 
+changed the value for the `LOG_NEWTMGR` settings. 
 
 ```no-highlight
 
+/**
+ * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
+ */
+
 #ifndef H_MYNEWT_SYSCFG_
 #define H_MYNEWT_SYSCFG_
+
+/**
+ * This macro exists to ensure code includes this header when needed.  If code
+ * checks the existence of a setting directly via ifdef without including this
+ * header, the setting macro will silently evaluate to 0.  In contrast, an
+ * attempt to use these macros without including this header will result in a
+ * compiler error.
+ */
+#define MYNEWT_VAL(x)                           MYNEWT_VAL_ ## x
+
 
      ...
 
@@ -344,6 +363,38 @@ for the `LOG_NEWTMGR` settings.
 #endif
 
 #endif
+
+```
+
+The `log_init()` function in the `sys/log/src/log.c` file initializes the `sys/log` package. It checks the 
+`LOG_NEWTMGR` setting value, using `MYNEWT_VAL(LOG_NEWTMGR)`, to determine whether the target application
+has enabled the `newtmgr log` functionality. It only registers the the callbacks to process the
+`newtmgr log` commands when the setting value is non-zero.
+
+```no-highlight
+
+void
+log_init(void)
+{
+    int rc;
+
+    /* Ensure this function only gets called by sysinit. */
+    SYSINIT_ASSERT_ACTIVE();
+
+    (void)rc;
+
+    if (log_inited) {
+        return;
+    }
+    log_inited = 1;
+        ...
+
+#if MYNEWT_VAL(LOG_NEWTMGR)
+    rc = log_nmgr_register_group();
+    SYSINIT_PANIC_ASSERT(rc == 0);
+#endif
+}
+
 ```
 
 <br>
@@ -381,9 +432,9 @@ You specify an init function in the `pkg.yml` file for a package as follows:
        where `stage_number` is a number that indicates when this init function is called relative to the other 
        package init functions.  Mynewt calls the package init functions in increasing stage number order
        and in alphabetic order of init function names for functions in the same stage.
-       *Note:* The init function will be called at stage 0 if `pkg.init_stage` is not specified.
+       **Note:** The init function will be called at stage 0 if `pkg.init_stage` is not specified.
  
-*Note:* You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
+**Note:** You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
 
 <br>
 
