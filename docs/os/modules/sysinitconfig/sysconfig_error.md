@@ -25,9 +25,8 @@ override violations:
 
 * Ambiguity Violation - Two packages of the same priority override a setting with 
 different values. And no higher priority package overrides the setting.
-* Lateral Violation - A Lib package overrides a setting that another Lib package defines.
 * Priority Violation - A package overrides a setting defined by a package with higher or 
-equal priority (TODO: Add error message examples)
+equal priority (TODO: Change error message to indicate a more general priority violation instead of only lateral overrides)
 
 ####Example: Ambiguity Violation Error Message
 
@@ -69,9 +68,9 @@ syscfg.vals:
 
 ```
 
-####Example: Lateral Violation Error Message
+####Example: Priority Violation Error Message
 
-The following example shows the error message that newt outputs for a lateral violation:
+The following example shows the error message that newt outputs for a lateral violation where a package tries to change the setting that was defined by another package at the same priority level:
 
 ```no-highlight
 
