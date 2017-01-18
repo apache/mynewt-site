@@ -31,7 +31,7 @@ $ tree -L 3
 
 <br>
 
-When Newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." 
+When newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." 
 
 <br>
 
@@ -78,7 +78,7 @@ covered in the "repository" section.
 
 #### "targets" Package Directory
 
-`targets` is where targets are stored, and each target is a collection of parameters that must be passed to Newt in order to generate a reproducible build. Along with the `apps` directory, `targets` represents the top of the build tree. Any packages or parameters specified at the target level cascades down to all dependencies.
+`targets` is where targets are stored, and each target is a collection of parameters that must be passed to newt in order to generate a reproducible build. Along with the `apps` directory, `targets` represents the top of the build tree. Any packages or parameters specified at the target level cascades down to all dependencies.
 
 Most targets consist of:
 
@@ -139,9 +139,9 @@ The target specifies two major things:
 * Board Support Package (target.bsp): The board support package to build 
 along with that application.
 
-Newt goes and builds the dependency tree specified by all the packages. While building this tree, it does a few other things:
+Newt builds the dependency tree specified by all the packages. While building this tree, it does a few other things:
 
-- Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
+- Sets up the include paths for each package. Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
 newt structure must always be prefixed by the package name. For example, libs/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.
 
 
@@ -187,21 +187,27 @@ $ tree
 
 <br>
 
-- API requirements are validated.  Packages can export APIs they 
+- Validates API requirements.  Packages can export APIs they 
 implement, (i.e. pkg.api: hw-hal-impl), and other packages can require 
 those APIs (i.e. pkg.req_api: hw-hal-impl).
 
+- Reads and validates the configuration setting definitions and values from the package `syscfg.yml` files.
+It generates a `syscfg.h` header file that packages include in the source files inorder to access the settings.  
+It also generates a system initialization function to initialize the packages.
+See [System Configuration And Initialization](/os/modules/sysinitconfig/sysinitconfig.md) for more information.
 
-In order to properly resolve all dependencies in the build system, Newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.
+
+In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.
+
 
 Newt then goes through this package list, and builds every package into 
 an archive file.
 
-**NOTE:** The Newt tool generates compiler dependencies for all of these packages, and only rebuilds the packages whose dependencies have changed. Changes in package & project dependencies are also taken into account. It is smart, after all!
+**NOTE:** The newt tool generates compiler dependencies for all of these packages, and only rebuilds the packages whose dependencies have changed. Changes in package & project dependencies are also taken into account. It is smart, after all!
 
 ### Producing artifacts
 
-Once Newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)
+Once newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)
 
 NOTE: One common use of the "features" option above is to overwrite 
 which linkerscript is used, based upon whether or not the BSP is being 
