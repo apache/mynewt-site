@@ -1,7 +1,7 @@
 ## Air quality sensor project via Bluetooth
 
-This is a follow-on project to the [Basic Air Quality Sensor](air_quality_sensor.md) project so it is
-assumed that you have worked through that project and have your CO2 sensor working properly with
+This is a follow-on project to the [Basic Air Quality Sensor](air_quality_sensor.md) project; so it is
+assumed that you have worked through that project and have your CO<sub>2</sub> sensor working properly with
 your Arduino Primo board. 
 
 So let's get started making this thing Bluetooth enabled!
@@ -13,7 +13,7 @@ app most of the bluetooth plumbing has already been taken care of for us. What's
 to add the required GATT services for advertising the Carbon Dioxide sensor so that
 other devices can get those values.
 
-First, we'll define the GATT Serivces in `apps/air_quality/src/bleprph.h`
+First, we'll define the GATT Services in `apps/air_quality/src/bleprph.h`.
 
 ```c
 /* Sensor Data */
@@ -29,10 +29,10 @@ uint16_t gatt_co2_val;
 ```
 
 You can use any hex values you choose for the sensor type and sensor values, and you can 
-even forgoe the sensor type and sensor string definitions altogether but they make
+even forget the sensor type and sensor string definitions altogether but they make
 the results look nice in our Bleutooth App.
 
-Next well add those services to `apps/air_quality/src/gatt_svr.c`
+Next we'll add those services to `apps/air_quality/src/gatt_svr.c`.
 
 ```c
 static int
@@ -44,7 +44,7 @@ static uint16_t gatt_co2_val_len;
 
 ```
 
-And make sure it is added as *primary* service
+Make sure it is added as *primary* service.
 
 ```c
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
@@ -89,7 +89,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
 };
 ```
 
-Next we need to tell the GATT Server how to handle requests for CO2 readings :
+Next we need to tell the GATT Server how to handle requests for CO<sub>2</sub> readings :
 
 ```c
 static int
@@ -115,7 +115,7 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
             rc = gatt_svr_chr_write(ctxt->om, 0,
                                     sizeof gatt_co2_val,
                                     &gatt_co2_val,
-                                    &gatt_co2val_len);
+                                    &gatt_co2_val_len);
             return rc;
         } else if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
             rc = os_mbuf_append(ctxt->om, &gatt_co2_val,
@@ -130,11 +130,10 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
 }
 ```
 
-Now it's time to go into our `apps/air_quality/src/main.c` and change how we read CO2 readings and 
+Now it's time to go into our `apps/air_quality/src/main.c` and change how we read CO<sub>2</sub> readings and 
 respond to requests. 
 
-We'll need a task handler, etc. for the co2 readings -- they were handled by the shell task but 
-now they need to be handled separately.
+We'll need a task handler with an event queue for the CO<sub>2</sub> readings -- they were handled by the shell task in the previous tutorial but now it needs to be replaced by a different handler as shown below.
 
 ```c
 /* CO2 Task settings */
@@ -146,7 +145,7 @@ bssnz_t os_stack_t co2_stack[CO2_STACK_SIZE];
 ```
 
 And of course we'll need to go to our `main()` and do all the standard task and event setup we
-normally do by adding this:
+normally do by adding the following. Again, remember to delete all the shell event queues and tasks.
 
 ```c
 /* Initialize sensor eventq */
@@ -208,13 +207,13 @@ err:
 ```
 
 You'll notice that it looks eeirily similar to a portion of the shell event we created 
-earlier. This one just reads and updates the CO2 value and sends that over BLE to any
-connected clients. 
+earlier. This one simply reads and updates the CO<sub>2</sub> value and sends that over BLE to any
+connected clients instead. 
 
 We can now build, create-image and load the app onto our Arduino Primo board, and then 
 connect and see the updated values! The image below shows the results using MyNewt Sensor Reader,
-a Mac OS X app developed for conecting to MyNewt devices over Bluetooth but you can also use LightBlue
-or any other application that can conect to, and read, Bluetooth data.
+a Mac OS X app developed for connecting to MyNewt devices over Bluetooth but you can also use LightBlue
+or any other application that can connect to, and read, Bluetooth data.
 
 ![MyNewt Sensor Reader](pics/MyNewtSensorReader.jpg)
 

@@ -43,8 +43,7 @@ Your project.yml file should look like this:
 Good. You want to make sure you have all the needed bits for supporting your board; 
 so you decide to build the blinky project for the platform first.
 
-Now create a target for it and build it. Easiest way to proceed is to copy the existing t
-arget for blinky, and modify it to build for Arduino Primo board.
+Now create a target for it and build it. Easiest way to proceed is to copy the existing target for blinky, and modify it to build for Arduino Primo board.
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ newt target copy my_blinky_sim blink_primo
