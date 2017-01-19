@@ -238,7 +238,7 @@ Compiling image_validate.c
 
 **NOTE:** If you've installed the latest gcc using homebrew on your Mac, you will likely be running gcc-6. Make sure you have adjusted the compiler.yml configuration to reflect that as noted in [Native Install Option](native_tools.md). You can choose to downgrade to gcc-5 in order to use the default gcc compiler configuration for MyNewt.
 
-**NOTE** If you are running the standard gcc for 64-bit machines, it does not support 32-bit. In that case you will see compilation errors. You need to install multiboot gcc (e.g. gcc-multilib if you running on a 64-bit Ubuntu).
+**NOTE:** If you are running the standard gcc for 64-bit machines, it does not support 32-bit. In that case you will see compilation errors. You need to install multiboot gcc (e.g. gcc-multilib if you running on a 64-bit Ubuntu).
 
 ```
 $ brew uninstall gcc-6
