@@ -373,7 +373,7 @@
 
 
 <p><br></p>
-<p>When Newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
+<p>When newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
 <p><br></p>
 <h4 id="apps-package-directory">"apps" Package Directory</h4>
 <p><code>apps</code> is where applications are stored, and applications are where the main() function is contained.  The base project directory comes with one simple app called <code>blinky</code> in the <code>apps</code> directory. The core repository <code>@apache-mynewt-core</code> comes with many additional sample apps in its <code>apps</code> directory. At the time of this writing, there are several example BLE apps, the boot app, slinky app for using newt manager protocol, and more in that directory.</p>
@@ -409,7 +409,7 @@ depends on kernel/os, hw/hal and sys/console/full packages.</p>
 covered in the "repository" section. </p>
 <p><br></p>
 <h4 id="targets-package-directory">"targets" Package Directory</h4>
-<p><code>targets</code> is where targets are stored, and each target is a collection of parameters that must be passed to Newt in order to generate a reproducible build. Along with the <code>apps</code> directory, <code>targets</code> represents the top of the build tree. Any packages or parameters specified at the target level cascades down to all dependencies.</p>
+<p><code>targets</code> is where targets are stored, and each target is a collection of parameters that must be passed to newt in order to generate a reproducible build. Along with the <code>apps</code> directory, <code>targets</code> represents the top of the build tree. Any packages or parameters specified at the target level cascades down to all dependencies.</p>
 <p>Most targets consist of:</p>
 <ul>
 <li>app: The application to build</li>
@@ -464,9 +464,9 @@ target.build_profile: &quot;debug&quot;
 <li>Board Support Package (target.bsp): The board support package to build 
 along with that application.</li>
 </ul>
-<p>Newt goes and builds the dependency tree specified by all the packages. While building this tree, it does a few other things:</p>
+<p>Newt builds the dependency tree specified by all the packages. While building this tree, it does a few other things:</p>
 <ul>
-<li>Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
+<li>Sets up the include paths for each package. Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
 newt structure must always be prefixed by the package name. For example, libs/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.</li>
 </ul>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ tree
@@ -510,16 +510,24 @@ newt structure must always be prefixed by the package name. For example, libs/os
 
 <p><br></p>
 <ul>
-<li>API requirements are validated.  Packages can export APIs they 
+<li>
+<p>Validates API requirements.  Packages can export APIs they 
 implement, (i.e. pkg.api: hw-hal-impl), and other packages can require 
-those APIs (i.e. pkg.req_api: hw-hal-impl).</li>
+those APIs (i.e. pkg.req_api: hw-hal-impl).</p>
+</li>
+<li>
+<p>Reads and validates the configuration setting definitions and values from the package <code>syscfg.yml</code> files.
+It generates a <code>syscfg.h</code> header file that packages include in the source files inorder to access the settings.<br />
+It also generates a system initialization function to initialize the packages.
+See <a href="../../os/modules/sysinitconfig/sysinitconfig/">System Configuration And Initialization</a> for more information.</p>
+</li>
 </ul>
-<p>In order to properly resolve all dependencies in the build system, Newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.</p>
+<p>In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.</p>
 <p>Newt then goes through this package list, and builds every package into 
 an archive file.</p>
-<p><strong>NOTE:</strong> The Newt tool generates compiler dependencies for all of these packages, and only rebuilds the packages whose dependencies have changed. Changes in package &amp; project dependencies are also taken into account. It is smart, after all!</p>
+<p><strong>NOTE:</strong> The newt tool generates compiler dependencies for all of these packages, and only rebuilds the packages whose dependencies have changed. Changes in package &amp; project dependencies are also taken into account. It is smart, after all!</p>
 <h3 id="producing-artifacts">Producing artifacts</h3>
-<p>Once Newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)</p>
+<p>Once newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)</p>
 <p>NOTE: One common use of the "features" option above is to overwrite 
 which linkerscript is used, based upon whether or not the BSP is being 
 build for a raw image, bootable image or bootloader itself.</p>
