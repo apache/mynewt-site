@@ -60,21 +60,13 @@ targets/rb_boot
     build_profile=optimized
 ```
 
-Build the bootloader and app images.
-
-```
-$ newt build rb_boot
-$ newt build rb_boot
-$ newt create-image rb_blinky 0.0.1
-```
-
-Create the directory and package to hold the manufacturing images.
+Create the directory and to hold the mfg packages.
 
 ```
 $ mkdir -p mfgs/rb_blinky_rsa
 ```
 
-The `rb_blinky_rsa` package needs a pkg.yml file. In addition it is needs a mfg.yml file where the two constituent targets are defined. An example of each file is shown below.
+The `rb_blinky_rsa` package needs a pkg.yml file. In addition it is needs a mfg.yml file to specify the two constituent targets. An example of each file is shown below.
 
 ```
 $  more mfgs/rb_blinky_rsa/pkg.yml 
@@ -90,6 +82,13 @@ $  more mfgs/rb_blinky_rsa/mfg.yml
 mfg.bootloader: 'targets/rb_boot'
 mfg.images:
     - 'targets/rb_blinky'
+```
+
+Build the bootloader and app images.
+
+```
+$ newt build rb_boot
+$ newt create-image rb_blinky 0.0.1
 ```
 
 Run the `newt mfg create` command to collect all the manufacturing snapshot files.
