@@ -20,7 +20,7 @@ See [Other Configuration Options](#other-configuration-options) on how to custom
 
 <br>
 
-### Pre-Requisites
+### Prerequisites
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 
 * Installed the [newt tool](../../newt/install/newt_mac.md). 
@@ -28,7 +28,6 @@ Ensure that you have met the following prerequisites before continuing with this
 * Have Internet connectivity to fetch remote Mynewt components.
 * Installed the [compiler tools](../get_started/native_tools.md) to 
 support native compiling to build the project this tutorial creates.  
-* Installed the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
 * Have a cable to establish a serial USB connection between the board and the laptop.
 
 <br>
@@ -267,5 +266,6 @@ Notes:
 * When you enable Newt Manager support, using either the newtmgr or oicmgr framework, your application automatically 
 supports the Newt Manager `echo`, `taskstats`, `mpstats`, `datetime`, and `reset` commands.  These 
 commands cannot be configured individually.
-* Currently, the `mgmt/imgmgr` package does not provide a configuration setting to enable or disable support 
-for the `newtmgr image` command. 
+* The `mgmt/imgmgr` package does not provide a configuration setting to enable or disable support 
+for the `newtmgr image` command.  Do not specify the package in the `pkg.deps` parameter if 
+your device has limited flash memory and cannot support Over-The-Air (OTA) firmware upgrades.
