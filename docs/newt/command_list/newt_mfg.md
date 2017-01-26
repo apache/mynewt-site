@@ -60,7 +60,7 @@ targets/rb_boot
     build_profile=optimized
 ```
 
-Create the directory and to hold the mfg packages.
+Create the directory to hold the mfg packages.
 
 ```
 $ mkdir -p mfgs/rb_blinky_rsa
