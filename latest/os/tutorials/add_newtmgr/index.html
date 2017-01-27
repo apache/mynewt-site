@@ -10,7 +10,7 @@
         <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/add_newtmgr/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>Enable newtmgr in any app - Apache Mynewt</title>
+	    <title>Enable Newt Manager in any app - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Enable newtmgr in any app">
+    <body class="Enable Newt Manager in any app">
 
 
         <div class="container">
@@ -313,7 +313,7 @@
               
                 
     <li class="active">
-      <a href="./">Enable newtmgr in any app</a>
+      <a href="./">Enable Newt Manager in any app</a>
     </li>
 
               
@@ -451,7 +451,7 @@
         
       
       
-        <li>&raquo; Enable newtmgr in any app</li>
+        <li>&raquo; Enable Newt Manager in any app</li>
       
     
     
@@ -459,59 +459,104 @@
 </div>
                         </div>
                         
-                            <h2 id="enabling-newt-manager-newtmgr-in-a-project">Enabling Newt Manager (newtmgr) in a project</h2>
-<p><br></p>
-<p>This tutorial explains how to add the newtmgr task to a project so that you can interact with your project over newtmgr.</p>
-<p><br></p>
-<h3 id="pre-requisites">Pre-Requisites</h3>
+                            <h2 id="enabling-newt-manager-in-your-application">Enabling Newt Manager in Your Application</h2>
+<p><br>
+In order for your application to communicate with the newtmgr tool and process Newt Manager commands, you must 
+enable Newt Manager device management and the support to process Newt Manager commands 
+in your application.  This tutorial explains how to add the support to your application.</p>
+<p>This tutorial assumes that you have read the <a href="../../../os/modules/devmgmt/newtmgr/">Device Management with Newt Manager</a>
+guide and are familiar with the <code>newtmgr</code> and <code>oicmgr</code> frameworks and all the options that are available 
+to customize your application.</p>
+<p>This tutorial shows you how to configure your application to:</p>
 <ul>
-<li>Ensure you have installed <a href="../../../newt/install/newt_mac/">newt</a> and that the 
-newt command is in your system path. </li>
-<li>Ensure that you have installed the newtmgr tool <a href="../../../newtmgr/installing/">newtmgr</a></li>
-<li>You must have Internet connectivity to fetch remote Mynewt components.</li>
-<li>You must <a href="../../get_started/native_tools/">install the compiler tools</a> to 
+<li>Use the newtmgr framework.</li>
+<li>Use serial transport to communicate with the newtmgr tool.</li>
+<li>Support all Newt Manager commands.</li>
+</ul>
+<p>See <a href="#other-configuration-options">Other Configuration Options</a> on how to customize your application.</p>
+<p><br></p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Ensure that you have met the following prerequisites before continuing with this tutorial:</p>
+<ul>
+<li>Installed the <a href="../../../newt/install/newt_mac/">newt tool</a>. </li>
+<li>Installed the <a href="../../../newtmgr/installing/">newtmgr tool</a>.</li>
+<li>Have Internet connectivity to fetch remote Mynewt components.</li>
+<li>Installed the <a href="../../get_started/native_tools/">compiler tools</a> to 
 support native compiling to build the project this tutorial creates.  </li>
-<li>You must install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK package</a> to load your project on the board.</li>
-<li>Cable to establish a serial USB connection between the board and the laptop</li>
+<li>Have a cable to establish a serial USB connection between the board and the laptop.</li>
 </ul>
 <p><br></p>
-<h3 id="use-an-existing-project">Use an existing project</h3>
-<p>Since all we're doing is adding newtmgr capability to a project, we assume that you have worked through at least some of the other tutorials, and have an existing project.
-For this example, we'll be modifying the <a href="../bletiny_project/">ble_tiny</a> project to enable newtmgr connectivity. We'll be calling our app myble as in that project as well. 
-Feel free to use whatever project you'd like though.</p>
-<p>The first thing you'll need to add is a new dependency for your app. In the repo for the bletiny app you'll need to add the following line to the pkg.yml file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"> - libs/newtmgr
+<h3 id="use-an-existing-project">Use an Existing Project</h3>
+<p>We assume that you have worked through at least some of the other tutorials and have an existing project.
+In this example, we modify the <a href="../bletiny_project/">ble_tiny</a> project to enable Newt Manager support. 
+We call our application <code>myble</code>.  You can create the application using any name you choose. </p>
+<h3 id="modify-package-dependencies-and-configurations">Modify Package Dependencies and Configurations</h3>
+<p>Add the following packages to the <code>pkg.deps</code> parameter in your target or application <code>pkg.yml</code> file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
+    - mgmt/newtmgr
+    - mgmt/newtmgr/transport/nmgr_shell
+    - mgmt/imgmgr
+    - sys/log/full
+    - sys/stats/full
+    - sys/config
+    - test/crash_test
+    - test/runtest
 </pre></div>
 
 
-<p>Now the application will know to pull in the newtmgr code.</p>
+<p>Each package provides the following Newt Manager functionality:</p>
+<ul>
+<li><code>mgmt/newtmgr</code>: Supports the newtmgr framework and the 
+Newt Manager <code>echo</code>, <code>taskstats</code> <code>mpstats</code>, <code>datetime</code>, and <code>reset</code> commands.</li>
+<li><code>mgmt/newtmgr/transport/nmgr_shell</code>: Supports serial transport.</li>
+<li><code>mgmt/imgmgr</code>: Supports the <code>newtmgr image</code> command </li>
+<li><code>sys/log/full</code> : Supports the <code>newtmgr log</code> command.</li>
+<li><code>sys/stats/full</code>: Supports the <code>newtmgr stat</code> command. </li>
+<li><code>sys/config</code>: Supports the <code>newtmgr config</code> command. </li>
+<li><code>test/crash_test</code>: Supports the <code>newtmgr crash</code> command. </li>
+<li><code>test/runtest</code>: Supports the <code>newt run</code> command.</li>
+</ul>
+<p>Add the following configuration setting values to the <code>syscfg.vals</code> parameter in the target or 
+application <code>syscfg.yml</code> file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
+    LOG_NEWTMGR: 1
+    STATS_NEWTMGR: 1
+    CONFIG_NEWTMGR: 1
+    CRASH_TEST_NEWTMGR: 1
+    RUNTEST_NEWTMGR: 1
+    SHELL_TASK: 1
+</pre></div>
+
+
+<p>The first five configuration settings enable support for the Newt Manager <code>log</code>, <code>stats</code>, <code>config</code>, <code>crash</code>, 
+and <code>run</code> commands. The <code>SHELL_TASK</code> setting enables the shell for serial transport.</p>
+<p>Note that you may need to override additional configuration settings that are specific to each package to customize the 
+package functionality.</p>
 <p><br></p>
-<h3 id="modify-the-source">Modify the source</h3>
-<p>First, you'll need to include the newtmgr header file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &lt;newtmgr/newtmgr.h&gt;
+<h3 id="modify-the-source">Modify the Source</h3>
+<p>Your application must designate an event queue that the <code>mgmt</code> package uses to receive request events from 
+the newtmgr tool.  It must also initialize a task and implement the task handler to
+dispatch events from this queue.  The <code>mgmt</code> package executes and processes newtmgr 
+request events in the context of this task.  Your application, however, does 
+not need to create a dedicated event queue and task for this purpose and can use its default 
+event queue.  This example uses the application's default event queue.  </p>
+<p>The <code>mgmt</code> package exports the <code>void mgmt_evq_set(struct os_eventq *evq)</code> function that an application must call 
+to designate the event queue. Modify <code>main.c</code> to add this call as follows:</p>
+<p>Add the <code>mgmt/mgmt.h</code> header file: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &lt;mgmt/mgmt.h&gt;
 </pre></div>
 
 
-<p>Next, you'll need to declare a task for the newtmgr:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#define NEWTMGR_TASK_PRIO (4)
-#define NEWTMGR_TASK_STACK_SIZE (OS_STACK_ALIGN(896))
-os_stack_t newtmgr_stack[NEWTMGR_TASK_STACK_SIZE];
+<p>Add the call to designate the event queue. In the <code>main()</code> function,<br />
+scroll down to the <code>os_eventq_dflt_set(&amp;ble_tiny_evq)</code> function call and add the 
+following statement below it:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">mgmt_eventq_set(&amp;ble_tiny_evq)
 </pre></div>
 
 
-<p>Next you'll scroll down (way down) to the <code>main()</code> function and find the lines:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">rc = console_init(shell_console_rx_cb);
-assert(rc == 0);
-</pre></div>
-
-
-<p>After those lines, add:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">nmgr_task_init(NEWTMGR_TASK_PRIO, newtmgr_stack, NEWTMGR_TASK_STACK_SIZE);
-</pre></div>
-
-
-<h3 id="build-targets">Build targets</h3>
-<p>Then build the two targets.</p>
+<p>The <code>mgmt_eventq_set()</code> function must be called after your application has initialized the event queue and task.</p>
+<h3 id="build-the-targets">Build the Targets</h3>
+<p>Build the two targets as follows:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot
 &lt;snip&gt;
 App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
@@ -525,35 +570,37 @@ Compiling os.c
 
 
 <p><br></p>
-<h3 id="create-the-app-image">Create the app image</h3>
-<p>Generate a signed application image for the <code>myble</code> target. The version number is arbitrary.</p>
+<h3 id="create-the-application-image">Create the Application Image</h3>
+<p>Generate a signed application image for the <code>myble</code> target. You can use any version number you choose.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image myble 1.0.0
-App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
+App image successfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
 Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
 </pre></div>
 
 
 <p><br></p>
-<h3 id="load-the-image">Load the image</h3>
-<p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
+<h3 id="load-the-image">Load the Image</h3>
+<p>Ensure the USB connector is in place and the power LED on the board is lit. Turn the power switch on your board off, 
+then back on to reset the board after loading the image.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_boot
 $ newt load myble
 </pre></div>
 
 
+<h3 id="set-up-a-connection-profile">Set Up a Connection Profile</h3>
+<p>The newtmgr tool requires a connection profile in order to connect to your board. If you have not done so, 
+follow the <a href="../../../newtmgr/overview/">instructions</a> for setting up your connection profile.</p>
 <p><br></p>
-<h3 id="set-up-newtmgr-connection">Set up newtmgr connection</h3>
-<p>Newtmgr requires a connection profile in order to connect to your board. If you haven't yet, follow the <a href="../../../newtmgr/overview/">instructions</a> for setting up your connection profile.</p>
-<p><br></p>
-<h3 id="connecting-with-your-app">Connecting with your app</h3>
-<p>Once you have a connection profile set up, you can connect to your device with <code>newtmgr -c myconn &lt;command&gt;</code> to run commands agains your app. </p>
-<p>To test and make sure that newtmgr is working, try the echo command:</p>
+<h3 id="connecting-with-your-application">Connecting with Your Application</h3>
+<p>Once you have a connection profile set up, you can connect to your device with <code>newtmgr -c myconn &lt;command&gt;</code> to run commands in your application. </p>
+<p>Issue the <code>echo</code> command to ensure that your application is communicating with the newtmgr tool:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># newtmgr -c myconn echo hello
-{&quot;r&quot;: &quot;hello&quot;}
+hello
 </pre></div>
 
 
-<p>Newtmgr wraped the response in valid JSON notation. Now let's look at some BLE stats using newtmgr:</p>
+<p>Test your application to ensure that it can process a Newt Manager command that is supported by a different package.
+Issue the <code>stat</code> command to see the BLE stats. </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">newtmgr -c myconn stat ble_att
 Return Code = 0
 Stats Name: ble_att
@@ -565,44 +612,9 @@ Stats Name: ble_att
   read_group_type_rsp_tx: 0
   indicate_req_rx: 0
   find_type_value_rsp_tx: 0
-  read_mult_rsp_tx: 0
-  exec_write_req_rx: 0
-  exec_write_rsp_tx: 0
-  error_rsp_tx: 0
-  find_type_value_rsp_rx: 0
-  read_type_req_tx: 0
-  read_type_rsp_rx: 0
-  read_rsp_tx: 0
-  read_blob_req_tx: 0
-  mtu_req_tx: 0
-  read_req_tx: 0
-  read_blob_rsp_tx: 0
-  read_mult_req_rx: 0
-  write_req_tx: 0
-  prep_write_rsp_tx: 0
-  indicate_rsp_rx: 0
-  write_cmd_rx: 0
-  exec_write_rsp_rx: 0
-  find_info_req_rx: 0
-  mtu_rsp_rx: 0
-  prep_write_req_rx: 0
-  notify_req_rx: 0
-  read_group_type_rsp_rx: 0
-  prep_write_rsp_rx: 0
-  indicate_rsp_tx: 0
-  find_info_rsp_tx: 0
-  read_blob_req_rx: 0
-  read_group_type_req_rx: 0
-  write_cmd_tx: 0
-  mtu_req_rx: 0
-  read_mult_rsp_rx: 0
-  write_rsp_rx: 0
-  write_req_rx: 0
-  read_type_rsp_tx: 0
-  read_mult_req_tx: 0
-  error_rsp_rx: 0
-  find_info_rsp_rx: 0
-  find_type_value_req_tx: 0
+
+       ...
+
   read_req_rx: 0
   read_type_req_rx: 0
   notify_req_tx: 0
@@ -614,7 +626,55 @@ Stats Name: ble_att
 </pre></div>
 
 
-<p>Your application is now able to communicate via newtmgr!</p>
+<p>Your application is now able to communicate with the newtmgr tool.</p>
+<h3 id="other-configuration-options">Other Configuration Options</h3>
+<p>This section explains how to customize your application to use other Newt Manager protocol options.</p>
+<h4 id="newtmgr-framework-transport-protocol-options">Newtmgr Framework Transport Protocol Options</h4>
+<p>The newtmgr framework currently supports BLE and serial transport protocols. 
+To configure the transport protocols that are supported, modify the <code>pkg.yml</code> 
+and <code>syscfg.yml</code> files as follows:</p>
+<ul>
+<li>Add the <code>mgmt/newtmgr/transport/ble</code> package to <code>pkg.deps</code> parameter to enable BLE transport.</li>
+<li>Add the <code>mgmt/newtmgr/transport/nmgr_shell</code> package to 
+the <code>pkg.deps</code> parameter,  and add <code>SHELL_TASK: 1</code> to the <code>syscfg.vals</code> parameter to enable serial transport.</li>
+</ul>
+<p><br></p>
+<h4 id="oicmgr-framework-options">Oicmgr Framework Options</h4>
+<p>To use the oicmgr framework instead of the newtmgr framework, modify the <code>pkg.yml</code> and <code>syscfg.yml</code> files 
+as follows:</p>
+<ul>
+<li>Add the <code>mgmt/oicmgr</code> package (instead of the <code>mgmt/newtmgr</code> and <code>mgmt/newtmgr/transport</code> packages 
+as described previously) to the <code>pkg.deps</code> parameter.</li>
+<li>Add <code>OC_SERVER: 1</code> to the <code>syscfg.vals</code> parameter.</li>
+</ul>
+<p>Oicmgr supports the IP, serial, and BLE transport protocols.  To configure the transport protocols that are supported, 
+set the configuration setting values in the <code>syscfg.vals</code> parameter as follows:</p>
+<ul>
+<li>Add <code>OC_TRANSPORT_IP: 1</code> to enable IP transport. </li>
+<li>Add <code>OC_TRANSPORT_GATT: 1</code> to enable BLE transport.</li>
+<li>Add <code>OC_TRANSPORT_SERIAL: 1</code> and <code>SHELL_TASK: 1</code>  to enable serial transport.</li>
+</ul>
+<p><br></p>
+<h4 id="customize-the-newt-manager-commands-that-your-application-supports">Customize the Newt Manager Commands that Your Application Supports</h4>
+<p>We recommend that you only enable support for the Newt Manager commands that your application uses 
+to reduce your application code size.  To configure the commands that are supported, set the configuration 
+setting values in the <code>syscfg.vals</code> parameter as follows:</p>
+<ul>
+<li>Add <code>LOG_NEWTMGR: 1</code> to enable support for the <code>newtmgr log</code> command.</li>
+<li>Add <code>STATS_NEWTMGR: 1</code> to enable support for the <code>newtmgr stat</code> command.</li>
+<li>Add <code>CONFIG_NEWTMGR: 1</code> to enable support for the <code>newtmgr config</code> command.</li>
+<li>Add <code>CRASH_TEST_NEWTMGR: 1</code> to enable support for the  <code>newtmgr crash</code> command.</li>
+<li>Add <code>RUNTEST_NEWTMGR: 1</code> to enable support for the  <code>newtmgr crash</code> command.</li>
+</ul>
+<p>Notes: </p>
+<ul>
+<li>When you enable Newt Manager support, using either the newtmgr or oicmgr framework, your application automatically 
+supports the Newt Manager <code>echo</code>, <code>taskstats</code>, <code>mpstats</code>, <code>datetime</code>, and <code>reset</code> commands.  These 
+commands cannot be configured individually.</li>
+<li>The <code>mgmt/imgmgr</code> package does not provide a configuration setting to enable or disable support 
+for the <code>newtmgr image</code> command.  Do not specify the package in the <code>pkg.deps</code> parameter if 
+your device has limited flash memory and cannot support Over-The-Air (OTA) firmware upgrades.</li>
+</ul>
                         
                         <div class="row">
                             
