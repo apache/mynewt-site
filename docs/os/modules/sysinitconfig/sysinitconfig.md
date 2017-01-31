@@ -11,7 +11,7 @@ package dependencies for your target build.
 
 Mynewt defines several configuration parameters in the `pkg.yml` and `syscfg.yml` files. The newt tool uses this information to: 
 
-* Generate a system initialization function that calls all the package-specific system initialization functions. 
+* Generate a system initialization function that calls all the package-specific ystem initialization functions. 
 * Generate a system configuration header file that contains all the package configuration settings and values.
 * Display the system configuration settings and values in the `newt target config` command.
 
@@ -113,7 +113,7 @@ defined in the BSP flash map for your target board.
 
 ####Examples of Configuration Settings
 
-**Example 1:** The following example is an excerpt from the `sys/log` package `syscfg.yml` file. It defines the 
+**Example 1:** The following example is an excerpt from the `sys/log/full` package `syscfg.yml` file. It defines the 
 `LOG_LEVEL` configuration setting to specify the log level and the `LOG_NEWTMGR` configuration setting to specify whether
 to enable or disable the newtmgr logging feature.
 
@@ -238,7 +238,7 @@ package `syscfg.yml` files.
 ####Examples of Overrides
 
 **Example 4:** The following example is an excerpt from the `apps/slinky` package `syscfg.yml` file.  The application package overrides, 
-in addition to other packages, the `sys/log` package system configuration settings defined in **Example 1**. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
+in addition to other packages, the `sys/log/full` package system configuration settings defined in **Example 1**. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
 
 ```no-highlight
 
@@ -312,9 +312,9 @@ For example, to reference the `my-config-name` setting name,  you use `MYNEWT_VA
 
 ####Example of syscfg.h and How to Reference a Setting Name
 **Example 6**: The following example are excerpts from a sample `syscfg.h` file generated for an app/slinky target and 
-from the `sys/log` package `log.c` file that shows how to reference a setting name.
+from the `sys/log/full` package `log.c` file that shows how to reference a setting name.
 
-The `syscfg.h` file shows the `sys/log` package definitions and also indicates that `app/slinky` 
+The `syscfg.h` file shows the `sys/log/full` package definitions and also indicates that `app/slinky` 
 changed the value for the `LOG_NEWTMGR` settings. 
 
 ```no-highlight
@@ -349,7 +349,7 @@ changed the value for the `LOG_NEWTMGR` settings.
 
      ...
 
-/*** sys/log */
+/*** sys/log/full */
 
 #ifndef MYNEWT_VAL_LOG_LEVEL
 #define MYNEWT_VAL_LOG_LEVEL (0)
@@ -357,7 +357,7 @@ changed the value for the `LOG_NEWTMGR` settings.
 
      ...
 
-/* Overridden by apps/slinky (defined by sys/log) */
+/* Overridden by apps/slinky (defined by sys/log/full) */
 #ifndef MYNEWT_VAL_LOG_NEWTMGR
 #define MYNEWT_VAL_LOG_NEWTMGR (1)
 #endif
@@ -366,7 +366,7 @@ changed the value for the `LOG_NEWTMGR` settings.
 
 ```
 
-The `log_init()` function in the `sys/log/src/log.c` file initializes the `sys/log` package. It checks the 
+The `log_init()` function in the `sys/log/full/src/log.c` file initializes the `sys/log/full` package. It checks the 
 `LOG_NEWTMGR` setting value, using `MYNEWT_VAL(LOG_NEWTMGR)`, to determine whether the target application
 has enabled the `newtmgr log` functionality. It only registers the the callbacks to process the
 `newtmgr log` commands when the setting value is non-zero.
@@ -401,102 +401,166 @@ log_init(void)
 
 ### System Initialization
 
-An application's `main()` function must first call the Mynewt `sysinit()` function to 
-initialize the software before it performs any other processing.
-`sysinit()` calls the `sysinit_app()` function to perform system 
-initialization for the packages in the target.  You can, optionally, specify an 
-initialization function that `sysinit_app()` calls to initialize a package. 
+During system startup, Mynewt creates a default event queue and a main task to process events from this queue. 
+You can override the `OS_MAIN_TASK_PRIO` and `OS_MAIN_TASK_STACK_SIZE` setting values defined by the 
+`kernel/os` package to specify different task priority and stack size values.
 
-A package init function must have the following prototype:
+Your application's `main()` function executes in the context of the main task and must perform the following:
+
+* At the start of `main()`, call the Mynewt `sysinit()` function to initialize 
+the packages before performing any other processing.
+* At the end of `main()`, wait for and dispatch events from the default event queue in a forever loop. 
+
+**Note:** You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
+
+Here is an example of a `main()` function:
+
+```no-highlight
+
+int
+main(int argc, char **argv)
+{
+    /* First, call sysinit() to perform the system and package initialization */
+    sysinit();
+
+      ... other application initialization processing....
+
+     
+    /*  Last, process events from the default event queue.  */
+    while (1) {
+       os_eventq_run(os_eventq_dflt_get());
+    }
+    /* main never returns */   
+}
+
+```
+<br>
+
+####Specifying Package Initialization Functions
+
+The `sysinit()` function calls the `sysinit_app()` function to perform system 
+initialization for the packages in the target.   You can, optionally, 
+specify one or more package initialization functions 
+that `sysinit_app()` calls to initialize a package. 
+
+A package initialization function must have the following prototype:
 
 ```no-highlight
 
 void init_func_name(void)
 
 ```
-Package init functions are called in stages to ensure that lower priority packages 
-are initialized before higher priority packages.
+Package initialization functions are called in stages to ensure that lower priority
+packages are initialized before higher priority packages.  A stage is an 
+integer value, 0 or higher, that specifies when an initialization function is 
+called.  Mynewt calls the package initialization functions 
+in increasing stage number order.  The call order for initialization functions with the 
+same stage number depends on the order the packages are processed,
+and you cannot rely on a specific call order for these functions.  
 
-You specify an init function in the `pkg.yml` file for a package as follows:
+You use the `pkg.init` parameter in the 
+`pkg.yml` file to specify an initialization function and the stage number to call the function.
+You can specify multiple initialization functions, with a different stage number for each function,
+for the parameter values.  This feature allows packages with interdependencies to
+perform initialization in multiple stages.  
 
-* Use the `init_function` parameter to specify an init function name. 
+The `pkg.init` parameter has the following syntax in the `pkg.yml` file: 
 
-           pkg.init_function: pkg_init_func_name
+```no-highlight 
 
-      where `pkg_init_func_name` is the C function name of package init function. 
+pkg.init: 
+    pkg_init_func1_name: pkg_init_func1_stage 
+    pkg_init_func2_name: pkg_init_func2_stage 
 
-* Use the `init_stage` parameter to specify when to call the package init function.
+              ...
 
-           pkg.init_stage: stage_number
+    pkg_init_funcN_name: pkg_init_funcN_stage
 
-       where `stage_number` is a number that indicates when this init function is called relative to the other 
-       package init functions.  Mynewt calls the package init functions in increasing stage number order
-       and in alphabetic order of init function names for functions in the same stage.
-       **Note:** The init function will be called at stage 0 if `pkg.init_stage` is not specified.
- 
-**Note:** You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
+```
+where `pkg_init_func#_name` is the C function name of an initialization function, and `pkg_init_func#_stage` 
+is an integer value, 0 or higher, that indicates the stage when the `pkg_init_func#_name` function is called.  
+
+
+**Note:** The `pkg.init_function` and `pkg.init_stage` parameters introduced in a previous release for 
+specifying a package initialization function and a stage number are deprecated and have been 
+retained to support the legacy format.  They will not 
+be maintained for future releases and we recommend that you migrate to use the `pkg.init` parameter.
 
 <br>
 
 #### Generated sysinit_app() Function
 
-The newt tool processes the `init_function` and `init_stage` parameters in all the pkg.yml files for a target,
+The newt tool processes the `pkg.init` parameters in all the `pkg.yml` files for a target,
 generates the `sysinit_app()` function in the `<target-path>/generated/src/<target-name>-sysinit_app.c` file, and 
 includes the file in the build. Here is an example `sysinit_app()` function:
 
 ```no-highlight
 
-/**
+**
  * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
  */
 
 #if !SPLIT_LOADER
 
-void os_init(void);
 void split_app_init(void);
 void os_pkg_init(void);
 void imgmgr_module_init(void);
-void nmgr_pkg_init(void);
 
       ...
 
-void console_pkg_init(void);
-void log_init(void);
-
-      ...
+void stats_module_init(void);
 
 void
 sysinit_app(void)
 {
-    os_init();
 
     /*** Stage 0 */
     /* 0.0: kernel/os */
     os_pkg_init();
-    /* 0.1: sys/console/full */
+
+    /*** Stage 2 */
+    /* 2.0: sys/flash_map */
+    flash_map_init();
+
+    /*** Stage 10 */
+    /* 10.0: sys/stats/full */
+    stats_module_init();
+
+    /*** Stage 20 */
+    /* 20.0: sys/console/full */
     console_pkg_init();
 
-        ...
-
-    /*** Stage 1 */
-    /* 1.0: sys/log */
+    /*** Stage 100 */
+    /* 100.0: sys/log/full */
     log_init();
+    /* 100.1: sys/mfg */
+    mfg_init();
 
-        ...
+         ....
 
-    /*** Stage 5 */
-    /* 5.0: boot/split */
-    split_app_init();
-    /* 5.1: mgmt/imgmgr */
+    /*** Stage 300 */
+    /* 300.0: sys/config */    
+    config_pkg_init();
+
+    /*** Stage 500 */
+    /* 500.0: sys/id */
+    id_init();
+    /* 500.1: sys/shell */
+    shell_init();
+
+          ...
+
+    /* 500.4: mgmt/imgmgr */
     imgmgr_module_init();
-    /* 5.2: mgmt/newtmgr */
-    nmgr_pkg_init();
-        ...
-}
 
+    /*** Stage 501 */
+    /* 501.0: mgmt/newtmgr/transport/nmgr_shell */
+    nmgr_shell_pkg_init();
+}
 #endif
 
 ```
+
 
 <br>
 

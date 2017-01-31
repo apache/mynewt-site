@@ -26,7 +26,7 @@ override violations:
 * Ambiguity Violation - Two packages of the same priority override a setting with 
 different values. And no higher priority package overrides the setting.
 * Priority Violation - A package overrides a setting defined by a package with higher or 
-equal priority (TODO: Change error message to indicate a more general priority violation instead of only lateral overrides)
+equal priority. 
 
 ####Example: Ambiguity Violation Error Message
 
@@ -37,13 +37,13 @@ The following example shows the error message that newt outputs for an ambiguity
 Error: Syscfg ambiguities detected:
     Setting: LOG_NEWTMGR, Packages: [apps/slinky, apps/splitty]
 Setting history (newest -> oldest):
-    LOG_NEWTMGR: [apps/splitty:0, apps/slinky:1, sys/log:0]
+    LOG_NEWTMGR: [apps/splitty:0, apps/slinky:1, sys/log/full:0]
 
 ```
 
 The above error occurs because the `apps/slinky` and `apps/splitty` packages 
 in the split image target both override the same setting with different 
-values.  The `apps/slinky` package sets the `sys/log` package `LOG_NEWTMGR` 
+values.  The `apps/slinky` package sets the `sys/log/full` package `LOG_NEWTMGR` 
 setting to 1, and the `apps/splitty` package sets the setting to 0. The 
 overrides are ambiguous because both are `app` packages and 
 have the same priority.  The following are excerpts of the defintion 
@@ -52,7 +52,7 @@ and the two overrides from the `syscfg.yml` files that cause the error:
 
 ```no-highlight
 
-#Package: sys/log/
+#Package: sys/log/full
 syscfg.defs:
     LOG_NEWTMGR:
         description: 'Enables or disables newtmgr command tool logging'
@@ -70,27 +70,28 @@ syscfg.vals:
 
 ####Example: Priority Violation Error Message
 
-The following example shows the error message that newt outputs for a lateral violation where a package tries to change the setting that was defined by another package at the same priority level:
+The following example shows the error message that newt outputs for a priority violation 
+where a package tries to change the setting that was defined by another package at 
+the same priority level:
 
 ```no-highlight
 
-
-Error: Lateral overrides detected (bottom-priority packages cannot override settings):
-    Package: mgmt/newtmgr, Setting: LOG_NEWTMGR
+Error: Priority violations detected (Packages can only override settings defined by packages of lower priority):
+    Package: mgmt/newtmgr overriding setting: LOG_NEWTMGR defined by sys/log/full
 
 Setting history (newest -> oldest):
-    LOG_NEWTMGR: [sys/log:0]
+    LOG_NEWTMGR: [sys/log/full:0]
 
 ```
 
 The above error occurs because the `mgmt/newtmgr` lib package 
-overrides the `LOG_NEWTMGR` setting that the `sys/log` lib package 
+overrides the `LOG_NEWTMGR` setting that the `sys/log/full` lib package 
 defines. The following are excerpts of the definition and the override from the 
 `syscfg.yml` files that cause this error: 
 
 ```no-highlight
 
-#Package: sys/log
+#Package: sys/log/full
 syscfg.defs:
      LOG_NEWTMGR:
         description: 'Enables or disables newtmgr command tool logging'

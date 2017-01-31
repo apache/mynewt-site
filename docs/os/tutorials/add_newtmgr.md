@@ -93,14 +93,15 @@ package functionality.
 ###Modify the Source
 
 Your application must designate an event queue that the `mgmt` package uses to receive request events from 
-the newtmgr tool.  It must also initialize a task and implement the task handler to
-dispatch events from this queue.  The `mgmt` package executes and processes newtmgr 
-request events in the context of this task.  Your application, however, does 
-not need to create a dedicated event queue and task for this purpose and can use its default 
-event queue.  This example uses the application's default event queue.  
+the newtmgr tool.  The `mgmt` package executes and handles newtmgr request events in the context of the task that
+processes events from this event queue.  You can designate the default event queue that Mynewt 
+creates.  If you choose to create and use a dedicated event queue, you must also 
+initialize a task and implement the task handler to dispatch events from this queue.  This example 
+uses the default event queue that Mynewt creates. 
 
-The `mgmt` package exports the `void mgmt_evq_set(struct os_eventq *evq)` function that an application must call 
-to designate the event queue. Modify `main.c` to add this call as follows:
+The `mgmt` package exports the `void mgmt_evq_set(struct os_eventq *evq)` 
+function that an application must call to designate the event queue.
+Modify `main.c` to add this call as follows:
 
 Add the `mgmt/mgmt.h` header file: 
 
@@ -110,15 +111,16 @@ Add the `mgmt/mgmt.h` header file:
 
 ```
 Add the call to designate the event queue. In the `main()` function,  
-scroll down to the `os_eventq_dflt_set(&ble_tiny_evq)` function call and add the 
-following statement below it:
+scroll down to the  `while (1) ` loop and add the 
+following statement above the loop: 
 
 ```no-highlight
 
-mgmt_eventq_set(&ble_tiny_evq)
+mgmt_evq_set(os_eventq_dflt_get())
 
 ```
-The `mgmt_eventq_set()` function must be called after your application has initialized the event queue and task.
+**Note:** If you choose to create and use a dedicated event queue, you must initialize the event queue and 
+the task before calling the `mgmt_evq_set()` function. 
 
 
 ### Build the Targets
