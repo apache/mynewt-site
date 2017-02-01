@@ -634,9 +634,11 @@ pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;
 pkg.homepage: &quot;http://mynewt.apache.org/&quot;
 pkg.keywords:
 
-pkg.deps:
+pkg.deps: 
     - &quot;@apache-mynewt-core/kernel/os&quot;
-    - &quot;@apache-mynewt-core/sys/log&quot;
+    - &quot;@apache-mynewt-core/sys/shell&quot;
+    - &quot;@apache-mynewt-core/sys/stats/full&quot;
+    - &quot;@apache-mynewt-core/sys/log/full&quot;
     - &quot;@apache-mynewt-core/mgmt/newtmgr&quot;
     - &quot;@apache-mynewt-core/mgmt/newtmgr/transport/ble&quot;
     - &quot;@apache-mynewt-core/net/nimble/controller&quot;
@@ -647,7 +649,6 @@ pkg.deps:
     - &quot;@apache-mynewt-core/net/nimble/host/store/ram&quot;
     - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;
     - &quot;@apache-mynewt-core/sys/console/full&quot;
-    - &quot;@apache-mynewt-core/libc/baselibc&quot;
     - &quot;@apache-mynewt-core/sys/sysinit&quot;
     - &quot;@apache-mynewt-core/sys/id&quot;
 </pre></div>
@@ -702,8 +703,15 @@ To start development of the driver, you first need to create a package descripti
 <span style="color: #633820"># under the License.</span>
 <span style="color: #633820">#</span>
 <span style="color: #000000">pkg</span>.<span style="color: #000000">name</span>: <span style="color: #000000">libs/my_drivers/senseair</span>
+<span style="color: #000000">pkg</span>.<span style="color: #000000">description</span>: <span style="color: #000000">Host</span> <span style="color: #000000">side</span> <span style="color: #000000">of</span> <span style="color: #000000">the</span> <span style="color: #000000">nimble</span> <span style="color: #000000">Bluetooth</span> <span style="color: #000000">Smart</span> <span style="color: #000000">stack</span>.
+<span style="color: #000000">pkg</span>.<span style="color: #000000">author</span>: <span style="color: #C41A16">&quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;</span>
+<span style="color: #000000">pkg</span>.<span style="color: #000000">homepage</span>: <span style="color: #C41A16">&quot;http://mynewt.apache.org/&quot;</span>
+<span style="color: #000000">pkg</span>.<span style="color: #000000">keywords</span>:
+    <span style="color: #000000">-</span> <span style="color: #000000">ble</span>
+    <span style="color: #000000">-</span> <span style="color: #000000">bluetooth</span>
+
 <span style="color: #000000">pkg</span>.<span style="color: #000000">deps</span>:
-    <span style="color: #000000">-</span> <span style="color: #C41A16">&quot;@apache-mynewt-core/hw/hal&quot;</span>
+    <span style="color: #000000">-</span> <span style="color: #C41A16">&quot;@apache-mynewt-core/kernel/os&quot;</span>
 </pre></div>
 
 
@@ -781,8 +789,8 @@ pkg.deps:
     - &quot;@apache-mynewt-core/libs/os&quot;
     - &quot;@apache-mynewt-core/libs/shell&quot;
     - &quot;@apache-mynewt-core/sys/config&quot;
-    - &quot;@apache-mynewt-core/sys/log&quot;
-    - &quot;@apache-mynewt-core/sys/stats&quot;
+    - &quot;@apache-mynewt-core/sys/log/full&quot;
+    - &quot;@apache-mynewt-core/sys/stats/full&quot;
     - &quot;@apache-mynewt-core/libs/baselibc&quot;
     - libs/my_drivers/senseair
 </pre></div>
@@ -938,7 +946,7 @@ You can connect the hardware to your board and start developing code for the dri
 <p>The sensor has a serial port connection, and that's how you are going to connect to it. Your original BSP, hw/bsp/arduino_primo_nrf52, has two UARTs set up.
 We're using one for our shell/console. It also has a second UART set up as a 'bit-bang' UART but since the SenseAir only needs to
 communicate at 9600 baud, this bit-banged uart is plenty fast enough.</p>
-<p>You'll have to make a small change to the <code>syscfg.yml</code> file in your project's target directory to chang the pin definitions 
+<p>You'll have to make a small change to the <code>syscfg.yml</code> file in your project's target directory to change  the pin definitions 
 for this second UART. Those changes are as follows:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    UART_0_PIN_TX: 23
     UART_0_PIN_RX: 24
@@ -1211,7 +1219,7 @@ which is a blocking read. If you were making a commercial product, you would pro
 </pre></div>
 
 
-<p>And your modified your main() for senseair driver init.</p>
+<p>And your modified main() for senseair driver init.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
 <span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
@@ -1234,8 +1242,8 @@ straight to the board if you prefer.</p>
 <p><img alt="SenseAir Wiring" src="../pics/Senseair1.png" /></p>
 <p>Now that you have that wired up, let's get the Arduino Primo wired up. A couple of things to note:</p>
 <ul>
-<li>The Arduino Primo's 'console' UART is actually UART1. The secondary (bit-banged) UART is 
-UART0, so that's where we'll have to hook up the SenseAir.</li>
+<li>The Arduino Primo's 'console' UART is actually UART1. </li>
+<li>The secondary (bit-banged) UART is UART0, so that's where we'll have to hook up the SenseAir.</li>
 </ul>
 <p>Here's what your Arduino Primo should now look like with everything wired in:</p>
 <p><img alt="SenseAir and Arduino Primo Wiring" src="../pics/Senseair2.png" /></p>

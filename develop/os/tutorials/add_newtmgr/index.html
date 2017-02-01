@@ -535,26 +535,28 @@ package functionality.</p>
 <p><br></p>
 <h3 id="modify-the-source">Modify the Source</h3>
 <p>Your application must designate an event queue that the <code>mgmt</code> package uses to receive request events from 
-the newtmgr tool.  It must also initialize a task and implement the task handler to
-dispatch events from this queue.  The <code>mgmt</code> package executes and processes newtmgr 
-request events in the context of this task.  Your application, however, does 
-not need to create a dedicated event queue and task for this purpose and can use its default 
-event queue.  This example uses the application's default event queue.  </p>
-<p>The <code>mgmt</code> package exports the <code>void mgmt_evq_set(struct os_eventq *evq)</code> function that an application must call 
-to designate the event queue. Modify <code>main.c</code> to add this call as follows:</p>
+the newtmgr tool.  The <code>mgmt</code> package executes and handles newtmgr request events in the context of the task that
+processes events from this event queue.  You can designate the default event queue that Mynewt 
+creates.  If you choose to create and use a dedicated event queue, you must also 
+initialize a task and implement the task handler to dispatch events from this queue.  This example 
+uses the default event queue that Mynewt creates. </p>
+<p>The <code>mgmt</code> package exports the <code>void mgmt_evq_set(struct os_eventq *evq)</code> 
+function that an application must call to designate the event queue.
+Modify <code>main.c</code> to add this call as follows:</p>
 <p>Add the <code>mgmt/mgmt.h</code> header file: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &lt;mgmt/mgmt.h&gt;
 </pre></div>
 
 
 <p>Add the call to designate the event queue. In the <code>main()</code> function,<br />
-scroll down to the <code>os_eventq_dflt_set(&amp;ble_tiny_evq)</code> function call and add the 
-following statement below it:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">mgmt_eventq_set(&amp;ble_tiny_evq)
+scroll down to the  <code>while (1)</code> loop and add the 
+following statement above the loop: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">mgmt_evq_set(os_eventq_dflt_get())
 </pre></div>
 
 
-<p>The <code>mgmt_eventq_set()</code> function must be called after your application has initialized the event queue and task.</p>
+<p><strong>Note:</strong> If you choose to create and use a dedicated event queue, you must initialize the event queue and 
+the task before calling the <code>mgmt_evq_set()</code> function. </p>
 <h3 id="build-the-targets">Build the Targets</h3>
 <p>Build the two targets as follows:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot

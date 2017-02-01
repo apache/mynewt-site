@@ -492,12 +492,12 @@ other devices can get those values.</p>
 <p>First, we'll define the GATT Services in <code>apps/air_quality/src/bleprph.h</code>.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* Sensor Data */</span>
 <span style="color: #177500">/* e761d2af-1c15-4fa7-af80-b5729002b340 */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">gatt_svr_svc_co2_uuid</span>[<span style="color: #1C01CE">16</span>] <span style="color: #000000">=</span> {
-    <span style="color: #1C01CE">0x40</span>, <span style="color: #1C01CE">0xb3</span>, <span style="color: #1C01CE">0x20</span>, <span style="color: #1C01CE">0x90</span>, <span style="color: #1C01CE">0x72</span>, <span style="color: #1C01CE">0xb5</span>, <span style="color: #1C01CE">0x80</span>, <span style="color: #1C01CE">0xaf</span>,
-    <span style="color: #1C01CE">0xa7</span>, <span style="color: #1C01CE">0x4f</span>, <span style="color: #1C01CE">0x15</span>, <span style="color: #1C01CE">0x1c</span>, <span style="color: #1C01CE">0xaf</span>, <span style="color: #1C01CE">0xd2</span>, <span style="color: #1C01CE">0x61</span>, <span style="color: #1C01CE">0xe7</span> };
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">ble_uuid128_t</span> <span style="color: #000000">gatt_svr_svc_co2_uuid</span> <span style="color: #000000">=</span>
+    <span style="color: #000000">BLE_UUID128_INIT</span>(<span style="color: #1C01CE">0x40</span>, <span style="color: #1C01CE">0xb3</span>, <span style="color: #1C01CE">0x20</span>, <span style="color: #1C01CE">0x90</span>, <span style="color: #1C01CE">0x72</span>, <span style="color: #1C01CE">0xb5</span>, <span style="color: #1C01CE">0x80</span>, <span style="color: #1C01CE">0xaf</span>,
+                     <span style="color: #1C01CE">0xa7</span>, <span style="color: #1C01CE">0x4f</span>, <span style="color: #1C01CE">0x15</span>, <span style="color: #1C01CE">0x1c</span>, <span style="color: #1C01CE">0xaf</span>, <span style="color: #1C01CE">0xd2</span>, <span style="color: #1C01CE">0x61</span>, <span style="color: #1C01CE">0xe7</span>);
 <span style="color: #633820">#define CO2_SNS_TYPE          0xDEAD</span>
 <span style="color: #633820">#define CO2_SNS_STRING &quot;SenseAir K30 CO2 Sensor&quot;</span>
-<span style="color: #633820">#define CO2_SNS_VAL               0xBEAD</span>
+<span style="color: #633820">#define CO2_SNS_VAL           0xBEAD</span>
 
 <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_co2_val</span>; 
 </pre></div>
@@ -505,7 +505,7 @@ other devices can get those values.</p>
 
 <p>You can use any hex values you choose for the sensor type and sensor values, and you can 
 even forget the sensor type and sensor string definitions altogether but they make
-the results look nice in our Bleutooth App.</p>
+the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we'll add those services to <code>apps/air_quality/src/gatt_svr.c</code>.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_sns_access</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
@@ -521,15 +521,15 @@ the results look nice in our Bleutooth App.</p>
     {
         <span style="color: #177500">/*** Service: Security test. */</span>
         .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
-        .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_svc_sec_test_uuid</span>,
+        .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_svc_sec_test_uuid</span>.<span style="color: #000000">u</span>,
         .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
             <span style="color: #177500">/*** Characteristic: Random number generator. */</span>
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_sec_test_rand_uuid</span>,
+            .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_chr_sec_test_rand_uuid</span>.<span style="color: #000000">u</span>,
             .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
             .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span> <span style="color: #000000">|</span> <span style="color: #000000">BLE_GATT_CHR_F_READ_ENC</span>,
         }, {
             <span style="color: #177500">/*** Characteristic: Static value. */</span>
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_sec_test_static_uuid</span>,
+            .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_chr_sec_test_static_uuid</span>,.<span style="color: #000000">u</span>
             .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
             .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span> <span style="color: #000000">|</span>
                      <span style="color: #000000">BLE_GATT_CHR_F_WRITE</span> <span style="color: #000000">|</span> <span style="color: #000000">BLE_GATT_CHR_F_WRITE_ENC</span>,
@@ -540,28 +540,29 @@ the results look nice in our Bleutooth App.</p>
         {
             <span style="color: #177500">/*** CO2 Level Notification Service. */</span>
             .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
-            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_svc_co2_uuid</span>,
+            .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_svc_co2_uuid</span>.<span style="color: #000000">u</span>,
             .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
-                .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">CO2_SNS_TYPE</span>),
+                .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_TYPE</span>),
                 .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_sns_access</span>,
                 .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
             }, {
-                .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">CO2_SNS_VAL</span>),
+                .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_VAL</span>),
                 .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_sns_access</span>,
                 .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
             }, {
                 <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more characteristics in this service. */</span>
             } },
         },
-    {
-        <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more services. */</span>
-    },
-};
+
+        {
+            <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more services. */</span>
+        },
+    };
 </pre></div>
 
 
 <p>Next we need to tell the GATT Server how to handle requests for CO<sub>2</sub> readings :</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">sstatic</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_sns_access</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
                           <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
                           <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
@@ -569,8 +570,7 @@ the results look nice in our Bleutooth App.</p>
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_128_to_16</span>(<span style="color: #000000">ctxt-&gt;chr-&gt;uuid128</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">uuid16</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_u16</span>(<span style="color: #000000">ctxt-&gt;chr-&gt;uuid</span>);
 
     <span style="color: #A90D91">switch</span> (<span style="color: #000000">uuid16</span>) {
     <span style="color: #A90D91">case</span> <span style="color: #000000">CO2_SNS_TYPE</span>:
@@ -595,7 +595,7 @@ the results look nice in our Bleutooth App.</p>
     <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
         <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
         <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_UNLIKELY</span>;
-    }                              
+    }
 }
 </pre></div>
 
@@ -660,7 +660,7 @@ normally do by adding the following. Again, remember to delete all the shell eve
         <span style="color: #A90D91">goto</span> <span style="color: #000000">err</span>;
     }
     <span style="color: #000000">gatt_co2_val</span> <span style="color: #000000">=</span> <span style="color: #000000">value</span>;
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gatts_find_chr</span>(<span style="color: #000000">gatt_svr_svc_co2_uuid</span>, <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">CO2_SNS_VAL</span>), <span style="color: #A90D91">NULL</span>, <span style="color: #000000">&amp;chr_val_handle</span>);
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gatts_find_chr</span>(<span style="color: #000000">&amp;gatt_svr_svc_co2_uuid</span>.<span style="color: #000000">u</span>, <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_VAL</span>), <span style="color: #A90D91">NULL</span>, <span style="color: #000000">&amp;chr_val_handle</span>);
     <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
     <span style="color: #000000">ble_gatts_chr_updated</span>(<span style="color: #000000">chr_val_handle</span>);
     <span style="color: #A90D91">return</span> (<span style="color: #1C01CE">0</span>);
