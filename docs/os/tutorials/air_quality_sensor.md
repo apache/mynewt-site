@@ -172,9 +172,11 @@ pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 
-pkg.deps:
+pkg.deps: 
     - "@apache-mynewt-core/kernel/os"
-    - "@apache-mynewt-core/sys/log"
+    - "@apache-mynewt-core/sys/shell"
+    - "@apache-mynewt-core/sys/stats/full"
+    - "@apache-mynewt-core/sys/log/full"
     - "@apache-mynewt-core/mgmt/newtmgr"
     - "@apache-mynewt-core/mgmt/newtmgr/transport/ble"
     - "@apache-mynewt-core/net/nimble/controller"
@@ -185,7 +187,6 @@ pkg.deps:
     - "@apache-mynewt-core/net/nimble/host/store/ram"
     - "@apache-mynewt-core/net/nimble/transport/ram"
     - "@apache-mynewt-core/sys/console/full"
-    - "@apache-mynewt-core/libc/baselibc"
     - "@apache-mynewt-core/sys/sysinit"
     - "@apache-mynewt-core/sys/id"
 ```
@@ -244,8 +245,15 @@ Now you can add the files you need. You'll need a pkg.yml to describe the driver
 # under the License.
 #
 pkg.name: libs/my_drivers/senseair
+pkg.description: Host side of the nimble Bluetooth Smart stack.
+pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.homepage: "http://mynewt.apache.org/"
+pkg.keywords:
+    - ble
+    - bluetooth
+
 pkg.deps:
-    - "@apache-mynewt-core/hw/hal"
+    - "@apache-mynewt-core/kernel/os"
 ```
 
 ```no-highlight
@@ -325,8 +333,8 @@ pkg.deps:
     - "@apache-mynewt-core/libs/os"
     - "@apache-mynewt-core/libs/shell"
     - "@apache-mynewt-core/sys/config"
-    - "@apache-mynewt-core/sys/log"
-    - "@apache-mynewt-core/sys/stats"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/sys/stats/full"
     - "@apache-mynewt-core/libs/baselibc"
     - libs/my_drivers/senseair
 ```
@@ -772,7 +780,7 @@ senseair_init(int uartno)
 }
 ```
 
-And your modified your main() for senseair driver init.
+And your modified main() for senseair driver init.
 
 ```c
 int
@@ -802,8 +810,8 @@ Here's what your SenseAir board should look like once it's wired up:
 
 Now that you have that wired up, let's get the Arduino Primo wired up. A couple of things to note:
 
-* The Arduino Primo's 'console' UART is actually UART1. The secondary (bit-banged) UART is 
-UART0, so that's where we'll have to hook up the SenseAir.
+* The Arduino Primo's 'console' UART is actually UART1. 
+* The secondary (bit-banged) UART is UART0, so that's where we'll have to hook up the SenseAir.
 
 Here's what your Arduino Primo should now look like with everything wired in:
 
