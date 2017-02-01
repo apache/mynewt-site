@@ -161,7 +161,6 @@ Then you modify the apps/air_quality/pkg.yml for air_quality in order to change 
 You'll need to add the `@apache-mynewt-core/` path to all the package dependencies, since the app no longer
 resides within the apache-mynewt-core repository.
 
-The Arduino Primo board has a limited amount of memory, so you must also switch your libc to be baselibc, instead of the standard one.
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat apps/air_quality/pkg.yml
@@ -335,7 +334,6 @@ pkg.deps:
     - "@apache-mynewt-core/sys/config"
     - "@apache-mynewt-core/sys/log/full"
     - "@apache-mynewt-core/sys/stats/full"
-    - "@apache-mynewt-core/libs/baselibc"
     - libs/my_drivers/senseair
 ```
 
