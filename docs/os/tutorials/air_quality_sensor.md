@@ -501,7 +501,7 @@ The sensor has a serial port connection, and that's how you are going to connect
 We're using one for our shell/console. It also has a second UART set up as a 'bit-bang' UART but since the SenseAir only needs to
 communicate at 9600 baud, this bit-banged uart is plenty fast enough.
 
-You'll have to make a small change to the `syscfg.yml` file in your project's target directory to chang the pin definitions 
+You'll have to make a small change to the `syscfg.yml` file in your project's target directory to change  the pin definitions 
 for this second UART. Those changes are as follows:
 
 ```no-highlight
