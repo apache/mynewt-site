@@ -22,7 +22,11 @@ You will need the following equipment:
 
 ##Build Your Application
 To save time, we will simply modify the Blinky app. We'll add the Task Management code to
+<<<<<<< HEAD
+the Blinky App. Follow the [*Arduino Zero Blinky tutorial*](http://mynewt.apache.org/os/tutorials/arduino_zero/) 
+=======
 the Blinky app. Follow the [*Arduino Zero Blinky tutorial*](http://mynewt.apache.org/os/tutorials/arduino_zero/) 
+>>>>>>> apache/master
 to create a new project and build your bootloader and application. Finally, build and 
 load the application to your Arduino to verify that everything is in order. Now let’s get started!
 
@@ -35,7 +39,11 @@ in main.c (located in apps/blinky/src):
 struct os_task work_task;
 ```
 
+<<<<<<< HEAD
+A task is represented by the [*os_task*](http://mynewt.apache.org/os/core_os/task/task/#data-structures) 
+=======
 A task is represented by the [*os_task*](http://mynewt.apache.org/os/core_os/task/task/#data-structures)  
+>>>>>>> apache/master
 struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two 
 main elements, a task function (also known as a task handler) and a task stack.
 
@@ -50,7 +58,6 @@ which are generally 32 bits, making our entire stack 1024 Bytes.
 
 ```c
   #define WORK_STACK_SIZE OS_STACK_ALIGN(256)
-  os_stack_t work_stack[WORK_STACK_SIZE];
 ```
 
 
@@ -97,13 +104,21 @@ Let’s set the priority of `work_task` to 0, because everyone knows that work i
 ### Initialization
 To initialize a new task we use [*os_task_init()*](http://mynewt.apache.org/os/core_os/task/os_task_init/) 
 which takes a number of arguments including our new task function, stack, and priority. Much like `blinky_task`, 
+<<<<<<< HEAD
+we’re going to initialize `work_task` inside `init_tasks` to keep our main function clean. We'll set the task stack here and pass it to the `os_task_init()` function as well.
+=======
 we’re going to initialize `work_task` inside `init_tasks` to keep our main function clean.
+>>>>>>> apache/master
 
 ```c
 int
 init_tasks(void)
 {
     /* … */
+    os_stack_t *work_stack;
+    work_stack = malloc(sizeof(os_stack_t)*WORK_STACK_SIZE);
+    
+    assert(pstack);
     os_task_init(&work_task, "work", work_task_handler, NULL,
             WORK_TASK_PRIO, OS_WAIT_FOREVER, work_stack,
             WORK_STACK_SIZE);
@@ -151,11 +166,20 @@ os_task_init(&mytask, "mytask", mytask_handler, NULL,
 ```
 
 ##Task Priority, Preempting, and Context Switching
+<<<<<<< HEAD
+
 A preemptive RTOS is one in which a higher priority task that is *ready to run* will preempt (i.e. take the 
 place of) the lower priority task which is *running*. When a lower priority task is preempted by a higher 
 priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new 
 task is switched in.
 
+=======
+A preemptive RTOS is one in which a higher priority task that is *ready to run* will preempt (i.e. take the 
+place of) the lower priority task which is *running*. When a lower priority task is preempted by a higher 
+priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new 
+task is switched in.
+
+>>>>>>> apache/master
 In our example, `work_task` has a higher priority than `blinky_task` and, because it is never put into a 
 *sleep* state, holds the processor focus on its context. Let’s give `work_task` a delay and some simulated 
 work to keep it busy. Because the delay is measured in os ticks, the actual number of ticks per second is 
@@ -237,9 +261,15 @@ Set a new app location.
 $ newt target set task_tgt app=apps/mynewt_tasks_lesson
 ```
 
+<<<<<<< HEAD
+Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead 
+choosing to use the [*console*](http://mynewt.apache.org/latest/os/modules/console/console/) 
+and [*shell*](http://mynewt.apache.org/latest/os/modules/shell/shell/) to follow our tasks through execution.
+=======
 Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead choosing t
 o use the [*console*](http://mynewt.apache.org/latest/os/modules/console/console/) and [*shell*](http://mynewt.apache.org/latest/os/modules/shell/shell/) 
 to follow our tasks through execution.
+>>>>>>> apache/master
 
 Additionally, we have a number of different tasks:
 
@@ -277,6 +307,10 @@ $ cd repos/mynewt_arduino_zero
 $ git checkout develop
 ```
 
+<<<<<<< HEAD
+You should already be familiar with the [Serial Port Setup and Configuration](../get_started/serial_access.md), but if
+you're not, you can go there now and then come back. 
+=======
 Open a new terminal window and list your serial connections to find our Arduino.
 ```c
 $ ls /dev/tty.*
@@ -291,6 +325,7 @@ $ minicom -D /dev/tty.usbmodem14132 -b 115200
 ```
 
 If you see minicom welcome you, you’re ready to move on!
+>>>>>>> apache/master
 
 ### Output Analysis
 
@@ -398,7 +433,12 @@ rate, Task B would take over a minute to finish one cycle.
 
 Feel free to play around with the testing parameters to study the different changes yourself!
 
+<<<<<<< HEAD
+###Conclusion
+
+=======
 ##Conclusion
+>>>>>>> apache/master
 Moving forward, tasks are just the tip of the iceberg. The [*scheduler*](http://mynewt.apache.org/latest/os/core_os/context_switch/context_switch/), 
 [*event queues*](http://mynewt.apache.org/latest/os/core_os/event_queue/event_queue/), 
 [*semaphores*](http://mynewt.apache.org/latest/os/core_os/semaphore/semaphore/), and 
@@ -412,4 +452,8 @@ your application. In the end, the way you manage your tasks depends on the conte
 application. You should assign priorities based on execution time, urgency, and frequency, among 
 other things.
 
+<<<<<<< HEAD
 Keep blinking and happy hacking!
+=======
+Keep blinking and happy hacking!
+>>>>>>> apache/master
