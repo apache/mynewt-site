@@ -11,7 +11,7 @@ package dependencies for your target build.
 
 Mynewt defines several configuration parameters in the `pkg.yml` and `syscfg.yml` files. The newt tool uses this information to: 
 
-* Generate a system initialization function that calls all the package-specific ystem initialization functions. 
+* Generate a system initialization function that calls all the package-specific system initialization functions. 
 * Generate a system configuration header file that contains all the package configuration settings and values.
 * Display the system configuration settings and values in the `newt target config` command.
 
