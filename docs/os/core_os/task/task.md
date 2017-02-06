@@ -58,7 +58,7 @@ tasks. This information is of type `os_task_info` and is described below.
 The following is a very simple example showing a single application task. This 
 task simply toggles an LED at a one second interval.
  
-```c 
+```c
 /* Create a simple "project" with a task that blinks a LED every second */
 
 /* Define task stack and task object */
@@ -83,23 +83,21 @@ void my_task_func(void *arg) {
 }
 
 /* This is the main function for the project */
-int main(void) {
-    int rc;
+int main(int argc, char **argv) 
+{
 
-    /* Initialize OS */
-    os_init();
+    /* Perform system and package initialization */
+    sysinit();
 
     /* Initialize the task */
     os_task_init(&my_task, "my_task", my_task_func, NULL, MY_TASK_PRIO, 
                  OS_WAIT_FOREVER, my_task_stack, MY_STACK_SIZE);
 
-    /* Start the OS */
-    os_start();
-
-    /* os start should never return. If it does, this should be an error */
-    assert(0);
-
-    return rc;
+    /*  Process events from the default event queue.  */
+    while (1) {
+       os_eventq_run(os_eventq_dflt_get());
+    }
+    /* main never returns */  
 }
 ``` 
 

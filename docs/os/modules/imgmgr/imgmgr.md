@@ -29,6 +29,5 @@ The functions available in imgmgr are:
 
 | Function | Description |
 |---------|-------------|
-| [imgmgr_module_init](imgmgr_module_init.md) | Registers image manager commands with newtmgr. |
 | [imgr_ver_parse](imgr_ver_parse.md) | Parses character string containing specified image version number and writes that to given image_version struct. |
 | [imgr_ver_str](imgr_ver_str.md) | Takes version string from specified image_version struct and formats it into a printable string. |
