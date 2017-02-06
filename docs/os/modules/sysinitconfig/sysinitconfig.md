@@ -409,7 +409,7 @@ Your application's `main()` function executes in the context of the main task an
 
 * At the start of `main()`, call the Mynewt `sysinit()` function to initialize 
 the packages before performing any other processing.
-* At the end of `main()`, wait for and dispatch events from the default event queue in a forever loop. 
+* At the end of `main()`, wait for and dispatch events from the default event queue in an infinite loop. 
 
 **Note:** You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
 
