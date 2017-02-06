@@ -1,20 +1,28 @@
 # Shell
 
-The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing 
-[newtmgr](../../../newtmgr/overview.md) line protocol over serial line. Shell runs in its own task.
+The shell runs above the console and provides two functionalities:
+
+* Processes console input. 
+* Implements the [newtmgr](../../../newtmgr/overview.md) line protocol over serial transport. 
+
+The `sys/shell` package implements the shell.  The shell uses the OS default event queue 
+for shell events and runs in the context of the main task. An application can, optionally, 
+specify a dedicated event queue for the shell to use.
 
 ###Description
 
-* Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string 
-and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.
+* The shell's first job is to direct incoming commands to other subsystems. It parses the incoming character string 
+into tokens and uses the first token to determine the subsystem command handler to call to process the command.
 
-    * Subsystems register their command handlers using `shell_cmd_register()`. When shell calls the command handler, it passes the other tokens as arguments.
+    * Subsystems register their command handlers using the `shell_cmd_register()` 
+      function.  When shell calls the command handler, it passes the other tokens as arguments.
 
     * A few commands are currently available in the shell - `tasks`, `log`, `echo`, `date` and `prompt`.
 
-* Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. 
-Protocol handler (libs/newtmgr) registers itself using `shell_nlip_input_register()`, and shell calls the registered 
-handler for every frame. Outgoing frames for the protocol are sent using `shell_nlip_output()`.
+* The shell's second job is to handle packet framing, encoding, and decoding of newtmgr protocol messages that are
+sent over the console.  The Newtmgr serial transport package (`mgmt/newtmgr/transport/newtmgr_shell`) 
+calls the `shell_nlip_input_register()` function to register a handler that the shell calls when it 
+receives newtmgr request messages.
 
 <br>
 
@@ -121,8 +129,8 @@ The functions available in this OS feature are:
 
 | Function | Description |
 |---------|-------------|
-| [shell_task_init](shell_task_init.md) | Initializes the shell package. This creates a task for shell, and registers few commands on its own. |
 | [shell_cmd_register](shell_cmd_register.md) | Registers a handler for incoming console commands. |
 | [shell_nlip_input_register](shell_nlip_input_register.md) | Registers a handler for incoming newtmgr messages. |
 | [shell_nlip_output](shell_nlip_output.md) | Queue outgoing newtmgr message for transmission. |
+| [shell_evq_set](shell_evq_set.md) | Specifies a dedicated event queue for shell events. |
 
