@@ -1,4 +1,4 @@
-## <font color="F2853F" style="font-size:24pt"> shell_task_init</font>
+## <font color="F2853F" style="font-size:24pt"> shell_evq_set</font>
 
 ```c
 void shell_evq_set(struct os_eventq *evq)
