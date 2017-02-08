@@ -555,49 +555,66 @@
                         </div>
                         
                             <h1 id="console">Console</h1>
-<p>The console is an operating system window where users interact with system programs of the operating system 
-or a console application by entering text input (typically from a keyboard) and reading text output 
-(typically on the computer terminal or monitor). The text written on the console brings some information 
-and is a sequence of characters sent by the OS or programs running on the OS. </p>
+<p>The console is an operating system window where users interact with the OS subsystems or a console 
+application.  A user typically inputs text from a keyboard and reads the OS output text on a computer
+monitor.  The text are sent as a sequence of characters between the user and the OS. </p>
 <p>Support is currently available for console access via the serial port on the hardware board.</p>
 <h3 id="description">Description</h3>
 <p>In the Mynewt OS, the console library comes in two versions:</p>
 <ul>
-<li>full - containing the full implementation</li>
-<li>stub - containing stubs for the API</li>
+<li>
+<p>The <code>sys/console/full</code> package implements the complete console functionality and API.</p>
+</li>
+<li>
+<p>The <code>sys/console/stub</code> package implements stubs for the API.</p>
+</li>
 </ul>
-<p>Both of these have a <code>pkg.yml</code> file which states that they provide the <code>console</code> API. If a pkg uses 
-this API, it should list <code>console</code> as a requirement. For example, the shell pkg is defined by the 
-following pkg.yml file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    pkg.name: libs/shell 
-    pkg.vers: 0.1
-    pkg.deps:
-        - libs/os
-        - libs/util
-    pkg.reqs:
-        - console
-    pkg.identities:
-        - SHELL 
+<p>Both packages export the <code>console</code> API, and any package that uses 
+the console API must list <code>console</code> as a requirement. For example, the shell package defines the following <code>pkg.yml</code>
+file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: sys/shell
+pkg.deps:
+    - kernel/os
+    - encoding/base64
+    - time/datetime
+    - util/crc
+pkg.req_apis:
+    - console
 </pre></div>
 
 
-<p>The project .yml file decides which version of the console pkg should be included. 
-If a project requires the full console capability it lists dependency <code>libs/console/full</code> in its pkg.yml 
-file. On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) 
-but may have a dependency on a pkg that has console capability. In that case you would use a console stub. </p>
-<p>Another example would be the bootloader project where we want to keep the size of the image small. It includes 
-the <code>libs/os</code> pkg that can print out messages on a console (e.g. if there is a hard fault) and the <code>libs/util</code> 
-pkg that uses the full console (but only if SHELL is present to provide a CLI). However, we do not want to use 
-any console I/O capability in this particular bootloader project to keep the size small. We simply use the console 
-stub instead, and the pkg.yml file for the project boot pkg looks like the following:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    project.name: boot
-    project.identities: bootloader
-    project.pkgs:
-        - libs/os
-        - libs/bootutil
-        - libs/nffs
-        - libs/console/stub
-        - libs/util 
+<p>The project <code>pkg.yml</code> file specifies the version of the console package to use.
+A project that requires the full console capability must list the <code>sys/console/full</code> package as a dependency 
+in its <code>pkg.yml</code> file.</p>
+<p>An example is the <code>slinky</code> application. It requires the full console capability and has the following
+<code>pkg.yml</code> file: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: apps/slinky
+pkg.deps:
+    - test/flash_test
+    - mgmt/imgmgr
+    - mgmt/newtmgr
+    - mgmt/newtmgr/transport/nmgr_shell
+    - kernel/os
+    - boot/bootutil
+    - sys/shell
+    - sys/console/full
+       ...
+    - sys/id
+</pre></div>
+
+
+<p>On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) 
+but may have a dependency on a package that has console capability. In this case, you use 
+the console stub API and list the <code>sys/console/stub</code> package as a dependency in its <code>pkg.yml</code> file. </p>
+<p>An example is the bootloader project where we want to keep the size of the image small. It includes 
+the <code>kernel/os</code> package that can print out messages on a console (e.g. if there is a hard fault).
+However, we do not want to use any console I/O capability in this particular bootloader project to 
+keep the size small. The project uses the console stub API and has the following <code>pkg.yml</code> file: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: apps/boot
+pkg.deps:
+    - boot/bootutil
+    - kernel/os
+    - sys/console/stub
 </pre></div>
 
 
@@ -608,8 +625,8 @@ based on these interrupts.</p>
 want to output info related to that crash.</p>
 <p>Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to 
 know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.</p>
-<p>The Console also has a prompt that is configurable. It is off by default but can be turned on programatically. The
-prompt cahracter can also be changed by the user.</p>
+<p>The Console also has a prompt that is configurable. It is off by default but can be turned on programmatically. The
+prompt character can also be changed by the user.</p>
 <h3 id="data-structures">Data structures</h3>
 <p>N/A</p>
 <h3 id="list-of-functions">List of Functions</h3>

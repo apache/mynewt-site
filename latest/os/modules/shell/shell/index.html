@@ -288,7 +288,7 @@
   
   
     <li><a href="
-  ../shell_task_init/
+  ../shell_cmd_register/
 ">Functions</a>
   
   
@@ -555,16 +555,23 @@
                         </div>
                         
                             <h1 id="shell">Shell</h1>
-<p>The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing 
-<a href="../../../../newtmgr/overview/">newtmgr</a> line protocol over serial line. Shell runs in its own task.</p>
+<p>The shell runs above the console and provides two functionalities:</p>
+<ul>
+<li>Processes console input. </li>
+<li>Implements the <a href="../../../../newtmgr/overview/">newtmgr</a> line protocol over serial transport. </li>
+</ul>
+<p>The <code>sys/shell</code> package implements the shell.  The shell uses the OS default event queue 
+for shell events and runs in the context of the main task. An application can, optionally, 
+specify a dedicated event queue for the shell to use.</p>
 <h3 id="description">Description</h3>
 <ul>
 <li>
-<p>Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string 
-and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.</p>
+<p>The shell's first job is to direct incoming commands to other subsystems. It parses the incoming character string 
+into tokens and uses the first token to determine the subsystem command handler to call to process the command.</p>
 <ul>
 <li>
-<p>Subsystems register their command handlers using <code>shell_cmd_register()</code>. When shell calls the command handler, it passes the other tokens as arguments.</p>
+<p>Subsystems register their command handlers using the <code>shell_cmd_register()</code> 
+  function.  When shell calls the command handler, it passes the other tokens as arguments.</p>
 </li>
 <li>
 <p>A few commands are currently available in the shell - <code>tasks</code>, <code>log</code>, <code>echo</code>, <code>date</code> and <code>prompt</code>.</p>
@@ -572,9 +579,10 @@ and splits it into tokens. Then it looks for the subsystem to handle this comman
 </ul>
 </li>
 <li>
-<p>Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. 
-Protocol handler (libs/newtmgr) registers itself using <code>shell_nlip_input_register()</code>, and shell calls the registered 
-handler for every frame. Outgoing frames for the protocol are sent using <code>shell_nlip_output()</code>.</p>
+<p>The shell's second job is to handle packet framing, encoding, and decoding of newtmgr protocol messages that are
+sent over the console.  The Newtmgr serial transport package (<code>mgmt/newtmgr/transport/newtmgr_shell</code>) 
+calls the <code>shell_nlip_input_register()</code> function to register a handler that the shell calls when it 
+receives newtmgr request messages.</p>
 </li>
 </ul>
 <p><br></p>
@@ -694,10 +702,6 @@ Prompt set to: &gt;
 </thead>
 <tbody>
 <tr>
-<td><a href="../shell_task_init/">shell_task_init</a></td>
-<td>Initializes the shell package. This creates a task for shell, and registers few commands on its own.</td>
-</tr>
-<tr>
 <td><a href="../shell_cmd_register/">shell_cmd_register</a></td>
 <td>Registers a handler for incoming console commands.</td>
 </tr>
@@ -708,6 +712,10 @@ Prompt set to: &gt;
 <tr>
 <td><a href="../shell_nlip_output/">shell_nlip_output</a></td>
 <td>Queue outgoing newtmgr message for transmission.</td>
+</tr>
+<tr>
+<td><a href="../shell_evq_set/">shell_evq_set</a></td>
+<td>Specifies a dedicated event queue for shell events.</td>
 </tr>
 </tbody>
 </table>
@@ -728,8 +736,8 @@ Prompt set to: &gt;
     </li>
     <li class="pull-right">
     
-    <a href=../shell_task_init/>
-        Next: shell_task_init
+    <a href=../shell_cmd_register/>
+        Next: shell_cmd_register
         <span class="fa fa-arrow-right"></span>
     </a>
     

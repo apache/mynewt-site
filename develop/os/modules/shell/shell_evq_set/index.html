@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/shell/shell_task_init/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/shell/shell_evq_set/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	    <title>shell_task_init - Apache Mynewt</title>
+	    <title>shell_evq_set - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="shell_task_init">
+    <body class="shell_evq_set">
 
 
         <div class="container">
@@ -288,19 +288,11 @@
   
   
     <li><a href="
-  ./
+  ../shell_cmd_register/
 ">Functions</a>
   
   
     <ul>
-          
-              
-                
-    <li class="active">
-      <a href="./">shell_task_init</a>
-    </li>
-
-              
           
               
                 
@@ -322,6 +314,14 @@
                 
     <li >
       <a href="../shell_nlip_output/">shell_nlip_output</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">shell_evq_set</a>
     </li>
 
               
@@ -572,7 +572,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
-    <li><a href="/latest/os/introduction">Docs</a></li>
+    <li><a href="/develop/os/introduction">Docs</a></li>
     
     
         
@@ -580,11 +580,11 @@
         
       
         
-          <li>&raquo; Functions</li>
+          <li>&raquo; <a href="../shell_cmd_register/">Functions</a></li>
         
       
       
-        <li>&raquo; shell_task_init</li>
+        <li>&raquo; shell_evq_set</li>
       
     
     
@@ -592,13 +592,15 @@
 </div>
                         </div>
                         
-                            <h2 id="shell_task_init"><font color="F2853F" style="font-size:24pt"> shell_task_init</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">shell_task_init</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">prio</span>, <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">*stack</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">stack_size</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">max_input_length</span>);
+                            <h2 id="shell_evq_set"><font color="F2853F" style="font-size:24pt"> shell_evq_set</font></h2>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> <span style="color: #000000">shell_evq_set</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>)
 </pre></div>
 
 
-<p>Initializes the shell package. This creates a task for shell, and registers a few commands on its own 
-(<code>echo</code>, <code>?</code>, <code>prompt</code> for example). It also allocates memory for buffering console input.</p>
+<p>Specifies an event queue to use for shell events.   You must create the event queue 
+and the task to process events from the queue before calling this function. </p>
+<p>By default, shell uses the OS default event queue and executes in the context
+of the main task that Mynewt creates.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -609,43 +611,14 @@
 </thead>
 <tbody>
 <tr>
-<td><code>prio</code></td>
-<td>Priority of the shell task</td>
-</tr>
-<tr>
-<td><code>stack</code></td>
-<td>Pointer to shell tasks's stack</td>
-</tr>
-<tr>
-<td><code>stack_size</code></td>
-<td>Size of the aforementioned stack (in units of os_stack_t)</td>
-</tr>
-<tr>
-<td><code>max_input_length</code></td>
-<td>the maximum expected length of line for input</td>
+<td><code>evq</code></td>
+<td>Pointer to the event queue to use for shell events.</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
-<p>Returns 0 on success; nonzero on failure.</p>
+<p>None</p>
 <h4 id="notes">Notes</h4>
-<p>You can register commands before calling this, but only if OS has not been started.</p>
-<h4 id="example">Example</h4>
-<p>Here's an example of stand-alone code which allows the user to execute regression tests for sys/config package only.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define SHELL_TASK_PRIO (3)</span>
-<span style="color: #633820">#define SHELL_MAX_INPUT_LEN     (256)</span>
-<span style="color: #633820">#define SHELL_TASK_STACK_SIZE (OS_STACK_ALIGN(384))</span>
-<span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">shell_stack</span>[<span style="color: #000000">SHELL_TASK_STACK_SIZE</span>];
-
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
-{
-    ....
-    <span style="color: #000000">shell_task_init</span>(<span style="color: #000000">SHELL_TASK_PRIO</span>, <span style="color: #000000">shell_stack</span>, <span style="color: #000000">SHELL_TASK_STACK_SIZE</span>,
-                    <span style="color: #000000">SHELL_MAX_INPUT_LEN</span>);
-    ....
-}
-</pre></div>
                         
                         <div class="row">
                             
@@ -655,16 +628,16 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../shell/>
+    <a href=../shell_nlip_output/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Shell
+        Previous: shell_nlip_output
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../shell_cmd_register/>
-        Next: shell_cmd_register
+    <a href=../../split/split/>
+        Next: Split Images
         <span class="fa fa-arrow-right"></span>
     </a>
     

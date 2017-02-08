@@ -255,8 +255,8 @@
   
   
     <li><a href="
-  ../os_init/
-">System-level Functions</a>
+  ../os_started/
+">Functions</a>
   
   
     </li>
@@ -702,15 +702,27 @@
 <li><a href="../porting/port_os/">Porting OS to other platforms</a></li>
 </ul>
 <h3 id="basic-os-application-creation">Basic OS Application Creation</h3>
-<p>Creating an application using the Mynewt Core OS is a relatively simple task: once you have installed the basic Newt Tool structure (build structure) for your application and created your BSP (Board Support Package), the developer initializes the OS by calling <code>os_init()</code>, performs application specific initializations, and then starts the os by calling <code>os_start()</code>. </p>
-<p>The <code>os_init()</code> API performs two basic functions: calls architecture and bsp specific setup and initializes the idle task of the OS. This is required before the OS is started. The OS start API initializes the OS time tick interrupt and starts the highest priority task running (i.e starts the scheduler). Note that <code>os_start()</code> never returns; once called the device is either running in an application task context or in idle task context.</p>
+<p>Creating an application using the Mynewt Core OS is a relatively simple task. The main steps are:</p>
+<ol>
+<li>Install the basic Newt Tool structure (build structure) for your application.</li>
+<li>Create your BSP (Board Support Package).</li>
+<li>In your application <code>main()</code> function, call the <code>sysinit()</code> function to initialize 
+the system and packages, perform application specific initialization, then
+wait and dispatch events from the OS default event 
+queue in an infinite loop. (See <a href="../../modules/sysinitconfig/sysinitconfig/">System Configuration and Initialization</a> for more details.) </li>
+</ol>
 <p>Initializing application modules and tasks can get somewhat complicated with RTOS's similar to Mynewt. Care must be taken that the API provided by a task are initialized prior to being called by another (higher priority) task. </p>
 <p>For example, take a simple application with two tasks (tasks 1 and 2, with task 1 higher priority than task 2). Task 2 provides an API which has a semaphore lock and this semaphore is initialized by task 2 when the task handler for task 2 is called. Task 1 is expected to call this API.</p>
 <p>Consider the sequence of events when the OS is started. The scheduler starts running and picks the highest priority task (task 1 in this case). The task handler function for task 1 is called and will keep running until it yields execution. Before yielding, code in the task 1 handler function calls the API provided by task 2. The semaphore being accessed in the task 2 API has yet to be initialized since the task 2 handler function has not had a chance to run! This will lead to undesirable behavior and will need to be addressed by the application developer. Note that the Mynewt OS does guard against internal API being called before the OS has started (they will return error) but it does not safeguard application defined objects from access prior to initialization.</p>
 <h3 id="example">Example</h3>
-<p>One way to avoid initialization issues like the one described above is to perform task initializations prior to starting the OS. The code example shown below illustrates this concept. The application initializes the OS, calls an application specific "task initialization" function, and then starts the OS. The application task initialization function is responsible for initializing all the data objects that each task exposes to the other tasks. The tasks themselves are also initialized at this time (by calling <code>os_task_init()</code>). </p>
+<p>One way to avoid initialization issues like the one described above is for the application to 
+initialize the objects that are accessed by multiple tasks before it initializes the tasks with the OS.</p>
+<p>The code example shown below illustrates this concept. The application initializes system and  packages,  calls an application specific "task initialization" function, and dispatches events from the default event queue. The application task initialization function is responsible for initializing all the data objects that each task exposes to the other tasks. The tasks themselves are also initialized at this time (by calling <code>os_task_init()</code>). </p>
 <p>In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called <code>os_sem_init()</code> for task2_sem inside <code>task2_handler()</code>, task 1 would have called <code>os_sem_pend()</code> using task2_sem before task2_sem was initialized.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #177500">/* Task 1 handler function */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">task1_sem</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">task2_sem</span>;
+
+    <span style="color: #177500">/* Task 1 handler function */</span>
     <span style="color: #A90D91">void</span>
     <span style="color: #000000">task1_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
     {
@@ -758,17 +770,22 @@
     <span style="color: #177500">/**</span>
 <span style="color: #177500">     * init_app_tasks</span>
 <span style="color: #177500">     *  </span>
-<span style="color: #177500">     * Called by main.c after os_init(). This function performs initializations </span>
-<span style="color: #177500">     * that are required before tasks are running. </span>
+<span style="color: #177500">     * This function performs initializations that are required before tasks run. </span>
 <span style="color: #177500">     *  </span>
 <span style="color: #177500">     * @return int 0 success; error otherwise.</span>
 <span style="color: #177500">     */</span>
     <span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
     <span style="color: #000000">init_app_tasks</span>(<span style="color: #A90D91">void</span>)
     {
+        <span style="color: #177500">/* </span>
+<span style="color: #177500">         * Call task specific initialization functions to initialize any shared objects </span>
+<span style="color: #177500">         * before initializing the tasks with the OS.</span>
+<span style="color: #177500">         */</span>
+        <span style="color: #000000">task1_init</span>();
+        <span style="color: #000000">task2_init</span>();
+
         <span style="color: #177500">/*</span>
-<span style="color: #177500">         * Initialize tasks 1 and 2. Note that the task handlers are not called yet; they will</span>
-<span style="color: #177500">         * be called when the OS is started.</span>
+<span style="color: #177500">         * Initialize tasks 1 and 2 with the OS. </span>
 <span style="color: #177500">         */</span>
         <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;task1</span>, <span style="color: #C41A16">&quot;task1&quot;</span>, <span style="color: #000000">task1_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">TASK1_PRIO</span>, 
                      <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">task1_stack</span>, <span style="color: #000000">TASK1_STACK_SIZE</span>);
@@ -776,49 +793,37 @@
         <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;task2</span>, <span style="color: #C41A16">&quot;task2&quot;</span>, <span style="color: #000000">task2_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">TASK2_PRIO</span>, 
                      <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">task2_stack</span>, <span style="color: #000000">TASK2_STACK_SIZE</span>);
 
-        <span style="color: #177500">/* Call task specific initialization functions. */</span>
-        <span style="color: #000000">task1_init</span>();
-        <span style="color: #000000">task2_init</span>();
-
         <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
     }
 
     <span style="color: #177500">/**</span>
 <span style="color: #177500">     * main</span>
 <span style="color: #177500">     *  </span>
-<span style="color: #177500">     * The main function for the application. This function initializes the os, calls </span>
-<span style="color: #177500">     * the application specific task initialization function. then starts the </span>
-<span style="color: #177500">     * OS. We should not return from os start! </span>
+<span style="color: #177500">     * The main function for the application. This function initializes the system and packages, </span>
+<span style="color: #177500">     * calls the application specific task initialization function, then waits and dispatches </span>
+<span style="color: #177500">     * events from the OS default event queue in an infinite loop. </span>
 <span style="color: #177500">     */</span>
     <span style="color: #A90D91">int</span>
-    <span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>)
+    <span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**arg</span>)
     {
-        <span style="color: #A90D91">int</span> <span style="color: #000000">i</span>;
-        <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-        <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">seed</span>;
 
-        <span style="color: #177500">/* Initialize OS */</span>
-        <span style="color: #000000">os_init</span>();
+        <span style="color: #177500">/* Perform system and package initialization */</span>
+        <span style="color: #000000">sysinit</span>();
 
         <span style="color: #177500">/* Initialize application specific tasks */</span>
         <span style="color: #000000">init_app_tasks</span>();
 
-        <span style="color: #177500">/* Start the OS */</span>
-        <span style="color: #000000">os_start</span>();
-
-        <span style="color: #177500">/* os start should never return. If it does, this should be an error */</span>
-        <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
-
-        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
-    }
+        <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+           <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+        }
+        <span style="color: #177500">/* main never returns */</span> 
+}
 </pre></div>
 
 
 <h3 id="os-functions">OS Functions</h3>
 <p>The functions available at the OS level are:</p>
 <ul>
-<li><a href="../os_init/">os_init</a></li>
-<li><a href="../os_start/">os_start</a></li>
 <li><a href="../os_started/">os_started</a></li>
 </ul>
                         
@@ -838,8 +843,8 @@
     </li>
     <li class="pull-right">
     
-    <a href=../os_init/>
-        Next: os_init
+    <a href=../os_started/>
+        Next: os_started
         <span class="fa fa-arrow-right"></span>
     </a>
     
