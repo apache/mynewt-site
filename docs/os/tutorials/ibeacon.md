@@ -49,14 +49,46 @@ package.
 static void
 bleprph_advertise(void)
 {
+    struct ble_gap_adv_params adv_params;
     struct ble_hs_adv_fields fields;
+    const char *name;
     int rc;
 
-    /* Set the advertisement data included in our advertisements. */
+    /**
+     *  Set the advertisement data included in our advertisements:
+     *     o Flags (indicates advertisement type and other general info).
+     *     o Advertising tx power.
+     *     o Device name.
+     *     o 16-bit service UUIDs (alert notifications).
+     */
+
     memset(&fields, 0, sizeof fields);
-    fields.name = (uint8_t *)bleprph_device_name;
-    fields.name_len = strlen(bleprph_device_name);
+
+    /* Advertise two flags:
+     *     o Discoverability in forthcoming advertisement (general)
+     *     o BLE-only (BR/EDR unsupported).
+     */
+    fields.flags = BLE_HS_ADV_F_DISC_GEN |
+                   BLE_HS_ADV_F_BREDR_UNSUP;
+
+    /* Indicate that the TX power level field should be included; have the
+     * stack fill this value automatically.  This is done by assiging the
+     * special value BLE_HS_ADV_TX_PWR_LVL_AUTO.
+     */
+    fields.tx_pwr_lvl_is_present = 1;
+    fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;
+
+    name = ble_svc_gap_device_name();
+    fields.name = (uint8_t *)name;
+    fields.name_len = strlen(name);
     fields.name_is_complete = 1;
+
+    fields.uuids16 = (ble_uuid16_t[]){
+        BLE_UUID16_INIT(GATT_SVR_SVC_ALERT_UUID)
+    };
+    fields.num_uuids16 = 1;
+    fields.uuids16_is_complete = 1;
+
     rc = ble_gap_adv_set_fields(&fields);
     if (rc != 0) {
         BLEPRPH_LOG(ERROR, "error setting advertisement data; rc=%d\n", rc);
@@ -64,8 +96,11 @@ bleprph_advertise(void)
     }
 
     /* Begin advertising. */
-    rc = ble_gap_adv_start(BLE_GAP_DISC_MODE_GEN, BLE_GAP_CONN_MODE_UND,
-                           NULL, 0, NULL, bleprph_on_connect, NULL);
+    memset(&adv_params, 0, sizeof adv_params);
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+    rc = ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC, NULL, BLE_HS_FOREVER,
+                           &adv_params, bleprph_gap_event, NULL);
     if (rc != 0) {
         BLEPRPH_LOG(ERROR, "error enabling advertisement; rc=%d\n", rc);
         return;
@@ -76,21 +111,22 @@ bleprph_advertise(void)
 The call to `ble_gap_adv_set_fields()` configures the device with normal
 (non-iBeacon) advertisements; the call to `ble_gap_adv_start()` tells the
 NimBLE stack to start broadcasting.  We are now going to create an iBeacon app
-by making the following to changes:
+by making the following two changes:
 
 * Call `ble_ibeacon_set_adv_data()` instead of `ble_gap_adv_set_fields()`.
 * Modify the call to `ble_gap_adv_start()` such that the device is non-discoverable and non-connectable.
 
 <br>
 
-```c hl_lines="4 7 8 10 11 19"
+```c hl_lines="4 5 7 8 9 11 12 21 22"
 static void
 bleprph_advertise(void)
 {
+    struct ble_gap_adv_params adv_params;
     uint8_t uuid128[16];
     int rc;
 
-    /* Arbitrarily et the UUID to a string of 0x11 bytes. */
+    /* Arbitrarily set the UUID to a string of 0x11 bytes. */
     memset(uuid128, 0x11, sizeof uuid128);
 
     /* Major version=2; minor version=10. */
@@ -102,8 +138,11 @@ bleprph_advertise(void)
     }
 
     /* Begin advertising. */
-    rc = ble_gap_adv_start(BLE_GAP_DISC_MODE_NON, BLE_GAP_CONN_MODE_NON,
-                           NULL, 0, NULL, bleprph_on_connect, NULL);
+    memset(&adv_params, 0, sizeof adv_params);
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_NON;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_NON;
+    rc = ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC, NULL, BLE_HS_FOREVER,
+                           &adv_params, bleprph_gap_event, NULL);
     if (rc != 0) {
         BLEPRPH_LOG(ERROR, "error enabling advertisement; rc=%d\n", rc);
         return;
