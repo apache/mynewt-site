@@ -49,11 +49,11 @@ you'll need to include that remote repository and install it as well. If you're 
 with using repositories, see the section on [repositories](repo/add_repos.md) before
 continuing. Or just copy and paste the following.
 
-In your `project.yml` file, add `- mynewt_nordic` to the `project.repositories` section, and 
+In your `project.yml` file, add `mynewt_nordic` to the `project.repositories` section, and 
 then add the proper repository definition. When you're done, your `project.yml` file
 should look like this:
 
-```
+```hl_lines="5 15 16 17 18 19"
 project.name: "my_project"
 
 project.repositories:
