@@ -5,28 +5,27 @@
     os_eventq_inited(const struct os_eventq *evq)
 ```
 
-Check if event queue `const struct os_eventq` is ready for use.
+Indicates whether an event queue has been initialized.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `evq` |  Pointer to event queue to check  |
+| `evq` |  Pointer to the event queue to check  |
 
 #### Returned values
 
-`0` if event queue is ready
+* 1 if the event queue has been initialized and ready for use.
+* 0 if the event queue has not been initialized.
 
 #### Notes
-
-If an event queue was properly initialized (and the proper checks were done at initialization)
-this check is not needed prior to using an event queue.
-
+You do not need to call this function prior to using an event queue if you have called the `os_eventq_init()` function 
+to initialize the queue.
 
 #### Example
 
 <Add text to set up the context for the example here>
-This checks an event queue before using it.
+This example checks whether an event queue has been initialized.
 
 
 ```c
