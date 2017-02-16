@@ -23,10 +23,10 @@ See [Other Configuration Options](#other-configuration-options) on how to custom
 ### Prerequisites
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-* Installed the [newt tool](../../newt/install/newt_mac.md). 
-* Installed the [newtmgr tool](../../newtmgr/installing.md).
+* Install the [newt tool](../../newt/install/newt_mac.md). 
+* Install the [newtmgr tool](../../newtmgr/installing.md).
 * Have Internet connectivity to fetch remote Mynewt components.
-* Installed the [compiler tools](../get_started/native_tools.md) to 
+* Install the [compiler tools](../get_started/native_tools.md) to 
 support native compiling to build the project this tutorial creates.  
 * Have a cable to establish a serial USB connection between the board and the laptop.
 
@@ -92,16 +92,13 @@ package functionality.
 
 ###Modify the Source
 
-Your application must designate an event queue that the `mgmt` package uses to receive request events from 
-the newtmgr tool.  The `mgmt` package executes and handles newtmgr request events in the context of the task that
-processes events from this event queue.  You can designate the default event queue that Mynewt 
-creates.  If you choose to create and use a dedicated event queue, you must also 
-initialize a task and implement the task handler to dispatch events from this queue.  This example 
-uses the default event queue that Mynewt creates. 
+By default, the `mgmt` package uses the Mynewt default event queue to receive request events from the newtmgr tool. These events are processed in the context of the application main task. 
 
-The `mgmt` package exports the `void mgmt_evq_set(struct os_eventq *evq)` 
-function that an application must call to designate the event queue.
-Modify `main.c` to add this call as follows:
+You can specify a different event queue for the package to use.  If you choose to use a dedicated event queue, you must create a task to process events from this event queue.  The `mgmt` package executes and handles newtmgr request events in the context of this task.  The `mgmt` package exports the `mgmt_evq_set()` function that allows you to specify an event queue. 
+
+This example uses the Mynewt default event queue and you do not need to modify your application source.  
+
+If you choose to use a different event queue, see [Events and Event Queues](event_queue.md) for details on how to initialize an event queue and create a task to process the events. You will also need to modify your `main.c` to add the call to the `mgmt_evq_set()` function as follows:
 
 Add the `mgmt/mgmt.h` header file: 
 
@@ -110,18 +107,15 @@ Add the `mgmt/mgmt.h` header file:
 #include <mgmt/mgmt.h>
 
 ```
-Add the call to designate the event queue. In the `main()` function,  
-scroll down to the  `while (1) ` loop and add the 
-following statement above the loop: 
+<br>
+Add the call to specify the event queue. In the `main()` function, scroll down to the  `while (1) ` loop and add the following statement above the loop: 
 
 ```no-highlight
 
-mgmt_evq_set(os_eventq_dflt_get())
+mgmt_evq_set(&my_eventq)
 
 ```
-**Note:** If you choose to create and use a dedicated event queue, you must initialize the event queue and 
-the task before calling the `mgmt_evq_set()` function. 
-
+where `my_eventq` is an event queue that you have initialized.
 
 ### Build the Targets
 
