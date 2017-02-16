@@ -116,10 +116,10 @@ $ mkdir -p apps/nrf52_adc
 $ cp -Rp repos/apache-mynewt-core/apps/bleprph/* apps/nrf52_adc
 ```
 
-Next, you'll modify the `pkg.yml` file for your app:
+Next, you'll modify the `pkg.yml` file for your app. Note the change in `pkg.name` and `pkg.description`. Also make sure that you specify the full path of all the packages with the prefix `@apache-mynewt-core/` as shown in the third highlighted line.
 
-```
-$ cat app/nrf52_adc/pkg.yml
+```hl_lines="3 5 11"
+$ cat apps/nrf52_adc/pkg.yml
 ...
 pkg.name: apps/nrf52_adc
 pkg.type: app
@@ -128,23 +128,24 @@ pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 
-pkg.deps:
-    - boot/split
-    - kernel/os
-    - mgmt/newtmgr
-    - mgmt/newtmgr/transport/ble
-    - net/nimble/controller
-    - net/nimble/host
-    - net/nimble/host/services/ans
-    - net/nimble/host/services/gap
-    - net/nimble/host/services/gatt
-    - net/nimble/host/store/ram
-    - net/nimble/transport/ram
-    - sys/console/full
-    - sys/log/full
-    - sys/stats/full
-    - sys/sysinit
-    - sys/id
+pkg.deps: 
+    - "@apache-mynewt-core/boot/split"
+    - "@apache-mynewt-core/kernel/os"
+    - "@apache-mynewt-core/mgmt/imgmgr"
+    - "@apache-mynewt-core/mgmt/newtmgr"
+    - "@apache-mynewt-core/mgmt/newtmgr/transport/ble"
+    - "@apache-mynewt-core/net/nimble/controller"
+    - "@apache-mynewt-core/net/nimble/host"
+    - "@apache-mynewt-core/net/nimble/host/services/ans"
+    - "@apache-mynewt-core/net/nimble/host/services/gap"
+    - "@apache-mynewt-core/net/nimble/host/services/gatt"
+    - "@apache-mynewt-core/net/nimble/host/store/ram"
+    - "@apache-mynewt-core/net/nimble/transport/ram"
+    - "@apache-mynewt-core/sys/console/full"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/sys/stats/full"
+    - "@apache-mynewt-core/sys/sysinit"
+    - "@apache-mynewt-core/sys/id"
 ```
 
 Great! We have our very own app so let's make sure we have all of our targets set
@@ -304,10 +305,10 @@ Now you can add the files you need. You'll need a pkg.yml to describe the driver
 pkg.name: libs/my_drivers/myadc
 pkg.deps:
     - "@apache-mynewt-core/hw/hal"
-    - "@mynewt-nordic/hw/drivers/adc/adc_nrf52"
+    - "@mynewt_nordic/hw/drivers/adc/adc_nrf52"
 ```
 
-First, let's create the required header file `myadc.h` in the includes directory.
+First, let's create the required header file `myadc.h` in the includes directory i.e. `libs/my_drivers/myadc/include/myadc/myadc.h`.
 It's a pretty straightforward header file, since we only need to do 2 things:
 
 * Initialize the ADC device
@@ -519,7 +520,40 @@ syscfg.defs:
         value: 'SAADC_CONFIG_IRQ_PRIORITY'
 ```
 
-Once that's all done, you should have a working ADC Driver for your NRF52DK board.
+Once that's all done, you should have a working ADC Driver for your NRF52DK board. The last step in getting the driver set up is to include it in the package dependency defined by `pkg.deps` in the `pkg.yml` file of your app. Add it in `apps/nrf52_adc/pkg.yml` as shown by the highlighted line below.
+
+```hl_lines="29"
+# Licensed to the Apache Software Foundation (ASF) under one
+# <snip>
+
+pkg.name: apps/nrf52_adc
+pkg.type: app
+pkg.description: Simple BLE peripheral application for ADC sensor.
+pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.homepage: "http://mynewt.apache.org/"
+pkg.keywords:
+
+pkg.deps: 
+    - "@apache-mynewt-core/boot/split"
+    - "@apache-mynewt-core/kernel/os"
+    - "@apache-mynewt-core/mgmt/imgmgr"
+    - "@apache-mynewt-core/mgmt/newtmgr"
+    - "@apache-mynewt-core/mgmt/newtmgr/transport/ble"
+    - "@apache-mynewt-core/net/nimble/controller"
+    - "@apache-mynewt-core/net/nimble/host"
+    - "@apache-mynewt-core/net/nimble/host/services/ans"
+    - "@apache-mynewt-core/net/nimble/host/services/gap"
+    - "@apache-mynewt-core/net/nimble/host/services/gatt"
+    - "@apache-mynewt-core/net/nimble/host/store/ram"
+    - "@apache-mynewt-core/net/nimble/transport/ram"
+    - "@apache-mynewt-core/sys/console/full"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/sys/stats/full"
+    - "@apache-mynewt-core/sys/sysinit"
+    - "@apache-mynewt-core/sys/id"
+    - libs/my_drivers/myadc
+```
+
 
 <br>
 
@@ -541,9 +575,9 @@ struct os_task adc_task;
 bssnz_t os_stack_t adc_stack[ADC_STACK_SIZE];
 ```
 
-Next we'll need  o initialize the task `event_q` so we'll add the following to `main()` :
+Next we'll need  o initialize the task `event_q` so we'll add the highlighted code to `main()` as shown below:
 
-```c
+```c hl_lines="7 8 9 10 11 12 13 14 15"
     /* Set the default device name. */
     rc = ble_svc_gap_device_name_set("nimble-adc");
     assert(rc == 0);
@@ -586,7 +620,7 @@ adc_task_handler(void *unused)
 }
 ```
 
-Finally, we'll need to handle those `adc_read_event()` calls:
+Above the `adc_task_handler`, add code to handle the `adc_read_event()` calls:
 
 ```c
 int
@@ -628,7 +662,7 @@ via Bluetooth we'll need to actually define those Services and Characteristics.
 
 As with the [ble peripheral](bleprph/bleprph-app.md) app, we will advertise a couple of values from our app. The first is
 not strictly necessary, but it will help us build an iOS app later. We've defined a service and the characteristics in
-that service in `bleadc.h` as follows:
+that service in `bleadc.h` in the `apps/nrf52_adc/src/` directory as follows:
 
 ```c
 /* Sensor Data */
@@ -639,7 +673,7 @@ static const ble_uuid128_t gatt_svr_svc_adc_uuid =
 #define ADC_SNS_TYPE          0xDEAD
 #define ADC_SNS_STRING "eTape Liquid Level Sensor"
 #define ADC_SNS_VAL           0xBEAD
-uint16_t gatt_adc_val; 
+extern uint16_t gatt_adc_val; 
 ```
 
 The first is the UUID of the service, followed by the 2 characteristics we are going to offer.
@@ -657,7 +691,7 @@ The value that we'll be updating is also defined here as `gatt_adc_val`.
 If we then go look at `gatt_srv.c` we can see the structure of the service and
 characteristic offering that we set up:
 
-```c
+```c hl_lines="21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37"
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
         /*** Service: Security test. */
@@ -731,7 +765,7 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
             rc = gatt_svr_chr_write(ctxt->om, 0,
                                     sizeof gatt_adc_val,
                                     &gatt_adc_val,
-                                    &gatt_adc_val_len);
+                                    NULL);
             return rc;
         } else if (ctxt->op == BLE_GATT_ACCESS_OP_READ_CHR) {
             rc = os_mbuf_append(ctxt->om, &gatt_adc_val,
@@ -750,6 +784,19 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
 You can see that when request is for the `ADC_SNS_TYPE`, we return the
 Sensor Type we defined earlier. If the request if for `ADC_SNS_VAL` we'll return the
 `gatt_adc_val` value. 
+
+Don't forget to include the `bleadc.h` include file at the top of the `gatt_svr.c` file!
+
+```hl_lines="8"
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include "bsp/bsp.h"
+#include "host/ble_hs.h"
+#include "host/ble_uuid.h"
+#include "bleprph.h"
+#include "bleadc.h"
+```
 
 If you build, load and run this application now, you will see all those Services and Characteristics
 advertised, and you will even be able to read the "Sensor Type" String via the ADC_SNS_TYPE
