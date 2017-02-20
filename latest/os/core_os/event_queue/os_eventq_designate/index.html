@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/event_queue/os_eventq_dflt_set/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/core_os/event_queue/os_eventq_designate/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	    <title>os_eventq_dflt_set - Apache Mynewt</title>
+	    <title>os_eventq_designate - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="os_eventq_dflt_set">
+    <body class="os_eventq_designate">
 
 
         <div class="container">
@@ -360,8 +360,16 @@
           
               
                 
+    <li >
+      <a href="../os_eventq_dflt_get/">os_eventq_dflt_get</a>
+    </li>
+
+              
+          
+              
+                
     <li class="active">
-      <a href="./">os_eventq_dflt_set</a>
+      <a href="./">os_eventq_designate</a>
     </li>
 
               
@@ -369,7 +377,7 @@
               
                 
     <li >
-      <a href="../os_eventq_dflt_get/">os_eventq_dflt_get</a>
+      <a href="../os_eventq_run/">os_eventq_run</a>
     </li>
 
               
@@ -741,7 +749,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs pull-right">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -753,7 +761,7 @@
         
       
       
-        <li>&raquo; os_eventq_dflt_set</li>
+        <li>&raquo; os_eventq_designate</li>
       
     
     
@@ -761,13 +769,14 @@
 </div>
                         </div>
                         
-                            <h2 id="os_eventq_dflt_set"><font color="F2853F" style="font-size:24pt"> os_eventq_dflt_set</font></h2>
+                            <h2 id="os_eventq_designate"><font color="F2853F" style="font-size:24pt"> os_eventq_designate</font></h2>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   <span style="color: #A90D91">void</span>
-    <span style="color: #000000">os_eventq_dflt_set</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>)
+    <span style="color: #000000">os_eventq_designate</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">**cur_evq</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*new_evq</span>,  <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*start_ev</span>)
 </pre></div>
 
 
-<p>Sets <code>struct os_eventq</code> as the default event queue</p>
+<p>Reassigns a package's current event queue pointer to point to a new event queue. If a startup event 
+is specified, the event is added to the new event queue and removed from the current event queue.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -778,29 +787,30 @@
 </thead>
 <tbody>
 <tr>
-<td><code>evq</code></td>
-<td>Pointer to default event queue to use</td>
+<td><code>cur_evq</code></td>
+<td>Current event queue pointer to reassign</td>
+</tr>
+<tr>
+<td><code>new_evq</code></td>
+<td>New event queue to use for the package</td>
+</tr>
+<tr>
+<td><code>start_ev</code></td>
+<td>Start event to add to the new event queue</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
 <p>None</p>
 <h4 id="notes">Notes</h4>
-<p>Usually done at subsystem init time; before OS has been started, and before interrupts generating events have been enabled.</p>
 <h4 id="example">Example</h4>
-<p><Add text to set up the context for the example here>
-This sets the default event queue used by newtmgr task.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">g_nmgr_evq</span>;
-
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">nmgr_task_init</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">prio</span>, <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">*stack_ptr</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">stack_len</span>)
+<p><Add text to set up the context for the example here></p>
+<p>This example shows the <code>mgmt_evq_set()</code> function that the <code>mgmt/newtmgr</code> package implements. The function
+allows an application to specify an event queue for <code>newtmgr</code> to use. The <code>mgmt_evq_set()</code> function calls the <code>os_eventq_designate()</code> function to reassign the <code>nmgr_evq</code> to the event queue that the application specifies. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
+<span style="color: #000000">mgmt_evq_set</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>)
 {
-    <span style="color: #177500">/* variable declarations here */</span>
-
-    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;g_nmgr_evq</span>);
-    <span style="color: #000000">os_eventq_dflt_set</span>(<span style="color: #000000">&amp;g_nmgr_evq</span>);
-
-    <span style="color: #177500">/* initialization continues here */</span>
+    <span style="color: #000000">os_eventq_designate</span>(<span style="color: #000000">&amp;nmgr_evq</span>, <span style="color: #000000">evq</span>, <span style="color: #A90D91">NULL</span>);
 }
 </pre></div>
                         
@@ -812,16 +822,16 @@ This sets the default event queue used by newtmgr task.</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../os_eventq_remove/>
+    <a href=../os_eventq_dflt_get/>
         <span class="fa fa-arrow-left"></span>
-        Previous: os_eventq_remove
+        Previous: os_eventq_dflt_get
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../os_eventq_dflt_get/>
-        Next: os_eventq_dflt_get
+    <a href=../os_eventq_run/>
+        Next: os_eventq_run
         <span class="fa fa-arrow-right"></span>
     </a>
     

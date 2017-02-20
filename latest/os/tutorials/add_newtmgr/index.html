@@ -278,8 +278,21 @@
           
               
                 
+  
+  
+    <li><a href="
+  ../air_quality_sensor/
+">Air-quality Sensor project</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
     <li >
-      <a href="../event_queue/">Add task to manage multiple events</a>
+      <a href="../event_queue/">Events and Event Queues</a>
     </li>
 
               
@@ -494,10 +507,10 @@ to customize your application.</p>
 <h3 id="prerequisites">Prerequisites</h3>
 <p>Ensure that you have met the following prerequisites before continuing with this tutorial:</p>
 <ul>
-<li>Installed the <a href="../../../newt/install/newt_mac/">newt tool</a>. </li>
-<li>Installed the <a href="../../../newtmgr/installing/">newtmgr tool</a>.</li>
+<li>Install the <a href="../../../newt/install/newt_mac/">newt tool</a>. </li>
+<li>Install the <a href="../../../newtmgr/installing/">newtmgr tool</a>.</li>
 <li>Have Internet connectivity to fetch remote Mynewt components.</li>
-<li>Installed the <a href="../../get_started/native_tools/">compiler tools</a> to 
+<li>Install the <a href="../../get_started/native_tools/">compiler tools</a> to 
 support native compiling to build the project this tutorial creates.  </li>
 <li>Have a cable to establish a serial USB connection between the board and the laptop.</li>
 </ul>
@@ -550,29 +563,22 @@ and <code>run</code> commands. The <code>SHELL_TASK</code> setting enables the s
 package functionality.</p>
 <p><br></p>
 <h3 id="modify-the-source">Modify the Source</h3>
-<p>Your application must designate an event queue that the <code>mgmt</code> package uses to receive request events from 
-the newtmgr tool.  The <code>mgmt</code> package executes and handles newtmgr request events in the context of the task that
-processes events from this event queue.  You can designate the default event queue that Mynewt 
-creates.  If you choose to create and use a dedicated event queue, you must also 
-initialize a task and implement the task handler to dispatch events from this queue.  This example 
-uses the default event queue that Mynewt creates. </p>
-<p>The <code>mgmt</code> package exports the <code>void mgmt_evq_set(struct os_eventq *evq)</code> 
-function that an application must call to designate the event queue.
-Modify <code>main.c</code> to add this call as follows:</p>
+<p>By default, the <code>mgmt</code> package uses the Mynewt default event queue to receive request events from the newtmgr tool. These events are processed in the context of the application main task. </p>
+<p>You can specify a different event queue for the package to use.  If you choose to use a dedicated event queue, you must create a task to process events from this event queue.  The <code>mgmt</code> package executes and handles newtmgr request events in the context of this task.  The <code>mgmt</code> package exports the <code>mgmt_evq_set()</code> function that allows you to specify an event queue. </p>
+<p>This example uses the Mynewt default event queue and you do not need to modify your application source.  </p>
+<p>If you choose to use a different event queue, see <a href="../event_queue/">Events and Event Queues</a> for details on how to initialize an event queue and create a task to process the events. You will also need to modify your <code>main.c</code> to add the call to the <code>mgmt_evq_set()</code> function as follows:</p>
 <p>Add the <code>mgmt/mgmt.h</code> header file: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &lt;mgmt/mgmt.h&gt;
 </pre></div>
 
 
-<p>Add the call to designate the event queue. In the <code>main()</code> function,<br />
-scroll down to the  <code>while (1)</code> loop and add the 
-following statement above the loop: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">mgmt_evq_set(os_eventq_dflt_get())
+<p><br>
+Add the call to specify the event queue. In the <code>main()</code> function, scroll down to the  <code>while (1)</code> loop and add the following statement above the loop: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">mgmt_evq_set(&amp;my_eventq)
 </pre></div>
 
 
-<p><strong>Note:</strong> If you choose to create and use a dedicated event queue, you must initialize the event queue and 
-the task before calling the <code>mgmt_evq_set()</code> function. </p>
+<p>where <code>my_eventq</code> is an event queue that you have initialized.</p>
 <h3 id="build-the-targets">Build the Targets</h3>
 <p>Build the two targets as follows:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot
