@@ -1,8 +1,8 @@
 ### Latest Apache Mynewt OS Release
 
-* Release Version:Apache Mynewt: 1.0.0-b1-incubating
-* Release Date: Dec 13, 2016
-* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b1-incubating) 
+* Release Version: Apache Mynewt 1.0.0-b2-incubating
+* Release Date: Feb 15, 2017
+* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b2-incubating) 
 
 
 #### Fresh install
@@ -56,5 +56,6 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 * Apache Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating)
 * Apache Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating)
 * Apache Mynewt 0.9.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating)
+* Apache Mynewt 1.0.0-b1-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b1-incubating)
 <br>
 <br>
