@@ -1,37 +1,32 @@
 ## <font color="#F2853F" style="font-size:24pt">newt clean </font>
 
-Deletes application build artifacts for a specified target
+Delete build artifacts for one or more targets. 
 
 #### Usage: 
 
 ```no-highlight
-    newt clean [flags] input1
-```
-
-#### Flags:
-
-```no-highlight
-    -h, --help=false: help for target
+    newt clean <target-name> [target-name...] | all [flags]
 ```
 
 #### Global Flags:
-
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
+
 ```
 #### Description
 
-Sub-command  | Explanation
--------------| ------------------------
-clean        | Deletes all the build artifacts generated for target specified by `input1`. It does not delete the target definition.
-
+Deletes all the build artifacts generated for  the `target-name` target. It does not delete the target definition.  You can specify a list of targets, separated by a space, to delete the artifacts for multiple targets, or specify `all` to delete the artifacts for all targets.
 
 #### Examples
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-clean       | newt clean myble2 | Removes all the files generated while building the target `myble2` and placed in the `bin/myble2` directory created during the build process.
+             | newt clean myble | Deletes the 'bin/targets/myble' directory where all the build artifacts generated from the `myble` target build are stored.
+             | newt clean my_blinky_sim myble | Deletes the 'bin/targets/my_blinky_sim' and the 'bin/targets/myble' directories where all the artifacts generated from the `my_blinky_sim` and `myble` target builds are stored.
+             | newt clean all | Removes the artifacts for all target builds. Deletes the top level 'bin' directory. 

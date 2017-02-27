@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">newt version </font>
 
-Allows you to query the version of newt installed in your application space.
+Display the version of the newt tool you have installed
 
 #### Usage:
 
@@ -8,24 +8,21 @@ Allows you to query the version of newt installed in your application space.
     newt version [flags]
 ```
     
-#### Flags:
-```no-highlight
-    -h, --help=false: help for version
-```
-
 #### Global Flags:
 ```no-highlight
-    -l, --loglevel string   Log level, defaults to WARN. (default "WARN")
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
     -o, --outfile string    Filename to tee output to
-    -q, --quiet             Be quiet; only display error output.
-    -s, --silent            Be silent; don't output anything.
-    -v, --verbose           Enable verbose output when executing commands.
-```    
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
+```
     
 #### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------
-version       | newt version | Displays the version of newt tool installed
+        | newt version | Displays the version of the newt tool you have installed
 
 

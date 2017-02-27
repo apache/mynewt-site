@@ -1,16 +1,15 @@
-## <font color="#F2853F" style="font-size:24pt">newt upgrade </font>
+## <font color="#F2853F" style="font-size:24pt">newt sync </font>
 
-Upgrade project dependencies.
+Synchronize project dependencies.
 
-#### Usage: 
+#### Usage:
+
 ```no-highlight
-    newt upgrade [flags] 
-```    
-    
-#### Flags:
-```no-highlight 
-    -f, --force   Force upgrade of the repositories to latest state in project.yml
+    newt version [flags]
 ```
+#### Flags:
+```no-highlight
+    -f, --force             Force overwrite of existing remote repository   
 #### Global Flags:
 ```no-highlight
     -h, --help              Help for newt commands
@@ -22,4 +21,4 @@ Upgrade project dependencies.
     -v, --verbose           Enable verbose output when executing commands
 ```
 #### Description
-Upagrades your project and package dependencies. If you have changed the project.yml description for the project, you need to run this command to update all the package dependencies.  
+Synchronize project dependencies and repositories. Use -f to force overwrite of existing repository.

@@ -41,12 +41,13 @@ When newt sees a directory tree that contains a "project.yml" file it knows that
 
 ```
 @~/dev/myproj$ ls repos/apache-mynewt-core/apps/
-blecent		bleprph_oic	bleuart		ffs2native	slinky_oic	test
-blehci		bletest		boot		ocf_sample	spitest		timtest
-bleprph		bletiny		fat2native	slinky		splitty
+blecent		blesplit	boot		sensors_test	splitty
+blehci		bletest		fat2native	slinky		test
+bleprph		bletiny		ffs2native	slinky_oic	testbench
+bleprph_oic	bleuart		ocf_sample	spitest		timtest
 ```
 
-Along with the `targets` directory, `apps` represents the top-level of the build tree for the particular project, and define the dependencies and features for the rest of the system. Mynewt users and developers can add their own apps to the project's `apps` directory.   
+Along with the `targets` directory, `apps` represents the top-level of the build tree for the particular project, and define the dependencies for the rest of the system. Mynewt users and developers can add their own apps to the project's `apps` directory.   
 
 The app definition is contained in a `pkg.yml` file. For example, blinky's `pkg.yml` file is:
 
@@ -68,8 +69,7 @@ pkg.deps:
 
 <br>
 
-This file says that the name of the package is apps/blinky, and it 
-depends on kernel/os, hw/hal and sys/console/full packages.
+This file says that the name of the package is apps/blinky, and it depends on the `kernel/os, `hw/hal` and `sys/console/full` packages.
 
 **NOTE:** @apache-mynewt-core is a repository descriptor, and this will be 
 covered in the "repository" section. 
@@ -100,20 +100,23 @@ pkg.yml		target.yml
 There are helper functions to aid the developer specify parameters for a target. 
 
 * **vals**: Displays all valid values for the specified parameter type (e.g. bsp for a target)
-* **target show**: Displays the build artifacts for specified or all targets
+* **target show**: Displays the variable values for either a specific target or all targets defined for the project
+* **target set**: Sets values for target variables
 
-In general, the three basic parameters of a target (`app`, `bsp`, and `build_profile`) are stored in the `target.yml` file in that target's build directory under `targets`. You will also see a `pkg.yml` file in the same directory. Since targets are packages, a `pkg.yml` is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:
+In general, the three basic parameters of a target (`app`, `bsp`, and `build_profile`) are stored in the target's `target.yml` file in the targets/&lt;target-name&gt; directory, where `target-name` is the name of the target. You will also see a `pkg.yml` file in the same directory. Since targets are packages, a `pkg.yml` is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:
 
 * Cflags: Any additional compiler flags you might want to specify to the build
 * Aflags: Any additional assembler flags you might want to specify to the build
 * Lflags: Any additional linker flags you might want to specify to the build
+
+You can also override the values of the system configuration settings that are defined by the packages that your target includes. You override the values in your target's `syscfg.yml` file (stored in the targets/&lt;target-name&gt; directory). You can use the `newt target config show` command to see the configuration settings and values for your target, and use the `newt target set` command to set the `syscfg` variable and override the configuration setting values.  You can also use an editor to create your target's `syscfg.yml` file and add the setting values to the file.  See [System Configuration And Initialization](/os/modules/sysinitconfig/sysinitconfig.md) for more information on system configuration settings.
 
 <br>
 
 
 ### Resolving dependencies
 
-When newt is told to build a project, it will:
+When newt builds a project, it will:
 
 * find the top-level project.yml file
 * recurse the packages in the package tree, and build a list of all 
@@ -142,45 +145,50 @@ along with that application.
 Newt builds the dependency tree specified by all the packages. While building this tree, it does a few other things:
 
 - Sets up the include paths for each package. Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
-newt structure must always be prefixed by the package name. For example, libs/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.
+newt structure must always be prefixed by the package name. For example, kernel/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.
 
 
 ```
-$ tree
-.
-├── README.md
-├── include
-│   └── os
-│       ├── arch
-│       │   ├── cortex_m0
-│       │   │   └── os
-│       │   │       └── os_arch.h
-│       │   ├── cortex_m4
-│       │   │   └── os
-│       │   │       └── os_arch.h
-│       │   └── sim
-│       │       └── os
-│       │           └── os_arch.h
-│       ├── endian.h
-│       ├── os.h
-│       ├── os_callout.h
-│       ├── os_cfg.h
-│       ├── os_eventq.h
-│       ├── os_heap.h
-│       ├── os_malloc.h
-│       ├── os_mbuf.h
-│       ├── os_mempool.h
-│       ├── os_mutex.h
-│       ├── os_sanity.h
-│       ├── os_sched.h
-│       ├── os_sem.h
-│       ├── os_task.h
-│       ├── os_test.h
-│       ├── os_time.h
-│       └── queue.h
-├── pkg.yml
-└── src
+$tree kernel/os/include
+kernel/os/include
+└── os
     ├── arch
+    │   ├── cortex_m0
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   ├── cortex_m4
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   ├── mips
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   ├── sim
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   └── sim-mips
+    │       └── os
+    │           └── os_arch.h
+    ├── endian.h
+    ├── os.h
+    ├── os_callout.h
+    ├── os_cfg.h
+    ├── os_cputime.h
+    ├── os_dev.h
+    ├── os_eventq.h
+    ├── os_fault.h
+    ├── os_heap.h
+    ├── os_malloc.h
+    ├── os_mbuf.h
+    ├── os_mempool.h
+    ├── os_mutex.h
+    ├── os_sanity.h
+    ├── os_sched.h
+    ├── os_sem.h
+    ├── os_task.h
+    ├── os_test.h
+    ├── os_time.h
+    └── queue.h
+
 <snip>
 
 ```
@@ -192,12 +200,12 @@ implement, (i.e. pkg.api: hw-hal-impl), and other packages can require
 those APIs (i.e. pkg.req_api: hw-hal-impl).
 
 - Reads and validates the configuration setting definitions and values from the package `syscfg.yml` files.
-It generates a `syscfg.h` header file that packages include in the source files inorder to access the settings.  
+It generates a `syscfg.h` header file that packages include in the source files in order to access the settings.  
 It also generates a system initialization function to initialize the packages.
 See [System Configuration And Initialization](/os/modules/sysinitconfig/sysinitconfig.md) for more information.
 
 
-In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.
+In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies.  And it builds a big list of all the packages that need to be build.
 
 
 Newt then goes through this package list, and builds every package into 
@@ -209,35 +217,41 @@ an archive file.
 
 Once newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)
 
-NOTE: One common use of the "features" option above is to overwrite 
-which linkerscript is used, based upon whether or not the BSP is being 
-build for a raw image, bootable image or bootloader itself.
-
-The newt tool places all of it's artifacts into the bin/ directory at 
-the top-level of the project, prefixed by the target name being built, 
-for example:
+The newt tool creates a bin directory under the base project directory, and places a target's build artifacts into the bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt; directory, where `target-name` is the name of the target and `app-name` is the name of the application. As an example, the `blinky.elf` executable for the `blinky` application defined by the `my_blinky_sim` target is stored in the bin/targets/my_blinky_sim/app/apps/blinky directory as shown in the following source tree:
 
 ```
-$ tree -L 4 bin/
-bin/
-└── my_blinky_sim
-     ├── apps
-     │   └── blinky
-     │       ├── blinky.a
-     │       ├── blinky.a.cmd
-     │       ├── blinky.elf
-     │       ├── blinky.elf.cmd
-     │       ├── blinky.elf.dSYM
-     │       ├── blinky.elf.lst
-     │       ├── main.d
-     │       ├── main.o
-     │       └── main.o.cmd
-     ├── hw
-     │   ├── bsp
-     │   │   └── native
-     │   ├── hal
-     │   │   ├── flash_map.d
-     │   │   ├── flash_map.o
+$tree -L 9 bin/ bin/
+└── targets
+    ├── my_blinky_sim
+    │   ├── app
+    │   │   ├── apps
+    │   │   │   └── blinky
+    │   │   │       ├── apps
+    │   │   │       │   └── blinky
+    │   │   │       │       └── src
+    │   │   │       │           ├── main.d
+    │   │   │       │           ├── main.o
+    │   │   │       │           └── main.o.cmd
+    │   │   │       ├── apps_blinky.a
+    │   │   │       ├── apps_blinky.a.cmd
+    │   │   │       ├── blinky.elf
+    │   │   │       ├── blinky.elf.cmd
+    │   │   │       ├── blinky.elf.dSYM
+    │   │   │       │   └── Contents
+    │   │   │       │       ├── Info.plist
+    │   │   │       │       └── Resources
+    │   │   │       │           └── DWARF
+    │   │   │       ├── blinky.elf.lst
+    │   │   │       └── manifest.json
+    │   │   ├── hw
+    │   │   │   ├── bsp
+    │   │   │   │   └── native
+    │   │   │   │       ├── hw_bsp_native.a
+    │   │   │   │       ├── hw_bsp_native.a.cmd
+    │   │   │   │       └── repos
+    │   │   │   │           └── apache-mynewt-core
+    │   │   │   │               └── hw
+
 <snip>
 ```
 
@@ -248,7 +262,8 @@ As you can see, a number of files are generated:
 - Archive File
 - *.cmd: The command use to generate the object or archive file
 - *.lst: The list file where symbols are located
-- *.o The object files that get put into the archive file
+
+Note: The *.o object files that get put into the archive file are stored in the bin/targets/my_blinky_sim/app/apps/blinky/apps/blinky/src directory.
 
 ### Download/Debug Support
 
@@ -260,6 +275,7 @@ that work on the target.  These are:
 * **size**         Size of target components
 * **create-image**  Add image header to target binary
 * **run**  The equivalent of build, create-image, load, and debug on specified target
+* **target** Create, delete, configure, and query a target
 
 `load` and `debug` handles driving GDB and the system debugger.  These 
 commands call out to scripts that are defined by the BSP.

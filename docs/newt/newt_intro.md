@@ -60,34 +60,34 @@ When Newt sees a directory tree that contains a "project.yml" file, it is smart 
 automatically builds a package tree. It also recognizes two important package directories in the package tree - "apps" and "targets". More on these directories in [Newt Theory of Ops](newt_operation.md).
 
 
-When Newt is told to build a project, it recursively resolves all package dependencies and generates artifacts that are placed in the bin/ directory at the top-level of the project. The artifact directory is prefixed by the target name being built - `my_blinky_sim` for example:
+When Newt builds a target, it recursively resolves all package dependencies, and generates artifacts that are placed in the bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt; directory, where the bin directory is under the project base directory, `target-name` is the name of the target, and `app-name` is the name of the application. For our example `my_blinky_sim` is the name of the target and `blinky` is the name of the application. The `blinky.elf` executable is stored in the bin/targets/my_blinky_sim/app/apps/blinky directory as shown in the source tree:
 
 ```
-$ tree bin
-bin
-└── my_blinky_sim
-    ├── apps
-    │   └── blinky
-    │       ├── blinky.a
-    │       ├── blinky.a.cmd
-    │       ├── blinky.elf
-    │       ├── blinky.elf.cmd
-    │       ├── blinky.elf.dSYM
-    │       │   └── Contents
-    │       │       ├── Info.plist
-    │       │       └── Resources
-    │       │           └── DWARF
-    │       │               └── blinky.elf
-    │       ├── blinky.elf.lst
-    │       ├── main.d
-    │       ├── main.o
-    │       └── main.o.cmd
-    ├── hw
-    │   ├── bsp
-    │   │   └── native
-    │   │       ├── hal_bsp.d
-    │   │       ├── hal_bsp.o
-    │   │       ├── hal_bsp.o.cmd
+tree -L 6 bin/
+bin/
+└── targets
+    ├── my_blinky_sim
+    │   ├── app
+    │   │   ├── apps
+    │   │   │   └── blinky
+    │   │   │       ├── apps
+    │   │   │       ├── apps_blinky.a
+    │   │   │       ├── apps_blinky.a.cmd
+    │   │   │       ├── blinky.elf
+    │   │   │       ├── blinky.elf.cmd
+    │   │   │       ├── blinky.elf.dSYM
+    │   │   │       ├── blinky.elf.lst
+    │   │   │       └── manifest.json
+    │   │   ├── hw
+    │   │   │   ├── bsp
+    │   │   │   │   └── native
+    │   │   │   ├── drivers
+    │   │   │   │   └── uart
+    │   │   │   ├── hal
+    │   │   │   │   ├── hw_hal.a
+    │   │   │   │   ├── hw_hal.a.cmd
+    │   │   │   │   └── repos
+
 <snip>
 ```
 
@@ -102,6 +102,7 @@ Once a target has been built, Newt allows additional operations on the target.
 * **size**: Get size of target components
 * **create-image**: Add image header to the binary image
 * **run**: Build, create image, load, and finally open a debug session with the target
+* **target**: Create, delete, configure, and query a target
 
 For more details on how Newt works, go to [Newt - Theory of Operations](newt_operation.md).
 
@@ -174,15 +175,15 @@ $ tree -L 2
 
 <br>
 
-In order to reference the installed repositories in packages, the "@" notation should be specified in the repository specifier.  As an example, the apps/blinky application has the following dependencies in its pkg.yml file. This tells the build system to look in the base directory of repos/apache-mynewt-core for the `libs/os`, `hw/hal`, and `libs/console/full` packages.
+In order to reference the installed repositories in packages, the "@" notation should be specified in the repository specifier.  As an example, the apps/blinky application has the following dependencies in its pkg.yml file. This tells the build system to look in the base directory of repos/apache-mynewt-core for the `kernel/os`, `hw/hal`, and `sys/console/full` packages.
 
 ```
 $ more apps/blinky/pkg.yml
 <snip>
 pkg.deps:
-     - "@apache-mynewt-core/libs/os"
+     - "@apache-mynewt-core/kernel/os"
      - "@apache-mynewt-core/hw/hal"
-     - "@apache-mynewt-core/libs/console/full"
+     - "@apache-mynewt-core/sys/console/full"
 ```
 
 <br>
@@ -200,10 +201,3 @@ Notes:
 1. Autocomplete will give you flag hints, but only if you type a '-'.  
 2. Autocomplete will not give you completion hints for the flag arguments (those optional things after the flag like `-l DEBUG`)
 3. Autocomplete uses newt to parse the project to find targets and libs.
-
-
-
-
-
-
-

@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">newt info </font>
 
-Shows information about the current project.
+Show information about the current project.
 
 #### Usage: 
 
@@ -11,15 +11,16 @@ Shows information about the current project.
 
 #### Global Flags:
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
     -o, --outfile string    Filename to tee output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
 ```
+
 #### Description
 
-Sub-command  | Explanation
--------------| ------------------------
-info         | Displays the repositories in the current project (the local as well as all the external repositories fetched). Also displays the packages in the local repository.
+Displays the repositories in the current project (the local as well as all the external repositories fetched). It also displays the packages in the local repository.
 
