@@ -287,7 +287,7 @@ App successfully built: ~/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blink
 ### Run the Project
 
 You can run the simulated version of your project and see the simulated LED
-blink. If you are using newt docker on Mac OS X, use `newt run` to run the simulated binary.
+blink. If you are using newt docker, use `newt run` to run the simulated binary.
 
 ```
 $ newt run my_blinky_sim
@@ -299,7 +299,7 @@ Reading symbols from /bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf...don
 ```
 Type `r` at the `(gdb)` prompt to run the project. You will see an output indicating that the hal_gpio pin is toggling between 1 and 0 in a simulated blink.
 
-If you natively install the toolchain, you can either use `newt run` or call the binary directly. `newt run` is the expected way to call things.
+If you natively install the toolchain, you can either use `newt run` or call the binary directly. Generally, `newt run` is the expected way to call things.
 
 ```
 $ ./bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
