@@ -279,7 +279,7 @@ Archiving native.a
 Compiling flash_map.c
 <snip>
 Linking blinky.elf
-App successfully built: /Users/dsimmons/myproj/bin/my_blinky_sim/apps/blinky/blinky.elf
+App successfully built: ~/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
 ```
 
 <br>
@@ -287,10 +287,22 @@ App successfully built: /Users/dsimmons/myproj/bin/my_blinky_sim/apps/blinky/bli
 ### Run the Project
 
 You can run the simulated version of your project and see the simulated LED
-blink.
+blink. If you are using newt docker on Mac OS X, use `newt run` to run the simulated binary.
 
 ```
-$ ./bin/my_blinky_sim/apps/blinky/blinky.elf
+$ newt run my_blinky_sim
+No download script for BSP hw/bsp/native
+Debugging /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf
+<snip>
+Reading symbols from /bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf...done.
+(gdb)
+```
+Type `r` at the `(gdb)` prompt to run the project. You will see an output indicating that the hal_gpio pin is toggling between 1 and 0 in a simulated blink.
+
+If you natively install the toolchain, you can either use `newt run` or call the binary directly. `newt run` is the expected way to call things.
+
+```
+$ ./bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
 hal_gpio set pin  1 to 0
 ```
 
