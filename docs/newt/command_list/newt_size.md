@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">newt size </font>
 
-Calculate the size of target components specified by <target-name>
+Calculates the size of target components for a target.
 
 #### Usage: 
 
@@ -10,26 +10,31 @@ Calculate the size of target components specified by <target-name>
 
 #### Flags:
 ```no-highlight
-    -h, --help=false: help for target
+    -F, --flash   Print FLASH statistics
+    -R, --ram     Print RAM statistics
 ```
 
 #### Global Flags:
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+  -h, --help              Help for newt commands
+  -j, --jobs int          Number of concurrent build jobs (default 8)
+  -l, --loglevel string   Log level (default "WARN")
+  -o, --outfile string    Filename to tee output to
+  -q, --quiet             Be quiet; only display error output
+  -s, --silent            Be silent; don't output anything
+  -v, --verbose           Enable verbose output when executing commands
 ```
 
+#### Description
+Displays the RAM and FLASH size of each component for the `target-name` target.  
 
 #### Examples
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|----------------- 
-size   | newt size blink_rigado | Inspects and lists the RAM and Flash memory use by each component (object files and libraries) of the target.
+             | newt size blink_rigado | Inspects and lists the RAM and Flash memory that each component (object files and libraries) for the `blink_rigado` target.
 
-#### Example output for `newt size boot_olimex`:
+#### Example output for `newt size blink_rigado`:
 
 ```no-highlight
 

@@ -1,16 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">newt vals </font>
 
-Displays valid values for the specified element type(s). Appropriate values must be chosen and assigned to one or more elements when defining a package or target. Element types currently available are the following:
-
-* api
-* app
-* bsp
-* build_profile
-* compiler
-* feature
-* lib
-* sdk
-* target
+Display valid values for the specified element type(s).
 
 
 #### Usage: 
@@ -18,27 +8,34 @@ Displays valid values for the specified element type(s). Appropriate values must
 ```no-highlight
   newt vals <element-type> [element-types...] [flags]
 ```
-
-#### Flags:
-```no-highlight
-    -h, --help=false: help for target
-```
-
 #### Global Flags:
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
 ```
+#### Description
 
+Displays valid values for the specified element type(s). You must set valid values for one or more elements when you define a package or a target. Valid element types are:
+
+* api
+* app
+* bsp
+* build_profile
+* compiler
+* lib
+* sdk
+* target
 
 #### Examples
 
- Sub-command  | Usage                  | Explanation 
--------------| -----------------------|----------------- 
-vals   | newt vals api | Shows the possible values for APIs a package may specify as required. For example, the `pkg.yml` for `adc` specifies that it requires the api named `ADC_HW_IMPL`, one of the values listed by the command.
+ Sub-command | Usage               | Explanation 
+-------------| --------------------|----------------- 
+             | newt vals api | Shows the possible values for APIs a package may specify as required. For example, the `pkg.yml` for `adc` specifies that it requires the api named `ADC_HW_IMPL`, one of the values listed by the command.
 
 #### Example output for `newt vals bsp`:
 

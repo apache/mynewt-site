@@ -1,41 +1,41 @@
 ## <font color="#F2853F" style="font-size:24pt">newt test </font>
 
-Executes unit tests for one or more packages 
+Execute unit tests for one or more packages.  
 
 #### Usage: 
 
 ```no-highlight
-    newt test [flags] input1 [input2] ...
+    newt test <package-name> [package-names...]  | all [flags]
 ```
 
 #### Flags:
 ```no-highlight
-    -h, --help=false: help for target
+   -e, --exclude string   Comma separated list of packages to exclude
+
 ```
 
 #### Global Flags:
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
 ```
 
 #### Description
-
-Sub-command  | Explanation
--------------| ------------------------
-test   | Test a pkg named `input1`. You may specify multiple packages separated by space in the same command. 
-
+Executes unit tests for one or more packages.  You specify a list of packages, separated by space, to test multiple packages in the same command, or specify `all` to test all packages. When you use the `all` option,  you may use the `-e` flag followed by a comma separated list of packages to exclude from the test.
 
 #### Examples
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-test | newt test targets/myble2 | Tests the pkg named 'targets/myble2' 
-    | newt test @apache-mynewt-core/libs/os | Tests the libs/os pkg in the repo named apache-mynewt-core
-    | newt test libs/os libs/json | Tests the `libs/os` and `libs/json packages` in the current repo. Should indicate at the end of the output: <br> `Passed tests: [libs/os libs/json]` <br>  `All tests passed`
+    | newt test <br>@apache-mynewt-core/kernel/os | Tests the `kernel/os` package in the `apache-mynewt-core` repository.
+    | newt test kernel/os encoding/json | Tests the `kernel/os` and `encoding/json` packages in the current repository. 
+    | newt test all | Tests all packages.
+    | newt test all -e net/oic,encoding/json | Tests all packages except for the `net/oic` and the `encoding/json` packages.
 
 
     

@@ -1,36 +1,32 @@
 ## <font color="#F2853F" style="font-size:24pt">newt build </font>
 
-Compiles, links, and builds one or more apps. 
+Build one or more targets. 
 
 #### Usage: 
 
 ```no-highlight
-    newt build [flags] input1
-```
-
-where `input1` is the name of the target to build.
-
-#### Flags:
-
-```no-highlight
-    -h, --help=false: help for target
+    newt build  <target-name> [target_name ...] [flags] 
 ```
 
 #### Global Flags:
-
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
 ```
 
+#### Description
+Compiles, links, and builds an ELF binary for the target named &lt;target-name&gt;.  It builds an ELF file for the application specified by the `app` variable for the `target-name` target. The image can be loaded and run on the hardware specified by the `bsp` variable for the target. The command creates the 'bin/' directory under the project's base directory (that the `newt new` command created) and stores the executable in the 'bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt;' directory.
+
+You can specify a list of target names, separated by a space, to build multiple targets. 
 
 #### Examples
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-build       | newt build <br> `input1`  | Builds the source code into an image that can be loaded on the hardware (`bsp`) associated with the target named `input1` to run the application enabled by the `app` setting associated with that target. It creates 'bin/' directory and 'bin/<input1>/apps/<app>' subdirectory inside the base directory for the app, compiles and generates binaries and executables, and places them in that subdirectory. 
-      | newt build <br> my_blinky_sim | For example, if `app` was set to `apps/blinky` for the target "my_blinky_sim", you will find the generated .elf, .a, and .lst files in bin/my_blinky_sim/apps/blinky directory created under the base directory for the app created using `newt new` at the start of the project. 
-build       |  newt build my_blinky_sim myble | builds the apps defined for both the targets "my_blinky_sim" and "myble".
+      | newt build <br> my_blinky_sim | Builds an executable for the `my_blinky_sim` target. For example, if the `my_blinky_sim` target has `app` set to `apps/blinky`, you will find the generated .elf, .a, and .lst files in the 'bin/targets/my_blinky_sim/app/apps/blinky' directory. 
+      |  newt build <br> my_blinky_sim myble | Builds the images for the applications defined by the `my_blinky_sim` and `myble` targets.

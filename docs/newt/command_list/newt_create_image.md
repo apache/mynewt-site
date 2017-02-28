@@ -1,35 +1,32 @@
 ## <font color="#F2853F" style="font-size:24pt">newt create-image </font>
 
-Creates a signed image by adding image header to created binary file for specified target. Version number in the header is set to be <version> 
+Create and sign an image by adding an image header to the binary file created for a target. Version number in the header is set to &lt;version&gt;. To sign an image provide a .pem file for the signing-key and an optional key-id.
 
 #### Usage: 
 
 ```no-highlight
-    newt create-image <target-name> <version> [flags]
-```
-
-#### Flags:
-```no-highlight
-    -h, --help=false: help for target
+    newt create-image <target-name> <version> [signing-key [key-id]][flags]
 ```
 
 #### Global Flags:
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
 ```
 #### Description
 
-Sub-command  | Explanation
--------------| ------------------------
-create-image | Signs and adds image header to the created binary file for target named `<target-name>` and given the version specified as `<version>`. The application image generated is `<app-name>.img` where the app-name is the same as the app specified in the target definition. The generated application image can be found in `/bin/<target-name>/apps/<app-name>/`. <br> <br> A build manifest file `manifest.json` is also generated in the same directory. This build manifest contains information such as build time, version, image name, a hash to identify the image, packages actually used to create the build, and the target for which the image is built.
+Adds an image header to the created binary file for the `target-name` target. The image version is set to `version`. It creates a `<app-name>.img` file for the image, where `app-name` is the value specified in the target `app` variable, and stores the file in the '/bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt;/' directory.  A `manifest.json` build manifest file is also generated in the same directory. This build manifest contains information such as build time, version, image name, a hash to identify the image, packages actually used to create the build, and the target for which the image is built.
 
+To sign an image,  provide a .pem file for the `signing-key` and an optional `key-id`. `key-id` must be a value between 0-255.
 
 #### Examples
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-create-image   | newt create-image myble2 1.0.1.0 | Creates a signed image for target `myble2` and assigns it the version `1.0.1.0`. <br> <br> If the target is as follows: <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE <br> <br> then, the created image is `bin/myble2/apps/bletiny/bletiny.img` and the manifest is `bin/myble2/apps/bletiny/manifest.json`
+             | newt create-image myble2 1.0.1.0 | Creates an image for target `myble2` and assigns it version `1.0.1.0`. <br> <br> For the following target definition: <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE <br> <br> the created image is 'bin/targets/myble2/app/apps/bletiny/bletiny.img' and the manifest is 'bin/targets/myble2/app/apps/bletiny/manifest.json'
+             | newt create-image myble2 1.0.1.0 private.pem | Creates an image for target `myble2` and assigns it the version `1.0.1.0`. Signs the image using  private key specified by the private.pem file. 
