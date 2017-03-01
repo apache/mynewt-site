@@ -47,10 +47,52 @@ pkg.deps:
 
 The `libs/imgmgr` package uses the `fs/fs` API for all file system operations.
 
+### Support for multiple filesystems
+
+When using a single filesystem/disk, it is valid to provide paths in the standard
+unix way, eg, `/<dir-name>/<file-name>`. When trying to run more than one filesystem
+or a single filesystem in multiple devices simultaneosly, an extra name has to be
+given to the disk that is being used. The abstraction for that was added as the
+`fs/disk` package which is a dependency of `fs/fs`. It adds the following extra
+user function:
+
+```c
+int disk_register(const char *disk_name, const char *fs_name, struct disk_ops *dops)
+```
+
+As an example os usage:
+
+```c
+disk_register("mmc0", "fatfs", &mmc_ops);
+disk_register("flash0", "nffs", NULL);
+```
+
+This registers the name `mmc0` to use `fatfs` as the filesystem and `mmc_ops` for
+the low-level disk driver and also registers `flash0` to use `nffs`. `nffs` is
+currently strongly bound to the `hal_flash` interface, ignoring any other possible
+`disk_ops` given.
+
+#### struct disk_ops
+
+To support a new low-level disk interface, the `struct disk_ops` interface must
+be implemented by the low-level driver. Currently only `read` and `write` are
+effectively used (by `fatfs`).
+
+```c
+struct disk_ops {
+    int (*read)(uint8_t, uint32_t, void *, uint32_t);
+    int (*write)(uint8_t, uint32_t, const void *, uint32_t);
+    int (*ioctl)(uint8_t, uint32_t, void *);
+    SLIST_ENTRY(disk_ops) sc_next;
+}
+```
+
 ###Thread Safety
+
 All `fs/fs` functions are thread safe.
 
-###Header Files 
+###Header Files
+
 All code which uses the `fs/fs` package needs to include the following header:
 
 ```c
@@ -66,7 +108,7 @@ struct fs_dir;
 struct fs_dirent;
 ```
 
-###API
+### <a name="API"></a>API
 
 Functions in `fs/fs` that indicate success or failure do so with the following set of return codes:
 

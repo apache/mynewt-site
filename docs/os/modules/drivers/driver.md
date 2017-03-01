@@ -41,10 +41,22 @@ Device drivers in the Mynewt context includes libraries that interface with devi
 
 * Device drivers should be searchable. The plan is to have the newt tool offer a `newt pkg search` capability. This is work in progress. You are welcome to join the conversation on the dev@ mailing list!
 
-
-###Example
+### Example
 
 The Mynewt core repo includes an example of a driver using the HAL to provide extra functionality - the UART driver. It uses HAL GPIO and UART to provide multiple serial ports on the NRF52 (but allowed on other platforms too.)
 
 The gist of the driver design is that there is an API for the driver (for use by applications), and then sub-packages to that driver that implement that driver API using the HAL and BSP APIs.
 
+### Implemented drivers
+
+Drivers live under `hw/drivers`. The current list of supported drivers includes:
+
+| Driver | Description |
+|---------|-------------|
+| [adc](adc.md) | TODO: ADC driver. |
+| [flash](flash.md) | SPI/I2C flash drivers. |
+| [lwip](lwip.md) | TODO: LWIP. |
+| [mmc](mmc.md) | MMC/SD card driver. |
+| [nimble](/network/ble/ble_intro/) | NIMBLE. |
+| [sensors](sensors.md) | TODO: sensors. |
+| [uart](uart.md) | TODO: UART driver. |
