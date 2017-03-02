@@ -329,3 +329,99 @@ Error: setting LOG_NEWTMGR redefined
 
 ```
 **Note:** Newt does not output the `Setting history` with duplicate setting error messages. 
+<br>
+###Override of Undefined System Configuration Setting
+
+The `newt build` command ignores overrides of undefined system configuration settings. The command does not print a warning when you run it with the default log level.  If you override a setting and the value is not assigned to the setting, you may have misspelled the setting name or a package no longer defines the setting.  You have two options to troubleshoot this problem:
+
+* Run the `newt target config show` command to see the configuration setting definitions and overrides.
+* Run the `newt build -ldebug` command to build your target with DEBUG log level. 
+
+Note: The `newt build -ldebug` command generates lots of output and we recommend that you use the `newt target config show` command option.
+<br>
+####Example: Ignoring Override of Undefined Setting Message
+
+The following example shows that the `apps/slinky` application overrides the `LOG_NEWTMGR` setting but omits the **T** as an example of an error and overrides the misspelled **LOG_NEWMGR** setting.  Here is an excerpt from its `syscfg.yml` file: 
+```no-highlight
+#package: apps/slinky
+syscfg.vals:
+    # Enable the shell task.
+    SHELL_TASK: 1
+        ...
+
+    # Enable newtmgr commands.
+    STATS_NEWTMGR: 1
+    LOG_NEWMGR: 1
+
+```
+<br>
+The  `newt target config show slinky_sim` command outputs the following WARNING message:
+
+```no-highlight
+
+2017/02/18 17:19:12.119 [WARNING] Ignoring override of undefined settings:
+2017/02/18 17:19:12.119 [WARNING]     LOG_NEWMGR
+2017/02/18 17:19:12.119 [WARNING]     NFFS_FLASH_AREA
+2017/02/18 17:19:12.119 [WARNING] Setting history (newest -> oldest):
+2017/02/18 17:19:12.119 [WARNING]     LOG_NEWMGR: [apps/slinky:1]
+2017/02/18 17:19:12.119 [WARNING]     NFFS_FLASH_AREA: [hw/bsp/native:FLASH_AREA_NFFS]
+
+```
+<br>
+
+The `newt build -ldebug slinky_sim` command outputs the following  DEBUG message: 
+```no-highlight
+
+2017/02/18 17:06:21.451 [DEBUG] Ignoring override of undefined settings:
+2017/02/18 17:06:21.451 [DEBUG]     LOG_NEWMGR
+2017/02/18 17:06:21.451 [DEBUG]     NFFS_FLASH_AREA
+2017/02/18 17:06:21.451 [DEBUG] Setting history (newest -> oldest):
+2017/02/18 17:06:21.451 [DEBUG]     LOG_NEWMGR: [apps/slinky:1]
+2017/02/18 17:06:21.451 [DEBUG]     NFFS_FLASH_AREA: [hw/bsp/native:FLASH_AREA_NFFS]
+
+```
+
+<br>
+#### BSP Package Overrides Undefined Configuration Settings
+
+You might see a warning that indicates your application's BSP package is overriding some undefined settings. As you can see from the previous example, the WARNING message shows that the `hw/bsp/native` package is overriding the undefined `NFFS_FLASH_AREA` setting. This is not an error because of the way a BSP package defines and assigns its flash areas to packages that use flash memory.
+
+A BSP package defines, in its `bsp.yml` file, a flash area map of the flash areas on the board. A package that uses flash memory must define a flash area configuration setting name. The BSP package overrides the package's flash area setting with one of the flash areas from its flash area map.   A BSP package overrides the flash area settings for all packages that use flash memory because it does not know the packages that an application uses.  When an application does not include one of these packages, the flash area setting for the package is undefined. You will see a message that indicates the BSP package overrides this undefined setting.
+
+Here are excerpts from the `hw/bsp/native` package's `bsp.yml` and `syscfg.yml` files for the `slinky_sim` target.  The BSP package defines the flash area map in its `bsp.yml` file and overrides the flash area settings for all packages in its `syscfg.yml` file. The `slinky_sim` target does not use the `fs/nffs` package which defines the `NFFS_FLASH_AREA` setting. Newt warns that the `hw/bsp/native` packages overrides the undefined `NFFS_FLASH_AREA` setting.
+
+```no-highlights
+
+# hw/bsp/native bsp.yml
+bsp.flash_map:
+    areas:
+        # System areas.
+        FLASH_AREA_BOOTLOADER:
+            device: 0
+            offset: 0x00000000
+            size: 16kB
+
+            ...
+
+        FLASH_AREA_IMAGE_SCRATCH:
+            device: 0
+            offset: 0x000e0000
+            size: 128kB
+
+        # User areas.
+        FLASH_AREA_REBOOT_LOG:
+            user_id: 0
+            device: 0
+            offset: 0x00004000
+            size: 16kB
+        FLASH_AREA_NFFS:
+            user_id: 1
+            device: 0
+            offset: 0x00008000
+
+# hw/bsp/native syscfg.yml
+syscfg.vals:
+    NFFS_FLASH_AREA: FLASH_AREA_NFFS
+    CONFIG_FCB_FLASH_AREA: FLASH_AREA_NFFS
+    REBOOT_LOG_FLASH_AREA: FLASH_AREA_REBOOT_LOG
+```
