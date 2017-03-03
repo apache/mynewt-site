@@ -821,7 +821,90 @@ outputs when multiple packages define the <code>LOG_NEWTMGR</code> setting:</p>
 </pre></div>
 
 
-<p><strong>Note:</strong> Newt does not output the <code>Setting history</code> with duplicate setting error messages. </p>
+<p><strong>Note:</strong> Newt does not output the <code>Setting history</code> with duplicate setting error messages. 
+<br></p>
+<h3 id="override-of-undefined-system-configuration-setting">Override of Undefined System Configuration Setting</h3>
+<p>The <code>newt build</code> command ignores overrides of undefined system configuration settings. The command does not print a warning when you run it with the default log level.  If you override a setting and the value is not assigned to the setting, you may have misspelled the setting name or a package no longer defines the setting.  You have two options to troubleshoot this problem:</p>
+<ul>
+<li>Run the <code>newt target config show</code> command to see the configuration setting definitions and overrides.</li>
+<li>Run the <code>newt build -ldebug</code> command to build your target with DEBUG log level. </li>
+</ul>
+<p>Note: The <code>newt build -ldebug</code> command generates lots of output and we recommend that you use the <code>newt target config show</code> command option.
+<br></p>
+<h4 id="example-ignoring-override-of-undefined-setting-message">Example: Ignoring Override of Undefined Setting Message</h4>
+<p>The following example shows that the <code>apps/slinky</code> application overrides the <code>LOG_NEWTMGR</code> setting but omits the <strong>T</strong> as an example of an error and overrides the misspelled <strong>LOG_NEWMGR</strong> setting.  Here is an excerpt from its <code>syscfg.yml</code> file: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#package: apps/slinky
+syscfg.vals:
+    # Enable the shell task.
+    SHELL_TASK: 1
+        ...
+
+    # Enable newtmgr commands.
+    STATS_NEWTMGR: 1
+    LOG_NEWMGR: 1
+</pre></div>
+
+
+<p><br>
+The  <code>newt target config show slinky_sim</code> command outputs the following WARNING message:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">2017/02/18 17:19:12.119 [WARNING] Ignoring override of undefined settings:
+2017/02/18 17:19:12.119 [WARNING]     LOG_NEWMGR
+2017/02/18 17:19:12.119 [WARNING]     NFFS_FLASH_AREA
+2017/02/18 17:19:12.119 [WARNING] Setting history (newest -&gt; oldest):
+2017/02/18 17:19:12.119 [WARNING]     LOG_NEWMGR: [apps/slinky:1]
+2017/02/18 17:19:12.119 [WARNING]     NFFS_FLASH_AREA: [hw/bsp/native:FLASH_AREA_NFFS]
+</pre></div>
+
+
+<p><br></p>
+<p>The <code>newt build -ldebug slinky_sim</code> command outputs the following  DEBUG message: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">2017/02/18 17:06:21.451 [DEBUG] Ignoring override of undefined settings:
+2017/02/18 17:06:21.451 [DEBUG]     LOG_NEWMGR
+2017/02/18 17:06:21.451 [DEBUG]     NFFS_FLASH_AREA
+2017/02/18 17:06:21.451 [DEBUG] Setting history (newest -&gt; oldest):
+2017/02/18 17:06:21.451 [DEBUG]     LOG_NEWMGR: [apps/slinky:1]
+2017/02/18 17:06:21.451 [DEBUG]     NFFS_FLASH_AREA: [hw/bsp/native:FLASH_AREA_NFFS]
+</pre></div>
+
+
+<p><br></p>
+<h4 id="bsp-package-overrides-undefined-configuration-settings">BSP Package Overrides Undefined Configuration Settings</h4>
+<p>You might see a warning that indicates your application's BSP package is overriding some undefined settings. As you can see from the previous example, the WARNING message shows that the <code>hw/bsp/native</code> package is overriding the undefined <code>NFFS_FLASH_AREA</code> setting. This is not an error because of the way a BSP package defines and assigns its flash areas to packages that use flash memory.</p>
+<p>A BSP package defines, in its <code>bsp.yml</code> file, a flash area map of the flash areas on the board. A package that uses flash memory must define a flash area configuration setting name. The BSP package overrides the package's flash area setting with one of the flash areas from its flash area map.   A BSP package overrides the flash area settings for all packages that use flash memory because it does not know the packages that an application uses.  When an application does not include one of these packages, the flash area setting for the package is undefined. You will see a message that indicates the BSP package overrides this undefined setting.</p>
+<p>Here are excerpts from the <code>hw/bsp/native</code> package's <code>bsp.yml</code> and <code>syscfg.yml</code> files for the <code>slinky_sim</code> target.  The BSP package defines the flash area map in its <code>bsp.yml</code> file and overrides the flash area settings for all packages in its <code>syscfg.yml</code> file. The <code>slinky_sim</code> target does not use the <code>fs/nffs</code> package which defines the <code>NFFS_FLASH_AREA</code> setting. Newt warns that the <code>hw/bsp/native</code> packages overrides the undefined <code>NFFS_FLASH_AREA</code> setting.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># hw/bsp/native bsp.yml
+bsp.flash_map:
+    areas:
+        # System areas.
+        FLASH_AREA_BOOTLOADER:
+            device: 0
+            offset: 0x00000000
+            size: 16kB
+
+            ...
+
+        FLASH_AREA_IMAGE_SCRATCH:
+            device: 0
+            offset: 0x000e0000
+            size: 128kB
+
+        # User areas.
+        FLASH_AREA_REBOOT_LOG:
+            user_id: 0
+            device: 0
+            offset: 0x00004000
+            size: 16kB
+        FLASH_AREA_NFFS:
+            user_id: 1
+            device: 0
+            offset: 0x00008000
+
+# hw/bsp/native syscfg.yml
+syscfg.vals:
+    NFFS_FLASH_AREA: FLASH_AREA_NFFS
+    CONFIG_FCB_FLASH_AREA: FLASH_AREA_NFFS
+    REBOOT_LOG_FLASH_AREA: FLASH_AREA_REBOOT_LOG
+</pre></div>
                         
                         <div class="row">
                             

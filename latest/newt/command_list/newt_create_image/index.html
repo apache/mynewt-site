@@ -300,14 +300,6 @@
           
               
                 
-    <li >
-      <a href="../newt_complete/">newt complete</a>
-    </li>
-
-              
-          
-              
-                
     <li class="active">
       <a href="./">newt create-image</a>
     </li>
@@ -373,6 +365,14 @@
               
                 
     <li >
+      <a href="../newt_pkg/">newt pkg</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../newt_run/">newt run</a>
     </li>
 
@@ -382,6 +382,14 @@
                 
     <li >
       <a href="../newt_size/">newt size</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../newt_sync/">newt sync</a>
     </li>
 
               
@@ -496,41 +504,26 @@
                         </div>
                         
                             <h2 id="newt-create-image"><font color="#F2853F" style="font-size:24pt">newt create-image </font></h2>
-<p>Creates a signed image by adding image header to created binary file for specified target. Version number in the header is set to be <version> </p>
+<p>Create and sign an image by adding an image header to the binary file created for a target. Version number in the header is set to &lt;version&gt;. To sign an image provide a .pem file for the signing-key and an optional key-id.</p>
 <h4 id="usage">Usage:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    newt create-image &lt;target-name&gt; &lt;version&gt; [flags]
-</pre></div>
-
-
-<h4 id="flags">Flags:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    -h, --help=false: help for target
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    newt create-image &lt;target-name&gt; &lt;version&gt; [signing-key [key-id]][flags]
 </pre></div>
 
 
 <h4 id="global-flags">Global Flags:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    -l, --loglevel=&quot;WARN&quot;: Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don&#39;t output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default &quot;WARN&quot;)
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don&#39;t output anything
+    -v, --verbose           Enable verbose output when executing commands
 </pre></div>
 
 
 <h4 id="description">Description</h4>
-<table>
-<thead>
-<tr>
-<th>Sub-command</th>
-<th>Explanation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>create-image</td>
-<td>Signs and adds image header to the created binary file for target named <code>&lt;target-name&gt;</code> and given the version specified as <code>&lt;version&gt;</code>. The application image generated is <code>&lt;app-name&gt;.img</code> where the app-name is the same as the app specified in the target definition. The generated application image can be found in <code>/bin/&lt;target-name&gt;/apps/&lt;app-name&gt;/</code>. <br> <br> A build manifest file <code>manifest.json</code> is also generated in the same directory. This build manifest contains information such as build time, version, image name, a hash to identify the image, packages actually used to create the build, and the target for which the image is built.</td>
-</tr>
-</tbody>
-</table>
+<p>Adds an image header to the created binary file for the <code>target-name</code> target. The image version is set to <code>version</code>. It creates a <code>&lt;app-name&gt;.img</code> file for the image, where <code>app-name</code> is the value specified in the target <code>app</code> variable, and stores the file in the '/bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt;/' directory.  A <code>manifest.json</code> build manifest file is also generated in the same directory. This build manifest contains information such as build time, version, image name, a hash to identify the image, packages actually used to create the build, and the target for which the image is built.</p>
+<p>To sign an image,  provide a .pem file for the <code>signing-key</code> and an optional <code>key-id</code>. <code>key-id</code> must be a value between 0-255.</p>
 <h4 id="examples">Examples</h4>
 <table>
 <thead>
@@ -542,9 +535,14 @@
 </thead>
 <tbody>
 <tr>
-<td>create-image</td>
+<td></td>
 <td>newt create-image myble2 1.0.1.0</td>
-<td>Creates a signed image for target <code>myble2</code> and assigns it the version <code>1.0.1.0</code>. <br> <br> If the target is as follows: <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE <br> <br> then, the created image is <code>bin/myble2/apps/bletiny/bletiny.img</code> and the manifest is <code>bin/myble2/apps/bletiny/manifest.json</code></td>
+<td>Creates an image for target <code>myble2</code> and assigns it version <code>1.0.1.0</code>. <br> <br> For the following target definition: <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE <br> <br> the created image is 'bin/targets/myble2/app/apps/bletiny/bletiny.img' and the manifest is 'bin/targets/myble2/app/apps/bletiny/manifest.json'</td>
+</tr>
+<tr>
+<td></td>
+<td>newt create-image myble2 1.0.1.0 private.pem</td>
+<td>Creates an image for target <code>myble2</code> and assigns it the version <code>1.0.1.0</code>. Signs the image using  private key specified by the private.pem file.</td>
 </tr>
 </tbody>
 </table>
@@ -557,9 +555,9 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../newt_complete/>
+    <a href=../newt_clean/>
         <span class="fa fa-arrow-left"></span>
-        Previous: newt complete
+        Previous: newt clean
     </a>
     
     </li>
