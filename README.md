@@ -1,12 +1,20 @@
 The Apache MyNewt site is built using [MkDocs](http://www.mkdocs.org/).
 
 ## Setup
-### For all contributors:
-* Install [MkDocs](http://www.mkdocs.org/) on your system.
 
-### Additionally for committers:
-* `pip install GitPython`
-* `pip install sh`
+Clone the repo:
+
+    git clone https://github.com/apache/incubator-mynewt-site
+    cd incubator-mynewt-site
+
+Optional: it's a very good idea to use a `virtualenv`:
+
+    virtualenv venv
+    . venv/bin/activate
+
+Install the requirements:
+
+    pip install -r requirements.txt
 
 ## Submitting updates
 
@@ -21,6 +29,7 @@ The Apache MyNewt site is built using [MkDocs](http://www.mkdocs.org/).
 When a new release of MyNewt OS and its associated tools occurs, the documentation in the git `develop` branch of this repository should be in sync with the released version. The following steps will create a documentation branch for the release and make it available as the default documentation from the mynewt-site.
 
 ### Build
+
 1. Merge `develop` to `master`.
 1. Switch to the master branch.
     * `git checkout master`
@@ -32,10 +41,12 @@ When a new release of MyNewt OS and its associated tools occurs, the documentati
 1. Run: `./build.py`
 
 ### Test
+
 1. Run: `./serve.py`
 1. Visit [http://localhost:8000](http://localhost:8000)
 
 ### Deploy
+
 1. Run: `./deploy.sh`
 1. This will leave you on the `asf-site` branch.
 1. Commit & push the changes.
