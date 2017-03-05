@@ -82,7 +82,7 @@ syscfg.vals:
     RUNTEST_NEWTMGR: 1
     SHELL_TASK: 1
 ```
-The first five configuration settings enable support for the Newt Manager `log`, `stats`, `config`, `crash`, 
+The first five configuration settings enable support for the Newt Manager `log`, `stat`, `config`, `crash`, 
 and `run` commands. The `SHELL_TASK` setting enables the shell for serial transport.
 
 Note that you may need to override additional configuration settings that are specific to each package to customize the 
@@ -162,7 +162,7 @@ $ newt load myble
 ### Set Up a Connection Profile
 
 The newtmgr tool requires a connection profile in order to connect to your board. If you have not done so, 
-follow the [instructions](../../newtmgr/overview.md) for setting up your connection profile.
+follow the [instructions](../../newtmgr/command_list/newtmgr_conn.md) for setting up your connection profile.
 
 <br>
 
@@ -223,6 +223,7 @@ and `syscfg.yml` files as follows:
 * Add the `mgmt/newtmgr/transport/ble` package to `pkg.deps` parameter to enable BLE transport.
 * Add the `mgmt/newtmgr/transport/nmgr_shell` package to 
 the `pkg.deps` parameter,  and add `SHELL_TASK: 1` to the `syscfg.vals` parameter to enable serial transport.
+* Add the `mgmt/newtmgr/transport/nmgr_uart` package, and add `SHELL_TASK: 1` to enable serial communication over a UARTport.
 
 <br>
 
