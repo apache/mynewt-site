@@ -155,7 +155,7 @@ You can now disconnect the debugging cable from the board. You should see the gr
 
 ```no-highlight
         $ pwd
-        /Users/<user>/dev/larva/project/slinky
+        /Users/<user>/dev/project/slinky
         $ newtmgr conn add olimex01 type=serial connstring=/dev/tty.usbserial-AJ03HAQQ
         Connection profile olimex01 successfully added
         $ newtmgr conn show

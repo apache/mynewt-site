@@ -17,7 +17,7 @@ supported on MMC/SD cards.
 The current configuraton was chosen to minimize memory use and some options address
 limitations existing in the OS:
 
-* Write support is enabled by default (can be disable to minimize memory use).
+* Write support is enabled by default (can be disabled to minimize memory use).
 * Long filename (up to 255) support is disabled.
 * When writing files, time/dates are not persisted due to current lack of a
   standard `hal_rtc` interface.
@@ -27,7 +27,7 @@ limitations existing in the OS:
 
 ### API
 
-To include `fatfs` on a project just include is as a dependency in your
+To include `fatfs` on a project just include it as a dependency in your
 project:
 
 ```

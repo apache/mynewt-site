@@ -54,14 +54,6 @@ struct image_header {
     uint8_t  ih_key_id;
     uint8_t  _pad1;
     uint16_t ih_hdr_s< bok@bok.net
-35d33
-< ericmanganaro@gmail.com
-42d39
-< tam@proxy.co
-55d51
-< nathan@natb1.com
-110d105
-< rvs@apache.orgize;
     uint16_t _pad2;
     uint32_t ih_img_size; /* Does not include header. */
     uint32_t ih_flags;

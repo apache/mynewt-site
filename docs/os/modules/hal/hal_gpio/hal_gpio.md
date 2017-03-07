@@ -19,7 +19,7 @@ port pins) depends on the specific variant of the stm32F4xx.
 
 So if I want to turn on port B pin 3, that would be virtual pin  1*16 + 3 = 19.
 This translation is defined in the MCU implementation of
-[hal_gpio.c](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/mcu/stm/stm32f4xx/src/hal_gpio.c)
+[hal_gpio.c](https://github.com/apache/incubator-mynewt-core/blob/master/hw/mcu/stm/stm32f4xx/src/hal_gpio.c)
 for the stmf32F4xx.  Each MCU will typically have a different translation method
 depending on its GPIO architecture.
 
