@@ -10,7 +10,8 @@ Synchronize and refresh the contents of the local copy of all the repositories u
 #### Flags:
 ```no-highlight
     -f, --force             Force overwrite of existing remote repository
-   
+```   
+
 #### Global Flags:
 ```no-highlight
     -h, --help              Help for newt commands
