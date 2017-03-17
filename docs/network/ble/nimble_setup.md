@@ -108,9 +108,12 @@ pkg.name: apps/ble_app
 pkg.type: app
 
 pkg.deps:
-    - "@apache-mynewt-core/libs/baselibc"
-    - "@apache-mynewt-core/libs/console/full"
-    - "@apache-mynewt-core/libs/os"
+    - "@apache-mynewt-core/kernel/os"
+    - "@apache-mynewt-core/hw/hal"
+    - "@apache-mynewt-core/sys/console/full"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/sys/stats/full"
+    - "@apache-mynewt-core/net/nimble/transport/ram"
     - "@apache-mynewt-core/net/nimble/controller"
     - "@apache-mynewt-core/net/nimble/host"
 ```
@@ -124,7 +127,7 @@ int
 main(void)
 {
     /* Initialize OS */
-    os_init();
+    os_init(NULL);
 
     /* Start the OS */
     os_start();
