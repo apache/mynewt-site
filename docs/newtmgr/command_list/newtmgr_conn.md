@@ -21,7 +21,7 @@ The conn command provides subcommands to add, delete, and view configuration pro
 
 Sub-command  | Explanation
 -------------| ------------------------
-add       | The newtmgr conn add <conn_profile> <var-name=var-value> command creates a connection profile named `conn_profile`. A profile consists of these variables: <ul><li>`name`: Connection name. Defaults to `conn_profile` when the variable is not set in the command. </li><li>`type`: Connection type. Valid types are: `serial`, `oic_serial`, `ble`, `oic_ble`, `udp`, `oic_udp`.</li><li>`connstring`: The physical or virtual port to use for the connection.</li><li>`addrtype`: Device address type. Use with type `ble`.</li><li>`addr`:  Device address. Use with type `ble`.</ul>
+add       | The newtmgr conn add &lt;conn_profile&gt; &lt;var-name=var-value...&gt; command creates a connection profile named `conn_profile`. A profile consists of these variables: <ul><li>`name`: Connection name. Defaults to `conn_profile` when the variable is not set in the command. </li><li>`type`: Connection type. Valid types are: `serial`, `oic_serial`, `ble`, `oic_ble`, `udp`, `oic_udp`.</li><li>`connstring`: The physical or virtual port to use for the connection.</li><li>`addrtype`: Device address type. Use with type `ble`.</li><li>`addr`:  Device address. Use with type `ble`.</ul>
 delete    | The newtmgr conn delete &lt;conn_profile&gt; command deletes the `conn_profile` connection profile.
 show      | The newtmgr conn show [conn_profile] command shows the information for the `conn_profile` connection profile. It shows information for all the connection profiles if `conn_profile` is not specified.
     

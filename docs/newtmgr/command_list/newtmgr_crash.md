@@ -5,7 +5,7 @@ Send a crash command to a device.
 #### Usage:
 
 ```no-highlight
-    newtmgr crash <div0|jump0|ref0|assert|wdog> -c <conn_profile>; [flags] 
+    newtmgr crash <div0|jump0|ref0|assert|wdog> -c <conn_profile> [flags] 
 ```
 
 #### Global Flags:
