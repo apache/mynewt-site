@@ -12,13 +12,16 @@ Note that the Mynewt OS will run on the nRF52 chip in the Arduino Primo board. H
 
 <br>
 
-### Hardware and Software needed
+### Prerequisites
+Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-* Arduino Primo
-* Laptop running Mac OS
-* A micro USB 2.0 cable to power the Arduino primo board
-* It is assumed you have already installed newt tool. 
-* It is assumed you already installed native tools as described [here](../get_started/native_tools.md)
+* Have an Arduino Primo
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a Micro-USB cable to connect the board and the computer.
+* Have a computer to build a Mynewt application and connect to your board over USB.
+* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
+* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 * Debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.
 
 <br>
@@ -68,67 +71,54 @@ In order to be able to communicate with the SEGGER J-Link debugger on the dev bo
 
 <br>
 
-### Create a project.  
+### Create a Project  
+Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already created a project.
 
-Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
-[Get Started -- Creating Your First Project](../get_started/project_create.md)
-or just follow the commands below.
+Run the following commands to create a new project:
 
-```
+```no-highlight
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
     Downloading project skeleton from apache/incubator-mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
-    
     $ cd myproj
-    
-    $ newt install -v 
+    $ newt install
     apache-mynewt-core
-    Downloading repository description for apache-mynewt-core... success!
-    ...
-    apache-mynewt-core successfully installed version 0.9.0
-``` 
+    $
+```
 
 <br>
+### <a name="create_targets"></a>Create the Targets
 
-If you are working with 0.9.0 release (and not any subsequent releases), you will have to instruct newt to download code for the Arduino Primo Board Support Package (bsp) from the `develop` branch. You first edit the `project.yml` file in your project directory to change `vers:0-latest` to `0-dev`:
+Create two targets for the Arduino Primo board - one for the bootloader and one for the Blinky application.
 
-```hl_lines="5"
-<snip>
-#
-repository.apache-mynewt-core:
-    type: github
-    vers: 0-dev
-    user: apache
-    repo: incubator-mynewt-core
-```
+Run the following `newt target` commands to create a bootloader target. We name the target `primo_boot`:
 
-Then you run `newt upgrade`:
-
-```
-$ newt upgrade
-apache-mynewt-core
-Would you like to upgrade repository apache-mynewt-core from 0.9.0-none to 0.0.0-none ? [Yn] Y
-```
-
-
-**Note**: With the next release, the Arduino Primo bsp will be included in the main release package. The above edit and `newt upgrade` step will not be required.
-
-<br>
-
-### Create the targets
-
-Create two targets - one for the bootloader and one for the Primo board.  
-
-```
-$ newt target create primoblinky
-$ newt target set primoblinky app=@apache-mynewt-core/apps/blinky bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=debug
-
+```no-highlight
 $ newt target create primo_boot
 $ newt target set primo_boot app=@apache-mynewt-core/apps/boot bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=optimized
+```
+<br>
+Run the following `newt target` commands to create a target for your Blinky application. We name the target `primoblinky`:
+```no-highlight
+$ newt target create primoblinky
+$ newt target set primoblinky app=apps/blinky bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=debug
+```
+<br>
+If you are using openocd, run the following `newt target set` commands:
 
+```no-highlight
+$ newt target set primoblinky syscfg=OPENCD_DEBUG=1
+$ newt target set primo_boot syscfg=OPENCD_DEBUG=1
+
+```
+
+<br>
+You can run the `newt target show` command to verify your target settings:
+
+```no-highlight
 $ newt target show
 targets/my_blinky_sim
     app=apps/blinky
@@ -144,47 +134,68 @@ targets/primoblinky
     build_profile=optimized
 ```
 
-If you are using openocd you must set the openocd_debug feature for both primo_boot and primoblinky.
-
-```
-$ newt target set primo_boot features=openocd_debug
-$ newt target set primoblinky features=openocd_debug
-```
 
 <br>
 
-### Build the target executables 
-
-```
+### Build the Target Executables 
+Run the `newt build primo_boot` command to build the bootloader:
+```no-highlight
 $ newt build primo_boot
-<snip>
-Compiling log_shell.c
-Archiving log.a
-Linking boot.elf
-App successfully built: ~/dev/myproj/bin/primo_boot/apps/boot/boot.elf
+Building target targets/primo_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+
+      ...
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/primo_boot/app/apps/boot/boot.elf
+Target successfully built: targets/primo_boot
 ```
-```
+<br>
+Run the `newt build primoblinky` command to build the Blinky application:
+
+```no-highlight
 $ newt build primoblinky
-<snip>
-Compiling stats_shell.c
-Archiving stats.a
-Linking blinky.elf
-App successfully built: ~/dev/myproj/bin/primoblinky/apps/blinky/blinky.elf
+Building target targets/primoblinky
+Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
+Assembling repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52/src/arch/cortex_m4/gcc_startup_nrf52.s
+Compiling repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52/src/sbrk.c
+Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
+Assembling repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52/src/arch/cortex_m4/gcc_startup_nrf52_split.s
+Compiling apps/blinky/src/main.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/uart_bitbang/src/uart_bitbang.c
+Compiling repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52/src/hal_bsp.c
+
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/primoblinky/app/apps/blinky/blinky.elf
+Target successfully built: targets/primoblinky
 ```
 
 <br>
 
-### Sign and create the blinky application image 
+### Sign and Create the Blinky Application Image 
 
-You must sign and version your application image to download it using newt to the board. Use the newt create-image command to perform this action. You may assign an arbitrary version (e.g. 1.0.0) to the image.
+Run the `newt create-image primoblinky 1.0.0` command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.
 
-```
+```no-highlight
 $ newt create-image primoblinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/primoblinky/app/apps/blinky/blinky.img
+
 ```
 
 <br>
 
-### Connect the board
+### Connect to the Board
 
 Connect the Segger J-Link debug probe to the JTAG port on the Primo board using the Jlink 9-pin adapter and cable. Note that there are two JTAG ports on the board. Use the one nearest to the reset button as shown in the picture. Also use a micro USB 2.0 cable to connect the Primo board to one of your laptop's USB host ports.
 
@@ -194,14 +205,26 @@ Connect the Segger J-Link debug probe to the JTAG port on the Primo board using 
 
 **Note:** If you are going the OpenOCD route, you do not need to attach this connector. 
 
-### Download to the target
+### Load the Bootloader and the Blinky Application Image
+Run the `newt load primo_boot` command to load the bootloader onto your board:
 
-Download the bootloader first and then the blinky executable to the target platform. Don't forget to reset the board if you don't see the LED blinking right away. If the reset button doesn't work, powercycle the board!
+```no-highlight
+$ newt load primo_boot
+Loading bootloader
+$
+```
+<br>
+Run the `newt load primoblinky` command to load Blinky application image onto your board.
+```no-highlight
+$ newt  load primoblinky 
+Loading app image into slot 1
+$
+```
 
-```
-$ newt -v load primo_boot
-$ newt -v load primoblinky
-```
+You should see the LED on your board blink!
+
+Note: If the LED does not blink, try resetting your board.
+
 
 <br>
 

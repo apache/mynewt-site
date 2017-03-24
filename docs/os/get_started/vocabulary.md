@@ -32,7 +32,7 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 $ 
@@ -46,9 +46,9 @@ relies upon.
 * ```repository.apache-mynewt-core```: Defines the repository information for 
 the ```apache-mynewt-core``` repository.
 
-* ```vers=0-latest```: Defines the repository version. This string will use the 
+* ```vers=1-latest```: Defines the repository version. This string will use the 
 latest code in the 'Master' github branch. To use the latest version in the 
-develop branch, just change it to ```vers=0-dev```
+develop branch, just change it to ```vers=1-dev```
 
 Repositories are versioned collections of packages.  
 
@@ -134,20 +134,25 @@ In order to create and manipulate targets, the *newt* tool offers a set of helpe
 you can find more information about these by issuing:
 
 $ newt target
-```no-highligh
+```no-highlight
+newt target
 Usage:
   newt target [flags]
   newt target [command]
 
 Available Commands:
-  config      View target system configuration
+  config      View or populate a target's system configuration
   copy        Copy target
   create      Create a target
   delete      Delete target
+  dep         View target's dependency graph
+  revdep      View target's reverse-dependency graph
   set         Set target configuration variable
   show        View target configuration variables
 
 Global Flags:
+  -h, --help              Help for newt commands
+  -j, --jobs int          Number of concurrent build jobs (default 8)
   -l, --loglevel string   Log level (default "WARN")
   -o, --outfile string    Filename to tee output to
   -q, --quiet             Be quiet; only display error output
@@ -155,6 +160,7 @@ Global Flags:
   -v, --verbose           Enable verbose output when executing commands
 
 Use "newt target [command] --help" for more information about a command.
+
 $ 
 ```
 
@@ -168,7 +174,7 @@ directory rather than editing the package configurations directly.
 To see all **all** the system configuration settings, simply type
 
 ```no-highlight
-$ newt target config <target-name>
+$ newt target config show <target-name>
 ...
 * PACKAGE: sys/stats
   * Setting: STATS_CLI

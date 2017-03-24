@@ -74,10 +74,26 @@ is created.
 
 ```no-highlight
     $ newt build sim_slinky 
-    Compiling main.c
-    ...
-    Linking slinky.elf
-    App successfully built: ~/dev/slinky/bin/sim_slinky/apps/slinky/slinky.elf
+    Building target targets/sim_slinky
+    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+    Compiling repos/apache-mynewt-core/boot/split/src/split.c
+    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
+    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
+    Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
+
+              ...
+
+    Archiving util_crc.a
+    Archiving util_mem.a
+    Linking ~/dev/slinky/bin/targets/sim_slinky/app/apps/slinky/slinky.elf
+    Target successfully built: targets/sim_slinky
+
 ```
 
 ### Run the target
@@ -86,14 +102,13 @@ Run the executable you have build for the simulated environment. The serial port
 when mynewt slinky starts.
 
 ```no-highlight
-    $ ~/dev/slinky/bin/sim_slinky/apps/slinky/slinky.elf
+    $ ~/dev/slinky/bin/targets/sim_slinky/app/apps/slinky/slinky.elf
     uart0 at /dev/ttys005
 ```
 
 <br>
 
-In this example, the slinky app opened up a com port `/dev/ttys005`
-for communications with newtmgr. 
+In this example, the slinky app opened up a com port `/dev/ttys005` for communications with newtmgr. 
 
 **NOTE:** This application will block. You will need to open a new console (or execute this in another console) to continue the tutorial.*
 
@@ -108,25 +123,21 @@ You will now set up a connection profile using `newtmgr` for the serial port con
     Connection profile sim1 successfully added
     $ newtmgr conn show
     Connection profiles: 
-      sim1: type=serial, connstring='/dev/ttys007'
+      sim1: type=serial, connstring='/dev/ttys005'
 ```
 
 ### Executing newtmgr commands with the target
 
-You can now use connection profile `sim1` to talk to the running sim_blinky.
+You can now use connection profile `sim1` to talk to the running sim_slinky.
 As an example, we will query the running mynewt OS for the usage of its 
 memory pools.  
 
 ```no-highlight
     $ newtmgr -c sim1 mpstats
     Return Code = 0
-      nffs_cache_inode_pool (blksize=36 nblocks=4 nfree=4)
-      nffs_cache_block_pool (blksize=32 nblocks=64 nfree=64)
-      nffs_dir_pool (blksize=8 nblocks=4 nfree=4)
-      default_mbuf_data (blksize=256 nblocks=10 nfree=8)
-      nffs_file_pool (blksize=12 nblocks=4 nfree=4)
-      nffs_inode_entry_pool (blksize=24 nblocks=100 nfree=98)
-      nffs_block_entry_pool (blksize=12 nblocks=100 nfree=100)
+                            name blksz  cnt free  min
+                          msys_1   292   12   10   10
+
 ```
 
 As a test command, you can send an arbitrary string to the target and it
@@ -134,10 +145,8 @@ will echo that string back in a response to newtmgr.
 
 ```no-highlight
     $ newtmgr -c sim1 echo "Hello Mynewt"
-    {"r": "Hello Mynewt"}
+    Hello Mynewt
 ```
-
-The response comes back as a json string.
 
 In addition to these, you can also examine running tasks, statistics, 
 logs, image status (not on sim), and configuration.

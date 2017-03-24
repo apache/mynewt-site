@@ -48,7 +48,7 @@ If you want to build the *newt* tool from its source code, follow the following 
 
 * Next, install Go. When installed, Go offers you as a developer a language environment (to compile Go code), construct Go packages (to assemble Go packages) and import Go code (from github). In the next step, you will use the Go commands to import *newt* repo into your local Go environment.
 
-    **Note**: The Newt tool requires Go version 1.5 or later. It uses the support for "vendoring" that was added in Go 1.5. Depending on the Ubuntu version you have, the following may install an earlier version. In that case, download the latest package of Go 1.5 or 1.6 from [https://golang.org/dl/](https://golang.org/dl/). You can search for more detailed instructions such as installing Go 1.6 on Ubuntu 14.04 which can be found at [https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04).
+    **Note**: The Newt tool requires Go version 1.6 or later. Depending on the Ubuntu version you have, the following may install an earlier version. In that case, download the latest package of Go 1.6 from [https://golang.org/dl/](https://golang.org/dl/). You can search for more detailed instructions such as installing Go 1.6 on Ubuntu 14.04 which can be found at [https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04](https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04).
    
 ```no-highlight
         $ sudo apt-get install golang 
@@ -92,48 +92,60 @@ If you want to build the *newt* tool from its source code, follow the following 
 
    (Note: If you are going to be modifying the *newt* often and going to be compile the program every time you call it, you will want to store the command in a variable in your .bash_profile. So type in `export newt="go run $GOPATH/mynewt.apache.org/newt/newt/newt.go"` in your .bash_profile and execute it by calling `$newt` at the prompt instead of `newt`. Essentially, `$newt` calls `go run` which runs the compiled binary directly without producing an executable. Don't forget to reload the updated bash profile by typing `source ~/.bash_profile` at the prompt! )
    
-```
+```no-highlight
         $ newt version
         Newt version:  1.0
         $ newt -h
-        Newt allows you to create your own embedded project based on the Mynewt
-        operating system. Newt provides both build and package management in a
-        single tool, which allows you to compose an embedded workspace, and set
-        of projects, and then build the necessary artifacts from those projects.
-        For more information on the Mynewt operating system, please visit
-        https://www.github.com/mynewt/documentation.
+        Newt allows you to create your own embedded application based on the Mynewt 
+        operating system. Newt provides both build and package management in a single 
+        tool, which allows you to compose an embedded application, and set of 
+        projects, and then build the necessary artifacts from those projects. For more 
+        information on the Mynewt operating system, please visit 
+        https://mynewt.apache.org/. 
 
-        Please use the newt help command, and specify the name of the command
-        you want help for, for help on how to use a specific command
+        Please use the newt help command, and specify the name of the command you want 
+        help for, for help on how to use a specific command
 
         Usage:
-         newt [flags]
-         newt [command]
+          newt [flags]
+          newt [command]
 
         Examples:
-         newt
-         newt help [<command-name>]
-           For help on <command-name>.  If not specified, print this message.
-
+          newt
+          newt help [<command-name>]
+            For help on <command-name>.  If not specified, print this message.
 
         Available Commands:
-         version     Display the Newt version number.
-         target      Set and view target information
-         egg         Commands to list and inspect eggs on a nest
-         nest        Commands to manage nests & clutches (remote egg repositories)
-         help        Help about any command
+          build        Build one or more targets
+          clean        Delete build artifacts for one or more targets
+          create-image Add image header to target binary
+          debug        Open debugger session to target
+          info         Show project info
+          install      Install project dependencies
+          load         Load built target to board
+          mfg          Manufacturing flash image commands
+          new          Create a new project
+          pkg          Create and manage packages in the current workspace
+          run          build/create-image/download/debug <target>
+          size         Size of target components
+          sync         Synchronize project dependencies
+          target       Commands to create, delete, configure, and query targets
+          test         Executes unit tests for one or more packages
+          upgrade      Upgrade project dependencies
+          vals         Display valid values for the specified element type(s)
+          version      Display the Newt version number
 
         Flags:
-         -h, --help=false: help for newt
-         -l, --loglevel="WARN": Log level, defaults to WARN.
-         -q, --quiet=false: Be quiet; only display error output.
-         -s, --silent=false: Be silent; don't output anything.
-         -v, --verbose=false: Enable verbose output when executing commands.
+          -h, --help              Help for newt commands
+          -j, --jobs int          Number of concurrent build jobs (default 8)
+          -l, --loglevel string   Log level (default "WARN")
+          -o, --outfile string    Filename to tee output to
+          -q, --quiet             Be quiet; only display error output
+          -s, --silent            Be silent; don't output anything
+          -v, --verbose           Enable verbose output when executing commands
 
-
-        Use "newt help [command]" for more information about a command.
+        Use "newt [command] --help" for more information about a comma
 ```
-
 <br>
 
 #### 5. Updating the Newt tool

@@ -5,19 +5,16 @@ Learn how to use packages from a default application repository of Mynewt to bui
 This tutorial describes how to run Mynewt OS on Arduino Zero. Follow these simple steps and your board will be blinking in no time!
 
 ### Prerequisites
+Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-Before tackling this tutorial, it's best to read about Mynewt in the [Introduction](../get_started/get_started) section of this documentation.
-
-### Equipment
-
-You will need the following equipment
-
-* An Arduino Zero board.  NOTE: There are many flavors of Arduino. Ensure that
-you have an Arduino Zero. See below for the versions of Arduino Zero that are
-compatible with this tutorial
-* A computer that can connect to the Arduino Zero over USB
-* A USB cable (Type A to micro B) that can connect the computer to the Arduino
-* The Mynewt Release
+* Have an Arduino Zero board.  
+Note: There are many flavors of Arduino. Make sure you are using an Arduino Zero. See below for the versions of Arduino Zero that are compatible with this tutorial.
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a Micro-USB cable to connect the board and the computer.
+* Have a computer to build a Mynewt application and connect to your board over USB.
+* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
+* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section. 
 
 This tutorial has been tested on the following three Arduino Zero boards - Zero, M0 Pro, and Zero-Pro.
 
@@ -27,14 +24,29 @@ This tutorial has been tested on the following three Arduino Zero boards - Zero,
 
 Mynewt has not been tested on Arduino M0 which has no internal debugger support.
 
-### Install Mynewt and Newt
+<br>
 
-* If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/install/newt_mac.md)
-* If you have not already done so, create a project as shown in the Quick Start guide on how to [Create Your First Project](../get_started/project_create.md). Skip the testing and building the project steps in that tutorial since you will be defining a target for your Arduino board in this tutorial.
+### Create a Project
+Create a new project if you do not have an existing one.  You can skip this step and proceed to [fetch external packages](#fetchexternal) if you already created a project.  
+
+Run the following commands to create a new project: 
+
+```no-highlight
+    $ mkdir ~/dev
+    $ cd ~/dev
+    $ newt new myproj
+    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Installing skeleton in myproj...
+    Project myproj successfully created.
+    $ cd myproj
+    $ newt install
+    apache-mynewt-core
+    $
+```
 
 <br>
 
-### Fetch External Packages
+###<a name="fetchexternal"></a> Fetch External Packages
 
 Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.
@@ -56,24 +68,20 @@ project.repositories:
 
 repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 
 repository.mynewt_arduino_zero:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: runtimeinc
     repo: mynewt_arduino_zero
 $
 ```
 
 <br>
-
-Once you've edited your ```project.yml``` file, the next step is to install the
-project dependencies, this can be done with the ```newt install``` command
-(to see more output, provide the ```-v``` verbose option.):
-
+Install the project dependencies using the `newt install` command (You can specify ```-v``` for verbose output):
 ```no-highlight
 $ newt install
 apache-mynewt-core
@@ -83,16 +91,13 @@ $
 
 <br>
 
-**NOTE:** If there has been a new release of a repo used in your project since you last installed it, the `0-latest` version for the repo in the `project.yml` file will refer to the new release and will not match the installed files. In that case you will get an error message saying so and you will need to run `newt upgrade` to overwrite the existing files with the latest codebase.
+**NOTE:** If there has been a new release of a repo used in your project since you last installed it, the `1-latest` version for the repo in the `project.yml` file will refer to the new release and will not match the installed files. In that case you will get an error message saying so and you will need to run `newt upgrade` to overwrite the existing files with the latest codebase.
 
 <br>
-
-### Create your bootloader target
-
-Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to
-generate both a bootloader, and an image target.
-
-To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability.
+### Create a Target for the Bootloader
+You need to create two targets, one for the bootloader and one for the Blinky application.  
+<br>
+Run the following `newt target` commands, from your project directory (ex. ~/dev/myproj), to create a bootloader target for the Arduino Zero Pro board.  We name the target `arduino_boot`.
 
 ```no-highlight
 $ newt target create arduino_boot
@@ -105,12 +110,11 @@ Target targets/arduino_boot successfully set target.build_profile to optimized
 $ newt target set arduino_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
 Target targets/arduino_boot successfully set target.syscfg to BSP_ARDUINO_ZERO_PRO=1
 ```
+**Note:** If you have an Arduino Zero instead of a Arduino Zero Pro board, replace `BSP_ARDUINO_ZERO_PRO`  with `BSP_ARDUINO_ZERO` in the last `newt target set` command.
 
-<br>
+These commands perform the following:
 
-These commands do a few things:
-
-  * Create a target named ```arduino_boot```, in order to build the Arduino Zero Bootloader.
+  * Create a target named ```arduino_boot```  for the Arduino Zero Bootloader. 
   * Set the application for the ```arduino_boot``` target to the default Apache Mynewt
     bootloader (```@apache-mynewt-core/apps/boot```)
   * Set the board support package for the target to
@@ -119,66 +123,14 @@ These commands do a few things:
   * Use the "optimized" build profile for the `arduino_boot` target.  This
     instructs Newt to generate smaller and more efficient code for this target.
     This setting is necessary due to the bootloader's strict size constraints.
-  * Tells the Board Support Package to enable support for the Arduino Zero Pro or the Arduino Zero. Set it to `arduino_zero` or `arduino_zero_pro` depending on the board you have.
+  * Sets the system configuration setting for Board Support Package to support the Arduino Zero Pro. 
 
+See the [Concepts](../get_started/vocabulary.md) section for more information on setting options.
 <br>
-
-If you'd rather, you can also take care of that last part by editing the `syscfg.yml` file 
-for the target to set options -- at least one that is *required*.
-Look in the directory for the target, as defined by the target (in this case `targets/arduino_boot`)
-and edit the syscfg.yml file. It should look like this when you're done:
+###Create a Target for the Blinky Application
+Run the following `newt target` commands to create your Blinky application target.  We name the application target `arduino_blinky`.
 
 ```no-highlight
-### Package: targets/arduino_boot
-
-syscfg.vals:
-    BSP_ARDUINO_ZERO_PRO: 1
-
-            
-```
-
-If you have an Arduino Zero Pro or M0 Pro, you'll want `BSP_ARDUINO_ZEZRO_PRO: 1`. If you have the Arduino Zero, 
-you'll want `BSP_ARDUINO_ZERO: 1` instead.
-
-For more information on setting options, see the section on [Concepts](../get_started/vocabulary.md).
-
-For now, we're not going to set any more options or enable any more features of Mynewt OS.
-
-<br>
-
-### Build your bootloader
-
-Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the ```newt build``` command:
-
-```no-highlight
-$ newt build arduino_boot
-Compiling asprintf.c
-Compiling atoi.c
-Compiling atol.c
-Compiling atoll.c
-Compiling bsearch.c
-Compiling bzero.c
-Compiling calloc.c
-Compiling fgets.c
-Compiling inline.c
-<snip>
-App successfully built: myproject/bin/arduino_boot/apps/boot/boot.elf
-```
-
-If this command finishes successfully, you have successfully built the Arduino
-bootloader, and the next step is to build your application for the Arduino
-board.
-
-<br>
-
-### Build your blinky app
-
-To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  
-In this tutorial,  we will use the default application that comes with your project, ```apps/blinky```:
-
-**Note**: Remember to set features to `arduino_zero` if your board is Arduino Zero and not a Pro!
-
-```hl_lines="9"
 $ newt target create arduino_blinky
 Target targets/arduino_blinky successfully created
 $ newt target set arduino_blinky app=apps/blinky
@@ -187,63 +139,98 @@ $ newt target set arduino_blinky bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 Target targets/arduino_blinky successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_blinky build_profile=debug
 Target targets/arduino_blinky successfully set target.build_profile to debug
-$ newt target set arduino_blinky features=arduino_zero_pro
-Target targets/arduino_blinky successfully set pkg.features to arduino_zero_pro
+$ newt target set arduino_blinky syscfg=BSP_ARDUINO_ZERO_PRO=1
+Target targets/arduino_boot successfully set target.syscfg to BSP_ARDUINO_ZERO_PRO=1
 $
 ```
+**Note:** If you have an Arduino Zero instead of a Arduino Zero Pro board, replace `BSP_ARDUINO_ZERO_PRO`  with `BSP_ARDUINO_ZERO` in the last `newt target set` command.
 
 <br>
 
-You can now build the target, with ```newt build```:
+
+### Build the Bootloader
+
+Run the `newt build arduino_boot` command to build a bootloader for your arduino board:
+
+```no-highlight
+$ newt build arduino_boot
+Building target targets/arduino_boot
+Compiling bin/targets/arduino_boot/generated/src/arduino_boot-sysinit-app.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling bin/targets/arduino_boot/generated/src/arduino_boot-sysflash.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/arc4.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+
+      ....
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/arduino_boot/app/apps/boot/boot.elf
+Target successfully built: targets/arduino_boot
+
+```
+<br>
+
+
+### Build the Blinky Application
+
+Run the `newt build arduino_blinky` command to build your Blinky application image:
 
 ```no-highlight
 $ newt build arduino_blinky
-Compiling main.c
-Archiving blinky.a
-Compiling cons_fmt.c
-Compiling cons_tty.c
-Archiving full.a
-Compiling case.c
-Compiling suite.c
-Compiling testutil.c
-Archiving testutil.a
-<snip>
-App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf
+Building target targets/arduino_blinky
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_flash.c
+Compiling apps/blinky/src/main.c
+Compiling repos/mynewt_arduino_zero/hw/mcu/atmel/samd21xx/src/sam0/drivers/i2s/i2s.c
+Compiling repos/mynewt_arduino_zero/hw/bsp/arduino_zero/src/hal_bsp.c
+Compiling repos/mynewt_arduino_zero/hw/mcu/atmel/samd21xx/src/sam0/drivers/i2s/i2s_callback.c
+Compiling repos/mynewt_arduino_zero/hw/mcu/atmel/samd21xx/src/sam0/drivers/nvm/nvm.c
+
+     ...
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/arduino_blinky/app/apps/blinky/blinky.elf
+Target successfully built: targets/arduino_blinky
 ```
-<font color="#FF0000"> Congratulations! </font> You have successfully built your application. Now it's time to load both the bootloader and application onto the target.
-
 <br>
-
-### Connect the Target
+### Connect to the Board
 
 Connect your computer to the Arduino Zero (from now on we'll call this the
-target) with the Micro-USB cable through the Programming Port as shown below.
-Mynewt will download and debug the target through this port. You should see a
+target) with a Micro-USB cable through the Programming Port as shown below.
+Mynewt will load the image onto the board and  debug the target through this port. You should see a
 little green LED come on. That means the board has power.
 
 No external debugger is required.  The Arduino Zero comes with an internal
 debugger that can be accessed by Mynewt.
 
-A image below shows the Arduino Zero Programming Port.
+The images below show the Arduino Zero Programming Port.
 
 <img src="https://www.arduino.cc/en/uploads/Main/Zero_Usb_Ports.jpg" alt="Drawing" style="width: 400px;"/>
 <img src="http://www.arduino.org//images/products/ArduinoZeroPro-flat-org.jpg" alt="Drawing" style="width: 330px;"/>
 
 <br>
 
-### Download the Bootloader
+### Load the Bootloader onto the Board
 
-Execute the command to download the bootloader.
+Run the `newt load arduino_boot` command to load the bootloader onto your board:
 
-```c
-    $ newt load arduino_boot
+```no-highlight
+$ newt load arduino_boot
+Loading bootloader
+$
 ```
+The bootloader is loaded onto your board succesfully when the `newt load` command returns to the command prompt with no messages. You can proceed to load and run your Blinky application image (See [Run the Blinky Application](#runimage)).
 
-If the newt tool finishes without error, that means the bootloader has been
-successfully loaded onto the target.
-
-If, on the other hand, you get errors like the following:
-
+If the `newt load` command outputs the following error messages, you will need to erase your board.
 ```
 $ newt load arduino_boot -v
 Loading bootloader
@@ -267,13 +254,10 @@ Info : SWD IDCODE 0x0bc11477
 Info : at91samd21g18.cpu: hardware has 4 breakpoints, 2 watchpoints
 Error: Target not halted
 ```
-
-Then you'll need to erase your board first before downloading the `arduino_boot` application. Here's how you do that using gdb,
-the GNU Debugger. 
-
-```gdb
+<br>
+To erase your board, start a debug session and enter the highlighted commands at the `(gdb)` prompts:
+```hl_lines="2, 5, 14"  
 $ newt debug arduino_blinky
-
 (gdb) mon at91samd chip-erase
 chip erased
 chip erased
@@ -288,32 +272,27 @@ chip erased
 0x70:	0xffffffff	0xffffffff	0xffffffff	0xffffffff
 (gdb) q
 ```
-
-Once the chip is erased, go back and download the `arduino_boot` image to the board as above. 
-
 <br>
+Run the `newt load arduino_boot` command again after erasing the board.	
 
 <font color="#FF0000"> Reminder if you are using Docker: </font> When working with actual hardware, remember that each board has an ID. If you swap boards and do not refresh the USB Device Filter on the VirtualBox UI, the ID might be stale and the Docker instance may not be able to see the board correctly. For example, you may see an error message like `Error: unable to find CMSIS-DAP device` when you try to load or run an image on the board. In that case, you need to click on the USB link in VirtualBox UI, remove the existing USB Device Filter (e.g. "Atmel Corp. EDBG CMSIS-DAP[0101]") by clicking on the "Removes selected USB filter" button, and add a new filter by clicking on the "Adds new USB filter" button.
 
 <br>
 
-### Run the Image
+### <a name="runimage"></a>Run the Blinky Application 
 
-Now that the bootloader is downloaded to the target, the next step is to load
-your image onto the Arduino Zero.  The easiest way to do this, is to use the
-```newt run``` command.  ```newt run``` will automatically rebuild your program
-(if necessary), create an image, and load it onto the target device.
+After you load the bootloader successfully onto your board, you can load and run the Blinky application. 
 
-Here, we will load our ```arduino_blinky``` target onto the device, and we
-should see it run:
-
+Run the `newt run arduino_blinky 0.0.0` command to build the arduino_blinky target (if necessary), create an image with verison 0.0.0, load the image onto the board, and start a debugger session. 
 ```no-highlight
 $ newt run arduino_blinky 0.0.0
-Debugging myproject/bin/arduino_blinky/apps/blinky/blinky.elf
-Open On-Chip Debugger 0.9.0 (2015-09-23-21:46)
+App image succesfully generated: ~/dev/myproj/bin/targets/arduino_blinky/app/apps/blinky/blinky.img
+Loading app image into slot 1
+[~/dev/myproj/repos/mynewt_arduino_zero/hw/bsp/arduino_zero/arduino_zero_debug.sh ~/dev/myproj/repos/mynewt_arduino_zero/hw/bsp/arduino_zero ~/dev/myproj/bin/targets/arduino_blinky/app/apps/blinky/blinky]
+Open On-Chip Debugger 0.9.0 (2015-11-15-13:10)
 Licensed under GNU GPL v2
 For bug reports, read
-	http://openocd.org/doc/doxygen/bugs.html
+http://openocd.org/doc/doxygen/bugs.html
 Info : only one transport option; autoselect 'swd'
 adapter speed: 500 kHz
 adapter_nsrst_delay: 100
@@ -327,6 +306,9 @@ Info : CMSIS-DAP: Interface ready
 Info : clock speed 500 kHz
 Info : SWD IDCODE 0x0bc11477
 Info : at91samd21g18.cpu: hardware has 4 breakpoints, 2 watchpoints
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x21000000 pc: 0x0000fca6 psp: 0x20002408
 GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
 Copyright (C) 2014 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -341,13 +323,16 @@ Find the GDB manual and other documentation resources online at:
 <http://www.gnu.org/software/gdb/documentation/>.
 For help, type "help".
 Type "apropos word" to search for commands related to "word"...
-Reading symbols from myproject/bin/arduino_blinky/apps/blinky/blinky.elf...done.
-target state: halted
-target halted due to debug-request, current mode: Thread
-xPSR: 0x21000000 pc: 0x0000030e msp: 0x20008000
+Reading symbols from ~/dev/myproj/bin/targets/arduino_blinky/app/apps/blinky/blinky.elf...(no debugging symbols found)...done.
 Info : accepting 'gdb' connection on tcp/3333
 Info : SAMD MCU: SAMD21G18A (256KB Flash, 32KB RAM)
-0x0000030e in ?? ()
+0x0000fca6 in os_tick_idle ()
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x21000000 pc: 0x000000b8 msp: 0x20008000
+target state: halted
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x21000000 pc: 0x000000b8 msp: 0x20008000
 (gdb) r
 The "remote" target does not support "run".  Try "help target" or "continue".
 (gdb) c
@@ -356,9 +341,7 @@ Continuing.
 
 <br>
 
-**NOTE:** The 0.0.0 specified after the target name to `newt run` is the version
-of the image to load.  If you are not providing remote upgrade, and are just
-developing locally, you can provide 0.0.0 for every image version.
+**NOTE:** The 0.0.0 is the version number to assign to the images.  If you are not providing remote upgrade, and are just developing locally, you can provide 0.0.0 for every image version.
 
 If you want the image to run without the debugger connected, simply quit the
 debugger and restart the board.  The image you programmed will come up and run on 
@@ -366,9 +349,9 @@ the Arduino on the next boot!
 
 <br>
 
-### Watch the LED blink
+### Watch the LED Blink
 
-Congratulations! You have created a Mynewt operating system running on the
+Congratulations! You have created an Mynewt application running on the
 Arduino Zero. The LED right next to the power LED should be blinking. It is toggled 
 by one task running on the Mynewt OS.   
 

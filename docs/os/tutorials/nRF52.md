@@ -12,72 +12,77 @@ Note that there are several versions of the nRF52 in the market. The boards test
 
 <br>
 
-### Hardware needed
+### Prerequistes
 
-* nRF52 Development Kit (one of the following)
+Ensure that you have met the following prerequisites before continuing with this tutorial:
+
+* Have a nRF52 Development Kit (one of the following)
     * Dev Kit from Nordic - PCA 10040
     * Eval Kit from Rigado - BMD-300-EVAL-ES
-* Laptop running Mac OS
-* It is assumed you have already installed newt tool. 
-* It is assumed you already installed native tools as described [here](../get_started/native_tools.md)
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a Micro-USB cable to connect the board and the computer.
+* Have computer to build a Mynewt application and connect to your board over USB.
+* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
+* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
 <br>
 
-### Install jlinkEXE
+### Create a Project  
+Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created.  
 
-In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from [https://www.segger.com/jlink-software.html](https://www.segger.com/jlink-software.html). 
+Run the following commands to create a new project:
 
-<br>
-
-### Create a project.  
-
-Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
-[Get Started -- Creating Your First Project](../get_started/project_create.md)
-or just follow the commands below.
-
-```
+```no-highlight
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
     Downloading project skeleton from apache/incubator-mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
-    
     $ cd myproj
-    
-    $ newt install -v 
+    $ newt install
     apache-mynewt-core
-    Downloading repository description for apache-mynewt-core... success!
-    ...
-    apache-mynewt-core successfully installed version 0.9.0-none
+    $
 ``` 
 
 <br>
 
-### Create the targets
+### <a name="create_targets"></a>Create the Targets
 
-Create two targets - one for the bootloader and one for the nrf52 board.  
+Create two targets for the nRF52-DK board - one for the bootloader and one for the Blinky application.
+
+Run the following `newt target` commands, from your project directory (~/dev/myproj), to create a bootloader target. We name the target `nrf52_boot`:
 
 <font color="#F2853F">
-Note: The correct bsp must be chosen for the board you are using. </font>
+Note: For this tutorial, we are using the nRF52-DK board.  You must specify the correct bsp for the board you are using. </font> 
 
 * For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)
 * For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)
 
-
-```hl_lines="3 8"
-$ newt target create blink_nordic
-$ newt target set blink_nordic app=apps/blinky
-$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-$ newt target set blink_nordic build_profile=debug
-
+```hl_lines="3"
 $ newt target create nrf52_boot
 $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
 $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
 $ newt target set nrf52_boot build_profile=optimized
+```
 
+<br>
+Run the following `newt target` commands to create a target for your Blinky application. We name the target `nrf52_blinky`:
+
+```hl_lines="3" 
+$ newt target create nrf52_blinky
+$ newt target set nrf52_blinky app=apps/blinky
+$ newt target set nrf52_blinky bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_blinky build_profile=debug
+
+```
+<br>
+You can run the `newt target show` command to verify your target settings:
+
+```no-highlight
 $ newt target show 
-targets/blink_nordic
+targets/nrf52_blinky
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=debug
@@ -86,56 +91,92 @@ targets/nrf52_boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
 ```
-
 <br>
 
-### Build the target executables 
+### Build the Target Executables 
 
-```
+Run the `newt build nrf52_boot` command to build the bootloader:
+
+```no-highlight
 $ newt build nrf52_boot
-...
-Compiling boot.c
-Archiving boot.a
-Linking boot.elf
-App successfully built: ~/dev/myproj/bin/nrf52_boot/apps/boot/boot.elf
+Building target targets/nrf52_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    ...
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
 ```
-```
-$ newt build blink_nordic
-...
-Compiling main.c
-Archiving blinky.a
-Linking blinky.elf
-App successfully built: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.elf
+
+<br>
+Run the `newt build nrf52_blinky` command to build the Blinky application:
+
+```no-highlight
+$ newt build nrf52_blinky
+Building target targets/nrf52_blinky
+Assembling repos/apache-mynewt-core/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52_split.s
+Compiling repos/apache-mynewt-core/hw/bsp/nrf52dk/src/sbrk.c
+Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/uart_hal/src/uart_hal.c
+Assembling repos/apache-mynewt-core/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52.s
+Compiling apps/blinky/src/main.c
+
+    ...
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
+Target successfully built: targets/nrf52_blinky
 ```
 
 <br>
 
-### Sign and create the blinky application image 
+### Sign and Create the Blinky Application Image 
 
-You must sign and version your application image to download it using newt to the board. Use the newt create-image command to perform this action. You may assign an arbitrary version (e.g. 1.0.0) to the image.
+Run the `newt create-image nrf52_blinky 1.0.0` command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.
 
-```
-$ newt create-image blink_nordic 1.0.0
-App image successfully generated: ~/dev/myproj/bin/blink_nordic/apps/blinky/blinky.img
-Build manifest: ~/dev/myproj/bin/blink_nordic/apps/blinky/manifest.json
+```no-highlight
+$ newt create-image nrf52_blinky 1.0.0
+newt create-image nrf52_blinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
 ```
 
 <br>
 
-### Connect the board
+### Connect to the Board
 
-Connect the evaluation board via micro-USB to your PC via USB cable.
+* Connect a micro-USB cable from your computer to the micro-USB port on your nRF52-DK board.
+* Turn the power on the board to ON. You should see the green LED light up on the board.
         
+### Load the Bootloader and the Blinky Application Image
+
+Run the `newt load nrf52_boot` command to load the bootloader onto your board: 
+
+```no-highlight
+$ newt load nrf52_boot
+Loading bootloader
+$
+```
 <br>
-
-### Download to the target
-
-Download the bootloader first and then the blinky executable to the target platform. Don't forget to reset the board if you don't see the LED blinking right away!
-
+Run the `newt load nrf52_blinky` command to load Blinky application image onto your board.
+```no-highlight
+$ newt -v load nrf52_blinky
+Loading app image into slot 1
 ```
-$ newt -v load nrf52_boot
-$ newt -v load blink_nordic
-```
+
+You should see the LED1 on your board blink!
+
+Note: If the LED does not blink, try resetting your board.
 
 <br>
 
@@ -169,8 +210,7 @@ $
 
 ### Conclusion
 
-You have created, setup, compiled, loaded, and ran your first mynewt application
-for an nrf52 board.
+You have created, setup, compiled, loaded, and ran your first mynewt application for an nrf52 board.
 
 We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on [writing a test suite](unit_test.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) or [Bluetooth Low Energy](bletiny_project.md) on your current board.
 
