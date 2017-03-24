@@ -13,9 +13,9 @@ Ensure that you have met the following prerequisites before continuing with this
 
 * Have a STM32-E407 development board from Olimex. 
 * Have a ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
-* Have USB A-B type cable to connect the debugger to your personal computer.
 * Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to your board over USB.
+* Have a computer to build a Mynewt application and connect to the board over USB.
+* Have USB A-B type cable to connect the debugger to your computer.
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
@@ -50,7 +50,7 @@ Run the following commands to create a new project:
 
 Create two targets for the Olimex board - one for the bootloader and one for the Blinky application.
 
-Run the following `newt target` commands to create a bootloader target. We name the target `boot_olimex`:
+Run the following `newt target` commands, from your project directory,  to create a bootloader target. We name the target `boot_olimex`.
 
 ```no-highlight
 $ newt target create boot_olimex
@@ -60,7 +60,7 @@ $ newt target set boot_olimex bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_d
 ```
 
 <br>
-Run the following `newt target` commands to create a target for your Blinky application. We name the target `olimex_blinky`:
+Run the following `newt target` commands to create a target for the Blinky application. We name the target `olimex_blinky`.
 
 ```no-highlight
 $ newt target create olimex_blinky
@@ -73,7 +73,7 @@ $ newt target set olimex_blinky app=apps/blinky
 <br>
 
 ### Build the Bootloader 
-Run the `newt build boot_olimex` command to build the boot loader image:
+Run the `newt build boot_olimex` command to build the bootloader:
 
 ```no-highlight
 $ newt build boot_olimex
@@ -124,7 +124,7 @@ Target successfully built: targets/olimex_blinky
 <br>
 
 ### Sign and Create the Blinky Application Image
-Run the `newt create-image olimex_blinky 1.0.0` command to sign and create an image file for your blinky application. You may assign an arbitrary version (e.g. 1.0.0) number.
+Run the `newt create-image olimex_blinky 1.0.0` command to sign and create an image file for the blinky application. You may assign an arbitrary version (e.g. 1.0.0) number.
 
 
 ```no-highlight
@@ -135,7 +135,7 @@ App image succesfully generated: ~/dev/myproj/bin/targets/olimex_blinky/app/apps
 
 ### Connect to the Board
 
-Configure your board to bootload from flash memory and to use the JTAG/SWD for the power source. Refer to the following diagrams to locate the boot jumpers and power input select jumpers on your board.
+Configure the board to bootload from flash memory and to use the JTAG/SWD for the power source. Refer to the following diagrams to locate the boot jumpers and power input select jumpers on the board.
 <br>
 
 <p align="center">

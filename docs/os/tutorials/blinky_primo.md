@@ -17,12 +17,12 @@ Ensure that you have met the following prerequisites before continuing with this
 
 * Have an Arduino Primo
 * Have Internet connectivity to fetch remote Mynewt components.
+* Have a computer to build a Mynewt application and connect to the` board over USB.
 * Have a Micro-USB cable to connect the board and the computer.
-* Have a computer to build a Mynewt application and connect to your board over USB.
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
-* Debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.
+* Install a debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.
 
 <br>
 
@@ -33,7 +33,7 @@ Ensure that you have met the following prerequisites before continuing with this
 
 ##### Option 2
 
-* No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download [here](downloads/openocd-wnrf52.tgz). Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:
+ No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download [here](downloads/openocd-wnrf52.tgz). Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:
 
 ```
 $./configure --enable-cmsis-dap --enable-openjtag_ftdi --enable-jlink --enable-stlink
@@ -94,14 +94,14 @@ Run the following commands to create a new project:
 
 Create two targets for the Arduino Primo board - one for the bootloader and one for the Blinky application.
 
-Run the following `newt target` commands to create a bootloader target. We name the target `primo_boot`:
+Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `primo_boot`.
 
 ```no-highlight
 $ newt target create primo_boot
 $ newt target set primo_boot app=@apache-mynewt-core/apps/boot bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=optimized
 ```
 <br>
-Run the following `newt target` commands to create a target for your Blinky application. We name the target `primoblinky`:
+Run the following `newt target` commands to create a target for the Blinky application. We name the target `primoblinky`.
 ```no-highlight
 $ newt target create primoblinky
 $ newt target set primoblinky app=apps/blinky bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=debug
@@ -110,13 +110,12 @@ $ newt target set primoblinky app=apps/blinky bsp=@apache-mynewt-core/hw/bsp/ard
 If you are using openocd, run the following `newt target set` commands:
 
 ```no-highlight
-$ newt target set primoblinky syscfg=OPENCD_DEBUG=1
-$ newt target set primo_boot syscfg=OPENCD_DEBUG=1
-
+$ newt target set primoblinky syscfg=OPENOCD_DEBUG=1
+$ newt target set primo_boot syscfg=OPENOCD_DEBUG=1
 ```
 
 <br>
-You can run the `newt target show` command to verify your target settings:
+You can run the `newt target show` command to verify the target settings:
 
 ```no-highlight
 $ newt target show
@@ -196,17 +195,15 @@ App image succesfully generated: ~/dev/myproj/bin/targets/primoblinky/app/apps/b
 <br>
 
 ### Connect to the Board
-
-Connect the Segger J-Link debug probe to the JTAG port on the Primo board using the Jlink 9-pin adapter and cable. Note that there are two JTAG ports on the board. Use the one nearest to the reset button as shown in the picture. Also use a micro USB 2.0 cable to connect the Primo board to one of your laptop's USB host ports.
+* Connect a micro USB cable to the Arduino Primo board and to your computer's USB port.
+* If you are using the Segger J-Link debug probe, connect the debug probe to the JTAG port on the Primo board using the Jlink 9-pin adapter and cable. Note that there are two JTAG ports on the board. Use the one nearest to the reset button as shown in the picture. 
 
 ![J-Link debug probe to Arduino](pics/primo-jlink.jpg "Connecting J-Link debug probe to Arduino Primo")
-        
-<br>
 
-**Note:** If you are going the OpenOCD route, you do not need to attach this connector. 
+**Note:** If you are using the OpenOCD debugger,  you do not need to attach this connector. 
 
 ### Load the Bootloader and the Blinky Application Image
-Run the `newt load primo_boot` command to load the bootloader onto your board:
+Run the `newt load primo_boot` command to load the bootloader onto the board:
 
 ```no-highlight
 $ newt load primo_boot
@@ -214,16 +211,17 @@ Loading bootloader
 $
 ```
 <br>
-Run the `newt load primoblinky` command to load Blinky application image onto your board.
+Run the `newt load primoblinky` command to load the Blinky application image onto the board.
+
 ```no-highlight
 $ newt  load primoblinky 
 Loading app image into slot 1
 $
 ```
 
-You should see the LED on your board blink!
+You should see the LED on the board blink!
 
-Note: If the LED does not blink, try resetting your board.
+Note: If the LED does not blink, try resetting the board.
 
 
 <br>

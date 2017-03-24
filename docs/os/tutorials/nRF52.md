@@ -8,11 +8,11 @@ Learn how to use packages from a default application repository of Mynewt to bui
 
 Create a project with a simple app that blinks an LED on the nRF52 board from Nordic Semiconductors.  Download the application to the target and watch it blink!
 
-Note that there are several versions of the nRF52 in the market. The boards tested with this tutorial are listed under "Hardware needed" below.
+Note that there are several versions of the nRF52 in the market. The boards tested with this tutorial are listed under "Prerequisites".
 
 <br>
 
-### Prerequistes
+### Prerequisites
 
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 
@@ -20,12 +20,13 @@ Ensure that you have met the following prerequisites before continuing with this
     * Dev Kit from Nordic - PCA 10040
     * Eval Kit from Rigado - BMD-300-EVAL-ES
 * Have Internet connectivity to fetch remote Mynewt components.
+* Have a computer to build a Mynewt application and connect to the board over USB.
 * Have a Micro-USB cable to connect the board and the computer.
-* Have computer to build a Mynewt application and connect to your board over USB.
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
+This tutorial uses the Nordic NRF52DK board.
 <br>
 
 ### Create a Project  
@@ -52,10 +53,10 @@ Run the following commands to create a new project:
 
 Create two targets for the nRF52-DK board - one for the bootloader and one for the Blinky application.
 
-Run the following `newt target` commands, from your project directory (~/dev/myproj), to create a bootloader target. We name the target `nrf52_boot`:
+Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `nrf52_boot`:
 
 <font color="#F2853F">
-Note: For this tutorial, we are using the nRF52-DK board.  You must specify the correct bsp for the board you are using. </font> 
+Note: This tutorial uses the Nordic nRF52-DK board.  You must specify the correct bsp for the board you are using. </font> 
 
 * For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)
 * For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)
@@ -68,17 +69,16 @@ $ newt target set nrf52_boot build_profile=optimized
 ```
 
 <br>
-Run the following `newt target` commands to create a target for your Blinky application. We name the target `nrf52_blinky`:
+Run the following `newt target` commands to create a target for the Blinky application. We name the target `nrf52_blinky`.
 
 ```hl_lines="3" 
 $ newt target create nrf52_blinky
 $ newt target set nrf52_blinky app=apps/blinky
 $ newt target set nrf52_blinky bsp=@apache-mynewt-core/hw/bsp/nrf52dk
 $ newt target set nrf52_blinky build_profile=debug
-
 ```
 <br>
-You can run the `newt target show` command to verify your target settings:
+You can run the `newt target show` command to verify the target settings:
 
 ```no-highlight
 $ newt target show 
@@ -155,12 +155,12 @@ App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/
 
 ### Connect to the Board
 
-* Connect a micro-USB cable from your computer to the micro-USB port on your nRF52-DK board.
+* Connect a micro-USB cable from your computer to the micro-USB port on the NRF52DK board.
 * Turn the power on the board to ON. You should see the green LED light up on the board.
         
 ### Load the Bootloader and the Blinky Application Image
 
-Run the `newt load nrf52_boot` command to load the bootloader onto your board: 
+Run the `newt load nrf52_boot` command to load the bootloader onto the board: 
 
 ```no-highlight
 $ newt load nrf52_boot
@@ -168,13 +168,13 @@ Loading bootloader
 $
 ```
 <br>
-Run the `newt load nrf52_blinky` command to load Blinky application image onto your board.
+Run the `newt load nrf52_blinky` command to load the Blinky application image onto the board.
 ```no-highlight
-$ newt -v load nrf52_blinky
+$ newt load nrf52_blinky
 Loading app image into slot 1
 ```
 
-You should see the LED1 on your board blink!
+You should see the LED1 on the board blink!
 
 Note: If the LED does not blink, try resetting your board.
 
