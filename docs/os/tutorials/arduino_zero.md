@@ -109,6 +109,7 @@ $ newt target set arduino_boot build_profile=optimized
 Target targets/arduino_boot successfully set target.build_profile to optimized
 $ newt target set arduino_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
 Target targets/arduino_boot successfully set target.syscfg to BSP_ARDUINO_ZERO_PRO=1
+$
 ```
 **Note:** If you have an Arduino Zero instead of a Arduino Zero Pro board, replace `BSP_ARDUINO_ZERO_PRO`  with `BSP_ARDUINO_ZERO` in the last `newt target set` command.
 
