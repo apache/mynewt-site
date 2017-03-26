@@ -49,7 +49,7 @@ It should look like this:
 On the NRF52DK developer kit board, the Rx pin is P0.08, so you'll attach your
 jumper wire from the Tx pin (D0) of the FT232H board here.
 
-The TX Pin is pin P0.08, so you'll attache the jumper wire from the Rx Pin (D1)
+The TX Pin is pin P0.06, so you'll attache the jumper wire from the Rx Pin (D1)
 on the FT232H board here. 
 
 Finally, the GND wire should go to the GND Pin on the NRF52DK. When you're

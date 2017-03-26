@@ -1,184 +1,233 @@
-## Project Slinky using STM32 board
+## Project Slinky using the Nordic nRF52 Board
 
 
 <br>
 
-The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr) by leveraging a sample app "Slinky" included under the /apps directory in the repository. In this project we will define a target for the STM32-E407 board and assign the app "Slinky" to it.
+The goal of this tutorial is to enable and demonstrate remote communications with a Mynewt application running on a device via newt manager (newtmgr). It uses the "Slinky" sample application that is included in the apache-mynewt-core/apps directory and the Nordic nRF52-DK board.
 
-If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md).
+If you have an existing project that has a different application and you wish to add newtmgr functionality to it, check out the [Enable newtmgr in any app](add_newtmgr.md) tutorial.
 
-<br>
+### Prerequisites
 
-### What you need
+Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-1. STM32-E407 development board from Olimex. You can order it from [http://www.mouser.com](http://www.mouser.com/search/ProductDetail.aspx?R=0virtualkey0virtualkeySTM32-E407), [http://www.digikey.com](http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951), and other places.
-2. ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
-3. USB A-B type cable to connect the debugger to your personal computer
-4. A USB to TTL Serial Cable with female wiring harness. An example is [http://www.amazon.com/JBtek®-WINDOWS-Supported-Raspberry-Programming/dp/B00QT7LQ88/ref=lp_464404_1_9?s=pc&ie=UTF8&qid=1454631303&sr=1-9](http://www.amazon.com/JBtek®-WINDOWS-Supported-Raspberry-Programming/dp/B00QT7LQ88/ref=lp_464404_1_9?s=pc&ie=UTF8&qid=1454631303&sr=1-9)
-5. Personal Computer
+* Have a Nordic nRF52-DK board.  
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a computer to build a Mynewt application and connect to the board over USB.
+* Have a Micro-USB cable to connect the board and the computer.
+* Have a [Serial Port Setup](/os/get_started/serial_access.md). 
+* Install the newt tool and the toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install the [newtmgr tool](../../newtmgr/installing/). 
+* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
+* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
-The instructions assume the user is using a Bourne-compatible shell (e.g. bash or zsh) on your computer. The given instructions have been tested with the following releases of operating systems:
-
-* Mac: OS X Yosemite Version 10.10.5
-
-### Overview of steps
+### Overview of Steps
 
 * Install dependencies
-* Define a target using the newt tool
+* Define targets using the newt tool
 * Build executables for the targets using the newt tool
 * Set up serial connection with the targets
 * Create a connection profile using the newtmgr tool
 * Use the newtmgr tool to communicate with the targets
 
-### Install newt
+### Create a New Project
+Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created or completed the [Sim Slinky](project-slinky.md) tutorial. 
 
-If you have not already installed `newt`, see the
-[newt installation instructions](../get_started/get_started/) and ensure newt is installed an in your path.
-
-### Install newtmgr
-
-If you have not already installed `newtmgr`, see the
-[newtmgr installation instructions](../../newtmgr/installing/) and ensure newtmgr is installed an in your path.
-
-### Create a new project
-
-Instructions for creating a project are located in the [Basic Setup](../get_started/project_create/) section of the [Mynewt Documentation](../introduction.md).
-
-If you already completed [Sim Slinky](project-slinky.md) you can skip this step.
-
-We will list only the steps here for brevity.  We will name the project
-`slinky`.
+Run the following commands to create a new project. We name the project `slinky`.	
 
 ```no-highlight
 $ newt new slinky
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 ...
 Installing skeleton in slink...
-Project slink successfully created
+Project slinky successfully created
 $ cd slinky
-$newt install -v
-Downloading repository description for apache-mynewt-core... success!
-...
-Repos successfully installed
+$newt install 
+apache-mynewt-core
 ```
 
 <br>
 
-### Set up your target builds
+###<a name="create_targets"></a> Create the Targets
 
-Create a target for `stm32_slinky` using the native BSP. The Newt tool output is suppressed below for brevity.
+Create two targets for the nRF52-DK board - one for the bootloader and one for the Slinky application.
+
+Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `nrf52_boot`.
 
 ```no-highlight
-$ newt target create stm32_slinky
-$ newt target set stm32_slinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-$ newt target set stm32_slinky build_profile=debug
-$ newt target set stm32_slinky app=@apache-mynewt-core/apps/slinky
+$ newt target create nrf52_boot
+$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_boot build_profile=optimized
+$ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
 ```
-
-Create a second target for `stm32_bootloader` to build a bootloader to boot
-the `stm32_slinky` image.  The tool output is suppressed below for brevity.
+<br>
+Run the following `newt target` commands to create a target for the Slinky application. We name the target `nrf52_slinky`.
 
 ```no-highlight
-$ newt target create stm32_bootloader
-$ newt target set stm32_bootloader bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-$ newt target set stm32_bootloader build_profile=optimized
-$ newt target set stm32_bootloader target.app=@apache-mynewt-core/apps/boot
+$ newt target create nrf52_slinky
+$ newt target set nrf52_slinky bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_slinky build_profile=debug
+$ newt target set nrf52_slinky app=@apache-mynewt-core/apps/slinky
 ```
 
 <br>
 
-### Build Targets
+### Build the Targets
+
+Run the `newt build nrf52_boot` command to build the bootloader:
 
 ```no-highlight
-$ newt build stm32_slinky
-Compiling main.c
-...
-Linking slinky.elf
-App successfully built: ~/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.elf
+$ newt build nrf52-boot
+Building target targets/nrf52_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    ...
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/slinky/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
 ```
+<br>
+
+Run the `newt build nrf52_slinky` command to build the Slinky application:
 
 ```no-highlight
-newt build stm32_bootloader
-Compiling crc16.c
-...
-Linking boot.elf
-App successfully built: ~/slinky/bin/stm32_bootloader/apps/boot/boot.elf
-```
+$newt build nrf52_slinky
+Building target targets/nrf52_slinky
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/split/src/split.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
 
-For the main image, you need to create an image using newt create-image.
-Give this image some arbitrary version number "1.2.3".
+       ...
 
-```no-highlight
-$ newt create-image stm32_slinky 1.2.3
-App image successfully generated: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.img
-Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/manifest.json
+Archiving util_mem.a
+Linking ~/dev/slinky/bin/targets/nrf52_slinky/app/apps/slinky/slinky.elf
+Target successfully built: targets/nrf52_slinky
 ```
 
 <br>
 
-### Using newtmgr with a remote target
+### Sign and Create the Slinky Application Image
 
-* First make sure the USB A-B type cable is connected to the ARM-USB-TINY-H debugger connector on the Olimex board.
-
-     Next go the to project directory and download the slinky project image to the flash of the Olimex board.
+Run the `newt create-image nrf52_slinky 1.0.0` command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.
 
 ```no-highlight
-$ newt load stm32_bootloader
-$ newt load stm32_slinky
+$ newt create-image nrf52_slinky 1.0.0
+App image succesfully generated: ~/dev/slinky/bin/targets/nrf52_slinky/app/apps/slinky/slinky.img
+$
+```
+<br>
+
+### Connect to the Board
+
+* Connect a micro-USB cable from your computer to the micro-USB port on the nRF52-DK board.
+* Turn the power on the board to ON. You should see the green LED light up on the board.
+
+<br>
+### Load the Bootloader and the Slinky Application Image
+
+Run the `newt load nrf52_boot` command to load the bootloader onto the board:
+
+```no-highlight
+$ newt load nrf52_boot
+Loading bootloader
+$
+```
+<br>
+Run the `newt load nrf52_slinky` command to load the Slinky application image onto the board:
+```no-highlight
+$ newt load nrf52_slinky
+Loading app image into slot 1
+$
+```
+<br>
+
+
+### Connect Newtmgr with the Board using a Serial Connection
+
+Set up serial connection from your computer to the nRF52-DK board (See [Serial Port Setup](/os/get_started/serial_access.md)).  
+
+Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
+
+```no-highlight
+$ ls /dev/tty*usbserial*
+/dev/tty.usbserial-1d11
+$
+```
+<br>
+Setup a newtmgr connection profile for the serial port. For our example, the port is  `/dev/tty.usbserial-1d11`. 
+
+Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `nrf52serial`.  You will need to replace the `connstring` with the specific port for your serial connection. 
+
+```no-highlight
+$ newtmgr conn add nrf52serial type=serial connstring=/dev/tty.usbserial-1d11
+Connection profile nrf52serial successfully added
+$
+```
+<br>
+You can run the `newt conn show` command to see all the newtmgr connection profiles:
+
+```no-highlight
+$ newtmgr conn show
+Connection profiles:
+  nrf52serial: type=serial, connstring='/dev/tty.usbserial-1d11'
+  sim1: type=serial, connstring='/dev/ttys012'
+$
 ```
 
-You can now disconnect the debugging cable from the board. You should see the green LED blinking. If not, try powercycling the board.
-
 <br>
-
-* Now you have to set up the serial connection from your computer to the Olimex board. Locate the PC6/USART6_TX (pin#3), PC7/USART6_RX (pin#4), and GND (pin#2) of the UEXT connector on the Olimex board. More information on the UEXT connector can be found at [https://www.olimex.com/Products/Modules/UEXT/](https://www.olimex.com/Products/Modules/UEXT/). The schematic of the board can be found at [https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf) for reference.
-
-    ![Alt Layout - Serial Connection](pics/serial_conn.png)
+### Use Newtmgr to Query the Board
+Run some newtmgr commands to query and receive responses back from the board (See the [Newt Manager Guide](newtmgr/overview) for more information on the newtmgr commands). 
 
 
-	* Connect the female RX pin of the USB-TTL serial cable to the TX of the UEXT connector on the board.
-	* Connect the female TX pin of the USB-TTL serial cable to the RX of the UEXT connector on the board.
-	* Connect the GND pin of the USB-TTL serial cable to the GND of the UEXT connector on the board.
-
-<br>
-
-* Locate the serial connection established in the /dev directory of your computer. It should be of the type `tty.usbserial-<some identifier>`.
+Run the `newtmgr echo hello -c nrf52serial` command. This is the simplest command that requests the board to echo back the text. 
 
 ```no-highlight
-        $ ls /dev/tty.usbserial-AJ03HAQQ
-        /dev/tty.usbserial-AJ03HAQQ
+$ newtmgr echo hello -c nrf52serial 
+hello
+$
+```
+<br>
+Run the `newtmgr image list -c nrf52serial` command to list the images on the board:
+
+```no-highlight
+$ newtmgr image list -c nrf52serial 
+Images:
+ slot=0
+    version: 1.0.0
+    bootable: true
+    flags: active confirmed
+    hash: f411a55d7a5f54eb8880d380bf47521d8c41ed77fd0a7bd5373b0ae87ddabd42
+Split status: N/A
+$
 ```
 
 <br>
-
-* You now have to define a connection profile using newtmgr. You can give it any name you want. The example below shows the connection profile being named as the very imaginative `olimex01`.
-
-```no-highlight
-        $ pwd
-        /Users/<user>/dev/project/slinky
-        $ newtmgr conn add olimex01 type=serial connstring=/dev/tty.usbserial-AJ03HAQQ
-        Connection profile olimex01 successfully added
-        $ newtmgr conn show
-        Connection profiles:
-          sim1: type=serial, connstring='/dev/ttys007'
-          olimex01: type=serial, connstring='/dev/tty.usbserial-AJ03HAQQ'
-```
-
-<br>
-
-* Now go ahead and query the Olimex board to get responses back. The simplest command is the `echo` command to ask it to respond with the text you send it.
+Run the `newtmgr taskstats -c nrf52serial` command to display the task statistics on the board:
 
 ```no-highlight
-    $ newtmgr echo -c olimex01 hello
-    {"r": "hello"}
-    $ newtmgr image -c olimex01 list
-    Images:
-        0 : 1.2.3
-    $ newtmgr -c olimex01 taskstats
-    Return Code = 0
-      newtmgr (prio=4 tid=2 runtime=0 cswcnt=12 stksize=512 stkusage=255 last_checkin=0 next_checkin=0)
-      task1 (prio=1 tid=3 runtime=0 cswcnt=299 stksize=128 stkusage=33 last_checkin=0 next_checkin=0)
-      task2 (prio=2 tid=4 runtime=0 cswcnt=300 stksize=128 stkusage=31 last_checkin=0 next_checkin=0)
-      idle (prio=255 tid=0 runtime=299916 cswcnt=313 stksize=32 stkusage=18 last_checkin=0 next_checkin=0)
-      shell (prio=3 tid=1 runtime=1 cswcnt=20 stksize=384 stkusage=60 last_checkin=0 next_checkin=0)
+$ newtmgr taskstats -c nrf52serial
+Return Code = 0
+      task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
+     task1   8   2        0     1751      192      110        0        0
+     task2   9   3        0     1751       64       31        0        0
+      idle 255   0   224081     2068       64       32        0        0
+      main 127   1        3       29     1024      365        0        0
+$
 ```

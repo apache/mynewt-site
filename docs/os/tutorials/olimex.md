@@ -149,12 +149,12 @@ Configure the board to bootload from flash memory and to use the JTAG/SWD for th
 * Locate the boot jumpers on the lower right corner of the board.  **B1_1/B1_0** and **B0_1/B0_0** are PTH jumpers to control the boot mode when a bootloader is present.  These two jumpers must be moved together.  The board searches for the bootloader in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we configure the board to boot from flash by jumpering **B0_0** and **B1_0**.
 **Note:** The markings on the board may not always be accurate, and you should always refer to the manual for the correct positioning. 
 
-* Locate the **Power Input Select** jumpers on the lower left corner of the board.  Set the Power Select jumpers to position 3 and 4 to use the JTAG/SWD for the power source. If you would like to use a different power source, refer to [OLIMEZ STM32-E407] user manual](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407.pdf) to pin specificiation.
+* Locate the **Power Input Select** jumpers on the lower left corner of the board.  Set the Power Select jumpers to position 3 and 4 to use the JTAG/SWD for the power source. If you would like to use a different power source, refer to the [OLIMEX STM32-E407 user manual](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407.pdf) for pin specifications.
  
 
 * Connect the JTAG connector to the JTAG/SWD interface on the board. 
 
-* Connect the USB A-B cable to the ARM-USB-TINY-H connector and your personal computer. 
+* Connect the USB A-B cable to the ARM-USB-TINY-H connector and your computer.
 
 * Check that the red PWR LED lights up.
 <br>
