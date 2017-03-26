@@ -228,15 +228,7 @@ sector at a time.  The swap status is necessary for resuming a swap operation
 if the device rebooted before a swap operation completed.
 
 3. Copy done: A single byte indicating whether the image in this slot is
-complete (0x01=d< bok@bok.net
-35d33
-< ericmanganaro@gmail.com
-42d39
-< tam@proxy.co
-55d51
-< nathan@natb1.com
-110d105
-< rvs@apache.orgone; 0xff=not done).
+complete (0x01=done, 0xff=not done).
 
 4. Image OK: A single byte indicating whether the image in this slot has been
 confirmed as good by the user (0x01=confirmed; 0xff=not confirmed).

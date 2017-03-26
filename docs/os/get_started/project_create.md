@@ -85,12 +85,11 @@ file.
 ```no-highlight
 repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 ```
-Changing to 0-dev will put you on the develop branch. **The Develop Branch may not be stable and 
-you may encounter bugs or other problems.**
+Changing to 1-dev will put you on the develop branch. **The Develop Branch may not be stable and you may encounter bugs or other problems.**
 
 <br>
 
@@ -115,7 +114,7 @@ Once _newt install_ has successfully finished, the contents of _apache-mynewt-co
 
 ```no-highlight
 $ tree -L 2 repos/apache-mynewt-core/
-repos/apache-mynewt-core/
+
 repos/apache-mynewt-core/
 ├── CODING_STANDARDS.md
 ├── DISCLAIMER
@@ -128,10 +127,12 @@ repos/apache-mynewt-core/
 │   ├── blehci
 │   ├── bleprph
 │   ├── bleprph_oic
+│   ├── blesplit
 │   ├── bletest
 │   ├── bletiny
 │   ├── bleuart
 │   ├── boot
+│   ├── fat2native
 │   ├── ffs2native
 │   ├── ocf_sample
 │   ├── slinky
@@ -139,16 +140,20 @@ repos/apache-mynewt-core/
 │   ├── spitest
 │   ├── splitty
 │   ├── test
+│   ├── testbench
 │   └── timtest
 ├── boot
 │   ├── boot_serial
 │   ├── bootutil
-│   └── split
+│   ├── split
+│   └── split_app
 ├── compiler
 │   ├── arm-none-eabi-m0
 │   ├── arm-none-eabi-m4
 │   ├── gdbmacros
-│   └── sim
+│   ├── mips
+│   ├── sim
+│   └── sim-mips
 ├── crypto
 │   ├── mbedtls
 │   └── tinycrypt
@@ -160,6 +165,8 @@ repos/apache-mynewt-core/
 │   ├── json
 │   └── tinycbor
 ├── fs
+│   ├── disk
+│   ├── fatfs
 │   ├── fcb
 │   ├── fs
 │   └── nffs
@@ -205,7 +212,6 @@ repos/apache-mynewt-core/
 │   ├── crash_test
 │   ├── flash_test
 │   ├── runtest
-│   ├── testreport
 │   └── testutil
 ├── time
 │   └── datetime
@@ -214,7 +220,7 @@ repos/apache-mynewt-core/
     ├── crc
     └── mem
 
-87 directories, 9 files
+94 directories, 9 files
 ```
 
 As you can see, the core of the Apache Mynewt operating system has been brought 
@@ -226,21 +232,44 @@ into your local directory.
 
 You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the `libs/os` package in the `apache-mynewt-core` repo, call newt as shown below.
 
-```
+```no-highlight
 $ newt test @apache-mynewt-core/sys/config
 Testing package @apache-mynewt-core/sys/config/test-fcb
 Compiling bootutil_misc.c
 Compiling image_ec.c
 Compiling image_rsa.c
 Compiling image_validate.c
-<snip>
+
+    ...
+
+Linking ~/dev/myproj/bin/targets/unittest/sys_config_test-fcb/app/sys/config/test-fcb/sys_config_test-fcb.elf
+Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_test-fcb/app/sys/config/test-fcb/sys_config_test-fcb.elf
+Testing package @apache-mynewt-core/sys/config/test-nffs
+Compiling repos/apache-mynewt-core/encoding/base64/src/hex.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_cli.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_dirent.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_mkdir.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_mount.c
+Compiling repos/apache-mynewt-core/encoding/base64/src/base64.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_file.c
+Compiling repos/apache-mynewt-core/fs/disk/src/disk.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_nmgr.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fsutil.c
+Compiling repos/apache-mynewt-core/fs/nffs/src/nffs.c
+
+     ...
+
+Linking ~/dev/myproj/bin/targets/unittest/sys_config_test-nffs/app/sys/config/test-nffs/sys_config_test-nffs.elf
+Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_test-nffs/app/sys/config/test-nffs/sys_config_test-nffs.elf
+Passed tests: [sys/config/test-fcb sys/config/test-nffs]
+All tests passed
 ```
 
 **NOTE:** If you've installed the latest gcc using homebrew on your Mac, you will likely be running gcc-6. Make sure you have adjusted the compiler.yml configuration to reflect that as noted in [Native Install Option](native_tools.md). You can choose to downgrade to gcc-5 in order to use the default gcc compiler configuration for MyNewt.
 
 **NOTE:** If you are running the standard gcc for 64-bit machines, it does not support 32-bit. In that case you will see compilation errors. You need to install multiboot gcc (e.g. gcc-multilib if you running on a 64-bit Ubuntu).
 
-```
+```no-highlight
 $ brew uninstall gcc-6
 $ brew link gcc-5
 ```
@@ -251,14 +280,21 @@ To test all the packages in a project, specify `all` instead of the package name
 
 ```no-highlight
 $ newt test all
+Testing package @apache-mynewt-core/boot/boot_serial/test
+Compiling repos/apache-mynewt-core/boot/boot_serial/test/src/boot_test.c
+Compiling repos/apache-mynewt-core/boot/boot_serial/test/src/testcases/boot_serial_setup.c
+
+     ...
+
+Linking ~/dev/myproj/bin/targets/unittest/boot_boot_serial_test/app/boot/boot_serial/test/boot_boot_serial_test.elf
+
 ...lots of compiling and testing...
-...about 2 minutes later ...
-Compiling mn_sock_test.c
-Archiving mn_socket.a
-Linking test_mn_socket
-Executing test: /Users/dsimmons/myproj/bin/unittest/sys/mn_socket/test_mn_socket
-Passed tests: [libs/json libs/util libs/mbedtls net/nimble/host hw/hal libs/bootutil sys/log sys/config sys/fcb fs/nffs libs/os libs/boot_serial sys/mn_socket]
+
+Linking ~/dev/myproj/bin/targets/unittest/util_cbmem_test/app/util/cbmem/test/util_cbmem_test.elf
+Executing test: ~/dev/myproj/bin/targets/unittest/util_cbmem_test/app/util/cbmem/test/util_cbmem_test.elf
+Passed tests: [boot/boot_serial/test boot/bootutil/test crypto/mbedtls/test encoding/base64/test encoding/cborattr/test encoding/json/test fs/fcb/test fs/nffs/test kernel/os/test net/ip/mn_socket/test net/nimble/host/test net/oic/test sys/config/test-fcb sys/config/test-nffs sys/flash_map/test sys/log/full/test util/cbmem/test]
 All tests passed
+
 ```
 
 <br>
@@ -267,19 +303,25 @@ All tests passed
 
 To build and run your new application, simply issue the following command:
 
-```
+```no-highlight
 $ newt build my_blinky_sim 
 Building target targets/my_blinky_sim
-Compiling main.c
-Archiving blinky.a
-Compiling hal_bsp.c
-Compiling os_bsp.c
-Compiling sbrk.c
-Archiving native.a
-Compiling flash_map.c
-<snip>
-Linking blinky.elf
-App successfully built: ~/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_common.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_flash.c
+Compiling repos/apache-mynewt-core/hw/bsp/native/src/hal_bsp.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/uart_hal/src/uart_hal.c
+Compiling apps/blinky/src/main.c
+
+    ...
+
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
+Target successfully built: targets/my_blinky_sim
+
 ```
 
 <br>
@@ -289,7 +331,7 @@ App successfully built: ~/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blink
 You can run the simulated version of your project and see the simulated LED
 blink. If you are using newt docker, use `newt run` to run the simulated binary.
 
-```
+```no-highlight
 $ newt run my_blinky_sim
 No download script for BSP hw/bsp/native
 Debugging /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf

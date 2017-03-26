@@ -42,11 +42,21 @@ struct os_mempool {
     int mp_block_size;
     int mp_num_blocks;
     int mp_num_free;
+    int mp_min_free;
     uint32_t mp_membuf_addr;
     STAILQ_ENTRY(os_mempool) mp_list;    
     SLIST_HEAD(,os_memblock);
     char *name;
 };
+
+struct os_mempool_info {
+    int omi_block_size;
+    int omi_num_blocks;
+    int omi_num_free;
+    int omi_min_free;
+    char omi_name[OS_MEMPOOL_INFO_NAME_LEN];
+};
+
 ```
 <br>
 
@@ -55,6 +65,7 @@ struct os_mempool {
 | mp_block_size | Size of the memory blocks, in bytes. This is not the actual  number of bytes used by each block; it is the requested size of each block. The actual memory block size will be aligned to OS_ALIGNMENT bytes |
 | mp_num_blocks | Number of memory blocks in the pool |
 | mp_num_free | Number of free blocks left |
+| mp_min_free | Lowest number of free blocks seen |
 | mp_membuf_addr | The address of the memory block. This is used to check that a valid memory block is being freed. |
 | mp_list | List pointer to chain memory pools so they can be displayed by newt tools |
 | SLIST_HEAD(,os_memblock) | List pointer to chain free memory blocks |
@@ -70,6 +81,7 @@ The functions/macros available in mem_pool are:
 | [os_memblock_get](os_memblock_get) | Allocate an element from the memory pool. |
 | [os_mempool_init](os_mempool_init) | Initializes the memory pool. |
 | [os_memblock_put](os_memblock_put) | Releases previously allocated element back to the pool. |
+| [os_mempool_info_get_next](os_mempool_info_get_next) | Retrieves memory pool information for the next memory pool. |
 | [OS_MEMPOOL_BYTES](OS_MEMPOOL_BYTES) | Calculates how many bytes of memory is used by n number of elements, when individual element size is blksize bytes. |
 | [OS_MEMPOOL_SIZE](OS_MEMPOOL_SIZE) | Calculates the number of os_membuf_t elements used by n blocks of size blksize bytes. |
 

@@ -235,7 +235,7 @@ If the `newt load` command outputs the following error messages, you will need t
 ```
 $ newt load arduino_boot -v
 Loading bootloader
-Error: Downloading ~/dev/arduino_zero/bin/targets/arduino_boot/app/apps/boot/boot.elf.bin to 0x0
+Error: Downloading ~/dev/myproj/bin/targets/arduino_boot/app/apps/boot/boot.elf.bin to 0x0
 Open On-Chip Debugger 0.9.0 (2015-11-15-05:39)
 Licensed under GNU GPL v2
 For bug reports, read
@@ -284,7 +284,7 @@ Run the `newt load arduino_boot` command again after erasing the board.
 
 After you load the bootloader successfully onto your board, you can load and run the Blinky application. 
 
-Run the `newt run arduino_blinky 1.0.0` command to build the arduino_blinky target (if necessary), create an image with verison 1.0.0, load the image onto the board, and start a debugger session. 
+Run the `newt run arduino_blinky 1.0.0` command to build the arduino_blinky target (if necessary), create an image with version 1.0.0, load the image onto the board, and start a debugger session. 
 ```no-highlight
 $ newt run arduino_blinky 1.0.0
 App image succesfully generated: ~/dev/myproj/bin/targets/arduino_blinky/app/apps/blinky/blinky.img
@@ -342,7 +342,7 @@ Continuing.
 
 <br>
 
-**NOTE:** The 1.0.0 is the version number to assign to the image. You may assign an abitrary version number. If you are not providing remote upgrade, and are just developing locally, you can provide 1.0.0 for every image version.
+**NOTE:** The 1.0.0 is the version number to assign to the image. You may assign an arbitrary version number. If you are not providing remote upgrade, and are just developing locally, you can provide 1.0.0 for every image version.
 
 If you want the image to run without the debugger connected, simply quit the
 debugger and restart the board.  The image you programmed will come up and run on 

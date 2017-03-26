@@ -26,7 +26,7 @@ Ensure that you have met the following prerequisites before continuing with this
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
-This tutorial uses the Nordic NRF52DK board.
+This tutorial uses the Nordic nRF52-DK board.
 <br>
 
 ### Create a Project  
@@ -155,7 +155,7 @@ App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/
 
 ### Connect to the Board
 
-* Connect a micro-USB cable from your computer to the micro-USB port on the NRF52DK board.
+* Connect a micro-USB cable from your computer to the micro-USB port on the nRF52-DK board.
 * Turn the power on the board to ON. You should see the green LED light up on the board.
         
 ### Load the Bootloader and the Blinky Application Image
