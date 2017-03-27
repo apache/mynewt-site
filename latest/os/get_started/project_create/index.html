@@ -436,14 +436,13 @@ code for newt. If you need to use a different branch, you can set this in the pr
 file. </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 </pre></div>
 
 
-<p>Changing to 0-dev will put you on the develop branch. <strong>The Develop Branch may not be stable and 
-you may encounter bugs or other problems.</strong></p>
+<p>Changing to 1-dev will put you on the develop branch. <strong>The Develop Branch may not be stable and you may encounter bugs or other problems.</strong></p>
 <p><br></p>
 <h3 id="newt-install">Newt Install</h3>
 <p>Once you've switched into your new project's directory, the next step is to fetch
@@ -460,7 +459,7 @@ use the <em>-v</em> (verbose) option to install. </p>
 <p><br></p>
 <p>Once <em>newt install</em> has successfully finished, the contents of <em>apache-mynewt-core</em> will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project. The actual output will depend on what is in the latest 'master' branch you have pulled from.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ tree -L 2 repos/apache-mynewt-core/
-repos/apache-mynewt-core/
+
 repos/apache-mynewt-core/
 ├── CODING_STANDARDS.md
 ├── DISCLAIMER
@@ -473,10 +472,12 @@ repos/apache-mynewt-core/
 │   ├── blehci
 │   ├── bleprph
 │   ├── bleprph_oic
+│   ├── blesplit
 │   ├── bletest
 │   ├── bletiny
 │   ├── bleuart
 │   ├── boot
+│   ├── fat2native
 │   ├── ffs2native
 │   ├── ocf_sample
 │   ├── slinky
@@ -484,16 +485,20 @@ repos/apache-mynewt-core/
 │   ├── spitest
 │   ├── splitty
 │   ├── test
+│   ├── testbench
 │   └── timtest
 ├── boot
 │   ├── boot_serial
 │   ├── bootutil
-│   └── split
+│   ├── split
+│   └── split_app
 ├── compiler
 │   ├── arm-none-eabi-m0
 │   ├── arm-none-eabi-m4
 │   ├── gdbmacros
-│   └── sim
+│   ├── mips
+│   ├── sim
+│   └── sim-mips
 ├── crypto
 │   ├── mbedtls
 │   └── tinycrypt
@@ -505,6 +510,8 @@ repos/apache-mynewt-core/
 │   ├── json
 │   └── tinycbor
 ├── fs
+│   ├── disk
+│   ├── fatfs
 │   ├── fcb
 │   ├── fs
 │   └── nffs
@@ -550,7 +557,6 @@ repos/apache-mynewt-core/
 │   ├── crash_test
 │   ├── flash_test
 │   ├── runtest
-│   ├── testreport
 │   └── testutil
 ├── time
 │   └── datetime
@@ -559,7 +565,7 @@ repos/apache-mynewt-core/
     ├── crc
     └── mem
 
-87 directories, 9 files
+94 directories, 9 files
 </pre></div>
 
 
@@ -574,7 +580,30 @@ Compiling bootutil_misc.c
 Compiling image_ec.c
 Compiling image_rsa.c
 Compiling image_validate.c
-&lt;snip&gt;
+
+    ...
+
+Linking ~/dev/myproj/bin/targets/unittest/sys_config_test-fcb/app/sys/config/test-fcb/sys_config_test-fcb.elf
+Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_test-fcb/app/sys/config/test-fcb/sys_config_test-fcb.elf
+Testing package @apache-mynewt-core/sys/config/test-nffs
+Compiling repos/apache-mynewt-core/encoding/base64/src/hex.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_cli.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_dirent.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_mkdir.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_mount.c
+Compiling repos/apache-mynewt-core/encoding/base64/src/base64.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_file.c
+Compiling repos/apache-mynewt-core/fs/disk/src/disk.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fs_nmgr.c
+Compiling repos/apache-mynewt-core/fs/fs/src/fsutil.c
+Compiling repos/apache-mynewt-core/fs/nffs/src/nffs.c
+
+     ...
+
+Linking ~/dev/myproj/bin/targets/unittest/sys_config_test-nffs/app/sys/config/test-nffs/sys_config_test-nffs.elf
+Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_test-nffs/app/sys/config/test-nffs/sys_config_test-nffs.elf
+Passed tests: [sys/config/test-fcb sys/config/test-nffs]
+All tests passed
 </pre></div>
 
 
@@ -588,13 +617,19 @@ $ brew link gcc-5
 <p><br></p>
 <p>To test all the packages in a project, specify <code>all</code> instead of the package name.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt test all
+Testing package @apache-mynewt-core/boot/boot_serial/test
+Compiling repos/apache-mynewt-core/boot/boot_serial/test/src/boot_test.c
+Compiling repos/apache-mynewt-core/boot/boot_serial/test/src/testcases/boot_serial_setup.c
+
+     ...
+
+Linking ~/dev/myproj/bin/targets/unittest/boot_boot_serial_test/app/boot/boot_serial/test/boot_boot_serial_test.elf
+
 ...lots of compiling and testing...
-...about 2 minutes later ...
-Compiling mn_sock_test.c
-Archiving mn_socket.a
-Linking test_mn_socket
-Executing test: /Users/dsimmons/myproj/bin/unittest/sys/mn_socket/test_mn_socket
-Passed tests: [libs/json libs/util libs/mbedtls net/nimble/host hw/hal libs/bootutil sys/log sys/config sys/fcb fs/nffs libs/os libs/boot_serial sys/mn_socket]
+
+Linking ~/dev/myproj/bin/targets/unittest/util_cbmem_test/app/util/cbmem/test/util_cbmem_test.elf
+Executing test: ~/dev/myproj/bin/targets/unittest/util_cbmem_test/app/util/cbmem/test/util_cbmem_test.elf
+Passed tests: [boot/boot_serial/test boot/bootutil/test crypto/mbedtls/test encoding/base64/test encoding/cborattr/test encoding/json/test fs/fcb/test fs/nffs/test kernel/os/test net/ip/mn_socket/test net/nimble/host/test net/oic/test sys/config/test-fcb sys/config/test-nffs sys/flash_map/test sys/log/full/test util/cbmem/test]
 All tests passed
 </pre></div>
 
@@ -604,16 +639,21 @@ All tests passed
 <p>To build and run your new application, simply issue the following command:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build my_blinky_sim 
 Building target targets/my_blinky_sim
-Compiling main.c
-Archiving blinky.a
-Compiling hal_bsp.c
-Compiling os_bsp.c
-Compiling sbrk.c
-Archiving native.a
-Compiling flash_map.c
-&lt;snip&gt;
-Linking blinky.elf
-App successfully built: ~/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_common.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_flash.c
+Compiling repos/apache-mynewt-core/hw/bsp/native/src/hal_bsp.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/uart_hal/src/uart_hal.c
+Compiling apps/blinky/src/main.c
+
+    ...
+
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
+Target successfully built: targets/my_blinky_sim
 </pre></div>
 
 

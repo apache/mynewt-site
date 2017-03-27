@@ -10,7 +10,7 @@
         <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/project-target-slinky/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>Slinky on STM32 board - Apache Mynewt</title>
+	    <title>Slinky on Nordic nRF52 board - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Slinky on STM32 board">
+    <body class="Slinky on Nordic nRF52 board">
 
 
         <div class="container">
@@ -306,7 +306,7 @@
               
                 
     <li class="active">
-      <a href="./">Slinky on STM32 board</a>
+      <a href="./">Slinky on Nordic nRF52 board</a>
     </li>
 
               
@@ -487,7 +487,7 @@
         
       
       
-        <li>&raquo; Slinky on STM32 board</li>
+        <li>&raquo; Slinky on Nordic nRF52 board</li>
       
     
     
@@ -495,167 +495,208 @@
 </div>
                         </div>
                         
-                            <h2 id="project-slinky-using-stm32-board">Project Slinky using STM32 board</h2>
+                            <h2 id="project-slinky-using-the-nordic-nrf52-board">Project Slinky using the Nordic nRF52 Board</h2>
 <p><br></p>
-<p>The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr) by leveraging a sample app "Slinky" included under the /apps directory in the repository. In this project we will define a target for the STM32-E407 board and assign the app "Slinky" to it.</p>
-<p>If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled <a href="../add_newtmgr/">Enable newtmgr in any app</a>.</p>
-<p><br></p>
-<h3 id="what-you-need">What you need</h3>
-<ol>
-<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/search/ProductDetail.aspx?R=0virtualkey0virtualkeySTM32-E407">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
-<li>ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)</li>
-<li>USB A-B type cable to connect the debugger to your personal computer</li>
-<li>A USB to TTL Serial Cable with female wiring harness. An example is <a href="http://www.amazon.com/JBtek®-WINDOWS-Supported-Raspberry-Programming/dp/B00QT7LQ88/ref=lp_464404_1_9?s=pc&amp;ie=UTF8&amp;qid=1454631303&amp;sr=1-9">http://www.amazon.com/JBtek®-WINDOWS-Supported-Raspberry-Programming/dp/B00QT7LQ88/ref=lp_464404_1_9?s=pc&amp;ie=UTF8&amp;qid=1454631303&amp;sr=1-9</a></li>
-<li>Personal Computer</li>
-</ol>
-<p>The instructions assume the user is using a Bourne-compatible shell (e.g. bash or zsh) on your computer. The given instructions have been tested with the following releases of operating systems:</p>
+<p>The goal of this tutorial is to enable and demonstrate remote communications with a Mynewt application running on a device via newt manager (newtmgr). It uses the "Slinky" sample application that is included in the apache-mynewt-core/apps directory and the Nordic nRF52-DK board.</p>
+<p>If you have an existing project that has a different application and you wish to add newtmgr functionality to it, check out the <a href="../add_newtmgr/">Enable newtmgr in any app</a> tutorial.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Ensure that you have met the following prerequisites before continuing with this tutorial:</p>
 <ul>
-<li>Mac: OS X Yosemite Version 10.10.5</li>
+<li>Have a Nordic nRF52-DK board.  </li>
+<li>Have Internet connectivity to fetch remote Mynewt components.</li>
+<li>Have a computer to build a Mynewt application and connect to the board over USB.</li>
+<li>Have a Micro-USB cable to connect the board and the computer.</li>
+<li>Have a <a href="../../get_started/serial_access/">Serial Port Setup</a>. </li>
+<li>Install the newt tool and the toolchains (See <a href="../../get_started/get_started/">Basic Setup</a>).</li>
+<li>Install the <a href="../../../newtmgr/installing/">newtmgr tool</a>. </li>
+<li>Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in <a href="../../../os/get_started/project_create">Creating Your First Project</a>.</li>
+<li>Read the Mynewt OS <a href="../../get_started/vocabulary/">Concepts</a> section.</li>
 </ul>
-<h3 id="overview-of-steps">Overview of steps</h3>
+<h3 id="overview-of-steps">Overview of Steps</h3>
 <ul>
 <li>Install dependencies</li>
-<li>Define a target using the newt tool</li>
+<li>Define targets using the newt tool</li>
 <li>Build executables for the targets using the newt tool</li>
 <li>Set up serial connection with the targets</li>
 <li>Create a connection profile using the newtmgr tool</li>
 <li>Use the newtmgr tool to communicate with the targets</li>
 </ul>
-<h3 id="install-newt">Install newt</h3>
-<p>If you have not already installed <code>newt</code>, see the
-<a href="../../get_started/get_started/">newt installation instructions</a> and ensure newt is installed an in your path.</p>
-<h3 id="install-newtmgr">Install newtmgr</h3>
-<p>If you have not already installed <code>newtmgr</code>, see the
-<a href="../../../newtmgr/installing/">newtmgr installation instructions</a> and ensure newtmgr is installed an in your path.</p>
-<h3 id="create-a-new-project">Create a new project</h3>
-<p>Instructions for creating a project are located in the <a href="../../get_started/project_create/">Basic Setup</a> section of the <a href="../../introduction/">Mynewt Documentation</a>.</p>
-<p>If you already completed <a href="../project-slinky/">Sim Slinky</a> you can skip this step.</p>
-<p>We will list only the steps here for brevity.  We will name the project
-<code>slinky</code>.</p>
+<h3 id="create-a-new-project">Create a New Project</h3>
+<p>Create a new project if you do not have an existing one.  You can skip this step and proceed to <a href="#create_targets">create the targets</a> if you already have a project created or completed the <a href="../project-slinky/">Sim Slinky</a> tutorial. </p>
+<p>Run the following commands to create a new project. We name the project <code>slinky</code>.   </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt new slinky
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 ...
 Installing skeleton in slink...
-Project slink successfully created
+Project slinky successfully created
 $ cd slinky
-$newt install -v
-Downloading repository description for apache-mynewt-core... success!
-...
-Repos successfully installed
+$newt install 
+apache-mynewt-core
 </pre></div>
 
 
 <p><br></p>
-<h3 id="set-up-your-target-builds">Set up your target builds</h3>
-<p>Create a target for <code>stm32_slinky</code> using the native BSP. The Newt tool output is suppressed below for brevity.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create stm32_slinky
-$ newt target set stm32_slinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-$ newt target set stm32_slinky build_profile=debug
-$ newt target set stm32_slinky app=@apache-mynewt-core/apps/slinky
+<h3 id="create-the-targets"><a name="create_targets"></a> Create the Targets</h3>
+<p>Create two targets for the nRF52-DK board - one for the bootloader and one for the Slinky application.</p>
+<p>Run the following <code>newt target</code> commands, from your project directory, to create a bootloader target. We name the target <code>nrf52_boot</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create nrf52_boot
+$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_boot build_profile=optimized
+$ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
 </pre></div>
 
 
-<p>Create a second target for <code>stm32_bootloader</code> to build a bootloader to boot
-the <code>stm32_slinky</code> image.  The tool output is suppressed below for brevity.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create stm32_bootloader
-$ newt target set stm32_bootloader bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-$ newt target set stm32_bootloader build_profile=optimized
-$ newt target set stm32_bootloader target.app=@apache-mynewt-core/apps/boot
-</pre></div>
-
-
-<p><br></p>
-<h3 id="build-targets">Build Targets</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build stm32_slinky
-Compiling main.c
-...
-Linking slinky.elf
-App successfully built: ~/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.elf
-</pre></div>
-
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">newt build stm32_bootloader
-Compiling crc16.c
-...
-Linking boot.elf
-App successfully built: ~/slinky/bin/stm32_bootloader/apps/boot/boot.elf
-</pre></div>
-
-
-<p>For the main image, you need to create an image using newt create-image.
-Give this image some arbitrary version number "1.2.3".</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image stm32_slinky 1.2.3
-App image successfully generated: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.img
-Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/manifest.json
+<p><br>
+Run the following <code>newt target</code> commands to create a target for the Slinky application. We name the target <code>nrf52_slinky</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create nrf52_slinky
+$ newt target set nrf52_slinky bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set nrf52_slinky build_profile=debug
+$ newt target set nrf52_slinky app=@apache-mynewt-core/apps/slinky
 </pre></div>
 
 
 <p><br></p>
-<h3 id="using-newtmgr-with-a-remote-target">Using newtmgr with a remote target</h3>
+<h3 id="build-the-targets">Build the Targets</h3>
+<p>Run the <code>newt build nrf52_boot</code> command to build the bootloader:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52-boot
+Building target targets/nrf52_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    ...
+
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/slinky/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
+</pre></div>
+
+
+<p><br></p>
+<p>Run the <code>newt build nrf52_slinky</code> command to build the Slinky application:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt build nrf52_slinky
+Building target targets/nrf52_slinky
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/split/src/split.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
+
+       ...
+
+Archiving util_mem.a
+Linking ~/dev/slinky/bin/targets/nrf52_slinky/app/apps/slinky/slinky.elf
+Target successfully built: targets/nrf52_slinky
+</pre></div>
+
+
+<p><br></p>
+<h3 id="sign-and-create-the-slinky-application-image">Sign and Create the Slinky Application Image</h3>
+<p>Run the <code>newt create-image nrf52_slinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image nrf52_slinky 1.0.0
+App image succesfully generated: ~/dev/slinky/bin/targets/nrf52_slinky/app/apps/slinky/slinky.img
+$
+</pre></div>
+
+
+<p><br></p>
+<h3 id="connect-to-the-board">Connect to the Board</h3>
 <ul>
-<li>
-<p>First make sure the USB A-B type cable is connected to the ARM-USB-TINY-H debugger connector on the Olimex board.</p>
-<p>Next go the to project directory and download the slinky project image to the flash of the Olimex board.</p>
-</li>
+<li>Connect a micro-USB cable from your computer to the micro-USB port on the nRF52-DK board.</li>
+<li>Turn the power on the board to ON. You should see the green LED light up on the board.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load stm32_bootloader
-$ newt load stm32_slinky
+<p><br></p>
+<h3 id="load-the-bootloader-and-the-slinky-application-image">Load the Bootloader and the Slinky Application Image</h3>
+<p>Run the <code>newt load nrf52_boot</code> command to load the bootloader onto the board:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_boot
+Loading bootloader
+$
 </pre></div>
 
 
-<p>You can now disconnect the debugging cable from the board. You should see the green LED blinking. If not, try powercycling the board.</p>
-<p><br></p>
-<ul>
-<li>
-<p>Now you have to set up the serial connection from your computer to the Olimex board. Locate the PC6/USART6_TX (pin#3), PC7/USART6_RX (pin#4), and GND (pin#2) of the UEXT connector on the Olimex board. More information on the UEXT connector can be found at <a href="https://www.olimex.com/Products/Modules/UEXT/">https://www.olimex.com/Products/Modules/UEXT/</a>. The schematic of the board can be found at <a href="https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf">https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407_sch.pdf</a> for reference.</p>
-<p><img alt="Alt Layout - Serial Connection" src="../pics/serial_conn.png" /></p>
-<ul>
-<li>Connect the female RX pin of the USB-TTL serial cable to the TX of the UEXT connector on the board.</li>
-<li>Connect the female TX pin of the USB-TTL serial cable to the RX of the UEXT connector on the board.</li>
-<li>Connect the GND pin of the USB-TTL serial cable to the GND of the UEXT connector on the board.</li>
-</ul>
-</li>
-</ul>
-<p><br></p>
-<ul>
-<li>Locate the serial connection established in the /dev directory of your computer. It should be of the type <code>tty.usbserial-&lt;some identifier&gt;</code>.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        $ ls /dev/tty.usbserial-AJ03HAQQ
-        /dev/tty.usbserial-AJ03HAQQ
+<p><br>
+Run the <code>newt load nrf52_slinky</code> command to load the Slinky application image onto the board:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_slinky
+Loading app image into slot 1
+$
 </pre></div>
 
 
 <p><br></p>
-<ul>
-<li>You now have to define a connection profile using newtmgr. You can give it any name you want. The example below shows the connection profile being named as the very imaginative <code>olimex01</code>.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">        $ pwd
-        /Users/&lt;user&gt;/dev/project/slinky
-        $ newtmgr conn add olimex01 type=serial connstring=/dev/tty.usbserial-AJ03HAQQ
-        Connection profile olimex01 successfully added
-        $ newtmgr conn show
-        Connection profiles:
-          sim1: type=serial, connstring=&#39;/dev/ttys007&#39;
-          olimex01: type=serial, connstring=&#39;/dev/tty.usbserial-AJ03HAQQ&#39;
+<h3 id="connect-newtmgr-with-the-board-using-a-serial-connection">Connect Newtmgr with the Board using a Serial Connection</h3>
+<p>Set up serial connection from your computer to the nRF52-DK board (See <a href="../../get_started/serial_access/">Serial Port Setup</a>).  </p>
+<p>Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type <code>tty.usbserial-&lt;some identifier&gt;</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ls /dev/tty*usbserial*
+/dev/tty.usbserial-1d11
+$
+</pre></div>
+
+
+<p><br>
+Setup a newtmgr connection profile for the serial port. For our example, the port is  <code>/dev/tty.usbserial-1d11</code>. </p>
+<p>Run the <code>newtmgr conn add</code> command to define a newtmgr connection profile for the serial port.  We name the connection profile <code>nrf52serial</code>.  You will need to replace the <code>connstring</code> with the specific port for your serial connection. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr conn add nrf52serial type=serial connstring=/dev/tty.usbserial-1d11
+Connection profile nrf52serial successfully added
+$
+</pre></div>
+
+
+<p><br>
+You can run the <code>newt conn show</code> command to see all the newtmgr connection profiles:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr conn show
+Connection profiles:
+  nrf52serial: type=serial, connstring=&#39;/dev/tty.usbserial-1d11&#39;
+  sim1: type=serial, connstring=&#39;/dev/ttys012&#39;
+$
 </pre></div>
 
 
 <p><br></p>
-<ul>
-<li>Now go ahead and query the Olimex board to get responses back. The simplest command is the <code>echo</code> command to ask it to respond with the text you send it.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newtmgr echo -c olimex01 hello
-    {&quot;r&quot;: &quot;hello&quot;}
-    $ newtmgr image -c olimex01 list
-    Images:
-        0 : 1.2.3
-    $ newtmgr -c olimex01 taskstats
-    Return Code = 0
-      newtmgr (prio=4 tid=2 runtime=0 cswcnt=12 stksize=512 stkusage=255 last_checkin=0 next_checkin=0)
-      task1 (prio=1 tid=3 runtime=0 cswcnt=299 stksize=128 stkusage=33 last_checkin=0 next_checkin=0)
-      task2 (prio=2 tid=4 runtime=0 cswcnt=300 stksize=128 stkusage=31 last_checkin=0 next_checkin=0)
-      idle (prio=255 tid=0 runtime=299916 cswcnt=313 stksize=32 stkusage=18 last_checkin=0 next_checkin=0)
-      shell (prio=3 tid=1 runtime=1 cswcnt=20 stksize=384 stkusage=60 last_checkin=0 next_checkin=0)
+<h3 id="use-newtmgr-to-query-the-board">Use Newtmgr to Query the Board</h3>
+<p>Run some newtmgr commands to query and receive responses back from the board (See the <a href="../newtmgr/overview">Newt Manager Guide</a> for more information on the newtmgr commands). </p>
+<p>Run the <code>newtmgr echo hello -c nrf52serial</code> command. This is the simplest command that requests the board to echo back the text. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr echo hello -c nrf52serial 
+hello
+$
+</pre></div>
+
+
+<p><br>
+Run the <code>newtmgr image list -c nrf52serial</code> command to list the images on the board:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image list -c nrf52serial 
+Images:
+ slot=0
+    version: 1.0.0
+    bootable: true
+    flags: active confirmed
+    hash: f411a55d7a5f54eb8880d380bf47521d8c41ed77fd0a7bd5373b0ae87ddabd42
+Split status: N/A
+$
+</pre></div>
+
+
+<p><br>
+Run the <code>newtmgr taskstats -c nrf52serial</code> command to display the task statistics on the board:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr taskstats -c nrf52serial
+Return Code = 0
+      task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
+     task1   8   2        0     1751      192      110        0        0
+     task2   9   3        0     1751       64       31        0        0
+      idle 255   0   224081     2068       64       32        0        0
+      main 127   1        3       29     1024      365        0        0
+$
 </pre></div>
                         
                         <div class="row">
