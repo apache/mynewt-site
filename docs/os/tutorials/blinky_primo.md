@@ -22,7 +22,7 @@ Ensure that you have met the following prerequisites before continuing with this
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
-* Install a debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.
+* Install a debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software but not as simple as Option 1.
 
 <br>
 
@@ -30,6 +30,8 @@ Ensure that you have met the following prerequisites before continuing with this
 
 * [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html) - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)
 * [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems
+* Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html). 
+
 
 ##### Option 2
 
@@ -48,29 +50,9 @@ Licensed under GNU GPL v2
 For bug reports, read
     http://openocd.org/doc/doxygen/bugs.html
 ```
-Next, make sure that you have checked out the newt develop branch and rebuilt newt.
-```
-$ cd $GOPATH/src/mynewt.apache.org/newt
-$ git checkout develop
-$ git pull
-$ cd newt
-$ go install
-```
-**Note:** This step can be removed once the changes have been pushed to master.
-
 You can now use openocd to upload to Arduino Primo board via the USB port itself.
 
-
-
 <br>
-
-
-### Install jlinkEXE 
-
-In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from [https://www.segger.com/jlink-software.html](https://www.segger.com/jlink-software.html). 
-
-<br>
-
 ### Create a Project  
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already created a project.
 
@@ -219,14 +201,14 @@ Loading app image into slot 1
 $
 ```
 
-You should see the LED on the board blink!
+You should see the orange LED (L13), below the ON LED,  on the board blink!
 
 Note: If the LED does not blink, try resetting the board.
 
 
 <br>
 
-**Note:** If you want to erase the flash and load the image again, you can use JLinkExe to issue an `erase` command.
+**Note:** If you want to erase the flash and load the image again, use JLinkExe and issue the `erase` command when you are using the Jlink debug probe: 
 
 ```
 $ JLinkExe -device nRF52 -speed 4000 -if SWD
@@ -252,7 +234,23 @@ Erasing done.
 J-Link>exit
 $
 ```
+<br>
 
+If you are using the OpenOCD debugger, run the `newt debug primoblinky` command and issue the highlighted command at the (gdb) prompt:
+
+```hl_lines="11"
+$newt debug primoblinky
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52/primo_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52 ~/dev/myproj/bin/targets/primoblinky/app/apps/blinky/blinky]
+Open On-Chip Debugger 0.10.0-dev-snapshot (2017-03-28-11:24)
+
+    ...
+
+os_tick_idle (ticks=128)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+warning: Source file is more recent than executable.
+200    if (ticks > 0) {
+(gdb) mon nrf52 mass_erase
+```
 <br>
 
 

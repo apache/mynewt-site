@@ -6,7 +6,7 @@
 
 Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
 
-Create a project with a simple app that blinks an LED on the nRF52 board from Nordic Semiconductors.  Download the application to the target and watch it blink!
+Create a project with a simple application that blinks an LED on the nRF52 board from Nordic Semiconductors.  Download the application to the target and watch it blink!
 
 Note that there are several versions of the nRF52 in the market. The boards tested with this tutorial are listed under "Prerequisites".
 
@@ -23,11 +23,11 @@ Ensure that you have met the following prerequisites before continuing with this
 * Have a computer to build a Mynewt application and connect to the board over USB.
 * Have a Micro-USB cable to connect the board and the computer.
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
 This tutorial uses the Nordic nRF52-DK board.
-<br>
 
 ### Create a Project  
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created.  
@@ -147,7 +147,6 @@ Run the `newt create-image nrf52_blinky 1.0.0` command to create and sign the ap
 
 ```no-highlight
 $ newt create-image nrf52_blinky 1.0.0
-newt create-image nrf52_blinky 1.0.0
 App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
 ```
 

@@ -15,7 +15,8 @@ Ensure that you have met the following prerequisites before continuing with this
 * Have a ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
 * Have Internet connectivity to fetch remote Mynewt components.
 * Have a computer to build a Mynewt application and connect to the board over USB.
-* Have USB A-B type cable to connect the debugger to your computer.
+* Have a USB A-B type cable to connect the debugger to your computer.
+* Have a USB Micro-A cable to connect your computer to the board.
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
@@ -135,7 +136,9 @@ App image succesfully generated: ~/dev/myproj/bin/targets/olimex_blinky/app/apps
 
 ### Connect to the Board
 
-Configure the board to bootload from flash memory and to use the JTAG/SWD for the power source. Refer to the following diagrams to locate the boot jumpers and power input select jumpers on the board.
+Configure the board to bootload from flash memory and to use USB-OTG2 for the power source. Refer to the following diagrams to locate the boot jumpers and power input select jumpers on the board. 
+
+**Note:** The labels for the **USB-OTG1** and **USB-OTG2** ports on the diagram are reversed. The port labeled USB-OTG1 on the diagram is the USB-OTG2 port and the port labeled USB-OTG2 on the diagram is the USB-OTG1 port.
 <br>
 
 <p align="center">
@@ -149,8 +152,9 @@ Configure the board to bootload from flash memory and to use the JTAG/SWD for th
 * Locate the boot jumpers on the lower right corner of the board.  **B1_1/B1_0** and **B0_1/B0_0** are PTH jumpers to control the boot mode when a bootloader is present.  These two jumpers must be moved together.  The board searches for the bootloader in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we configure the board to boot from flash by jumpering **B0_0** and **B1_0**.
 **Note:** The markings on the board may not always be accurate, and you should always refer to the manual for the correct positioning. 
 
-* Locate the **Power Input Select** jumpers on the lower left corner of the board.  Set the Power Select jumpers to position 3 and 4 to use the JTAG/SWD for the power source. If you would like to use a different power source, refer to the [OLIMEX STM32-E407 user manual](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407.pdf) for pin specifications.
- 
+* Locate the **Power Input Select** jumpers on the lower left corner of the board.  Set the Power Select jumpers to position 5 and 6 to use the USB-OTG2 port for the power source. If you would like to use a different power source, refer to the [OLIMEX STM32-E407 user manual](https://www.olimex.com/Products/ARM/ST/STM32-E407/resources/STM32-E407.pdf) for pin specifications.
+
+* Connect the USB Micro-A cable to the USB-OTG2 port on the board. 
 
 * Connect the JTAG connector to the JTAG/SWD interface on the board. 
 
@@ -180,7 +184,7 @@ Successfully loaded image.
 The LED should be blinking!
 
 <br>
-**But wait...not so fast.** Let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor, severing the debug connection to the JTAG port. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board.
+Let's double check that it is indeed booting from flash and making the LED blink from the image in flash. Pull the USB cable off the Olimex JTAG adaptor, severing the debug connection to the JTAG port. Next power off the Olimex board by pulling out the USB cable from the board. Wait for a couple of seconds and plug the USB cable back to the board.
 
    The LED light will start blinking again. Success!
 

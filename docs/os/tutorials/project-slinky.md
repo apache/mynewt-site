@@ -8,14 +8,15 @@ The goal of the project is to use a sample app called "Slinky" included in the M
 If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md). 
 
 <br>
+### Prerequisites
 
-### What you need
+Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-1.Personal Computer
-
-The instructions assume the user is using a Bourne-compatible shell (e.g. bash or zsh) on your computer. The given instructions have been tested with the following releases of operating systems:
-
-* Mac: OS X Yosemite Version 10.10.5
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a computer to build a Mynewt application.
+* Install the newt tool and the toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install the [newtmgr tool](../../newtmgr/installing/).
+* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
 ### Overview of steps
 
@@ -25,16 +26,6 @@ The instructions assume the user is using a Bourne-compatible shell (e.g. bash o
 * Set up serial connection with the targets 
 * Create a connection profile using the newtmgr tool
 * Use the newtmgr tool to communicate with the targets
-
-### Installing newt
-
-If you have not already installed `newt` see the 
-[newt installation instructions](../get_started/get_started/) and ensure newt is installed an in your path.
-
-### Installing newtmgr
-
-If you have not already installed `newtmgr` see the 
-[newtmgr installation instructions](../../newtmgr/installing/) and ensure newtmgr is installed an in your path.
 
 ### Creating a new project
 
@@ -98,8 +89,7 @@ is created.
 
 ### Run the target
 
-Run the executable you have build for the simulated environment. The serial port name on which the simulated target is connected is shown in the output
-when mynewt slinky starts.
+Run the executable you have build for the simulated environment. The serial port name on which the simulated target is connected is shown in the output when mynewt slinky starts.
 
 ```no-highlight
     $ ~/dev/slinky/bin/targets/sim_slinky/app/apps/slinky/slinky.elf

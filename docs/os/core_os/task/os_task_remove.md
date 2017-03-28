@@ -22,7 +22,7 @@ Removes a task, `t`, from the task list. A task cannot be removed when it is in 
 `OS_OK`:  Task `t` is removed sucessfully.
 <br>`OS_INVALID_PARM`:  Task `t` is the calling task. A task cannot remove itself.
 <br>`OS_NOT_STARTED`:  Task `t` is not initialized.
-<br>`OS_EBUSY`: Task `t` is either holding a lock or suspended waiting on lock on event.
+<br>`OS_EBUSY`: Task `t` is either holding a lock or suspended waiting for a lock or an event.
 <br>
 #### Example
 

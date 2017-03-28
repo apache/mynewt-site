@@ -220,10 +220,10 @@ The newtmgr framework currently supports BLE and serial transport protocols.
 To configure the transport protocols that are supported, modify the `pkg.yml` 
 and `syscfg.yml` files as follows:
 
-* Add the `mgmt/newtmgr/transport/ble` package to `pkg.deps` parameter to enable BLE transport.
+* Add the `mgmt/newtmgr/transport/ble` package to the `pkg.deps` parameter to enable BLE transport.
 * Add the `mgmt/newtmgr/transport/nmgr_shell` package to 
-the `pkg.deps` parameter,  and add `SHELL_TASK: 1` to the `syscfg.vals` parameter to enable serial transport.
-* Add the `mgmt/newtmgr/transport/nmgr_uart` package, and add `SHELL_TASK: 1` to enable serial communication over a UARTport.
+the `pkg.deps` parameter, and add `SHELL_TASK: 1` to the `syscfg.vals` parameter to enable serial transport when your application also uses the [Shell](/os/modules/shell/shell.md).
+* Add the `mgmt/newtmgr/transport/nmgr_uart` package to the `pkg.deps` parameter to enable serial transport over a UART port. You can use this package instead of the `nmgr_shell` package when your application does not use the [Shell](/os/modules/shell/shell.md) or you want to use a dedicated UART port to communicate with newtmgr.  You can change the `NMGR_UART` and `NMGR_URART_SPEED` sysconfig values to specify a different port.
 
 <br>
 
