@@ -161,7 +161,7 @@ $
 
 ### Connect Newtmgr with the Board using a Serial Connection
 
-Set up serial connection from your computer to the nRF52-DK board (See [Serial Port Setup](/os/get_started/serial_access.md)).  
+Set up a serial connection from your computer to the nRF52-DK board (See [Serial Port Setup](/os/get_started/serial_access.md)).  
 
 Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
 
