@@ -23,7 +23,7 @@ support native compiling to build the project this tutorial creates.
 
 ### Create a project
 
-Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. Make sure the downloaded version is 0.9.0 or later.
+Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. 
 
 ```
 $ newt new blehciproj 
@@ -32,11 +32,8 @@ Installing skeleton in blehciproj ...
 Project blehciproj  successfully created.
 $ cd mblehciproj 
 
-$ newt install -v 
+$ newt install
 apache-mynewt-core
-Downloading repository description for apache-mynewt-core... success!
-...
-apache-mynewt-core successfully installed version 0.9.0-none
 ```
 
 <br>
@@ -85,17 +82,19 @@ $ newt target show
 
 Then build the two targets.
 
-```
+```no-highlight
 $ newt build nrf52_boot
 <snip>
-App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
+Linking ~/dev/blehciproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
+
 $ newt build myble2
-Compiling hci_common.c
-Compiling util.c
-Archiving nimble.a
-Compiling os.c
 <snip>
+Linking ~/dev/blehciproj/bin/targets/myble2/app/apps/blehci/blehci.elf
+Target successfully built: targets/myble2
+$
 ```
+
 
 <br>
 
@@ -103,20 +102,30 @@ Compiling os.c
 
 Generate a signed application image for the `myble2` target. The version number is arbitrary.
 
-```
+```no-highlight
 $ newt create-image myble2 1.0.0
-App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
-Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
+App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/bletiny/bletiny.img
 ```
 
 <br>
 
-### Load the image
+### Load the bootloader and the application image
 
 Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.
 
+Load the bootloader:
+
+```no-highlight
+$ newt load nrf52_boot
+Loading bootloader
+$
 ```
-$ newt -v load myble
+<br>
+Load the application image:
+```no-highlight
+$ newt load myble2
+Loading app image into slot 1
+$
 ```
 
 <br>

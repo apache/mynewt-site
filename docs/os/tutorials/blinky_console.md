@@ -49,14 +49,14 @@ syscfg.vals:
 
 <br>
 ### Use the OS Default Event Queue to Process Blinky Timer and Shell Events
-Mynewt creates a default task that executes the application `main()` function. It also creates an OS default event queue that packages can use to queue their events.   Shell uses the OS default event queue for Shell events,  and `main()` can process the events in the context of the default task. 
+Mynewt creates a main task that executes the application `main()` function. It also creates an OS default event queue that packages can use to queue their events.   Shell uses the OS default event queue for Shell events,  and `main()` can process the events in the context of the main task. 
 
 Blinky's main.c is very simple. It only has a `main()` function that executes an infinite loop to toggle the LED and sleep for one second.  We will modify blinky:
 
 * To use os_callout to generate a timer event every one second instead of sleeping.  The timer events are added to the OS default event queue.
 * To process events from the OS default event queue inside the infinite loop in `main()`.
 
-This allows the default task to process both Shell events and the timer events to toggle the LED from the OS default event queue.
+This allows the main task to process both Shell events and the timer events to toggle the LED from the OS default event queue.
 
 <br>
 ### Modify main.c
@@ -170,7 +170,7 @@ Tutorial for more information on setting up your serial communication.
 
 ###Communicate with the Application
 
-Once you have a connection set up, run ```minicom -D /dev/tty.usbmodem<port> -b 115200``` to connect to the application console.
+Once you have a connection set up, run ```minicom -D /dev/tty.usbserial<port> -b 115200``` to connect to the application console.
     
 To test and make sure that the Shell is running, first just hit <return>:
     

@@ -10,15 +10,13 @@ Support is currently available for console access via the serial port on the har
 
 ###Description
 
-In the Mynewt OS, the console library comes in two versions:
+In the Mynewt OS, the console library comes in three versions:
 
 * The `sys/console/full` package implements the complete console functionality and API.
-
 * The `sys/console/stub` package implements stubs for the API.
+* The `sys/console/minimal` package implements minimal console functionality of reading from and writing to console.  It implements the `console_read()` and `console_write()` functions and stubs for all the other console functions.
 
-Both packages export the `console` API, and any package that uses 
-the console API must list `console` as a requirement. For example, the shell package defines the following `pkg.yml`
-file:
+All the packages export the `console` API, and any package that uses the console API must list `console` as a requirement its `pkg.yml` file:  
 
 ```no-highlight
 
@@ -32,10 +30,12 @@ pkg.req_apis:
     - console
 
 ```
+<br>
+The project `pkg.yml` file also specifies the version of the console package to use.
 
-The project `pkg.yml` file specifies the version of the console package to use.
-A project that requires the full console capability must list the `sys/console/full` package as a dependency 
-in its `pkg.yml` file.
+<br>
+####Using the Full Console Package
+A project that requires the full console capability must list the `sys/console/full` package as a dependency in its `pkg.yml` file.
 
 An example is the `slinky` application. It requires the full console capability and has the following
 `pkg.yml` file: 
@@ -54,15 +54,21 @@ pkg.deps:
        ...
     - sys/id
 ```
+<br>
+####Using the Stub Console Package
 
-On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) 
-but may have a dependency on a package that has console capability. In this case, you use 
-the console stub API and list the `sys/console/stub` package as a dependency in its `pkg.yml` file. 
+A project that uses console stub API must list the `sys/console/stub` package as a dependency in its `pkg.yml` file.
 
-An example is the bootloader project where we want to keep the size of the image small. It includes 
+Examples of when a project would use the console stubs might be:
+
+* A project may not have a physical console (e.g. a UART port to connect a terminal to) 
+but may have a dependency on a package that has console capability. 
+* A bootloader project where we want to keep the size of the image small. It includes 
 the `kernel/os` package that can print out messages on a console (e.g. if there is a hard fault).
 However, we do not want to use any console I/O capability in this particular bootloader project to 
-keep the size small. The project uses the console stub API and has the following `pkg.yml` file: 
+keep the size small. 
+
+The project would use the console stub API and has the following `pkg.yml` file: 
 
 ```no-highlight
 pkg.name: apps/boot
@@ -72,7 +78,33 @@ pkg.deps:
     - sys/console/stub
 
 ```
+<br>
 
+####Using the Minimal Console Package
+
+There might be projects that need to read and write data on a serial connection but do not need the full console capability. An example might be a project that supports serial image upgrade but does not need full newtmgr capability.  The project would use the console minimal API and has the following `pkg.yml` file: 
+
+```no-highlight
+pkg.name: apps/boot
+pkg.type: app
+pkg.description: Boot loader application.
+pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.homepage: "http://mynewt.apache.org/"
+pkg.keywords:
+    - loader
+
+pkg.deps:
+    - boot/bootutil
+    - kernel/os
+    - sys/console/stub
+
+pkg.deps.BOOT_SERIAL.OVERWRITE:
+    - sys/console/minimal
+    - boot/boot_serial
+
+```			
+
+<br>
 Console has 2 modes for transmit; *blocking mode* and *non-blocking mode*. Usually the *non-blocking mode* is the 
 active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added 
 based on these interrupts.

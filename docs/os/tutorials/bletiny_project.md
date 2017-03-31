@@ -1,4 +1,4 @@
-## Check stats on a BLE device
+## Check stats for a BLE Application  the NRF52 Board
 
 <br>
 
@@ -6,7 +6,7 @@ This tutorial explains how to run an example BLE app on a board and command it t
 
 <br>
 
-### Pre-Requisites
+### Prerequisites
 
 * Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
 newt command is in your system path. 
@@ -23,18 +23,14 @@ support native compiling to build the project this tutorial creates.
 
 Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory.
 
-```
-$ newt new myapp1
+```no-highlight
+$ newt new myproj 
 Downloading project skeleton from apache/incubator-mynewt-blinky...
-Installing skeleton in myapp1...
-Project myapp1 successfully created.
-$ cd myapp1
+Installing skeleton in myproj...
+Project myproj successfully created.
+$ cd myproj
 
-$ newt install -v 
-apache-mynewt-core
-Downloading repository description for apache-mynewt-core... success!
-...
-apache-mynewt-core successfully installed version 0.7.9-none
+$ newt install 
 ```
 
 <br>
@@ -43,7 +39,7 @@ apache-mynewt-core successfully installed version 0.7.9-none
 
 You will create two targets - one for the bootloader, the other for the application.
 
-```
+```no-highlight
 $ newt target create myble
 Target targets/myble successfully created
 $ newt target create nrf52_boot
@@ -65,7 +61,7 @@ Define the targets further. Note that you are using the example app `bletiny` fo
 
 <br>
 
-```
+```no-highlight
 $ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52dk
 Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
@@ -76,7 +72,7 @@ Target targets/myble successfully set target.build_profile to optimized
 
 Use the same `newt target set` command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..
 
-```
+```no-highlight
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk
@@ -85,7 +81,7 @@ targets/nrf52_boot
 
 You should have the following targets by the end of this step.
 
-```
+```no-highlight
 $ newt target show
 targets/my_blinky_sim
     app=apps/blinky
@@ -95,7 +91,6 @@ targets/myble
     app=@apache-mynewt-core/apps/bletiny
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
-    cflags=-DSTATS_NAME_ENABLE 
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk
@@ -106,7 +101,7 @@ Since we're interested in seeing the stats, we'll need to enable the stats modul
 To do this, you'll need to create a configuration file `syscfg.yml` in the app directory. from the target definition above, you can see that the app is in `apache-mynewt-core/apps/bletiny`
 so that is where you'll put your configuration file. 
 
-```
+```no-highlight
 # Package: apps/bletiny
 
 syscfg.vals:
@@ -121,28 +116,52 @@ The first configuration value turns on the Shell Task, and we'll need this to ge
 
 Then build the two targets.
 
-```
-$ newt build nrf52_boot
-<snip>
-App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
-$ newt build myble
-Compiling hci_common.c
-Compiling util.c
-Archiving nimble.a
-Compiling os.c
-<snip>
-```
+Run the `newt build nrf52_boot` command to build the bootloader:
 
+```no-highlight
+Building target targets/nrf52_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/myproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
+```
 <br>
+Run the `newt build myble` command to build the bletiny application:
+```no-highlight
+ newt build myble
+Building target targets/myble
+Compiling repos/apache-mynewt-core/encoding/base64/src/base64.c
+Compiling repos/apache-mynewt-core/encoding/base64/src/hex.c
+Compiling repos/apache-mynewt-core/hw/bsp/nrf52dk/src/hal_bsp.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/parse.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/misc.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/gatt_svr.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/cmd.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/main.c
 
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+Target successfully built: targets/myble
+
+```
+<br>
 ### Create the app image
 
-Generate a signed application image for the `myble` target. The version number is arbitrary.
+Run the `newt create-image myble 1.0.0` command to generate a signed application image for the `myble` target. The version number is arbitrary.
 
-```
-$ newt create-image myble 1.0.0
-App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
-Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
+```no-highlight
+$newt create-image myble 1.0.0
+Compiling bin/targets/myble/generated/src/myble-sysinit-app.c
+Archiving myble-sysinit-app.a
+Linking ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+App image succesfully generated: ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.img
 ```
 
 <br>
@@ -170,7 +189,7 @@ You may use any terminal emulation program to communicate with the board. This t
 
 
 ```
-$ minicom -D /dev/tty.usbserial-AJ03HAQQ -b 115200
+$ minicom -D /dev/tty.usbserial-1a12 -b 115200
 ```
 
 <br>
@@ -181,15 +200,15 @@ When the Minicom screen comes up, type in `?`
 Welcome to minicom 2.7
 
 OPTIONS: 
-Compiled on Nov 24 2015, 16:14:21.
-Port /dev/tty.usbserial-AJ03HAQQ, 09:57:17
+Compiled on Mar 18 2016, 04:59:47.
+Port /dev/tty.usbserial-1a12, 21:24:09
 
 Press Meta-Z for help on special keys
 
 ?
-4754:Commands:
-4754:     echo         ?    prompt     tasks  mempools      date
-4756:        b
+7471:Commands:
+7471:     stat      echo         ?    prompt     ticks     tasks 
+7474: mempools      date         b 
 ```
 
 <br>
@@ -214,13 +233,13 @@ This is just a counter kept by the MCU.
 Try the `tasks` command. 
 
 ```hl_lines="1"
-27365: > tasks
-Tasks:
-28330:  idle (prio: 255, tid: 0, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 64, susage: 34, cswcnt: 233, tot_run_time: 28330ms)
-28333:  ble_ll (prio: 0, tid: 1, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 80, susage: 60, cswcnt: 11, tot_run_time: 0ms)
-28336:  shell (prio: 1, tid: 2, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 512, susage: 115, cswcnt: 18, tot_run_time: 0ms)
-28339:  bletiny (prio: 1, tid: 3, lcheck: 0, ncheck: 0, flags: 0x0, ssize: 512, susage: 138, cswcnt: 456, tot_run_time: 0ms)
-28342: >
+> tasks
+Tasks: 
+46682:    task pri tid  runtime      csw    stksz   stkuse   lcheck   ncheck fg
+46684:    idle 255   0    46683       99       64       31        0        0  0
+46686:    main 127   1        1       29      512      156        0        0  0
+46688:  ble_ll   0   2        0       12       80       58        0        0  0
+46691: > 
 ```
 
 <br>
@@ -228,40 +247,44 @@ Tasks:
 Try specifying a BLE related stat, for example `ble_ll`. You should see some HCI (Host Controller Interface) command counts. 
 
 ```hl_lines="1"
-241133: > stat ble_ll
+113136: > stat ble_ll
 hci_cmds: 11
-241888:hci_cmd_errs: 0
-241888:hci_events_sent: 11
-241890:bad_ll_state: 0
-241890:bad_acl_hdr: 0
-241891:no_bufs: 0
-241891:rx_adv_pdu_crc_ok: 0
-241892:rx_adv_pdu_crc_err: 0
-241893:rx_adv_bytes_crc_ok: 0
-241894:rx_adv_bytes_crc_err: 0
-241895:rx_data_pdu_crc_ok: 0
-241895:rx_data_pdu_crc_err: 0
-<snip>
+155545:hci_cmd_errs: 0
+155545:hci_events_sent: 11
+155547:bad_ll_state: 0
+155547:bad_acl_hdr: 0
+155548:no_bufs: 0
+155548:rx_adv_pdu_crc_ok: 0
+155549:rx_adv_pdu_crc_err: 0
+155550:rx_adv_bytes_crc_ok: 0
+155551:rx_adv_bytes_crc_err: 0
+155552:rx_data_pdu_crc_ok: 0
+
+    ...
+
+155564:scan_req_txf: 0
+155565:scan_req_txg: 0
+155565:scan_rsp_txg: 0
+155566: > 
 ```
 
 <br>
 
-For a more exciting output, try scanning your surroundings for BLE adverstisements. The HCI command shown below specifies a scan duration in ms, sets discovery mode to general (as opposed to limited), the filter to no-whitelist, and type of scan to passive. You should see some scan data flying by!
+For a more exciting output, try scanning your surroundings for BLE advertisements. The HCI command shown below specifies a scan duration in ms, scan to passive, and no duplicates.  You should see some scan data flying by!
+
 
 ```hl_lines="1"
-139088: > b scan dur=10000 disc=gen filt=no_wl type=passive
-...
-146055:received advertisement; event_type=0 addr_type=1 addr=6b:aa:49:b7:46:e6 length_data=24 rssi=-42 data=0x02:0x01:0x1a:0x14:0xff:0x4c:0x00:0x01:0x00:0x00:0x00:0x00:0x04:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00 fields:
-146061:    flags=0x1a
-146062:    mfg_data=0x4c:0x00:0x01:0x00:0x00:0x00:0x00:0x04:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00:0x00
-146065:
-146065:received advertisement; event_type=0 addr_type=0 addr=ac:bc:32:ac:4f:e4 length_data=11 rssi=-36 data=0x02:0x01:0x06:0x07:0xff:0x4c:0x00:0x10:0x02:0x0b:0x00 fields:
-146069:    flags=0x06
-146070:    mfg_data=0x4c:0x00:0x10:0x02:0x0b:0x00
-146071:
-146072:scanning finished
-...
-<snip>
+b scan dur=10000 passive=1 nodups=1
+37266:[ts=291140616ssb, mod=4 level=1] GAP procedure initiated: discovery; own_as
+
+37641:
+38256:received advertisement; event_type=0 rssi=-48 addr_type=1 addr=59:cc:3d:a3:
+38261:    flags=0x1a:
+38261:        General discoverable mode
+38262:    uuids16(complete)=0x1802 
+38263:    name(complete)=Find Me
+38264:
+38551:scanning finished
 ```
 
 <br>
@@ -271,42 +294,50 @@ If you're still not seeing any output from the device, try running the debugger 
 <br>
 
 ```
-$ newt debug myble
-Debugging ./bin/myble/apps/bletiny/bletiny.elf
-GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20140731-cvs
-Copyright (C) 2013 Free Software Foundation, Inc.
-
+$newt debug myble
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52dk ~/dev/wanda/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny]
+~/dev/myproj/repos/apache-mynewt-core/hw/scripts/common.sh: line 38: [: =: unary operator expected
+Debugging ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
+Copyright (C) 2014 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
 and "show warranty" for details.
 This GDB was configured as "--host=x86_64-apple-darwin10 --target=arm-none-eabi".
+Type "show configuration" for configuration details.
 For bug reporting instructions, please see:
-<http://www.gnu.org/software/gdb/bugs/>...
-Reading symbols from ./bin/myble/apps/bletiny/bletiny.elf...done.
-0x00002f08 in ?? ()
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf...done.
+os_tick_idle (ticks=1920)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+200    if (ticks > 0) {
 (gdb) monitor reset
 Resetting target
 (gdb) c
 Continuing.
 ^C
 Program received signal SIGTRAP, Trace/breakpoint trap.
-os_tick_idle (ticks=1000) at hal_os_tick.c:117
-117	    if (ticks > 0) {
+os_tick_idle (ticks=1907)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+200    if (ticks > 0) {
 (gdb) p g_os_time
-$1 = 37991
+$1 = 13
 (gdb) c
 Continuing.
 ^C
 Program received signal SIGTRAP, Trace/breakpoint trap.
-os_tick_idle (ticks=1000) at hal_os_tick.c:117
-117	    if (ticks > 0) {
+os_tick_idle (ticks=1920)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+200    if (ticks > 0) {
 (gdb) p g_os_time
-$2 = 51888
-(gdb) c
-Continuing.
+$2 = 6611
+(gdb) 
 ```
-
 <br>
 
 You should see the g_os_time advancing as above, as each os time tick is 1ms. If the system ticks aren't advancing, then nothing's actually running.
