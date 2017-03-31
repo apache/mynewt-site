@@ -285,7 +285,7 @@
               
                 
     <li >
-      <a href="../blinky_sram_olimex/">Run Blinky from SRAM, no bootloader</a>
+      <a href="../rbnano2/">Blinky on RedBear Nano 2</a>
     </li>
 
               
@@ -326,7 +326,7 @@
               
                 
     <li >
-      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino Zero</a>
+      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino MKR1000</a>
     </li>
 
               
@@ -555,13 +555,14 @@
 <li>Install the Newt tool and toolchains (See <a href="../../get_started/get_started/">Basic Setup</a>).</li>
 <li>Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in <a href="../../../os/get_started/project_create">Creating Your First Project</a>.</li>
 <li>Read the Mynewt OS <a href="../../get_started/vocabulary/">Concepts</a> section.</li>
-<li>Install a debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software install but not as simple as Option 1.</li>
+<li>Install a debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software but not as simple as Option 1.</li>
 </ul>
 <p><br></p>
 <h5 id="option-1">Option 1</h5>
 <ul>
 <li><a href="https://www.segger.com/jlink-debug-probes.html">Segger J-Link Debug Probe</a> - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)</li>
 <li><a href="https://www.segger.com/jlink-adapters.html#CM_9pin">J-Link 9 pin Cortex-M Adapter</a> that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems</li>
+<li>Install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK Software and documentation pack</a>. </li>
 </ul>
 <h5 id="option-2">Option 2</h5>
 <p>No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download <a href="../downloads/openocd-wnrf52.tgz">here</a>. Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:</p>
@@ -578,20 +579,7 @@ For bug reports, read
 </pre></div>
 
 
-<p>Next, make sure that you have checked out the newt develop branch and rebuilt newt.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd $GOPATH/src/mynewt.apache.org/newt
-$ git checkout develop
-$ git pull
-$ cd newt
-$ go install
-</pre></div>
-
-
-<p><strong>Note:</strong> This step can be removed once the changes have been pushed to master.</p>
 <p>You can now use openocd to upload to Arduino Primo board via the USB port itself.</p>
-<p><br></p>
-<h3 id="install-jlinkexe">Install jlinkEXE</h3>
-<p>In order to be able to communicate with the SEGGER J-Link debugger on the dev board, you have to download and install the J-Link GDB Server software on to your laptop. You may download the "Software and documentation pack for Mac OS X" from <a href="https://www.segger.com/jlink-software.html">https://www.segger.com/jlink-software.html</a>. </p>
 <p><br></p>
 <h3 id="create-a-project">Create a Project</h3>
 <p>Create a new project if you do not have an existing one.  You can skip this step and proceed to <a href="#create_targets">create the targets</a> if you already created a project.</p>
@@ -727,10 +715,10 @@ $
 </pre></div>
 
 
-<p>You should see the LED on the board blink!</p>
+<p>You should see the orange LED (L13), below the ON LED,  on the board blink!</p>
 <p>Note: If the LED does not blink, try resetting the board.</p>
 <p><br></p>
-<p><strong>Note:</strong> If you want to erase the flash and load the image again, you can use JLinkExe to issue an <code>erase</code> command.</p>
+<p><strong>Note:</strong> If you want to erase the flash and load the image again, use JLinkExe and issue the <code>erase</code> command when you are using the Jlink debug probe: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ JLinkExe -device nRF52 -speed 4000 -if SWD
 SEGGER J-Link Commander V5.12c (Compiled Apr 21 2016 16:05:51)
 DLL version V5.12c, compiled Apr 21 2016 16:05:45
@@ -754,6 +742,22 @@ Erasing done.
 J-Link&gt;exit
 $
 </pre></div>
+
+
+<p><br></p>
+<p>If you are using the OpenOCD debugger, run the <code>newt debug primoblinky</code> command and issue the highlighted command at the (gdb) prompt:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt debug primoblinky
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52/primo_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/arduino_primo_nrf52 ~/dev/myproj/bin/targets/primoblinky/app/apps/blinky/blinky]
+Open On-Chip Debugger 0.10.0-dev-snapshot (2017-03-28-11:24)
+
+    ...
+
+os_tick_idle (ticks=128)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+warning: Source file is more recent than executable.
+200    if (ticks &gt; 0) {
+<span style="background-color: #ffffcc">(gdb) mon nrf52 mass_erase
+</span></pre></div>
 
 
 <p><br></p>

@@ -285,7 +285,7 @@
               
                 
     <li >
-      <a href="../blinky_sram_olimex/">Run Blinky from SRAM, no bootloader</a>
+      <a href="../rbnano2/">Blinky on RedBear Nano 2</a>
     </li>
 
               
@@ -326,7 +326,7 @@
               
                 
     <li >
-      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino Zero</a>
+      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino MKR1000</a>
     </li>
 
               
@@ -540,30 +540,21 @@
                         
                             <h2 id="enabling-the-console-and-shell-for-blinky">Enabling The Console and Shell for Blinky</h2>
 <p><br></p>
-<p>This tutorial explains how to add the Console and Shell task to the blinky app so that you 
-can interact with it over a serial line connection.</p>
+<p>This tutorial explains how to add the Console and Shell task to the blinky application so that you can interact with it over a serial line connection.</p>
 <p><br></p>
-<h3 id="pre-requisites">Pre-Requisites</h3>
+<h3 id="prerequisites">Prerequisites</h3>
 <ul>
-<li>Ensure you have installed <a href="../../../newt/install/newt_mac/">newt</a> and that the 
-newt command is in your system path. </li>
-<li>You must have Internet connectivity to fetch remote Mynewt components.</li>
-<li>You must <a href="../../get_started/native_tools/">install the compiler tools</a> to 
-support native compiling to build the project this tutorial creates.  </li>
-<li>You must install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK package</a> to 
-load your project on the board.</li>
-<li>Cable to establish a serial USB connection between the board and the laptop</li>
+<li>Work through one of the Blinky Tutorials to create and build a Blinky application for one of the boards.</li>
 </ul>
 <p><br></p>
-<h3 id="use-an-existing-project">Use an existing project</h3>
+<h3 id="use-an-existing-project">Use an Existing Project</h3>
 <p>Since all we're doing is adding the shell and console capability to blinky, we assume 
 that you have worked through at least some of the other tutorials, and have an existing project.
 For this example, we'll be modifying the <a href="../nRF52/">blinky on nrf52</a> project to enable 
-the shell and console connectivity. Feel free to use whatever version of blinky you'd like though.</p>
+the shell and console connectivity. You can use blinky on a different board.</p>
 <p><br></p>
 <h3 id="modify-the-dependencies-and-configuration">Modify the Dependencies and Configuration</h3>
-<p>The first thing you'll need to add is a few new dependencies for your app. To add shell support to 
-your app make sure the following <code>pkg.deps</code> are defined in your target's pkg.yml file:</p>
+<p>Add the following dependencies to your application target's <code>pkg.yml</code> file:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/shell&quot;
@@ -572,12 +563,8 @@ your app make sure the following <code>pkg.deps</code> are defined in your targe
 
 
 <p>This lets the newt system know that it needs to pull in the code for the console and the shell.</p>
-<p>Now we'll need to modify the settings for the app to turn on the shell, etc. by modifying the
-<code>syscfg.yml</code> file for your target. (Remember, these files are in the targets/<app-name> directory.)
-If there isn't a <code>syscfg.yml</code> file in your target's directory, you will need to create one.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># Package: apps/bletiny
-
-syscfg.vals:
+<p>Modify the system configuration settings to enable Shell and Console ticks and prompt.  Add the following to your application target's <code>syscfg.yml</code> file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
     # Enable Console OS Ticks
@@ -587,91 +574,117 @@ syscfg.vals:
 </pre></div>
 
 
-<h3 id="add-an-event-queue">Add an Event Queue</h3>
-<p>Blinky is a small app that doesn't make use of tasks or an event queue as many other apps do, so
-we'll have to modify the source for the app in order to add one. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* System event queue task handler */</span>
-<span style="color: #633820">#define SYSEVQ_PRIO (1)</span>
-<span style="color: #633820">#define SYSEVQ_STACK_SIZE    OS_STACK_ALIGN(512)</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">task_sysevq</span>;
-<span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">sysevq_stack</span>[<span style="color: #000000">SYSEVQ_STACK_SIZE</span>];
+<p><br></p>
+<h3 id="use-the-os-default-event-queue-to-process-blinky-timer-and-shell-events">Use the OS Default Event Queue to Process Blinky Timer and Shell Events</h3>
+<p>Mynewt creates a default task that executes the application <code>main()</code> function. It also creates an OS default event queue that packages can use to queue their events.   Shell uses the OS default event queue for Shell events,  and <code>main()</code> can process the events in the context of the default task. </p>
+<p>Blinky's main.c is very simple. It only has a <code>main()</code> function that executes an infinite loop to toggle the LED and sleep for one second.  We will modify blinky:</p>
+<ul>
+<li>To use os_callout to generate a timer event every one second instead of sleeping.  The timer events are added to the OS default event queue.</li>
+<li>To process events from the OS default event queue inside the infinite loop in <code>main()</code>.</li>
+</ul>
+<p>This allows the default task to process both Shell events and the timer events to toggle the LED from the OS default event queue.</p>
+<p><br></p>
+<h3 id="modify-mainc">Modify main.c</h3>
+<p>Initialize a os_callout timer and move the toggle code from the while loop in <code>main()</code> to the event callback function. Add the following code above the <code>main()</code> function:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* The timer callout */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">blinky_callout</span>;
 
-<span style="color: #177500">/* Event queue for events handled by the system (shell, etc.) */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">sys_evq</span>;
-</pre></div>
-
-
-<p>We define a new <code>os_task</code> a task stack (<code>sysevq_stack</code>) and new system event queue 
-(<code>sys_evq</code>) so that the shell and console will have an event queue to run in.</p>
-<p>Next we go down to our <code>init_tasks()</code> function and initialize it</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;task_sysevq</span>, <span style="color: #C41A16">&quot;sysevq&quot;</span>, <span style="color: #000000">sysevq_handler</span>, <span style="color: #A90D91">NULL</span>,
-        <span style="color: #000000">SYSEVQ_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">sysevq_stack</span>, <span style="color: #000000">SYSEVQ_STACK_SIZE</span>);
-<span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;sys_evq</span>);
-<span style="color: #000000">os_eventq_dflt_set</span>(<span style="color: #000000">&amp;sys_evq</span>);
-</pre></div>
-
-
-<p>This will initialize the task, initialize the event queue, and then set the new event queue as
-the default event queue.       </p>
-<p>Finally, we need to add the task handler for the event queue:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
-<span style="color: #177500"> * This task serves as a container for the shell and newtmgr packages.  These</span>
-<span style="color: #177500"> * packages enqueue timer events when they need this task to do work.</span>
+<span style="color: #177500">/*</span>
+<span style="color: #177500"> * Event callback function for timer events. It toggles the led pin.</span>
 <span style="color: #177500"> */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">sysevq_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
 {
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">&amp;sys_evq</span>);
-    }
+    <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
+
+    <span style="color: #000000">++g_task1_loops</span>;
+    <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pin</span>);
+
+    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+}
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">init_timer</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #177500">/*</span>
+<span style="color: #177500">     * Initialize the callout for a timer event.</span>
+<span style="color: #177500">     */</span>
+    <span style="color: #000000">os_callout_init</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">os_eventq_dflt_get</span>(),
+                    <span style="color: #000000">timer_ev_cb</span>, <span style="color: #A90D91">NULL</span>);
+
+    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+
 }
 </pre></div>
 
 
-<h3 id="build-targets">Build targets</h3>
+<p>In <code>main()</code>, add the call to the <code>init_timer()</code> function before the while loop and modify the while loop to process events from the OS default event queue:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+<span style="color: #633820">#ifdef ARCH_sim</span>
+    <span style="color: #000000">mcu_sim_parse_args</span>(<span style="color: #000000">argc</span>, <span style="color: #000000">argv</span>);
+<span style="color: #633820">#endif</span>
+
+    <span style="color: #000000">sysinit</span>();
+
+    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+    <span style="color: #000000">init_timer</span>();
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+    }
+    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>)
+    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+}
+</pre></div>
+
+
+<p><br></p>
+<h3 id="build-the-blinky-application-target">Build the Blinky Application Target</h3>
 <p>We're not going to build the bootloader here since we are assuming that you have already
 built and loaded it during previous tutorials.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build blinky
-Archiving cbmem.a
-Compiling crc16.c
-Compiling crc8.c
-Archiving crc.a
-Compiling mem.c
-Archiving mem.a
-Linking ~/dev/myproj/bin/targets/blinky/app/apps/blinky/blinky.elf
-Target successfully built: targets/blinky
+<p>Run the <code>newt build nrf52_blinky</code> command to build the Blinky application:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_blinky
+
+   ...
+
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
+Target successfully built: targets/nrf52_blinky
 </pre></div>
 
 
 <p><br></p>
-<h3 id="create-the-app-image">Create the app image</h3>
-<p>Generate a signed application image for the <code>blinky</code> target. The version number is arbitrary.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image blinky 1.0.0
-App image succesfully generated: ~/dev/myproj/bin/targets/blinky/app/apps/blinky/blinky.img
+<h3 id="sign-and-create-the-blinky-application-image">Sign and Create the Blinky Application Image</h3>
+<p>Run the <code>newt create-image nrf52_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image nrf52_blinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
 </pre></div>
 
 
 <p><br></p>
-<h3 id="load-the-image">Load the image</h3>
+<h3 id="load-the-image">Load the Image</h3>
 <p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load blinky
+<p>Run the <code>newt load nrf52_blinky</code> command to load the Blinky application image onto the board.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_blinky
+Loading app image into slot 1
 </pre></div>
 
 
 <p><br></p>
-<h3 id="set-up-serial-connection">Set up Serial connection</h3>
+<h3 id="set-up-a-serial-connection">Set Up a Serial Connection</h3>
 <p>You'll need a Serial connection to see the output of your program. You can reference the <a href="../../get_started/serial_access/">Serial Port Setup</a> 
-Tutorial for more information on setting up your serial communications.</p>
+Tutorial for more information on setting up your serial communication.</p>
 <p><br></p>
-<h3 id="connecting-with-your-app">Connecting with your app</h3>
-<p>Once you have a connection set up, you can connect to your device with <code>minicom -D /dev/tty.usbmodem&lt;port&gt; -b 115200</code> to run connect
-to the console of your app. </p>
+<h3 id="communicate-with-the-application">Communicate with the Application</h3>
+<p>Once you have a connection set up, run <code>minicom -D /dev/tty.usbmodem&lt;port&gt; -b 115200</code> to connect to the application console.</p>
 <p>To test and make sure that the Shell is running, first just hit <return>:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3534: &gt;
 </pre></div>
 
 
-<p>Remember, we turned the CONSOLE_PROMPT and the CONSOLE_TICKS on earlier. You can try some commands now:</p>
+<p>You can try some commands:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3609: &gt; ?
 Commands:
 8841:     echo         ?    prompt     ticks     tasks  mempools
@@ -688,9 +701,6 @@ prompt on
 39108: Prompt now on.
 39108: &gt;
 </pre></div>
-
-
-<p>And there you have the Console and Shell working in an app that previously had no event queue! </p>
                         
                         <div class="row">
                             
@@ -700,9 +710,9 @@ prompt on
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../blinky_sram_olimex/>
+    <a href=../rbnano2/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Run Blinky from SRAM, no bootloader
+        Previous: Blinky on RedBear Nano 2
     </a>
     
     </li>

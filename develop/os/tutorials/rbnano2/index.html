@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_sram_olimex/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/rbnano2/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>Run Blinky from SRAM, no bootloader - Apache Mynewt</title>
+	    <title>Blinky on RedBear Nano 2 - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Run Blinky from SRAM, no bootloader">
+    <body class="Blinky on RedBear Nano 2">
 
 
         <div class="container">
@@ -285,7 +285,7 @@
               
                 
     <li class="active">
-      <a href="./">Run Blinky from SRAM, no bootloader</a>
+      <a href="./">Blinky on RedBear Nano 2</a>
     </li>
 
               
@@ -326,7 +326,7 @@
               
                 
     <li >
-      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino Zero</a>
+      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino MKR1000</a>
     </li>
 
               
@@ -530,7 +530,7 @@
         
       
       
-        <li>&raquo; Run Blinky from SRAM, no bootloader</li>
+        <li>&raquo; Blinky on RedBear Nano 2</li>
       
     
     
@@ -538,153 +538,176 @@
 </div>
                         </div>
                         
-                            <h2 id="run-blinky-from-sram-without-bootloader">Run Blinky from SRAM without bootloader</h2>
+                            <h2 id="blinky-your-hello-world-on-redbear-nano-2">Blinky, your "Hello World!", on RedBear Nano 2</h2>
+<p><br></p>
 <h3 id="objective">Objective</h3>
-<p>To download an application image directly into the embedded SRAM in the microcontroller and run it without the bootloader. This tutorial describes how you do it on an Olimex STM32 board.</p>
-<h3 id="what-you-need">What you need</h3>
-<ol>
-<li>STM32-E407 development board from Olimex. You can order it from <a href="http://www.mouser.com/search/ProductDetail.aspx?R=0virtualkey0virtualkeySTM32-E407">http://www.mouser.com</a>, <a href="http://www.digikey.com/product-detail/en/STM32-E407/1188-1093-ND/3726951">http://www.digikey.com</a>, and other places.</li>
-<li>ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)</li>
-<li>USB A-B type cable to connect the debugger to your personal computer</li>
-<li>Personal Computer with Mac OS (Mac: OS X Yosemite Version 10.10.5) or Linux box (Ubuntu 14.10: Utopic Unicorn)</li>
-<li>An account on Github repository and <em>git</em> installed on your computer.</li>
-<li>It is assumed you have already installed newt tool.</li>
-<li>It is assumed you already installed native tools as described <a href="../../get_started/native_tools/">here</a></li>
-</ol>
-<p>Also, we assume that you're familiar with UNIX shells. Let's gets started!</p>
+<p>Learn how to use packages from a default application repository of Mynewt to build your first <em>Hello World</em> application (Blinky) on a target board. Once built using the <em>newt</em> tool, this application will blink the LED lights on the target board.</p>
+<p>Create a project with a simple application that blinks an LED on a RedBear Nano 2 board.  Download the application to the target and watch it blink!</p>
 <p><br></p>
-<h3 id="prepare-the-software">Prepare the Software</h3>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Ensure that you have met the following prerequisites before continuing with this tutorial:</p>
 <ul>
-<li>Make sure the PATH environment variable includes the $HOME/dev/go/bin directory.</li>
+<li>Have a RedBear Nano 2 board. </li>
+<li>Have Internet connectivity to fetch remote Mynewt components.</li>
+<li>Have a computer to build a Mynewt application and connect to the board over USB.</li>
+<li>Install the Newt tool and toolchains (See <a href="../../get_started/get_started/">Basic Setup</a>).</li>
+<li>Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in <a href="../../../os/get_started/project_create">Creating Your First Project</a>.</li>
+<li>Read the Mynewt OS <a href="../../get_started/vocabulary/">Concepts</a> section.</li>
 </ul>
-<p><br></p>
-<h3 id="create-a-project">Create a project</h3>
-<p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in
-<a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
-or just follow the commands below.</p>
+<p><strong>Note:</strong> You must install a patched version of OpenOCD .10.0 (See <a href="../../../os/tutorials/blinky_primo">Debugger Option 2 in the Arduino Primo Blinky Tutorial</a>).</p>
+<h3 id="create-a-project">Create a Project</h3>
+<p>Create a new project if you do not have an existing one.  You can skip this step and proceed to <a href="#create_targets">create the targets</a> if you already have a project created.  </p>
+<p>Run the following commands to create a new project:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
     Downloading project skeleton from apache/incubator-mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
-
-    $cd myproj
-
-    $ newt install -v
+    $ cd myproj
+    $ newt install
     apache-mynewt-core
-    Downloading repository description for apache-mynewt-core... success!
-    ...
-    apache-mynewt-core successfully installed version 0.7.9-none
+    $
 </pre></div>
 
 
 <p><br></p>
-<h3 id="create-a-target">Create a target</h3>
-<p>Change directory to ~/dev/myproj directory and define the <em>blinky</em> target inside myproj, using the <em>newt</em> tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt target create blinky
-    $ newt target set blinky build_profile=debug
-    $ newt target set blinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
-    $ newt target set blinky app=apps/blinky
-    $ newt target show blinky
-    targets/blinky
-        app=apps/blinky
-        bsp=hw/bsp/olimex_stm32-e407_devboard
-        build_profile=debug
+<h3 id="create-the-targets"><a name="create_targets"></a>Create the Targets</h3>
+<p>Create two targets for the RedBear Nano 2 board - one for the bootloader and one for the Blinky application.</p>
+<p>Run the following <code>newt target</code> commands, from your project directory, to create a bootloader target. We name the target <code>rbnano2_boot</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create rbnano2_boot
+$ newt target set rbnano2_boot app=@apache-mynewt-core/apps/boot
+$ newt target set rbnano2_boot bsp=@apache-mynewt-core/hw/bsp/rb-nano2
+$ newt target set rbnano2_boot build_profile=optimized
+</pre></div>
+
+
+<p><br>
+Run the following <code>newt target</code> commands to create a target for the Blinky application. We name the target <code>nrf52_blinky</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create rbnano2_blinky
+$ newt target set rbnano2_blinky app=apps/blinky
+$ newt target set rbnano2_blinky bsp=@apache-mynewt-core/hw/bsp/rb-nano2
+$ newt target set rbnano2_blinky build_profile=debug
+</pre></div>
+
+
+<p><br>
+You can run the <code>newt target show</code> command to verify the target settings:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show 
+targets/rbnano2_blinky
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/rb-nano2
+    build_profile=debug
+targets/rbnano2_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/rb-nano2
+    build_profile=optimized
 </pre></div>
 
 
 <p><br></p>
-<h3 id="build-the-image">Build the image</h3>
-<p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>.</p>
-<p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
-    $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
-    (some diff will be displayed)
-    $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
-    $ cd ~/dev/myproj
-    $ newt build blinky
-    Compiling case.c
-    Compiling suite.c
-    ...
-    Linking blinky.elf
-    App successfully built:~/dev/myproj/bin/blinky/apps/blinky/blinky.elf
-    $ ls ~/dev/myproj/bin/blinky/apps/blinky/
-        blinky.elf      blinky.elf.bin     blinky.elf.cmd  
-        blinky.elf.lst  blinky.elf.map
+<h3 id="build-the-target-executables">Build the Target Executables</h3>
+<p>Run the <code>newt build rbnano2_boot</code> command to build the bootloader:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt build rbnano2_boot
+Building target targets/rbnano2_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+
+      ...
+
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/rbnano2_boot/app/apps/boot/boot.elf
+Target successfully built: targets/rbnano2_boot
+</pre></div>
+
+
+<p><br>
+Run the <code>newt build rbnano2_blinky</code> command to build the Blinky application:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt build rbnano2_blinky
+Building target targets/rbnano2_blinky
+Assembling repos/apache-mynewt-core/hw/bsp/rb-nano2/src/arch/cortex_m4/gcc_startup_nrf52_split.s
+Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
+Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
+Compiling repos/apache-mynewt-core/hw/bsp/rb-nano2/src/sbrk.c
+Compiling apps/blinky/src/main.c
+
+     ...
+
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky.elf
+Target successfully built: targets/rbnano2_blinky
 </pre></div>
 
 
 <p><br></p>
-<h3 id="prepare-the-hardware-to-boot-from-embedded-sram">Prepare the hardware to boot from embedded SRAM</h3>
-<ul>
-<li>Locate the boot jumpers on the board.</li>
-</ul>
-<p><br></p>
-<p><img alt="Alt Layout - Top View" src="../pics/topview.png" />
-<img alt="Alt Layout - Bottom View" src="../pics/bottomview.png" /></p>
-<p><br></p>
-<ul>
-<li>
-<p>B1_1/B1_0 and B0_1/B0_0 are PTH jumpers. Note that because the markings on the board may not always be accurate, when in doubt, you should always refer to the manual for the correct positioning. Since the jumpers are a pair, they should move together, and as such, the pair is responsible for the boot mode when bootloader is present.
-To locate the bootloader, the board searches in three places: User Flash Memory, System Memory or the Embedded SRAM. For this Blinky project, we will configure it to boot from SRAM by jumpering <strong>B0_1</strong> and <strong>B1_1</strong>.</p>
-</li>
-<li>
-<p>Connect USB-OTG#2 in the picture above to a USB port on your computer (or a powered USB hub to make sure there is enough power available to the board).</p>
-</li>
-<li>
-<p>The red PWR LED should be lit.</p>
-</li>
-<li>
-<p>Connect the JTAG connector to the SWD/JTAG interface on the board. The other end of the cable should be connected to the USB port or hub of your computer.</p>
-</li>
-</ul>
-<p><br></p>
-<h3 id="lets-go">Let's Go!</h3>
-<ul>
-<li>Ensure that you are in the blinky project directory with the <em>blinky.elf</em> executable. Run the debug command in the <em>newt</em> tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an <code>-c "reset halt"</code> command.</li>
-</ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt debug blinky
-    Debugging with ~/dev/core/hw/bsp/olimex_...
-    Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
-    GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
-    Copyright (C) 2014 Free Software Foundation, Inc.
-    License GPLv3+: GNU GPL version 3 &lt;http://gnu.org/licenses/gpl.html&gt;
-    ...
-    (info)
-    ...
-    target state: halted
-    target halted due to debug-request, current mode: Thread
-    xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
-    Info : accepting &#39;gdb&#39; connection on tcp/3333
-    Info : device id = 0x10036413
-    Info : flash size = 1024kbytes
+<h3 id="sign-and-create-the-blinky-application-image">Sign and Create the Blinky Application Image</h3>
+<p>Run the <code>newt create-image rbnano2_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt create-image rbnano2_blinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky.img
 </pre></div>
 
 
 <p><br></p>
-<p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example,</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) set $msp=0x10010000
+<h3 id="connect-to-the-board">Connect to the Board</h3>
+<p>Connect the RedBear Nano 2 USB to a USB port on your computer. You should see an orange LED light up on the board.</p>
+<h3 id="load-the-bootloader-and-the-blinky-application-image">Load the Bootloader and the Blinky Application Image</h3>
+<p>Run the <code>newt load rbnano2_boot</code> command to load the bootloader onto the board: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load rbnano2_boot
+Loading bootloader
+$
 </pre></div>
 
 
-<p><br></p>
-<p>Now load the image and type "c" or "continue" from the GNU debugger.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
-    Loading section .text, size 0x16b88 lma 0x20000000
-    Loading section .ARM.exidx, size 0x18 lma 0x20016b88
-    Loading section .data, size 0x9ec lma 0x20016ba0
-    Start address 0x200004b8, load size 95628
-    Transfer rate: 74 KB/sec, 3825 bytes/write.
-    (gdb) c
-    Continuing.
+<p><br>
+Note: The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the <code>newt debug rbnano2_blinky</code> command and issue the following commands at the highlighted (gdb) prompts.  </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt debug rbnano2_blinky
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/rb-nano2/rb-nano2_debug.sh  ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/rb-nano2 ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky]
+Open On-Chip Debugger 0.10.0-dev-snapshot (2017-03-28-11:24)
+Licensed under GNU GPL v2
+
+     ...
+
+<span style="background-color: #ffffcc">(gdb) set {unsigned long}0x4001e504=2
+</span><span style="background-color: #ffffcc">(gdb) x/1wx 0x4001e504
+</span>0x4001e504:0x00000002
+<span style="background-color: #ffffcc">(gdb) set {unsigned long}0x4001e50c=1
+</span>Info : SWD DPIDR 0x2ba01477
+Error: Failed to read memory at 0x00009ef4
+<span style="background-color: #ffffcc">(gdb) x/32wx 0x00
+</span>0x0:0xffffffff0xffffffff0xffffffff0xffffffff
+0x10:0xffffffff0xffffffff0xffffffff0xffffffff
+0x20:0xffffffff0xffffffff0xffffffff0xffffffff
+0x30:0xffffffff0xffffffff0xffffffff0xffffffff
+0x40:0xffffffff0xffffffff0xffffffff0xffffffff
+0x50:0xffffffff0xffffffff0xffffffff0xffffffff
+0x60:0xffffffff0xffffffff0xffffffff0xffffffff
+0x70:0xffffffff0xffffffff0xffffffff0xffffffff
+(gdb)
 </pre></div>
 
 
-<ul>
-<li>Voilà! The board's LED should be blinking at 1 Hz. Success!</li>
-</ul>
-<p><br></p>
+<p><br>
+Run the <code>newt load rbnano2_blinky</code> command to load the Blinky application image onto the board.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load rbnano2_blinky
+Loading app image into slot 1
+</pre></div>
+
+
+<p>You should see a blue LED on the board blink!</p>
+<p>Note: If the LED does not blink, try resetting your board.</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>You have created, setup, compiled, loaded, and ran your first mynewt application for a RedBear Nano 2 board.</p>
+<p>We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on <a href="../unit_test/">writing a test suite</a> or try enabling additional functionality such as <a href="../project-target-slinky/">remote comms</a> or <a href="../bletiny_project/">Bluetooth Low Energy</a> on your current board.</p>
+<p>If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our <a href="../../../community/">Community Page</a>.</p>
+<p>Keep on hacking and blinking!</p>
                         
                         <div class="row">
                             
