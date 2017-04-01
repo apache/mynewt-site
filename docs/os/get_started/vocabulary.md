@@ -103,9 +103,6 @@ Packages have a few features worth noting:
     they will inherit their functionality (header files, library definitions, etc.)
   * APIs: Packages can export named APIs, and they can require that certain 
     APIs be present, in order to compile.
-  * Features: Packages can operate differently depending on what named features are 
-    present in the system.  Packages can also export features to the rest of the 
-    Mynewt system.
 
 Everything that newt knows about within a project's directory is a package.  This 
 makes it very clean and easy to write re-usable components, which can describe their 
@@ -127,8 +124,9 @@ of your project.  Most targets consist of:
 
 Targets can also have additional items specified, including: 
 
+  * ```aflags```: Any additional assembler flags you might want to specify to the build.
   * ```cflags```: Any additional compiler flags you might want to specify to the build.
-  * ```features```: Any system level features you want to enable.
+  * ```lflags```: Any additional linker flags you might want to specify to the build.
 
 In order to create and manipulate targets, the *newt* tool offers a set of helper commands,
 you can find more information about these by issuing:

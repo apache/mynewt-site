@@ -230,7 +230,7 @@ into your local directory.
 
 ### Test the project's packages
 
-You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the `libs/os` package in the `apache-mynewt-core` repo, call newt as shown below.
+You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the `sys/config` package in the `apache-mynewt-core` repo, call newt as shown below.
 
 ```no-highlight
 $ newt test @apache-mynewt-core/sys/config
@@ -333,9 +333,10 @@ blink. If you are using newt docker, use `newt run` to run the simulated binary.
 
 ```no-highlight
 $ newt run my_blinky_sim
-No download script for BSP hw/bsp/native
-Debugging /workspace/bin/my_blinky_sim/apps/blinky/blinky.elf
-<snip>
+Loading app image into slot 1
+    ...
+Debugging ~/dev/myproj/bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
+    ...
 Reading symbols from /bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf...done.
 (gdb)
 ```
@@ -343,7 +344,7 @@ Type `r` at the `(gdb)` prompt to run the project. You will see an output indica
 
 If you natively install the toolchain, you can either use `newt run` or call the binary directly. Generally, `newt run` is the expected way to call things.
 
-```
+```no-highlight
 $ ./bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
 hal_gpio set pin  1 to 0
 ```
