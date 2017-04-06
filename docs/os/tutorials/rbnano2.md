@@ -1,25 +1,12 @@
 ## Blinky, your "Hello World!", on RedBear Nano 2
 
-<br>
-
-### Objective
-
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
-
-Create a project with a simple application that blinks an LED on a RedBear Nano 2 board.  Download the application to the target and watch it blink!
-
+This tutorial shows you how to create, build and run the Blinky application on a RedBear Nano 2 board.
 <br>
 
 ### Prerequisites
 
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a RedBear Nano 2 board. 
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
 **Note:** You must install a patched version of OpenOCD .10.0 (See [Debugger Option 2 in the Arduino Primo Blinky Tutorial](/os/tutorials/blinky_primo)).
 
@@ -192,15 +179,3 @@ Loading app image into slot 1
 You should see a blue LED on the board blink!
 
 Note: If the LED does not blink, try resetting your board.
-
-
-### Conclusion
-
-You have created, setup, compiled, loaded, and ran your first mynewt application for a RedBear Nano 2 board.
-
-We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on [writing a test suite](unit_test.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) or [Bluetooth Low Energy](bletiny_project.md) on your current board.
-
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
-

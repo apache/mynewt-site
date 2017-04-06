@@ -1,20 +1,11 @@
 ## Blinky, your "Hello World!", on Arduino Zero
 
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
-
-This tutorial describes how to run Mynewt OS on Arduino Zero. Follow these simple steps and your board will be blinking in no time!
+This tutorial shows you how to create, build and run the Blinky application on an Arduino Zero board.
 
 ### Prerequisites
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have an Arduino Zero board.  
 Note: There are many flavors of Arduino. Make sure you are using an Arduino Zero. See below for the versions of Arduino Zero that are compatible with this tutorial.
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Have a Micro-USB cable to connect the board and the computer.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section. 
 
 This tutorial uses the Arduino Zero Pro board. The tutorial has been tested on the following three Arduino Zero boards - Zero, M0 Pro, and Zero-Pro.
 
@@ -349,18 +340,4 @@ debugger and restart the board.  The image you programmed will come up and run o
 the Arduino on the next boot!  
 
 <br>
-
-### Watch the LED Blink
-
-Congratulations! You have created an Mynewt application running on the
-Arduino Zero. The LED right next to the power LED should be blinking. It is toggled 
-by one task running on the Mynewt OS.   
-
-We have more fun tutorials for you to get your hands dirty. Be bold and try other 
-Blinky-like [tutorials](../tutorials/nRF52.md) or try enabling additional functionality 
-such as [remote comms](project-target-slinky.md) on the current board.
-
-If you see anything missing or want to send us feedback, please do so by signing up for 
-appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
+You should see the LED blink!

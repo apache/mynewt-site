@@ -1,14 +1,12 @@
 ##Enabling The Console and Shell for Blinky
 
-<br>
-
-This tutorial explains how to add the Console and Shell task to the blinky application so that you can interact with it over a serial line connection.
-
+This tutorial shows you how to add the Console and Shell to the Blinky application and interact with it over a serial line connection.
 <br>
 
 ### Prerequisites
 
 * Work through one of the Blinky Tutorials to create and build a Blinky application for one of the boards.
+* Have a [serial setup](/os/get_started/serial_access.md).
 
 <br>
 

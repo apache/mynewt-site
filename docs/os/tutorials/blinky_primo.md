@@ -1,41 +1,23 @@
 ## Blinky, your "Hello World!", on Arduino Primo
 
-<br>
-
-### Objective
-
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
-
-Create a project with a simple app that blinks an LED on the Arduino Primo board.  Download the application to the target and watch it blink!
+This tutorial shows you how to create, build, and run the Blinky application on an Arduino Primo board.
 
 Note that the Mynewt OS will run on the nRF52 chip in the Arduino Primo board. However, the board support package for the Arduino Primo is different from the nRF52 dev kit board support package.
-
 <br>
-
 ### Prerequisites
-Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-* Have an Arduino Primo
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the` board over USB.
-* Have a Micro-USB cable to connect the board and the computer.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
-* Install a debugger - choose one of the two options below. Option 1 requires additional hardware but very easy to set up. Option 2 is free software but not as simple as Option 1.
+* Meet the the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
+* Have an Arduino Primo board.
+* Install a debugger choose one of the two options below:  Option 1 requires additional hardware but very easy to set up. 
 
 <br>
-
 ##### Option 1
-
 * [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html) - any model (this tutorial has been tested with J-Link EDU and J-Link Pro)
 * [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems
 * Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html). 
 
-
 ##### Option 2
-
- No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download [here](downloads/openocd-wnrf52.tgz). Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:
+No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download [here](downloads/openocd-wnrf52.tgz). Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:
 
 ```
 $./configure --enable-cmsis-dap --enable-openjtag_ftdi --enable-jlink --enable-stlink
@@ -50,9 +32,9 @@ Licensed under GNU GPL v2
 For bug reports, read
     http://openocd.org/doc/doxygen/bugs.html
 ```
+
 You can now use openocd to upload to Arduino Primo board via the USB port itself.
 
-<br>
 ### Create a Project  
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already created a project.
 
@@ -252,20 +234,3 @@ warning: Source file is more recent than executable.
 (gdb) mon nrf52 mass_erase
 ```
 <br>
-
-
-### Conclusion
-
-You have created, setup, compiled, loaded, and ran your first mynewt application
-for an Arduino Primo board.
-
-We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on [writing a test suite](unit_test.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) or [Bluetooth Low Energy](bletiny_project.md) on your current board.
-
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
-
-
-
-
-

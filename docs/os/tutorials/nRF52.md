@@ -1,12 +1,6 @@
 ## Blinky, your "Hello World!", on nRF52
-
+This tutorial shows you how to create, build, and run the Blinky application on the nRF52 board.
 <br>
-
-### Objective
-
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
-
-Create a project with a simple application that blinks an LED on the nRF52 board from Nordic Semiconductors.  Download the application to the target and watch it blink!
 
 Note that there are several versions of the nRF52 in the market. The boards tested with this tutorial are listed under "Prerequisites".
 
@@ -14,18 +8,10 @@ Note that there are several versions of the nRF52 in the market. The boards test
 
 ### Prerequisites
 
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a nRF52 Development Kit (one of the following)
     * Dev Kit from Nordic - PCA 10040
     * Eval Kit from Rigado - BMD-300-EVAL-ES
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Have a Micro-USB cable to connect the board and the computer.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
 This tutorial uses the Nordic nRF52-DK board.
 
@@ -205,19 +191,3 @@ Erasing done.
 J-Link>exit
 $
 ```
-
-
-### Conclusion
-
-You have created, setup, compiled, loaded, and ran your first mynewt application for an nrf52 board.
-
-We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on [writing a test suite](unit_test.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) or [Bluetooth Low Energy](bletiny_project.md) on your current board.
-
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
-
-
-
-
-

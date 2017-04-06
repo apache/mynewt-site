@@ -1,34 +1,9 @@
 ## Project Slinky using the Nordic nRF52 Board
-
-
-<br>
-
-The goal of this tutorial is to enable and demonstrate remote communications with a Mynewt application running on a device via newt manager (newtmgr). It uses the "Slinky" sample application that is included in the apache-mynewt-core/apps directory and the Nordic nRF52-DK board.
-
-If you have an existing project that has a different application and you wish to add newtmgr functionality to it, check out the [Enable newtmgr in any app](add_newtmgr.md) tutorial.
+This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for a Nordic nRF52 board.
 
 ### Prerequisites
-
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Slinky](/os/tutorials/project-slinky.md).  
 * Have a Nordic nRF52-DK board.  
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Have a Micro-USB cable to connect the board and the computer.
-* Have a [Serial Port Setup](/os/get_started/serial_access.md). 
-* Install the newt tool and the toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Install the [newtmgr tool](../../newtmgr/installing/). 
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
-
-### Overview of Steps
-
-* Install dependencies
-* Define targets using the newt tool
-* Build executables for the targets using the newt tool
-* Set up serial connection with the targets
-* Create a connection profile using the newtmgr tool
-* Use the newtmgr tool to communicate with the targets
 
 ### Create a New Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created or completed the [Sim Slinky](project-slinky.md) tutorial. 

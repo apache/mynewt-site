@@ -1,142 +1,36 @@
-## Project Sim Slinky  
+## Project Slinky  
 
+The goal of the project is to use a sample application called "Slinky" included in the Mynewt repository to enable remote communications with a device running the Mynewt OS. The protocol for remote communications is called newt manager (newtmgr). 
 
-<br>
+If you have an existing project using a target that does not use the Slinky application and you wish to add newtmgr functionality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md). 
 
-The goal of the project is to use a sample app called "Slinky" included in the Mynewt repository to enable remote communications with a device running the Mynewt OS. The protocol for remote communications is called newt manager (newtmgr). In this tutorial we will create a target for a simulated device and define it with the sample app "Slinky". 
+###Available Tutorials
+Tutorials are available for the following boards:
 
-If you have an existing project using a target that does not use the Slinky app and you wish to add newtmgt functonality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md). 
-
+* [Slinky on a simulated device](/os/tutorials/project-sim-slinky).
+* [Slinky on a nRF52](/os/tutorials/project-nrf52-slinky).
+* [Slinky on an Olimex](/os/tutorials/project-stm32-slinky).
 <br>
 ### Prerequisites
 
-Ensure that you have met the following prerequisites before continuing with this tutorial:
+Ensure that you meet the following prerequisites before continuing with this tutorial:
 
 * Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application.
+* Have a computer to build a Mynewt application and connect to the board over USB.
+* Have a Micro-USB cable to connect the board and the computer.
+* Have a [serial port setup](/os/get_started/serial_access.md).
 * Install the newt tool and the toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Install the [newtmgr tool](../../newtmgr/installing/).
+* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or kn
+ow how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
-### Overview of steps
+### Overview of Steps
 
-* Install dependencies
-* Define a target using the newt tool
-* Build executables for the targets using the newt tool
-* Set up serial connection with the targets 
-* Create a connection profile using the newtmgr tool
-* Use the newtmgr tool to communicate with the targets
-
-### Creating a new project
-
-Instructions for creating a project are located in the [Basic Setup](../get_started/project_create/) section of the [Mynewt Documentation](../introduction/)
-
-We will list only the steps here for brevity.  We will name the project
-`slinky`.
-
-```no-highlight
-    $ newt new slinky
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
-    ...
-    Installing skeleton in slink...
-    Project slink successfully created
-    $ cd slinky
-    $ newt install -v
-    Downloading repository description for apache-mynewt-core... success!
-    ...
-    Repos successfully installed
-```
-
-### Setting up your target build
-
-Create a target for `slinky` using the native bsp. We will list only the steps and suppress the tool output here for brevity.
-
-```no-highlight
-    $ newt target create sim_slinky
-    $ newt target set sim_slinky bsp=@apache-mynewt-core/hw/bsp/native
-    $ newt target set sim_slinky build_profile=debug
-    $ newt target set sim_slinky app=@apache-mynewt-core/apps/slinky
-```
-
-### Building Your target
-
-To build your target, use `newt build`.  When complete, an executable file
-is created.
-
-```no-highlight
-    $ newt build sim_slinky 
-    Building target targets/sim_slinky
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/split/src/split.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
-    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
-    Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
-
-              ...
-
-    Archiving util_crc.a
-    Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/sim_slinky/app/apps/slinky/slinky.elf
-    Target successfully built: targets/sim_slinky
-
-```
-
-### Run the target
-
-Run the executable you have build for the simulated environment. The serial port name on which the simulated target is connected is shown in the output when mynewt slinky starts.
-
-```no-highlight
-    $ ~/dev/slinky/bin/targets/sim_slinky/app/apps/slinky/slinky.elf
-    uart0 at /dev/ttys005
-```
-
-<br>
-
-In this example, the slinky app opened up a com port `/dev/ttys005` for communications with newtmgr. 
-
-**NOTE:** This application will block. You will need to open a new console (or execute this in another console) to continue the tutorial.*
-
-<br>
-
-### Setting up a connection profile
-
-You will now set up a connection profile using `newtmgr` for the serial port connection and start communicating with the simulated remote device.
-
-```no-highlight
-    $ newtmgr conn add sim1 type=serial connstring=/dev/ttys005
-    Connection profile sim1 successfully added
-    $ newtmgr conn show
-    Connection profiles: 
-      sim1: type=serial, connstring='/dev/ttys005'
-```
-
-### Executing newtmgr commands with the target
-
-You can now use connection profile `sim1` to talk to the running sim_slinky.
-As an example, we will query the running mynewt OS for the usage of its 
-memory pools.  
-
-```no-highlight
-    $ newtmgr -c sim1 mpstats
-    Return Code = 0
-                            name blksz  cnt free  min
-                          msys_1   292   12   10   10
-
-```
-
-As a test command, you can send an arbitrary string to the target and it
-will echo that string back in a response to newtmgr.
-
-```no-highlight
-    $ newtmgr -c sim1 echo "Hello Mynewt"
-    Hello Mynewt
-```
-
-In addition to these, you can also examine running tasks, statistics, 
-logs, image status (not on sim), and configuration.
+* Install dependencies.
+* Define the bootloader and Slinky application target for the target board.
+* Build the bootloader target.
+* Build the Slinky application target and create an application image.
+* Set a up serial connection with the targets.
+* Create a connection profile using the newtmgr tool.
+* Use the newtmgr tool to communicate with the targets.

@@ -1,34 +1,13 @@
-## Project Slinky Using STM32 Board
+## Project Slinky Using Olimex Board
 
-The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr) by leveraging a sample app "Slinky" included under the /apps directory in the repository. In this project we will define a target for the STM32-E407 board and assign the app "Slinky" to it.
-
-If you have an existing project that has a different application and you wish to add newtmgr functionality to it, check out the [Enable newtmgr in any app](add_newtmgr.md) tutorial.
-
+This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for an Olimex STM-E407 board.
 <br>
-
-
 ###Prerequisites
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Slinky](/os/tutorials/project-slinky.md).
 * Have a STM32-E407 development board from Olimex. 
 * Have a ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
+* Have a USB A-B type cable to connect the debugger to your computer. 
 * Have a USB to TTL Serial Cable with female wiring harness.
-* Have a USB Micro-A cable to connect your computer to the board.
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Install the newt tool and the toolchains (See Basic Setup).
-* Install the newtmgr tool.
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in Creating Your First Project.
-* Read the Mynewt OS Concepts section.
-
-### Overview of Steps
-
-* Install dependencies
-* Define a target using the newt tool
-* Build executables for the targets using the newt tool
-* Set up serial connection with the targets
-* Create a connection profile using the newtmgr tool
-* Use the newtmgr tool to communicate with the targets
 
 ### Create a New Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created or completed the [Sim Slinky](project-slinky.md) tutorial.

@@ -1,30 +1,14 @@
 ## Blinky, your "Hello World!", on Olimex
 
-### Objective
-
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board. Fun stuff!
-
-This tutorial shows you how to create a blinky application for the Olimex board. It also shows you how to load the application onto the board's flash memory and run the application.
-
+This tutorial shows you how to create, build, and run the Blinky application on an Olimex STM32-E407 board.
 <br>
-
 ### Prerequisites
-Ensure that you have met the following prerequisites before continuing with this tutorial:
 
+* Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a STM32-E407 development board from Olimex. 
 * Have a ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
 * Have a USB A-B type cable to connect the debugger to your computer.
-* Have a USB Micro-A cable to connect your computer to the board.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
-
-
 <br>
-
-
 ### Create a Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already created a project.
 
@@ -224,13 +208,3 @@ Let's double check that it is indeed booting from flash and making the LED blink
     (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff         
     (gdb) monitor flash info 0
 ```
-
-### Conclusion
-
-Congratulations! You have now tried out a project on actual hardware. If this is your first time to embedded systems, this must feel like the best hands-on and low-level "Hello World" program ever.
-
-Good, we have more fun tutorials for you to get your hands dirty. Be bold and try other Blinky-like [tutorials](../tutorials/nRF52.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) on the current board.
-
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
