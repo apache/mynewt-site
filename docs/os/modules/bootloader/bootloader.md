@@ -1,6 +1,6 @@
 #Bootloader
 
-The "bootloader" is the code that loads the Mynewt OS image into memory and conducts some checks before allowing the OS to be run. It manages images for the embedded system and upgrades of those images using protocols over various interfaces (e.g. serial, BLE etc.). Typically, systems with bootloaders have at least two program images coexisting on the same microcontroller, and hence must include branch code that performs a check to see if an attempt to update software is already underway and manage the progress of the process.
+The "bootloader" is the code that loads the Mynewt OS image into memory and conducts some checks before allowing the OS to be run. It manages images for the embedded system and upgrades of those images using protocols over various interfaces (e.g. serial, BLE, etc.). Typically, systems with bootloaders have at least two program images coexisting on the same microcontroller, and hence must include branch code that performs a check to see if an attempt to update software is already underway and manage the progress of the process.
 
 The bootloader in the Apache Mynewt project verifies the cryptographic signature of the firmware image before running it. It maintains a detailed status log for each stage of the boot process. For verification of the authenticity of the OS image, it:
 
@@ -53,7 +53,7 @@ struct image_header {
     uint16_t ih_tlv_size; /* Trailing TLVs */
     uint8_t  ih_key_id;
     uint8_t  _pad1;
-    uint16_t ih_hdr_s< bok@bok.net
+    uint16_t ih_hdr_size;
     uint16_t _pad2;
     uint32_t ih_img_size; /* Does not include header. */
     uint32_t ih_flags;
@@ -69,12 +69,12 @@ case of changes to the format of the image header.
 The following are the image header flags available.
 
 ```c
-#define IMAGE_F_PIC                   0x00000001
-#define IMAGE_F_SHA256                0x00000002	/* Image contains hash TLV */
-#define IMAGE_F_PKCS15_RSA2048_SHA256 0x00000004 /* PKCS15 w/RSA and SHA */
-#define IMAGE_F_ECDSA224_SHA256       0x00000008  /* ECDSA256 over SHA256 */
-#define IMAGE_F_NON_BOOTABLE          0x00000010
-#define IMAGE_HEADER_SIZE           32
+#define IMAGE_F_PIC                    0x00000001
+#define IMAGE_F_SHA256                 0x00000002 /* Image contains hash TLV */
+#define IMAGE_F_PKCS15_RSA2048_SHA256  0x00000004 /* PKCS15 w/RSA and SHA */
+#define IMAGE_F_ECDSA224_SHA256        0x00000008 /* ECDSA256 over SHA256 */
+#define IMAGE_F_NON_BOOTABLE           0x00000010
+#define IMAGE_HEADER_SIZE              32
 ``` 
 
 Optional type-length-value records (TLVs) containing image metadata are placed
@@ -103,8 +103,8 @@ A Mynewt device's flash is partitioned according to its _flash map_.  At a high
 level, the flash map maps numeric IDs to _flash areas_.  A flash area is a
 region of disk with the following properties:
 
-    1. An area can be fully erased without affecting any other areas.
-    2. A write to one area does not restrict writes to other areas.
+1. An area can be fully erased without affecting any other areas.
+2. A write to one area does not restrict writes to other areas.
 
 The boot loader uses the following flash areas:
 
@@ -205,21 +205,21 @@ An image trailer has the following structure:
 These records are at the end of each image slot.  The offset immediately
 following such a record represents the start of the next flash area.
 
-Note: "min-write-size" is a property of the flash hardware.  If the hardware
+Note: `min-write-size` is a property of the flash hardware.  If the hardware
 allows individual bytes to be written at arbitrary addresses, then
-min-write-size is 1.  If the hardware only allows writes at even addresses,
-then min-write-size is 2, and so on.
+`min-write-size` is 1.  If the hardware only allows writes at even addresses,
+then `min-write-size` is 2, and so on.
 
 The fields are defined as follows:
 
 1. MAGIC: The following 16 bytes, written in host-byte-order:
 
-    const uint32_t boot_img_magic[4] = {
-        0xf395c277,
-        0x7fefd260,
-        0x0f505235,
-        0x8079b62c,
-    };
+        const uint32_t boot_img_magic[4] = {
+            0xf395c277,
+            0x7fefd260,
+            0x0f505235,
+            0x8079b62c,
+        };
 
 2. Swap status: A series of single-byte records.  Each record corresponds to a
 flash sector in an image slot.  A swap status byte indicate the location of
@@ -228,16 +228,16 @@ sector at a time.  The swap status is necessary for resuming a swap operation
 if the device rebooted before a swap operation completed.
 
 3. Copy done: A single byte indicating whether the image in this slot is
-complete (0x01=done, 0xff=not done).
+complete (`0x01=done, 0xff=not done`).
 
 4. Image OK: A single byte indicating whether the image in this slot has been
-confirmed as good by the user (0x01=confirmed; 0xff=not confirmed).
+confirmed as good by the user (`0x01=confirmed; 0xff=not confirmed`).
 
 The boot vector records are structured around the limitations imposed by flash
 hardware.  As a consequence, they do not have a very intuitive design, and it
 is difficult to get a sense of the state of the device just by looking at the
-boot vector.  It is better to map all the possible vector states to the swap types (None, Test, Revert)
-via a set of tables.  These tables are reproduced below.
+boot vector.  It is better to map all the possible vector states to the swap types
+(None, Test, Revert) via a set of tables.  These tables are reproduced below.
 In these tables, the "pending" and "confirmed" flags are shown for illustrative
 purposes; they are not actually present in the boot vector.
 
@@ -302,33 +302,34 @@ sections describe each step of the process in more detail.
 
 Procedure:
 
-A. Inspect swap status region; is an interrupted swap is being resumed?
-    Yes: Complete the partial swap operation; skip to step C.
-    No: Proceed to step B.
+    A. Inspect swap status region; is an interrupted swap is being resumed?
+        Yes: Complete the partial swap operation; skip to step C.
+        No: Proceed to step B.
 
-B. Insect boot vector; is a swap requested?
-    Yes.
-        1. Is the requested image valid (integrity and security check)?
-            Yes.
-                a. Perform swap operation.
-                b. Persist completion of swap procedure to boot vector.
-                c. Proceed to step C.
-            No.
-                a. Erase invalid image.
-                b. Persist failure of swap procedure to boot vector.
-                c. Proceed to step C.
-    No: Proceed to step C.
+    B. Inspect boot vector; is a swap requested?
+        Yes.
+            1. Is the requested image valid (integrity and security check)?
+                Yes.
+                    a. Perform swap operation.
+                    b. Persist completion of swap procedure to boot vector.
+                    c. Proceed to step C.
+                No.
+                    a. Erase invalid image.
+                    b. Persist failure of swap procedure to boot vector.
+                    c. Proceed to step C.
+        No: Proceed to step C.
 
-C. Boot into image in slot 0.
+    C. Boot into image in slot 0.
 
 
 ###Image Swapping
 
 The boot loader swaps the contents of the two image slots for two reasons:
-    * User has issued an "image test" operation; the image in slot-1 should be
-      run once (state II).
-    * Test image rebooted without being confirmed; the boot loader should
-      revert to the original image currently in slot-1 (state III).
+
+* User has issued an "image test" operation; the image in slot-1 should be
+  run once (state II).
+* Test image rebooted without being confirmed; the boot loader should
+  revert to the original image currently in slot-1 (state III).
 
 If the boot vector indicates that the image in the secondary slot should be
 run, the boot loader needs to copy it to the primary slot.  The image currently
@@ -364,6 +365,7 @@ the user can test the image in slot 1 (i.e., transition to state II).
 
 The particulars of step 3 vary depending on whether an image is being tested or
 reverted:
+
     * test:
         o Write slot0.copy_done = 1
         (should now be in state III)
@@ -380,9 +382,9 @@ The swap status region allows the boot loader to recover in case it restarts in
 the middle of an image swap operation.  The swap status region consists of a
 series of single-byte records.  These records are written independently, and
 therefore must be padded according to the minimum write size imposed by the
-flash hardware.  In the below figure, a min-write-size of 1 is assumed for
+flash hardware.  In the below figure, a `min-write-size` of 1 is assumed for
 simplicity.  The structure of the swap status region is illustrated below.  In
-this figure, a min-write-size of 1 is assumed for simplicity.
+this figure, a `min-write-size` of 1 is assumed for simplicity.
 
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -414,6 +416,7 @@ with 0.  The swap status region is a representation of this reversed list.
 
 During a swap operation, each sector index transitions through four separate
 states:
+
     0. slot 0: image 0,   slot 1: image 1,   scratch: N/A
     1. slot 0: image 0,   slot 1: N/A,       scratch: image 1 (1->s, erase 1)
     2. slot 0: N/A,       slot 1: image 0,   scratch: image 1 (0->1, erase 0)
@@ -437,7 +440,7 @@ values map to the above four states as follows
     state 3 | 0x01 | 0x02 | 0x03
 
 The swap status region can accommodate 128 sector indices.  Hence, the size of
-the region, in bytes, is 128 * min-write-size * 3.  The number 128 is chosen
+the region, in bytes, is `128 * min-write-size * 3`.  The number 128 is chosen
 somewhat arbitrarily and will likely be made configurable.  The only
 requirement for the index count is that is is great enough to account for a
 maximum-sized image (i.e., at least as great as the total sector count in an
@@ -516,11 +519,12 @@ doesn't perform an integrity check.
 
 During the integrity check, the boot loader verifies the following aspects of
 an image:
-    * 32-bit magic number must be correct (0x96f3b83c).
-    * Image must contain a SHA256 TLV.
-    * Calculated SHA256 must matche SHA256 TLV contents.
-    * Image *may* contain a signature TLV.  If it does, its contents must be
-      verifiable using a key embedded in the boot loader.
+
+* 32-bit magic number must be correct (0x96f3b83c).
+* Image must contain a SHA256 TLV.
+* Calculated SHA256 must matche SHA256 TLV contents.
+* Image *may* contain a signature TLV.  If it does, its contents must be
+  verifiable using a key embedded in the boot loader.
 
 ###Image Signing and Verification
 
@@ -533,6 +537,6 @@ with.  The boot loader uses this index to identify the corresponding public
 key.
 
 For information on embedding public keys in the boot loader, as well as
-producing signed images, see: boot/bootutil/signed_images.md 
+producing signed images, see: boot/bootutil/signed_images.md
 
 
