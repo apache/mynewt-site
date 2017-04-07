@@ -65,12 +65,12 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 0-dev
+    vers: 1-dev
     user: apache
     repo: incubator-mynewt-core
 repository.mynewt_nordic:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: runtimeinc
     repo: mynewt_nordic
 ```

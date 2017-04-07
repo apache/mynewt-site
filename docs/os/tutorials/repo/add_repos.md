@@ -78,7 +78,7 @@ In the same `myproj` above you will see the following repo descriptor.
 ```no-highlight
 repository.apache-Mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 ```
@@ -137,14 +137,14 @@ project.repositories:
 #
 repository.apache-Mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
     
 # a special repo to hold hardware specific stuff for arduino zero
 repository.Mynewt_arduino_zero:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: runtimeinc
     repo: Mynewt_arduino_zero
 ```
@@ -158,10 +158,10 @@ systems like github.  The repo descriptor in your `project.yml` file must
 specify the version of the repo you will accept into your project.
 
 For now, we are at the beginnings of Mynewt. For testing and evaluation
-please use `0-latest` in the `vers` field in your repo descriptor.
+please use `1-latest` in the `vers` field in your repo descriptor.
 
 ```
-    vers:0-latest
+    vers:1-latest
 ```
 
 See [Create a Repo](create_repo) for a description of the versioning system and all the possible ways to specify a version to use.
@@ -182,15 +182,22 @@ Here is the `repository.yml` file from the apache-Mynewt-core:
 ```no-highlight
 repo.name: apache-mynewt-core
 repo.versions:
-    "0.0.0": "develop"
+    "0.0.0": "master"
+    "0.0.1": "master"
     "0.7.9": "mynewt_0_8_0_b2_tag"
     "0.8.0": "mynewt_0_8_0_tag"
     "0.9.0": "mynewt_0_9_0_tag"
-    "0.9.1": "master"
-    "0-latest": "0.9.0"
-    "0-dev": "0.9.1"
+    "0.9.9": "mynewt_1_0_0_b1_tag"
+    "0.9.99": "mynewt_1_0_0_b2_tag"
+    "0.9.999": "mynewt_1_0_0_rc1_tag"
+    "1.0.0": "mynewt_1_0_0_tag"
+
+    "0-latest": "1.0.0"    # 1.0.0
+    "0-dev": "0.0.0"       # master
+
     "0.8-latest": "0.8.0"
     "0.9-latest": "0.9.0"
+    "1.0-latest": "1.0.0"  # 1.0.0
 ```
 
 <br>
@@ -235,7 +242,7 @@ The stability string can be one of 3 pre-defined stability values.
 In your `project.yml` file you can specify different combinations of 
 the version number and stability value.  For example:
 
-* `0-latest`      -- The latest version with major number 0
+* `1-latest`      -- The latest version with major number 1
 * `1.2-stable`    -- The latest stable version with major and minor number 1.2
 * `1.2-dev`       -- The development version from 1.2
 * `1.1.1`         -- a specific version 1.1.1
