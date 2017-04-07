@@ -35,13 +35,13 @@ These are the general steps to create, load and run the Blinky application on yo
 * Build the bootloader target.
 * Build the Blinky application target and create an application image.
 * Connect to the board.
-* Load to bootloader onto the board.
-* Load to Blinky application image onto the board.
+* Load the bootloader onto the board.
+* Load the Blinky application image onto the board.
 * See the LED on your board blink.
 
 <br>
 
-After you try the Blinky application on your boards, checkout out other tutorials to enable additional functionality such as [remote comms](project-slinky.md) on the current board.
+After you try the Blinky application on your boards, checkout out other tutorials to enable additional functionality such as [remote comms](project-slinky.md) on the current board. If you have BLE (Bluetooth Low Energy) chip (e.g. nRF52) on your board, you can try turning it into an [iBeacon](ibeacon.md) or [Eddystone Beacon](eddystone.md)! 
 
 If you see anything missing or want to send us feedback, please sign up for 
 appropriate mailing lists on our [Community Page](../../community.md).
