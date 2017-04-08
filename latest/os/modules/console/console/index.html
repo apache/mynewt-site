@@ -549,18 +549,13 @@ application.  A user typically inputs text from a keyboard and reads the OS outp
 monitor.  The text are sent as a sequence of characters between the user and the OS. </p>
 <p>Support is currently available for console access via the serial port on the hardware board.</p>
 <h3 id="description">Description</h3>
-<p>In the Mynewt OS, the console library comes in two versions:</p>
+<p>In the Mynewt OS, the console library comes in three versions:</p>
 <ul>
-<li>
-<p>The <code>sys/console/full</code> package implements the complete console functionality and API.</p>
-</li>
-<li>
-<p>The <code>sys/console/stub</code> package implements stubs for the API.</p>
-</li>
+<li>The <code>sys/console/full</code> package implements the complete console functionality and API.</li>
+<li>The <code>sys/console/stub</code> package implements stubs for the API.</li>
+<li>The <code>sys/console/minimal</code> package implements minimal console functionality of reading from and writing to console.  It implements the <code>console_read()</code> and <code>console_write()</code> functions and stubs for all the other console functions.</li>
 </ul>
-<p>Both packages export the <code>console</code> API, and any package that uses 
-the console API must list <code>console</code> as a requirement. For example, the shell package defines the following <code>pkg.yml</code>
-file:</p>
+<p>All the packages export the <code>console</code> API, and any package that uses the console API must list <code>console</code> as a requirement its <code>pkg.yml</code> file:  </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: sys/shell
 pkg.deps:
     - kernel/os
@@ -572,9 +567,11 @@ pkg.req_apis:
 </pre></div>
 
 
-<p>The project <code>pkg.yml</code> file specifies the version of the console package to use.
-A project that requires the full console capability must list the <code>sys/console/full</code> package as a dependency 
-in its <code>pkg.yml</code> file.</p>
+<p><br>
+The project <code>pkg.yml</code> file also specifies the version of the console package to use.</p>
+<p><br></p>
+<h4 id="using-the-full-console-package">Using the Full Console Package</h4>
+<p>A project that requires the full console capability must list the <code>sys/console/full</code> package as a dependency in its <code>pkg.yml</code> file.</p>
 <p>An example is the <code>slinky</code> application. It requires the full console capability and has the following
 <code>pkg.yml</code> file: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: apps/slinky
@@ -592,13 +589,19 @@ pkg.deps:
 </pre></div>
 
 
-<p>On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) 
-but may have a dependency on a package that has console capability. In this case, you use 
-the console stub API and list the <code>sys/console/stub</code> package as a dependency in its <code>pkg.yml</code> file. </p>
-<p>An example is the bootloader project where we want to keep the size of the image small. It includes 
+<p><br></p>
+<h4 id="using-the-stub-console-package">Using the Stub Console Package</h4>
+<p>A project that uses console stub API must list the <code>sys/console/stub</code> package as a dependency in its <code>pkg.yml</code> file.</p>
+<p>Examples of when a project would use the console stubs might be:</p>
+<ul>
+<li>A project may not have a physical console (e.g. a UART port to connect a terminal to) 
+but may have a dependency on a package that has console capability. </li>
+<li>A bootloader project where we want to keep the size of the image small. It includes 
 the <code>kernel/os</code> package that can print out messages on a console (e.g. if there is a hard fault).
 However, we do not want to use any console I/O capability in this particular bootloader project to 
-keep the size small. The project uses the console stub API and has the following <code>pkg.yml</code> file: </p>
+keep the size small. </li>
+</ul>
+<p>The project would use the console stub API and has the following <code>pkg.yml</code> file: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: apps/boot
 pkg.deps:
     - boot/bootutil
@@ -607,7 +610,30 @@ pkg.deps:
 </pre></div>
 
 
-<p>Console has 2 modes for transmit; <em>blocking mode</em> and <em>non-blocking mode</em>. Usually the <em>non-blocking mode</em> is the 
+<p><br></p>
+<h4 id="using-the-minimal-console-package">Using the Minimal Console Package</h4>
+<p>There might be projects that need to read and write data on a serial connection but do not need the full console capability. An example might be a project that supports serial image upgrade but does not need full newtmgr capability.  The project would use the console minimal API and has the following <code>pkg.yml</code> file: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: apps/boot
+pkg.type: app
+pkg.description: Boot loader application.
+pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;
+pkg.homepage: &quot;http://mynewt.apache.org/&quot;
+pkg.keywords:
+    - loader
+
+pkg.deps:
+    - boot/bootutil
+    - kernel/os
+    - sys/console/stub
+
+pkg.deps.BOOT_SERIAL.OVERWRITE:
+    - sys/console/minimal
+    - boot/boot_serial
+</pre></div>
+
+
+<p><br>
+Console has 2 modes for transmit; <em>blocking mode</em> and <em>non-blocking mode</em>. Usually the <em>non-blocking mode</em> is the 
 active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added 
 based on these interrupts.</p>
 <p><em>Blocking mode</em> is used when we don't want TX completion interrupts. It is used when system crashes, and we still 

@@ -606,7 +606,7 @@
                         </div>
                         
                             <h2 id="console_read"><font color="#F2853F" style="font-size:24pt"> console_read </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">console_read</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*str</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">console_read</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*str</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">*newline</span>)
 </pre></div>
 
 
@@ -629,6 +629,10 @@ separate lines; once it encounters a newline character, it replaces that with en
 <td><code>cnt</code></td>
 <td>Maximum number of characters to copy.</td>
 </tr>
+<tr>
+<td><code>newline</code></td>
+<td>Pointer to an integer variable that is set to 1 when an newline character is received and set to 0 otherwise.</td>
+</tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
@@ -641,12 +645,13 @@ available, or if the first received character was '\n'.</p>
     <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
     <span style="color: #A90D91">char</span> <span style="color: #000000">rx_msg</span>[<span style="color: #1C01CE">128</span>];
     <span style="color: #A90D91">int</span> <span style="color: #000000">rx_len</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">newline</span>;
 
     <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
         <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;task1_evq</span>);
         <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span>);
         <span style="color: #A90D91">if</span> (<span style="color: #000000">ev-&gt;ev_type</span> <span style="color: #000000">==</span> <span style="color: #000000">CONS_EV_TYPE</span>) {
-            <span style="color: #000000">rx_len</span> <span style="color: #000000">=</span> <span style="color: #000000">console_read</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">rx_msg</span>));
+            <span style="color: #000000">rx_len</span> <span style="color: #000000">=</span> <span style="color: #000000">console_read</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">rx_msg</span>), <span style="color: #000000">&amp;newline</span>);
             <span style="color: #A90D91">if</span> (<span style="color: #000000">rx_len</span>) {
                     <span style="color: #A90D91">if</span> (<span style="color: #000000">!strncmp</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #C41A16">&quot;reset&quot;</span>, <span style="color: #000000">rx_len</span>)) {
                             <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);

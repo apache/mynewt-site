@@ -232,9 +232,7 @@
                 
   
   
-    <li><a href="
-  ../arduino_zero/
-">Project Blinky</a>
+    <li ><a href="../blinky/">Project Blinky</a>
   
   
     </li>
@@ -248,6 +246,49 @@
     <li ><a href="../repo/add_repos/">Work with repositories</a>
   
   
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../project-slinky/">Project Slinky for Remote Comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../ibeacon/">BLE iBeacon</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../eddystone/">BLE Eddystone</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../add_newtmgr/">Enable Newt Manager in any app</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../add_shell/">Enable the OS Shell and Console</a>
     </li>
 
               
@@ -286,35 +327,6 @@
           
               
                 
-  
-  
-    <li><a href="
-  ../project-slinky/
-">Project Slinky for remote comms</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../add_newtmgr/">Enable Newt Manager in any app</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../add_shell/">Enable the OS Shell and Console</a>
-    </li>
-
-              
-          
-              
-                
     <li >
       <a href="../bletiny_project/">BLE app to check stats via console</a>
     </li>
@@ -328,22 +340,6 @@
     <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
   
   
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../ibeacon/">BLE iBeacon</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../eddystone/">BLE Eddystone</a>
     </li>
 
               
@@ -493,18 +489,15 @@ support native compiling to build the project this tutorial creates.  </li>
 </ul>
 <p><br></p>
 <h3 id="create-a-project">Create a project</h3>
-<p>Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. Make sure the downloaded version is 0.9.0 or later.</p>
+<p>Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt new blehciproj 
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in blehciproj ...
 Project blehciproj  successfully created.
 $ cd mblehciproj 
 
-$ newt install -v 
+$ newt install
 apache-mynewt-core
-Downloading repository description for apache-mynewt-core... success!
-...
-apache-mynewt-core successfully installed version 0.9.0-none
 </pre></div>
 
 
@@ -548,13 +541,14 @@ $ newt target set myble2 build_profile=optimized
 <p>Then build the two targets.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_boot
 &lt;snip&gt;
-App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
+Linking ~/dev/blehciproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
+
 $ newt build myble2
-Compiling hci_common.c
-Compiling util.c
-Archiving nimble.a
-Compiling os.c
 &lt;snip&gt;
+Linking ~/dev/blehciproj/bin/targets/myble2/app/apps/blehci/blehci.elf
+Target successfully built: targets/myble2
+$
 </pre></div>
 
 
@@ -562,15 +556,25 @@ Compiling os.c
 <h3 id="create-the-app-image">Create the app image</h3>
 <p>Generate a signed application image for the <code>myble2</code> target. The version number is arbitrary.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image myble2 1.0.0
-App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
-Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
+App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/bletiny/bletiny.img
 </pre></div>
 
 
 <p><br></p>
-<h3 id="load-the-image">Load the image</h3>
+<h3 id="load-the-bootloader-and-the-application-image">Load the bootloader and the application image</h3>
 <p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt -v load myble
+<p>Load the bootloader:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_boot
+Loading bootloader
+$
+</pre></div>
+
+
+<p><br>
+Load the application image:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load myble2
+Loading app image into slot 1
+$
 </pre></div>
 
 
@@ -635,9 +639,9 @@ eir_len 23
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../eddystone/>
+    <a href=../bleprph/bleprph-app/>
         <span class="fa fa-arrow-left"></span>
-        Previous: BLE Eddystone
+        Previous: BLE Peripheral App
     </a>
     
     </li>
