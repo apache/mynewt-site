@@ -50,7 +50,7 @@ In order to provide all this functionality, and operate in an
 extremely low resource environment, Mynewt provides a very fine-grained source
 package management and build system tool, called *newt*.
 
-You can install and build *newt* for [Linux](../newt/install/newt_linux/) or [Mac](../newt/install/newt_mac/).
+You can install *newt* for [Mac OS](../newt/install/newt_mac/) or [Linux](../newt/install/newt_linux/).
 
 <br>
 
@@ -59,7 +59,7 @@ You can install and build *newt* for [Linux](../newt/install/newt_linux/) or [Ma
 
 In order to enable a user to communicate with remote instances of Mynewt OS and query, configure, and operate them, Mynewt provides an application tool called Newt Manager or `newtmgr`.
 
-You can install and build *newtmgr* from source code on [Linux or Mac](../newtmgr/installing/).
+You can install *newtmgr* for [Mac OS](../newtmgr/install_mac/) or [Linux](../newtmgr/install_linux/).
 
 <br>
 
