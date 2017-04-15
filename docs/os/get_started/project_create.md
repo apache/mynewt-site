@@ -89,7 +89,7 @@ repository.apache-mynewt-core:
     user: apache
     repo: incubator-mynewt-core
 ```
-Changing to 1-dev will put you on the develop branch. **The Develop Branch may not be stable and you may encounter bugs or other problems.**
+Changing to 0-dev will put you on the latest master branch. **This branch may not be stable and you may encounter bugs or other problems.**
 
 <br>
 
