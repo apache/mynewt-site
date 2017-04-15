@@ -4,6 +4,7 @@ This tutorial shows you how to create, build and run the Slinky application and 
 ### Prerequisites
 * Meet the prerequisites listed in [Project Slinky](/os/tutorials/project-slinky.md).  
 * Have a Nordic nRF52-DK board.  
+* Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
 
 ### Create a New Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created or completed the [Sim Slinky](project-slinky.md) tutorial. 
