@@ -47,8 +47,8 @@ relies upon.
 the ```apache-mynewt-core``` repository.
 
 * ```vers=1-latest```: Defines the repository version. This string will use the 
-latest code in the 'Master' github branch. To use the latest version in the 
-develop branch, just change it to ```vers=1-dev```
+latest stable version in the 'Master' github branch. To use the latest version in the 
+master branch, just change it to ```vers=0-dev```. Note that this branch might not be stable. 
 
 Repositories are versioned collections of packages.  
 

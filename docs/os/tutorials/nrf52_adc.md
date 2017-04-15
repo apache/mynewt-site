@@ -65,7 +65,7 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 1-dev
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 repository.mynewt_nordic:

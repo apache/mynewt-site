@@ -33,8 +33,8 @@ Check the gcc version you have installed (either using brew or previously instal
 
 ```hl_lines="2 3"
 # OS X.
-compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
-compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.cc.DARWIN.OVERWRITE: "gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "gcc-5"
 compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
 compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
 compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
@@ -42,8 +42,8 @@ compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
 with the following:
 
 ```no-highlight
-compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6"
-compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6 -x assembler-with-cpp”
+compiler.path.cc.DARWIN.OVERWRITE: "gcc-6"
+compiler.path.as.DARWIN.OVERWRITE: "gcc-6”
 ```
 
 <br>
@@ -52,8 +52,8 @@ In case you wish to use Clang, you can change your `<mynewt-src-directory>/repos
 
 ```hl_lines="2 3"
 # OS X.
-compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
-compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.cc.DARWIN.OVERWRITE: "gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "gcc-5"
 compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
 compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
 compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"

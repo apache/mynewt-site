@@ -7,8 +7,7 @@ This tutorial shows you how to create, build and run the Blinky application on a
 
 * Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a RedBear Nano 2 board. 
-
-**Note:** You must install a patched version of OpenOCD .10.0 (See [Debugger Option 2 in the Arduino Primo Blinky Tutorial](/os/tutorials/blinky_primo)).
+* Install a patched version of OpenOCD 0.10.0 described in [Install OpenOCD](os/get_started/cross_tools/).
 
 ### Create a Project  
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created.  

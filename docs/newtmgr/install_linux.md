@@ -1,33 +1,25 @@
 
-# Installing Newtmgr
+# Installing Newtmgr on Linux
 
-This page shows you how to install newtmgr from source code.
+This page shows you how to install newtmgr from source code on Linux.
 
 ### Install Go (golang)
 
-If you have not already done so, install Go for your platform.  
+Install Go if it is not installed.  The Newtmgr tool version 1.0.0 requires Go version 1.7 or later.  Currently, the latest Go version that Ubuntu installs is
+1.6. You can run `apt-get install golang-1.7-go` to install version 1.7. You can also download version 1.7 from [https:/
+/golang.org/dl/](https://golang.org/dl/).
 
-The easiest way on a MAC is to use `brew`.  
-
-```no-highlight
-brew install go
-==> Downloading https://homebrew.bintray.com/bottles/go-1.5.3.mavericks.bottle.t
-...
-==> Summary
-🍺  /usr/local/Cellar/go/1.5.3: 5,336 files, 259.6M
+```hl_lines="1 7"
+$sudo apt-get install golang-1.7-go
+Reading package lists... Done
+     ...
+Unpacking golang-1.7-go (1.7.1-2ubuntu1) ...
+Setting up golang-1.7-go (1.7.1-2ubuntu1) ...
+$
+$sudo ln -sf ../lib/go-1.7/bin/go /usr/bin/go
+$go version
+go version go1.7.1 linux/amd64
 ```
-
-<br>
-
-Alternatively, you can download binaries from 
-[the golang.org site](https://golang.org/doc/install)
-To test your Go implementation, you can query Go for its version information
-
-```no-highlight
-$ go version
-go version go1.5.3 darwin/amd64
-```
-
 <br>
 
 To use go, you must set a `$GOPATH` variable in your environment.  This tells
@@ -50,8 +42,7 @@ environment.
 You will first download the source code for newt.
 
 ```no-highlight
-    go get mynewt.apache.org/newt/...
-        (wait a few minutes please, this sits without any indications of working)
+go get mynewt.apache.org/newt/...
 ```
 
 <br>
@@ -62,10 +53,10 @@ Change into the directory where the newmgr tool was downloaded and
 install the newtmgr tool
 
 ```no-highlight
-    cd $GOPATH/src/mynewt.apache.org/newt/newtmgr
-    go install
-    $ ls $GOPATH/bin
-    ... newtmgr	...
+$cd $GOPATH/src/mynewt.apache.org/newt/newtmgr
+$go install
+$ls $GOPATH/bin
+... newtmgr	...
 ```
 
 <br>
