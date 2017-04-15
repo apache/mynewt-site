@@ -12,6 +12,7 @@ Note that there are several versions of the nRF52 in the market. The boards test
 * Have a nRF52 Development Kit (one of the following)
     * Dev Kit from Nordic - PCA 10040
     * Eval Kit from Rigado - BMD-300-EVAL-ES
+* Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
 
 This tutorial uses the Nordic nRF52-DK board.
 
