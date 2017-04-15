@@ -8,6 +8,8 @@ This tutorial shows you how to create, build, and run the Blinky application on 
 * Have a STM32-E407 development board from Olimex. 
 * Have a ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
 * Have a USB A-B type cable to connect the debugger to your computer.
+* Install the [OpenOCD debugger](/os/get_started/cross_tools/).
+
 <br>
 ### Create a Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already created a project.
