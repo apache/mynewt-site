@@ -50,14 +50,14 @@ If you want to build the *newt* tool from its source code, follow the following 
 
     **Note**: The Newt tool requires Go version 1.7 or later.  Currently, the latest Go version that Ubuntu installs is 1.6. You can run `apt-get install golang-1.7-go` to install version 1.7. You can also download version 1.7 from [https://golang.org/dl/](https://golang.org/dl/). 
    
-```no-highlight
+```hl_lines="1 7"
 $sudo apt-get install golang-1.7-go
 Reading package lists... Done
      ...
 Unpacking golang-1.7-go (1.7.1-2ubuntu1) ...
 Setting up golang-1.7-go (1.7.1-2ubuntu1) ...
 $
-$sudo ln -s /usr/lib/go-1.7/bin/go /usr/bin/go
+$sudo ln -sf ../lib/go-1.7/bin/go /usr/bin/go
 $go version
 go version go1.7.1 linux/amd64
 ```
