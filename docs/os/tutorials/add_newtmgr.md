@@ -24,7 +24,7 @@ See [Other Configuration Options](#other-configuration-options) on how to custom
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 
 * Install the [newt tool](../../newt/install/newt_mac.md). 
-* Install the [newtmgr tool](../../newtmgr/installing.md).
+* Install the [newtmgr tool](../../newtmgr/install_mac.md).
 * Have Internet connectivity to fetch remote Mynewt components.
 * Install the [compiler tools](../get_started/native_tools.md) to 
 support native compiling to build the project this tutorial creates.  
@@ -166,7 +166,7 @@ follow the [instructions](../../newtmgr/command_list/newtmgr_conn.md) for settin
 
 <br>
 
-###Connecting with Your Application
+###Communicate with Your Application
 
 Once you have a connection profile set up, you can connect to your device with ```newtmgr -c myconn <command>``` to run commands in your application. 
     

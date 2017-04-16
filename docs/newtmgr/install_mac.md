@@ -1,12 +1,13 @@
 ## Installing Newtmgr on Mac OS
 
-Newtmgr is supported on Mac OS X 64 bits platforms and has been tested on Mac OS Maverick (10.9) and later.
+Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.9 and higher.
 
 This page shows you how to install the following versions of newtmgr:
 
 * The latest stable release version (1.0.0)
 * The latest from the master branch (unstable)
 
+**Note:** If you would like to contribute to the newtmgr tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env).
 ### Adding the runtimeco/homebrew-mynewt Tap:
 You should have added the runtimeco/homebrew-mynewt tap when you installed the *newt* tool. Run the following commands if you have not done so:
 
@@ -40,7 +41,7 @@ lrwxr-xr-x  1 user  staff  42 Apr 15 09:14 /usr/local/bin/newtmgr -> ../Cellar/m
 **Note:** If you previously built newtmgr from source and the output of `which newtmgr` shows "$GOPATH/bin/newtmgr", you will need to move "$GOPATH/bin"  after "/usr/local/bin" in your $PATH.
 
 <br>
-Run `newtmgr help` to get information about newtgmr:
+Get information about newtmgr:
 ```no-highlight
 $newtmgr help
 Newtmgr helps you manage remote devices running the Mynewt OS
@@ -89,7 +90,7 @@ $brew unlink mynewt-newtmgr
 <br>
 Install the latest unstable version of newtmgr from the master branch:
 ```no-highlight
-brew install --HEAD  mynewt-newtmgr
+$brew install --HEAD  mynewt-newtmgr
 ==> Installing mynewt-newtmgr from runtimeco/mynewt
 ==> Cloning https://github.com/apache/incubator-mynewt-newt.git
 Cloning into '/Users/<user>/Library/Caches/Homebrew/mynewt-newtmgr--git'...
@@ -103,13 +104,11 @@ Resolving deltas: 100% (154/154), done.
 🍺  /usr/local/Cellar/mynewt-newtmgr/HEAD-409f7d3: 3 files, 15.1MB, built in 14 seconds
 ```
 <br>
-####Switching Back to the Stable Release Version
-You can switch back to the stable release version (1.0.0) of newtmgr:
+To switch back to the stable release version (1.0.0) of newtmgr, you can run:
 ```no-highlight
-brew switch mynewt-newtmgr 1.0.0
+$brew switch mynewt-newtmgr 1.0.0
 Cleaning /usr/local/Cellar/mynewt-newtmgr/1.0.0
 Cleaning /usr/local/Cellar/mynewt-newtmgr/HEAD-409f7d3
 1 links created for /usr/local/Cellar/mynewt-newtmgr/1.0.0
 ```
 <br>
-**Note:** If you would like to contribute to newtmgr tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env).

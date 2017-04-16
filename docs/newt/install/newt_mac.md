@@ -1,12 +1,13 @@
 ## Installing Newt on Mac OS
 
-Newt is supported on Mac OS X 64 bits platforms and has been tested on Mac OS Maverick (10.9) and later.
+Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.9 and higher.
 
 This page shows you how to install the following versions of newt:
 
 * The latest stable release version (1.0.0) 
 * The latest from the master branch (unstable)
 
+**Note:** If you would like to contribute to the newt tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env).
 ### Installing Homebrew 
 
 If you do not have Homebrew installed, run the following command. You will be prompted for your sudo password.
@@ -52,9 +53,9 @@ Apache Newt (incubating) version: 1.0.0
 **Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin"  after "/usr/local/bin" in your $PATH.
 
 <br>
-Run `newt help` to get information about newt:
+Get information about newt: 
 ```no-highlight
-$ newt help
+$newt help
 Newt allows you to create your own embedded application based on the Mynewt 
 operating system. Newt provides both build and package management in a single 
 tool, which allows you to compose an embedded application, and set of 
@@ -139,8 +140,7 @@ $newt version
 Apache Newt (incubating) version: 1.0.0-dev
 ```
 <br>
-####Switching Back to the Stable Release Version
-You can switch back to the stable release version (1.0.0) of newt:
+To switch back to the stable release version (1.0.0) of newt, you can run:
 ```no-highlight
 $brew switch mynewt-newt 1.0.0
 Cleaning /usr/local/Cellar/mynewt-newt/1.0.0
@@ -150,4 +150,3 @@ $newt version
 Apache Newt (incubating) version: 1.0.0
 ```
 <br>
-**Note:** If you would like to contribute to the newt tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env).
