@@ -20,7 +20,7 @@ Ensure that you meet the following prerequisites before continuing with this tut
 * Have a Micro-USB cable to connect the board and the computer.
 * Have a [serial port setup](/os/get_started/serial_access.md).
 * Install the newt tool and the toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Install the [newtmgr tool](../../newtmgr/installing/).
+* Install the [newtmgr tool](/newtmgr/install_mac.md).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 * Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or kn
 ow how to as explained in [Creating Your First Project](/os/get_started/project_create).
