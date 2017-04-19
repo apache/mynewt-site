@@ -11,7 +11,6 @@ The full list of tutorials can be seen in the navigation bar on the left. New on
 * You have installed Docker container of Newt tool and toolchains or you have installed them natively on your machine
 * You have created a new project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](../get_started/project_create).
 * You have at least one of the supported development boards:
-    * [STM32F3 discovery kit from ST Micro](STM32F303.md)
     * [Arduino Zero hardware](arduino_zero.md)
     * [Olimex/STM32F407ZGT6 Cortex-M4 hardware](olimex.md)
     * [nRF52 Development Kit from Nordic Semiconductor](nRF52.md)
@@ -28,13 +27,8 @@ The tutorials fall into a few broad categories. Some examples in each category a
 * Making an LED blink (the "Hello World" equivalent in the electronics world)
     * [Blinky on Arduino Zero hardware](arduino_zero.md)
     * [Blinky on Olimex/STM32F407ZGT6 Cortex-M4 hardware](olimex.md)
-    * [Blinky on STM32F3 discovery kit from ST Micro](STM32F303.md)
     * [Blinky on nRF52 Development Kit from Nordic Semiconductor](nRF52.md) **Note:** This supports BLE.
-
-    <br>
-
-* Tweaking available apps to customize behavior e.g. making a more exciting LED blink pattern
-    * [Pinwheel Blinky on STM32F3 discovery board](pin-wheel-mods.md)
+    * [Blinky on Redbear Nano2](rbnano2.md)
 
     <br>
 
