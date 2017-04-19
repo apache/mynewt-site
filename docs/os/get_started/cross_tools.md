@@ -52,8 +52,6 @@ $ sudo apt-get install gdb-arm-none-eabi
 ## Install Debugger 
 Mynewt uses, depending on the board, either the OpenOCD or SEGGER J-Link debugger. 
 
-<br>
-
 
 ### Install OpenOCD
 OpenOCD (Open On-Chip Debugger) is open-source software that allows your
@@ -61,65 +59,75 @@ computer to interface with the JTAG debug connector on a variety of boards.  A
 JTAG connection lets you debug and test embedded target devices. For more on
 OpenOCD go to [http://openocd.org](http://openocd.org).
 
-OpenOCD version 0.10.0-dev-snapshot that is currently in development is required.  A binary for this version is available to download for Mac OS and Linux
+OpenOCD version 0.10.0 with nrf52 support is required.  A binary for this version is available to download for Mac OS and Linux.
 
+<br>
 #### Install OpenOCD on Mac OS
-Step 1: Download the [binary tarball for Mac OS](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4-MacOS.tgz).
+Step 1: Download the [binary tarball for Mac OS](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-MacOS.tgz).
 
 Step 2: Change to the root directory: 
 ```no-highlight 
 $cd / 
 ```
+<br>
 Step 3: Untar the tarball and install into ** /usr/local/bin**.  You will need to replace ** ~/Downloads ** with the directory that the tarball is downloaded to.  
 ```no-highlight
-sudo tar -xf ~/Downloads/openocd-bin-8*-MacOS.tgz ` 
+sudo tar -xf ~/Downloads/openocd-bin-0.10.0-MacOS.tgz ` 
 ```
+<br>
 Step 4: Check the OpenOCD version you are using: 
 
 ```no-highlight
 $which openocd
 /usr/local/bin/openocd
 $openocd -v
-Open On-Chip Debugger 0.10.0-dev-snapshot (2017-04-04-14:18)
+Open On-Chip Debugger 0.10.0
 Licensed under GNU GPL v2
 For bug reports, read
 http://openocd.org/doc/doxygen/bugs.html
 ```
-#### Install OpenOCD on Linux 
 
-Step 1: Download the [binary tarball for Linux 64 bits](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4-Linux.tgz). 
+You should see version: **0.10.0**. 
+
+<br>
+#### Install OpenOCD on Linux 
+Step 1: Download the [binary tarball for Linux](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-Linux.tgz)
 
 Step 2: Change to the root directory: 
 ``` 
 $cd / 
 ```
-
+<br>
 Step 3: Untar the tarball and install into ** /usr/local/bin**.  You will need to replace ** ~/Downloads ** with the directory that the tarball is downloaded to.  
 
-```no-highlight
-$sudo tar --no-same-owner -xpf ~/Downloads/openocd-bin-8*-Linux.tgz
-```
+** Note:** You must specify the -p option for the tar command.
 
+```no-highlight
+$sudo tar -xpf ~/Downloads/openocd-bin-0.10.0-Linux.tgz
+```
+<br>
 Step 4: Check the OpenOCD version you are using: 
 
 ```no-highlight
 $which openocd
 /usr/local/bin/openocd
 $openocd -v
-Open On-Chip Debugger 0.10.0-dev-snapshot (2017-04-04-14:18)
+Open On-Chip Debugger 0.10.0
 Licensed under GNU GPL v2
 For bug reports, read
 http://openocd.org/doc/doxygen/bugs.html
 ```
-You should see version: ** 0.10.0-dev-snapshot (2017-04-04-14:18) **. 
+You should see version: **0.10.0**. 
 
-If you see the following error message:
+If you see any of these error messages:
 
-** openocd: error while loading shared libraries: libftdi.so.1: cannot open shared object file: No such file or directory **
+* openocd: error while loading shared libraries: libhidapi-hidraw.so.0: cannot open shared object file: No such file or directory
 
-run the following to install the library:
+* openocd: error while loading shared libraries: libusb-1.0.so.0: cannot open shared object file: No such file or directory 
+
+run the following command to install the libraries: 
 ```no-highlight
-$sudo apt-get install libftdi1
+$sudo apt-get install libhidapi-dev:i386
 ```
 <br>
 ###Install SEGGAR J-Link 
