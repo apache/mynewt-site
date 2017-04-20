@@ -8,7 +8,7 @@ Note that the Mynewt OS will run on the nRF52 chip in the Arduino Primo board. H
 
 * Meet the the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have an Arduino Primo board.
-* Install a debugger choose one of the two options below:  Option 1 requires additional hardware but very easy to set up. 
+* Install a debugger.  Choose one of the two options below:  Option 1 requires additional hardware but very easy to set up. 
 
 <br>
 ##### Option 1
@@ -17,21 +17,7 @@ Note that the Mynewt OS will run on the nRF52 chip in the Arduino Primo board. H
 * Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html). 
 
 ##### Option 2
-No additional hardware is required but a version of OpenOCD 0.10.0 that is currently in development needs to be installed. A patch for the nRF52 has been applied to the OpenOCD code in development and a tarball has been made available for download [here](downloads/openocd-wnrf52.tgz). Untar it. From the top of the directory tree ("openocd-code-89bf96ffe6ac66c80407af8383b9d5adc0dc35f4"), build it using the following configuration:
-
-```
-$./configure --enable-cmsis-dap --enable-openjtag_ftdi --enable-jlink --enable-stlink
-```
-
-Then run `make` and `sudo make install`. This step takes minutes, so be patient.
-
-```
-$ openocd -v
-Open On-Chip Debugger 0.10.0-dev-snapshot (2016-05-20-10:43)
-Licensed under GNU GPL v2
-For bug reports, read
-    http://openocd.org/doc/doxygen/bugs.html
-```
+This board requires a patch version of OpenOCD 0.10.0 that is in development. See [Install OpenOCD](/os/get_started/cross_tools.md) instructions to install it if you do not have this version installed.
 
 You can now use openocd to upload to Arduino Primo board via the USB port itself.
 

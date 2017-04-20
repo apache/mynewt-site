@@ -23,9 +23,8 @@ Ensure that you meet the following prerequisites before continuing with one of t
 * Have a computer to build a Mynewt application and connect to the board over USB.
 * Have a Micro-USB cable to connect the board and the computer.
 * Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Install either the Jlink or OpenOCD debugger.
-* Create a project space (directory structure) and populate it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section. 
+* Create a project space (directory structure) and populate it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 <br>
 ###Overview of Steps
 These are the general steps to create, load and run the Blinky application on your board:
