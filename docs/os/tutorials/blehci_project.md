@@ -161,7 +161,7 @@ Switched line discipline from 0 to 15
 Device index 1 attached
 ```
 
-The baud rate can be configured by overriding the default value of 1000000 in the `net/nimble/transport/uart/syscfg.yml`. Settings can be overriden by a higher priority package such as the application. So, for example, you may set the `BLE_HCI_UART_BAUD` to a different value in `apps/blehci/syscfg.yml`.
+The baud rate used to connect to the controller may be changed by overriding the default value of 1000000 in the `net/nimble/transport/uart/syscfg.yml`. Settings in the serial transport `syscfg.yml` file can be overridden by a higher priority package such as the application. So, for example, you may set the `BLE_HCI_UART_BAUD` to a different value in `apps/blehci/syscfg.yml`.
 
 If there is no CTS/RTS lines present in the test environment, flow control should be turned off. This can be done with
 -N option for btattach. **Note:** -N option came with BlueZ ver 5.44.
