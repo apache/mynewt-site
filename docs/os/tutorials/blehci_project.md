@@ -155,11 +155,16 @@ Bluetooth monitor ver 5.37
 In a different terminal, attach the blehci device to the BlueZ daemon (substitute the correct /dev filename for ttyUSB0).
 
 ```
-$ sudo btattach -B /dev/ttyUSB0 -S 115200 
+$ sudo btattach -B /dev/ttyUSB0 -S 1000000
 Attaching BR/EDR controller to /dev/ttyUSB0
 Switched line discipline from 0 to 15
 Device index 1 attached
 ```
+
+The baud rate can be configured by overriding the default value of 1000000 in the `net/nimble/transport/uart/syscfg.yml`. Settings can be overriden by a higher priority package such as the application. So, for example, you may set the `BLE_HCI_UART_BAUD` to a different value in `apps/blehci/syscfg.yml`.
+
+If there is no CTS/RTS lines present in the test environment, flow control should be turned off. This can be done with
+-N option for btattach. **Note:** -N option came with BlueZ ver 5.44.
 
 <br>
 

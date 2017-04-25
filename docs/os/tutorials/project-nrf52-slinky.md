@@ -169,7 +169,7 @@ $
 
 <br>
 ### Use Newtmgr to Query the Board
-Run some newtmgr commands to query and receive responses back from the board (See the [Newt Manager Guide](newtmgr/overview) for more information on the newtmgr commands). 
+Run some newtmgr commands to query and receive responses back from the board (See the [Newt Manager Guide](../../newtmgr/overview) for more information on the newtmgr commands). 
 
 
 Run the `newtmgr echo hello -c nrf52serial` command. This is the simplest command that requests the board to echo back the text. 
