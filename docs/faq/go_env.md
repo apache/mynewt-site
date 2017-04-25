@@ -142,9 +142,11 @@ The newtmgr Go package is **mynewt.apache.org/newtmgr/newtmgr**. It is stored in
 
 Download the newtmgr package and install the tool:
 
+**Note:** `-ldflags -s` must be passed to the `go get` command.
+
 ```no-highlight
 $cd $GOPATH
-$go get mynewt.apache.org/newtmgr/newtmgr
+$go get -ldflags -s mynewt.apache.org/newtmgr/newtmgr
 $cd $GOPATH/src/mynewt.apache.org/newtmgr
 $ls
 DISCLAIMER	NOTICE		newtmgr
@@ -195,6 +197,8 @@ $git pull
 
 <br>
 Build and install the tool. The updated binary will be installed in the **$GOPATH/bin** directory: 
+
+(**Note:** `-ldflags -s` must be passed to the `go install` command if you are rebuilding newtmgr)
 
 ```no-highlight
 $go install
