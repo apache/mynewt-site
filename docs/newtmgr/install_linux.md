@@ -1,6 +1,6 @@
 ## Installing Newtmgr on Linux
 
-You can install the latest stable release (1.0.0) of newtmgr from a Debian binary package (amd64) or from a Debian source package. This page shows you how to:
+You can install the latest stable release (1.0.0) of the newtmgr tool from a Debian binary package (amd64) or from a Debian source package. This page shows you how to:
 
 1. Set up your computer to retrieve Debian packages from the runtimeco debian package repository. 
 
@@ -9,7 +9,7 @@ You can install the latest stable release (1.0.0) of newtmgr from a Debian binar
 2. Install the latest stable release version of newtmgr from a Debian binary package. 
 3. Install the latest stable release version of newtmgr from a Debian source package.
 
-If you are running on an amd64 platform, we recommend that you install from the binary package.
+If you are installing on an amd64 platform, we recommend that you install from the binary package.
 
 **Note:** See [Setting Up an Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env) if you want to:  
 
@@ -20,18 +20,17 @@ If you are running on an amd64 platform, we recommend that you install from the 
 
 ### Setting Up Your Computer to Get Packages from runtimeco 
 
-The newtmgr Debian packages are stored in a private repository on **https://github/runtimeco/debian-mynewt**. 
+The newtmgr Debian packages are stored in a private repository on **https://github/runtimeco/debian-mynewt**.   You must set up the following on your computer to retreive packages from the repository:
 
-**Note**: You will only need to perform these steps once on your computer. You can skip this step if you already set up your computer to access the runtimeco debian repository when you installed the newt tool. 
+**Note**: You only need to perform this setup once on your computer and you may have already done so when you installed the newt tool. 
 
-The following steps must be performed on your computer:
 
-1. Add the `apt-transport-https` package to use HTTPS to retrieve packages. 
+1. Install the `apt-transport-https` package to use HTTPS to retrieve packages. 
 2. Download the public key for the runtimeco debian repository and import the key into the apt keychain.
 3. Add the repository for the binary and source packages to the apt source list.
 
 <br>
-Add the apt-transport-https package:
+Install the apt-transport-https package:
 ```no-highlight
 $sudo apt-get update
 $sudo apt-get install apt-transport-https
@@ -39,14 +38,14 @@ $sudo apt-get install apt-transport-https
 <br>
 
 
-Download the public key for the runtimeco apt repo (**Note:** There is  `-` after the add):
+Download the public key for the runtimeco apt repo  (**Note:** There is  a `-` after  `apt-key add`):
 
 ```no-highlight
 wget -qO - https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/mynewt.gpg.key | sudo apt-key add -
 ```
 <br>
 
-Add the repository for the binary and source packages to the apt source list:
+Add the repository for the binary and source packages to the `mynewt.list` apt source list file.
 
 ```no-highlight
 $sudo -s
@@ -55,26 +54,22 @@ root$ cat > /etc/apt/sources.list.d/mynewt.list <<EOF
 deb https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 deb-src https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 EOF
+root$exit
 ```
+**Note:** Do not forget to exit the root shell.
+
 <br>
-Check the content of the file:
+Verify the content of the source list file:
 
 ```no-highlight
-root$more /etc/apt/sources.list.d//mynewt.list
+$more /etc/apt/sources.list.d/mynewt.list
 deb https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 deb-src https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 ```
 <br> 
-
-Exit the root shell:
-
-```no-highlight
-root$exit
-```
-<br>
 ### Installing the Latest Release of Newtmgr from a Binary Package 
 
-For Linux amd64 platform, you can install the latest stable version (1.0.0) of newtmgr from the newtmgr Debian binary package:
+For Linux amd64 platforms, you can install the latest stable version (1.0.0) of newtmgr from the newtmgr Debian binary package:
 
 ```no-highlight
 $sudo apt-get update
@@ -101,7 +96,7 @@ See [Checking the Installed Version of Newtmgr](#check) to verify that you are u
 
 If you are running Linux on a different architecture, you can install the Debian source package for the latest stable release (1.0.0) of newtmgr. The installation of the source package builds the newtmgr binary and creates a Debian binary package that you then install.
 
-**Note**: Newtmgr version 1.0.0 has been tested on Linux amd64 platform. 
+**Note**: Newtmgr version 1.0.0 has been tested on Linux amd64 platforms. 
 
 <br>
 #### Installing Go 1.7 
@@ -150,14 +145,23 @@ dpkg-deb: building package 'newtmgr' in '../newtmgr_1.0.0-1_amd64.deb'.
 dpkg-genchanges: info: binary-only upload (no source code included)
  dpkg-source --after-build newtmgr-1.0.0
 dpkg-buildpackage: info: binary-only upload (no source included)
+W: Can't drop privileges for downloading as file 'newtmgr_1.0.0-1.dsc' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
 ```
+**Note:** You can ignore the "Permission denied" warning message at the end of the command.
+
 
 <br>
 Install the newtmgr binary package that is created from the source package:
 
+**Note:** The file name for the binary package has the format: newtmgr_1.0.0-1_**arch**.deb,  where **arch** is a value that identifies your host architecture.
+
 ```no-highlight
 $sudo dpkg -i newtmgr_1.0.0-1_amd64.deb 
-
+Selecting previously unselected package newtmgr.
+(Reading database ... 215099 files and directories currently installed.)
+Preparing to unpack newtmgr_1.0.0-1_amd64.deb ...
+Unpacking newtmgr (1.0.0-1) ...
+Setting up newtmgr (1.0.0-1) ...
 ```
 <br>
 ###<a name="check"></a> Checking the Installed Version of Newtmgr
@@ -172,7 +176,8 @@ $which newtmgr
 /usr/bin/newtmgr
 ```
 
-**Note:** If you previously built newtmgr from source and the output of `which newtmgr` shows "$GOPATH/bin/newtmgr", you will need to move "$GOPATH/bin" after "/usr/bin" in your $PATH and export your $PATH.
+**Note:** If you previously built newtmgr from source and the output of `which newtmgr` shows "$GOPATH/bin/newtmgr", you will need to move "$GOPATH/bin" after "/usr/bin" for your PATH environment variable and export it.
+
 
 <br>
 Get information about newtmgr:

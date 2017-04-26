@@ -1,12 +1,12 @@
 ## Installing Newt on Linux
 
-You can install the latest stable release (1.0.0) of newt from a Debian binary package (amd64) or from a Debian source package. This page shows you how to:
+You can install the latest stable release (1.0.0) of the newt tool from a Debian binary package (amd64) or from a Debian source package. This page shows you how to:
 
 1. Set up your computer to retrieve Debian packages from the runtimeco debian package repository.
 2. Install the latest stable release version of newt from a Debian binary package. 
 3. Install the latest stable release version of newt from a Debian source package.
 
-If you are running on an amd64 platform, we recommend that you install from the binary package.
+If you are installing on an amd64 platform, we recommend that you install from the binary package.
 
 **Note:** See [Setting Up an Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env) if you want to:  
 
@@ -16,18 +16,17 @@ If you are running on an amd64 platform, we recommend that you install from the 
 <br>
 
 ### Setting Up Your Computer to Get Packages from runtimeco 
-The newt Debian packages are stored in a private repository on **https://github/runtimeco/debian-mynewt**. 
+The newt Debian packages are stored in a private repository on **https://github/runtimeco/debian-mynewt**.  The following steps must be performed on your computer to retreive packages from the repository:
 
-**Note:** You will only need to perform these steps only once on your computer.
-The following steps must be performed on your computer:
+**Note:** You only need to perform this setup once on your computer.
 
-1. Add the `apt-transport-https` package to use HTTPS to retrieve packages. 
+1. Install the `apt-transport-https` package to use HTTPS to retrieve packages. 
 2. Download the public key for the runtimeco debian repository and import the key into the apt keychain.
 3. Add the repository for the binary and source packages to the apt source list.
 
 
 <br>
-Add the apt-transport-https package:
+Install the apt-transport-https package:
 ```no-highlight
 $sudo apt-get update
 $sudo apt-get install apt-transport-https
@@ -35,14 +34,14 @@ $sudo apt-get install apt-transport-https
 <br>
 
 
-Download the public key for the runtimeco apt repo (**Note:** There is  `-` after the add):
+Download the public key for the runtimeco apt repo (**Note:** There is  a `-` after  `apt-key add`):
 
 ```no-highlight
 wget -qO - https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/mynewt.gpg.key | sudo apt-key add -
 ```
 <br>
 
-Add the repository for the binary and source packages to the apt source list:
+Add the repository for the binary and source packages to the `mynewt.list` apt source list file.
 
 ```no-highlight
 $sudo -s
@@ -51,26 +50,23 @@ root$ cat > /etc/apt/sources.list.d/mynewt.list <<EOF
 deb https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 deb-src https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 EOF
+root$exit
 ```
+**Note:** Do not forget to exit the root shell.
+
 <br>
-Check the content of the file:
+Verify the content of the source list file:
 
 ```no-highlight
-root$more /etc/apt/sources.list.d//mynewt.list
+$more /etc/apt/sources.list.d/mynewt.list
 deb https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 deb-src https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
 ```
 <br> 
 
-Exit the root shell:
-
-```no-highlight
-root$exit
-```
-<br>
 ### Installing the Latest Release of Newt from a Binary Package 
 
-For Linux amd64 platform, you can install the latest stable version (1.0.0) of newt from the newt Debian binary package:
+For Linux amd64 platforms, you can install the latest stable version (1.0.0) of newt from the newt Debian binary package:
 
 ```no-highlight
 $sudo apt-get update
@@ -93,7 +89,7 @@ See [Checking the Installed Version of Newt](#check) to verify that you are usin
 
 If you are running Linux on a different architecture, you can install the Debian source package for the latest stable release (1.0.0) of newt. The installation of the source package builds the newt binary and creates a Debian binary package that you then install.
 
-**Note**: Newt version 1.0.0 has been tested on Linux amd64 platform. Version 1.0.0 does not build on the 32 bit platform but have been fixed for the next release.
+**Note**: Newt version 1.0.0 has been tested on Linux amd64 platforms. Version 1.0.0 does not build on 32 bit platforms but have been fixed for the next release.
 
 <br>
 #### Installing Go 1.7 
@@ -146,10 +142,12 @@ dpkg-genchanges: info: binary-only upload (no source code included)
 dpkg-buildpackage: info: binary-only upload (no source included)
 W: Can't drop privileges for downloading as file 'newt_1.0.0-1.dsc' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
 ```
-**Note:** You can ignore the "Permission denied: warning message at the end of the command.
+**Note:** You can ignore the "Permission denied" warning message at the end of the command.
 
 <br>
 Install the newt binary package that is created from the source package:
+
+**Note:** The file name for the binary package has the format: newt_1.0.0-1_**arch**.deb,  where **arch** is a value that identifies your host architecture.  
 
 ```no-highlight
 $sudo dpkg -i newt_1.0.0-1_amd64.deb 
@@ -174,7 +172,7 @@ $newt version
 Apache Newt (incubating) version: 1.0.0
 ```
 
-**Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin" after "/usr/bin" in your $PATH and export your $PATH.
+**Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin" after "/usr/bin" for your PATH environment variable and export it. 
 
 <br>
 Get information about newt:
