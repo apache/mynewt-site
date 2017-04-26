@@ -67,7 +67,7 @@ repository.apache-mynewt-core:
 repository.mynewt_arduino_zero:
     type: github
     vers: 1-latest
-    user: runtimeinc
+    user: runtimeco
     repo: mynewt_arduino_zero
 $
 ```
