@@ -392,11 +392,14 @@
                         </div>
                         
                             <h1 id="installing-cross-tools-for-arm">Installing Cross Tools for ARM</h1>
-<p>This page shows how to install tools on your laptop/computer to use for direct communication (e.g. for debugging) with some ARM based HW platforms running Apache Mynewt. You will also have to use the Newt tool installed to run natively on your machine. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.</p>
-<p>This page provides guidance for installing the tools directly on your MAC and Linux machine. See the relevant sections below.</p>
+<p>This page shows how to install tools on your laptop/computer to use for direct communication (e.g. for debugging) with some ARM based HW platforms running Apache Mynewt.  It shows you how to install the following tools for Mac OS X and Linux:</p>
+<ul>
+<li>ARM Cross toolchain</li>
+<li>Debugger to load and debug your device</li>
+</ul>
 <p><br></p>
-<h2 id="install-arm-cross-tools-in-mac-os-x">Install ARM Cross tools in Mac OS X</h2>
-<h3 id="install-tool-chain">Install Tool Chain</h3>
+<h2 id="install-arm-cross-toolchain">Install ARM Cross Toolchain</h2>
+<h3 id="install-arm-toolchain-for-mac-os-x">Install ARM Toolchain For Mac OS X</h3>
 <p>Install the PX4 Toolchain and check the version installed. ARM maintains a
 pre-built GNU toolchain with a GCC source branch targeted at Embedded ARM
 Processors, namely Cortex-R/Cortex-M processor families. After installing,
@@ -420,22 +423,7 @@ available. Mynewt OS will eventually work with multiple versions available,
 including the latest releases. However, at present we have tested only with
 this version and recommend it for getting started. </p>
 <p><br></p>
-<h3 id="install-openocd">Install OpenOCD</h3>
-<p>OpenOCD (Open On-Chip Debugger) is open-source software that allows your
-computer to interface with the JTAG debug connector on a variety of boards.  A
-JTAG connection lets you debug and test embedded target devices. For more on
-OpenOCD go to <a href="http://openocd.org">http://openocd.org</a>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install open-ocd
-$ which openocd
-/usr/local/bin/openocd
-$ ls -l $(which openocd)
-lrwxr-xr-x  1 &lt;user&gt;  admin  36 Sep 17 16:22 /usr/local/bin/openocd -&gt; ../Cellar/open-ocd/0.9.0/bin/openocd
-</pre></div>
-
-
-<p><br></p>
-<h2 id="install-arm-cross-arm-tools-for-linux">Install ARM cross arm tools for Linux</h2>
-<h3 id="install-tool-chain_1">Install Tool Chain</h3>
+<h3 id="install-arm-toolchain-for-linux">Install ARM Toolchain For Linux</h3>
 <p>On a Debian-based Linux distribution, gcc 4.9.3 for ARM can be installed with
 apt-get as documented below. The steps are explained in depth at
 <a href="https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa">https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa</a>.</p>
@@ -448,20 +436,86 @@ $ sudo apt-get install gdb-arm-none-eabi
 
 
 <p><br></p>
-<h3 id="install-openocd_1">Install OpenOCD</h3>
+<h2 id="install-debugger">Install Debugger</h2>
+<p>Mynewt uses, depending on the board, either the OpenOCD or SEGGER J-Link debugger. </p>
+<h3 id="install-openocd">Install OpenOCD</h3>
 <p>OpenOCD (Open On-Chip Debugger) is open-source software that allows your
 computer to interface with the JTAG debug connector on a variety of boards.  A
 JTAG connection lets you debug and test embedded target devices. For more on
 OpenOCD go to <a href="http://openocd.org">http://openocd.org</a>.</p>
-<p>If you are running Ubuntu 15.x, then you are in luck and you can simply run: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo apt-get install openocd 
+<p>OpenOCD version 0.10.0 with nrf52 support is required.  A binary for this version is available to download for Mac OS and Linux.</p>
+<p><br></p>
+<h4 id="install-openocd-on-mac-os">Install OpenOCD on Mac OS</h4>
+<p>Step 1: Download the <a href="https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-MacOS.tgz">binary tarball for Mac OS</a>.</p>
+<p>Step 2: Change to the root directory: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd / 
 </pre></div>
 
 
-<p>For this project, you should download the openocd 0.8.0 package from
-<a href="https://launchpad.net/ubuntu/vivid/+source/openocd">https://launchpad.net/ubuntu/vivid/+source/openocd</a>.
-The direct link to the amd64 build is
-<a href="http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb">http://launchpadlibrarian.net/188260097/openocd_0.8.0-4_amd64.deb</a>. </p>
+<p><br>
+Step 3: Untar the tarball and install into <strong> /usr/local/bin</strong>.  You will need to replace <strong> ~/Downloads </strong> with the directory that the tarball is downloaded to.  </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">sudo tar -xf ~/Downloads/openocd-bin-0.10.0-MacOS.tgz ` 
+</pre></div>
+
+
+<p><br>
+Step 4: Check the OpenOCD version you are using: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$which openocd
+/usr/local/bin/openocd
+$openocd -v
+Open On-Chip Debugger 0.10.0
+Licensed under GNU GPL v2
+For bug reports, read
+http://openocd.org/doc/doxygen/bugs.html
+</pre></div>
+
+
+<p>You should see version: <strong>0.10.0</strong>. </p>
+<p><br></p>
+<h4 id="install-openocd-on-linux">Install OpenOCD on Linux</h4>
+<p>Step 1: Download the <a href="https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-Linux.tgz">binary tarball for Linux</a></p>
+<p>Step 2: Change to the root directory: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd / 
+</pre></div>
+
+
+<p><br>
+Step 3: Untar the tarball and install into <strong> /usr/local/bin</strong>.  You will need to replace <strong> ~/Downloads </strong> with the directory that the tarball is downloaded to.  </p>
+<p><strong> Note:</strong> You must specify the -p option for the tar command.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$sudo tar -xpf ~/Downloads/openocd-bin-0.10.0-Linux.tgz
+</pre></div>
+
+
+<p><br>
+Step 4: Check the OpenOCD version you are using: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$which openocd
+/usr/local/bin/openocd
+$openocd -v
+Open On-Chip Debugger 0.10.0
+Licensed under GNU GPL v2
+For bug reports, read
+http://openocd.org/doc/doxygen/bugs.html
+</pre></div>
+
+
+<p>You should see version: <strong>0.10.0</strong>. </p>
+<p>If you see any of these error messages:</p>
+<ul>
+<li>
+<p>openocd: error while loading shared libraries: libhidapi-hidraw.so.0: cannot open shared object file: No such file or directory</p>
+</li>
+<li>
+<p>openocd: error while loading shared libraries: libusb-1.0.so.0: cannot open shared object file: No such file or directory </p>
+</li>
+</ul>
+<p>run the following command to install the libraries: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$sudo apt-get install libhidapi-dev:i386
+</pre></div>
+
+
+<p><br></p>
+<h3 id="install-seggar-j-link">Install SEGGAR J-Link</h3>
+<p>You can download and install Segger J-LINK Software and documentation pack from <a href="https://www.segger.com/jlink-software.html">SEGGER</a>. </p>
                         
                         <div class="row">
                             

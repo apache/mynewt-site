@@ -262,22 +262,23 @@
 </div>
                         </div>
                         
-                            <h2 id="contributing-to-newt-and-newtmgr-tools">Contributing to Newt and Newtmgr Tools</h2>
-<p>Newt and Newtmgr are written in Go (golang). This guide shows you how to install Go and setup your environment if
-you would like to contribute to the newt or newtmgr tools.</p>
+                            <h2 id="contributing-to-newt-or-newtmgr-tools">Contributing to Newt or Newtmgr Tools</h2>
+<p>Newt and Newtmgr are written in Go (golang). This guide shows you how to install Go and setup your environment to update and build the tools if you want to: </p>
+<ul>
+<li>Contribute to newt or newtmgr features or fix bugs.</li>
+<li>Build the tools with latest updates from the master branch on a Linux platform.</li>
+</ul>
 <p>This guide shows you how to perform the following:</p>
 <ol>
-<li>Install Go on either Mac OS or Linux.</li>
+<li>Install Go on either Mac OS X or Linux. (Tasks that are specific to each platform are called out.)</li>
 <li>Setup the Go environment.</li>
-<li>Download the newt and newtmgr source code.</li>
-<li>Build the newt and newtmgr tools.</li>
+<li>Download the source, build, and install the newt or newtmgr tools.</li>
 <li>Update and rebuild the tools. </li>
 </ol>
-<p>Steps 2-5 apply to both Mac OS and Linux platforms.</p>
-<p><strong>Note:</strong> You will also need to read and follow the instructions from <a href="../../faq/answers/">FAQ</a> to set up your git repos to submit changes.</p>
+<p><strong>Note:</strong> You will also need to read and follow the instructions from the <a href="../../faq/answers/">FAQ</a> to set up your git repos to submit changes.</p>
 <h3 id="step-1-installing-go">Step 1: Installing Go</h3>
-<p>The latest master branch of newt and newtmgr requires GO version 1.6 or higher.
-<br></p>
+<p>The latest master branch of newt and newtmgr requires GO version 1.6 or higher. You can skip this step and proceed to Step 2 if you already have Go version 1.6 or higher installed.</p>
+<p><br></p>
 <h4 id="installing-go-on-mac-os-x">Installing Go on Mac OS X</h4>
 <p>If you do not have Homebrew installed, run the following command. You will be prompted for your sudo password.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ruby -e &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;
@@ -325,13 +326,14 @@ go version go1.6.3 linux/amd64
 
 <p><br></p>
 <h3 id="step-2-setting-up-your-go-environment">Step 2: Setting Up Your Go Environment</h3>
-<p>Go provides an environment to compile Go code, construct Go packages,  and import Go code.  You will use Go commands to import the <strong>newt</strong> repository into your local Go environment.  The Go language environment dictates a specific directory structure, or workspace in Go parlance. It must contain three sibling directories with the names <strong>src</strong>, <strong>pkg</strong> and <strong>bin</strong>: </p>
+<p>This section describes the Go environment and how to setup a Go workspace. If you already have a Go workspace for your other Go projects, you can skip this step and proceed to Step 3.</p>
+<p>Go provides an environment to compile Go code, construct Go packages,  and import Go code.  You will use Go commands to import the newt or newtmgr package repository into your local Go environment.  The Go language environment dictates a specific directory structure, or workspace in Go parlance. It must contain three sibling directories with the names <strong>src</strong>, <strong>pkg</strong> and <strong>bin</strong>: </p>
 <ul>
 <li>src contains Go source files organized into packages (one package per directory)</li>
 <li>pkg contains package objects</li>
-<li>bin contains executable commands.</li>
+<li>bin contains the Go application executables that Go builds and installs.</li>
 </ul>
-<p>The <strong>GOPATH</strong> environment variable specifies the location of your workspace. To setup this workspace environment, create a <strong>dev</strong> directory and then a <strong>go</strong> directory under it. Set the GOPATH environment variable to this directory where you will clone the newt repository.</p>
+<p>The <strong>GOPATH</strong> environment variable specifies the location of your workspace.  To setup this workspace environment, create a <strong>dev</strong> directory and then a <strong>go</strong> directory under it. Set the GOPATH environment variable to this directory where you will clone the newt and newtmgr repositories.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd $HOME
 $ mkdir -p dev/go  
 $ cd dev/go
@@ -340,57 +342,113 @@ $ export GOPATH=`pwd`
 
 
 <p><br>
-Add the export GOPATH statement to the ~/.bash_profile file and source the file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ vi ~/.bash_profile
-$ source ~/.bash_profile
+Add the following export statements to your ~/.bash_profile file and source the file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">export GOPATH=$HOME/dev/go
+export PATH=$GOPATH/bin:$PATH
 </pre></div>
 
 
 <p><br></p>
-<h3 id="step-3-downloading-the-source">Step 3: Downloading the Source</h3>
-<p>Use Go commands to retrieve the latest source from the newt repository (currently the ASF incubator directory). Check that the directories are installed.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ go get mynewt.apache.org/newt/...
-$ ls $GOPATH/src/mynewt.apache.org/newt
-DISCLAIMER  NOTICE      newt        newtvm      viper
-LICENSE     README.md   newtmgr     util        yaml
-</pre></div>
-
-
+<h3 id="step-3-downloading-the-source-and-installing-the-tools">Step 3: Downloading the Source and Installing the Tools</h3>
+<p>Newt and newtmgr are individual Go packages and have their own git repositories. You can download the source and install one or both tools.</p>
+<p>We use the <code>go get</code> command to download the source, build, and install the binary in the <strong>$GOPATH/bin</strong> directory. </p>
 <p><br></p>
-<h3 id="step-4-building-the-newt-and-newtmgr-tools">Step 4: Building the Newt and Newtmgr Tools</h3>
-<p>Perform the following commands to build the tools:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd $GOPATH/src/mynewt.apache.org/newt/newt
-$ go install
-$ ls $GOPATH/bin/
-newt newtmgr newtvm
-</pre></div>
+<h4 id="downloading-and-installing-the-newt-tool">Downloading and Installing the Newt Tool</h4>
+<p>The newt Go package is <strong>mynewt.apache.org/newt/newt</strong> and is stored in the <a href="https://github.com/apache/incubator-mynewt-newt">Apache Mynewt newt tool repository mirrored on github</a>. </p>
+<p>Download the newt package source and install the tool:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd $GOPATH
+$go get mynewt.apache.org/newt/newt
+$cd $GOPATH/src/mynewt.apache.org/newt
+$ls 
+DISCLAIMER      RELEASE_NOTES.md    util
+INSTALLING.md       build.sh        viper
+LICENSE         newt            yaml
+NOTICE          newtmgr
+README.md       newtvm
+$git status
+On branch master
+Your branch is up-to-date with &#39;origin/master&#39;.
 
-
-<p><br></p>
-<h3 id="step-5-updating-and-rebuilding-the-tools">Step 5: Updating and Rebuilding the Tools</h3>
-<p>Change to the directory where you initially installed the source: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd $GOPATH/src/mynewt.apache.org/newt
+nothing to commit, working directory clean
 </pre></div>
 
 
 <p><br>
-Pull the latest source from the repository (you can change to a different branch using git checkout [branch] if you need to)</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ git pull
+<strong>Note:</strong> The source code under the <strong>newtmgr</strong> directory is no longer used or updated. The current <strong>newtmgr</strong> source has its own Git repository.</p>
+<p><br>
+Check that the newt binary is installed and you are using the one from <strong> $GOPATH/bin</strong>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ls $GOPATH/bin/newt
+~/dev/go/bin/newt
+$which newt
+~/dev/go/bin/newt
+$newt version
+Apache Newt (incubating) version: 1.0.0-dev
+</pre></div>
+
+
+<p><br></p>
+<h4 id="downloading-and-installing-the-newtmgr-tool">Downloading and Installing the Newtmgr Tool</h4>
+<p>The newtmgr Go package is <strong>mynewt.apache.org/newtmgr/newtmgr</strong>. It is stored in the <a href="https://github.com/apache/incubator-mynewt-newtmgr">Apache Mynewt newtmgr tool repository mirrored on github</a>.</p>
+<p>Download the newtmgr package and install the tool:</p>
+<p><strong>Note:</strong> <code>-ldflags -s</code> must be passed to the <code>go get</code> command.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd $GOPATH
+$go get -ldflags -s mynewt.apache.org/newtmgr/newtmgr
+$cd $GOPATH/src/mynewt.apache.org/newtmgr
+$ls
+DISCLAIMER  NOTICE      newtmgr
+LICENSE     README.md   nmxact
+$git status
+On branch master
+Your branch is up-to-date with &#39;origin/master&#39;.
+
+nothing to commit, working directory clean
 </pre></div>
 
 
 <p><br>
-Install the tools from the latest source:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd newt
-$ go install
-$ cd ../newtmgr
-$ go install
-$ ls $GOPATH /bin/
-newt newtmgr newtvm
+Check that the newtmgr binary is installed and you are using the one from <strong>$GOPATH/bin</strong>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ls $GOPATH/bin/newtmgr
+~/dev/go/bin/newtmgr
+$which newt
+~/dev/go/bin/newtmgr
 </pre></div>
 
 
-<p>This should have updated your newt and newtmgr to the latest version based on the git repository you used.</p>
+<p><br></p>
+<h3 id="step-4-updating-and-rebuilding-the-tools">Step 4: Updating and Rebuilding the Tools:</h3>
+<p>This section shows you how to rebuild the newt and newtmgr tools with the latest updates from the master branch or after you have made changes in your branch. </p>
+<p>Here is the general procedure to rebuild either the newt or newtmgr tool. The only difference is the directory where you will be executing the commands from. You will need to repeat the procedure to rebuild both tools.</p>
+<ol>
+<li>Change to the directory where the local Git repository for the tool is installed.</li>
+<li>Pull the latest changes from the master branch. If you made changes you will need to rebase with <strong>origin master</strong> (See <a href="../../faq/answers/">FAQ</a>).</li>
+<li>Build and install the tool.</li>
+</ol>
+<p><br>
+Change to the directory where the source for the tool is installed.</p>
+<p>For the  <strong>newt</strong> tool:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd $GOPATH/src/mynewt.apache.org/newt/newt
+</pre></div>
+
+
+<p>For the <strong>newtmgr</strong> tool:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd $GOPATH/src/mynewt.apache.org/newtmgr/newtmgr
+</pre></div>
+
+
+<p><br>
+After you change to the specific tool directory, get the latest updates from the master branch.  If you made changes and need to rebase with the origin, add the <code>--rebase origin master</code> arguments to the  <code>git pull</code> command:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$git pull 
+</pre></div>
+
+
+<p><br>
+Build and install the tool. The updated binary will be installed in the <strong>$GOPATH/bin</strong> directory: </p>
+<p>(<strong>Note:</strong> <code>-ldflags -s</code> must be passed to the <code>go install</code> command if you are rebuilding newtmgr)</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$go install
+</pre></div>
+
+
+<p>You can run the <code>ls -l</code> command to check the modification time for the binary to ensure the new version is installed. </p>
                         
                         <div class="row">
                             
