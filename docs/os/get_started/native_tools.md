@@ -139,4 +139,4 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
 
 <br>
 
-At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the [Create Your First Project](project_create.md) section.
+At this point you have installed all the necessary software to build and run your first project on a simluator on your Mac OS or Linux computer. You may proceed to the [Create Your First Project](project_create.md) section or continue to the next section and install the cross tools for ARM.

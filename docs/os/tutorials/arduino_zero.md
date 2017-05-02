@@ -41,7 +41,7 @@ Run the following commands to create a new project:
 ###<a name="fetchexternal"></a> Fetch External Packages
 
 Mynewt uses source code provided directly from the chip manufacturer for
-low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.
+low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the newt tool can fetch them.
 
 To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
 the repository to the `project.yml` file in your base project directory.

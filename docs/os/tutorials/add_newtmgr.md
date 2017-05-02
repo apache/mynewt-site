@@ -23,12 +23,10 @@ See [Other Configuration Options](#other-configuration-options) on how to custom
 ### Prerequisites
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-* Install the [newt tool](../../newt/install/newt_mac.md). 
-* Install the [newtmgr tool](../../newtmgr/install_mac.md).
 * Have Internet connectivity to fetch remote Mynewt components.
-* Install the [compiler tools](../get_started/native_tools.md) to 
-support native compiling to build the project this tutorial creates.  
 * Have a cable to establish a serial USB connection between the board and the laptop.
+* Install the newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install the [newtmgr tool](../../newtmgr/install_mac.md).
 
 <br>
 

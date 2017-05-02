@@ -8,20 +8,19 @@ This tutorial explains how to run an example BLE app on a board and command it t
 
 ### Prerequisites
 
-* Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
-newt command is in your system path. 
-* You must have Internet connectivity to fetch remote Mynewt components.
-* You must [install the compiler tools](../get_started/native_tools.md) to 
-support native compiling to build the project this tutorial creates.  
-* You must install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
-* You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
-* Cable to establish a serial USB connection between the board and the laptop
+Ensure that you have met the following prerequisites before continuing with this tutorial:
+
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
+* Have a cable to establish a serial USB connection between the board and the laptop
+* Install the newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
 
 <br>
 
 ### Create a project
 
-Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory.
+Use the newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory.
 
 ```no-highlight
 $ newt new myproj 

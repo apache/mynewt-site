@@ -4,14 +4,13 @@ This page shows how to create a Mynewt Project using the `newt` command-line too
 
 <br>
 
-### Pre-Requisites
+### Prerequisites
 
-* Newt:
+* Have Internet connectivity to fetch remote Mynewt components.
+* Install Newt:
+    * If you have taken the native install route,  see the installation instructions for [Mac OS](../../newt/install/newt_mac.md) or for [Linux](../../newt/install/newt_linux.md). 
     * If you have taken the Docker route, you have already installed Newt.
-    * If you have taken the native install route, you have to ensure that you have installed the Newt tool following the instructions for [Mac](../../newt/install/newt_mac.md) or [Linux](../../newt/install/newt_linux.md) as appropriate, and that the `newt` command is in your system path. 
-* You must have Internet connectivity to fetch remote Mynewt components.
-* You must [install the compiler tools](native_tools.md) to 
-support native compiling to build the project this tutorial creates.  
+* Install the [native toolchain](native_tools.md) to compile and build a Mynewt native application. 
 
 <br>
 
@@ -32,7 +31,7 @@ Project myproj successfully created.
 Newt populates this new project with a base skeleton of a new Apache Mynewt 
 project.  It has the following structure. 
 
-**Note**: If you do not have `tree`, install it by running `brew install tree`.
+**Note**: If you do not have `tree`, run `brew install tree` to install on Mac OS or run `sudo apt-get install tree` to install on Linux.
 
 ```no-highlight 
 $ cd myproj

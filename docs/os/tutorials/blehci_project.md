@@ -8,22 +8,20 @@ The host used in this specific example is the BlueZ Bluetooth stack. Since BlueZ
 
 <br>
 
-### Pre-Requisites
+### Prerequisites
+Ensure that you meet the following prerequisites before continuing with one of the tutorials.
 
-* Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
-newt command is in your system path. 
-* You must have Internet connectivity to fetch remote Mynewt components.
-* If you are not using the Docker container for newt and other tools, you must [install the compiler tools](../get_started/native_tools.md) to 
-support native compiling to build the project this tutorial creates.  
-* You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
-* USB TTL Serial Cable that supports hardware flow control such as ones found at [http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm](http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm) to establish a serial USB connection between the board and the laptop.
-* You have installed a BLE host such as BlueZ on a Linux machine to talk to the nrf52 board running Mynewt. Use `sudo apt-get install bluez` to install it on your Linux machine. 
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
+* Have a USB TTL Serial Cable that supports hardware flow control such as ones found at [http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm](http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm) to establish a serial USB connection between the board and the laptop.
+* Install the newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install a BLE host such as BlueZ on a Linux machine to talk to the nrf52 board running Mynewt. Use `sudo apt-get install bluez` to install it on your Linux machine. 
 
 <br>
 
 ### Create a project
 
-Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. 
+Use the newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. 
 
 ```
 $ newt new blehciproj 

@@ -7,16 +7,13 @@ can interact with your project over a serial line connection.
 
 <br>
 
-### Pre-Requisites
+### Prerequisites
+Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-* Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
-newt command is in your system path. 
-* You must have Internet connectivity to fetch remote Mynewt components.
-* You must [install the compiler tools](../get_started/native_tools.md) to 
-support native compiling to build the project this tutorial creates.  
-* You must install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to 
-load your project on the board.
-* Cable to establish a serial USB connection between the board and the laptop
+* Have Internet connectivity to fetch remote Mynewt components.  
+* Have a cable to establish a serial USB connection between the board and the laptop
+* Install the newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install the [Segger JLINK package]( https://www.segger.com/jlink-software.html) to load your project on the board.
 
 <br>
 
