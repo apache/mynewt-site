@@ -161,15 +161,22 @@ Loading app image into slot 1
 
 ### Set Up a Serial Connection
 
-You'll need a Serial connection to see the output of your program. You can reference the [Serial Port Setup](../get_started/serial_access.md) 
-Tutorial for more information on setting up your serial communication.
+You'll need a Serial connection to see the output of your program. You can reference the [Serial Port Setup](../get_started/serial_access.md) Tutorial for more information on setting up your serial communication.
 
 <br>
-
 ###Communicate with the Application
 
-Once you have a connection set up, run ```minicom -D /dev/tty.usbserial<port> -b 115200``` to connect to the application console.
+Once you have a connection set up, you can connect to your device as follows:
+
+* On Mac OS and Linux platforms, you can run ```minicom -D /dev/tty.usbserial-<port> -b 115200``` to connect to the console of your app. Note that on Linux, the format of the port name is `/dev/ttyUSB<N>`, where N is a number.
+
+* On Windows, you can use a terminal application such as PuTTY to connect to the device.
+	
+	If you located your port from a MinGW terminal,  the port name format is `/dev/ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
+	
+	You can also use the Windows Device Manager to locate the COM port.
     
+<br>
 To test and make sure that the Shell is running, first just hit <return>:
     
 ```no-highlight

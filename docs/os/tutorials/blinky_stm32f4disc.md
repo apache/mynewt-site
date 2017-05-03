@@ -169,7 +169,11 @@ Note: If the LED does not blink, try resetting your board.
 
 <br>
 
-**Note:** If you want to erase the flash and load the image again, start a debug session, and enter `mon  stm32f2x mass_erase 0` at the gdb prompt:
+If you want to erase the flash and load the image again, start a debug session, and enter `mon  stm32f2x mass_erase 0` at the gdb prompt:
+
+**Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
+
+<br>
 ```no-highlight
 $newt debug stm32f4disc_blinky
 [~/dev/myproj/repos/apache-mynewt-core/hw/bsp/stm32f4discovery/stm32f4discovery_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/stm32f4discovery ~/dev/myproj/bin/targets/stm32f4disc_blinky/app/apps/blinky/blinky]

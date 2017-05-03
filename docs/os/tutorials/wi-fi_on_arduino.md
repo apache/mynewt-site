@@ -235,8 +235,19 @@ Set up a serial connection from your computer to the MKR1000 board (See [Serial 
 <br>
 <p>
 <br>
-Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
+<br>
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is
+ platform dependent:
 
+
+* Mac OS uses the format `tty.usbserial-<some identifier>`.
+* Linux uses the format `TTYUSB<N>`, where `N` is a number.  For example, TTYUSB2.
+* MinGW on Windows uses the format `ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `
+/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
+	
+	You can also use the Windows Device Manager to find the COM port number.
+
+<br>
 ```no-highlight
 $ ls /dev/tty*usbserial*
 /dev/tty.usbserial-1d13
@@ -247,6 +258,9 @@ $
 ### Start Wi-Fi via console
 
 Use a terminal emulation program to communicate with the board over the serial port. This tutorial shows a Minicom set up. Run the minicom command with the serial port you located on your computer:
+
+**Note:** On Windows, you can use the PuTTY application. 
+
 ```no-highlight
 $ minicom -D /dev/tty.usbserial-1d13 -b 115200
 ```

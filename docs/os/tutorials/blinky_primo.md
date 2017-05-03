@@ -176,9 +176,11 @@ Note: If the LED does not blink, try resetting the board.
 
 <br>
 
-**Note:** If you want to erase the flash and load the image again, use JLinkExe and issue the `erase` command when you are using the Jlink debug probe: 
-
-```
+If you want to erase the flash and load the image again, use JLinkExe and issue the `erase` command when you are using the Jlink debug probe: 
+ 
+**Note:** On Windows: Run the `jlink` command with the same arguments from a Windows Command Prompt terminal.
+<br>
+```no-highlight
 $ JLinkExe -device nRF52 -speed 4000 -if SWD
 SEGGER J-Link Commander V5.12c (Compiled Apr 21 2016 16:05:51)
 DLL version V5.12c, compiled Apr 21 2016 16:05:45
@@ -205,6 +207,8 @@ $
 <br>
 
 If you are using the OpenOCD debugger, run the `newt debug primoblinky` command and issue the highlighted command at the (gdb) prompt:
+
+**Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
 
 ```hl_lines="11"
 $newt debug primoblinky

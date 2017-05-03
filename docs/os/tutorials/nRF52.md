@@ -166,9 +166,12 @@ Note: If the LED does not blink, try resetting your board.
 
 <br>
 
-**Note:** If you want to erase the flash and load the image again, you can use JLinkExe to issue an `erase` command.
+If you want to erase the flash and load the image again, you can run `JLinkExe` to issue an `erase` command.
 
-```
+**Note:** On Windows: Run the `jlink` command with the same arguments from a Windows Command Prompt terminal.
+
+<br>
+```no-highlight
 $ JLinkExe -device nRF52 -speed 4000 -if SWD
 SEGGER J-Link Commander V5.12c (Compiled Apr 21 2016 16:05:51)
 DLL version V5.12c, compiled Apr 21 2016 16:05:45

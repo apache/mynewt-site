@@ -1,21 +1,18 @@
-# Installing Cross Tools for ARM 
+# Installing the Cross Tools for ARM 
 
-This page shows how to install tools on your laptop/computer to use for direct communication (e.g. for debugging) with some ARM based HW platforms running Apache Mynewt.  It shows you how to install the following tools for Mac OS X and Linux:
+This page shows you how to install the tools to build, run, and debug Mynewt OS applications that run on supported ARM target boards.  It shows you how to install the following tools on Mac OS, Linux and Windows:
 
-* ARM Cross toolchain
-* Debugger to load and debug your device
+* ARM cross toolchain to compile and build Mynewt applications for the target boards.
+* Debuggers to load and debug applications on the target boards.
 
 <br>
 
-## Install ARM Cross Toolchain
+## Installing the ARM Cross Toolchain
+ARM maintains a pre-built GNU toolchain with gcc and gdb targeted at Embedded ARM Processors, namely Cortex-R/Cortex-M processor families. Mynewt OS has been tested with version 4.9 of the toolchain and we recommend you install this version to get started.  Mynewt OS will eventually work with multiple versions available, including the latest releases. 
 
-### Install ARM Toolchain For Mac OS X
+### Installing the ARM Toolchain For Mac OS X
 
-Install the PX4 Toolchain and check the version installed. ARM maintains a
-pre-built GNU toolchain with a GCC source branch targeted at Embedded ARM
-Processors, namely Cortex-R/Cortex-M processor families. After installing,
-ensure that the symbolic link installed by Homebrew points to the correct
-version of the debugger.
+Add the **PX4/homebrew-px4** homebrew tap and install version 4.9 of the toolchain. After installing, check that the symbolic link that homebrew created points to the correct version of the debugger.
 
 ```no-highlight
 $ brew tap PX4/homebrew-px4
@@ -29,13 +26,10 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 $ ls -al /usr/local/bin/arm-none-eabi-gdb
 lrwxr-xr-x  1 aditihilbert  admin  69 Sep 22 17:16 /usr/local/bin/arm-none-eabi-gdb -> /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/arm-none-eabi-gdb
 ```
-**Note:** If no version is specified, brew will install the latest version
-available. Mynewt OS will eventually work with multiple versions available,
-including the latest releases. However, at present we have tested only with
-this version and recommend it for getting started. 
+**Note:** If no version is specified, brew will install the latest version available. 
 
 <br>
-### Install ARM Toolchain For Linux
+### Installing the ARM Toolchain For Linux
 
 On a Debian-based Linux distribution, gcc 4.9.3 for ARM can be installed with
 apt-get as documented below. The steps are explained in depth at
@@ -49,20 +43,36 @@ $ sudo apt-get install gcc-arm-none-eabi
 $ sudo apt-get install gdb-arm-none-eabi
 ```
 <br>
-## Install Debugger 
-Mynewt uses, depending on the board, either the OpenOCD or SEGGER J-Link debugger. 
+### Installing the ARM Toolchain for Windows
+Step 1: Download and run the [installer](https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q2-update/+download/gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe) to install arm-none-eabi-gcc and arm-none-eabi-gdb. Select the default destination folder: **C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q2**. 
 
+**Note:** You may select a different folder but the installation instructions use the default values.
 
-### Install OpenOCD
+Step 2: Add the path:** C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q2\bin** to your Windows **Path** environment variable.  Note: You must add **bin** to the path.
+
+Step 3: Check that you are using the installed versions arm-none-eabi-gcc and arm-none-eabi-gdb.  Open a MinGW terminal and run the `which` commands. 
+
+**Note:** You must start a new MinGW terminal to inherit the new **Path** values.
+
+```no-highlight
+$ which arm-none-eabi-gcc
+/c/Program Files (x86)/GNU Tools ARM Embedded/4.9 2015q2/bin/arm-none-eabi-gcc
+$which arm-none-eabi-gdb
+/c/Program Files (x86)/GNU Tools ARM Embedded/4.9 2015q2/bin/arm-none-eabi-gdb
+```
+## Installing the Debuggers 
+Mynewt uses, depending on the board, either the OpenOCD or SEGGER J-Link debuggers. 
+<br>
+### Installing the OpenOCD Debugger
 OpenOCD (Open On-Chip Debugger) is open-source software that allows your
 computer to interface with the JTAG debug connector on a variety of boards.  A
 JTAG connection lets you debug and test embedded target devices. For more on
 OpenOCD go to [http://openocd.org](http://openocd.org).
 
-OpenOCD version 0.10.0 with nrf52 support is required.  A binary for this version is available to download for Mac OS and Linux.
+OpenOCD version 0.10.0 with nrf52 support is required.  A binary for this version is available to download for Mac OS, Linux, and Windows.
 
 <br>
-#### Install OpenOCD on Mac OS
+#### Installing OpenOCD on Mac OS
 Step 1: Download the [binary tarball for Mac OS](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-MacOS.tgz).
 
 Step 2: Change to the root directory: 
@@ -75,7 +85,7 @@ Step 3: Untar the tarball and install into ** /usr/local/bin**.  You will need t
 sudo tar -xf ~/Downloads/openocd-bin-0.10.0-MacOS.tgz ` 
 ```
 <br>
-Step 4: Check the OpenOCD version you are using: 
+Step 4: Check the OpenOCD version you are using.  
 
 ```no-highlight
 $which openocd
@@ -90,7 +100,7 @@ http://openocd.org/doc/doxygen/bugs.html
 You should see version: **0.10.0**. 
 
 <br>
-#### Install OpenOCD on Linux 
+#### Installing OpenOCD on Linux 
 Step 1: Download the [binary tarball for Linux](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-Linux.tgz)
 
 Step 2: Change to the root directory: 
@@ -130,5 +140,33 @@ run the following command to install the libraries:
 $sudo apt-get install libhidapi-dev:i386
 ```
 <br>
-###Install SEGGAR J-Link 
+#### Installing OpenOCD on Windows 
+Step 1: Download the [binary zip file for Windows](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-0.10.0.zip).
+
+Step 2: Extract into the **C:\openocd-0.10.0** folder. 
+
+Step 3: Add the path: ** C:\openocd-0.10.0\bin** to your Windows User **Path** environment variable.  Note: You must add **bin** to the path.
+
+Step 4: Check the OpenOCD version you are using.  Open a new MinGW terminal and run the following commands: 
+
+**Note:** You must start a new MinGW terminal to inherit the new **Path** values.
+
+```no-highlight
+$which openocd
+/c/openocd-0.10.0/bin/openocd
+$openocd -v
+Open On-Chip Debugger 0.10.0
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+```
+You should see version: **0.10.0**. 
+
+<br>
+###Installing SEGGAR J-Link 
 You can download and install Segger J-LINK Software and documentation pack from [SEGGER](https://www.segger.com/jlink-software.html). 
+
+**Note:** On Windows, perform the following after the installation:
+
+* Add the installation destination folder path to your Windows user **Path** environment variable.  You do not need to add **bin** to the path.
+* Open a new MinGW terminal to inherit the new **Path** values.

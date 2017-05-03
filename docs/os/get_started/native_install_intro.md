@@ -1,17 +1,23 @@
 # Native Installation 
 
-This section shows you how to install tools on Mac OS and Linux platforms to develop, build, run, and debug Mynewt OS applications. You can build Mynewt OS applications to run as a native application on your computer or to run on your target board. These tools include:
+This section shows you how to install the tools to develop and build Mynewt OS applications on Mac OS, Linux, and Windows, and run and debug the applications on target boards.   For Mac OS and Linux, you can also build Mynewt OS applications that run on Mynewt's simulated hardware. These applications run natively on Mac OS and Linux. 
 
-* Newt tool - Tool to create, build, load, and debug a mynewt target.
+The tools you need are:
+
+* Newt tool: Tool to create, build, load, and debug Mynewt OS applications.
 
     * See [Installing the Newt Tool on Mac OS](/newt/install/newt_mac.md) to install on Mac OS.
     * See [Installing the Newt Tool on Linux](/newt/install/newt_linux.md) to install on Linux.
+    * See [Installing the Newt Tool on Windows](/newt/install/newt_windows.md) to install on Windows. 
+	
 
 
-<br>
+* Native toolchain:  Native toolchain to compile and build Mynewt OS applications that run on Mynewt's simulated hardware on Mac OS and Linux.   
+	
+	(See [Installing Native Toolchain](/os/get_started/native_tools.md)).  
 
-* Native toolchain - Native toolchain to build and run Mynewt OS as a native application on your computer.
-  (See [Installing Native Toolchain](/os/get_started/native_tools.md)).  
-
-* Cross toolchain for ARM - Cross toolchain for ARM to build and run a Mynewt OS application on a target board
-  (See [Installing Cross Tools for ARMs](/os/get_started/cross_tools.md)).
+* Cross tools for ARM:  
+    * Cross toolchain for ARM to compile and build Mynewt OS applications for target boards.
+    * Debuggers to load and debug applications on target boards. 
+	
+	(See [Installing Cross Tools for ARMs](/os/get_started/cross_tools.md)).

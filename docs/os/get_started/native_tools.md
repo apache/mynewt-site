@@ -1,21 +1,20 @@
-# Installing Native Mynewt Tools
+# Installing Native Toolchain
 
-This page shows how to install tools for native Mynewt targets (simulated targets on your laptop/computer) without using a Docker container. In other words, it allows you to run Mynewt OS as a native application on your Mac or Linux machine to simulate a target and use the Newt tool running natively on your machine to manage the simulated target. It also allows you to run the test suites for all packages not requiring HW support. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.
+This page shows you how to install the toolchain to build Mynewt OS applications that run native on Mac OS and Linux. The applications run on  Mynewt's simulated hardware.  It also allows you to run the test suites for all packages that do not require HW support. 
 
-This page provides guidance for MAC and Linux. See the relevant sections below.
-
-<br>
-
-## Set up toolchain for Mac
-
-### Install Brew
-
-If you have not already installed Homebrew from the 
-[`newt` tutorials pages](../../newt/install/newt_mac.md), install it. 
+**Note:** This is not supported on Windows.
 
 <br>
 
-###Install gcc/libc 
+## Setting Up the Toolchain for Mac
+
+### Installing Brew
+
+If you have not already installed Homebrew from the [`newt` tutorials pages](../../newt/install/newt_mac.md), install it. 
+
+<br>
+
+###Installing gcc/libc 
 
 OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.
 
@@ -84,7 +83,7 @@ A third option is to simply **downgrade to gcc 5.x**.
 
 <br>
 
-###Install gdb 
+###Installing gdb 
 
 ```no-highlight
 $ brew install gdb
@@ -103,7 +102,7 @@ continue without the ability to debug your mynewt application on your PC.*
 
 <br>
 
-## Set up toolchain for Linux 
+## Setting Up the Toolchain for Linux 
 
 The below procedure can be used to set up a Debian-based Linux system (e.g.,
 Ubuntu).  If you are running a different Linux distribution, you will need to

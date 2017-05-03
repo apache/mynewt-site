@@ -5,7 +5,7 @@ If you are curious about Mynewt and want to get a quick feel for the project, yo
 <br>
 **Option 1 (Recommended)** allows you to install the Newt tool, instances of the Mynewt OS (for simulated targets), and toolchains for developing embedded software (e.g. GNU toolchain) natively on your laptop or computer. We have tried to make the process easy. For example, for the Mac OS we created brew formulas. 
 
-We recommend this option if you are familiar with such environments or are concerned about performance on your machine. Follow the instructions to [install native tools](native_tools.md) and [install cross tools for ARM](cross_tools.md) if you prefer this option.
+We recommend this option if you are familiar with such environments or are concerned about performance on your machine. Follow the instructions in the [Native Install Option](native_install_intro.md) if you prefer this option.
 
 <br>
 

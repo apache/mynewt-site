@@ -142,6 +142,10 @@ $
 <br>
 Note: The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the `newt debug rbnano2_blinky` command and issue the following commands at the highlighted (gdb) prompts.  
 
+**Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
+
+<br>
+
 ```hl_lines="8 9 11 14"
 $newt debug rbnano2_blinky
 [~/dev/myproj/repos/apache-mynewt-core/hw/bsp/rb-nano2/rb-nano2_debug.sh  ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/rb-nano2 ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky]

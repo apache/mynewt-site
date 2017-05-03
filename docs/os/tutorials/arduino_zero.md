@@ -249,6 +249,9 @@ Error: Target not halted
 ```
 <br>
 To erase your board, start a debug session and enter the highlighted commands at the `(gdb)` prompts:
+
+**Note:** On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
+
 ```hl_lines="2, 5, 14"  
 $ newt debug arduino_blinky
 (gdb) mon at91samd chip-erase
@@ -277,6 +280,9 @@ Run the `newt load arduino_boot` command again after erasing the board.
 After you load the bootloader successfully onto your board, you can load and run the Blinky application. 
 
 Run the `newt run arduino_blinky 1.0.0` command to build the arduino_blinky target (if necessary), create an image with version 1.0.0, load the image onto the board, and start a debugger session. 
+
+**Note** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals.  The output of openocd is logged to the openocd.log file in your project's base directory and not to the terminal. The openocd and gdb terminals will close automatically when you quit gdb. 
+<br>
 ```no-highlight
 $ newt run arduino_blinky 1.0.0
 App image succesfully generated: ~/dev/myproj/bin/targets/arduino_blinky/app/apps/blinky/blinky.img

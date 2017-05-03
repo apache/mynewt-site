@@ -139,23 +139,38 @@ $
 
 Set up a serial connection from your computer to the nRF52-DK board (See [Serial Port Setup](/os/get_started/serial_access.md)).  
 
-Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is platform dependent:
 
+* Mac OS uses the format `tty.usbserial-<some identifier>`.
+* Linux uses the format `TTYUSB<N>`, where `N` is a number.  For example, TTYUSB2.
+* MinGW on Windows uses the format `ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.  
+	
+	You can also use the Windows Device Manager to find the COM port number.
+
+<br>
 ```no-highlight
 $ ls /dev/tty*usbserial*
 /dev/tty.usbserial-1d11
 $
 ```
 <br>
+
 Setup a newtmgr connection profile for the serial port. For our example, the port is  `/dev/tty.usbserial-1d11`. 
 
-Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `nrf52serial`.  You will need to replace the `connstring` with the specific port for your serial connection. 
+Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `nrf52serial`.  
 
+**Note**: 
+
+* You will need to replace the `connstring` with the specific port for your serial connection. 
+* On Windows, you must specify `COM<N+1>` for the connstring if `/dev/ttyS<N>` is the serial port.
+
+<br>
 ```no-highlight
 $ newtmgr conn add nrf52serial type=serial connstring=/dev/tty.usbserial-1d11
 Connection profile nrf52serial successfully added
 $
 ```
+
 <br>
 You can run the `newt conn show` command to see all the newtmgr connection profiles:
 

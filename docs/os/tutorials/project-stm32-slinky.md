@@ -149,8 +149,16 @@ Locate the PC6/USART6_TX (pin 3), PC7/USART6_RX (pin 4), and GND (pin 2) of the 
 * Connect the GND pin of the USB-TTL serial cable to the GND (Pin 2) of the UEXT connector on the board.
 
 <br>
-Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is platform dependent:
 
+
+* Mac OS uses the format `tty.usbserial-<some identifier>`.
+* Linux uses the format `TTYUSB<N>`, where `N` is a number.  For example, TTYUSB2.
+* MinGW on Windows uses the format `ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
+	
+	You can also use the Windows Device Manager to find the COM port number.
+
+<br>
 ```no-highlight
 $ ls /dev/tty*usbserial*
 /dev/tty.usbserial-1d13
@@ -160,8 +168,14 @@ $
 <br>
 Setup a newtmgr connection profile for the serial port. For our example, the port is  `/dev/tty.usbserial-1d13`.
 
-Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `stm32serial`.  You will need to replace the `connstring` with the specific port for your serial connection.
+Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `stm32serial`.  
+ 
+**Note**:
 
+* You will need to replace the `connstring` with the specific port for your serial connection.
+* On Windows, you must specify `COM<N+1>` for the connstring if `/dev/ttyS<N>` is the serial port.
+
+<br>
 ```no-highlight
 $ newtmgr conn add stm32serial type=serial connstring=/dev/tty.usbserial-1d13
 Connection profile stm32serial successfully added

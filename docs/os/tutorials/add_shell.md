@@ -106,9 +106,17 @@ Tutorial for more information on setting up your serial communications.
 
 ###Connecting with your app
 
-Once you have a connection set up, you can connect to your device with ```minicom -D /dev/tty.usbmodem<port> -b 115200``` to run connect
-to the console of your app. 
-    
+Once you have a connection set up, you can connect to your device as follows: 
+
+* On Mac OS and Linux platforms, you can run ```minicom -D /dev/tty.usbserial-<port> -b 115200``` to connect to the console of your app. Note that on Linux, the format of the port name is `/dev/ttyUSB<N>`, where N is a number. 
+
+* On Windows, you can use a terminal application such as PuTTY to connect to the device.  
+	
+	If you located your port from a MinGW terminal,  the port name format is `/dev/ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`. 
+	
+	You can also use the Windows Device Manager to locate the COM port.
+
+<br>
 To test and make sure that the Shell is running, first just hit <return>:
     
 ```no-highlight

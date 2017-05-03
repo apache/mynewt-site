@@ -1,6 +1,6 @@
 ## Project Sim Slinky  
 
-This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for a simulated device.
+This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for a simulated device. This is supported on Mac OS and Linux platforms.
 
 <br>
 ### Prerequisites

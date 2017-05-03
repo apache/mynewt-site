@@ -148,7 +148,6 @@ Configure the board to bootload from flash memory and to use USB-OTG2 for the po
 
 * Check that the red PWR LED lights up.
 <br>
-
 ### Load the Bootloader and Blinky Application
 
 Run the `newt load boot_olimex` command to load the bootloader image onto the board:
@@ -158,6 +157,16 @@ Loading bootloader
 Load command: ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard ~/dev/myproj/bin/targets/boot_olimex/app/apps/boot/boot
 Successfully loaded image.
 ```
+
+Note: If you are using Windows and get the `no device found` error, you will need to install the usb drivers for your Olimex debugger. Download [Zadig](http://zadig.akeo.ie) and run it:
+
+* Select Options > List All Devices.
+* Select Olimex OpenOCD JTAG ARM-USB-TINY-H from the drop down menu.
+* Select the WinUSB drivers.
+* Click Install Driver.
+* Run the `newt load boot_olimex` command again. 
+
+<br>
 Run the `newt load olimex_blinky` command to load the blinky application image onto the board:
 ```no-highlight
 newt load -v olimex_blinky
@@ -174,7 +183,12 @@ Let's double check that it is indeed booting from flash and making the LED blink
 
    The LED light will start blinking again. Success!
 
-   **Note #1:** If you want to download the image to flash and a gdb session opened up, use `newt debug blinky`. Type `c` to continue inside the gdb session.
+If you want to download the image to flash and open a gdb session, use `newt debug blinky`.  
+
+**Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
+
+<br>
+Type `c` to continue inside the gdb session.
 
 ```no-highlight     
     $ newt debug blinky
@@ -199,7 +213,7 @@ Let's double check that it is indeed booting from flash and making the LED blink
 
 <br>
 
-   **Note #2:** If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase_sector 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma,' you should see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
+If you want to erase the flash and load the image again you may use the following commands from within gdb. `flash erase_sector 0 0 x` tells it to erase sectors 0 through x. When you ask it to display (in hex notation) the contents of the sector starting at location 'lma,' you should see all f's. The memory location 0x8000000 is the start or origin of the flash memory contents and is specified in the olimex_stm32-e407_devboard.ld linker script. The flash memory locations is specific to the processor.
 ```no-highlight         
     (gdb) monitor flash erase_sector 0 0 4
     erased sectors 0 through 4 on flash bank 0 in 2.296712s

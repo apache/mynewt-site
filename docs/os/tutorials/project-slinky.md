@@ -7,7 +7,7 @@ If you have an existing project using a target that does not use the Slinky appl
 ###Available Tutorials
 Tutorials are available for the following boards:
 
-* [Slinky on a simulated device](/os/tutorials/project-sim-slinky).
+* [Slinky on a simulated device](/os/tutorials/project-sim-slinky). This is supported on Mac OS and Linux platforms.
 * [Slinky on a nRF52](/os/tutorials/project-nrf52-slinky).
 * [Slinky on an Olimex](/os/tutorials/project-stm32-slinky).
 <br>
