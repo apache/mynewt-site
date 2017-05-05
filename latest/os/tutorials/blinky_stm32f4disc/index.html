@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_console/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/blinky_stm32f4disc/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>Add Console and Shell to Blinky - Apache Mynewt</title>
+	    <title>Blinky on STM32F4-Discovery - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Add Console and Shell to Blinky">
+    <body class="Blinky on STM32F4-Discovery">
 
 
         <div class="container">
@@ -281,16 +281,16 @@
           
               
                 
-    <li >
-      <a href="../blinky_stm32f4disc/">Blinky on STM32F4-Discovery</a>
+    <li class="active">
+      <a href="./">Blinky on STM32F4-Discovery</a>
     </li>
 
               
           
               
                 
-    <li class="active">
-      <a href="./">Add Console and Shell to Blinky</a>
+    <li >
+      <a href="../blinky_console/">Add Console and Shell to Blinky</a>
     </li>
 
               
@@ -525,7 +525,7 @@
         
       
       
-        <li>&raquo; Add Console and Shell to Blinky</li>
+        <li>&raquo; Blinky on STM32F4-Discovery</li>
       
     
     
@@ -533,168 +533,185 @@
 </div>
                         </div>
                         
-                            <h2 id="enabling-the-console-and-shell-for-blinky">Enabling The Console and Shell for Blinky</h2>
-<p>This tutorial shows you how to add the Console and Shell to the Blinky application and interact with it over a serial line connection.
+                            <h2 id="blinky-your-hello-world-on-stm32f4-discovery">Blinky, your "Hello World!", on STM32F4-Discovery</h2>
+<p>This tutorial shows you how to create, build, and run the Blinky application on the STM32F4-Discovery board.
 <br></p>
+<p><br></p>
 <h3 id="prerequisites">Prerequisites</h3>
 <ul>
-<li>Work through one of the Blinky Tutorials to create and build a Blinky application for one of the boards.</li>
-<li>Have a <a href="../../get_started/serial_access/">serial setup</a>.</li>
+<li>Meet the prerequisites listed in <a href="../blinky/">Project Blinky</a>.</li>
+<li>Have a STM32F4-Discovery board.</li>
+<li>Have a USB type A to Mini-B cable.    </li>
+<li>Install a patched version of OpenOCD 0.10.0 described in <a href="../os/get_started/cross_tools/">Install OpenOCD</a>.  </li>
 </ul>
-<p><br></p>
-<h3 id="use-an-existing-project">Use an Existing Project</h3>
-<p>Since all we're doing is adding the shell and console capability to blinky, we assume 
-that you have worked through at least some of the other tutorials, and have an existing project.
-For this example, we'll be modifying the <a href="../nRF52/">blinky on nrf52</a> project to enable 
-the shell and console connectivity. You can use blinky on a different board.</p>
-<p><br></p>
-<h3 id="modify-the-dependencies-and-configuration">Modify the Dependencies and Configuration</h3>
-<p>Add the following dependencies to your application target's <code>pkg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
-    - &quot;@apache-mynewt-core/sys/console/full&quot;
-    - &quot;@apache-mynewt-core/sys/shell&quot;
-    - &quot;@apache-mynewt-core/sys/sysinit&quot;
-</pre></div>
-
-
-<p>This lets the newt system know that it needs to pull in the code for the console and the shell.</p>
-<p>Modify the system configuration settings to enable Shell and Console ticks and prompt.  Add the following to your application target's <code>syscfg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
-    # Enable the shell task.
-    SHELL_TASK: 1
-    # Enable Console OS Ticks
-    CONSOLE_TICKS: 1
-    # Enable Console Prompt
-    CONSOLE_PROMPT: 1 
+<h3 id="create-a-project">Create a Project</h3>
+<p>Create a new project if you do not have an existing one.  You can skip this step and proceed to <a href="#create_targets">create the targets</a> if you already have a project created.  </p>
+<p>Run the following commands to create a new project:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
+    $ cd ~/dev
+    $ newt new myproj
+    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Installing skeleton in myproj...
+    Project myproj successfully created.
+    $ cd myproj
+    $ newt install
+    apache-mynewt-core
+    $
 </pre></div>
 
 
 <p><br></p>
-<h3 id="use-the-os-default-event-queue-to-process-blinky-timer-and-shell-events">Use the OS Default Event Queue to Process Blinky Timer and Shell Events</h3>
-<p>Mynewt creates a main task that executes the application <code>main()</code> function. It also creates an OS default event queue that packages can use to queue their events.   Shell uses the OS default event queue for Shell events,  and <code>main()</code> can process the events in the context of the main task. </p>
-<p>Blinky's main.c is very simple. It only has a <code>main()</code> function that executes an infinite loop to toggle the LED and sleep for one second.  We will modify blinky:</p>
-<ul>
-<li>To use os_callout to generate a timer event every one second instead of sleeping.  The timer events are added to the OS default event queue.</li>
-<li>To process events from the OS default event queue inside the infinite loop in <code>main()</code>.</li>
-</ul>
-<p>This allows the main task to process both Shell events and the timer events to toggle the LED from the OS default event queue.</p>
-<p><br></p>
-<h3 id="modify-mainc">Modify main.c</h3>
-<p>Initialize a os_callout timer and move the toggle code from the while loop in <code>main()</code> to the event callback function. Add the following code above the <code>main()</code> function:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* The timer callout */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">blinky_callout</span>;
-
-<span style="color: #177500">/*</span>
-<span style="color: #177500"> * Event callback function for timer events. It toggles the led pin.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
-{
-    <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
-
-    <span style="color: #000000">++g_task1_loops</span>;
-    <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pin</span>);
-
-    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
-}
-
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">init_timer</span>(<span style="color: #A90D91">void</span>)
-{
-    <span style="color: #177500">/*</span>
-<span style="color: #177500">     * Initialize the callout for a timer event.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">os_callout_init</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">os_eventq_dflt_get</span>(),
-                    <span style="color: #000000">timer_ev_cb</span>, <span style="color: #A90D91">NULL</span>);
-
-    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
-
-}
+<h3 id="create-the-targets"><a name="create_targets"></a>Create the Targets</h3>
+<p>Create two targets for the STM32F4-Discovery board - one for the bootloader and one for the Blinky application.</p>
+<p>Run the following <code>newt target</code> commands, from your project directory, to create a bootloader target. We name the target <code>stm32f4disc_boot</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create stm32f4disc_boot
+$ newt target set stm32f4disc_boot app=@apache-mynewt-core/apps/boot
+$ newt target set stm32f4disc_boot bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
+$ newt target set stm32f4disc_boot build_profile=optimized
 </pre></div>
 
 
-<p>In <code>main()</code>, add the call to the <code>init_timer()</code> function before the while loop and modify the while loop to process events from the OS default event queue:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
-{
+<p><br>
+Run the following <code>newt target</code> commands to create a target for the Blinky application. We name the target <code>stm32f4disc_blinky</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create stm32f4disc_blinky
+$ newt target set stm32f4disc_blinky app=apps/blinky
+$ newt target set stm32f4disc_blinky bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
+$ newt target set stm32f4disc_blinky build_profile=debug
+</pre></div>
 
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-<span style="color: #633820">#ifdef ARCH_sim</span>
-    <span style="color: #000000">mcu_sim_parse_args</span>(<span style="color: #000000">argc</span>, <span style="color: #000000">argv</span>);
-<span style="color: #633820">#endif</span>
-
-    <span style="color: #000000">sysinit</span>();
-
-    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
-    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
-    <span style="color: #000000">init_timer</span>();
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
-    }
-    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>)
-    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
-}
+<p><br>
+You can run the <code>newt target show</code> command to verify the target settings:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show 
+targets/my_blinky_sim
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/native
+    build_profile=debug
+targets/stm32f4disc_blinky
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
+    build_profile=debug
+targets/stm32f4disc_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
+    build_profile=optimized
 </pre></div>
 
 
 <p><br></p>
-<h3 id="build-the-blinky-application-target">Build the Blinky Application Target</h3>
-<p>We're not going to build the bootloader here since we are assuming that you have already
-built and loaded it during previous tutorials.</p>
-<p>Run the <code>newt build nrf52_blinky</code> command to build the Blinky application:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_blinky
+<h3 id="build-the-target-executables">Build the Target Executables</h3>
+<p>Run the <code>newt build stm32f4disc_boot</code> command to build the bootloader:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build stm32f4disc_boot
+Building target targets/stm32f4disc_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+    ...
 
-   ...
-
+Archiving sys_flash_map.a
+Archiving sys_mfg.a
+Archiving sys_sysinit.a
 Archiving util_mem.a
-Linking ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
-Target successfully built: targets/nrf52_blinky
+Linking ~/dev/myproj/bin/targets/stm32f4disc_boot/app/apps/boot/boot.elf
+Target successfully built: targets/stm32f4disc_boot
+</pre></div>
+
+
+<p><br>
+Run the <code>newt build stm32f4disc_blinky</code> command to build the Blinky application:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt build stm32f4disc_blinky
+Building target targets/stm32f4disc_blinky
+Compiling apps/blinky/src/main.c
+Compiling repos/apache-mynewt-core/hw/bsp/stm32f4discovery/src/sbrk.c
+Compiling repos/apache-mynewt-core/hw/bsp/stm32f4discovery/src/system_stm32f4xx.c
+Compiling repos/apache-mynewt-core/hw/bsp/stm32f4discovery/src/hal_bsp.c
+Assembling repos/apache-mynewt-core/hw/bsp/stm32f4discovery/src/arch/cortex_m4/startup_STM32F40x.s
+Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/uart_hal/src/uart_hal.c
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_common.c
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_flash.c
+
+    ...
+
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/stm32f4disc_blinky/app/apps/blinky/blinky.elf
+Target successfully built: targets/stm32f4disc_blinky
 </pre></div>
 
 
 <p><br></p>
 <h3 id="sign-and-create-the-blinky-application-image">Sign and Create the Blinky Application Image</h3>
-<p>Run the <code>newt create-image nrf52_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image nrf52_blinky 1.0.0
-App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
+<p>Run the <code>newt create-image stm32f4disc_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt create-image stm32f4disc_blinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/stm32f4disc_blinky/app/apps/blinky/blinky.img
 </pre></div>
 
 
 <p><br></p>
-<h3 id="load-the-image">Load the Image</h3>
-<p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
-<p>Run the <code>newt load nrf52_blinky</code> command to load the Blinky application image onto the board.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_blinky
+<h3 id="connect-to-the-board">Connect to the Board</h3>
+<p>Connect a USB type A to Mini-B cable from your computer to the port the board indicated on the diagram:     </p>
+<p><br>
+<br>
+<img alt="stm32f4-discovery" src="../pics/stm32f4_disc.jpg" title="Connecting computer to stm32f4disc" /></p>
+<p><br></p>
+<p>You should see the small PWR red LED light up.</p>
+<h3 id="load-the-bootloader-and-the-blinky-application-image">Load the Bootloader and the Blinky Application Image</h3>
+<p>Run the <code>newt load stm32f4disc_boot</code> command to load the bootloader onto the board: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt load stm32f4disc_boot
+Loading bootloader
+</pre></div>
+
+
+<p><br>
+Run the <code>newt load stm32f4disc_blinky</code> command to load the Blinky application image onto the board.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt load stm32f4disc_blinky
 Loading app image into slot 1
 </pre></div>
 
 
+<p>You should see the small green LD4 LED on the board blink!</p>
+<p>Note: If the LED does not blink, try resetting your board.</p>
 <p><br></p>
-<h3 id="set-up-a-serial-connection">Set Up a Serial Connection</h3>
-<p>You'll need a Serial connection to see the output of your program. You can reference the <a href="../../get_started/serial_access/">Serial Port Setup</a> 
-Tutorial for more information on setting up your serial communication.</p>
-<p><br></p>
-<h3 id="communicate-with-the-application">Communicate with the Application</h3>
-<p>Once you have a connection set up, run <code>minicom -D /dev/tty.usbserial&lt;port&gt; -b 115200</code> to connect to the application console.</p>
-<p>To test and make sure that the Shell is running, first just hit <return>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3534: &gt;
-</pre></div>
+<p><strong>Note:</strong> If you want to erase the flash and load the image again, start a debug session, and enter <code>mon  stm32f2x mass_erase 0</code> at the gdb prompt:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt debug stm32f4disc_blinky
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/stm32f4discovery/stm32f4discovery_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/stm32f4discovery ~/dev/myproj/bin/targets/stm32f4disc_blinky/app/apps/blinky/blinky]
+Open On-Chip Debugger 0.10.0
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+adapter_nsrst_delay: 100
+none separate
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Info : STLINK v2 JTAG v25 API v2 SWIM v14 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 2.881129
+Info : stm32f4x.cpu: hardware has 6 breakpoints, 4 watchpoints
+target halted due to debug-request, current mode: Thread
 
+           ...
 
-<p>You can try some commands:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3609: &gt; ?
-Commands:
-8841:     echo         ?    prompt     ticks     tasks  mempools
-8843:     date         b
-8844: &gt; ticks off
- Console Ticks off
- &gt; prompt off
- Prompt now off.
-ticks on
-33383: Console Ticks on
-
-33568:
-prompt on
-39108: Prompt now on.
-39108: &gt;
+Reading symbols from ~/dev/myproj/bin/targets/stm32f4disc_blinky/app/apps/blinky/blinky.elf...done.
+target halted due to debug-request, current mode: Thread
+xPSR: 0x41000000 pc: 0x08021e90 psp: 0x20002290
+Info : accepting &#39;gdb&#39; connection on tcp/3333
+Info : device id = 0x10076413
+Info : flash size = 1024kbytes
+0x08021e90 in __WFI () at repos/apache-mynewt-core/hw/cmsis-core/src/ext/core_cmInstr.h:342
+342       __ASM volatile (&quot;wfi&quot;);
+(gdb) mon stm32f2x mass_erase 0
+stm32x mass erase complete
+stm32x mass erase complete
+(gdb)
 </pre></div>
                         
                         <div class="row">
@@ -705,16 +722,16 @@ prompt on
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../blinky_stm32f4disc/>
+    <a href=../rbnano2/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Blinky on STM32F4-Discovery
+        Previous: Blinky on RedBear Nano 2
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../repo/add_repos/>
-        Next: Work with repositories
+    <a href=../blinky_console/>
+        Next: Add Console and Shell to Blinky
         <span class="fa fa-arrow-right"></span>
     </a>
     
