@@ -13,6 +13,7 @@ Tutorials are available for the following boards:
 * [Blinky on an Olimex](/os/tutorials/olimex.md)
 * [Blinky on a nRF52](/os/tutorials/nRF52.md)
 * [Blinky on a RedBear Nano 2](/os/tutorials/rbnano2.md)
+* [Blinky on a STM32F4-Discovery](/os/tutorials/blinky_stm32f4disc.md)
 
 We also have a tutorial that shows you how to add [Console and Shell to the Blinky Application](/os/tutorials/blinky_console.md).
 <br>
