@@ -26,30 +26,12 @@ If you are not a committer and you wish to work on it, someone who is on the com
 
 **You submit your proposed changes for your peers with committer status to review and merge.**
 
-The "develop" branch on Mynewt's repository contains the most recent changes made by the community of developers. Contributions from you need to go into this branch. The essential steps to setting up your project space for working with the latest code from "develop" and make pull requests into "develop" to get your code added are the following:
+The process to submit a Pull Request on github.com is described on the [Confluence page for the project](https://cwiki.apache.org/confluence/display/MYNEWT/Contributing+to+Apache+Mynewt). 
 
+### I am a committer in the project. Can I merge my own Pull Request into the git repository?
 
-**Step 1:** Create a fork of the entire Mynewt repository on github.com.
-**Step 2:** Setup repository on your laptop to use code in “develop” branch. You then create a new branch “mybranch” using “git checkout –b”. You also add a remote handle named “fork” that points to the github fork you created in Step 1.
-```    $ newt new devproject    $ cd devproject    $ vi project.yml        # change version to 0-dev for repository.apache-mynewt-core    $ newt install    $ cd repos/apache-mynewt-core    $ git status        On branch develop        Your branch is up-to-date with 'origin/develop'.        nothing to commit, working directory clean    $ git checkout –b mybranch    $ git remote -v        origin https://github.com/apache/incubator-mynewt-core.git (fetch) 
-        origin https://github.com/apache/incubator-mynewt-core.git (push)    $ git remote add fork https://github.com/<user>/incubator-mynewt-core 
-    $ git remote -v        origin https://github.com/apache/incubator-mynewt-core.git (fetch) 
-        origin https://github.com/apache/incubator-mynewt-core.git (push)        fork https://github.com/<user>/incubator-mynewt-core (fetch) 
-        fork https://github.com/<user>/incubator-mynewt-core (push)
-```**Step 3:** Check you are in “mybranch”. Write code. Stage and commit your changes(example shows adding all).
-```   $ git checkout mybranch   $ git add .   $ git commit –m “your message about your code changes”
-```
-**Step 4:** Always pull the latest from develop on Apache mirror to “mybranch” before pushing any changes to remotes. If you see merge conflicts, resolve them first.
-```   $ git pull --rebase origin develop
-```
-**Step 5:** Push your changes to “mybranch” branch on your github fork. If “mybranch” does not exist yet on your github fork, the command automa;cally creates it.
-```   $ git push fork mybranch
-```
-**￼Step 6:** Generate a pull request from “mybranch” in your fork to “develop” in Mynewt using the "New pull request" button on github.com.
-
-
-![Mynewt Dev Cycle](mynewt_dev_cycle.jpg)
-    
+Yes, but only if your Pull Request has been reviewed and approved by another committer in Apache Mynewt.
+The process to merge a Pull Request is described on the [Confluence page for the project](https://cwiki.apache.org/confluence/display/MYNEWT/Merging+Pull+Requests).
     
 ### I would like to make some edits to the documentation. What do I do?
 
