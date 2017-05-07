@@ -11,7 +11,7 @@ This section shows you how to install tools on Mac OS and Linux platforms to dev
 <br>
 
 * Native toolchain - Native toolchain to build and run Mynewt OS as a native application on your computer.
-  (See [Installing Native Toolchain](/os/get_started/native_install.md)).  
+  (See [Installing Native Toolchain](/os/get_started/native_tools.md)).  
 
 * Cross toolchain for ARM - Cross toolchain for ARM to build and run a Mynewt OS application on a target board
   (See [Installing Cross Tools for ARMs](/os/get_started/cross_tools.md)).
