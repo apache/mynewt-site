@@ -51,8 +51,8 @@ Add the repository for the binary and source packages to the `mynewt.list` apt s
 $sudo -s
 [sudo] password for <user>:
 root$ cat > /etc/apt/sources.list.d/mynewt.list <<EOF
-deb https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
-deb-src https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
+deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
+deb-src https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 EOF
 root$exit
 ```
@@ -63,8 +63,8 @@ Verify the content of the source list file:
 
 ```no-highlight
 $more /etc/apt/sources.list.d/mynewt.list
-deb https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
-deb-src https://raw.githubusercontent.com/runtimeco/debian-package/master latest main
+deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
+deb-src https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 ```
 <br> 
 ### Installing the Latest Release of Newtmgr from a Binary Package 
