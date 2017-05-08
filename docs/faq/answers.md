@@ -26,7 +26,7 @@ If you are not a committer and you wish to work on it, someone who is on the com
 
 **You submit your proposed changes for your peers with committer status to review and merge.**
 
-The process to submit a Pull Request on github.com is described on the [Confluence page for the project](https://cwiki.apache.org/confluence/display/MYNEWT/Contributing+to+Apache+Mynewt). 
+The process to submit a Pull Request on github.com is described on the [Confluence page for the project](https://cwiki.apache.org/confluence/display/MYNEWT/Submitting+Pull+Requests). 
 
 ### I am a committer in the project. Can I merge my own Pull Request into the git repository?
 
