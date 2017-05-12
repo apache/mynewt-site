@@ -1,6 +1,6 @@
 ## Installing Newtmgr on Linux
 
-You can install the latest stable release (1.0.0) of the newtmgr tool from a Debian binary package (amd64) or from a Debian source package. This page shows you how to:
+You can install the latest stable release (1.0.0) of the newtmgr tool from a Debian binary package (amd64) or from a Debian source package.  This page shows you how to:
 
 1. Set up your computer to retrieve Debian packages from the runtimeco debian package repository. 
 
@@ -10,6 +10,9 @@ You can install the latest stable release (1.0.0) of the newtmgr tool from a Deb
 3. Install the latest stable release version of newtmgr from a Debian source package.
 
 If you are installing on an amd64 platform, we recommend that you install from the binary package.
+
+**Note:**  We have tested the newtmgr tool binary and apt-get install from the runtimeco Debian package repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. We recommend that you upgrade Ubuntu on your computer.
+
 
 **Note:** See [Setting Up an Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env) if you want to:  
 
@@ -66,13 +69,34 @@ $more /etc/apt/sources.list.d/mynewt.list
 deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 deb-src https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 ```
+<br>
+Update the available packages:
+```no-highlight
+$sudo apt-get update
+```
+<br>
+**Note:** If you are not using Ubuntu version 16, you may see the following errors.  We recommend that you upgrade Ubuntu.  We have provided instructions on how to manually download and install the binary package if you choose not to upgrade, but you will want to upgrade Ubuntu if you are installing from source.  
+
+```no-highlight
+
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/source/Sources  Ht
+tpError404
+
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/binary-amd64/Packa
+ges  Bad header line
+
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/binary-i386/Packag
+es  HttpError404
+
+E: Some index files failed to download. They have been ignored, or old ones used instead.
+
+```
 <br> 
 ### Installing the Latest Release of Newtmgr from a Binary Package 
 
 For Linux amd64 platforms, you can install the latest stable version (1.0.0) of newtmgr from the newtmgr Debian binary package:
 
 ```no-highlight
-$sudo apt-get update
 $sudo apt-get install newtmgr
 Reading package lists... Done
 Building dependency tree       
@@ -88,6 +112,14 @@ Preparing to unpack .../newtmgr_1.0.0-1_amd64.deb ...
 Unpacking newtmgr (1.0.0-1) ...
 Setting up newtmgr (1.0.0-1) 
 ```
+<br>
+**Note:** If you are not using Ubuntu version 16 and are not able to update the runtimeco Debian package repo on your computer successfully, you can manually download and install the newtmgr_1.0.0-1_amd64.deb binary package as follows:
+
+```no-highlight
+$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newtmgr/newtmgr_1.0.0-1_amd64.deb
+$sudo dpkg -i newtmgr_1.0.0-1_amd64.deb
+```
+
 <br>
 See [Checking the Installed Version of Newtmgr](#check) to verify that you are using the installed version of newtmgr.
 
