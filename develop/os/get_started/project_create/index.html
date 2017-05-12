@@ -361,24 +361,37 @@
 </div>
                         </div>
                         
-                            <h2 id="create-your-first-mynewt-project">Create Your First Mynewt Project</h2>
-<p>This page shows how to create a Mynewt Project using the <code>newt</code> command-line tool.</p>
+                            <h2 id="creating-your-first-mynewt-project">Creating Your First Mynewt Project</h2>
+<p>This page shows you how to create a Mynewt project using the <code>newt</code> command-line tool. The project is a blinky application that toggles a pin. The application uses the Mynewt's simulated hardware and runs as a native application on Mac OS and Linux. </p>
+<p><strong>Note:</strong> The Mynewt simulator is not yet supported on Windows. If you are using the native install option (not the Docker option), you will need to create the blinky application for a target board.  We recommend that you read the section on creating a new project and fetching the source repository to understand the Mynewt repository structure, create a new project, and fetch the source dependencies before proceeding to one of the <a href="../../tutorials/blinky/">Blinky Tutorials</a>. </p>
+<p>This guide shows you how to:</p>
+<ol>
+<li>Create a new project and fetch the source repository and dependecies.</li>
+<li>Test the project packages (Not supported on Windows).</li>
+<li>Build and run the simulated blinky application (Not supported on Windows). </li>
+</ol>
 <p><br></p>
 <h3 id="prerequisites">Prerequisites</h3>
 <ul>
 <li>Have Internet connectivity to fetch remote Mynewt components.</li>
-<li>Install Newt:<ul>
-<li>If you have taken the native install route,  see the installation instructions for <a href="../../../newt/install/newt_mac/">Mac OS</a> or for <a href="../../../newt/install/newt_linux/">Linux</a>. </li>
-<li>If you have taken the Docker route, you have already installed Newt.</li>
+<li>Install the newt tool: <ul>
+<li>If you have taken the native install option,  see the installation instructions for <a href="../../../newt/install/newt_mac/">Mac OS</a>, <a href="../../../newt/install/newt_linux/">Linux</a>, or <a href="../../../newt/install/newt_windows/">Windows</a>. </li>
+<li>If you have taken the Docker option, you have already installed Newt.</li>
 </ul>
 </li>
 <li>Install the <a href="../native_tools/">native toolchain</a> to compile and build a Mynewt native application. </li>
 </ul>
 <p><br></p>
-<h3 id="newt-new">Newt New</h3>
-<p>Choose a project name. For this tutorial we will call this project <code>myproj</code>.
-Enter the <code>newt new myproj</code> command. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt new myproj
+<h3 id="creating-a-new-project-and-fetching-the-source-repository">Creating a New Project and Fetching the Source Repository</h3>
+<p>This section describes how to use the newt tool to create a new project and fetch the core mynewt source repository.</p>
+<p><br></p>
+<h4 id="creating-a-new-project">Creating a New Project</h4>
+<p>Choose a name for your project. We name the project <code>myproj</code>.  </p>
+<p><br>
+Run the <code>newt new myproj</code> command, from your <strong>dev</strong> directory, to create a new project:</p>
+<p><strong>Note:</strong> This tutorial assumes you created a <strong>dev</strong> directory under your home directory. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$cd ~/dev
+$ newt new myproj
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in myproj...
 Project myproj successfully created.
@@ -386,9 +399,8 @@ Project myproj successfully created.
 
 
 <p><br></p>
-<p>Newt populates this new project with a base skeleton of a new Apache Mynewt 
-project.  It has the following structure. </p>
-<p><strong>Note</strong>: If you do not have <code>tree</code>, run <code>brew install tree</code> to install on Mac OS or run <code>sudo apt-get install tree</code> to install on Linux.</p>
+<p>The newt tool creates a project base directory name <strong>myproj</strong>.  All newt tool commands are run from the project base directory.  The newt tool populates this new project with a base skeleton of a new Apache Mynewt project in the project base directory.  It has the following structure: </p>
+<p><strong>Note</strong>: If you do not have <code>tree</code>, run  <code>brew install tree</code> to install on Mac OS,  <code>sudo apt-get install tree</code> to install on Linux, and <code>pacman -Su tree</code> from a MinGW terminal to install on Windows.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ cd myproj
 $ tree 
 .
@@ -415,24 +427,21 @@ $ tree
 
 
 <p><br></p>
-<p>The Newt tool has installed the base files for a project comprising the following:</p>
+<p>The newt tool installs the following files for a project in the project base directory:</p>
 <ol>
 <li>The file <code>project.yml</code> contains the repository list that the project uses to fetch
-its packages. Your project is a collection of repositories.  In this case, the project just
-comprises the core mynewt repository.  Later you will add more repositories
-to include other mynewt components.</li>
-<li>The file <code>apps/blinky/pkg.yml</code> contains the description of your application
-and its package dependencies.</li>
-<li>A <code>target</code> directory containing <code>my_blinky_sim</code>, a target descriptor used to
-build a version of myproj.  Use <code>newt target show</code> to see available build 
+its packages. Your project is a collection of repositories.  In this case, the project only 
+comprises the core mynewt repository.  Later, you will add more repositories to include other mynewt components.</li>
+<li>The file <code>apps/blinky/pkg.yml</code> contains the description of your application and its package dependencies.</li>
+<li>A <code>target</code> directory that contains the <code>my_blinky_sim</code> directory. The <code>my_blinky_sim</code> directory 
+a target information to build a version of myproj.  Use <code>newt target show</code> to see available build 
 targets.</li>
 <li>A non-buildable target called <code>unittest</code>.  This is used internally by <code>newt</code> and is not a formal build target.</li>
 </ol>
-<p><strong>NOTE:</strong> The actual code and package files are not installed 
-(except the template for <code>main.c</code>).  See the next step for installing the packages.</p>
-<p><strong>NOTE:</strong> By default newt uses the code in the master branch. This is the latest stable
-code for newt. If you need to use a different branch, you can set this in the project.yml
-file. </p>
+<p><strong>Note:</strong> The actual code and package files are not installed (except the template for <code>main.c</code>).  See the next step to install the packages.</p>
+<p><br></p>
+<h4 id="fetching-the-mynewt-source-repository-and-dependencies">Fetching the Mynewt Source Repository and Dependencies</h4>
+<p>By default,  Mynewt projects rely on a single repository: <strong>apache-mynewt-core</strong> and uses the source in the master branch.  If you need to use a different branch, you need to change the <code>vers</code> value in the project.yml file:  </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">repository.apache-mynewt-core:
     type: github
     vers: 1-latest
@@ -441,22 +450,18 @@ file. </p>
 </pre></div>
 
 
-<p>Changing to 0-dev will put you on the latest master branch. <strong>This branch may not be stable and you may encounter bugs or other problems.</strong></p>
-<p><br></p>
-<h3 id="newt-install">Newt Install</h3>
-<p>Once you've switched into your new project's directory, the next step is to fetch
-any dependencies this project has.  By default, all Newt projects rely on a
-single remote repository, apache-mynewt-core.  The <em>newt install</em> command will
-fetch this repository.</p>
+<p>Changing vers to 0-dev will put you on the latest master branch. <strong>This branch may not be stable and you may encounter bugs or other problems.</strong></p>
+<p><br>
+Run the <code>newt install</code> command, from your project base directory (myproj), to fetch the source repository and dependencies: </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt install
 apache-mynewt-core
 </pre></div>
 
 
-<p><strong>NOTE:</strong> <em>apache-mynewt-core</em> may take a while to download.  To see progress,
-use the <em>-v</em> (verbose) option to install. </p>
+<p><strong>Note:</strong> It may take a while to download the apache-mynewt-core reposistory.  Use the <em>-v</em> (verbose) option to see the installation progress.</p>
 <p><br></p>
-<p>Once <em>newt install</em> has successfully finished, the contents of <em>apache-mynewt-core</em> will have been downloaded into your local directory.  You can view them by issuing the following commands in the base directory of the new project. The actual output will depend on what is in the latest 'master' branch you have pulled from.</p>
+<p>View the core of the Apache Mynewt OS that is downloaded into your local directory. </p>
+<p>(The actual output will depend on what is in the latest 'master' branch)</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ tree -L 2 repos/apache-mynewt-core/
 
 repos/apache-mynewt-core/
@@ -568,11 +573,10 @@ repos/apache-mynewt-core/
 </pre></div>
 
 
-<p>As you can see, the core of the Apache Mynewt operating system has been brought 
-into your local directory. </p>
 <p><br></p>
-<h3 id="test-the-projects-packages">Test the project's packages</h3>
-<p>You have already built your first basic project. You can ask Newt to execute the unit tests in a package. For example, to test the <code>sys/config</code> package in the <code>apache-mynewt-core</code> repo, call newt as shown below.</p>
+<h3 id="testing-the-project-packages">Testing the Project Packages</h3>
+<p><strong>Note</strong>: This is not yet supported on Windows.</p>
+<p>You can use the newt tool to execute the unit tests in a package. For example, run the following command to test the <code>sys/config</code> package in the <code>apache-mynewt-core</code> repo:  </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt test @apache-mynewt-core/sys/config
 Testing package @apache-mynewt-core/sys/config/test-fcb
 Compiling bootutil_misc.c
@@ -606,13 +610,13 @@ All tests passed
 </pre></div>
 
 
-<p><strong>NOTE:</strong> If you've installed the latest gcc using homebrew on your Mac, you will likely be running gcc-6. Make sure you have adjusted the compiler.yml configuration to reflect that as noted in <a href="../native_tools/">Native Install Option</a>. You can choose to downgrade to gcc-5 in order to use the default gcc compiler configuration for MyNewt.</p>
-<p><strong>NOTE:</strong> If you are running the standard gcc for 64-bit machines, it does not support 32-bit. In that case you will see compilation errors. You need to install multiboot gcc (e.g. gcc-multilib if you running on a 64-bit Ubuntu).</p>
+<p><strong>Note:</strong> If you installed the latest gcc using homebrew on your Mac, you are probably running gcc-6.  Make sure you change the compiler.yml configuration to specify that you are using gcc-6 (See <a href="../native_tools/">Native Install Option</a>).  You can also downgrade your installation to gcc-5 and use the default gcc compiler configuration for MyNewt:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew uninstall gcc-6
 $ brew link gcc-5
 </pre></div>
 
 
+<p><strong>Note:</strong> If you are running the standard gcc for 64-bit machines, it does not support 32-bit. In that case you will see compilation errors. You need to install multilib gcc (e.g. gcc-multilib if you running on a 64-bit Ubuntu).</p>
 <p><br></p>
 <p>To test all the packages in a project, specify <code>all</code> instead of the package name.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt test all
@@ -634,8 +638,12 @@ All tests passed
 
 
 <p><br></p>
-<h3 id="build-the-project">Build the Project</h3>
-<p>To build and run your new application, simply issue the following command:</p>
+<h3 id="building-and-running-the-simulated-blinky-application">Building and Running the Simulated Blinky Application</h3>
+<p>The section shows you how to build and run the blinky application to run on Mynewt's simulated hardware.</p>
+<p><strong>Note</strong>: This is not yet supported on Windows. Refer to the <a href="../../tutorials/blinky/">Blinky Tutorials</a> to create a blinky application on a target boards.</p>
+<p><br></p>
+<h4 id="building-the-application">Building the Application</h4>
+<p>To build the simulated blinky application, run <code>newt build my_blinky_sim</code>:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build my_blinky_sim 
 Building target targets/my_blinky_sim
 Compiling repos/apache-mynewt-core/hw/hal/src/hal_common.c
@@ -657,9 +665,16 @@ Target successfully built: targets/my_blinky_sim
 
 
 <p><br></p>
-<h3 id="run-the-project">Run the Project</h3>
-<p>You can run the simulated version of your project and see the simulated LED
-blink. If you are using newt docker, use <code>newt run</code> to run the simulated binary.</p>
+<h4 id="running-the-blinky-application">Running the Blinky Application</h4>
+<p>You can run the simulated version of your project and see the simulated LED blink. </p>
+<p>If you natively install the toolchain execute the binary directly:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ./bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
+hal_gpio set pin  1 to 0
+</pre></div>
+
+
+<p><br>
+If you are using newt docker, use <code>newt run</code> to run the simulated binary.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt run my_blinky_sim
 Loading app image into slot 1
     ...
@@ -671,14 +686,8 @@ Reading symbols from /bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf...don
 
 
 <p>Type <code>r</code> at the <code>(gdb)</code> prompt to run the project. You will see an output indicating that the hal_gpio pin is toggling between 1 and 0 in a simulated blink.</p>
-<p>If you natively install the toolchain, you can either use <code>newt run</code> or call the binary directly. Generally, <code>newt run</code> is the expected way to call things.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ./bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
-hal_gpio set pin  1 to 0
-</pre></div>
-
-
 <p><br></p>
-<h3 id="complete">Complete</h3>
+<h3 id="exploring-other-mynewt-os-features">Exploring other Mynewt OS Features</h3>
 <p>Congratulations, you have created your first project!  The blinky application
 is not terribly exciting when it is run in the simulator, as there is no LED to
 blink.  Apache Mynewt has a lot more functionality than just running simulated

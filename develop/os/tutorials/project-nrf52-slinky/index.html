@@ -625,16 +625,31 @@ $
 <p><br></p>
 <h3 id="connect-newtmgr-with-the-board-using-a-serial-connection">Connect Newtmgr with the Board using a Serial Connection</h3>
 <p>Set up a serial connection from your computer to the nRF52-DK board (See <a href="../../get_started/serial_access/">Serial Port Setup</a>).  </p>
-<p>Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type <code>tty.usbserial-&lt;some identifier&gt;</code>.</p>
+<p>Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is platform dependent:</p>
+<ul>
+<li>Mac OS uses the format <code>tty.usbserial-&lt;some identifier&gt;</code>.</li>
+<li>Linux uses the format <code>TTYUSB&lt;N&gt;</code>, where <code>N</code> is a number.  For example, TTYUSB2.</li>
+<li>
+<p>MinGW on Windows uses the format <code>ttyS&lt;N&gt;</code>, where <code>N</code> is a number. You must map the port name to a Windows COM port: <code>/dev/ttyS&lt;N&gt;</code> maps to <code>COM&lt;N+1&gt;</code>. For example, <code>/dev/ttyS2</code> maps to  <code>COM3</code>.  </p>
+<p>You can also use the Windows Device Manager to find the COM port number.</p>
+</li>
+</ul>
+<p><br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ls /dev/tty*usbserial*
 /dev/tty.usbserial-1d11
 $
 </pre></div>
 
 
-<p><br>
-Setup a newtmgr connection profile for the serial port. For our example, the port is  <code>/dev/tty.usbserial-1d11</code>. </p>
-<p>Run the <code>newtmgr conn add</code> command to define a newtmgr connection profile for the serial port.  We name the connection profile <code>nrf52serial</code>.  You will need to replace the <code>connstring</code> with the specific port for your serial connection. </p>
+<p><br></p>
+<p>Setup a newtmgr connection profile for the serial port. For our example, the port is  <code>/dev/tty.usbserial-1d11</code>. </p>
+<p>Run the <code>newtmgr conn add</code> command to define a newtmgr connection profile for the serial port.  We name the connection profile <code>nrf52serial</code>.  </p>
+<p><strong>Note</strong>: </p>
+<ul>
+<li>You will need to replace the <code>connstring</code> with the specific port for your serial connection. </li>
+<li>On Windows, you must specify <code>COM&lt;N+1&gt;</code> for the connstring if <code>/dev/ttyS&lt;N&gt;</code> is the serial port.</li>
+</ul>
+<p><br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr conn add nrf52serial type=serial connstring=/dev/tty.usbserial-1d11
 Connection profile nrf52serial successfully added
 $

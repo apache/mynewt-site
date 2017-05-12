@@ -409,9 +409,17 @@ pin. Just make sure you wire Rx from the FT232H to TX on the M0 Pro, and vice-ve
 <p><img alt="Arduino M0 Pro Wiring" src="../pics/m0pro.png" /></p>
 <p><br></p>
 <h2 id="setup-serial-communications">Setup Serial Communications</h2>
-<p>As mentioned earlier, we'll be using the built in <code>screen</code> command for this, but we'll still 
-need to know which serial port to connect to. So, before plugging in the FT232H Board, 
-check to see what USB devices are already connected:</p>
+<p>You will need to know the serial port to connect to and use a terminal program to connect to the board.</p>
+<h3 id="example-for-mac-os-and-linux-platforms">Example for Mac OS  and Linux Platforms</h3>
+<p>First check what USB devices are already connected before connecting the FT232H board to your computer.  The ports are listed in the <strong>/dev</strong> directory and the format of the port name is platform dependent:</p>
+<ul>
+<li>Mac OS uses the format <code>tty.usbserial-&lt;some identifier&gt;</code>. </li>
+<li>Linux uses the format <code>TTYUSB&lt;N&gt;</code>, where <code>N</code> is a number.  For example, TTYUSB2.</li>
+</ul>
+<p><br>
+This example is run on a Mac OS system. </p>
+<p>Check what USB devices are already connected:
+<br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ls -la /dev/*usb*
 0 crw-rw-rw-  1 root  wheel   20,  63 Nov 23 11:13 /dev/cu.usbmodem401322
 0 crw-rw-rw-  1 root  wheel   20,  62 Nov 23 11:13 /dev/tty.usbmodem401322
@@ -419,7 +427,9 @@ $
 </pre></div>
 
 
-<p>Now, plug in the FT232H board, and run that command again:</p>
+<p><br>
+Plug in the FT232H board and check the ports again:
+<br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ ls -la /dev/*usb*
 0 crw-rw-rw-  1 root  wheel   20,  63 Nov 23 11:13 /dev/cu.usbmodem401322
 0 crw-rw-rw-  1 root  wheel   20,  65 Nov 23 11:26 /dev/cu.usbserial-0020124
@@ -429,33 +439,80 @@ $
 </pre></div>
 
 
-<p>So the FT232H is connected to <code>/dev/tty.usbserial-0020124</code> (The number after tty.usbserial
-will be different on your machine.)</p>
-<p>So let's connect to it:</p>
+<p><br>
+The FT232H is connected to <code>/dev/tty.usbserial-0020124</code> (The number after tty.usbserial will be different on your machine.)
+<br>
+Use the screen command to connect to the board: 
+<br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ screen /dev/tty.usbserial-0020124 115200
 </pre></div>
 
 
-<p>To exit out of <code>screen</code> you'll type <code>control-A</code> followed by <code>control-\</code> and you'll
+<p><br>
+To exit out of <code>screen</code> you'll type <code>control-A</code> followed by <code>control-\</code> and you'll
 be back to a terminal prompt.</p>
-<p>If you'd like to use Minicom:</p>
+<p><br></p>
+<p>You can also use minicom:
+<br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ minicom -D /dev/tty.usbserial-0020124
+
+Welcome to minicom 2.7
+
+OPTIONS: 
+Compiled on Nov 24 2015, 16:14:21.
+Port /dev/tty.usbserial-0020124, 09:57:17
+
+Press Meta-Z for help on special keys
 </pre></div>
 
 
-<p>Welcome to minicom 2.7</p>
-<p>OPTIONS: 
-Compiled on Nov 24 2015, 16:14:21.
-Port /dev/tty.usbserial-0020124, 09:57:17</p>
-<p>Press Meta-Z for help on special keys
-```</p>
+<p><br>
+If there's no Mynewt app running, or the Mynewt app doesn't have the Shell and Console
+enabled, you won't see anything there, but you can always refer back to this page
+from later tutorials if you need to.</p>
 <p><br></p>
+<h3 id="example-for-windows-platforms">Example for Windows Platforms</h3>
+<p>First check what USB devices are already connected before connecting the FT232H board to your computer.  You can locate the ports from a MinGW terminal or use the Windows Device Manager. </p>
+<p>On a MinGW terminal, the ports are listed in the /dev directory and the format of the port name is <code>ttyS&lt;N&gt;</code> where N is a number. You must map the port name to a Windows COM port: <code>/dev/ttyS&lt;N&gt;</code> maps to <code>COM&lt;N+1&gt;</code>. For example, <code>/dev/ttyS2</code> maps to  <code>COM3</code>.</p>
+<p>Check what USB devices are already connected:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ls -l /dev/ttyS* 
+crw-rw-rw- 1 &lt;user&gt; None 117, 5 May  9 04:24 /dev/ttyS5
+$
+</pre></div>
+
+
+<p><br>
+/dev/ttyS5 maps to the Windows COM6 port. You can run Windows Device Manager to confirm:</p>
+<p><br>
+<img alt="Device Manager - USB Devices" src="../../../os/tutorials/pics/device_manager_no_ft232H.png" /></p>
+<p><br></p>
+<p>Plug in the FT232H board and check the ports again:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ls -l /dev/ttyS* 
+ls -l /dev/ttyS*
+crw-rw-rw- 1 &lt;user&gt; None 117, 10 May  9 04:55 /dev/ttyS10
+crw-rw-rw- 1 &lt;user&gt; None 117,  5 May  9 04:55 /dev/ttyS5
+$
+</pre></div>
+
+
+<p><br>
+The FT232H board is connected to port /dev/ttyS10 (or COM11):</p>
+<p><br>
+<img alt="Device Manager - FT232H" src="../../../os/tutorials/pics/device_manager_ft232H.png" /></p>
+<p><br></p>
+<p>We use the PuTTY terminal application to connect to the board on the COM11 port:
+<br>
+<img alt="PuTTY" src="../../../os/tutorials/pics/putty.png" /></p>
+<p><br></p>
+<p>Press Open and you should get a terminal screen titled "COM11 - PuTTY"</p>
 <p>If there's no Mynewt app running, or the Mynewt app doesn't have the Shell and Console
 enabled, you won't see anything there, but you can always refer back to this page
 from later tutorials if you need to.</p>
+<p><br></p>
 <p>Now that you know how to communicate with your mynewt application, let's move on to
 creating one!</p>
-<p><br></p>
                         
                         <div class="row">
                             
