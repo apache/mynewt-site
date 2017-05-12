@@ -217,7 +217,7 @@ $
 <br>
 
 ### Load the Wi-Fi Application Image onto the Board
-Run the `newt load arduino_wifi` command to load the wifi application onto the board:
+Run the `newt load mkr1000_wifi` command to load the wifi application onto the board:
 
 ```no-highlight
 $ newt load mkr1000_wifi
