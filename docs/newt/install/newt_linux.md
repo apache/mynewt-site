@@ -8,15 +8,18 @@ You can install the latest stable release (1.0.0) of the newt tool from a Debian
 
 If you are installing on an amd64 platform, we recommend that you install from the binary package.
 
+**Note:**  We have tested the newt tool binary and apt-get install from the runtimeco Debian package repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. We recommend that you upgrade Ubuntu on your computer. 
+
+
 **Note:** See [Setting Up an Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env) if you want to:  
 
 * Use the newt tool with the latest updates from the master branch. The master branch may be unstable and we recommend that you use the latest stable release version.
 * Contribute to the newt tool. 
 
 <br>
-
 ### Setting Up Your Computer to Get Packages from runtimeco 
 The newt Debian packages are stored in a private repository on **https://github/runtimeco/debian-mynewt**.  The following steps must be performed on your computer to retreive packages from the repository:
+
 
 **Note:** You only need to perform this setup once on your computer.
 
@@ -62,14 +65,38 @@ $more /etc/apt/sources.list.d/mynewt.list
 deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 deb-src https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 ```
+<br>
+Update the available packages: 
+```no-highlight
+$sudo apt-get update
+```
+<br>
+**Note:** If you are not using Ubuntu version 16, you may see the following errors.  We recommend that you upgrade Ubuntu.  We have provided instructions on how to manually download and install the binary package if you choose not to upgrade, but you will want to upgrade Ubuntu if you are installing from source.
+
+
+```no-highlight
+
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/source/Sources  HttpError404
+
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/binary-amd64/Packages  Bad header line
+
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/binary-i386/Packages  HttpError404
+
+E: Some index files failed to download. They have been ignored, or old ones used instead.
+
+```
+
+<br>
+
+
 <br> 
 
 ### Installing the Latest Release of Newt from a Binary Package 
 
-For Linux amd64 platforms, you can install the latest stable version (1.0.0) of newt from the newt Debian binary package:
+For Linux amd64 platforms, you can install the latest stable version (1.0.0) of newt from the newt Debian binary package. 
+
 
 ```no-highlight
-$sudo apt-get update
 $sudo apt-get install newt
 Reading package lists... Done
 Building dependency tree       
@@ -80,6 +107,14 @@ Reading state information... Done
 Preparing to unpack .../newt_1.0.0-1_amd64.deb ...
 Unpacking newt (1.0.0-1) ...
 Setting up newt (1.0.0-1) ...
+```
+<br>
+
+**Note:**If you are not using Ubuntu version 16 and are not able to update the runtimeco Debian package repo on your computer successfully, you can manually download and install the newt_1.0.0-1_amd64.deb binary package as follows:
+
+```no-highlight
+$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newt/newt_1.0.0-1_amd64.deb
+$sudo dpkg -i newt_1.0.0-1_amd64.deb
 ```
 <br>
 See [Checking the Installed Version of Newt](#check) to verify that you are using the installed version of newt.
