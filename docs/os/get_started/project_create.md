@@ -103,6 +103,8 @@ repository.apache-mynewt-core:
 
 Changing vers to 0-dev will put you on the latest master branch. **This branch may not be stable and you may encounter bugs or other problems.**
 
+**Note:** On Windows platforms,  you will need to change vers to 0-dev and use the latest master branch. Release 1.0.0 is not supported on Windows.
+
 <br>
 Run the `newt install` command, from your project base directory (myproj), to fetch the source repository and dependencies: 
 
