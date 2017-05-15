@@ -156,6 +156,15 @@ Run the `newt load stm32f4disc_boot` command to load the bootloader onto the boa
 $newt load stm32f4disc_boot
 Loading bootloader
 ```
+
+Note: If you are using Windows and get a `open failed` or  `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
+
+* Select Options > List All Devices.
+* Select `STM32 STLink` from the drop down menu.
+* Select the `WinUSB` driver.
+* Click Install Driver.
+* Run the `newt load stm32f4disc_boot` command again.
+
 <br>
 Run the `newt load stm32f4disc_blinky` command to load the Blinky application image onto the board.
 ```no-highlight

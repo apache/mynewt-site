@@ -158,11 +158,11 @@ Load command: ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_dev
 Successfully loaded image.
 ```
 
-Note: If you are using Windows and get the `no device found` error, you will need to install the usb drivers for your Olimex debugger. Download [Zadig](http://zadig.akeo.ie) and run it:
+Note: If you are using Windows and get a `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
 
 * Select Options > List All Devices.
-* Select Olimex OpenOCD JTAG ARM-USB-TINY-H from the drop down menu.
-* Select the WinUSB drivers.
+* Select `Olimex OpenOCD JTAG ARM-USB-TINY-H` from the drop down menu.
+* Select the `WinUSB` driver.
 * Click Install Driver.
 * Run the `newt load boot_olimex` command again. 
 

@@ -129,6 +129,15 @@ Loading bootloader
 $
 ```
 <br>
+Note: If you are using Windows and get a `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
+
+* Select Options > List All Devices.
+* Select `Olimex OpenOCD JTAG ARM-USB-TINY-H` from the drop down menu.
+* Select the `WinUSB` driver.
+* Click Install Driver.
+* Run the `newt load stm32_boot` command again.
+
+<br>
 Run the `newt load stm32_slinky` command to load the Slinky application image onto the board:
 ```no-highlight
 $ newt load stm32_slinky
