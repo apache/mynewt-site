@@ -59,14 +59,11 @@ low level operations. Sometimes this code is licensed only for the specific manu
 To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
 the repository to the `project.yml` file in your base project directory (`arduinowifi`).
 
-```
-user@~/dev/arduinowifi$ vi project.yml
-```
-
 Here is an example ```project.yml``` file with the Arduino Zero repository
 added. The sections with ```mynewt_arduino_zero``` that need to be added to
 your project file are highlighted.
 
+**Note:** On Windows platforms: You need to set `vers` to `0-dev` and use the latest master branch for both repositories.
 
 ```hl_lines="6 14 15 16 17 18"
 $ more project.yml

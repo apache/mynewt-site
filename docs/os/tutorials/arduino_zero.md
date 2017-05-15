@@ -50,6 +50,8 @@ Here is an example ```project.yml``` file with the Arduino Zero repository
 added. The sections with ```mynewt_arduino_zero``` that need to be added to
 your project file are highlighted.
 
+**Note:** On Windows platforms: You need to set `vers` to `0-dev` and use the latest master branch for both repositories.
+
 ```hl_lines="6 14 15 16 17 18"
 $ more project.yml
 project.name: "my_project"
