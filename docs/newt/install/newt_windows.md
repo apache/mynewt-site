@@ -95,11 +95,10 @@ README.md		newtvm
 Check that the newt tool is installed and it is in your path:
 
 ```no-highlight
-$ls go/bin
-$ ls bin/newt
-bin/newt
-$which go
-/home/<user>/dev/go/bin/newt
+$ls $GOPATH/bin/newt
+~/dev/go/bin/newt
+$which newt
+~/dev/go/bin/newt
 $ newt version
 Apache Newt (incubating) version: 1.0.0-dev
 ```

@@ -311,7 +311,7 @@ All tests passed
 ### Building and Running the Simulated Blinky Application
 The section shows you how to build and run the blinky application to run on Mynewt's simulated hardware.
 
-**Note**: This is not yet supported on Windows. Refer to the [Blinky Tutorials](/os/tutorials/blinky.md) to create a blinky application on a target boards.
+**Note**: This is not yet supported on Windows. Refer to the [Blinky Tutorials](/os/tutorials/blinky.md) to create a blinky application for a target board.
 
 <br>
 ####Building the Application
