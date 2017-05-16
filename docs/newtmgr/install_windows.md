@@ -26,7 +26,7 @@ Check that the newtmgr binary is installed and you are using the one from **$GOP
 ```no-highlight
 $ls $GOPATH/bin/newtmgr
 ~/dev/go/bin/newtmgr
-$which newt
+$which newtmgr
 ~/dev/go/bin/newtmgr
 ```
 <br>
