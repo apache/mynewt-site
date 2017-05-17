@@ -152,7 +152,7 @@ App image succesfully generated: ~/dev/myproj/bin/targets/primoblinky/app/apps/b
 
 **Note:** If you are using the OpenOCD debugger,  you do not need to attach this connector. 
 
-### Load the Bootloader and the Blinky Application Image
+### Load the Bootloader
 Run the `newt load primo_boot` command to load the bootloader onto the board:
 
 ```no-highlight
@@ -160,7 +160,16 @@ $ newt load primo_boot
 Loading bootloader
 $
 ```
+
+**Note:** If you are using OpenOCD on a Windows platform and you get an `unable to find CMSIS-DAP device` error, you will need to download and install the mbed Windows serial port driver from [https://developer.mbed.org/handbook/Windows-serial-configuration](https://developer.mbed.org/handbook/Windows-serial-configuration). Follow the instructions from the site to install the driver.  Here are some additional notes about the installation:
+
+1. The instructions indicate that the mbed Windows serial port driver is not required for Windows 10. If you are using Windows 10 and get the `unable to find CMSIS-DAP device` error, we recommend that you install the driver.
+2. If the driver installation fails, we recommend that you unplug the board, plug it back in, and retry the installation.
+
+Run the `newt load primo_boot` command again.
+
 <br>
+###Load the Blinky Application Image
 Run the `newt load primoblinky` command to load the Blinky application image onto the board.
 
 ```no-highlight
@@ -175,7 +184,7 @@ Note: If the LED does not blink, try resetting the board.
 
 
 <br>
-
+###Erase Flash
 If you want to erase the flash and load the image again, use JLinkExe and issue the `erase` command when you are using the Jlink debug probe: 
  
 **Note:** On Windows: Run the `jlink` command with the same arguments from a Windows Command Prompt terminal.

@@ -157,7 +157,7 @@ $newt load stm32f4disc_boot
 Loading bootloader
 ```
 
-Note: If you are using Windows and get a `open failed` or  `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
+Note: If you are using Windows and get an `open failed` or  `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
 
 * Select Options > List All Devices.
 * Select `STM32 STLink` from the drop down menu.

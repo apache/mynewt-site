@@ -130,7 +130,7 @@ App image succesfully generated: ~/dev/myproj/bin/targets/rbnano2_blinky/app/app
 Connect the RedBear Nano 2 USB to a USB port on your computer. You should see an orange LED light up on the board.
 
         
-### Load the Bootloader and the Blinky Application Image
+### Load the Bootloader 
 
 Run the `newt load rbnano2_boot` command to load the bootloader onto the board: 
 
@@ -140,7 +140,17 @@ Loading bootloader
 $
 ```
 <br>
-Note: The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the `newt debug rbnano2_blinky` command and issue the following commands at the highlighted (gdb) prompts.  
+
+**Note:** On Windows platforms, if you get an `unable to find CMSIS-DAP device` error, you will need to download and install the mbed Windows serial port driver from [https://developer.mbed.org/handbook/Windows-serial-configuration](https://developer.mbed.org/handbook/Windows-serial-configuration). Follow the instructions from the site to install the driver.  Here are some additional notes about the installation:
+
+1. The instructions indicate that the mbed Windows serial port driver is not required for Windows 10. If you are using Windows 10 and get the `unable to find CMSIS-DAP device` error, we recommend that you install the driver.
+2. If the driver installation fails, we recommend that you unplug the board, plug it back in, and retry the installation.
+
+Run the `newt load rbnano2_boot` command again.
+
+<br>
+####Clear the Write Protection on the Flash Memory
+The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the `newt debug rbnano2_blinky` command and issue the following commands at the highlighted (gdb) prompts.  
 
 **Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
 
@@ -171,9 +181,10 @@ Error: Failed to read memory at 0x00009ef4
 0x70:0xffffffff0xffffffff0xffffffff0xffffffff
 (gdb)
 ```
-
 <br>
-Run the `newt load rbnano2_blinky` command to load the Blinky application image onto the board.
+### Load the Blinky Application Image
+<br>
+Run the `newt load rbnano2_blinky` command to load the Blinky application image onto the board:
 ```no-highlight
 $ newt load rbnano2_blinky
 Loading app image into slot 1
