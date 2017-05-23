@@ -57,7 +57,7 @@ pkg.deps:
 Each package provides the following Newt Manager functionality:
 
 * `mgmt/newtmgr`: Supports the newtmgr framework and the 
-Newt Manager `echo`, `taskstats` `mpstats`, `datetime`, and `reset` commands.
+Newt Manager `echo`, `taskstat` `mpstat`, `datetime`, and `reset` commands.
 * `mgmt/newtmgr/transport/nmgr_shell`: Supports serial transport.
 * `mgmt/imgmgr`: Supports the `newtmgr image` command 
 * `sys/log/full` : Supports the `newtmgr log` command.
@@ -259,7 +259,7 @@ setting values in the `syscfg.vals` parameter as follows:
 Notes: 
 
 * When you enable Newt Manager support, using either the newtmgr or oicmgr framework, your application automatically 
-supports the Newt Manager `echo`, `taskstats`, `mpstats`, `datetime`, and `reset` commands.  These 
+supports the Newt Manager `echo`, `taskstat`, `mpstat`, `datetime`, and `reset` commands.  These 
 commands cannot be configured individually.
 * The `mgmt/imgmgr` package does not provide a configuration setting to enable or disable support 
 for the `newtmgr image` command.  Do not specify the package in the `pkg.deps` parameter if 

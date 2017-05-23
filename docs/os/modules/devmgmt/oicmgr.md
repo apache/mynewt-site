@@ -23,7 +23,7 @@ It sends a CoAP request for **/omgr** as follows:
 
 * Specifies the newtmgr command to execute in the URI query string. 
 * Uses a GET method for newtmgr commands that retreive information 
-from your application, for example, the ```taskstats``` and ```mpstats``` commands. 
+from your application, for example, the ```taskstat``` and ```mpstat``` commands. 
 * Uses a PUT method for newtmgr commands that send data to or modify the state of your application,
 for example, the ```echo``` or ```datetime``` commands. 
 * Sends the CBOR-encoded command request data in the CoAP message payload.
