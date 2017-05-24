@@ -164,7 +164,14 @@ $
 **Note:** If you are using OpenOCD on a Windows platform and you get an `unable to find CMSIS-DAP device` error, you will need to download and install the mbed Windows serial port driver from [https://developer.mbed.org/handbook/Windows-serial-configuration](https://developer.mbed.org/handbook/Windows-serial-configuration). Follow the instructions from the site to install the driver.  Here are some additional notes about the installation:
 
 1. The instructions indicate that the mbed Windows serial port driver is not required for Windows 10. If you are using Windows 10 and get the `unable to find CMSIS-DAP device` error, we recommend that you install the driver.
-2. If the driver installation fails, we recommend that you unplug the board, plug it back in, and retry the installation.
+2. If the driver installation fails, we recommend that you download and install the Arduino Primo CMSIS-DAP driver. Perform the following steps: 
+
+    * Download the [Arduino Primo CMSIS-DAP driver](https://github.com/runtimeco/openocd-binaries/raw/master/arduino_primo_drivers.zip) and extract the zip file.
+    * Start Device Manager.
+    * Select **Other Devices** > **CMSIS-DAP CDC** > **Properties** > **Drivers** > **Update Driver...**.
+    * Select **Browse my computer for driver software**.
+    * Select the Arduino Driver folder where extracted the drivers to (check the include subfolders). Click **Next**  to install the driver.
+
 
 Run the `newt load primo_boot` command again.
 
