@@ -13,6 +13,9 @@ Prerequisites:
 * Have Internet connectivity to fetch remote Mynewt components.
 * Have a computer to build a Mynewt application.
 * Perform [native installation](/os/get_started/native_install_intro.md) for the Mynewt tools and toolchains.
+	
+	**Note:** For Windows platforms, ensure that the MinGW bash you install is added to your Windows Path. In addition, if you are using Windows 10 WSL, you must have the MinGW bash before the Windows 10 WSL bash in your Windows Path.
+
 * Read the Mynewt OS Concepts section.
 * Create a project space (directory structure) and populate it with the core code repository (apache-mynewt-core) or know how to as explained in Creating Your First Project.  
 * Complete one of the [Blinky Tutorials](/os/tutorials/blinky.md).
@@ -21,7 +24,7 @@ Prerequisites:
 
 * This guide is not a tutorial for Visual Studio Code. It assumes you are familiar with Visual Studio Code. If this is your first time using Visual Studio Code, we recommend that you read the Visual Studio Code [documentation and tutorials](https://code.visualstudio.com/docs) and evaluate whether you would like to use it to develop Mynewt applications. 
 * This guide uses Visual Studio Code on Windows. Visual Studio Code is supported on Linux and Mac OS but may have some variations in the keyboard shortcuts and command names for these platforms. 
-* You can also use the Eclipse IDE to develop Mynewt applications. See [https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse](https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse) for more details.
+* You can also use the Eclipse IDE to develop Mynewt applications. See [https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse](https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse) for more details. On Windows platforms, you must also ensure the MinGW bash is set in your Windows Path as described in the prerequisites.
 
 ###Installing Visual Studio Code
 Download and install Visual Studio Code from [https://code.visualstudio.com/](https://code.visualstudio.com/).
@@ -67,7 +70,7 @@ You define Visual Studio Code tasks to build and debug your Mynewt targets in Vi
 
 Perform the following steps to create the tasks to build and debug the Arduino blinky bootloader and appliction targets:
 
-Step 1: Press `Ctrl-Shift-P`, type `task` in the search box, and select **Tasks:Configure Task Runner** from the search results.  
+Step 1: Press `Ctrl-Shift-P`, type `task`, and select **Tasks:Configure Task Runner** from the search results.  
 
 Step 2: Select **Others** (scroll down to the bottom of the list) to create a task runner for external commands. 
 <br>
@@ -133,7 +136,7 @@ For more information on tasks and all supported properties, see the [Visual Stud
 <br>
 ####Running a Task
 
-To run a task, select `Ctrl-Shift-P`, type `task`, and select **Tasks: Run Task**.  The tasks that you define in the `tasks.json` file are listed.  Select the task to run. 
+To run a task, press `Ctrl-Shift-P`, type `task` on the search box, and select **Tasks: Run Task**.  The tasks that you define in the `tasks.json` file are listed.  Select the task to run. 
 
 The following is an example of running the `build_arduino_boot` task:
 <br>
@@ -143,9 +146,13 @@ The following is an example of running the `build_arduino_boot` task:
 <p align="center"><img src="/faq/pics/task_start_small.png"></p>
 
 <br>
+
+**Note**:To run the `build_arduino_linky` task, you can use the keyboard shortcut `Ctrl-Shift-B` because the task has the property `isBuildCommand` set to true.  
+
+<br>
 ####Defining Tasks for Other Newt Commands
 
-Other newt commands, such as the `newt load` command, do not need to run from within Visual Studio Code. You can define tasks for them as a convenience or run them on the command line from the Visual Studio Code integrated terminal (or an external terminal).
+Other newt commands, such as the `newt load` command, do not need to run from within Visual Studio Code. You can define a task for each command as a convenience and run the command as a task, or you can run the newt command on the command line from the Visual Studio Code integrated terminal or an external terminal.
 
 To create the tasks for the `newt load arduino_boot` and `newt laod arduino_blinky` commands, add the following definitions to the `tasks.json` file:
 
@@ -162,8 +169,10 @@ To create the tasks for the `newt load arduino_boot` and `newt laod arduino_blin
         }, 
 
 ```
+
+
 <br>
-To run the commands from the Visual Studio integrated terminal, press ``Ctrl-` `` to launch the integrated terminal and enter the command as shown:
+To run a command from the Visual Studio integrated terminal, instead of starting a task,  press ``Ctrl-` `` to launch the integrated terminal and enter the command on the prompt:
 <br>
 <p align="center"><img src="/faq/pics/integrated_terminal_small.png"></p>
 <br>
@@ -195,7 +204,7 @@ Step 2: Delete the content from the `launch.json` file, add the following defini
             "executable": "${workspaceRoot}\\bin\\targets\\arduino_blinky\\app\\apps\\blinky\\blinky.elf",
             "target": ":3333",
             "cwd": "${workspaceRoot}",
-            "gdbpath": "arm-none-eabi-gdb.exe",
+            "gdbpath": "C:\\Program Files (x86)\\GNU Tools ARM Embedded\\4.9 2015q2\\bin\\arm-none-eabi-gdb.exe",
             "remote": true
 
         }

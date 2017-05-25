@@ -21,3 +21,6 @@ The tools you need are:
     * Debuggers to load and debug applications on target boards. 
 	
 	(See [Installing Cross Tools for ARMs](/os/get_started/cross_tools.md)).
+
+
+If you would like to use an IDE to develop and debug Mynewt applications, see [using an IDE to develop Mynewt Applications](/faq/ide.md).  You must still perform the native installation outlined on this page.

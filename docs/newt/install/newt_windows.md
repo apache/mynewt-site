@@ -22,6 +22,9 @@ MSYS2/MinGW provides a bash shell and tools to build applications that run on Wi
 
 The subsystems run the bash shell and provide a Unix-like environment. You can also run Windows applications from the shell. We will use the MinGW subsystem.
 
+**Note:** You can skip this installation step if you already have MinGW installed (from an earlier MSYS2/MinGW or Git Bash installation), but you must list the **bin** path for your installation in your Windows Path. For example: if you installed MSYS2/MinGW in the ** C:\msys64 ** directory,  add **C:\msys64\usr\bin** to your Windows Path. If you are using Windows 10 WSL, ensure that you use the **C:\msys64\usr\bin\bash.exe** and not the Windows 10 WSL bash.
+
+
 To install and setup MSYS2 and MinGW:
 
 1. Download and run the [MSYS2 installer](http://www.msys2.org).  Select the 64 bit version if you are running on a 64 bit platform. Follow the prompts and check the `Run MSYS2 now` checkbox on the `Installation Complete` dialog. 
@@ -33,7 +36,12 @@ To install and setup MSYS2 and MinGW:
 	
 	To add the variable,  select properties for your computer > Advanced system settings > Environment Variables > New
 
-4. Run the `pacman -Su vim` command to install the vim editor. 
+4. Add the MinGW **bin** path to your Windows Path. For example: if you install MSYS2/MinGW in the **C:\msys64** directory,  add **C:\msys64\usr\bin** to your Windows Path. 
+
+	**Note:** If you are using Windows 10 WSL,  ensure that you use the **C:\msys64\usr\bin\bash.exe** and not the Windows 10 WSL bash.
+
+
+5. Run the `pacman -Su vim` command to install the vim editor. 
 	
 	**Note:**You can also use a Windows editor. You can access your files from the **C:\&lt;msys-install-folder&gt;\home\&lt;username&gt;** folder, where **msys-install-folder** is the folder you installed MSYS2 in. For example, if you installed MSYS2 in the **msys64** folder, your files are stored in **C:\msys64\home\&lt;username&gt;**
 
