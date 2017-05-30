@@ -196,8 +196,11 @@ Step 2: Delete the content from the `launch.json` file, add the following defini
             "target": ":3333",
             "cwd": "${workspaceRoot}",
             "gdbpath": "arm-none-eabi-gdb.exe",
-            "remote": true
-
+            "remote": true,
+            "autorun": [
+                "monitor halt",
+                "monitor reset"
+            ]
         }
     ]
 }
