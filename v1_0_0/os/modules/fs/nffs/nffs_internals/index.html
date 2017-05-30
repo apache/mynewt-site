@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/fs/nffs/nffs_internals/"> -->
+        <link rel="shortcut icon" href="../../../../../img/favicon.ico">
+
+	    <title>Internals - Apache Mynewt</title>
+
+        <link href="../../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../../../css/highlight.css">
+        <link href="../../../../../css/base.css" rel="stylesheet">
+        <link href="../../../../../css/custom.css" rel="stylesheet">
+        <link href="../../../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-72162311-1', 'auto');
+                ga('send', 'pageview');
+            </script>
+        
+    </head>
+
+
+    <body class="Internals">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.0.0</a> released (March 22, 2017)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/latest/os/introduction">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+            <!-- Search, Navigation and Repo links -->
+            <ul class="nav navbar-nav navbar-right">
+                
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version">
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+    
+    <option
+      value="/develop/os/introduction"
+      
+    >
+      Version: develop (latest)
+    </option>
+    
+    <option
+      value="/v0_9_0/os/introduction"
+      
+    >
+      Version: 0.9.0
+    </option>
+    
+    <option
+      value="/v1_0_0/os/introduction"
+      selected="selected"
+    >
+      Version: 1.0.0
+    </option>
+    
+</select>
+</li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../../get_started/vocabulary/">Concepts</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../tutorials/tutorials/">Tutorials</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../os_user_guide/">OS User Guide</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../core_os/mynewt_os/">OS Core</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../core_os/porting/port_os/">Porting to your Platform</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../console/console/">Console</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../shell/shell/">Shell</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../bootloader/bootloader/">Bootloader</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  
+  
+  ../../fs/fs/
+
+">File System</a>
+  
+  
+    <ul>
+          
+              
+                
+  
+  
+    <li ><a href="../../fs/fs/">File System Abstraction</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../nffs/">Newtron Flash File System</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../nffs_area_desc/
+">Data Structures</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../nffs_detect/
+">Functions</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Internals</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../otherfs/">Other File Systems</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../testutil/testutil/">Test Utilities</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../devmgmt/newtmgr/">Device Management with Newt Manager</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../imgmgr/imgmgr/">Image Manager</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../baselibc/">Baselibc library</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../elua/elua/">Embedded Lua</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../json/json/">JSON</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../stats/stats/">Stats</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../logs/logs/">Logs</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../sysinitconfig/sysinitconfig/">System Configuration And Initialization</a>
+  
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../../../faq/how_to_edit_docs/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs pull-right">
+    <li><a href="/v1_0_0/os/introduction">Docs</a></li>
+    
+    
+        
+          <li>&raquo; File System</li>
+        
+      
+        
+          <li>&raquo; <a href="../nffs/">Newtron Flash File System</a></li>
+        
+      
+      
+        <li>&raquo; Internals</li>
+      
+    
+    
+  </ul>
+</div>
+                        </div>
+                        
+                            <h1 id="internals-of-nffs">Internals of nffs</h1>
+<h3 id="disk-structure">Disk structure</h3>
+<p>On disk, each area is prefixed with the following header:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** On-disk representation of an area header. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_area</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nda_magic</span>[<span style="color: #1C01CE">4</span>];  <span style="color: #177500">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nda_length</span>;    <span style="color: #177500">/* Total size of area, in bytes. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nda_ver</span>;        <span style="color: #177500">/* Current nffs version: 0 */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nda_gc_seq</span>;     <span style="color: #177500">/* Garbage collection count. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">reserved8</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nda_id</span>;         <span style="color: #177500">/* 0xff if scratch area. */</span>
+};
+</pre></div>
+
+
+<p>Beyond its header, an area contains a sequence of disk objects, representing the contents of the file system.  There are two types of objects: <em>inodes</em> and <em>data blocks</em>.  An inode represents a file or directory; a data block represents part of a file's contents.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** On-disk representation of an inode (file or directory). */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_inode</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_magic</span>;         <span style="color: #177500">/* NFFS_INODE_MAGIC */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_id</span>;            <span style="color: #177500">/* Unique object ID. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_seq</span>;           <span style="color: #177500">/* Sequence number; greater supersedes</span>
+<span style="color: #177500">                                   lesser. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_parent_id</span>;     <span style="color: #177500">/* Object ID of parent directory inode. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">reserved8</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ndi_filename_len</span>;   <span style="color: #177500">/* Length of filename, in bytes. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ndi_crc16</span>;         <span style="color: #177500">/* Covers rest of header and filename. */</span>
+    <span style="color: #177500">/* Followed by filename. */</span>
+};
+</pre></div>
+
+
+<p>An inode filename's length cannot exceed 256 bytes.  The filename is not null-terminated.  The following ASCII characters are not allowed in a filename:</p>
+<ul>
+<li>/  (slash character)</li>
+<li>\0 (NUL character)</li>
+</ul>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** On-disk representation of a data block. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_block</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_magic</span>;     <span style="color: #177500">/* NFFS_BLOCK_MAGIC */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_id</span>;        <span style="color: #177500">/* Unique object ID. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_seq</span>;       <span style="color: #177500">/* Sequence number; greater supersedes lesser. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_inode_id</span>;  <span style="color: #177500">/* Object ID of owning inode. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_prev_id</span>;   <span style="color: #177500">/* Object ID of previous block in file;</span>
+<span style="color: #177500">                               NFFS_ID_NONE if this is the first block. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ndb_data_len</span>;  <span style="color: #177500">/* Length of data contents, in bytes. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ndb_crc16</span>;     <span style="color: #177500">/* Covers rest of header and data. */</span>
+    <span style="color: #177500">/* Followed by &#39;ndb_data_len&#39; bytes of data. */</span>
+};
+</pre></div>
+
+
+<p>Each data block contains the ID of the previous data block in the file.  Together, the set of blocks in a file form a reverse singly-linked list.</p>
+<p>The maximum number of data bytes that a block can contain is determined at initialization-time.  The result is the greatest number which satisfies all of the following restrictions:</p>
+<ul>
+<li>No more than 2048.</li>
+<li>At least two maximum-sized blocks can fit in the smallest area.</li>
+</ul>
+<p>The 2048 number was chosen somewhat arbitrarily, and may change in the future.</p>
+<h3 id="id-space">ID space</h3>
+<p>All disk objects have a unique 32-bit ID.  The ID space is partitioned as
+follows:</p>
+<table>
+<thead>
+<tr>
+<th>ID range</th>
+<th>Node type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00000000 - 0x0fffffff</td>
+<td>Directory inodes</td>
+</tr>
+<tr>
+<td>0x10000000 - 0x7fffffff</td>
+<td>File inodes</td>
+</tr>
+<tr>
+<td>0x80000000 - 0xfffffffe</td>
+<td>Data blocks</td>
+</tr>
+<tr>
+<td>0xffffffff</td>
+<td>Reserved (NFFS_ID_NONE)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scratch-area">Scratch area</h3>
+<p>A valid nffs file system must contain a single "scratch area."  The scratch area does not contain any objects of its own, and is only used during garbage collection.  The scratch area must have a size greater than or equal to each of the other areas in flash.</p>
+<h3 id="ram-representation">RAM representation</h3>
+<p>Every object in the file system is stored in a 256-entry hash table.  An object's hash key is derived from its 32-bit ID.  Each list in the hash table is sorted by time of use; most-recently-used is at the front of the list. All objects are represented by the following structure:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
+<span style="color: #177500"> * What gets stored in the hash table.  Each entry represents a data block or</span>
+<span style="color: #177500"> * an inode.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> {
+    <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">nffs_hash_entry</span>) <span style="color: #000000">nhe_next</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nhe_id</span>;        <span style="color: #177500">/* 0 - 0x7fffffff if inode; else if block. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nhe_flash_loc</span>; <span style="color: #177500">/* Upper-byte = area idx; rest = area offset. */</span>
+};
+</pre></div>
+
+
+<p>For each data block, the above structure is all that is stored in RAM.  To acquire more information about a data block, the block header must be read from flash.</p>
+<p>Inodes require a fuller RAM representation to capture the structure of the file system.  There are two types of inodes: <em>files</em> and <em>directories</em>.  Each inode hash entry is actually an instance of the following structure:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Each inode hash entry is actually one of these. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">nie_hash_entry</span>;
+    <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">nffs_inode_entry</span>) <span style="color: #000000">nie_sibling_next</span>;
+    <span style="color: #A90D91">union</span> {
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_list</span> <span style="color: #000000">nie_child_list</span>;           <span style="color: #177500">/* If directory */</span>
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nie_last_block_entry</span>;    <span style="color: #177500">/* If file */</span>
+    };
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nie_refcnt</span>;
+};
+</pre></div>
+
+
+<p>A directory inode contains a list of its child files and directories (<em>fie_child_list</em>).  These entries are sorted alphabetically using the ASCII character set.</p>
+<p>A file inode contains a pointer to the last data block in the file (<em>nie_last_block_entry</em>).  For most file operations, the reversed block list must be walked backwards.  This introduces a number of speed inefficiencies:</p>
+<ul>
+<li>All data blocks must be read to determine the length of the file.</li>
+<li>Data blocks often need to be processed sequentially.  The reversed nature of the block list transforms this from linear time to an O(n^2) operation.</li>
+</ul>
+<p>Furthermore, obtaining information about any constituent data block requires a separate flash read.</p>
+<h3 id="inode-cache-and-data-block-cache">Inode cache and Data Block cache</h3>
+<p>The speed issues are addressed by a pair of caches.  Cached inodes entries contain the file length and a much more convenient doubly-linked list of cached data blocks.  The benefit of using caches is that the size of the caches need not be proportional to the size of the file system.  In other words, caches can address speed efficiency concerns without negatively impacting the file system's scalability.</p>
+<p>nffs requires both caches during normal operation, so it is not possible to disable them.  However, the cache sizes are configurable, and both caches can be configured with a size of one if RAM usage must be minimized.</p>
+<p>The following data structures are used in the inode and data block caches.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Full data block representation; not stored permanently in RAM. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_block</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nb_hash_entry</span>;   <span style="color: #177500">/* Points to real block entry. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nb_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
+<span style="color: #177500">                                                supersedes lesser. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*nb_inode_entry</span>; <span style="color: #177500">/* Owning inode. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nb_prev</span>;         <span style="color: #177500">/* Previous block in file. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">nb_data_len</span>;                    <span style="color: #177500">/* # of data bytes in block. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">reserved16</span>;
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Represents a single cached data block. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_block</span> {
+    <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">nffs_cache_block</span>) <span style="color: #000000">ncb_link</span>; <span style="color: #177500">/* Next / prev cached block. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_block</span> <span style="color: #000000">ncb_block</span>;            <span style="color: #177500">/* Full data block. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ncb_file_offset</span>;               <span style="color: #177500">/* File offset of this block. */</span>
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Full inode representation; not stored permanently in RAM. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*ni_inode_entry</span>; <span style="color: #177500">/* Points to real inode entry. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ni_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
+<span style="color: #177500">                                                supersedes lesser. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*ni_parent</span>;      <span style="color: #177500">/* Points to parent directory. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ni_filename_len</span>;                 <span style="color: #177500">/* # chars in filename. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ni_filename</span>[<span style="color: #000000">NFFS_SHORT_FILENAME_LEN</span>]; <span style="color: #177500">/* First 3 bytes. */</span>
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
+<span style="color: #000000">TAILQ_HEAD</span>(<span style="color: #000000">nffs_block_cache_list</span>, <span style="color: #000000">nffs_block_cache_entry</span>);
+
+<span style="color: #177500">/** Represents a single cached file inode. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_inode</span> {
+    <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">nffs_cache_inode</span>) <span style="color: #000000">nci_link</span>;        <span style="color: #177500">/* Sorted; LRU at tail. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode</span> <span style="color: #000000">nci_inode</span>;                   <span style="color: #177500">/* Full inode. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_block_list</span> <span style="color: #000000">nci_block_list</span>;   <span style="color: #177500">/* List of cached blocks. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nci_file_size</span>;                        <span style="color: #177500">/* Total file size. */</span>
+};
+</pre></div>
+
+
+<p>Only file inodes are cached; directory inodes are never cached.</p>
+<p>Within a cached inode, all cached data blocks are contiguous.  E.g., if the start and end of a file are cached, then the middle must also be cached.  A data block is only cached if its owning file is also cached.</p>
+<p>Internally, cached inodes are stored in a singly-linked list, ordered by time of use.  The most-recently-used entry is the first element in the list.  If a new inode needs to be cached, but the inode cache is full, the least-recently-used entry is freed to make room for the new one.  The following operations cause an inode to be cached:</p>
+<ul>
+<li>Querying a file's length.</li>
+<li>Seeking within a file.</li>
+<li>Reading from a file.</li>
+<li>Writing to a file.</li>
+</ul>
+<p>The following operations cause a data block to be cached:</p>
+<ul>
+<li>Reading from the block.</li>
+<li>Writing to the block.</li>
+</ul>
+<p>If one of the above operations is applied to a data block that is not currently cached, nffs uses the following procedure to cache the necessary block:</p>
+<ol>
+<li>If none of the owning inode's blocks are currently cached, allocate a cached block entry corresponding to the requested block and insert it into the inode's list.</li>
+<li>Else if the requested file offset is less than that of the first cached block, bridge the gap between the inode's sequence of cached blocks and the block that now needs to be cached.  This is accomplished by caching each block in the gap, finishing with the requested block.</li>
+<li>Else (the requested offset is beyond the end of the cache),<ol>
+<li>If the requested offset belongs to the block that immediately follows the end of the cache, cache the block and append it to the list.</li>
+<li>Else, clear the cache, and populate it with the single entry corresponding to the requested block.</li>
+</ol>
+</li>
+</ol>
+<p>If the system is unable to allocate a cached block entry at any point during the above procedure, the system frees up other blocks currently in the cache. This is accomplished as follows:</p>
+<ul>
+<li>Iterate the inode cache in reverse (i.e., start with the least-recently-used entry).  For each entry:<ol>
+<li>If the entry's cached block list is empty, advance to the next entry.</li>
+<li>Else, free all the cached blocks in the entry's list.</li>
+</ol>
+</li>
+</ul>
+<p>Because the system imposes a minimum block cache size of one, the above procedure will always reclaim at least one cache block entry.  The above procedure may result in the freeing of the block list that belongs to the very inode being operated on.  This is OK, as the final block to get cached is always the block being requested.</p>
+<h1 id="detection">Detection</h1>
+<p>The file system detection process consists of scanning a specified set of flash regions for valid nffs areas, and then populating the RAM representation of the file system with the detected objects.  Detection is initiated with the <a href="../nffs_detect/">nffs_detect()</a> function.</p>
+<p>Not every area descriptor passed to <code>nffs_detect()</code> needs to reference a valid nffs area.  Detection is successful as long as a complete file system is detected somewhere in the specified regions of flash.  If an application is unsure where a file system might be located, it can initiate detection across the entire flash region.</p>
+<p>A detected file system is valid if:</p>
+<ol>
+<li>At least one non-scratch area is present.</li>
+<li>At least one scratch area is present (only the first gets used if there is more than one).</li>
+<li>The root directory inode is present.</li>
+</ol>
+<p>During detection, each indicated region of flash is checked for a valid area header.  The contents of each valid non-scratch area are then restored into the nffs RAM representation.  The following procedure is applied to each object in the area:</p>
+<ol>
+<li>Verify the object's integrity via a crc16 check.  If invalid, the object is discarded and the procedure restarts on the next object in the area.</li>
+<li>Convert the disk object into its corresponding RAM representation and insert it into the hash table.  If the object is an inode, its reference count is initialized to 1, indicating ownership by its parent directory.</li>
+<li>If an object with the same ID is already present, then one supersedes the other.  Accept the object with the greater sequence number and discard the other.</li>
+<li>If the object references a nonexistent inode (parent directory in the case of an inode; owning file in the case of a data block), insert a temporary "dummy" inode into the hash table so that inter-object links can be maintained until the absent inode is eventually restored.  Dummy inodes are identified by a reference count of 0.</li>
+<li>If a delete record for an inode is encountered, the inode's parent pointer is set to null to indicate that it should be removed from RAM.</li>
+</ol>
+<p>If nffs encounters an object that cannot be identified (i.e., its magic number is not valid), it scans the remainder of the flash area for the next valid magic number.  Upon encountering a valid object, nffs resumes the procedure described above.</p>
+<p>After all areas have been restored, a sweep is performed across the entire RAM representation so that invalid inodes can be deleted from memory.</p>
+<p>For each directory inode:</p>
+<ul>
+<li>If its reference count is 0 (i.e., it is a dummy), migrate its children to the <em>/lost+found</em> directory, and delete it from the RAM representation. This should only happen in the case of file system corruption.</li>
+<li>If its parent reference is null (i.e., it was deleted), delete it and all its children from the RAM representation.</li>
+</ul>
+<p>For each file inode:</p>
+<ul>
+<li>If its reference count is 0 (i.e., it is a dummy), delete it from the RAM representation.  This should only happen in the case of file system corruption.  (We should try to migrate the file to the lost+found directory in this case, as mentioned in the todo section).</li>
+</ul>
+<p>When an object is deleted during this sweep, it is only deleted from the RAM representation; nothing is written to disk.</p>
+<p>When objects are migrated to the lost+found directory, their parent inode reference is permanently updated on the disk.</p>
+<p>In addition, a single scratch area is identified during the detection process.  The first area whose <em>fda_id</em> value is set to 0xff is designated as the file system scratch area.  If no valid scratch area is found, the cause could be that the system was restarted while a garbage collection cycle was in progress.  Such a condition is identified by the presence of two areas with the same ID.  In such a case, the shorter of the two areas is erased and designated as the scratch area.</p>
+<h1 id="formatting">Formatting</h1>
+<p>A new nffs file system is created via formatting.  Formatting is achieved via the <a href="../nffs_format/">nffs_format()</a> function.</p>
+<p>During a successful format, an area header is written to each of the specified locations.  One of the areas in the set is designated as the initial scratch area.</p>
+<h1 id="flash-writes">Flash writes</h1>
+<p>The nffs implementation always writes in a strictly sequential fashion within an area.  For each area, the system keeps track of the current offset.  Whenever an object gets written to an area, it gets written to that area's current offset, and the offset is increased by the object's disk size.</p>
+<p>When a write needs to be performed, the nffs implementation selects the appropriate destination area by iterating though each area until one with sufficient free space is encountered.</p>
+<p>There is no write buffering.  Each call to a write function results in a write operation being sent to the flash hardware.</p>
+<h3 id="new-objects">New objects</h3>
+<p>Whenever a new object is written to disk, it is assigned the following properties:</p>
+<ul>
+<li><em>ID:</em> A unique value is selected from the 32-bit ID space, as appropriate for the object's type.</li>
+<li><em>Sequence number:</em> 0</li>
+</ul>
+<p>When a new file or directory is created, a corresponding inode is written to flash.  Likewise, a new data block also results in the writing of a corresponding disk object.</p>
+<h3 id="movingrenaming-files-and-directories">Moving/Renaming files and directories</h3>
+<p>When a file or directory is moved or renamed, its corresponding inode is rewritten to flash with the following properties:</p>
+<ul>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+<li><em>Parent inode:</em> As specified by the move / rename operation.</li>
+<li><em>Filename:</em> As specified by the move / rename operation.</li>
+</ul>
+<p>Because the inode's ID is unchanged, all dependent objects remain valid.</p>
+<h3 id="unlinking-files-and-directories">Unlinking files and directories</h3>
+<p>When a file or directory is unlinked from its parent directory, a deletion record for the unlinked inode gets written to flash.  The deletion record is an inode with the following properties:</p>
+<ul>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+<li><em>Parent inode ID:</em> NFFS_ID_NONE</li>
+</ul>
+<p>When an inode is unlinked, no deletion records need to be written for the inode's dependent objects (constituent data blocks or child inodes).  During the next file system detection, it is recognized that the objects belong to a deleted inode, so they are not restored into the RAM representation.</p>
+<p>If a file has an open handle at the time it gets unlinked, application code can continued to use the file handle to read and write data.  All files retain a reference count, and a file isn't deleted from the RAM representation until its reference code drops to 0.  Any attempt to open an unlinked file fails, even if the file is referenced by other file handles.</p>
+<h3 id="writing-to-a-file">Writing to a file</h3>
+<p>The following procedure is used whenever the application code writes to a file.  First, if the write operation specifies too much data to fit into a single block, the operation is split into several separate write operations.  Then, for each write operation:</p>
+<ol>
+<li>Determine which existing blocks the write operation overlaps (n = number of overwritten blocks).</li>
+<li>If <em>n = 0</em>, this is an append operation.  Write a data block with the following properties:<ul>
+<li><em>ID:</em> New unique value.</li>
+<li><em>Sequence number:</em> 0.</li>
+</ul>
+</li>
+<li>Else <em>(n &gt; 1)</em>, this write overlaps existing data.<ol>
+<li>For each block in <em>[1, 2, ... n-1]</em>, write a new block containing the updated contents.  Each new block supersedes the block it overwrites.  That is, each block has the following properties:<ul>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+</ul>
+</li>
+<li>Write the nth block.  The nth block includes all appended data, if any.  As with the other blocks, its ID is unchanged and its sequence number is incremented.</li>
+</ol>
+</li>
+</ol>
+<p>Appended data can only be written to the end of the file.  That is, "holes" are not supported.</p>
+<h1 id="garbage-collection">Garbage collection</h1>
+<p>When the file system is too full to accommodate a write operation, the system must perform garbage collection to make room.  The garbage collection procedure is described below:</p>
+<ul>
+<li>The non-scratch area with the lowest garbage collection sequence number is selected as the "source area."  If there are other areas with the same sequence number, the one with the smallest flash offset is selected. </li>
+<li>The source area's ID is written to the scratch area's header, transforming it into a non-scratch ID.  This former scratch area is now known as the "destination area."</li>
+<li>The RAM representation is exhaustively searched for collectible objects.  The following procedure is applied to each inode in the system:<ul>
+<li>If the inode is resident in the source area, copy the inode record to the destination area.</li>
+<li>If the inode is a file inode, walk the inode's list of data blocks, starting with the last block in the file.  Each block that is resident in the source area is copied to the destination area.  If there is a run of two or more blocks that are resident in the source area, they are consolidated and copied to the destination area as a single new block (subject to the maximum block size restriction).</li>
+</ul>
+</li>
+<li>The source area is reformatted as a scratch sector (i.e., is is fully erased, and its header is rewritten with an ID of 0xff).  The area's garbage collection sequence number is incremented prior to rewriting the header.  This area is now the new scratch sector.</li>
+</ul>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    <a href=../nffs_init/>
+        <span class="fa fa-arrow-left"></span>
+        Previous: nffs_init
+    </a>
+    
+    </li>
+    <li class="pull-right">
+    
+    <a href=../../otherfs/>
+        Next: Other File Systems
+        <span class="fa fa-arrow-right"></span>
+    </a>
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt (incubating) is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+                MyNewt is an effort undergoing incubation at The Apache Software Foundation (ASF), sponsored by the Apache Incubator. Incubation is required of all newly accepted projects until a further review indicates that the infrastructure, communications, and decision making process have stabilized in a manner consistent with other successful ASF projects. While incubation status is not necessarily a reflection of the completeness or stability of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+            </small>
+            <img src="/img/egg-logo2.png" alt="Apache Incubator" title="Apache Incubator">
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../../../js/highlight.pack.js"></script>
+        <script src="../../../../../js/base.js"></script>
+        <script src="../../../../../js/custom.js"></script>
+
+    </body>
+</html>
