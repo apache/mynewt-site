@@ -2,7 +2,10 @@
 
 A single command to do four steps - build a target, create-image, load image on a board, and start a debug session with the image on the board.
 
-**Note**: If the version number is omitted, the create-image step is skipped.
+**Note**: If the version number is omitted: 
+
+* The create-image step is skipped for a bootloader target.
+* You will be prompted to enter a version number for an application target.
 
 #### Usage: 
 
