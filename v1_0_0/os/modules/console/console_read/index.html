@@ -373,6 +373,17 @@
                 
   
   
+    <li ><a href="../../split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../bootloader/bootloader/">Bootloader</a>
   
   
@@ -401,6 +412,17 @@
   
   
     <li ><a href="../../hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../drivers/driver/">Drivers</a>
   
   
     </li>
@@ -452,7 +474,7 @@
                 
   
   
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
+    <li ><a href="../../json/json/">JSON</a>
   
   
     </li>
@@ -463,7 +485,7 @@
                 
   
   
-    <li ><a href="../../json/json/">JSON</a>
+    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -555,7 +577,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -591,12 +613,12 @@
                         </div>
                         
                             <h2 id="console_read"><font color="#F2853F" style="font-size:24pt"> console_read </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">  int
-  console_read(char *str, int cnt)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">console_read</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*str</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">*newline</span>)
 </pre></div>
 
 
-<p>Copies up to <em>cnt</em> bytes of received data to buffer pointed by <em>str</em>. Function tries to break the input into separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.</p>
+<p>Copies up to <code>cnt</code> bytes of received data to buffer pointed by <code>str</code>. Function tries to break the input into 
+separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -607,12 +629,16 @@
 </thead>
 <tbody>
 <tr>
-<td>str</td>
+<td><code>str</code></td>
 <td>Buffer where data is copied to.</td>
 </tr>
 <tr>
-<td>cnt</td>
+<td><code>cnt</code></td>
 <td>Maximum number of characters to copy.</td>
+</tr>
+<tr>
+<td><code>newline</code></td>
+<td>Pointer to an integer variable that is set to 1 when an newline character is received and set to 0 otherwise.</td>
 </tr>
 </tbody>
 </table>
@@ -620,22 +646,27 @@
 <p>Returns the number of characters copied. 0 if there was no data
 available, or if the first received character was '\n'.</p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void
-task1_loop(void *arg)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
+<span style="color: #000000">task1_loop</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    struct os_event *ev;
-    char rx_msg[128];
-    int rx_len;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
+    <span style="color: #A90D91">char</span> <span style="color: #000000">rx_msg</span>[<span style="color: #1C01CE">128</span>];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rx_len</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">newline</span>;
 
-    while (1) {
-        ev = os_eventq_get(&amp;task1_evq);
-        assert(ev);
-        if (ev-&gt;ev_type == CONS_EV_TYPE) {
-            rx_len = console_read(rx_msg, sizeof(rx_msg));
-            if (rx_len) {
-                    if (!strncmp(rx_msg, &quot;reset&quot;, rx_len)) {
-                            assert(0);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;task1_evq</span>);
+        <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span>);
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">ev-&gt;ev_type</span> <span style="color: #000000">==</span> <span style="color: #000000">CONS_EV_TYPE</span>) {
+            <span style="color: #000000">rx_len</span> <span style="color: #000000">=</span> <span style="color: #000000">console_read</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">rx_msg</span>), <span style="color: #000000">&amp;newline</span>);
+            <span style="color: #A90D91">if</span> (<span style="color: #000000">rx_len</span>) {
+                    <span style="color: #A90D91">if</span> (<span style="color: #000000">!strncmp</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #C41A16">&quot;reset&quot;</span>, <span style="color: #000000">rx_len</span>)) {
+                            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
                     }
+            }
+        }
+    }
+}    
 </pre></div>
                         
                         <div class="row">

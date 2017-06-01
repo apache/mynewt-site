@@ -292,7 +292,7 @@
   
   
     <li><a href="
-  ../../../faq/how_to_edit_docs/
+  ../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -351,7 +351,7 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 $ 
@@ -367,6 +367,11 @@ relies upon.</p>
 <li>
 <p><code>repository.apache-mynewt-core</code>: Defines the repository information for 
 the <code>apache-mynewt-core</code> repository.</p>
+</li>
+<li>
+<p><code>vers=1-latest</code>: Defines the repository version. This string will use the 
+latest stable version in the 'Master' github branch. To use the latest version in the 
+master branch, just change it to <code>vers=0-dev</code>. Note that this branch might not be stable. </p>
 </li>
 </ul>
 <p>Repositories are versioned collections of packages.  </p>
@@ -415,9 +420,6 @@ pkg.deps:
     they will inherit their functionality (header files, library definitions, etc.)</li>
 <li>APIs: Packages can export named APIs, and they can require that certain 
     APIs be present, in order to compile.</li>
-<li>Features: Packages can operate differently depending on what named features are 
-    present in the system.  Packages can also export features to the rest of the 
-    Mynewt system.</li>
 </ul>
 <p>Everything that newt knows about within a project's directory is a package.  This 
 makes it very clean and easy to write re-usable components, which can describe their 
@@ -436,41 +438,69 @@ of your project.  Most targets consist of: </p>
 </ul>
 <p>Targets can also have additional items specified, including: </p>
 <ul>
+<li><code>aflags</code>: Any additional assembler flags you might want to specify to the build.</li>
 <li><code>cflags</code>: Any additional compiler flags you might want to specify to the build.</li>
-<li><code>features</code>: Any system level features you want to enable.</li>
+<li><code>lflags</code>: Any additional linker flags you might want to specify to the build.</li>
 </ul>
 <p>In order to create and manipulate targets, the <em>newt</em> tool offers a set of helper commands,
 you can find more information about these by issuing:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target
-
-Usage: 
+<p>$ newt target</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">newt target
+Usage:
   newt target [flags]
   newt target [command]
 
-Available Commands: 
-  show        View target configuration variables
-  set         Set target configuration variable
+Available Commands:
+  config      View or populate a target&#39;s system configuration
+  copy        Copy target
   create      Create a target
   delete      Delete target
-  copy        Copy target
-  vars        Show variable names
-
-Flags:
-  -h, --help=false: help for target
+  dep         View target&#39;s dependency graph
+  revdep      View target&#39;s reverse-dependency graph
+  set         Set target configuration variable
+  show        View target configuration variables
 
 Global Flags:
-  -l, --loglevel=&quot;WARN&quot;: Log level, defaults to WARN.
-  -o, --outfile=&quot;&quot;: Filename to tee log output to
-  -q, --quiet=false: Be quiet; only display error output.
-  -s, --silent=false: Be silent; don&#39;t output anything.
-  -v, --verbose=false: Enable verbose output when executing commands.
+  -h, --help              Help for newt commands
+  -j, --jobs int          Number of concurrent build jobs (default 8)
+  -l, --loglevel string   Log level (default &quot;WARN&quot;)
+  -o, --outfile string    Filename to tee output to
+  -q, --quiet             Be quiet; only display error output
+  -s, --silent            Be silent; don&#39;t output anything
+  -v, --verbose           Enable verbose output when executing commands
 
-Additional help topics:
+Use &quot;newt target [command] --help&quot; for more information about a command.
 
-
-Use &quot;newt help [command]&quot; for more information about a command.
 $ 
 </pre></div>
+
+
+<h3 id="configuration">Configuration</h3>
+<p>There are a lot of configuration options available when building your application in MyNewt. System Configuration options are set in 
+a file called <code>syscfg.yml</code> and you will find these configuration files throughout the MyNewt packages. While you can edit these
+files directly to change some default settings, it is best to override the default settings in a <code>syscfg.yml</code> file in your project
+directory rather than editing the package configurations directly.</p>
+<p>To see all <strong>all</strong> the system configuration settings, simply type</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target config show &lt;target-name&gt;
+...
+* PACKAGE: sys/stats
+  * Setting: STATS_CLI
+    * Description: Expose the &quot;stat&quot; shell command.
+    * Value: 0
+  * Setting: STATS_NAMES
+    * Description: Include and report the textual name of each statistic.
+    * Value: 0
+  * Setting: STATS_NEWTMGR
+    * Description: Expose the &quot;stat&quot; newtmgr command.
+    * Value: 0
+...
+$
+</pre></div>
+
+
+<p>Keep in mind that this will only show the configuration options for any packages that are included in your applicaiton. </p>
+<p>If you really want to see <strong>all</strong> the available configuration options, you can go rough each package and look at the
+<code>syscfg.yml</code> file in each. </p>
                         
                         <div class="row">
                             
@@ -480,9 +510,9 @@ $
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../project_create/>
+    <a href=../serial_access/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Create Your First Project
+        Previous: Serial Port Setup
     </a>
     
     </li>

@@ -262,8 +262,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -285,7 +285,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -458,6 +469,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -486,6 +508,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -537,7 +570,7 @@
                 
   
   
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
+    <li ><a href="../../../modules/json/json/">JSON</a>
   
   
     </li>
@@ -548,7 +581,7 @@
                 
   
   
-    <li ><a href="../../../modules/json/json/">JSON</a>
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -640,7 +673,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -684,12 +717,12 @@
 <p>Time unit when arming the timer is OS ticks. This rate of this ticker depends on the platform this is running on. You should use OS define <em>OS_TICKS_PER_SEC</em> to convert wallclock time to OS  ticks.</p>
 <p>Callout timer fires out just once. For periodic timer type of operation you need to rearm it once it fires.</p>
 <h3 id="data-structures">Data structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct os_callout {
-    struct os_event c_ev;
-    struct os_eventq *c_evq;
-    uint32_t c_ticks;
-    TAILQ_ENTRY(os_callout) c_next;
-};
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> {
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">c_ev</span>;
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*c_evq</span>;
+        <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">c_ticks</span>;
+        <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">os_callout</span>) <span style="color: #000000">c_next</span>;
+    };
 </pre></div>
 
 
@@ -702,28 +735,28 @@
 </thead>
 <tbody>
 <tr>
-<td>c_ev</td>
+<td><code>c_ev</code></td>
 <td>Event structure of this callout</td>
 </tr>
 <tr>
-<td>c_evq</td>
+<td><code>c_evq</code></td>
 <td>Event queue where this callout is placed on timer expiry</td>
 </tr>
 <tr>
-<td>c_ticks</td>
+<td><code>c_ticks</code></td>
 <td>OS tick amount when timer fires</td>
 </tr>
 <tr>
-<td>c_next</td>
+<td><code>c_next</code></td>
 <td>Linkage to other unexpired callouts</td>
 </tr>
 </tbody>
 </table>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct os_callout_func {
-    struct os_callout cf_c;
-    os_callout_func_t cf_func;
-    void *cf_arg;
-};
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout_func</span> {
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">cf_c</span>;
+        <span style="color: #A90D91">os_callout_func_t</span> <span style="color: #000000">cf_func</span>;
+        <span style="color: #A90D91">void</span> <span style="color: #000000">*cf_arg</span>;
+    };
 </pre></div>
 
 
@@ -736,15 +769,15 @@
 </thead>
 <tbody>
 <tr>
-<td>cf_c</td>
+<td><code>cf_c</code></td>
 <td>struct os_callout. See above</td>
 </tr>
 <tr>
-<td>cf_func</td>
+<td><code>cf_func</code></td>
 <td>Function pointer which should be called by event queue processing</td>
 </tr>
 <tr>
-<td>cf_arg</td>
+<td><code>cf_arg</code></td>
 <td>Generic void * argument to that function</td>
 </tr>
 </tbody>

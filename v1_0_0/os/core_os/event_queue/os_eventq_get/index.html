@@ -262,8 +262,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -285,7 +285,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -319,7 +330,7 @@
   
   
     <li><a href="
-  ./
+  ../os_eventq_init/
 ">Functions</a>
   
   
@@ -327,8 +338,8 @@
           
               
                 
-    <li class="active">
-      <a href="./">os_eventq_get</a>
+    <li >
+      <a href="../os_eventq_init/">os_eventq_init</a>
     </li>
 
               
@@ -336,7 +347,15 @@
               
                 
     <li >
-      <a href="../os_eventq_init/">os_eventq_init</a>
+      <a href="../os_eventq_inited/">os_eventq_inited</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">os_eventq_get</a>
     </li>
 
               
@@ -353,6 +372,30 @@
                 
     <li >
       <a href="../os_eventq_remove/">os_eventq_remove</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../os_eventq_dflt_get/">os_eventq_dflt_get</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../os_eventq_designate/">os_eventq_designate</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../os_eventq_run/">os_eventq_run</a>
     </li>
 
               
@@ -494,6 +537,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -522,6 +576,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -573,7 +638,7 @@
                 
   
   
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
+    <li ><a href="../../../modules/json/json/">JSON</a>
   
   
     </li>
@@ -584,7 +649,7 @@
                 
   
   
-    <li ><a href="../../../modules/json/json/">JSON</a>
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -676,7 +741,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -699,7 +764,7 @@
         
       
         
-          <li>&raquo; Functions</li>
+          <li>&raquo; <a href="../os_eventq_init/">Functions</a></li>
         
       
       
@@ -712,12 +777,13 @@
                         </div>
                         
                             <h2 id="os_eventq_get"><font color="#F2853F" style="font-size:24pt"> os_eventq_get</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*</span>
 <span style="color: #000000">os_eventq_get</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>)
 </pre></div>
 
 
-<p>Fetches the first event from a queue. Task will sleep until something gets queued.</p>
+<p>Dequeues and returns an event from the head of an event queue. When the event queue is empty, 
+the function puts the task into the <code>sleeping</code> state.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -728,23 +794,28 @@
 </thead>
 <tbody>
 <tr>
-<td>evq</td>
-<td>Queue to wait on</td>
+<td><code>evq</code></td>
+<td>Event queue to retrieve the event from</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
-<p>Will return with a pointer to first <em>struct event</em> which is in the queue.</p>
+<p>A pointer to the <code>os_event</code> structure for the event dequeued from the queue. </p>
 <h4 id="notes">Notes</h4>
+<p>In most cases, you do not need to call this function directly. You should call the <code>os_eventq_run()</code> wrapper
+function that calls this function to retrieve an event and then calls the callback function to process the event.   </p>
 <h4 id="example">Example</h4>
-<p>Main loop of an example task.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;task1_evq</span>);
-        <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">ev-&gt;ev_type</span> <span style="color: #000000">==</span> <span style="color: #000000">CONS_EV_TYPE</span>) {
-            <span style="color: #177500">/* XXX do stuff */</span>
-        }
-    }
+<p>Example of the <code>os_eventq_run()</code> wrapper function that calls this function:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
+<span style="color: #000000">os_eventq_run</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>)
+{
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
+
+    <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">evq</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">ev-&gt;ev_cb</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
+
+    <span style="color: #000000">ev-&gt;ev_cb</span>(<span style="color: #000000">ev</span>);
+}
 </pre></div>
                         
                         <div class="row">
@@ -755,16 +826,16 @@
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../event_queue/>
+    <a href=../os_eventq_inited/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Event Queues
+        Previous: os_eventq_inited
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../os_eventq_init/>
-        Next: os_eventq_init
+    <a href=../os_eventq_put/>
+        Next: os_eventq_put
         <span class="fa fa-arrow-right"></span>
     </a>
     

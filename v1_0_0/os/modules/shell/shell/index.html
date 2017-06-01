@@ -295,7 +295,7 @@
   
   
     <li><a href="
-  ../shell_task_init/
+  ../shell_cmd_register/
 ">Functions</a>
   
   
@@ -304,6 +304,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../split/split/">Split Images</a>
+  
   
     </li>
 
@@ -341,6 +352,17 @@
   
   
     <li ><a href="../../hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../drivers/driver/">Drivers</a>
   
   
     </li>
@@ -392,7 +414,7 @@
                 
   
   
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
+    <li ><a href="../../json/json/">JSON</a>
   
   
     </li>
@@ -403,7 +425,7 @@
                 
   
   
-    <li ><a href="../../json/json/">JSON</a>
+    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -495,7 +517,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -529,36 +551,54 @@
                         </div>
                         
                             <h1 id="shell">Shell</h1>
-<p>The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing newtmgr line protocol over serial line. Shell runs on its own task.</p>
+<p>The shell runs above the console and provides two functionalities:</p>
+<ul>
+<li>Processes console input. </li>
+<li>Implements the <a href="../../../../newtmgr/overview/">newtmgr</a> line protocol over serial transport. </li>
+</ul>
+<p>The <code>sys/shell</code> package implements the shell.  The shell uses the OS default event queue 
+for shell events and runs in the context of the main task. An application can, optionally, 
+specify a dedicated event queue for the shell to use.</p>
 <h3 id="description">Description</h3>
 <ul>
 <li>
-<p>Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.</p>
-<p>Subsystems register their command handlers using <code>shell_cmd_register()</code>. When shell calls the command handler, it passes the other tokens as arguments.</p>
-<p>A few commands are currently available in the shell - <code>tasks</code>, <code>log</code>, and <code>stat stat</code>. A $ prompt sign will be coming soon!</p>
+<p>The shell's first job is to direct incoming commands to other subsystems. It parses the incoming character string 
+into tokens and uses the first token to determine the subsystem command handler to call to process the command.</p>
+<ul>
+<li>
+<p>Subsystems register their command handlers using the <code>shell_cmd_register()</code> 
+  function.  When shell calls the command handler, it passes the other tokens as arguments.</p>
 </li>
 <li>
-<p>Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using <code>shell_nlip_input_register()</code>, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using <code>shell_nlip_output()</code>.</p>
+<p>A few commands are currently available in the shell - <code>tasks</code>, <code>log</code>, <code>echo</code>, <code>date</code> and <code>prompt</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>The shell's second job is to handle packet framing, encoding, and decoding of newtmgr protocol messages that are
+sent over the console.  The Newtmgr serial transport package (<code>mgmt/newtmgr/transport/newtmgr_shell</code>) 
+calls the <code>shell_nlip_input_register()</code> function to register a handler that the shell calls when it 
+receives newtmgr request messages.</p>
 </li>
 </ul>
 <p><br></p>
 <p>Create a sim target to check out these commands available in shell.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">user@~/dev/larva$ newt target create blinky_sim
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">user@~/dev$ newt target create blinky_sim
 Creating target blinky_sim
 Target blinky_sim successfully created!
-user@~/dev/larva$ newt target set blinky_sim name=blinky_sim
+user@~/dev$ newt target set blinky_sim name=blinky_sim
 Target blinky_sim successfully set name to blinky_sim
-user@~/dev/larva$ newt target set blinky_sim arch=sim
+user@~/dev$ newt target set blinky_sim arch=sim
 Target blinky_sim successfully set arch to sim
-user@~/dev/larva$ newt target set blinky_sim project=blinky
+user@~/dev$ newt target set blinky_sim project=blinky
 Target blinky_sim successfully set project to blinky
-user@~/dev/larva$ newt target set blinky_sim bsp=hw/bsp/native
+user@~/dev$ newt target set blinky_sim bsp=hw/bsp/native
 Target blinky_sim successfully set bsp to hw/bsp/native
-user@~/dev/larva$ newt target set blinky_sim compiler_def=debug
+user@~/dev$ newt target set blinky_sim compiler_def=debug
 Target blinky_sim successfully set compiler_def to debug
-user@~/dev/larva$ newt target set blinky_sim compiler=sim
+user@~/dev$ newt target set blinky_sim compiler=sim
 Target blinky_sim successfully set compiler to sim
-user@~/dev/larva$ newt target show
+user@~/dev$ newt target show
 blinky_sim
     arch: sim
     bsp: hw/bsp/native
@@ -566,7 +606,7 @@ blinky_sim
     compiler_def: debug
     name: blinky_sim
     project: blinky
-user@~/dev/larva$ newt target build blinky_sim
+user@~/dev$ newt target build blinky_sim
 Building target blinky_sim (project = blinky)
 Compiling case.c
 Compiling suite.c
@@ -577,7 +617,7 @@ Building project blinky
 Linking blinky.elf
 Successfully run!
 
-user@~/dev/larva$ ./project/blinky/bin/blinky_sim/blinky.elf
+user@~/dev$ ./project/blinky/bin/blinky_sim/blinky.elf
 uart0 at /dev/ttys005
 </pre></div>
 
@@ -605,17 +645,21 @@ tasks
 217953:  os_sanity (prio: 254, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
 218010:  task2 (prio: 2, nw: 217709, flags: 0x3, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
 
-stat stat
-229881:s0: 1
+
+prompt
+Usage: prompt [set|show] [prompt_char]
+prompt set &gt;
+Prompt set to: &gt;
+229370: &gt;
 </pre></div>
 
 
 <h3 id="data-structures">Data structures</h3>
 <p>This data structure is used in holding information about registered command handlers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct shell_cmd {
-    char *sc_cmd;
-    shell_cmd_func_t sc_cmd_func;
-    STAILQ_ENTRY(shell_cmd) sc_next;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">shell_cmd</span> {
+    <span style="color: #A90D91">char</span> <span style="color: #000000">*sc_cmd</span>;
+    <span style="color: #A90D91">shell_cmd_func_t</span> <span style="color: #000000">sc_cmd_func</span>;
+    <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">shell_cmd</span>) <span style="color: #000000">sc_next</span>;
 };
 </pre></div>
 
@@ -629,15 +673,15 @@ stat stat
 </thead>
 <tbody>
 <tr>
-<td>sc_cmd</td>
+<td><code>sc_cmd</code></td>
 <td>Character string of the command</td>
 </tr>
 <tr>
-<td>sc_cmd_func</td>
+<td><code>sc_cmd_func</code></td>
 <td>Pointer to the command handler</td>
 </tr>
 <tr>
-<td>sc_next</td>
+<td><code>sc_next</code></td>
 <td>Bookkeeping linkage internal for shell</td>
 </tr>
 </tbody>
@@ -654,10 +698,6 @@ stat stat
 </thead>
 <tbody>
 <tr>
-<td><a href="../shell_task_init/">shell_task_init</a></td>
-<td>Initializes the shell package. This creates a task for shell, and registers few commands on its own.</td>
-</tr>
-<tr>
 <td><a href="../shell_cmd_register/">shell_cmd_register</a></td>
 <td>Registers a handler for incoming console commands.</td>
 </tr>
@@ -668,6 +708,10 @@ stat stat
 <tr>
 <td><a href="../shell_nlip_output/">shell_nlip_output</a></td>
 <td>Queue outgoing newtmgr message for transmission.</td>
+</tr>
+<tr>
+<td><a href="../shell_evq_set/">shell_evq_set</a></td>
+<td>Specifies a dedicated event queue for shell events.</td>
 </tr>
 </tbody>
 </table>
@@ -688,8 +732,8 @@ stat stat
     </li>
     <li class="pull-right">
     
-    <a href=../shell_task_init/>
-        Next: shell_task_init
+    <a href=../shell_cmd_register/>
+        Next: shell_cmd_register
         <span class="fa fa-arrow-right"></span>
     </a>
     

@@ -294,6 +294,17 @@
                 
   
   
+    <li ><a href="../../split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../bootloader/bootloader/">Bootloader</a>
   
   
@@ -330,14 +341,6 @@
           
               
                 
-    <li >
-      <a href="../hal_architecture/">Architecture</a>
-    </li>
-
-              
-          
-              
-                
   
   
     <li><a href="
@@ -366,6 +369,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../drivers/driver/">Drivers</a>
+  
   
     </li>
 
@@ -416,7 +430,7 @@
                 
   
   
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
+    <li ><a href="../../json/json/">JSON</a>
   
   
     </li>
@@ -427,7 +441,7 @@
                 
   
   
-    <li ><a href="../../json/json/">JSON</a>
+    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -519,7 +533,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -557,66 +571,8 @@
                             <h1 id="using-hal-in-your-libraries">Using HAL in Your Libraries</h1>
 <p>This page describes the recommended way to implement libraries that 
 utilize HAL functionality.</p>
-<p>Consider the light switch example from the <a href="../hal/">HAL overview</a> page.</p>
-<p>The light switch module needs a GPIO pin to set
-the light switch to on or off.  The module declares that the GPIO to 
-control the light switch is declared elsewhere in one of two methods.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   extern const int light_switch_gpio;
-</pre></div>
-
-
-<p>or</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    extern int bsp_light_app_get_light_gpio();
-</pre></div>
-
-
-<p>Which method a library uses 
-(extern const versus function) depends on what functionality the library
-might wish to declare.  The <code>extern const</code> model uses the smallest code 
-footprint, but since its constant cannot be changed at runtime (based on 
-the configuration of the device say).  The <code>extern function</code> call requires
-the BSP to implement a function which allows flexibility to assign the 
-GPIO for the light switch to be determined at runtime with a small expense of
-slightly more code.</p>
-<p>Then the <code>libs/light</code> would go on to use the specified GPIO during its runtime
-execution. For example this shows both ways the library could interface to the 
-bsp to get the right GPIO:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void light_on(void) {
-        . . .
-        /* finally time to turn the light on */
-        hal_gpio_set(light_switch_gpio);
-    }
-
-    void light_on(void) {
-        . . .
-        int pin = bsp_light_app_get_light_gpio();
-        /* finally time to turn the light on */
-        hal_gpio_set(pin);
-    }
-</pre></div>
-
-
-<p>When you library user includes <code>libs/light</code> as a dependency and then builds
-with <strong>newt</strong>, they will get an unresolved external for either <code>light_switch_gpio</code> 
-or <code>bsp_light_app_get_light_gpio()</code> and will need to add to their BSP.</p>
-<p>In their BSP, they can add </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   const int light_switch_gpio = 5;
-</pre></div>
-
-
-<p>or</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   int bsp_light_app_get_light_gpio(void) {
-        return my_configured_lightswitch_io();
-   }
-</pre></div>
-
-
-<p>So where did the number <code>5</code> come from.  Their BSP already includes the specific
-MCU that they are using. And their <code>mcu/xxx/hal_gpio.c</code> already defines 
-the mapping between physical pins and the virtual device ids.  </p>
-<p>The user can determine (when writing code) from their boards physical pinmap 
-and from the <code>hal_gpio.c</code> MCU mapping which virtual device_id corresponds 
-to the correct physical pin in their system.</p>
+<p>An example of the GPIO HAL being used by a driver for a UART bitbanger that programs the start bit, data bits, and stop bit can be seen in <a href="https://github.com/apache/incubator-mynewt-core/blob/master/hw/drivers/uart/uart_bitbang/src/uart_bitbang.c">hw/drivers/uart/uart_bitbang/src/uart_bitbang.c</a></p>
+<p>An example of the flash HAL being used by a file sytem can be seen in <a href="https://github.com/apache/incubator-mynewt-core/blob/master/fs/nffs/src/nffs_flash.c">fs/nffs/src/nffs_flash.c</a>.</p>
                         
                         <div class="row">
                             
@@ -626,9 +582,9 @@ to the correct physical pin in their system.</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../hal_uart/hal_uart/>
+    <a href=../hal_watchdog/hal_watchdog/>
         <span class="fa fa-arrow-left"></span>
-        Previous: UART
+        Previous: Watchdog
     </a>
     
     </li>

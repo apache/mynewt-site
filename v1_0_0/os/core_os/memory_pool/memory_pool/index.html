@@ -262,8 +262,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -285,7 +285,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -458,6 +469,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -486,6 +508,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -537,7 +570,7 @@
                 
   
   
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
+    <li ><a href="../../../modules/json/json/">JSON</a>
   
   
     </li>
@@ -548,7 +581,7 @@
                 
   
   
-    <li ><a href="../../../modules/json/json/">JSON</a>
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -640,7 +673,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -684,7 +717,7 @@
 <p><br>
 The next order of business is to allocate the memory used by the memory pool. This memory can either be statically allocated (i.e. a global variable) or dynamically allocated (i.e. from the heap). When determining the amount of memory required for the memory pool, simply multiplying the number of blocks by the size of each block is not sufficient as the OS may have alignment requirements. The alignment size definition is named <code>OS_ALIGNMENT</code> and can be found in os_arch.h as it is architecture specific. The memory block alignment is usually for efficiency but may be due to other reasons. Generally, blocks are aligned on 32-bit boundaries. Note that memory blocks must also be of sufficient size to hold a list pointer as this is needed to chain memory blocks on the free list.</p>
 <p>In order to simplify this for the user two macros have been provided: <code>OS_MEMPOOL_BYTES(n, blksize)</code> and <code>OS_MEMPOOL_SIZE(n, blksize)</code>. The first macro returns the number of bytes needed for the memory pool while the second returns the number of <code>os_membuf_t</code> elements required by the memory pool. The <code>os_membuf_t</code> type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary. </p>
-<p>Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).</p>
+<p>Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. <code>OS_ALIGNMENT</code>).</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> <span style="color: #000000">*my_memory_buffer</span>;
 <span style="color: #000000">my_memory_buffer</span> <span style="color: #000000">=</span> <span style="color: #000000">malloc</span>(<span style="color: #000000">OS_MEMPOOL_BYTES</span>(<span style="color: #000000">NUM_BLOCKS</span>, <span style="color: #000000">BLOCK_SIZE</span>));
 </pre></div>
@@ -708,10 +741,19 @@ Once the memory pool has been initialized the developer can allocate memory bloc
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_block_size</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_num_blocks</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_num_free</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">mp_min_free</span>;
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">mp_membuf_addr</span>;
     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_mempool</span>) <span style="color: #000000">mp_list</span>;    
     <span style="color: #000000">SLIST_HEAD</span>(,<span style="color: #000000">os_memblock</span>);
     <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
+};
+
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool_info</span> {
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_block_size</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_num_blocks</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_num_free</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_min_free</span>;
+    <span style="color: #A90D91">char</span> <span style="color: #000000">omi_name</span>[<span style="color: #000000">OS_MEMPOOL_INFO_NAME_LEN</span>];
 };
 </pre></div>
 
@@ -736,6 +778,10 @@ Once the memory pool has been initialized the developer can allocate memory bloc
 <tr>
 <td>mp_num_free</td>
 <td>Number of free blocks left</td>
+</tr>
+<tr>
+<td>mp_min_free</td>
+<td>Lowest number of free blocks seen</td>
 </tr>
 <tr>
 <td>mp_membuf_addr</td>
@@ -776,6 +822,10 @@ Once the memory pool has been initialized the developer can allocate memory bloc
 <tr>
 <td><a href="../os_memblock_put">os_memblock_put</a></td>
 <td>Releases previously allocated element back to the pool.</td>
+</tr>
+<tr>
+<td><a href="../os_mempool_info_get_next">os_mempool_info_get_next</a></td>
+<td>Retrieves memory pool information for the next memory pool.</td>
 </tr>
 <tr>
 <td><a href="../OS_MEMPOOL_BYTES">OS_MEMPOOL_BYTES</a></td>

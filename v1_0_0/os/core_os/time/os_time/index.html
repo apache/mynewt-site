@@ -262,8 +262,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -285,7 +285,18 @@
                 
   
   
-    <li class="active"><a href="./">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li class="active"><a href="./">OS Time</a>
   
   
     <ul>
@@ -297,7 +308,7 @@
   
   
     <li><a href="
-  ../os_time_delay/
+  ../os_time_advance/
 ">Functions</a>
   
   
@@ -458,6 +469,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -486,6 +508,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -537,7 +570,7 @@
                 
   
   
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
+    <li ><a href="../../../modules/json/json/">JSON</a>
   
   
     </li>
@@ -548,7 +581,7 @@
                 
   
   
-    <li ><a href="../../../modules/json/json/">JSON</a>
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -640,7 +673,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -663,7 +696,7 @@
         
       
         
-          <li>&raquo; Time</li>
+          <li>&raquo; OS Time</li>
         
       
       
@@ -682,26 +715,31 @@
 <h2 id="data-structures">Data Structures</h2>
 <p>Time is stored in Mynewt as an <code>os_time_t</code> value. </p>
 <p>Wallclock time is represented using the <code>struct os_timeval</code> and <code>struct os_timezone</code> tuple.</p>
-<p><code>struct os_timeval</code> represents the number of seconds elapsed since 00:00:00 Jan 1, 1970 UTC.
-<pre>
-struct os_timeval {
-    int64_t tv_sec;  /<em> seconds since Jan 1 1970 UTC </em>/
-    int32_t tv_usec; /<em> fractional seconds </em>/
-};</p>
-<p>struct os_timeval tv = { 1457400000, 0 };  /<em> 01:20:00 Mar 8 2016 UTC </em>/
-</pre></p>
-<p><code>struct os_timezone</code> is used to specify the offset of local time from UTC and whether daylight savings is in effect. Note that <code>tz_minuteswest</code> is a positive number if the local time is <em>behind</em> UTC and a negative number if the local time is <em>ahead</em> of UTC.
-<pre>
-struct os_timezone {
-    int16_t tz_minuteswest;
-    int16_t tz_dsttime;
-};</p>
-<p>/<em> Pacific Standard Time is 08:00 hours west of UTC </em>/
-struct os_timezone PST = { 480, 0 };
-struct os_timezone PDT = { 480, 1 };</p>
-<p>/<em> Indian Standard Time is 05:30 hours east of UTC </em>/
-struct os_timezone IST = { -330, 0 };
-</pre></p>
+<p><code>struct os_timeval</code> represents the number of seconds elapsed since the epoch (00:00:00 Jan 1, 1970 UTC).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_timeval</span> {
+    <span style="color: #A90D91">int64_t</span> <span style="color: #000000">tv_sec</span>;  <span style="color: #177500">/* seconds since Jan 1 1970 UTC */</span>
+    <span style="color: #A90D91">int32_t</span> <span style="color: #000000">tv_usec</span>; <span style="color: #177500">/* fractional seconds */</span>
+};
+
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_timeval</span> <span style="color: #000000">tv</span> <span style="color: #000000">=</span> { <span style="color: #1C01CE">1457400000</span>, <span style="color: #1C01CE">0</span> };  <span style="color: #177500">/* 01:20:00 Mar 8 2016 UTC */</span>
+</pre></div>
+
+
+<p><code>struct os_timezone</code> is used to specify the offset of local time from UTC and whether daylight savings is in effect. Note that <code>tz_minuteswest</code> is a positive number if the local time is <em>behind</em> UTC and a negative number if the local time is <em>ahead</em> of UTC.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_timezone</span> {
+    <span style="color: #A90D91">int16_t</span> <span style="color: #000000">tz_minuteswest</span>;
+    <span style="color: #A90D91">int16_t</span> <span style="color: #000000">tz_dsttime</span>;
+};
+
+<span style="color: #177500">/* Pacific Standard Time is 08:00 hours west of UTC */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_timezone</span> <span style="color: #000000">PST</span> <span style="color: #000000">=</span> { <span style="color: #1C01CE">480</span>, <span style="color: #1C01CE">0</span> };
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_timezone</span> <span style="color: #000000">PDT</span> <span style="color: #000000">=</span> { <span style="color: #1C01CE">480</span>, <span style="color: #1C01CE">1</span> };
+
+<span style="color: #177500">/* Indian Standard Time is 05:30 hours east of UTC */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_timezone</span> <span style="color: #000000">IST</span> <span style="color: #000000">=</span> { <span style="color: #000000">-</span><span style="color: #1C01CE">330</span>, <span style="color: #1C01CE">0</span> };
+</pre></div>
+
+
 <h2 id="list-of-functions">List of Functions</h2>
 <p>The functions available in time are:</p>
 <table>
@@ -713,6 +751,10 @@ struct os_timezone IST = { -330, 0 };
 </thead>
 <tbody>
 <tr>
+<td><a href="../os_time_advance/">os_time_advance</a></td>
+<td>Increments the OS time tick for the system.</td>
+</tr>
+<tr>
 <td><a href="../os_time_delay/">os_time_delay</a></td>
 <td>Put the current task to sleep for the given number of ticks.</td>
 </tr>
@@ -721,16 +763,20 @@ struct os_timezone IST = { -330, 0 };
 <td>Get the current value of OS time.</td>
 </tr>
 <tr>
-<td><a href="../os_time_tick/">os_time_tick</a></td>
-<td>Increments the OS time tick for the system.</td>
+<td><a href="../os_time_ms_to_ticks/">os_time_ms_to_ticks</a></td>
+<td>Converts milliseconds to os ticks.</td>
 </tr>
 <tr>
-<td><a href="../os_settimeofday/">os_settimeofday</a></td>
-<td>Set the current time of day to the given time structs.</td>
+<td><a href="../os_get_uptime_usec/">os_get_uptime_usec</a></td>
+<td>Gets the time duration since boot.</td>
 </tr>
 <tr>
 <td><a href="../os_gettimeofday/">os_gettimeofday</a></td>
 <td>Populate the given timeval and timezone structs with current time data.</td>
+</tr>
+<tr>
+<td><a href="../os_settimeofday/">os_settimeofday</a></td>
+<td>Set the current time of day to the given time structs.</td>
 </tr>
 </tbody>
 </table>
@@ -761,16 +807,16 @@ struct os_timezone IST = { -330, 0 };
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../context_switch/os_sched_wakeup/>
+    <a href=../../cputime/os_cputime_usecs_to_ticks/>
         <span class="fa fa-arrow-left"></span>
-        Previous: os_sched_wakeup
+        Previous: os_cputime_usecs_to_ticks
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../os_time_delay/>
-        Next: os_time_delay
+    <a href=../os_time_advance/>
+        Next: os_time_advance
         <span class="fa fa-arrow-right"></span>
     </a>
     

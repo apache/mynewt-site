@@ -373,6 +373,17 @@
                 
   
   
+    <li ><a href="../../split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../bootloader/bootloader/">Bootloader</a>
   
   
@@ -401,6 +412,17 @@
   
   
     <li ><a href="../../hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../drivers/driver/">Drivers</a>
   
   
     </li>
@@ -452,7 +474,7 @@
                 
   
   
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
+    <li ><a href="../../json/json/">JSON</a>
   
   
     </li>
@@ -463,7 +485,7 @@
                 
   
   
-    <li ><a href="../../json/json/">JSON</a>
+    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -555,7 +577,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -591,13 +613,15 @@
                         </div>
                         
                             <h2 id="console_init"><font color="#F2853F" style="font-size:24pt"> console_init </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   int
-   console_init(console_rx_cb rx_cb)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">console_init</span>(<span style="color: #000000">console_rx_cb</span> <span style="color: #000000">rx_cb</span>)
 </pre></div>
 
 
-<p>Initializes console receive buffer and calls hal funtions <code>hal_uart_init_cbs</code> and <code>hal_uart_config</code> to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
-<p>Caller registers a function pointer of <code>type void (*console_rx_cb)(int full_line)</code>. This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.</p>
+<p>Initializes the console receive buffer and calls hal funtions <code>hal_uart_init_cbs</code> and <code>hal_uart_config</code> to 
+initialize the serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
+<p>Caller registers a function pointer of <code>type void (*console_rx_cb)(int full_line)</code>. This function will be 
+called when the console receives either a) full line of data or b) when RX buffer in console is full. 
+Note that this function is most likely getting called from an interrupt context.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -608,8 +632,8 @@
 </thead>
 <tbody>
 <tr>
-<td>rx_cb</td>
-<td>Function pointer, which gets called input is received.</td>
+<td><code>rx_cb</code></td>
+<td>Function pointer, which gets called when input is received.</td>
 </tr>
 </tbody>
 </table>
@@ -617,15 +641,15 @@
 <p>Returns 0 on success.
 Non-zero if HAL UART function calls fail.</p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">int
-main(int argc, char **argv)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
     ....
 
-    /* Init tasks */
-    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,
-                         SHELL_MAX_INPUT_LEN);
-    console_init(shell_console_rx_cb);
+    <span style="color: #177500">/* Init tasks */</span>
+    <span style="color: #000000">shell_task_init</span>(<span style="color: #000000">SHELL_TASK_PRIO</span>, <span style="color: #000000">shell_stack</span>, <span style="color: #000000">SHELL_TASK_STACK_SIZE</span>,
+                         <span style="color: #000000">SHELL_MAX_INPUT_LEN</span>);
+    <span style="color: #000000">console_init</span>(<span style="color: #000000">shell_console_rx_cb</span>);
 
     ....
 }

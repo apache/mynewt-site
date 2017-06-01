@@ -262,8 +262,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -304,7 +304,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -458,6 +469,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -486,6 +508,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -537,7 +570,7 @@
                 
   
   
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
+    <li ><a href="../../../modules/json/json/">JSON</a>
   
   
     </li>
@@ -548,7 +581,7 @@
                 
   
   
-    <li ><a href="../../../modules/json/json/">JSON</a>
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -640,7 +673,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -677,13 +710,13 @@
 <p>Scheduler's job is to maintain the list of tasks and decide which one should be running next.</p>
 <h2 id="description">Description</h2>
 <p>Task states can be <em>running</em>, <em>ready to run</em> or <em>sleeping</em>.</p>
-<p>When task is <em>running</em>, CPU is executing in that task's context. The program counter (PC) is pointing to instructions task wants to execute and stack pointer (SP) is pointing to task's stack.</p>
-<p>Task which is <em>ready to run</em> wants to get on the CPU to do its work.</p>
-<p>Task which is <em>sleeping</em> has no more work to do. It's waiting for someone else to wake it up.</p>
-<p>Scheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's t_prio field), and make its state <em>running</em>.</p>
-<p>Tasks which are either <em>running</em> or <em>ready to run</em> are kept in linked list <code>g_os_run_list</code>. This list is ordered by priority.</p>
-<p>Tasks which are <em>sleeping</em> are kept in linked list <code>g_os_sleep_list</code>.</p>
-<p>Scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be <em>running</em>. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently <em>running</em> task is stored and the new task is swapped in.</p>
+<p>When a task is <em>running</em>, the CPU is executing in that task's context. The program counter (PC) is pointing to instructions that task wants to execute and the stack pointer (SP) is pointing to that task's stack.</p>
+<p>A task which is <em>ready to run</em> wants to get on the CPU to do its work.</p>
+<p>A task which is <em>sleeping</em> has no more work to do. It's waiting for someone or something else to wake it up.</p>
+<p>The Scheduler algorithm is simple: from among the tasks which are ready to run, pick the the one with highest priority (lowest numeric value in task's <code>t_prio</code> field), and make its state <em>running</em>.</p>
+<p>Tasks which are either <em>running</em> or <em>ready to run</em> are kept in a linked list <code>g_os_run_list</code>. This list is ordered by priority.</p>
+<p>Tasks which are <em>sleeping</em> are kept in a linked list <code>g_os_sleep_list</code>.</p>
+<p>The scheduler has a CPU architecture specific component; this code is responsible for swapping in the task which should be <em>running</em>. This process is called context switch. During context switching the state of the CPU (e.g. registers) for the currently <em>running</em> task is stored and the new task is swapped in.</p>
 <h2 id="list-of-functions">List of Functions</h2>
 <p>The functions available in context_switch are:</p>
 <table>
@@ -700,7 +733,7 @@
 </tr>
 <tr>
 <td><a href="../os_arch_ctx_sw/">os_arch_ctx_sw</a></td>
-<td>Change the state of task given task to <em>running</em>.</td>
+<td>Change the state of a given task to <em>running</em>.</td>
 </tr>
 <tr>
 <td><a href="../os_sched_ctx_sw_hook/">os_sched_ctx_sw_hook</a></td>
@@ -708,11 +741,11 @@
 </tr>
 <tr>
 <td><a href="../os_sched_get_current_task/">os_sched_get_current_task</a></td>
-<td>Returns the pointer to task which is currently <em>running</em>.</td>
+<td>Returns the pointer to the task which is currently <em>running</em>.</td>
 </tr>
 <tr>
 <td><a href="../os_sched_insert/">os_sched_insert</a></td>
-<td>Insert task into scheduler's ready to run list.</td>
+<td>Insert a task into scheduler's <em>ready to run</em> list.</td>
 </tr>
 <tr>
 <td><a href="../os_sched_next_task/">os_sched_next_task</a></td>
@@ -721,6 +754,10 @@
 <tr>
 <td><a href="../os_sched_os_timer_exp/">os_sched_os_timer_exp</a></td>
 <td>Inform scheduler that OS time has moved forward.</td>
+</tr>
+<tr>
+<td><a href="../os_sched_remove/">os_sched_remove</a></td>
+<td>Stops a task and removes it from all the OS task lists.</td>
 </tr>
 <tr>
 <td><a href="../os_sched_resort/">os_sched_resort</a></td>

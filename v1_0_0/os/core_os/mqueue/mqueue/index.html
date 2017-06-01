@@ -262,8 +262,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -285,7 +285,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -495,6 +506,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -523,6 +545,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -574,7 +607,7 @@
                 
   
   
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
+    <li ><a href="../../../modules/json/json/">JSON</a>
   
   
     </li>
@@ -585,7 +618,7 @@
                 
   
   
-    <li ><a href="../../../modules/json/json/">JSON</a>
+    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
   
   
     </li>
@@ -677,7 +710,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -711,33 +744,43 @@
                         </div>
                         
                             <h1 id="mqueue">Mqueue</h1>
-<p>Mqueue (Mbuf event queue) is a set of API built on top of the mbuf and event queue code. A typical networking stack operation is to put a packet on a queue and post an event to the task handling that queue. Mqueue was designed to provide a common API so that individual packages would not each have to create similar code.</p>
-<p>The mqueue data structure consists of a queue head pointer (a "stailq" queue; a singly linked list with head structure having a pointer to the start and end of the list) and an os event structure. Packets (packet header mbufs) are added to the queue using the <em>omp_next</em> pointer in the <code>os_mbuf_pkthdr</code> structure of the mbuf. The event is used to post to the task an event of type OS_EVENT_T_MQUEUE_DATA. </p>
-<p><br>  </p>
+<p>The mqueue construct allows a task to wake up when it receives data.  Typically, this data is in the form of packets received over a network.  A common networking stack operation is to put a packet on a queue and post an event to the task monitoring that queue. When the task handles the event, it processes each packet on the packet queue.</p>
+<p><br></p>
 <h3 id="using-mqueue">Using Mqueue</h3>
-<p>The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call my_task_rx_data_func. Presumably, some other code will call this API. </p>
+<p>The following code sample demonstrates how to use an mqueue.  In this example:</p>
+<ul>
+<li>packets are put on a receive queue</li>
+<li>a task processes each packet on the queue (increments a receive counter)</li>
+</ul>
+<p>Not shown in the code example is a call <code>my_task_rx_data_func</code>. Presumably, some other code will call this API. </p>
 <p><br></p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">uint32_t</span> <span style="color: #000000">pkts_rxd</span>;
 <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> <span style="color: #000000">rxpkt_q</span>;
 <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">my_task_evq</span>;
 
+<span style="color: #177500">/**</span>
+<span style="color: #177500"> * Removes each packet from the receive queue and processes it.</span>
+<span style="color: #177500"> */</span>
 <span style="color: #A90D91">void</span>
 <span style="color: #000000">process_rx_data_queue</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>;
 
-    <span style="color: #177500">/* Drain all packets off queue and process them */</span>
     <span style="color: #A90D91">while</span> ((<span style="color: #000000">om</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mqueue_get</span>(<span style="color: #000000">&amp;rxpkt_q</span>)) <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>) {
         <span style="color: #000000">++pkts_rxd</span>;
         <span style="color: #000000">os_mbuf_free_chain</span>(<span style="color: #000000">om</span>);
     }
 }
 
+<span style="color: #177500">/**</span>
+<span style="color: #177500"> * Called when a packet is received.</span>
+<span style="color: #177500"> */</span>
 <span style="color: #A90D91">int</span>
 <span style="color: #000000">my_task_rx_data_func</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
+    <span style="color: #177500">/* Enqueue the received packet and wake up the listening task. */</span>
     <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mqueue_put</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #000000">&amp;my_task_evq</span>, <span style="color: #000000">om</span>);
     <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
         <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
@@ -759,18 +802,11 @@
     <span style="color: #177500">/* Initialize mqueue */</span>
     <span style="color: #000000">os_mqueue_init</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #A90D91">NULL</span>);
 
+    <span style="color: #177500">/* Process each event posted to our eventq.  When there are no events to</span>
+<span style="color: #177500">     * process, sleep until one arrives.</span>
+<span style="color: #177500">     */</span>
     <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;my_task_evq</span>);
-        <span style="color: #A90D91">switch</span> (<span style="color: #000000">ev-&gt;ev_type</span>) {
-
-        <span style="color: #A90D91">case</span> <span style="color: #000000">OS_EVENT_T_MQUEUE_DATA</span>:
-            <span style="color: #000000">process_rx_data_queue</span>();
-            <span style="color: #A90D91">break</span>;
-
-        <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
-            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
-            <span style="color: #A90D91">break</span>;
-        }
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">&amp;my_task_evq</span>);
     }
 }
 </pre></div>
