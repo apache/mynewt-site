@@ -100,7 +100,7 @@ As an example, we will query the running mynewt OS for the usage of its
 memory pools.  
 
 ```no-highlight
-    $ newtmgr -c sim1 mpstats
+    $ newtmgr -c sim1 mpstat
     Return Code = 0
                             name blksz  cnt free  min
                           msys_1   292   12   10   10

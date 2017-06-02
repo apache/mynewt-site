@@ -17,7 +17,7 @@ The system level management groups are listed in following table:
 </tt>
 <tr>
 <td>MGMT_GROUP_ID_DEFAULT</td>
-<td>```echo``` ```taskstats``` ```mpstats``` ```datetime``` ```reset```</td>
+<td>```echo``` ```taskstat``` ```mpstat``` ```datetime``` ```reset```</td>
 <td>mgmt/newtmgr/nmgr_os</td>
 </tr>
 <tr>

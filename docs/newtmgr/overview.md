@@ -17,11 +17,11 @@ Available Commands:
   fs          Access files on a device
   image       Manage images on a device
   log         Manage logs on a device
-  mpstats     Read memory pool statistics from a device
+  mpstat      Read memory pool statistics from a device
   reset       Send reset request to a device
   run         Run test procedures on a device
   stat        Read statistics from a device
-  taskstats   Read task statistics from a device
+  taskstat    Read task statistics from a device
 
 Flags:
   -c, --conn string       connection profile to use.

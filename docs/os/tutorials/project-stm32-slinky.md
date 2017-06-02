@@ -230,10 +230,10 @@ $
 
 
 <br>
-Run the `newtmgr taskstats -c stm32serial` command to display the task statistics on the board:
+Run the `newtmgr taskstat -c stm32serial` command to display the task statistics on the board:
 
 ```no-highlight
-$ newtmgr taskstats -c stm32serial
+$ newtmgr taskstat -c stm32serial
 Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
      task1   8   2        0       90      192      110        0        0

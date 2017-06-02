@@ -1,10 +1,10 @@
-## <font color="#F2853F" style="font-size:24pt">newtmgr taskstats </font>
+## <font color="#F2853F" style="font-size:24pt">newtmgr taskstat </font>
 Read task statistics from a device.
 
 #### Usage:
 
 ```no-highlight
-    newtmgr taskstats -c <conn_profile> [flags] 
+    newtmgr taskstat -c <conn_profile> [flags] 
 ```
 
 #### Global Flags:
@@ -33,12 +33,12 @@ Reads and displays the task statistics from a device. Newtmgr uses the `conn_pro
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------
-             | newtmgr taskstats<br>-c profile0 | Reads and displays the task statistics from a device. Newtmgr connects to the device over a connection specified in the `profile01` connection profile.
+             | newtmgr taskstat<br>-c profile0 | Reads and displays the task statistics from a device. Newtmgr connects to the device over a connection specified in the `profile01` connection profile.
 
 Here is an example output for the `myble` application from the [Enabling Newt Manager in any app](/os/tutorials/add_newtmgr.md) tutiorial:
 
 ```no-highlight
-newtmgr taskstats -c myserial 
+newtmgr taskstat -c myserial 
 Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
       idle 255   0   151917       47       64       34        0        0

@@ -210,10 +210,10 @@ $
 ```
 
 <br>
-Run the `newtmgr taskstats -c nrf52serial` command to display the task statistics on the board:
+Run the `newtmgr taskstat -c nrf52serial` command to display the task statistics on the board:
 
 ```no-highlight
-$ newtmgr taskstats -c nrf52serial
+$ newtmgr taskstat -c nrf52serial
 Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
      task1   8   2        0     1751      192      110        0        0
