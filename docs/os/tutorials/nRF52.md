@@ -1,8 +1,8 @@
-## Blinky, your "Hello World!", on nRF52
-This tutorial shows you how to create, build, and run the Blinky application on the nRF52 board.
+## Blinky, your "Hello World!", on a nRF52 Development Kit
+This tutorial shows you how to create, build, and run the Blinky application on a nRF52 Development Kit.
 <br>
 
-Note that there are several versions of the nRF52 in the market. The boards tested with this tutorial are listed under "Prerequisites".
+Note that there are several versions of the nRF52 Development Kit in the market. The boards tested with this tutorial are listed under "Prerequisites".
 
 <br>
 
@@ -10,8 +10,8 @@ Note that there are several versions of the nRF52 in the market. The boards test
 
 * Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a nRF52 Development Kit (one of the following)
-    * Dev Kit from Nordic - PCA 10040
-    * Eval Kit from Rigado - BMD-300-EVAL-ES
+    * Nordic nRF52-DK Development Kit - PCA 10040
+    * Rigado BMD-300 Evaluation Kit - BMD-300-EVAL-ES
 * Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
 
 This tutorial uses the Nordic nRF52-DK board.
