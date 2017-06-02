@@ -518,7 +518,8 @@
 
 
 <h4 id="available-commands">Available Commands:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    config      View or populate a target&#39;s system configuration settings
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    amend       Add, change, or delete values for multi-value target variables
+    config      View or populate a target&#39;s system configuration settings
     copy        Copy target
     create      Create a target
     delete      Delete target
@@ -551,6 +552,10 @@
 </thead>
 <tbody>
 <tr>
+<td>amend</td>
+<td>The amend command allows you to add, change, or delete values for multi-value target variables that you have set with the <code>newt target set</code> command. The format of the amend command is: <br>newt target amend &lt;target-name&gt; &lt;var-name=var-value&gt; [var-name=var-value...] <br>Specify the <code>-d</code> flag to delete values.<br><br>The following multi-value variables can be amended: <code>aflags</code>, <code>cflags</code>, <code>lflags</code>, <code>syscfg</code>. <br>The <code>var-value</code> format depends on the <code>var-name</code> as follows: <ul><li><code>aflags</code>, <code>cflags</code>, <code>lflags</code>: A string of flags, with each flag separated by a space. These variables are saved in the target's <code>pkg.yml</code> file.</li><li><code>syscfg</code>: The <code>syscfg</code> variable allows you to assign values to configuration settings in your target's <code>syscfg.yml</code> file. <br><br>The format is <code>syscfg=setting-name1=setting-value1[:setting-name2=setting-value2...]</code>,  where <code>setting-name1</code> is a configuration setting name and <code>setting-value1</code> is the value to assign to <code>setting-name1</code>. If <code>setting-value1</code> is not specified, the setting is set to value <code>1</code>.  You use a <code>:</code> to delimit each setting when you amend multiple settings.<br><br>To delete a system configuration setting, you only need to specify the setting name. For example, <code>syscfg=setting-name1:setting-name2</code> deletes configuration settings named <code>setting-name1</code> and <code>setting-name2</code>. </li></ul></td>
+</tr>
+<tr>
 <td>config</td>
 <td>The config command allows you to  view or populate a target's system configuration settings.  A target's system configuration settings include the settings of all the packages it includes. The settings for a package are listed in the package's <code>syscfg.yml</code> file. The <code>config</code> command has two subcommands: <code>show</code> and <code>init</code>.  <br><br> The config show &lt;target-name&gt; command displays the system configuration setting definitions and values for all the packages that the <code>target-name</code> target includes.  <br><br>The config init &lt;target-name&gt; command populates the target's <code>syscfg.yml</code> file with the system configuration values for all the packages that the <code>target-name</code> target includes.</td>
 </tr>
@@ -576,7 +581,7 @@
 </tr>
 <tr>
 <td>set</td>
-<td>The set &lt;target-name&gt; &lt;var-name=var-value&gt; [var-name=var-value...] command sets variables (attributes) for the &lt;target-name&gt;  target. The set command overwrites your current variable values. <br><br>The valid <code>var-name</code> values are: <code>app</code>, <code>bsp</code>, <code>loader</code>, <code>build_profile</code>, <code>cflags</code>, <code>lflags</code>, <code>aflags</code>, <code>syscfg</code>.  <br><br>The <code>var-value</code> format depends on the <code>var-name</code> as follows: <ul><li><code>app</code>, <code>bsp</code>, <code>loader</code>: @&lt;source-path&gt;, where <code>source-path</code> is the directory containing the application or bsp source. These variables are stored in the target's target.yml file. For a simulated target, e.g. for software testing purposes, set <code>bsp</code> to <code>@apache-mynewt-core/hw/bsp/native</code>.</li> <li><code>build_profile</code>: <code>optimized</code> or <code>debug</code></li><li><code>cflags</code>, <code>aflags</code>, <code>lflags</code>: A string of flags, with each flag separated by a space. These variables are saved in the target's <code>pkg.yml</code> file. </li><li><code>syscfg</code>: The <code>syscfg</code> variable allows you to assign values to configuration settings in your target's <code>syscfg.yml</code> file. <br>The format is <code>syscfg=setting-name1=setting-value1[:setting-name2=setting-value2...]</code>,  where <code>setting-name1</code> is a configuration setting name and <code>setting-value1</code> is the value to assign to <code>settingname1</code>. If <code>settingvalue1</code> is not specified, the setting is set to value <code>1</code>.  You use a <code>:</code> to delimit each setting when you set multiple settings. <br><strong>Warning</strong>: All existing setting values in the <code>syscfg.yml</code> file are deleted.  Only new settings that are specified in the command are saved in the <code>syscfg.yml</code> file.</li></ul>  You can specify <code>var-name=</code> or <code>var-name=""</code> to unset a variable value.<br><br>To display all the existing values for a target variable (attribute), you can run the <code>newt vals &lt;variable-name&gt;</code> command. For example, <code>newt vals app</code> displays the valid values available for the variable <code>app</code> for any target.</td>
+<td>The set &lt;target-name&gt; &lt;var-name=var-value&gt; [var-name=var-value...] command sets variables (attributes) for the &lt;target-name&gt;  target. The set command overwrites your current variable values. <br><br>The valid <code>var-name</code> values are: <code>app</code>, <code>bsp</code>, <code>loader</code>, <code>build_profile</code>, <code>cflags</code>, <code>lflags</code>, <code>aflags</code>, <code>syscfg</code>.  <br><br>The <code>var-value</code> format depends on the <code>var-name</code> as follows: <ul><li><code>app</code>, <code>bsp</code>, <code>loader</code>: @&lt;source-path&gt;, where <code>source-path</code> is the directory containing the application or bsp source. These variables are stored in the target's target.yml file. For a simulated target, e.g. for software testing purposes, set <code>bsp</code> to <code>@apache-mynewt-core/hw/bsp/native</code>.</li> <li><code>build_profile</code>: <code>optimized</code> or <code>debug</code></li><li><code>aflags</code>, <code>cflags</code>, <code>lflags</code>: A string of flags, with each flag separated by a space. These variables are saved in the target's <code>pkg.yml</code> file.</li><li><code>syscfg</code>: The <code>syscfg</code> variable allows you to assign values to configuration settings in your target's <code>syscfg.yml</code> file. <br>The format is <code>syscfg=setting-name1=setting-value1[:setting-name2=setting-value2...]</code>,  where <code>setting-name1</code> is a configuration setting name and <code>setting-value1</code> is the value to assign to <code>setting-name1</code>. If <code>setting-value1</code> is not specified, the setting is set to value <code>1</code>.  You use a <code>:</code> to delimit each setting when you set multiple settings. </li></ul>You can specify <code>var-name=</code> or <code>var-name=""</code> to unset a variable value.<br><br> <strong>Warning</strong>: For multi-value variables, the command overrides all existing values. Use the <code>newt target amend</code> command to change or add new values for a multi-value variable after you have set the variable value. The multi-value variables are: <code>aflags</code>, <code>cflags</code>, <code>lflags</code>, and <code>syscfg</code>.<br><br>To display all the existing values for a target variable (attribute), you can run the <code>newt vals &lt;variable-name&gt;</code> command. For example, <code>newt vals app</code> displays the valid values available for the variable <code>app</code> for any target.</td>
 </tr>
 <tr>
 <td>show</td>
@@ -594,6 +599,16 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>amend</td>
+<td>newt target amend myble syscfg=CONFIG_NEWTMGR=0 cflags="-DTEST"</td>
+<td>Changes (or adds) the <code>CONFIG_NEWTMGR</code> variable to value 0 in the <code>syscfg.yml</code> file and adds the -DTEST flag to <code>pkg.cflags</code> in the <code>pkg.yml</code> file for the <code>myble</code> target. Other syscfg setting values and cflags values are not changed.</td>
+</tr>
+<tr>
+<td>amend</td>
+<td>newt target amend myble -d syscfg=LOG_LEVEL:CONFIG_NEWTMGR cflags="-DNDEBUG"</td>
+<td>Deletes <code>LOG_LEVEL</code> and <code>CONFIG_NEWTMGR</code> settings from the <code>syscfg.yml</code> file  and the -DTEST flag from <code>pkg.cflags</code> for the <code>myble</code> target. Other syscfg setting values and cflags values are not changed.</td>
+</tr>
 <tr>
 <td>config show</td>
 <td>newt target config show rb_blinky</td>
