@@ -26,6 +26,7 @@ In addition to the [Newt Tool Manual](newt_intro.md) in docs, command-line help 
       newt target [command]
     
     Available Commands:
+      amend       Add, change, or delete values for multi-value target variables
       config      View or populate a target's system configuration
       copy        Copy target
       create      Create a target
