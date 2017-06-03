@@ -41,12 +41,12 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 
 <br>
 
-### Release Archives
+### Prior Releases
 
-* Apache Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating), [Release Download](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-0.8.0-incubating)
-* Apache Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating), [Release Download](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-0.8.0-b2-incubating)
-* Apache Mynewt 0.9.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating), [Release Download](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-0.9.0-incubating)
-* Apache Mynewt 1.0.0-b1-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b1-incubating), [Release Download](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-1.0.0-b1-incubating)
-* Apache Mynewt 1.0.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b2-incubating), [Release Download](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-1.0.0-b2-incubating)
+* Apache Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.8.0-b2-incubating/)
+* Apache Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.8.0-incubating/)
+* Apache Mynewt 0.9.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.9.0-incubating/)
+* Apache Mynewt 1.0.0-b1-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b1-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-1.0.0-b1-incubating/)
+* Apache Mynewt 1.0.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b2-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-1.0.0-b2-incubating/)
 <br>
 <br>
