@@ -239,7 +239,7 @@ a network, or processing data, should be given a low priority in order to not ho
 
 The diagram below shows the different scheduling patterns we would expect when we set the `work_task` priority higher and lower than the `main` task priority.  
 
-![Task Scheduling](pics/task_lesson1.png)
+![Task Scheduling](pics/task_lesson.png)
 
 In the second case where the `main` task has a higher priority, `work_task` runs and executes “work” when
 the `main` task sleeps, saving us idle time compared to the first case.
