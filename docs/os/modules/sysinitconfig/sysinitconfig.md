@@ -193,7 +193,7 @@ by other packages.  This mechanism allows:
 
 * Mynewt developers to implement a package and easily override the system configuration setting values 
    that are defined by the packages it depends on. 
-* Application developers to easily and cleanly override default configuration settings in a single place and build a customized target. You can use the `newt target config <target-name>` command to check all the system configuration setting definitions and
+* Application developers to easily and cleanly override default configuration settings in a single place and build a customized target. You can use the `newt target config show <target-name>` command to check all the system configuration setting definitions and
    values in your target to determine the setting values to override. See [newt target](/newt/command_list/newt_target.md). 
 
 `vals` specifies the mappings of system configuration setting name-value pairs as follows: 
