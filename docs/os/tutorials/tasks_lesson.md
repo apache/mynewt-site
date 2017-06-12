@@ -244,4 +244,4 @@ The diagram below shows the different scheduling patterns we would expect when w
 In the second case where the `main` task has a higher priority, `work_task` runs and executes “work” when
 the `main` task sleeps, saving us idle time compared to the first case.
 
-**Note:** Defining the same priority for two tasks leads to somewhat undefined behavior and should be avoided.
+**Note:** Defining the same priority for two tasks fires an assert in os_task_init() and must be avoided. Priority 127 is reserved for main task, 255 for idle task.
