@@ -560,38 +560,41 @@ in a section have the same size.</p>
 <p>Stats sections are currently stored in a single global stats group.  </p>
 <p>Statistics are stored in a simple structure which contains a small
 stats header followed by a list of stats.  The stats header contains:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">stats_hdr</span> {
-     <span style="color: #A90D91">char</span> <span style="color: #000000">*s_name</span>;
-     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">s_size</span>;
-     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">s_cnt</span>;
-     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">s_pad1</span>;
- <span style="color: #633820">#ifdef STATS_NAME_ENABLE</span>
-     <span style="color: #A90D91">struct</span> <span style="color: #000000">stats_name_map</span> <span style="color: #000000">*s_map</span>;
-     <span style="color: #A90D91">int</span> <span style="color: #000000">s_map_cnt</span>;
- <span style="color: #633820">#endif</span>
-     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">stats_hdr</span>) <span style="color: #000000">s_next</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct stats_hdr {
+     char *s_name;
+     uint8_t s_size;
+     uint8_t s_cnt;
+     uint16_t s_pad1;
+#if MYNEWT_VAL(STATS_NAMES)
+     const struct stats_name_map *s_map;
+     int s_map_cnt;
+#endif
+     STAILQ_ENTRY(stats_hdr) s_next;
  };
 </pre></div>
 
 
+<p>The fields define with in the <code>#if MYNEWT_VAL(STATS_NAME)</code> directive are only inincluded when the <code>STATS_NAMES</code> syscfg setting is set to 1 and enables use statistic names.
+<br></p>
+<h4 id="enabling-statistic-names">Enabling Statistic Names</h4>
+<p>By default, statistics are queried by number. You can use the <code>STATS_NAMES</code> syscfg setting to enable statistic names and view the results by name.  Enabling statistic names provides better descriptions in the reported statistics, but takes code space to store the strings within the image.</p>
+<p>To enable statistic names, set the <code>STATS_NAMES</code> value to 1 in the application <code>syscfg.yml</code> file or use the <code>newt target set</code> command to set the syscfg setting value.  Here are examples for each method:</p>
+<p>Method 1  - Set the value in the application <code>syscfg.yml</code> files:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># Package: apps/myapp
+
+syscfg.vals:
+    STATS_NAMES: 1
+</pre></div>
+
+
 <p><br></p>
-<h4 id="compile-time-options">Compile Time Options</h4>
-<p>When building your app, there is a single compile time option for
-statistics.  When querying statistics, they are always queried by number,
-but if you want to see the results by name, you need to define 
-<code>STATS_NAME_ENABLE</code>.  This is defined using </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.clfags: -DSTATS_NAME_ENABLE
+<p>Method 2 - Set the target <code>syscfg</code> variable: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">newt target set myapp syscfg=STATS_NAMES=1
 </pre></div>
 
 
-<p>in your apps pkg.yml file or </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">target.clfags: -DSTATS_NAME_ENABLE
-</pre></div>
-
-
-<p>in your target definition.</p>
-<p>Enabling stat names provides better descriptions in the reported stats,
-but takes code space to store the strings within the image.</p>
+<p><strong>Note:</strong>  This <code>newt target set</code> command only sets the syscfg variable for the <code>STATS_NAMES</code> setting as an example. For your target, you should set the syscfg variable with the other settings that you want to override. </p>
 <p><br></p>
 <h3 id="adding-stats-to-your-code">Adding Stats to your code.</h3>
 <p>Creating new stats table requires the following steps.</p>
@@ -672,8 +675,8 @@ in your header file.</p>
 
 <p><br></p>
 <h4 id="define-the-stats-section-name-table">Define the stats section name table</h4>
-<p>Whether or not you are using <code>STATS_NAME_ENABLE</code>, you must define 
-a stats name table.  If <code>STATS_NAME_ENABLE</code> is not enabled, this will 
+<p>Whether or not you have <code>STATS_NAMES</code> enabled, you must define 
+a stats name table.  If <code>STATS_NAMES</code> is not enabled, this will 
 not take any code space or image size.  </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">/* define a few stats for querying */
 STATS_NAME_START(my_stat_section)
