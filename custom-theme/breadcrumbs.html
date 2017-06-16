@@ -1,5 +1,5 @@
 <div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs pull-right">
+  <ul class="wy-breadcrumbs">
     <li><a href="/{{ config.extra.version }}/{{ config.extra.doc_path }}">Docs</a></li>
     {% if current_page %}
     {% for doc in current_page.ancestors %}
@@ -15,11 +15,16 @@
     {% endif %}
     {% if repo_url %}
       <li class="wy-breadcrumbs-aside">
-          {% if repo_name == 'GitHub' %}
-            <a href="{{ repo_url }}" class="icon icon-github"> Edit on GitHub</a>
-          {% elif repo_name == 'Bitbucket' %}
-            <a href="{{ repo_url }}" class="icon icon-bitbucket"> Edit on BitBucket</a>
-          {% endif %}
+        {%- block repo %}
+        {% if page and page.edit_url %}
+          <a href="{{ page.edit_url }}"
+          {%- if config.repo_name|lower == 'github' %}
+            class="icon icon-github"
+          {%- elif config.repo_name|lower == 'bitbucket' %}
+            class="icon icon-bitbucket"
+          {% endif %}> Edit on {{ config.repo_name }}</a>
+        {% endif %}
+        {%- endblock %}
       </li>
     {% endif %}
   </ul>
