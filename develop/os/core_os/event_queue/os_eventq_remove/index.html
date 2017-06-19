@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -783,6 +770,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/core_os/event_queue/os_eventq_remove.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -790,9 +780,8 @@
                         </div>
                         
                             <h2 id="os_eventq_remove"><font color="#F2853F" style="font-size:24pt"> os_eventq_remove</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">os_eventq_remove</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">void
+os_eventq_remove(struct os_eventq *evq, struct os_event *ev)</code></pre>
 
 
 <p>Removes an event from an event queue.</p>
@@ -822,25 +811,24 @@
 <p><Add text to set up the context for the example here>
 This example from the <code>os_callout_stop()</code> function shows how to remove a callout event from an event queue. It removes
 the event from the queue if the event is queued.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">os_callout_stop</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">*c</span>)
+<pre class="codehilite"><code class="language-c">void
+os_callout_stop(struct os_callout *c)
 {
-    <span style="color: #A90D91">os_sr_t</span> <span style="color: #000000">sr</span>;
+    os_sr_t sr;
 
-    <span style="color: #000000">OS_ENTER_CRITICAL</span>(<span style="color: #000000">sr</span>);
+    OS_ENTER_CRITICAL(sr);
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">os_callout_queued</span>(<span style="color: #000000">c</span>)) {
-        <span style="color: #000000">TAILQ_REMOVE</span>(<span style="color: #000000">&amp;g_callout_list</span>, <span style="color: #000000">c</span>, <span style="color: #000000">c_next</span>);
-        <span style="color: #000000">c-&gt;c_next</span>.<span style="color: #000000">tqe_prev</span> <span style="color: #000000">=</span> <span style="color: #A90D91">NULL</span>;
+    if (os_callout_queued(c)) {
+        TAILQ_REMOVE(&amp;g_callout_list, c, c_next);
+        c-&gt;c_next.tqe_prev = NULL;
     }
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">c-&gt;c_evq</span>) {
-        <span style="color: #000000">os_eventq_remove</span>(<span style="color: #000000">c-&gt;c_evq</span>, <span style="color: #000000">&amp;c-&gt;c_ev</span>);
+    if (c-&gt;c_evq) {
+        os_eventq_remove(c-&gt;c_evq, &amp;c-&gt;c_ev);
     }
 
-    <span style="color: #000000">OS_EXIT_CRITICAL</span>(<span style="color: #000000">sr</span>);
-}
-</pre></div>
+    OS_EXIT_CRITICAL(sr);
+}</code></pre>
                         
                         <div class="row">
                             

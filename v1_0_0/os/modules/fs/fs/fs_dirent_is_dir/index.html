@@ -127,10 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -764,8 +760,7 @@
                         </div>
                         
                             <h2 id="fs95dirent95is95dir"><font color="#F2853F" style="font-size:24pt">fs_dirent_is_dir</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">fs_dirent_is_dir</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_dirent</span> <span style="color: #000000">*dirent</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int fs_dirent_is_dir(const struct fs_dirent *dirent)</code></pre>
 
 
 <p>Tells you whether the specified directory entry is a sub-directory or a regular file. </p>
@@ -790,56 +785,54 @@
 <li>0: The entry is a regular file.</li>
 </ul>
 <h4 id="header-file">Header file</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs.h&quot;</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">#include &quot;fs/fs.h&quot;</code></pre>
 
 
 <h4 id="example">Example</h4>
 <p>This example iterates through the contents of a directory, printing the name of each child node.  When the traversal is complete, the code closes the directory handle.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">traverse_dir</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*dirname</span>)
+<pre class="codehilite"><code class="language-c">int
+traverse_dir(const char *dirname)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_dirent</span> <span style="color: #000000">*dirent</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_dir</span> <span style="color: #000000">*dir</span>;
-    <span style="color: #A90D91">char</span> <span style="color: #000000">buf</span>[<span style="color: #1C01CE">64</span>];
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">name_len</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct fs_dirent *dirent;
+    struct fs_dir *dir;
+    char buf[64];
+    uint8_t name_len;
+    int rc;
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_opendir</span>(<span style="color: #000000">dirname</span>, <span style="color: #000000">&amp;dir</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    rc = fs_opendir(dirname, &amp;dir);
+    if (rc != 0) {
+        return -1;
     }
 
-    <span style="color: #177500">/* Iterate through the parent directory, printing the name of each child</span>
-<span style="color: #177500">     * entry.  The loop only terminates via a function return.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #177500">/* Retrieve the next child node. */</span>
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_readdir</span>(<span style="color: #000000">dir</span>, <span style="color: #000000">&amp;dirent</span>); 
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #000000">FS_ENOENT</span>) {
-            <span style="color: #177500">/* Traversal complete. */</span>
-            <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
-        } <span style="color: #A90D91">else</span> <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-            <span style="color: #177500">/* Unexpected error. */</span>
-            <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    /* Iterate through the parent directory, printing the name of each child
+     * entry.  The loop only terminates via a function return.
+     */
+    while (1) {
+        /* Retrieve the next child node. */
+        rc = fs_readdir(dir, &amp;dirent); 
+        if (rc == FS_ENOENT) {
+            /* Traversal complete. */
+            return 0;
+        } else if (rc != 0) {
+            /* Unexpected error. */
+            return -1;
         }
 
-        <span style="color: #177500">/* Read the child node&#39;s name from the file system. */</span>
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_dirent_name</span>(<span style="color: #000000">dirent</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">buf</span>, <span style="color: #000000">buf</span>, <span style="color: #000000">&amp;name_len</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-            <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+        /* Read the child node's name from the file system. */
+        rc = fs_dirent_name(dirent, sizeof buf, buf, &amp;name_len);
+        if (rc != 0) {
+            return -1;
         }
 
-        <span style="color: #177500">/* Print the child node&#39;s name to the console. */</span>
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">fs_dirent_is_dir</span>(<span style="color: #000000">dirent</span>)) {
-            <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot; dir: &quot;</span>);
-        } <span style="color: #A90D91">else</span> {
-            <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;file: &quot;</span>);
+        /* Print the child node's name to the console. */
+        if (fs_dirent_is_dir(dirent)) {
+            console_printf(&quot; dir: &quot;);
+        } else {
+            console_printf(&quot;file: &quot;);
         }
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;%s\n&quot;</span>, <span style="color: #000000">buf</span>);
+        console_printf(&quot;%s\n&quot;, buf);
     }
-}
-</pre></div>
+}</code></pre>
                         
                         <div class="row">
                             

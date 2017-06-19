@@ -127,10 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -591,58 +587,55 @@
 </ol>
 <p>Both methods require the user to describe how the flash memory should be divided into nffs areas.  This is accomplished with an array of <a href="../nffs_area_desc/">struct nffs_area_desc</a>.</p>
 <p>Typically, a product's flash layout is exposed via its BSP-specific <code>bsp_flash_dev()</code> function.  This function retrieves the layout of the specified flash device resident in the BSP.  The result of this function can then be converted into the <code>struct nffs_area_desc[]</code> that nffs requires.  The below example, taken from the slinky project, illustrates the nffs initialization procedure.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*** hw/hal/include/hal/flash_map.h */</span>
+<pre class="codehilite"><code class="language-c">/*** hw/hal/include/hal/flash_map.h */
 
-<span style="color: #177500">/*</span>
-<span style="color: #177500"> * Flash area types</span>
-<span style="color: #177500"> */</span>
-<span style="color: #633820">#define FLASH_AREA_BOOTLOADER           0</span>
-<span style="color: #633820">#define FLASH_AREA_IMAGE_0              1</span>
-<span style="color: #633820">#define FLASH_AREA_IMAGE_1              2</span>
-<span style="color: #633820">#define FLASH_AREA_IMAGE_SCRATCH        3</span>
-<span style="color: #633820">#define FLASH_AREA_NFFS                 4</span>
-</pre></div>
+/*
+ * Flash area types
+ */
+#define FLASH_AREA_BOOTLOADER           0
+#define FLASH_AREA_IMAGE_0              1
+#define FLASH_AREA_IMAGE_1              2
+#define FLASH_AREA_IMAGE_SCRATCH        3
+#define FLASH_AREA_NFFS                 4</code></pre>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*** project/slinky/src/main.c */</span>
+<pre class="codehilite"><code class="language-c">/*** project/slinky/src/main.c */
 
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+int
+main(int argc, char **argv)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>;
+    int rc;
+    int cnt;
 
-    <span style="color: #177500">/* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_area_desc</span> <span style="color: #000000">descs</span>[<span style="color: #000000">NFFS_AREA_MAX</span>];
+    /* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */
+    struct nffs_area_desc descs[NFFS_AREA_MAX];
 
-    <span style="color: #177500">/* Initialize nffs&#39;s internal state. */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_init</span>();
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Initialize nffs's internal state. */
+    rc = nffs_init();
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Convert the set of flash blocks we intend to use for nffs into an array</span>
-<span style="color: #177500">     * of nffs area descriptors.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">cnt</span> <span style="color: #000000">=</span> <span style="color: #000000">NFFS_AREA_MAX</span>;
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">flash_area_to_nffs_desc</span>(<span style="color: #000000">FLASH_AREA_NFFS</span>, <span style="color: #000000">&amp;cnt</span>, <span style="color: #000000">descs</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Convert the set of flash blocks we intend to use for nffs into an array
+     * of nffs area descriptors.
+     */
+    cnt = NFFS_AREA_MAX;
+    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &amp;cnt, descs);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Attempt to restore an existing nffs file system from flash. */</span>
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">nffs_detect</span>(<span style="color: #000000">descs</span>) <span style="color: #000000">==</span> <span style="color: #000000">FS_ECORRUPT</span>) {
-        <span style="color: #177500">/* No valid nffs instance detected; format a new one. */</span>
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_format</span>(<span style="color: #000000">descs</span>);
-        <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Attempt to restore an existing nffs file system from flash. */
+    if (nffs_detect(descs) == FS_ECORRUPT) {
+        /* No valid nffs instance detected; format a new one. */
+        rc = nffs_format(descs);
+        assert(rc == 0);
     }
-    <span style="color: #177500">/* [ ... ] */</span>
-}
-</pre></div>
+    /* [ ... ] */
+}</code></pre>
 
 
 <p>After nffs has been initialized, the application can access the file system via the <a href="../../fs/fs/">file system abstraction layer</a>.</p>
 <h3 id="configuration">Configuration</h3>
 <p>The nffs file system is configured by populating fields in a global <a href="../nffs_config/">struct nffs_config</a> instance.  Each field in the structure corresponds to a setting.  All configuration must be done prior to calling nffs_init().</p>
 <p>The global <code>struct nffs_config</code> instance is exposed in <code>nffs/nffs.h</code> as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">extern</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_config</span> <span style="color: #000000">nffs_config</span>;
-</pre></div>
+<pre class="codehilite"><code class="language-c">extern struct nffs_config nffs_config;</code></pre>
 
 
 <h3 id="data-structures">Data Structures</h3>

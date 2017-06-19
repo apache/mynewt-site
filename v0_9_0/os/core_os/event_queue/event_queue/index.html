@@ -127,10 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -664,13 +660,12 @@ Processing task would then act according to event type.</p>
 <p>It is assumed that there is only one task consuming events from an event queue. Only one task should be sleeping on a particular <em>os_eventq</em> at a time.</p>
 <p>Note that os_callout subsystem assumes that event queue is used as the wakeup mechanism.</p>
 <h3 id="data-structures">Data structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> {
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ev_queued</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ev_type</span>;
-    <span style="color: #A90D91">void</span> <span style="color: #000000">*ev_arg</span>;
-    <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_event</span>) <span style="color: #000000">ev_next</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_event {
+    uint8_t ev_queued;
+    uint8_t ev_type;
+    void *ev_arg;
+    STAILQ_ENTRY(os_event) ev_next;
+};</code></pre>
 
 
 <table>
@@ -699,11 +694,10 @@ Processing task would then act according to event type.</p>
 </tr>
 </tbody>
 </table>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*evq_task</span>;
-    <span style="color: #000000">STAILQ_HEAD</span>(, <span style="color: #000000">os_event</span>) <span style="color: #000000">evq_list</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_eventq {
+    struct os_task *evq_task;
+    STAILQ_HEAD(, os_event) evq_list;
+};</code></pre>
 
 
 <table>

@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -454,6 +441,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/network/ble/ini_stack/ble_controller_ini.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -462,8 +452,7 @@
                         
                             <h2 id="initialize-the-nimble-controller">Initialize the NimBLE controller</h2>
 <p>The NimBLE controller is initialized via a call to <code>ble_ll_init()</code>.  This function is declared as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">ble_ll_init</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ll_task_prio</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">num_acl_pkts</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">acl_pkt_size</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int ble_ll_init(uint8_t ll_task_prio, uint8_t num_acl_pkts, uint16_t acl_pkt_size)</code></pre>
 
 
 <p>This function's parameters are documented below.</p>
@@ -507,56 +496,55 @@ higher in priority than the LL task should not perform actions that take too
 long; even a few milliseconds could cause undesirable behavior.</p>
 <p><strong>num_acl_pkts</strong> and <strong>acl_pkt_size</strong>:</p>
 <p>These two parameters are used to limit the amount of data the host tries to send through the controller.  NimBLE uses the msys facility for allocating data packets, so the product of these arguments must not be larger than the total amount of memory allocated for msys.  The below example uses some values that are reasonable for most uses.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc"><span style="color: #633820">#include &quot;controller/ble_ll.h&quot;</span>
-</span>
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">#include &quot;controller/ble_ll.h&quot;
+
+int
+main(void)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_cfg</span> <span style="color: #000000">cfg</span>;
+    int rc;
+    struct ble_hs_cfg cfg;
 
-    <span style="color: #177500">/* Initialize OS */</span>
-    <span style="color: #000000">os_init</span>();
+    /* Initialize OS */
+    os_init();
 
-    <span style="color: #177500">/* Set cputime to count at 1 usec increments */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">cputime_init</span>(<span style="color: #1C01CE">1000000</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Set cputime to count at 1 usec increments */
+    rc = cputime_init(1000000);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Create memory pool for NimBLE packets and register with Msys */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mempool_init</span>(<span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_NUM_MBUFS</span>,
-            <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>, <span style="color: #000000">&amp;g_mbuf_buffer</span>[<span style="color: #1C01CE">0</span>], <span style="color: #C41A16">&quot;mbuf_pool&quot;</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Create memory pool for NimBLE packets and register with Msys */
+    rc = os_mempool_init(&amp;g_mbuf_mempool, MBUF_NUM_MBUFS,
+            MBUF_MEMBLOCK_SIZE, &amp;g_mbuf_buffer[0], &quot;mbuf_pool&quot;);
+    assert(rc == 0);
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_pool_init</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>, <span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>,
-                           <span style="color: #000000">MBUF_NUM_MBUFS</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    rc = os_mbuf_pool_init(&amp;g_mbuf_pool, &amp;g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
+                           MBUF_NUM_MBUFS);
+    assert(rc == 0);
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_msys_register</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    rc = os_msys_register(&amp;g_mbuf_pool);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Initialize our device address */</span>
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">0</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x33</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">1</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x22</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">2</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x11</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">3</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0xcc</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">4</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0xbb</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">5</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x0a</span>;
+    /* Initialize our device address */
+    g_dev_addr[0] = 0x33;
+    g_dev_addr[1] = 0x22;
+    g_dev_addr[2] = 0x11;
+    g_dev_addr[3] = 0xcc;
+    g_dev_addr[4] = 0xbb;
+    g_dev_addr[5] = 0x0a;
 
-    <span style="color: #177500">/* Initialize the statistics package */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">stats_module_init</span>();
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Initialize the statistics package */
+    rc = stats_module_init();
+    assert(rc == 0);
 
-<span style="background-color: #ffffcc">    <span style="color: #177500">/* Initialize the BLE LL */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ll_init</span>(<span style="color: #1C01CE">0</span>, <span style="color: #1C01CE">7</span>, <span style="color: #1C01CE">260</span>);
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
-</span>
-    <span style="color: #177500">/* Start the OS */</span>
-    <span style="color: #000000">os_start</span>();
+    /* Initialize the BLE LL */
+    rc = ble_ll_init(0, 7, 260);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* os start should never return. If it does, this should be an error */</span>
-    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
-}
-</pre></div>
+    /* Start the OS */
+    os_start();
+
+    /* os start should never return. If it does, this should be an error */
+    assert(0);
+}</code></pre>
 
 
 <p><br></p>

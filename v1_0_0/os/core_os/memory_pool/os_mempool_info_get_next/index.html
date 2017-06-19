@@ -127,10 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -761,8 +757,7 @@
                         </div>
                         
                             <h2 id="os_mempool_info_get_next"><font color="F2853F" style="font-size:24pt"> os_mempool_info_get_next</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">*</span> <span style="color: #000000">os_mempool_info_get_next</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">*mp</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool_info</span> <span style="color: #000000">*omi</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_mempool * os_mempool_info_get_next(struct os_mempool *mp, struct os_mempool_info *omi)</code></pre>
 
 
 <p>Populates the os_mempool_info structure pointed to by <code>omi</code> with memory pool information. 
@@ -799,47 +794,46 @@ The value of <code>mp</code> specifies the memory pool information to populate. 
 </ul>
 <p><br></p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">shell_os_mpool_display_cmd</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+<pre class="codehilite"><code class="language-c">shell_os_mpool_display_cmd(int argc, char **argv)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">*mp</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool_info</span> <span style="color: #000000">omi</span>;
-    <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
+    struct os_mempool *mp;
+    struct os_mempool_info omi;
+    char *name;
 
-    <span style="color: #000000">name</span> <span style="color: #000000">=</span> <span style="color: #A90D91">NULL</span>;
-    <span style="color: #000000">found</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+    name = NULL;
+    found = 0;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">argc</span> <span style="color: #000000">&gt;</span> <span style="color: #1C01CE">1</span> <span style="color: #000000">&amp;&amp;</span> <span style="color: #000000">strcmp</span>(<span style="color: #000000">argv</span>[<span style="color: #1C01CE">1</span>], <span style="color: #C41A16">&quot;&quot;</span>)) {
-        <span style="color: #000000">name</span> <span style="color: #000000">=</span> <span style="color: #000000">argv</span>[<span style="color: #1C01CE">1</span>];                  
+    if (argc &gt; 1 &amp;&amp; strcmp(argv[1], &quot;&quot;)) {
+        name = argv[1];                  
     }
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Mempools: \n&quot;</span>);
-    <span style="color: #000000">mp</span> <span style="color: #000000">=</span> <span style="color: #A90D91">NULL</span>;
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;%32s %5s %4s %4s %4s\n&quot;</span>, <span style="color: #C41A16">&quot;name&quot;</span>, <span style="color: #C41A16">&quot;blksz&quot;</span>, <span style="color: #C41A16">&quot;cnt&quot;</span>, <span style="color: #C41A16">&quot;free&quot;</span>,
-                   <span style="color: #C41A16">&quot;min&quot;</span>);
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">mp</span> <span style="color: #000000">=</span> <span style="color: #000000">o</span>{<span style="color: #000000">_mempool_info_get_next</span>(<span style="color: #000000">mp</span>, <span style="color: #000000">&amp;omi</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">mp</span> <span style="color: #000000">==</span> <span style="color: #A90D91">NULL</span>) {
-            <span style="color: #A90D91">break</span>;      
+    console_printf(&quot;Mempools: \n&quot;);
+    mp = NULL;
+    console_printf(&quot;%32s %5s %4s %4s %4s\n&quot;, &quot;name&quot;, &quot;blksz&quot;, &quot;cnt&quot;, &quot;free&quot;,
+                   &quot;min&quot;);
+    while (1) {
+        mp = o{_mempool_info_get_next(mp, &amp;omi);
+        if (mp == NULL) {
+            break;      
         }
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">name</span>) {
-            <span style="color: #A90D91">if</span> (<span style="color: #000000">strcmp</span>(<span style="color: #000000">name</span>, <span style="color: #000000">omi</span>.<span style="color: #000000">omi_name</span>)) {
-                <span style="color: #A90D91">continue</span>;
-            } <span style="color: #A90D91">else</span> {
-                <span style="color: #000000">found</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
+        if (name) {
+            if (strcmp(name, omi.omi_name)) {
+                continue;
+            } else {
+                found = 1;
             }
         }
 
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;%32s %5d %4d %4d %4d\n&quot;</span>, <span style="color: #000000">omi</span>.<span style="color: #000000">omi_name</span>,
-                       <span style="color: #000000">omi</span>.<span style="color: #000000">omi_block_size</span>, <span style="color: #000000">omi</span>.<span style="color: #000000">omi_num_blocks</span>,
-                       <span style="color: #000000">omi</span>.<span style="color: #000000">omi_num_free</span>, <span style="color: #000000">omi</span>.<span style="color: #000000">omi_min_free</span>);
+        console_printf(&quot;%32s %5d %4d %4d %4d\n&quot;, omi.omi_name,
+                       omi.omi_block_size, omi.omi_num_blocks,
+                       omi.omi_num_free, omi.omi_min_free);
     }
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">name</span> <span style="color: #000000">&amp;&amp;</span> <span style="color: #000000">!found</span>) {
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Couldn&#39;t find a memory pool with name %s\n&quot;</span>,
-                <span style="color: #000000">name</span>);
+    if (name &amp;&amp; !found) {
+        console_printf(&quot;Couldn't find a memory pool with name %s\n&quot;,
+                name);
     }
-    <span style="color: #A90D91">return</span> (<span style="color: #1C01CE">0</span>);
-}
-</pre></div>
+    return (0);
+}</code></pre>
                         
                         <div class="row">
                             

@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -485,6 +472,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/tutorials/tasks_lesson.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -522,8 +512,7 @@ load the application to your Arduino to verify that everything is in order. Now 
 <p>The purpose of this section is to give an introduction to the important aspects of tasks 
 and how to properly initialize them. First, let’s define a second task called <code>work_task</code> 
 in main.c (located in apps/blinky/src):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">work_task</span>;
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_task work_task;</code></pre>
 
 
 <p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a> 
@@ -536,28 +525,26 @@ us the ability to set the stack size for a task giving the application developer
 memory usage. Since we’re not short on memory, our <code>work_stack</code> is plenty large 
 for the purpose of this lesson. Notice that the elements in our task stack are of type <code>os_stack_t</code> 
 which are generally 32 bits, making our entire stack 1024 Bytes.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #633820">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">  #define WORK_STACK_SIZE OS_STACK_ALIGN(256)</code></pre>
 
 
 <p>Note: The <code>OS_STACK_ALIGN</code> macro is used to align the stack based on the hardware architecture.</p>
 <h3 id="task-function">Task Function</h3>
 <p>A task function is essentially an infinite loop that waits for some “event” to wake it up.  In general, the task function is where the majority of work is done by a task.  Let’s write a task function for <code>work_task</code> called <code>work_task_handler()</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<pre class="codehilite"><code class="language-c">void
+work_task_handler(void *arg)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
+    struct os_task *t;
 
-    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
-    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+    g_led_pin = LED_BLINK_PIN;
+    hal_gpio_init_out(g_led_pin, 1);
 
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">t</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sched_get_current_task</span>();
-        <span style="color: #000000">assert</span>(<span style="color: #000000">t-&gt;t_func</span> <span style="color: #000000">==</span> <span style="color: #000000">work_task_handler</span>);
-        <span style="color: #177500">/* Do work... */</span>
+    while (1) {
+        t = os_sched_get_current_task();
+        assert(t-&gt;t_func == work_task_handler);
+        /* Do work... */
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p>The task function is called when the task is initially put into the <em>running</em> state by the scheduler. 
@@ -569,53 +556,49 @@ be in most task functions.</p>
 priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we 
 must choose a priority defined as a macro variable.</p>
 <p>Let’s set the priority of <code>work_task</code> to 0, because everyone knows that work is more important than blinking.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #633820">#define WORK_TASK_PRIO (0)</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">  #define WORK_TASK_PRIO (0)</code></pre>
 
 
 <h3 id="initialization">Initialization</h3>
 <p>To initialize a new task we use <a href="http://mynewt.apache.org/os/core_os/task/os_task_init/"><em>os_task_init()</em></a> 
 which takes a number of arguments including our new task function, stack, and priority. </p>
 <p>Add the <code>init_tasks()</code> function to initialize <code>work_task</code> to keep our main function clean. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">int
+init_tasks(void)
 {
-    <span style="color: #177500">/* … */</span>
-    <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">*work_stack</span>;
-    <span style="color: #000000">work_stack</span> <span style="color: #000000">=</span> <span style="color: #000000">malloc</span>(<span style="color: #A90D91">sizeof</span>(<span style="color: #A90D91">os_stack_t</span>)<span style="color: #000000">*WORK_STACK_SIZE</span>);
+    /* … */
+    os_stack_t *work_stack;
+    work_stack = malloc(sizeof(os_stack_t)*WORK_STACK_SIZE);
 
-    <span style="color: #000000">assert</span>(<span style="color: #000000">work_stack</span>);
-    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;work_task</span>, <span style="color: #C41A16">&quot;work&quot;</span>, <span style="color: #000000">work_task_handler</span>, <span style="color: #A90D91">NULL</span>,
-            <span style="color: #000000">WORK_TASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">work_stack</span>,
-            <span style="color: #000000">WORK_STACK_SIZE</span>);
+    assert(work_stack);
+    os_task_init(&amp;work_task, &quot;work&quot;, work_task_handler, NULL,
+            WORK_TASK_PRIO, OS_WAIT_FOREVER, work_stack,
+            WORK_STACK_SIZE);
 
-    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
-}
-</pre></div>
+    return 0;
+}</code></pre>
 
 
 <p><br></p>
 <p>Add the call to <code>init_tasks()</code> in <code>main()</code> before the <code>while</code> loop:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+<pre class="codehilite"><code class="language-c">int
+main(int argc, char **argv)
 {
 
         ...
 
-    <span style="color: #177500">/* Initialize the work task */</span>
-    <span style="color: #000000">init_tasks</span>();
+    /* Initialize the work task */
+    init_tasks();
 
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+    while (1) {
          ...
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p><br>
 And that’s it! Now run your application using the newt run command.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt run arduino_blinky 0.0.0
-</pre></div>
+<pre class="codehilite"><code>$ newt run arduino_blinky 0.0.0</code></pre>
 
 
 <p><br>
@@ -624,32 +607,29 @@ When GDB appears press C then Enter to continue and … <em>wait, why doesn't ou
 <h4 id="review">Review</h4>
 <p>Before we run our new app, let’s review what we need in order to create a task. This is a general case for a new task called mytask:</p>
 <p><strong>1)</strong>   Define a new task, task stack, and priority:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* My Task */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">mytask</span>
-<span style="color: #177500">/* My Task Stack */</span>
-<span style="color: #633820">#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)</span>
-<span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">mytask_stack</span>[<span style="color: #000000">MYTASK_STACK_SIZE</span>];
-<span style="color: #177500">/* My Task Priority */</span>
-<span style="color: #633820">#define MYTASK_PRIO (0)</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">/* My Task */
+struct os_task mytask
+/* My Task Stack */
+#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)
+os_stack_t mytask_stack[MYTASK_STACK_SIZE];
+/* My Task Priority */
+#define MYTASK_PRIO (0)</code></pre>
 
 
 <p><strong>2)</strong> Define task function:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> 
-<span style="color: #000000">mytask_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<pre class="codehilite"><code class="language-c">void 
+mytask_handler(void *arg)
 {
-  <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-      <span style="color: #177500">/* ... */</span>
+  while (1) {
+      /* ... */
   }
-}
-</pre></div>
+}</code></pre>
 
 
 <p><strong>3)</strong> Initialize the task:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;mytask</span>, <span style="color: #C41A16">&quot;mytask&quot;</span>, <span style="color: #000000">mytask_handler</span>, <span style="color: #A90D91">NULL</span>, 
-            <span style="color: #000000">MYTASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">mytask_stack</span>,
-            <span style="color: #000000">MYTASK_STACK_SIZE</span>);
-</pre></div>
+<pre class="codehilite"><code class="language-c">os_task_init(&amp;mytask, &quot;mytask&quot;, mytask_handler, NULL, 
+            MYTASK_PRIO, OS_WAIT_FOREVER, mytask_stack,
+            MYTASK_STACK_SIZE);</code></pre>
 
 
 <h2 id="task-priority-preempting-and-context-switching">Task Priority, Preempting, and Context Switching</h2>
@@ -659,33 +639,31 @@ priority task, the lower priority task’s context data (stack pointer, register
 task is switched in.</p>
 <p>In our example, <code>work_task</code> (priority 0) has a higher priority than the <code>main</code> task (priority 127).  Since <code>work_task</code> is never put into a <em>sleep</em> state, it holds the processor focus on its context. </p>
 <p>Let’s give <code>work_task</code> a delay and some simulated work to keep it busy. The delay is measured in os ticks and the actual number of ticks per second is dependent on the board. We multiply <code>OS_TICKS_PER_SEC</code>, which is defined in the MCU, by the number of seconds we wish to delay.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<pre class="codehilite"><code class="language-c">void
+work_task_handler(void *arg)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
+    struct os_task *t;
 
-    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
-    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+    g_led_pin = LED_BLINK_PIN;
+    hal_gpio_init_out(g_led_pin, 1);
 
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">t</span> <span style="color: #000000">=</span> <span style="color: #A90D91">os_sched_get_current_t</span><span style="color: #000000">:ask</span>();
-        <span style="color: #000000">assert</span>(<span style="color: #000000">t-&gt;t_func</span> <span style="color: #000000">==</span> <span style="color: #000000">work_task_handler</span>);
-        <span style="color: #177500">/* Do work... */</span>
-        <span style="color: #A90D91">int</span> <span style="color: #000000">i</span>;
-        <span style="color: #A90D91">for</span>(<span style="color: #000000">i</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>; <span style="color: #000000">i</span> <span style="color: #000000">&lt;</span> <span style="color: #1C01CE">1000000</span>; <span style="color: #000000">++i</span>) {
-            <span style="color: #177500">/* Simulate doing a noticeable amount of work */</span>
-            <span style="color: #000000">hal_gpio_write</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+    while (1) {
+        t = os_sched_get_current_t:ask();
+        assert(t-&gt;t_func == work_task_handler);
+        /* Do work... */
+        int i;
+        for(i = 0; i &lt; 1000000; ++i) {
+            /* Simulate doing a noticeable amount of work */
+            hal_gpio_write(g_led_pin, 1);
         }
-        <span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">3</span> <span style="color: #000000">*</span> <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+        os_time_delay(3 * OS_TICKS_PER_SEC);
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p><br>
 In order to notice the LED changing, modify the time delay in <code>main()</code> to blink at a higher frequency.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC/</span><span style="color: #1C01CE">10</span>);
-</pre></div>
+<pre class="codehilite"><code class="language-c">os_time_delay(OS_TICKS_PER_SEC/10);</code></pre>
 
 
 <p><br>

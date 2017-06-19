@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -770,6 +757,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/fs/fs/fs_read.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -777,8 +767,7 @@
                         </div>
                         
                             <h2 id="fs95read"><font color="#F2853F" style="font-size:24pt">fs_read</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">fs_read</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span> <span style="color: #000000">*file</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">len</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*out_data</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">*out_len</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int fs_read(struct fs_file *file, uint32_t len, void *out_data, uint32_t *out_len)</code></pre>
 
 
 <p>Reads data from the specified file.  If more data is requested than remains in the file, all available data is retrieved and a success code is returned.</p>
@@ -815,39 +804,37 @@
 <li><a href="../fs_return_codes/">FS error code</a> on failure</li>
 </ul>
 <h4 id="header-file">Header file</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs.h&quot;</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">#include &quot;fs/fs.h&quot;</code></pre>
 
 
 <h4 id="example">Example</h4>
 <p>The below code opens the file <code>/settings/config.txt</code> for reading, reads some data, and then closes the file.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">read_config</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">int
+read_config(void)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span> <span style="color: #000000">*file</span>;
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">bytes_read</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">buf</span>[<span style="color: #1C01CE">16</span>];
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct fs_file *file;
+    uint32_t bytes_read;
+    uint8_t buf[16];
+    int rc;
 
-    <span style="color: #177500">/* Open the file for reading. */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_open</span>(<span style="color: #C41A16">&quot;/settings/config.txt&quot;</span>, <span style="color: #000000">FS_ACCESS_READ</span>, <span style="color: #000000">&amp;file</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    /* Open the file for reading. */
+    rc = fs_open(&quot;/settings/config.txt&quot;, FS_ACCESS_READ, &amp;file);
+    if (rc != 0) {
+        return -1;
     }
 
-    <span style="color: #177500">/* Read up to 16 bytes from the file. */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_read</span>(<span style="color: #000000">file</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">buf</span>, <span style="color: #000000">buf</span>, <span style="color: #000000">&amp;bytes_read</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #177500">/* buf now contains up to 16 bytes of file data. */</span>
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;read %u bytes\n&quot;</span>, <span style="color: #000000">bytes_read</span>)
+    /* Read up to 16 bytes from the file. */
+    rc = fs_read(file, sizeof buf, buf, &amp;bytes_read);
+    if (rc == 0) {
+        /* buf now contains up to 16 bytes of file data. */
+        console_printf(&quot;read %u bytes\n&quot;, bytes_read)
     }
 
-    <span style="color: #177500">/* Close the file. */</span>
-    <span style="color: #000000">fs_close</span>(<span style="color: #000000">file</span>);
+    /* Close the file. */
+    fs_close(file);
 
-    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
-}
-</pre></div>
+    return rc == 0 ? 0 : -1;
+}</code></pre>
                         
                         <div class="row">
                             

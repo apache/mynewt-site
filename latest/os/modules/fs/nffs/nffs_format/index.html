@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -650,6 +637,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/fs/nffs/nffs_format.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -657,8 +647,7 @@
                         </div>
                         
                             <h2 id="nffs95format"><font color="F2853F" style="font-size:24pt">nffs_format</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">nffs_format</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_area_desc</span> <span style="color: #000000">*area_descs</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int nffs_format(const struct nffs_area_desc *area_descs)</code></pre>
 
 
 <p>Erases all the specified areas and initializes them with a clean nffs file system.</p>
@@ -683,55 +672,52 @@
 <li><a href="../../fs/fs_return_codes/">FS error code</a> on failure.</li>
 </ul>
 <h4 id="header-file">Header file</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;nffs/nffs.h&quot;</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">#include &quot;nffs/nffs.h&quot;</code></pre>
 
 
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*** hw/hal/include/hal/flash_map.h */</span>
+<pre class="codehilite"><code class="language-c">/*** hw/hal/include/hal/flash_map.h */
 
-<span style="color: #177500">/*</span>
-<span style="color: #177500"> * Flash area types</span>
-<span style="color: #177500"> */</span>
-<span style="color: #633820">#define FLASH_AREA_BOOTLOADER           0</span>
-<span style="color: #633820">#define FLASH_AREA_IMAGE_0              1</span>
-<span style="color: #633820">#define FLASH_AREA_IMAGE_1              2</span>
-<span style="color: #633820">#define FLASH_AREA_IMAGE_SCRATCH        3</span>
-<span style="color: #633820">#define FLASH_AREA_NFFS                 4</span>
-</pre></div>
+/*
+ * Flash area types
+ */
+#define FLASH_AREA_BOOTLOADER           0
+#define FLASH_AREA_IMAGE_0              1
+#define FLASH_AREA_IMAGE_1              2
+#define FLASH_AREA_IMAGE_SCRATCH        3
+#define FLASH_AREA_NFFS                 4</code></pre>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*** project/slinky/src/main.c */</span>
+<pre class="codehilite"><code class="language-c">/*** project/slinky/src/main.c */
 
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+int
+main(int argc, char **argv)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>;
+    int rc;
+    int cnt;
 
-    <span style="color: #177500">/* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_area_desc</span> <span style="color: #000000">descs</span>[<span style="color: #000000">NFFS_AREA_MAX</span>];
+    /* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */
+    struct nffs_area_desc descs[NFFS_AREA_MAX];
 
-    <span style="color: #177500">/* Initialize nffs&#39;s internal state. */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_init</span>();
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Initialize nffs's internal state. */
+    rc = nffs_init();
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Convert the set of flash blocks we intend to use for nffs into an array</span>
-<span style="color: #177500">     * of nffs area descriptors.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">cnt</span> <span style="color: #000000">=</span> <span style="color: #000000">NFFS_AREA_MAX</span>;
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">flash_area_to_nffs_desc</span>(<span style="color: #000000">FLASH_AREA_NFFS</span>, <span style="color: #000000">&amp;cnt</span>, <span style="color: #000000">descs</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Convert the set of flash blocks we intend to use for nffs into an array
+     * of nffs area descriptors.
+     */
+    cnt = NFFS_AREA_MAX;
+    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &amp;cnt, descs);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Attempt to restore an existing nffs file system from flash. */</span>
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">nffs_detect</span>(<span style="color: #000000">descs</span>) <span style="color: #000000">==</span> <span style="color: #000000">FS_ECORRUPT</span>) {
-        <span style="color: #177500">/* No valid nffs instance detected; format a new one. */</span>
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_format</span>(<span style="color: #000000">descs</span>);
-        <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Attempt to restore an existing nffs file system from flash. */
+    if (nffs_detect(descs) == FS_ECORRUPT) {
+        /* No valid nffs instance detected; format a new one. */
+        rc = nffs_format(descs);
+        assert(rc == 0);
     }
-    <span style="color: #177500">/* [ ... ] */</span>
-}
-</pre></div>
+    /* [ ... ] */
+}</code></pre>
                         
                         <div class="row">
                             

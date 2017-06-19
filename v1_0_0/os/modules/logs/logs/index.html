@@ -127,10 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -551,17 +547,15 @@
 </li>
 </ul>
 <p>Both packages export the <code>log</code> API, and any package that uses the log API must list <code>log</code> as a requirement  in its <code>pkg.yml</code> file as follows: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.req_apis:
-    - log
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">pkg.req_apis:
+    - log</code></pre>
 
 
 <p><br>
 The application's <code>pkg.yml</code> file specifies the version of the log package to use.
 A project that requires the full logging capability must list the <code>sys/log/full</code> package as a dependency in its <code>pkg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
-    - sys/log/full
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">pkg.deps:
+    - sys/log/full</code></pre>
 
 
 <p><br>
@@ -577,13 +571,11 @@ your app <code>pkg.cflags</code> files to set the compile time log level.   The
 log level are defined in <code>/sys/log/full/include/log/log.h</code>
 but must be added by number to your <code>yml</code> file.</p>
 <p>For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    pkg.cflags -DLOG_LEVEL=3
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    pkg.cflags -DLOG_LEVEL=3</code></pre>
 
 
 <p>or </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    newt target set my_target cflags=-DLOG_LEVEL=3
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    newt target set my_target cflags=-DLOG_LEVEL=3</code></pre>
 
 
 <p>would both set the compile-time log level to <code>LOG_LEVEL_ERROR</code>.  All logs
@@ -613,8 +605,7 @@ Examples may include</p>
 </ul>
 <p>To use logging, you typically do not need to create your own log handler.  You can use one of the pre-built ones.</p>
 <p>A package or an application must define a variable of type <code>struct log</code> and register a log handler for it with the log package. It must call the <code>log_register()</code> function to specify the log handler to use:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">log_register</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">log</span> <span style="color: #000000">*log</span>, <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">log_handler</span> <span style="color: #000000">*lh</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">level</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">log_register(char *name, struct log *log, const struct log_handler *lh, void *arg, uint8_t level)</code></pre>
 
 
 <p>The parameters are:</p>
@@ -642,57 +633,54 @@ Examples may include</p>
 <h3 id="configuring-logging-for-packages-that-an-application-uses">Configuring Logging for Packages that an Application Uses</h3>
 <p>Here is an example of how an application can set the log handlers for the logs of the packages that the application includes.  </p>
 <p>In this example, the <code>package1</code> package defines the variable  <code>package1_log</code> of type <code>struct log</code> and externs the variable. Similarly, the <code>package2</code> package defines the variable <code>package2_log</code> and externs the variable.  The application sets logs for <code>package1</code> to use console and sets logs  for <code>package2</code> to use a circular buffer.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &lt;package1/package1.h&gt;</span>
-<span style="color: #633820">#include &lt;package2/package2.h&gt;</span>
-<span style="color: #633820">#include &lt;util/cbmem.h&gt;</span>
+<pre class="codehilite"><code class="language-c">#include &lt;package1/package1.h&gt;
+#include &lt;package2/package2.h&gt;
+#include &lt;util/cbmem.h&gt;
 
-<span style="color: #633820">#include &lt;log/log.h&gt;</span>
+#include &lt;log/log.h&gt;
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">cbmem_buf</span>[<span style="color: #000000">MAX_CBMEM_BUF</span>];
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">cbmem</span> <span style="color: #000000">cbmem</span>;
+static uint32_t cbmem_buf[MAX_CBMEM_BUF];
+static struct cbmem cbmem;
 
 
-<span style="color: #A90D91">void</span> <span style="color: #000000">app_log_init</span>(<span style="color: #A90D91">void</span>)
+void app_log_init(void)
 {
 
 
 
-    <span style="color: #000000">log_register</span>(<span style="color: #C41A16">&quot;package1_log&quot;</span>, <span style="color: #000000">&amp;package1_log</span>, <span style="color: #000000">&amp;log_console_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">LOG_SYSLEVEL</span>);
+    log_register(&quot;package1_log&quot;, &amp;package1_log, &amp;log_console_handler, NULL, LOG_SYSLEVEL);
 
-    <span style="color: #000000">cbmem_init</span>(<span style="color: #000000">&amp;cbmem</span>, <span style="color: #000000">cbmem_buf</span>, <span style="color: #000000">MAX_CBMEM_BUF</span>);
-    <span style="color: #000000">log_register</span>(<span style="color: #C41A16">&quot;package2_log&quot;</span>, <span style="color: #000000">&amp;package2_log</span>, <span style="color: #000000">&amp;log_cbmem_handler</span>, <span style="color: #000000">&amp;cbmem</span>, <span style="color: #000000">LOG_SYSLEVEL</span>);
+    cbmem_init(&amp;cbmem, cbmem_buf, MAX_CBMEM_BUF);
+    log_register(&quot;package2_log&quot;, &amp;package2_log, &amp;log_cbmem_handler, &amp;cbmem, LOG_SYSLEVEL);
 
-}
-</pre></div>
+}</code></pre>
 
 
 <p><br></p>
 <h3 id="implementing-a-package-that-uses-logging">Implementing a Package that Uses Logging</h3>
 <p>This example shows how a package logs to console.  The package registers default logging properties to use the console, but allows an application to override the values. It defines the <code>my_package_log</code> variable and makes it external so an application can override log handler.</p>
 <p>Make the <code>my_package_log</code> variable external:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* my_package.h*/</span>
+<pre class="codehilite"><code class="language-c">/* my_package.h*/
 
-<span style="color: #177500">/* pick a unique name here */</span>
-<span style="color: #A90D91">extern</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">log</span> <span style="color: #000000">my_package_log</span>;
-</pre></div>
+/* pick a unique name here */
+extern struct log my_package_log;</code></pre>
 
 
 <p><br></p>
 <p>Define the <code>my_package_log</code> variable and register the console log handler: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* my_package.c */</span>
+<pre class="codehilite"><code class="language-c">/* my_package.c */
 
-<span style="color: #A90D91">struct</span> <span style="color: #000000">log</span> <span style="color: #000000">my_package_log</span>;
+struct log my_package_log;
 
 {
     ...
 
-    <span style="color: #177500">/* register my log with a name to the system */</span>
-    <span style="color: #000000">log_register</span>(<span style="color: #C41A16">&quot;log&quot;</span>, <span style="color: #000000">&amp;my_package_log</span>, <span style="color: #000000">&amp;log_console_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">LOG_LEVEL_DEBUG</span>);
+    /* register my log with a name to the system */
+    log_register(&quot;log&quot;, &amp;my_package_log, &amp;log_console_handler, NULL, LOG_LEVEL_DEBUG);
 
-    <span style="color: #000000">LOG_DEBUG</span>(<span style="color: #000000">&amp;my_package_log</span>, <span style="color: #000000">LOG_MODULE_DEFAULT</span>, <span style="color: #C41A16">&quot;bla&quot;</span>);
-    <span style="color: #000000">LOG_DEBUG</span>(<span style="color: #000000">&amp;my_package_log</span>, <span style="color: #000000">LOG_MODULE_DEFAULT</span>, <span style="color: #C41A16">&quot;bab&quot;</span>);
-}
-</pre></div>
+    LOG_DEBUG(&amp;my_package_log, LOG_MODULE_DEFAULT, &quot;bla&quot;);
+    LOG_DEBUG(&amp;my_package_log, LOG_MODULE_DEFAULT, &quot;bab&quot;);
+}</code></pre>
 
 
 <h3 id="log-api-and-log-levels">Log API and Log Levels</h3>

@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -552,6 +539,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/fs/otherfs.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -562,56 +552,53 @@
 <p>Libraries use Mynewt's file system abstraction layer (<code>fs/fs</code>) for all file operations.  Because clients use an abstraction layer, the underlying file system can be swapped out without affecting client code.  This page documents the procedure for plugging a custom file system into the Mynewt file system abstraction layer.</p>
 <h3 id="1-specify-fsfs-as-a-dependency-of-your-file-system-package">1. Specify <code>fs/fs</code> as a dependency of your file system package.</h3>
 <p>The file system package must register itself with the <code>fs/fs</code> package, so it must specify <code>fs/fs</code> as a dependency.  As an example, part of the Newtron Flash File System (nffs) <code>pkg.yml</code> is reproduced below.   Notice the first item in the <code>pkg.deps</code> list.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: fs/nffs
+<pre class="codehilite"><code class="language-no-highlight">pkg.name: fs/nffs
 pkg.deps:
     - fs/fs
     - hw/hal
     - libs/os
     - libs/testutil
-    - sys/log
-</pre></div>
+    - sys/log</code></pre>
 
 
 <h3 id="2-register-your-packages-api-with-the-fsfs-interface">2. Register your package's API with the <code>fs/fs</code> interface.</h3>
 <p>The <code>fs/fs</code> package calls into the underlying file system via a collection of function pointers.  To plug your file system into the <code>fs/fs</code> API, you must assign these function pointers to the corresponding routines in your file system package.</p>
 <p>For example, <code>nffs</code> registers itself with <code>fs/fs</code> as follows (from <code>fs/nffs/src/nffs.c</code>):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_ops</span> <span style="color: #000000">nffs_ops</span> <span style="color: #000000">=</span> {
-    .<span style="color: #000000">f_open</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_open</span>,
-    .<span style="color: #000000">f_close</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_close</span>,
-    .<span style="color: #000000">f_read</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_read</span>,
-    .<span style="color: #000000">f_write</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_write</span>,
+<pre class="codehilite"><code class="language-c">static const struct fs_ops nffs_ops = {
+    .f_open = nffs_open,
+    .f_close = nffs_close,
+    .f_read = nffs_read,
+    .f_write = nffs_write,
 
-    .<span style="color: #000000">f_seek</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_seek</span>,
-    .<span style="color: #000000">f_getpos</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_getpos</span>,
-    .<span style="color: #000000">f_filelen</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_file_len</span>,
+    .f_seek = nffs_seek,
+    .f_getpos = nffs_getpos,
+    .f_filelen = nffs_file_len,
 
-    .<span style="color: #000000">f_unlink</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_unlink</span>,
-    .<span style="color: #000000">f_rename</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_rename</span>,
-    .<span style="color: #000000">f_mkdir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_mkdir</span>,
+    .f_unlink = nffs_unlink,
+    .f_rename = nffs_rename,
+    .f_mkdir = nffs_mkdir,
 
-    .<span style="color: #000000">f_opendir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_opendir</span>,
-    .<span style="color: #000000">f_readdir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_readdir</span>,
-    .<span style="color: #000000">f_closedir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_closedir</span>,
+    .f_opendir = nffs_opendir,
+    .f_readdir = nffs_readdir,
+    .f_closedir = nffs_closedir,
 
-    .<span style="color: #000000">f_dirent_name</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_dirent_name</span>,
-    .<span style="color: #000000">f_dirent_is_dir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_dirent_is_dir</span>,
+    .f_dirent_name = nffs_dirent_name,
+    .f_dirent_is_dir = nffs_dirent_is_dir,
 
-    .<span style="color: #000000">f_name</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;nffs&quot;</span>
+    .f_name = &quot;nffs&quot;
 };
 
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">nffs_init</span>(<span style="color: #A90D91">void</span>)
+int
+nffs_init(void)
 {
-    <span style="color: #177500">/* [...] */</span>
-    <span style="color: #000000">fs_register</span>(<span style="color: #000000">&amp;nffs_ops</span>);
-}
-</pre></div>
+    /* [...] */
+    fs_register(&amp;nffs_ops);
+}</code></pre>
 
 
 <h3 id="header-files">Header Files</h3>
 <p>To gain access to <code>fs/fs</code>'s registration interface, include the following header:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs_if.h&quot;</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">#include &quot;fs/fs_if.h&quot;</code></pre>
                         
                         <div class="row">
                             

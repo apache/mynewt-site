@@ -127,10 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -414,64 +410,58 @@
 <p><br></p>
 <h3 id="initiate-a-direct-connection-to-a-device">Initiate a direct connection to a device</h3>
 <p>In this case, your board is acting as a central and initiating a connection with another BLE device. The example assumes you know the address of the peer, either by scanning for available peers or because you have set up the peer yourself.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">b conn addr_type=public addr=d4:f5:13:53:d2:43
-</span>[ts=118609ssb, mod=64 level=2] connection complete; status=0 handle=1 peer_addr_type=0 peer_addr=0x43:0xd2:0x53:0x13:0xf5:0xd4 conn_itvl=40 conn_latency=0 supervision_timeout=256
-</pre></div>
+<pre class="codehilite"><code>b conn addr_type=public addr=d4:f5:13:53:d2:43
+[ts=118609ssb, mod=64 level=2] connection complete; status=0 handle=1 peer_addr_type=0 peer_addr=0x43:0xd2:0x53:0x13:0xf5:0xd4 conn_itvl=40 conn_latency=0 supervision_timeout=256</code></pre>
 
 
 <p>The <code>handle=1</code> in the output indicates that it is connection-1.</p>
 <p><br></p>
 <h3 id="configure-advertisements-to-include-device-name">Configure advertisements to include device name</h3>
 <p>In this case, your board is acting as a peripheral. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b set adv_data name=&lt;your-device-name&gt;
-</pre></div>
+<pre class="codehilite"><code>b set adv_data name=&lt;your-device-name&gt;</code></pre>
 
 
 <p><br></p>
 <h3 id="begin-sending-undirected-general-advertisements">Begin sending undirected general advertisements</h3>
 <p>In this case, your board is acting as a peripheral. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b adv conn=und disc=gen
-</pre></div>
+<pre class="codehilite"><code>b adv conn=und disc=gen</code></pre>
 
 
 <p><br></p>
 <h3 id="show-established-connections">Show established connections.</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b show conn
-</pre></div>
+<pre class="codehilite"><code>b show conn</code></pre>
 
 
 <p><br></p>
 <h3 id="discover-and-display-peers-services">Discover and display peer's services.</h3>
 <p>This is how you discover and then display the services of the peer you established earlier across connection-1.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">b disc svc conn=1
-</span><span style="background-color: #ffffcc">b show chr
-</span>[ts=132425ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
+<pre class="codehilite"><code>b disc svc conn=1
+b show chr
+[ts=132425ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
 [ts=132428ssb, mod=64 level=2]     start=1 end=5 uuid=0x1800
 [ts=132433ssb, mod=64 level=2]     start=6 end=16 uuid=0x1808
 [ts=132437ssb, mod=64 level=2]     start=17 end=31 uuid=0x180a
-[ts=132441ssb, mod=64 level=2]     start=32 end=65535 uuid=00000000-0000-1000-1000000000000000
-</pre></div>
+[ts=132441ssb, mod=64 level=2]     start=32 end=65535 uuid=00000000-0000-1000-1000000000000000</code></pre>
 
 
 <p><br></p>
 <h3 id="discover-characteristics-for-each-service-on-peer">Discover characteristics for each service on peer</h3>
 <p>The following examples show how to find the characteristics for each service available on the peer device across connection-1. The start and end values depend on the specific services discovered using the previous command <code>b show chr</code>. Continuing with the example above, you can discover the characteristics of the first service and display it using the following commands.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">b disc chr conn=1 start=1 end=5
-</span><span style="background-color: #ffffcc">b show chr
-</span>[ts=163063ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
+<pre class="codehilite"><code>b disc chr conn=1 start=1 end=5
+b show chr
+[ts=163063ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
 [ts=163067ssb, mod=64 level=2]     start=1 end=5 uuid=0x1800
 [ts=163071ssb, mod=64 level=2]         def_handle=2 val_handle=3 properties=0x02 uuid=0x2a00
 [ts=163078ssb, mod=64 level=2]         def_handle=4 val_handle=5 properties=0x02 uuid=0x2a01
 [ts=163085ssb, mod=64 level=2]     start=6 end=16 uuid=0x1808
 [ts=163089ssb, mod=64 level=2]     start=17 end=31 uuid=0x180a
-[ts=163094ssb, mod=64 level=2]     start=32 end=65535 uuid=00000000-0000-1000-1000000000000000
-</pre></div>
+[ts=163094ssb, mod=64 level=2]     start=32 end=65535 uuid=00000000-0000-1000-1000000000000000</code></pre>
 
 
 <p>You can next discover characteristics for the second service and display. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc">b disc chr conn=1 start=6 end=16
-</span><span style="background-color: #ffffcc">b show chr
-</span>[ts=180631ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
+<pre class="codehilite"><code>b disc chr conn=1 start=6 end=16
+b show chr
+[ts=180631ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
 [ts=180634ssb, mod=64 level=2]     start=1 end=5 uuid=0x1800
 [ts=180639ssb, mod=64 level=2]         def_handle=2 val_handle=3 properties=0x02 uuid=0x2a00
 [ts=180646ssb, mod=64 level=2]         def_handle=4 val_handle=5 properties=0x02 uuid=0x2a01
@@ -481,36 +471,31 @@
 [ts=180672ssb, mod=64 level=2]         def_handle=12 val_handle=13 properties=0x28 uuid=0x2a52
 [ts=180679ssb, mod=64 level=2]         def_handle=15 val_handle=16 properties=0x02 uuid=0x2a08
 [ts=180686ssb, mod=64 level=2]     start=17 end=31 uuid=0x180a
-[ts=180691ssb, mod=64 level=2]     start=32 end=65535 uuid=00000000-0000-1000-1000000000000000
-</pre></div>
+[ts=180691ssb, mod=64 level=2]     start=32 end=65535 uuid=00000000-0000-1000-1000000000000000</code></pre>
 
 
 <p><br></p>
 <h3 id="discover-descriptors-for-each-characteristic-on-peer">Discover descriptors for each characteristic on peer</h3>
 <p>Just as before, the start and end values depend on the specific characteristics discovered.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b disc dsc conn=1 start=1 end=5
+<pre class="codehilite"><code>b disc dsc conn=1 start=1 end=5
 b disc dsc conn=1 start=6 end=16
-b disc dsc conn=1 start=17 end=31
-</pre></div>
+b disc dsc conn=1 start=17 end=31</code></pre>
 
 
 <p><br></p>
 <h3 id="read-an-attribute-belonging-to-the-peer">Read an attribute belonging to the peer</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b read conn=1 attr=18 attr=21
-</pre></div>
+<pre class="codehilite"><code>b read conn=1 attr=18 attr=21</code></pre>
 
 
 <p><br></p>
 <h3 id="write-to-an-attribute-belonging-to-the-peer">Write to an attribute belonging to the peer</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b write conn=1 attr=3 value=0x01:0x02:0x03
-</pre></div>
+<pre class="codehilite"><code>b write conn=1 attr=3 value=0x01:0x02:0x03</code></pre>
 
 
 <p><br></p>
 <h3 id="perform-a-passive-scan">Perform a passive scan</h3>
 <p>This is how you tell your board to listen to all advertisements around it. The duration is specified in ms.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">b scan dur=1000 disc=gen type=passive filt=no_wl
-</pre></div>
+<pre class="codehilite"><code>b scan dur=1000 disc=gen type=passive filt=no_wl</code></pre>
 
 
 <p><br></p>

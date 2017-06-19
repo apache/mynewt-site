@@ -127,19 +127,6 @@
                 </li>
             </ul>
 
-            <!-- Search, Navigation and Repo links -->
-            <ul class="nav navbar-nav navbar-right">
-                
-                <li>
-                    <a href="https://github.com/apache/incubator-mynewt-site/">
-                        
-                            <i class="fa fa-github"></i>
-                        
-                        GitHub
-                    </a>
-                </li>
-                
-            </ul>
         </div>
     </div>
 </nav>
@@ -713,6 +700,9 @@
     
       <li class="wy-breadcrumbs-aside">
         
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/core_os/event_queue/event_queue.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
       </li>
     
   </ul>
@@ -733,13 +723,12 @@
 </ul>
 <h3 id="data-structures">Data structures</h3>
 <p>The <code>os_event</code> structure defines an event and has the following fields:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> {
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ev_queued</span>;
-    <span style="color: #000000">os_event_fn</span> <span style="color: #000000">*ev_cb</span>;
-    <span style="color: #A90D91">void</span> <span style="color: #000000">*ev_arg</span>;
-    <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_event</span>) <span style="color: #000000">ev_next</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_event {
+    uint8_t ev_queued;
+    os_event_fn *ev_cb;
+    void *ev_arg;
+    STAILQ_ENTRY(os_event) ev_next;
+};</code></pre>
 
 
 <table>
@@ -769,8 +758,7 @@
 </tbody>
 </table>
 <p>An event callback function has the following function prototype:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">typedef</span> <span style="color: #A90D91">void</span> <span style="color: #000000">os_event_fn</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
-</pre></div>
+<pre class="codehilite"><code class="language-c">typedef void os_event_fn(struct os_event *ev);</code></pre>
 
 
 <p>A pointer to the <code>os_event</code> structure for the event is passed as an argument to the callback function. </p>
@@ -780,22 +768,20 @@
 <li>You must free the memory in the callback function after it completes processing the event.</li>
 </ul>
 <p>You must set the callback function for an event when you initialize the event.  For example, here is an example of a statically-initialized event in the NimBLE host:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">ble_hs_event_tx_notify</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+<pre class="codehilite"><code class="language-c">static void ble_hs_event_tx_notify(struct os_event *ev);
 
-<span style="color: #177500">/** OS event - triggers tx of pending notifications and indications. */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">ble_hs_ev_tx_notifications</span> <span style="color: #000000">=</span> {
-    .<span style="color: #000000">ev_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_event_tx_notify</span>,
-};
-</pre></div>
+/** OS event - triggers tx of pending notifications and indications. */
+static struct os_event ble_hs_ev_tx_notifications = {
+    .ev_cb = ble_hs_event_tx_notify,
+};</code></pre>
 
 
 <p><br> <br />
 The <code>os_eventq</code> structure defines an event queue and has the following fields:   </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*evq_task</span>;
-    <span style="color: #000000">STAILQ_HEAD</span>(, <span style="color: #000000">os_event</span>) <span style="color: #000000">evq_list</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_eventq {
+    struct os_task *evq_task;
+    STAILQ_HEAD(, os_event) evq_list;
+};</code></pre>
 
 
 <table>
