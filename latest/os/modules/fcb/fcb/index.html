@@ -553,6 +553,7 @@
 </div>
                         </div>
                         
+                        
                             <h1 id="flash-circular-buffer-fcb">Flash Circular Buffer (FCB)</h1>
 <p>Flash circular buffer provides an abstration through which you can treat flash like a FIFO. You append entries to the end, and read data from the beginning.</p>
 <h3 id="description">Description</h3>
@@ -576,12 +577,13 @@
 * Call fcb_getnext() with pointer to current element to get the next one. And so on.</p>
 <h3 id="data-structures">Data structures</h3>
 <p>This data structure describes the element location in the flash. You would use it figure out what parameters to pass to flash_area_read() to read element contents. Or to flash_area_write() when adding a new element.</p>
-<pre class="codehilite"><code class="language-c">struct fcb_entry {
-    struct flash_area *fe_area;
-    uint32_t fe_elem_off;
-    uint32_t fe_data_off;
-    uint16_t fe_data_len;
-};</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">fcb_entry</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">flash_area</span> <span style="color: #000000">*fe_area</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">fe_elem_off</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">fe_data_off</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">fe_data_len</span>;
+};
+</pre></div>
 
 
 <table>
@@ -611,21 +613,22 @@
 </tbody>
 </table>
 <p>The following data structure describes the FCB itself. First part should be filled in by the user before calling fcb_init(). The second part is used by FCB for its internal bookkeeping.</p>
-<pre class="codehilite"><code class="language-c">struct fcb {
-    /* Caller of fcb_init fills this in */
-    uint32_t f_magic;           /* As placed on the disk */
-    uint8_t f_version;          /* Current version number of the data */
-    uint8_t f_sector_cnt;       /* Number of elements in sector array */
-    uint8_t f_scratch_cnt;      /* How many sectors should be kept empty */
-    struct flash_area *f_sectors; /* Array of sectors, must be contiguous */
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">fcb</span> {
+    <span style="color: #177500">/* Caller of fcb_init fills this in */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">f_magic</span>;           <span style="color: #177500">/* As placed on the disk */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">f_version</span>;          <span style="color: #177500">/* Current version number of the data */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">f_sector_cnt</span>;       <span style="color: #177500">/* Number of elements in sector array */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">f_scratch_cnt</span>;      <span style="color: #177500">/* How many sectors should be kept empty */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">flash_area</span> <span style="color: #000000">*f_sectors</span>; <span style="color: #177500">/* Array of sectors, must be contiguous */</span>
 
-    /* Flash circular buffer internal state */
-    struct os_mutex f_mtx;      /* Locking for accessing the FCB data */
-    struct flash_area *f_oldest;
-    struct fcb_entry f_active;
-    uint16_t f_active_id;
-    uint8_t f_align;            /* writes to flash have to aligned to this */
-};</code></pre>
+    <span style="color: #177500">/* Flash circular buffer internal state */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mutex</span> <span style="color: #000000">f_mtx</span>;      <span style="color: #177500">/* Locking for accessing the FCB data */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">flash_area</span> <span style="color: #000000">*f_oldest</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">fcb_entry</span> <span style="color: #000000">f_active</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">f_active_id</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">f_align</span>;            <span style="color: #177500">/* writes to flash have to aligned to this */</span>
+};
+</pre></div>
 
 
 <table>

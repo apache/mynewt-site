@@ -152,14 +152,14 @@
     
     <option
       value="/develop/os/introduction"
-      selected="selected"
+      
     >
       Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      
+      selected="selected"
     >
       Version: 0.9.0
     </option>
@@ -503,17 +503,6 @@
                 
   
   
-    <li ><a href="../../../modules/devmgmt/newtmgr/">Device Management with Newt Manager</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../../modules/imgmgr/imgmgr/">Image Manager</a>
   
   
@@ -567,17 +556,6 @@
   
   
     <li ><a href="../../../modules/logs/logs/">Logs</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../../modules/sysinitconfig/sysinitconfig/">System Configuration And Initialization</a>
   
   
     </li>
@@ -651,7 +629,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/v0_9_0/os/introduction">Docs</a></li>
     
     
         
@@ -665,16 +643,25 @@
       
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/core_os/task/task.md"
-            class="icon icon-github"> Edit on GitHub</a>
-        
-      </li>
-    
   </ul>
 </div>
                         </div>
+                        
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/os/core_os/task/task/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
                         
                             <h1 id="task">Task</h1>
 <p>A task, along with the scheduler, forms the basis of the Mynewt OS. A task 
@@ -726,105 +713,108 @@ API. Developers can walk the list of tasks to obtain information on all created
 tasks. This information is of type <code>os_task_info</code> and is described below.</p>
 <p>The following is a very simple example showing a single application task. This 
 task simply toggles an LED at a one second interval.</p>
-<pre class="codehilite"><code class="language-c">/* Create a simple &quot;project&quot; with a task that blinks a LED every second */
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* Create a simple &quot;project&quot; with a task that blinks a LED every second */</span>
 
-/* Define task stack and task object */
-#define MY_TASK_PRI         (OS_TASK_PRI_HIGHEST) 
-#define MY_STACK_SIZE       (64) 
-struct os_task my_task; 
-os_stack_t my_task_stack[MY_STACK_SIZE]; 
+<span style="color: #177500">/* Define task stack and task object */</span>
+<span style="color: #633820">#define MY_TASK_PRI         (OS_TASK_PRI_HIGHEST) </span>
+<span style="color: #633820">#define MY_STACK_SIZE       (64) </span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">my_task</span>; 
+<span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">my_task_stack</span>[<span style="color: #000000">MY_STACK_SIZE</span>]; 
 
-/* This is the task function */
-void my_task_func(void *arg) {
-    /* Set the led pin as an output */
-    hal_gpio_init_out(LED_BLINK_PIN, 1);
+<span style="color: #177500">/* This is the task function */</span>
+<span style="color: #A90D91">void</span> <span style="color: #000000">my_task_func</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>) {
+    <span style="color: #177500">/* Set the led pin as an output */</span>
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">LED_BLINK_PIN</span>, <span style="color: #1C01CE">1</span>);
 
-    /* The task is a forever loop that does not return */
-    while (1) {
-        /* Wait one second */ 
-        os_time_delay(1000);
+    <span style="color: #177500">/* The task is a forever loop that does not return */</span>
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #177500">/* Wait one second */</span> 
+        <span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">1000</span>);
 
-        /* Toggle the LED */ 
-        hal_gpio_toggle(LED_BLINK_PIN);
+        <span style="color: #177500">/* Toggle the LED */</span> 
+        <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">LED_BLINK_PIN</span>);
     }
 }
 
-/* This is the main function for the project */
-int main(void) {
-    int rc;
+<span style="color: #177500">/* This is the main function for the project */</span>
+<span style="color: #A90D91">int</span> <span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>) {
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Initialize OS */
-    os_init();
+    <span style="color: #177500">/* Initialize OS */</span>
+    <span style="color: #000000">os_init</span>();
 
-    /* Initialize the task */
-    os_task_init(&amp;my_task, &quot;my_task&quot;, my_task_func, NULL, MY_TASK_PRIO, 
-                 OS_WAIT_FOREVER, my_task_stack, MY_STACK_SIZE);
+    <span style="color: #177500">/* Initialize the task */</span>
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;my_task</span>, <span style="color: #C41A16">&quot;my_task&quot;</span>, <span style="color: #000000">my_task_func</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">MY_TASK_PRIO</span>, 
+                 <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">my_task_stack</span>, <span style="color: #000000">MY_STACK_SIZE</span>);
 
-    /* Start the OS */
-    os_start();
+    <span style="color: #177500">/* Start the OS */</span>
+    <span style="color: #000000">os_start</span>();
 
-    /* os start should never return. If it does, this should be an error */
-    assert(0);
+    <span style="color: #177500">/* os start should never return. If it does, this should be an error */</span>
+    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
 
-    return rc;
-}</code></pre>
+    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+}
+</pre></div>
 
 
 <h2 id="data-structures">Data structures</h2>
-<pre class="codehilite"><code class="language-c">/* The highest and lowest task priorities */
-#define OS_TASK_PRI_HIGHEST         (0)
-#define OS_TASK_PRI_LOWEST          (0xff)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* The highest and lowest task priorities */</span>
+<span style="color: #633820">#define OS_TASK_PRI_HIGHEST         (0)</span>
+<span style="color: #633820">#define OS_TASK_PRI_LOWEST          (0xff)</span>
 
-/* Task states */
-typedef enum os_task_state {
-    OS_TASK_READY = 1, 
-    OS_TASK_SLEEP = 2
-} os_task_state_t;
+<span style="color: #177500">/* Task states */</span>
+<span style="color: #A90D91">typedef</span> <span style="color: #A90D91">enum</span> <span style="color: #000000">os_task_state</span> {
+    <span style="color: #000000">OS_TASK_READY</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>, 
+    <span style="color: #000000">OS_TASK_SLEEP</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">2</span>
+} <span style="color: #A90D91">os_task_state_t</span>;
 
-/* Task flags */
-#define OS_TASK_FLAG_NO_TIMEOUT     (0x0001U)
-#define OS_TASK_FLAG_SEM_WAIT       (0x0002U)
-#define OS_TASK_FLAG_MUTEX_WAIT     (0x0004U)
+<span style="color: #177500">/* Task flags */</span>
+<span style="color: #633820">#define OS_TASK_FLAG_NO_TIMEOUT     (0x0001U)</span>
+<span style="color: #633820">#define OS_TASK_FLAG_SEM_WAIT       (0x0002U)</span>
+<span style="color: #633820">#define OS_TASK_FLAG_MUTEX_WAIT     (0x0004U)</span>
 
-typedef void (*os_task_func_t)(void *);
+<span style="color: #A90D91">typedef</span> <span style="color: #000000">void</span> (<span style="color: #000000">*</span><span style="color: #A90D91">os_task_func_t</span>)(<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>);
 
-#define OS_TASK_MAX_NAME_LEN (32)</code></pre>
+<span style="color: #633820">#define OS_TASK_MAX_NAME_LEN (32)</span>
+</pre></div>
 
 
 <p><br></p>
-<pre class="codehilite"><code class="language-c">struct os_task {
-    os_stack_t *t_stackptr;
-    os_stack_t *t_stacktop;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> {
+    <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">*t_stackptr</span>;
+    <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">*t_stacktop</span>;
 
-    uint16_t t_stacksize;
-    uint16_t t_flags;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">t_stacksize</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">t_flags</span>;
 
-    uint8_t t_taskid;
-    uint8_t t_prio;
-    uint8_t t_state;
-    uint8_t t_pad;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">t_taskid</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">t_prio</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">t_state</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">t_pad</span>;
 
-    char *t_name;
-    os_task_func_t t_func;
-    void *t_arg;
+    <span style="color: #A90D91">char</span> <span style="color: #000000">*t_name</span>;
+    <span style="color: #A90D91">os_task_func_t</span> <span style="color: #000000">t_func</span>;
+    <span style="color: #A90D91">void</span> <span style="color: #000000">*t_arg</span>;
 
-    void *t_obj;
+    <span style="color: #A90D91">void</span> <span style="color: #000000">*t_obj</span>;
 
-    struct os_sanity_check t_sanity_check; 
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sanity_check</span> <span style="color: #000000">t_sanity_check</span>; 
 
-    os_time_t t_next_wakeup;
-    os_time_t t_run_time;
-    uint32_t t_ctx_sw_cnt;
+    <span style="color: #A90D91">os_time_t</span> <span style="color: #000000">t_next_wakeup</span>;
+    <span style="color: #A90D91">os_time_t</span> <span style="color: #000000">t_run_time</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">t_ctx_sw_cnt</span>;
 
-    /* Global list of all tasks, irrespective of run or sleep lists */
-    STAILQ_ENTRY(os_task) t_os_task_list;
+    <span style="color: #177500">/* Global list of all tasks, irrespective of run or sleep lists */</span>
+    <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_task</span>) <span style="color: #000000">t_os_task_list</span>;
 
-    /* Used to chain task to either the run or sleep list */ 
-    TAILQ_ENTRY(os_task) t_os_list;
+    <span style="color: #177500">/* Used to chain task to either the run or sleep list */</span> 
+    <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">os_task</span>) <span style="color: #000000">t_os_list</span>;
 
-    /* Used to chain task to an object such as a semaphore or mutex */
-    SLIST_ENTRY(os_task) t_obj_list;
-};</code></pre>
+    <span style="color: #177500">/* Used to chain task to an object such as a semaphore or mutex */</span>
+    <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">os_task</span>) <span style="color: #000000">t_obj_list</span>;
+};
+</pre></div>
 
 
 <table>
@@ -910,20 +900,21 @@ typedef void (*os_task_func_t)(void *);
 </tbody>
 </table>
 <p><br></p>
-<pre class="codehilite"><code class="language-c">struct os_task_info {
-    uint8_t oti_prio;
-    uint8_t oti_taskid;
-    uint8_t oti_state;
-    uint8_t oti_flags;
-    uint16_t oti_stkusage;
-    uint16_t oti_stksize;
-    uint32_t oti_cswcnt;
-    uint32_t oti_runtime;
-    os_time_t oti_last_checkin;
-    os_time_t oti_next_checkin;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task_info</span> {
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">oti_prio</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">oti_taskid</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">oti_state</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">oti_flags</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">oti_stkusage</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">oti_stksize</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">oti_cswcnt</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">oti_runtime</span>;
+    <span style="color: #A90D91">os_time_t</span> <span style="color: #000000">oti_last_checkin</span>;
+    <span style="color: #A90D91">os_time_t</span> <span style="color: #000000">oti_next_checkin</span>;
 
-    char oti_name[OS_TASK_MAX_NAME_LEN];
-};</code></pre>
+    <span style="color: #A90D91">char</span> <span style="color: #000000">oti_name</span>[<span style="color: #000000">OS_TASK_MAX_NAME_LEN</span>];
+};
+</pre></div>
 
 
 <table>

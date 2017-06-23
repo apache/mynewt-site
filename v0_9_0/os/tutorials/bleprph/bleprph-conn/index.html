@@ -466,6 +466,22 @@
 </div>
                         </div>
                         
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/os/tutorials/bleprph/bleprph-conn/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
+                        
                             <h2 id="ble-peripheral-project">BLE Peripheral Project</h2>
 <h3 id="connection-callbacks">Connection callbacks</h3>
 <p><br></p>
@@ -479,13 +495,14 @@ application specifies a connection callback when it begins advertising.  NimBLE
 uses this callback to notify the application that a central has connected to
 your peripheral after receiving an advertisement.  Let's revisit how <em>bleprph</em> specifies its connection callback when advertising:</p>
 <p><br></p>
-<pre class="codehilite"><code class="language-c">    /* Begin advertising. */
-    rc = ble_gap_adv_start(BLE_GAP_DISC_MODE_GEN, BLE_GAP_CONN_MODE_UND,
-                           NULL, 0, NULL, bleprph_on_connect, NULL);
-    if (rc != 0) {
-        BLEPRPH_LOG(ERROR, &quot;error enabling advertisement; rc=%d\n&quot;, rc);
-        return;
-    }</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #177500">/* Begin advertising. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_GAP_DISC_MODE_GEN</span>, <span style="color: #000000">BLE_GAP_CONN_MODE_UND</span>,
+                           <span style="color: #A90D91">NULL</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">bleprph_on_connect</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
+    }
+</pre></div>
 
 
 <p><br></p>
@@ -497,26 +514,27 @@ with the connection; all subsequent events related to this connection are
 communicated through this callback.</p>
 <p>Now let's look at the function that <em>bleprph</em> uses for all its connection
 callbacks: <code>bleprph_on_connect()</code>.</p>
-<pre class="codehilite"><code class="language-c">static int
-bleprph_on_connect(int event, int status, struct ble_gap_conn_ctxt *ctxt,
-                   void *arg)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">bleprph_on_connect</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">event</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">status</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_conn_ctxt</span> <span style="color: #000000">*ctxt</span>,
+                   <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    switch (event) {
-    case BLE_GAP_EVENT_CONN:
-        BLEPRPH_LOG(INFO, &quot;connection %s; status=%d &quot;,
-                    status == 0 ? &quot;up&quot; : &quot;down&quot;, status);
-        bleprph_print_conn_desc(ctxt-&gt;desc);
-        BLEPRPH_LOG(INFO, &quot;\n&quot;);
+    <span style="color: #A90D91">switch</span> (<span style="color: #000000">event</span>) {
+    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_EVENT_CONN</span>:
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;connection %s; status=%d &quot;</span>,
+                    <span style="color: #000000">status</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #C41A16">&quot;up&quot;</span> <span style="color: #000000">:</span> <span style="color: #C41A16">&quot;down&quot;</span>, <span style="color: #000000">status</span>);
+        <span style="color: #000000">bleprph_print_conn_desc</span>(<span style="color: #000000">ctxt-&gt;desc</span>);
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;\n&quot;</span>);
 
-        if (status != 0) {
-            /* Connection terminated; resume advertising. */
-            bleprph_advertise();
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">status</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+            <span style="color: #177500">/* Connection terminated; resume advertising. */</span>
+            <span style="color: #000000">bleprph_advertise</span>();
         }
-        break;
+        <span style="color: #A90D91">break</span>;
     }
 
-    return 0;
-}</code></pre>
+    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+}
+</pre></div>
 
 
 <p><br></p>
@@ -534,18 +552,19 @@ event.  <em>bleprph</em> does nothing more than log some fields of this struct, 
 some apps will likely want to perform further actions, e.g., perform service
 discovery on the connected device.  The <em>struct ble_gap_conn_ctxt</em> type is
 defined as follows:</p>
-<pre class="codehilite"><code class="language-c">struct ble_gap_conn_ctxt {
-    struct ble_gap_conn_desc *desc;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_conn_ctxt</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_conn_desc</span> <span style="color: #000000">*desc</span>;
 
-    union {
-        struct {
-            struct ble_gap_upd_params *self_params;
-            struct ble_gap_upd_params *peer_params;
-        } update;
+    <span style="color: #A90D91">union</span> {
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_upd_params</span> <span style="color: #000000">*self_params</span>;
+            <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_upd_params</span> <span style="color: #000000">*peer_params</span>;
+        } <span style="color: #000000">update</span>;
 
-        struct ble_gap_sec_params *sec_params;
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_sec_params</span> <span style="color: #000000">*sec_params</span>;
     };
-};</code></pre>
+};
+</pre></div>
 
 
 <p><br></p>
@@ -555,14 +574,15 @@ defined as follows:</p>
 <li><em>anonymous union:</em> The contents are event-specific; check the <em>event</em> code to determine which member field (if any) is relevant.</li>
 </ul>
 <p>For events of type <em>BLE_GAP_EVENT_CONN</em>, the anonymous union is not used at all, so the only information carried by the context struct is the connection descriptor.  The <em>struct ble_gap_conn_desc</em> type is defined as follows:</p>
-<pre class="codehilite"><code class="language-c">struct ble_gap_conn_desc {
-    uint8_t peer_addr[6];
-    uint16_t conn_handle;
-    uint16_t conn_itvl;
-    uint16_t conn_latency;
-    uint16_t supervision_timeout;
-    uint8_t peer_addr_type;
-};</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_conn_desc</span> {
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">peer_addr</span>[<span style="color: #1C01CE">6</span>];
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_itvl</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_latency</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">supervision_timeout</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">peer_addr_type</span>;
+};
+</pre></div>
 
 
 <p><br></p>

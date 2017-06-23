@@ -548,6 +548,7 @@
 </div>
                         </div>
                         
+                        
                             <h2 id="system-configuration-and-initialization">System Configuration and Initialization</h2>
 <p>This guide describes how Mynewt manages system configuration and initialization. It shows you how to 
 tell Mynewt to use default or customized values to initialize packages that you develop or use to build a target. This guide:</p>
@@ -580,7 +581,7 @@ the default setting values. </li>
 <p>You use the <code>defs</code> parameter in a <code>syscfg.yml</code> file to define the system configuration settings 
 for a package. <code>defs</code> is a mapping (or associative array) of system configuration setting definitions. It 
 has the following syntax:  </p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.defs:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.defs:
     PKGA_SYSCFG_NAME1:
        description:
        value:
@@ -590,7 +591,8 @@ has the following syntax:  </p>
        description:
        value:
        type:
-       restrictions:</code></pre>
+       restrictions:
+</pre></div>
 
 
 <p><br></p>
@@ -656,54 +658,59 @@ defined in the BSP flash map for your target board.
 <p><strong>Example 1:</strong> The following example is an excerpt from the <code>sys/log/full</code> package <code>syscfg.yml</code> file. It defines the 
 <code>LOG_LEVEL</code> configuration setting to specify the log level and the <code>LOG_NEWTMGR</code> configuration setting to specify whether
 to enable or disable the newtmgr logging feature.</p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.defs:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.defs:
     LOG_LEVEL:
-        description: 'Log Level'
+        description: &#39;Log Level&#39;
         value: 0
         type: raw
 
        ...       
 
     LOG_NEWTMGR: 
-        description: 'Enables or disables newtmgr command tool logging'
-        value: 0</code></pre>
+        description: &#39;Enables or disables newtmgr command tool logging&#39;
+        value: 0
+</pre></div>
 
 
 <p><br></p>
 <p><strong>Example 2:</strong> The following example is an excerpt from the <code>net/nimble/controller</code> package <code>syscfg.yml</code> file. It defines the <code>BLE_LL_PRIO</code> 
 configuration setting with a <code>task_priority</code> type and assigns task priority 0 to the BLE link layer task.</p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.defs:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.defs:
     BLE_LL_PRIO:
-        description: 'BLE link layer task priority'
-        type: 'task_priority'
-        value: 0</code></pre>
+        description: &#39;BLE link layer task priority&#39;
+        type: &#39;task_priority&#39;
+        value: 0
+</pre></div>
 
 
 <p><br></p>
 <p><strong>Example 3:</strong> The following example is an excerpt from the <code>fs/nffs</code> package <code>syscfg.yml</code> file. </p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.defs:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.defs:
     NFFS_FLASH_AREA:
-        description: 'The flash area to use for the Newtron Flash File System'
+        description: &#39;The flash area to use for the Newtron Flash File System&#39;
         type: flash_owner
         value:
         restrictions:
-            - $notnull</code></pre>
+            - $notnull
+</pre></div>
 
 
 <p>It defines the <code>NFFS_FLASH_AREA</code> configuration setting with a <code>flash_owner</code> type indicating that a flash area needs to be specified for the Newtron Flash File System. The flash areas are typically defined by the BSP in its <code>bsp.yml</code> file. For example, the <code>bsp.yml</code> for nrf52dk board (<code>hw/bsp/nrf52dk/bsp.yml</code>)  defines an area named <code>FLASH_AREA_NFFS</code>:</p>
-<pre class="codehilite"><code class="language-no-highlight">    FLASH_AREA_NFFS:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    FLASH_AREA_NFFS:
         user_id: 1
         device: 0
         offset: 0x0007d000
-        size: 12kB</code></pre>
+        size: 12kB
+</pre></div>
 
 
 <p>The <code>syscfg.yml</code> file for the same board (<code>hw/bsp/nrf52dk/syscfg.yml</code>) specifies that the above area be used for <code>NFFS_FLASH_AREA</code>.</p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.vals:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
     CONFIG_FCB_FLASH_AREA: FLASH_AREA_NFFS
     REBOOT_LOG_FLASH_AREA: FLASH_AREA_REBOOT_LOG
     NFFS_FLASH_AREA: FLASH_AREA_NFFS
-    COREDUMP_FLASH_AREA: FLASH_AREA_IMAGE_1</code></pre>
+    COREDUMP_FLASH_AREA: FLASH_AREA_IMAGE_1
+</pre></div>
 
 
 <p>Note that the <code>fs/nffs/syscfg.yml</code> file indicates that the <code>NFFS_FLASH_AREA</code> setting cannot be a null string; so a higher priority package must set a non-null value to it. That is exactly what the BSP package does. For more on priority of packages in setting values, see the next section.</p>
@@ -718,11 +725,12 @@ by other packages.  This mechanism allows:</p>
    values in your target to determine the setting values to override. See <a href="../../../../newt/command_list/newt_target/">newt target</a>. </li>
 </ul>
 <p><code>vals</code> specifies the mappings of system configuration setting name-value pairs as follows: </p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.vals:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
     PKGA_SYSCFG_NAME1: VALUE1
     PKGA_SYSCFG_NAME2: VALUE2
               ...
-    PKGN_SYSCFG_NAME1: VALUEN</code></pre>
+    PKGN_SYSCFG_NAME1: VALUEN
+</pre></div>
 
 
 <p><strong>Note</strong>: The newt tool ignores overrides of undefined system configuration settings.  </p>
@@ -751,7 +759,7 @@ package <code>syscfg.yml</code> files.</p>
 <h4 id="examples-of-overrides">Examples of Overrides</h4>
 <p><strong>Example 4:</strong> The following example is an excerpt from the <code>apps/slinky</code> package <code>syscfg.yml</code> file.  The application package overrides, 
 in addition to other packages, the <code>sys/log/full</code> package system configuration settings defined in <strong>Example 1</strong>. It changes the LOG_NEWTMGR system configuration setting value from <code>0</code> to <code>1</code>.</p>
-<pre class="codehilite"><code class="language-no-highlight">syscfg.vals:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
 
@@ -759,13 +767,14 @@ in addition to other packages, the <code>sys/log/full</code> package system conf
 
     # Enable newtmgr commands.
     STATS_NEWTMGR: 1
-    LOG_NEWTMGR: 1</code></pre>
+    LOG_NEWTMGR: 1
+</pre></div>
 
 
 <p><strong>Example 5:</strong> The following example are excerpts from the <code>hw/bsp/native</code> package <code>bsp.yml</code> and <code>syscfg.yml</code> files. 
 The package defines the flash areas for the BSP flash map in the <code>bsp.yml</code> file, and sets the <code>NFFS_FLASH_AREA</code> 
 configuration setting value to use the flash area named <code>FLASH_AREA_NFFS</code> in the <code>syscfg.yml</code> file.</p>
-<pre class="codehilite"><code class="language-no-highlight">bsp.flash_map:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">bsp.flash_map:
     areas:
         # System areas.
         FLASH_AREA_BOOTLOADER:
@@ -789,7 +798,8 @@ configuration setting value to use the flash area named <code>FLASH_AREA_NFFS</c
 
 
 syscfg.vals:
-    NFFS_FLASH_AREA: FLASH_AREA_NFFS</code></pre>
+    NFFS_FLASH_AREA: FLASH_AREA_NFFS
+</pre></div>
 
 
 <p><br></p>
@@ -813,7 +823,7 @@ For example, to reference the <code>my-config-name</code> setting name,  you use
 from the <code>sys/log/full</code> package <code>log.c</code> file that shows how to reference a setting name.</p>
 <p>The <code>syscfg.h</code> file shows the <code>sys/log/full</code> package definitions and also indicates that <code>app/slinky</code> 
 changed the value for the <code>LOG_NEWTMGR</code> settings. </p>
-<pre class="codehilite"><code class="language-no-highlight">/**
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">/**
  * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
  */
 
@@ -856,14 +866,15 @@ changed the value for the <code>LOG_NEWTMGR</code> settings. </p>
 #define MYNEWT_VAL_LOG_NEWTMGR (1)
 #endif
 
-#endif</code></pre>
+#endif
+</pre></div>
 
 
 <p>The <code>log_init()</code> function in the <code>sys/log/full/src/log.c</code> file initializes the <code>sys/log/full</code> package. It checks the 
 <code>LOG_NEWTMGR</code> setting value, using <code>MYNEWT_VAL(LOG_NEWTMGR)</code>, to determine whether the target application
 has enabled the <code>newtmgr log</code> functionality. It only registers the the callbacks to process the
 <code>newtmgr log</code> commands when the setting value is non-zero.</p>
-<pre class="codehilite"><code class="language-no-highlight">void
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void
 log_init(void)
 {
     int rc;
@@ -883,7 +894,8 @@ log_init(void)
     rc = log_nmgr_register_group();
     SYSINIT_PANIC_ASSERT(rc == 0);
 #endif
-}</code></pre>
+}
+</pre></div>
 
 
 <p><br></p>
@@ -899,7 +911,7 @@ the packages before performing any other processing.</li>
 </ul>
 <p><strong>Note:</strong> You must include the <code>sysinit/sysinit.h</code> header file to access the <code>sysinit()</code> function.</p>
 <p>Here is an example of a <code>main()</code> function:</p>
-<pre class="codehilite"><code class="language-no-highlight">int
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">int
 main(int argc, char **argv)
 {
     /* First, call sysinit() to perform the system and package initialization */
@@ -913,7 +925,8 @@ main(int argc, char **argv)
        os_eventq_run(os_eventq_dflt_get());
     }
     /* main never returns */   
-}</code></pre>
+}
+</pre></div>
 
 
 <p><br></p>
@@ -923,7 +936,8 @@ initialization for the packages in the target.   You can, optionally,
 specify one or more package initialization functions 
 that <code>sysinit_app()</code> calls to initialize a package. </p>
 <p>A package initialization function must have the following prototype:</p>
-<pre class="codehilite"><code class="language-no-highlight">void init_func_name(void)</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void init_func_name(void)
+</pre></div>
 
 
 <p>Package initialization functions are called in stages to ensure that lower priority
@@ -939,13 +953,14 @@ You can specify multiple initialization functions, with a different stage number
 for the parameter values.  This feature allows packages with interdependencies to
 perform initialization in multiple stages.  </p>
 <p>The <code>pkg.init</code> parameter has the following syntax in the <code>pkg.yml</code> file: </p>
-<pre class="codehilite"><code class="language-no-highlight">pkg.init: 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.init: 
     pkg_init_func1_name: pkg_init_func1_stage 
     pkg_init_func2_name: pkg_init_func2_stage 
 
               ...
 
-    pkg_init_funcN_name: pkg_init_funcN_stage</code></pre>
+    pkg_init_funcN_name: pkg_init_funcN_stage
+</pre></div>
 
 
 <p>where <code>pkg_init_func#_name</code> is the C function name of an initialization function, and <code>pkg_init_func#_stage</code> 
@@ -959,7 +974,7 @@ be maintained for future releases and we recommend that you migrate to use the <
 <p>The newt tool processes the <code>pkg.init</code> parameters in all the <code>pkg.yml</code> files for a target,
 generates the <code>sysinit_app()</code> function in the <code>&lt;target-path&gt;/generated/src/&lt;target-name&gt;-sysinit_app.c</code> file, and 
 includes the file in the build. Here is an example <code>sysinit_app()</code> function:</p>
-<pre class="codehilite"><code class="language-no-highlight">**
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">**
  * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
  */
 
@@ -1020,25 +1035,28 @@ sysinit_app(void)
     /* 501.0: mgmt/newtmgr/transport/nmgr_shell */
     nmgr_shell_pkg_init();
 }
-#endif</code></pre>
+#endif
+</pre></div>
 
 
 <p><br></p>
 <h3 id="conditional-configurations">Conditional Configurations</h3>
 <p>You can use the system configuration setting values to conditionally specify parameter values
 in <code>pkg.yml</code> and <code>syscfg.yml</code> files. The syntax is:</p>
-<pre class="codehilite"><code class="language-no-highlight">parameter_name.PKGA_SYSCFG_NAME:
-     parameter_value</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">parameter_name.PKGA_SYSCFG_NAME:
+     parameter_value
+</pre></div>
 
 
 <p>This specifies that <code>parameter_value</code> is only set for <code>parameter_name</code> if the <code>PKGA_SYSCFG_NAME</code> configuration setting value 
 is non-zero. Here is an example from the <code>libs/os</code> package <code>pkg.yml</code> file:</p>
-<pre class="codehilite"><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
     - sys/sysinit
     - util/mem
 
 pkg.deps.OS_CLI
-    - sys/shell</code></pre>
+    - sys/shell
+</pre></div>
 
 
 <p>This example specifies that the <code>os</code> package depends on the <code>sysinit</code> and <code>mem</code> packages, and also depends on the 

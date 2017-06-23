@@ -152,14 +152,14 @@
     
     <option
       value="/develop/os/introduction"
-      selected="selected"
+      
     >
       Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      
+      selected="selected"
     >
       Version: 0.9.0
     </option>
@@ -339,17 +339,6 @@
                 
   
   
-    <li ><a href="../../devmgmt/newtmgr/">Device Management with Newt Manager</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../imgmgr/imgmgr/">Image Manager</a>
   
   
@@ -428,17 +417,6 @@
 
               
           
-              
-                
-  
-  
-    <li ><a href="../../sysinitconfig/sysinitconfig/">System Configuration And Initialization</a>
-  
-  
-    </li>
-
-              
-          
     </ul>
   
     </li>
@@ -506,7 +484,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/v0_9_0/os/introduction">Docs</a></li>
     
     
         
@@ -520,16 +498,25 @@
       
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/json/json.md"
-            class="icon icon-github"> Edit on GitHub</a>
-        
-      </li>
-    
   </ul>
 </div>
                         </div>
+                        
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/os/modules/json/json/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
                         
                             <h1 id="json">JSON</h1>
 <p>JSON is a data interchange format. The description of this format can be found from IETF RFC 4627.</p>
@@ -537,84 +524,88 @@
 <p>This package helps in converting between C data types and JSON data objects. It supports both encoding and decoding.</p>
 <h2 id="data-structures">Data structures</h2>
 <h3 id="encoding">Encoding</h3>
-<pre class="codehilite"><code class="language-c">/* Encoding functions */
-typedef int (*json_write_func_t)(void *buf, char *data,
-        int len);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* Encoding functions */</span>
+<span style="color: #A90D91">typedef</span> <span style="color: #000000">int</span> (<span style="color: #000000">*</span><span style="color: #A90D91">json_write_func_t</span>)(<span style="color: #A90D91">void</span> <span style="color: #000000">*buf</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">*data</span>,
+        <span style="color: #A90D91">int</span> <span style="color: #000000">len</span>);
 
-struct json_encoder {
-    json_write_func_t je_write;
-    void *je_arg;
-    int je_wr_commas:1;
-    char je_encode_buf[64];
-};</code></pre>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">json_encoder</span> {
+    <span style="color: #A90D91">json_write_func_t</span> <span style="color: #000000">je_write</span>;
+    <span style="color: #A90D91">void</span> <span style="color: #000000">*je_arg</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">je_wr_commas</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">char</span> <span style="color: #000000">je_encode_buf</span>[<span style="color: #1C01CE">64</span>];
+};
+</pre></div>
 
 
 <p>Here's the data structure encoder funtions use, and it must be initialized by the caller. The key element is <em>je_write</em>, which is a function pointer which gets called whenever encoding routine is ready with encoded data. The element <em>je_arg</em> is passed to <em>je_write</em> as the first argument. The rest of the structure contents are for internal state management.
 This function should collect all the data encoder function generates. It can collect this data to a flat buffer, chain of mbufs or even stream through.</p>
-<pre class="codehilite"><code class="language-c">/**
- * For encode.  The contents of a JSON value to encode.
- */
-struct json_value {
-    uint8_t jv_pad1;
-    uint8_t jv_type;
-    uint16_t jv_len;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
+<span style="color: #177500"> * For encode.  The contents of a JSON value to encode.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">json_value</span> {
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">jv_pad1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">jv_type</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">jv_len</span>;
 
-    union {
-        uint64_t u;
-        float fl;
-        char *str;
-        struct {
-            char **keys;
-            struct json_value **values;
-        } composite;
-    } jv_val;
-};</code></pre>
+    <span style="color: #A90D91">union</span> {
+        <span style="color: #A90D91">uint64_t</span> <span style="color: #000000">u</span>;
+        <span style="color: #A90D91">float</span> <span style="color: #000000">fl</span>;
+        <span style="color: #A90D91">char</span> <span style="color: #000000">*str</span>;
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #A90D91">char</span> <span style="color: #000000">**keys</span>;
+            <span style="color: #A90D91">struct</span> <span style="color: #000000">json_value</span> <span style="color: #000000">**values</span>;
+        } <span style="color: #000000">composite</span>;
+    } <span style="color: #000000">jv_val</span>;
+};
+</pre></div>
 
 
 <p>This data structure is filled with data to be encoded. It is best to fill this using the macros <em>JSON_VALUE_STRING()</em> or <em>JSON_VALUE_STRINGN()</em> when value is string, <em>JSON_VALUE_INT()</em> when value is an integer, and so forth.</p>
 <h3 id="decoding">Decoding</h3>
-<pre class="codehilite"><code class="language-c">/* when you implement a json buffer, you must implement these functions */
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* when you implement a json buffer, you must implement these functions */</span>
 
-/* returns the next character in the buffer or '\0'*/
-typedef char (*json_buffer_read_next_byte_t)(struct json_buffer *);
-/* returns the previous character in the buffer or '\0' */
-typedef char (*json_buffer_read_prev_byte_t)(struct json_buffer *);
-/* returns the number of characters read or zero */
-typedef int (*json_buffer_readn_t)(struct json_buffer *, char *buf, int n);
+<span style="color: #177500">/* returns the next character in the buffer or &#39;\0&#39;*/</span>
+<span style="color: #A90D91">typedef</span> <span style="color: #000000">char</span> (<span style="color: #000000">*</span><span style="color: #A90D91">json_buffer_read_next_byte_t</span>)(<span style="color: #A90D91">struct</span> <span style="color: #000000">json_buffer</span> <span style="color: #000000">*</span>);
+<span style="color: #177500">/* returns the previous character in the buffer or &#39;\0&#39; */</span>
+<span style="color: #A90D91">typedef</span> <span style="color: #000000">char</span> (<span style="color: #000000">*</span><span style="color: #A90D91">json_buffer_read_prev_byte_t</span>)(<span style="color: #A90D91">struct</span> <span style="color: #000000">json_buffer</span> <span style="color: #000000">*</span>);
+<span style="color: #177500">/* returns the number of characters read or zero */</span>
+<span style="color: #A90D91">typedef</span> <span style="color: #000000">int</span> (<span style="color: #000000">*</span><span style="color: #A90D91">json_buffer_readn_t</span>)(<span style="color: #A90D91">struct</span> <span style="color: #000000">json_buffer</span> <span style="color: #000000">*</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">*buf</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">n</span>);
 
-struct json_buffer {
-    json_buffer_readn_t jb_readn;
-    json_buffer_read_next_byte_t jb_read_next;
-    json_buffer_read_prev_byte_t jb_read_prev;
-};</code></pre>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">json_buffer</span> {
+    <span style="color: #A90D91">json_buffer_readn_t</span> <span style="color: #000000">jb_readn</span>;
+    <span style="color: #A90D91">json_buffer_read_next_byte_t</span> <span style="color: #000000">jb_read_next</span>;
+    <span style="color: #A90D91">json_buffer_read_prev_byte_t</span> <span style="color: #000000">jb_read_prev</span>;
+};
+</pre></div>
 
 
 <p>Function pointers within this structure are used by decoder when it is reading in more data to decode.</p>
-<pre class="codehilite"><code class="language-c">struct json_attr_t {
-    char *attribute;
-    json_type type;
-    union {
-        int *integer;
-        unsigned int *uinteger;
-        double *real;
-        char *string;
-        bool *boolean;
-        char *character;
-        struct json_array_t array;
-        size_t offset;
-    } addr;
-    union {
-        int integer;
-        unsigned int uinteger;
-        double real;
-        bool boolean;
-        char character;
-        char *check;
-    } dflt;
-    size_t len;
-    const struct json_enum_t *map;
-    bool nodefault;
-};</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #A90D91">json_attr_t</span> {
+    <span style="color: #A90D91">char</span> <span style="color: #000000">*attribute</span>;
+    <span style="color: #000000">json_type</span> <span style="color: #000000">type</span>;
+    <span style="color: #A90D91">union</span> {
+        <span style="color: #A90D91">int</span> <span style="color: #000000">*integer</span>;
+        <span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">int</span> <span style="color: #000000">*uinteger</span>;
+        <span style="color: #A90D91">double</span> <span style="color: #000000">*real</span>;
+        <span style="color: #A90D91">char</span> <span style="color: #000000">*string</span>;
+        <span style="color: #A90D91">bool</span> <span style="color: #000000">*boolean</span>;
+        <span style="color: #A90D91">char</span> <span style="color: #000000">*character</span>;
+        <span style="color: #A90D91">struct</span> <span style="color: #A90D91">json_array_t</span> <span style="color: #000000">array</span>;
+        <span style="color: #A90D91">size_t</span> <span style="color: #000000">offset</span>;
+    } <span style="color: #000000">addr</span>;
+    <span style="color: #A90D91">union</span> {
+        <span style="color: #A90D91">int</span> <span style="color: #000000">integer</span>;
+        <span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">int</span> <span style="color: #000000">uinteger</span>;
+        <span style="color: #A90D91">double</span> <span style="color: #000000">real</span>;
+        <span style="color: #A90D91">bool</span> <span style="color: #000000">boolean</span>;
+        <span style="color: #A90D91">char</span> <span style="color: #000000">character</span>;
+        <span style="color: #A90D91">char</span> <span style="color: #000000">*check</span>;
+    } <span style="color: #000000">dflt</span>;
+    <span style="color: #A90D91">size_t</span> <span style="color: #000000">len</span>;
+    <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #A90D91">json_enum_t</span> <span style="color: #000000">*map</span>;
+    <span style="color: #A90D91">bool</span> <span style="color: #000000">nodefault</span>;
+};
+</pre></div>
 
 
 <p>This structure tells the decoder about a particular name/value pair. Structure must be filled in before calling the decoder routine <em>json_read_object()</em>.</p>

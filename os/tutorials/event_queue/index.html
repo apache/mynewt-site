@@ -152,14 +152,14 @@
     
     <option
       value="/develop/os/introduction"
-      selected="selected"
+      
     >
       Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      
+      selected="selected"
     >
       Version: 0.9.0
     </option>
@@ -408,7 +408,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/v0_9_0/os/introduction">Docs</a></li>
     
     
         
@@ -424,16 +424,25 @@
       
     
     
-      <li class="wy-breadcrumbs-aside">
-        
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/tutorials/event_queue.md"
-            class="icon icon-github"> Edit on GitHub</a>
-        
-      </li>
-    
   </ul>
 </div>
                         </div>
+                        
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/os/tutorials/event_queue/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
                         
                             <h2 id="how-to-define-a-task-which-uses-event-queues-to-manage-multiple-events">How to define a task which uses event queues to manage multiple events</h2>
 <h3 id="introduction">Introduction</h3>
@@ -450,54 +459,57 @@
 <p><br> </p>
 <h4 id="create-application">Create application</h4>
 <p>Here's what the pkg.yml looks for the application.</p>
-<pre class="codehilite"><code class="language-no-highlight">[marko@IsMyLaptop:~/src/events]$ cat apps/event_sample/pkg.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[marko@IsMyLaptop:~/src/events]$ cat apps/event_sample/pkg.yml
 pkg.name: apps/event_sample
 pkg.type: app
 
 pkg.deps:
     - &quot;@apache-mynewt-core/libs/os&quot;
     - &quot;@apache-mynewt-core/hw/hal&quot;
-    - &quot;@apache-mynewt-core/libs/console/stub&quot;</code></pre>
+    - &quot;@apache-mynewt-core/libs/console/stub&quot;
+</pre></div>
 
 
 <p><br></p>
 <h4 id="initialize-the-event-queue-structure">Initialize the event queue structure</h4>
 <p>This must be done before anyone tries to place events to the queue. Here it's done before any task gets created. Initialization is done by calling <em>os_eventq_init()</em>.</p>
-<pre class="codehilite"><code class="language-c">#define MY_TASK_PRIO        4
-#define MY_TASK_STACK_SZ    512
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define MY_TASK_PRIO        4</span>
+<span style="color: #633820">#define MY_TASK_STACK_SZ    512</span>
 
-static struct os_eventq my_eventq;
-static os_stack_t my_task_stack[MY_TASK_STACK_SZ];
-static struct os_task my_task_str;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">my_eventq</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">my_task_stack</span>[<span style="color: #000000">MY_TASK_STACK_SZ</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">my_task_str</span>;
 
-void
-init_tasks(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
-    struct os_task taskid;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">taskid</span>;
 
-    os_eventq_init(&amp;my_eventq);
-    os_task_init(&amp;my_task_str, &quot;task&quot;, my_task, NULL, MY_TASK_PRIO,
-        OS_WAIT_FOREVER, my_task_stack, MY_TASK_STACK_SZ);</code></pre>
+    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;my_eventq</span>);
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;my_task_str</span>, <span style="color: #C41A16">&quot;task&quot;</span>, <span style="color: #000000">my_task</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">MY_TASK_PRIO</span>,
+        <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">my_task_stack</span>, <span style="color: #000000">MY_TASK_STACK_SZ</span>);
+</pre></div>
 
 
 <p><br></p>
 <h4 id="processing-events">Processing events</h4>
 <p>Here event processing is done inside <em>my_task</em>. The main loop of the task is pulling events from the queue, and then taking action. We look at the type of the event to figure out what to do.</p>
 <p>The code snippet shows what the main loop of the event handler looks like. Events are removed from the head of the queue using os_eventq_get</p>
-<pre class="codehilite"><code class="language-c">void
-my_task(void *arg)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
+<span style="color: #000000">my_task</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    struct os_event *ev;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
 
-    while (1) {
-        ev = os_eventq_get(&amp;my_eventq);
-        switch (ev-&gt;ev_type) {
-        /* more event types here */
-        default:
-            assert(0);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;my_eventq</span>);
+        <span style="color: #A90D91">switch</span> (<span style="color: #000000">ev-&gt;ev_type</span>) {
+        <span style="color: #177500">/* more event types here */</span>
+        <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
+            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
         }
     }
-}</code></pre>
+}
+</pre></div>
 
 
 <p><br></p>
@@ -506,8 +518,9 @@ my_task(void *arg)
 <p>Reserved event types are defined in <em>libs/os/include/os/os_eventq.h</em>. One example of a reserved type is OS_EVENT_T_TIMER, which is used as type in OS callouts.</p>
 <p>You should start your event numbers from <em>OS_EVENT_T_PERUSER</em>, and go higher.</p>
 <p>You are going to generate events from GPIO interrupt handler, from another task as well as from a callout. OS callout already has a type, but you'll need to define types for the other uses.</p>
-<pre class="codehilite"><code class="language-c">#define MY_TASK_GPIO_EVENT  (OS_EVENT_T_PERUSER)
-#define MY_TASK_TASK_EVENT  (OS_EVENT_T_PERUSER + 1)</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define MY_TASK_GPIO_EVENT  (OS_EVENT_T_PERUSER)</span>
+<span style="color: #633820">#define MY_TASK_TASK_EVENT  (OS_EVENT_T_PERUSER + 1)</span>
+</pre></div>
 
 
 <p><br></p>
@@ -515,30 +528,31 @@ my_task(void *arg)
 <p>Events are posted to a queue by calling <em>os_eventq_put()</em>. You need to preallocate memory for the event structure. Here it's done by declaring the event structure as a global variable.</p>
 <p>Note that you can call <em>os_eventq_put()</em> with an event which has already been queued. In that case, the call has no effect; the position of the event is not changed within the queue.</p>
 <p>In the code snippet we declare the os_event structure, and initialize it. We also create the event generating task, and periodically post event to the event queue.</p>
-<pre class="codehilite"><code class="language-c">#define GEN_TASK_PRIO       3
-#define GEN_TASK_STACK_SZ   512
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define GEN_TASK_PRIO       3</span>
+<span style="color: #633820">#define GEN_TASK_STACK_SZ   512</span>
 
-static struct os_event gen_task_ev;
-static os_stack_t gen_task_stack[GEN_TASK_STACK_SZ];
-static struct os_task gen_task_str;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">gen_task_ev</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">gen_task_stack</span>[<span style="color: #000000">GEN_TASK_STACK_SZ</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">gen_task_str</span>;
 
-void
-gen_task(void *arg)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">gen_task</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    while (1) {
-        os_time_delay(OS_TICKS_PER_SEC / 4);
-        os_eventq_put(&amp;my_eventq, &amp;gen_task_ev);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC</span> <span style="color: #000000">/</span> <span style="color: #1C01CE">4</span>);
+        <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;my_eventq</span>, <span style="color: #000000">&amp;gen_task_ev</span>);
     }
 }
 
-void
-init_tasks(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
-    /* .... */
-    gen_task_ev.ev_type = MY_TASK_TASK_EVENT;
-    os_task_init(&amp;gen_task_str, &quot;gen_task&quot;, gen_task, NULL, GEN_TASK_PRIO,
-        OS_WAIT_FOREVER, gen_task_stack, GEN_TASK_STACK_SZ);
-}</code></pre>
+    <span style="color: #177500">/* .... */</span>
+    <span style="color: #000000">gen_task_ev</span>.<span style="color: #000000">ev_type</span> <span style="color: #000000">=</span> <span style="color: #000000">MY_TASK_TASK_EVENT</span>;
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;gen_task_str</span>, <span style="color: #C41A16">&quot;gen_task&quot;</span>, <span style="color: #000000">gen_task</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">GEN_TASK_PRIO</span>,
+        <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">gen_task_stack</span>, <span style="color: #000000">GEN_TASK_STACK_SZ</span>);
+}
+</pre></div>
 
 
 <p><br></p>
@@ -546,16 +560,17 @@ init_tasks(void)
 <p>You can get timer events delivered to your task's event queue with OS callout. Check <a href="../../core_os/callout/callout/">callout documentation</a> for description on how to use the API.</p>
 <p>For this example, you'll use only one type of callout; so you can use the simpler structure.</p>
 <p>In the code snippet we declare the os_callout structure and initialize it. Then we arm the timer.</p>
-<pre class="codehilite"><code class="language-c">static struct os_callout my_callout;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">my_callout</span>;
 
-void
-init_tasks(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
-    /* .... */
+    <span style="color: #177500">/* .... */</span>
 
-    os_callout_init(&amp;my_callout, &amp;my_eventq, NULL);
-    os_callout_reset(&amp;my_callout, OS_TICKS_PER_SEC);
-}</code></pre>
+    <span style="color: #000000">os_callout_init</span>(<span style="color: #000000">&amp;my_callout</span>, <span style="color: #000000">&amp;my_eventq</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;my_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+}
+</pre></div>
 
 
 <p><br></p>
@@ -563,178 +578,182 @@ init_tasks(void)
 <p>Another place where posting events makes sense is from an interrupt handler. In this tutorial you will do it when GPIO changes state.</p>
 <p>You'll use HAL GPIO interface to register a routine which is getting called from the interrupt handler context. This routine will then post event to your queue.</p>
 <p>On STM32F3Discovery board, there is a button connected to PA0. The identifier for this GPIO pin is 0.</p>
-<pre class="codehilite"><code class="language-c">static struct os_event gpio_ev;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">gpio_ev</span>;
 
-void
-init_tasks(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
-    /* .... */
+    <span style="color: #177500">/* .... */</span>
 
-    gpio_ev.ev_type = MY_TASK_GPIO_EVENT;
-    hal_gpio_irq_init(0, my_gpio_irq, NULL, GPIO_TRIG_RISING,
-        GPIO_PULL_NONE);
-    hal_gpio_irq_enable(0);
+    <span style="color: #000000">gpio_ev</span>.<span style="color: #000000">ev_type</span> <span style="color: #000000">=</span> <span style="color: #000000">MY_TASK_GPIO_EVENT</span>;
+    <span style="color: #000000">hal_gpio_irq_init</span>(<span style="color: #1C01CE">0</span>, <span style="color: #000000">my_gpio_irq</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">GPIO_TRIG_RISING</span>,
+        <span style="color: #000000">GPIO_PULL_NONE</span>);
+    <span style="color: #000000">hal_gpio_irq_enable</span>(<span style="color: #1C01CE">0</span>);
 }
 
-static void
-my_gpio_irq(void *arg)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">my_gpio_irq</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    os_eventq_put(&amp;my_eventq, &amp;gpio_ev);
-}</code></pre>
+    <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;my_eventq</span>, <span style="color: #000000">&amp;gpio_ev</span>);
+}
+</pre></div>
 
 
 <p><br></p>
 <h4 id="event-processing-finalized">Event processing finalized</h4>
 <p>Now that you are posting events from different sources, you will fill in the parts in the task main loop to trigger different behaviors depending on event type.</p>
 <p>You'll drive different LEDs depending on what type of event arrived. LEDs on this board are connected to PE8, PE9, PE10 and so on. These have GPIO identifiers starting from 72 onwards.</p>
-<pre class="codehilite"><code class="language-c">#define TASK_LED        72
-#define CALLOUT_LED     73
-#define GPIO_LED        74
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define TASK_LED        72</span>
+<span style="color: #633820">#define CALLOUT_LED     73</span>
+<span style="color: #633820">#define GPIO_LED        74</span>
 
-void
-init_tasks(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
-    /* .... */
-    hal_gpio_init_out(TASK_LED, 1);
-    hal_gpio_init_out(CALLOUT_LED, 1);
-    hal_gpio_init_out(GPIO_LED, 1);
-}</code></pre>
+    <span style="color: #177500">/* .... */</span>
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">TASK_LED</span>, <span style="color: #1C01CE">1</span>);
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">CALLOUT_LED</span>, <span style="color: #1C01CE">1</span>);
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">GPIO_LED</span>, <span style="color: #1C01CE">1</span>);
+}
+</pre></div>
 
 
 <p>And here is the new main loop for your task. Note that when callout event arrives, we re-arm the callout.</p>
-<pre class="codehilite"><code class="language-c">void
-my_task(void *arg)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
+<span style="color: #000000">my_task</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    struct os_event *ev;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
 
-    while (1) {
-        ev = os_eventq_get(&amp;my_eventq);
-        switch (ev-&gt;ev_type) {
-        case MY_TASK_TASK_EVENT:
-            hal_gpio_toggle(TASK_LED);
-            break;
-        case OS_EVENT_T_TIMER:
-            hal_gpio_toggle(CALLOUT_LED);
-            os_callout_reset(&amp;my_callout, OS_TICKS_PER_SEC / 2);
-            break;
-        case MY_TASK_GPIO_EVENT:
-            hal_gpio_toggle(GPIO_LED);
-            break;
-        default:
-            assert(0);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;my_eventq</span>);
+        <span style="color: #A90D91">switch</span> (<span style="color: #000000">ev-&gt;ev_type</span>) {
+        <span style="color: #A90D91">case</span> <span style="color: #000000">MY_TASK_TASK_EVENT</span>:
+            <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">TASK_LED</span>);
+            <span style="color: #A90D91">break</span>;
+        <span style="color: #A90D91">case</span> <span style="color: #000000">OS_EVENT_T_TIMER</span>:
+            <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">CALLOUT_LED</span>);
+            <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;my_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span> <span style="color: #000000">/</span> <span style="color: #1C01CE">2</span>);
+            <span style="color: #A90D91">break</span>;
+        <span style="color: #A90D91">case</span> <span style="color: #000000">MY_TASK_GPIO_EVENT</span>:
+            <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">GPIO_LED</span>);
+            <span style="color: #A90D91">break</span>;
+        <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
+            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
         }
     }
-}</code></pre>
+}
+</pre></div>
 
 
 <p><br></p>
 <p>Now you're done. Once you load this to your board, the task LED will blink at an interval of 250ms, the callout LED with an interval of 500ms, and the GPIO LED every time you press the button.</p>
 <p><br></p>
 <h3 id="code-for-the-example">Code for the example</h3>
-<pre class="codehilite"><code class="language-c">#include &lt;os/os.h&gt;
-#include &lt;bsp/bsp.h&gt;
-#include &lt;hal/hal_gpio.h&gt;
-#include &lt;assert.h&gt;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &lt;os/os.h&gt;</span>
+<span style="color: #633820">#include &lt;bsp/bsp.h&gt;</span>
+<span style="color: #633820">#include &lt;hal/hal_gpio.h&gt;</span>
+<span style="color: #633820">#include &lt;assert.h&gt;</span>
 
 
-#define MY_TASK_PRIO        4
-#define MY_TASK_STACK_SZ    512
+<span style="color: #633820">#define MY_TASK_PRIO        4</span>
+<span style="color: #633820">#define MY_TASK_STACK_SZ    512</span>
 
-#define GEN_TASK_PRIO       3
-#define GEN_TASK_STACK_SZ   512
+<span style="color: #633820">#define GEN_TASK_PRIO       3</span>
+<span style="color: #633820">#define GEN_TASK_STACK_SZ   512</span>
 
-#define MY_TASK_GPIO_EVENT  (OS_EVENT_T_PERUSER)
-#define MY_TASK_TASK_EVENT  (OS_EVENT_T_PERUSER + 1)
+<span style="color: #633820">#define MY_TASK_GPIO_EVENT  (OS_EVENT_T_PERUSER)</span>
+<span style="color: #633820">#define MY_TASK_TASK_EVENT  (OS_EVENT_T_PERUSER + 1)</span>
 
-#define TASK_LED        72
-#define CALLOUT_LED     73
-#define GPIO_LED        74
+<span style="color: #633820">#define TASK_LED        72</span>
+<span style="color: #633820">#define CALLOUT_LED     73</span>
+<span style="color: #633820">#define GPIO_LED        74</span>
 
-static struct os_eventq my_eventq;
-static os_stack_t my_task_stack[MY_TASK_STACK_SZ];
-static struct os_task my_task_str;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">my_eventq</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">my_task_stack</span>[<span style="color: #000000">MY_TASK_STACK_SZ</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">my_task_str</span>;
 
-static struct os_event gen_task_ev;
-static os_stack_t gen_task_stack[GEN_TASK_STACK_SZ];
-static struct os_task gen_task_str;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">gen_task_ev</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">gen_task_stack</span>[<span style="color: #000000">GEN_TASK_STACK_SZ</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">gen_task_str</span>;
 
-static struct os_callout my_callout;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">my_callout</span>;
 
-static struct os_event gpio_ev;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">gpio_ev</span>;
 
-void
-my_task(void *arg)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">my_task</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    struct os_event *ev;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
 
-    while (1) {
-        ev = os_eventq_get(&amp;my_eventq);
-        switch (ev-&gt;ev_type) {
-        case MY_TASK_TASK_EVENT:
-            hal_gpio_toggle(TASK_LED);
-            break;
-        case OS_EVENT_T_TIMER:
-            hal_gpio_toggle(CALLOUT_LED);
-            os_callout_reset(&amp;my_callout, OS_TICKS_PER_SEC / 2);
-            break;
-        case MY_TASK_GPIO_EVENT:
-            hal_gpio_toggle(GPIO_LED);
-            break;
-        default:
-            assert(0);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;my_eventq</span>);
+        <span style="color: #A90D91">switch</span> (<span style="color: #000000">ev-&gt;ev_type</span>) {
+        <span style="color: #A90D91">case</span> <span style="color: #000000">MY_TASK_TASK_EVENT</span>:
+            <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">TASK_LED</span>);
+            <span style="color: #A90D91">break</span>;
+        <span style="color: #A90D91">case</span> <span style="color: #000000">OS_EVENT_T_TIMER</span>:
+            <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">CALLOUT_LED</span>);
+            <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;my_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span> <span style="color: #000000">/</span> <span style="color: #1C01CE">2</span>);
+            <span style="color: #A90D91">break</span>;
+        <span style="color: #A90D91">case</span> <span style="color: #000000">MY_TASK_GPIO_EVENT</span>:
+            <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">GPIO_LED</span>);
+            <span style="color: #A90D91">break</span>;
+        <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
+            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
         }
     }
 }
 
-static void
-my_gpio_irq(void *arg)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">my_gpio_irq</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    os_eventq_put(&amp;my_eventq, &amp;gpio_ev);
+    <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;my_eventq</span>, <span style="color: #000000">&amp;gpio_ev</span>);
 }
 
-void
-gen_task(void *arg)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">gen_task</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    while (1) {
-        os_time_delay(OS_TICKS_PER_SEC / 4);
-        os_eventq_put(&amp;my_eventq, &amp;gen_task_ev);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC</span> <span style="color: #000000">/</span> <span style="color: #1C01CE">4</span>);
+        <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;my_eventq</span>, <span style="color: #000000">&amp;gen_task_ev</span>);
     }
 }
 
-void
-init_tasks(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
-    os_eventq_init(&amp;my_eventq);
-    os_task_init(&amp;my_task_str, &quot;task&quot;, my_task, NULL, MY_TASK_PRIO,
-        OS_WAIT_FOREVER, my_task_stack, MY_TASK_STACK_SZ);
+    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;my_eventq</span>);
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;my_task_str</span>, <span style="color: #C41A16">&quot;task&quot;</span>, <span style="color: #000000">my_task</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">MY_TASK_PRIO</span>,
+        <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">my_task_stack</span>, <span style="color: #000000">MY_TASK_STACK_SZ</span>);
 
-    gen_task_ev.ev_type = MY_TASK_TASK_EVENT;
-    os_task_init(&amp;gen_task_str, &quot;gen_task&quot;, gen_task, NULL, GEN_TASK_PRIO,
-        OS_WAIT_FOREVER, gen_task_stack, GEN_TASK_STACK_SZ);
+    <span style="color: #000000">gen_task_ev</span>.<span style="color: #000000">ev_type</span> <span style="color: #000000">=</span> <span style="color: #000000">MY_TASK_TASK_EVENT</span>;
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;gen_task_str</span>, <span style="color: #C41A16">&quot;gen_task&quot;</span>, <span style="color: #000000">gen_task</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">GEN_TASK_PRIO</span>,
+        <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">gen_task_stack</span>, <span style="color: #000000">GEN_TASK_STACK_SZ</span>);
 
-    os_callout_init(&amp;my_callout, &amp;my_eventq, NULL);
-    os_callout_reset(&amp;my_callout, OS_TICKS_PER_SEC);
+    <span style="color: #000000">os_callout_init</span>(<span style="color: #000000">&amp;my_callout</span>, <span style="color: #000000">&amp;my_eventq</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;my_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
 
-    gpio_ev.ev_type = MY_TASK_GPIO_EVENT;
-    hal_gpio_irq_init(0, my_gpio_irq, NULL, GPIO_TRIG_RISING,
-        GPIO_PULL_NONE);
-    hal_gpio_irq_enable(0);
+    <span style="color: #000000">gpio_ev</span>.<span style="color: #000000">ev_type</span> <span style="color: #000000">=</span> <span style="color: #000000">MY_TASK_GPIO_EVENT</span>;
+    <span style="color: #000000">hal_gpio_irq_init</span>(<span style="color: #1C01CE">0</span>, <span style="color: #000000">my_gpio_irq</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">GPIO_TRIG_RISING</span>,
+        <span style="color: #000000">GPIO_PULL_NONE</span>);
+    <span style="color: #000000">hal_gpio_irq_enable</span>(<span style="color: #1C01CE">0</span>);
 
-    hal_gpio_init_out(TASK_LED, 1);
-    hal_gpio_init_out(CALLOUT_LED, 1);
-    hal_gpio_init_out(GPIO_LED, 1);
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">TASK_LED</span>, <span style="color: #1C01CE">1</span>);
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">CALLOUT_LED</span>, <span style="color: #1C01CE">1</span>);
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">GPIO_LED</span>, <span style="color: #1C01CE">1</span>);
 }
 
-int
-main(int argc, char **argv)
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
-    os_init();
+    <span style="color: #000000">os_init</span>();
 
-    init_tasks();
-    os_start();
-    assert(0);
-    return 0;
-}</code></pre>
+    <span style="color: #000000">init_tasks</span>();
+    <span style="color: #000000">os_start</span>();
+    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
+    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+}
+</pre></div>
                         
                         <div class="row">
                             

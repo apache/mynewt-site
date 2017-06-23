@@ -443,50 +443,67 @@
 </div>
                         </div>
                         
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/network/ble/ini_stack/ble_mempool/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
+                        
                             <h2 id="create-the-system-memory-buffer-pool">Create the System Memory Buffer Pool</h2>
 <p>The Nimble stack allocates packet buffers (called mbufs) from the system memory buffer pool (msys). The system memory buffer pool and mbufs are described in the OS manual; we suggest reading that section in order to become familiar with mbufs if you are not already familiar with them. Note that the application itself (the unique application code that you are writing) does not need to use mbufs and none of the BLE host API exposed to the application developer uses them. However, the Nimble stack does require the existence of the system memory pool.</p>
 <p>Creating the memory pool and registering it with the system memory buffer pool can be a bit tricky the first time. However, using the template provided below it should be much easier. The header file /net/nimble/include/nimble/ble.h, which should be included in main.c, contains some MBUF macros that you will need to create the memory pool used by msys. The macro <code>BLE_MBUF_PAYLOAD_SIZE</code> defines the maximum amount of user payload, plus overhead, that a link layer BLE PDU can contain. The macro <code>BLE_MBUF_MEMBLOCK_OVERHEAD</code> is the amount of overhead required by the Nimble stack in each memory block used by the mbuf pool. The macro <code>MBUF_NUM_MBUFS</code> defines the number of mbufs in the mbuf pool and is defined locally. The user must determine, based on application requirements and platform memory size, how many mbufs are required. For example, if your application expects to have many simultaneous connections you may want to increase the size of the mbuf pool. In the example below, we assume you are only using a small number of active connections (2 to 3).</p>
 <p>A note about the size of the mbufs and <code>BLE_MBUF_PAYLOAD_SIZE</code>. Msys allows for multiple mbuf pools of various size. Currently, the Nimble stack requires that msys has an mbuf pool registered that can accommodate the maximum size BLE LL PDU. Thus, we only show the creation of one mbuf pool of maximum size mbufs which gets registered to the system mbuf memory pool. We plan on modifying the Nimble stack so that smaller mbufs can be used (to conserve memory) but at this point in time you cannot modify <code>BLE_MBUF_PAYLOAD_SIZE</code>. Furthermore, you cannot add a mbuf pool of smaller size elements to the msys pool as the msys code might then allocate a mbuf that is too small for the nimble stack.</p>
-<pre class="codehilite"><code class="language-c">/* Create a mbuf pool of BLE mbufs */
-#define MBUF_NUM_MBUFS      (8)
-#define MBUF_BUF_SIZE       OS_ALIGN(BLE_MBUF_PAYLOAD_SIZE, 4)
-#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + BLE_MBUF_MEMBLOCK_OVERHEAD)
-#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)
-
-struct os_mbuf_pool g_mbuf_pool;
-struct os_mempool g_mbuf_mempool;
-os_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];
-
-int
-main(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc"><span style="color: #177500">/* Create a mbuf pool of BLE mbufs */</span>
+</span><span style="background-color: #ffffcc"><span style="color: #633820">#define MBUF_NUM_MBUFS      (8)</span>
+</span><span style="background-color: #ffffcc"><span style="color: #633820">#define MBUF_BUF_SIZE       OS_ALIGN(BLE_MBUF_PAYLOAD_SIZE, 4)</span>
+</span><span style="background-color: #ffffcc"><span style="color: #633820">#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + BLE_MBUF_MEMBLOCK_OVERHEAD)</span>
+</span><span style="background-color: #ffffcc"><span style="color: #633820">#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)</span>
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pool</span> <span style="color: #000000">g_mbuf_pool</span>;
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">g_mbuf_mempool</span>;
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">os_membuf_t</span> <span style="color: #000000">g_mbuf_buffer</span>[<span style="color: #000000">MBUF_MEMPOOL_SIZE</span>];
+</span>
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>)
 {
-    int rc;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Initialize OS */
-    os_init();
+    <span style="color: #177500">/* Initialize OS */</span>
+    <span style="color: #000000">os_init</span>();
 
-    /* Set cputime to count at 1 usec increments */
-    rc = cputime_init(1000000);
-    assert(rc == 0);
+    <span style="color: #177500">/* Set cputime to count at 1 usec increments */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">cputime_init</span>(<span style="color: #1C01CE">1000000</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
-    /* Create memory pool for Nimble packets and register with Msys */
-    rc = os_mempool_init(&amp;g_mbuf_mempool, MBUF_NUM_MBUFS,
-            MBUF_MEMBLOCK_SIZE, &amp;g_mbuf_buffer[0], &quot;mbuf_pool&quot;);
-    assert(rc == 0);
+<span style="background-color: #ffffcc">    <span style="color: #177500">/* Create memory pool for Nimble packets and register with Msys */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mempool_init</span>(<span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_NUM_MBUFS</span>,
+</span><span style="background-color: #ffffcc">            <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>, <span style="color: #000000">&amp;g_mbuf_buffer</span>[<span style="color: #1C01CE">0</span>], <span style="color: #C41A16">&quot;mbuf_pool&quot;</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_pool_init</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>, <span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>,
+</span><span style="background-color: #ffffcc">                           <span style="color: #000000">MBUF_NUM_MBUFS</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_msys_register</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span>
+    <span style="color: #177500">/* Start the OS */</span>
+    <span style="color: #000000">os_start</span>();
 
-    rc = os_mbuf_pool_init(&amp;g_mbuf_pool, &amp;g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
-                           MBUF_NUM_MBUFS);
-    assert(rc == 0);
-
-    rc = os_msys_register(&amp;g_mbuf_pool);
-    assert(rc == 0);
-
-    /* Start the OS */
-    os_start();
-
-    /* os start should never return. If it does, this should be an error */
-    assert(0);
-}</code></pre>
+    <span style="color: #177500">/* os start should never return. If it does, this should be an error */</span>
+    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
+}
+</pre></div>
 
 
 <p><br></p>

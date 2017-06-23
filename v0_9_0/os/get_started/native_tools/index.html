@@ -384,6 +384,22 @@
 </div>
                         </div>
                         
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/os/get_started/native_tools/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
+                        
                             <h1 id="installing-native-mynewt-tools">Installing Native Mynewt Tools</h1>
 <p>This page shows how to install tools for native Mynewt targets (simulated targets on your laptop/computer) without using a Docker container. In other words, it allows you to run Mynewt OS as a native application on your Mac or Linux machine to simulate a target and use the Newt tool running natively on your machine to manage the simulated target. It also allows you to run the test suites for all packages not requiring HW support. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.</p>
 <p>This page provides guidance for MAC and Linux. See the relevant sections below.</p>
@@ -395,59 +411,66 @@
 <p><br></p>
 <h3 id="install-gcclibc">Install gcc/libc</h3>
 <p>OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.</p>
-<pre class="codehilite"><code class="language-no-highlight">$ brew install gcc
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install gcc
 ...
 ...
 ==&gt; Summary
-🍺  /usr/local/Cellar/gcc/5.2.0: 1353 files, 248M</code></pre>
+🍺  /usr/local/Cellar/gcc/5.2.0: 1353 files, 248M
+</pre></div>
 
 
 <p><br></p>
 <p>Check the gcc version you have installed (either using brew or previously installed). The brew-installed version can be checked using <code>brew list gcc</code>. The default compiler.yml configuration file in Mynewt expects version 5.x for Mac users, so if the installed version is 6.x and you wish to continue with this newer version, modify the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file to change the default <code>gcc-5</code> defined there to <code>gcc-6</code>. In other words, replace the lines shown highlighted below:</p>
-<pre class="codehilite"><code># OS X.
-compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
-compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
-compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># OS X.
+<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
+</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
+</span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
 compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
-compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;</code></pre>
+compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
+</pre></div>
 
 
 <p>with the following:</p>
-<pre class="codehilite"><code class="language-no-highlight">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6&quot;
-compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6 -x assembler-with-cpp”</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6&quot;
+compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6 -x assembler-with-cpp”
+</pre></div>
 
 
 <p><br></p>
 <p>In case you wish to use Clang, you can change your <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> to use Clang. Delete the gcc-5 DARWIN.OVERWRITE lines highlighted below.</p>
-<pre class="codehilite"><code># OS X.
-compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
-compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
-compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># OS X.
+<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
+</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
+</span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
 compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
-compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;</code></pre>
+compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
+</pre></div>
 
 
 <p><br></p>
 <p><strong>NOTE:</strong> Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.</p>
 <p><br></p>
 <p><strong>FURTHER NOTE:</strong> Mynewt developers mostly use gcc 5.x for sim builds; so it may take a little while to fix issues reported by the newer compiler. One option is to <strong>disable warnings</strong>. To do that, remove the <code>-Werror</code> flag as an option for the compiler in the  <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file as shown below. </p>
-<pre class="codehilite"><code>compiler.flags.base: &gt;
-    -m32 -Wall -ggdb</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">compiler.flags.base: &gt;
+<span style="background-color: #ffffcc">    -m32 -Wall -ggdb
+</span></pre></div>
 
 
 <p>You may alternatively choose to <strong>specify the precise warnings to ignore</strong> depending on the error thrown by the compiler. For example, if you see a <code>[-Werror=misleading-indentation]</code> error while building the sim image, add <code>-Wno-misleading-indentation]</code> as a compiler flag in the same line from the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file.</p>
-<pre class="codehilite"><code>compiler.flags.base: &gt;
-    -m32 -Wall -Werror -ggdb -Wno-misleading-indentation</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">compiler.flags.base: &gt;
+<span style="background-color: #ffffcc">    -m32 -Wall -Werror -ggdb -Wno-misleading-indentation
+</span></pre></div>
 
 
 <p>A third option is to simply <strong>downgrade to gcc 5.x</strong>.</p>
 <p><br></p>
 <h3 id="install-gdb">Install gdb</h3>
-<pre class="codehilite"><code class="language-no-highlight">$ brew install gdb
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ brew install gdb
 ...
 ...
 ==&gt; Summary
-🍺  /usr/local/Cellar/gdb/7.10.1: XXX files,YYM</code></pre>
+🍺  /usr/local/Cellar/gdb/7.10.1: XXX files,YYM
+</pre></div>
 
 
 <p><br></p>
@@ -463,12 +486,13 @@ substitute invocations of <em>apt-get</em> in the below steps with the package m
 that your distro uses.</p>
 <p><br></p>
 <h3 id="install-gcclibc-that-will-produce-32-bit-executables">Install gcc/libc that will produce 32-bit executables:</h3>
-<pre class="codehilite"><code class="language-no-highlight">$ sudo apt-get install gcc-multilib libc6-i386</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo apt-get install gcc-multilib libc6-i386
+</pre></div>
 
 
 <p><br></p>
 <h3 id="install-gdb_1">Install gdb</h3>
-<pre class="codehilite"><code class="language-no-highlight">$ sudo apt-get install gdb
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ sudo apt-get install gdb
 
 Reading package lists... Done
 Building dependency tree       
@@ -479,7 +503,8 @@ The following NEW packages will be installed:
   gdb
 ...
 Processing triggers for man-db (2.6.7.1-1ubuntu1) ...
-Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...</code></pre>
+Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
+</pre></div>
 
 
 <p><br></p>

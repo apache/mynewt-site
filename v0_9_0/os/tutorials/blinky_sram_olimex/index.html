@@ -483,6 +483,22 @@
 </div>
                         </div>
                         
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (0.9.0)!
+                                <a href="/latest/os/tutorials/blinky_sram_olimex/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                            
+                          
+                        
+                        
                             <h2 id="run-blinky-from-sram-without-bootloader">Run Blinky from SRAM without bootloader</h2>
 <h3 id="objective">Objective</h3>
 <p>To download an application image directly into the embedded SRAM in the microcontroller and run it without the bootloader. This tutorial describes how you do it on an Olimex STM32 board.</p>
@@ -507,7 +523,7 @@
 <p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
 <a href="../../get_started/project_create/">Get Started -- Creating Your First Project</a>
 or just follow the commands below.</p>
-<pre class="codehilite"><code class="language-no-highlight">    $ mkdir ~/dev
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
     Downloading project skeleton from apache/incubator-mynewt-blinky...
@@ -520,13 +536,14 @@ or just follow the commands below.</p>
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
-    apache-mynewt-core successfully installed version 0.7.9-none</code></pre>
+    apache-mynewt-core successfully installed version 0.7.9-none
+</pre></div>
 
 
 <p><br></p>
 <h3 id="create-a-target">Create a target</h3>
 <p>Change directory to ~/dev/myproj directory and define the <em>blinky</em> target inside myproj, using the <em>newt</em> tool. Starting with the target name, assign specific aspects of the project, as shown below, to pull the appropriate packages and build the right bundle or list for the board. For example, we set the build_profile, board support package (bsp), and app.</p>
-<pre class="codehilite"><code class="language-no-highlight">    $ newt target create blinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt target create blinky
     $ newt target set blinky build_profile=debug
     $ newt target set blinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
     $ newt target set blinky app=apps/blinky
@@ -534,14 +551,15 @@ or just follow the commands below.</p>
     targets/blinky
         app=apps/blinky
         bsp=hw/bsp/olimex_stm32-e407_devboard
-        build_profile=debug</code></pre>
+        build_profile=debug
+</pre></div>
 
 
 <p><br></p>
 <h3 id="build-the-image">Build the image</h3>
 <p>Next, let's build the image for the above target. By default, the linker script within the <code>hw/bsp/olimex_stm32-e407_devboard</code> package builds an image for flash memory, which we don't want; instead, we want an image for the SRAM, so you need to switch that script with <code>run_from_sram.ld</code>. </p>
 <p>Afer you build the target, you can find the executable <em>blinky.elf</em> in the project directory <em>~/dev/myproj/bin/blinky/apps/blinky/.</em> </p>
-<pre class="codehilite"><code class="language-no-highlight">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ cd ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/
     $ diff olimex_stm32-e407_devboard.ld run_from_sram.ld
     (some diff will be displayed)
     $ cp run_from_sram.ld olimex_stm32-e407_devboard.ld
@@ -554,7 +572,8 @@ or just follow the commands below.</p>
     App successfully built:~/dev/myproj/bin/blinky/apps/blinky/blinky.elf
     $ ls ~/dev/myproj/bin/blinky/apps/blinky/
         blinky.elf      blinky.elf.bin     blinky.elf.cmd  
-        blinky.elf.lst  blinky.elf.map</code></pre>
+        blinky.elf.lst  blinky.elf.map
+</pre></div>
 
 
 <p><br></p>
@@ -586,7 +605,7 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
 <ul>
 <li>Ensure that you are in the blinky project directory with the <em>blinky.elf</em> executable. Run the debug command in the <em>newt</em> tool. You'll see some status messages as shown below. In case you need to halt the debugging session, you can issue an <code>-c "reset halt"</code> command.</li>
 </ul>
-<pre class="codehilite"><code class="language-no-highlight">    $ newt debug blinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ newt debug blinky
     Debugging with ~/dev/core/hw/bsp/olimex_...
     Debugging ~/dev/core/project/blinky/bin/blinky/blinky.elf
     GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
@@ -598,26 +617,29 @@ To locate the bootloader, the board searches in three places: User Flash Memory,
     target state: halted
     target halted due to debug-request, current mode: Thread 
     xPSR: 0x01000000 pc: 0x080003c0 msp: 0x10010000
-    Info : accepting 'gdb' connection on tcp/3333
+    Info : accepting &#39;gdb&#39; connection on tcp/3333
     Info : device id = 0x10036413
-    Info : flash size = 1024kbytes</code></pre>
+    Info : flash size = 1024kbytes
+</pre></div>
 
 
 <p><br></p>
 <p>Check the value of the msp (main service pointer) register. If it is not 0x10010000 as indicated above, you will have to manually set it after you open the gdb tool and load the image on it. For example, </p>
-<pre class="codehilite"><code class="language-no-highlight">    (gdb) set $msp=0x10010000</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) set $msp=0x10010000
+</pre></div>
 
 
 <p><br></p>
 <p>Now load the image and type "c" or "continue" from the GNU debugger. </p>
-<pre class="codehilite"><code class="language-no-highlight">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    (gdb) load ~/dev/myproj/bin/blinky/apps/blinky/blinky.elf   
     Loading section .text, size 0x16b88 lma 0x20000000
     Loading section .ARM.exidx, size 0x18 lma 0x20016b88
     Loading section .data, size 0x9ec lma 0x20016ba0
     Start address 0x200004b8, load size 95628
     Transfer rate: 74 KB/sec, 3825 bytes/write.
     (gdb) c
-    Continuing.</code></pre>
+    Continuing.
+</pre></div>
 
 
 <ul>

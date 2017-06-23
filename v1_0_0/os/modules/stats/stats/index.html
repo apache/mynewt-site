@@ -533,6 +533,22 @@
 </div>
                         </div>
                         
+                          
+                            
+                          
+                            
+                          
+                            
+                              <div class="alert alert-danger">
+                                This is an old version of the documentation (1.0.0)!
+                                <a href="/latest/os/modules/stats/stats/">
+                                   Click here to read the newest version.
+                                </a>
+                              </div>
+                            
+                          
+                        
+                        
                             <h1 id="statistics-module">Statistics Module</h1>
 <p>The statistics module allows application, libraries, or drivers to
 record statistics that can be shown via the Newtmgr tool and console.</p>
@@ -556,17 +572,18 @@ in a section have the same size.</p>
 <p>Stats sections are currently stored in a single global stats group.  </p>
 <p>Statistics are stored in a simple structure which contains a small
 stats header followed by a list of stats.  The stats header contains:</p>
-<pre class="codehilite"><code class="language-c">struct stats_hdr {
-     char *s_name;
-     uint8_t s_size;
-     uint8_t s_cnt;
-     uint16_t s_pad1;
- #ifdef STATS_NAME_ENABLE
-     struct stats_name_map *s_map;
-     int s_map_cnt;
- #endif
-     STAILQ_ENTRY(stats_hdr) s_next;
- };</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">stats_hdr</span> {
+     <span style="color: #A90D91">char</span> <span style="color: #000000">*s_name</span>;
+     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">s_size</span>;
+     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">s_cnt</span>;
+     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">s_pad1</span>;
+ <span style="color: #633820">#ifdef STATS_NAME_ENABLE</span>
+     <span style="color: #A90D91">struct</span> <span style="color: #000000">stats_name_map</span> <span style="color: #000000">*s_map</span>;
+     <span style="color: #A90D91">int</span> <span style="color: #000000">s_map_cnt</span>;
+ <span style="color: #633820">#endif</span>
+     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">stats_hdr</span>) <span style="color: #000000">s_next</span>;
+ };
+</pre></div>
 
 
 <p><br></p>
@@ -575,11 +592,13 @@ stats header followed by a list of stats.  The stats header contains:</p>
 statistics.  When querying statistics, they are always queried by number,
 but if you want to see the results by name, you need to define 
 <code>STATS_NAME_ENABLE</code>.  This is defined using </p>
-<pre class="codehilite"><code>pkg.clfags: -DSTATS_NAME_ENABLE</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.clfags: -DSTATS_NAME_ENABLE
+</pre></div>
 
 
 <p>in your apps pkg.yml file or </p>
-<pre class="codehilite"><code>target.clfags: -DSTATS_NAME_ENABLE</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">target.clfags: -DSTATS_NAME_ENABLE
+</pre></div>
 
 
 <p>in your target definition.</p>
@@ -601,23 +620,26 @@ but takes code space to store the strings within the image.</p>
 <h4 id="include-the-stats-header-file">Include the stats header file</h4>
 <p>Add the stats library to your pkg.yml file for your package or app by adding
 this line to your package dependencies.</p>
-<pre class="codehilite"><code>pkg.deps:
-    - &quot;@apache-mynewt-core/sys/stats&quot;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
+    - &quot;@apache-mynewt-core/sys/stats&quot;
+</pre></div>
 
 
 <p><br></p>
 <p>Add this include directive to code files using the stats library.</p>
-<pre class="codehilite"><code>#include &lt;stats/stats.h&gt;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &lt;stats/stats.h&gt;
+</pre></div>
 
 
 <p><br></p>
 <h4 id="define-a-stats-section">Define a stats section</h4>
 <p>You must use the <code>stats.h</code> macros to define your stats table.  A 
 stats section definition looks like this.  </p>
-<pre class="codehilite"><code>STATS_SECT_START(my_stat_section)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">STATS_SECT_START(my_stat_section)
     STATS_SECT_ENTRY(attempt_stat)
     STATS_SECT_ENTRY(error_stat)
-STATS_SECT_END</code></pre>
+STATS_SECT_END
+</pre></div>
 
 
 <p><br></p>
@@ -629,11 +651,12 @@ different stats sizes through the following macros:</p>
 <li><code>STATS_SIZE_64</code> -- stats are 64-bits</li>
 </ul>
 <p>When this compiles/pre-processes, it produces a structure definition like this</p>
-<pre class="codehilite"><code>struct stats_my_stat_section { 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct stats_my_stat_section { 
     struct stats_hdr s_hdr;
     uint32_t sattempt_stat;
     uint32_t serror_stat;
-};</code></pre>
+};
+</pre></div>
 
 
 <p><br></p>
@@ -647,14 +670,16 @@ to include this definition in a header file.</p>
 have multiple copies of the same section (for example a stat section for
 each of 5 identical peripherals), the variable name of the stats section 
 must be unique.</p>
-<pre class="codehilite"><code>STATS_SECT_DECL(my_stat_section) g_mystat;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">STATS_SECT_DECL(my_stat_section) g_mystat;
+</pre></div>
 
 
 <p><br></p>
 <p>Again, if your stats section is used in multiple C files you will need to 
 include the above definition in one of the C files and 'extern' this declaration 
 in your header file.</p>
-<pre class="codehilite"><code>extern STATS_SECT_DECL(my_stat_section) g_mystat;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">extern STATS_SECT_DECL(my_stat_section) g_mystat;
+</pre></div>
 
 
 <p><br></p>
@@ -662,19 +687,21 @@ in your header file.</p>
 <p>Whether or not you are using <code>STATS_NAME_ENABLE</code>, you must define 
 a stats name table.  If <code>STATS_NAME_ENABLE</code> is not enabled, this will 
 not take any code space or image size.  </p>
-<pre class="codehilite"><code>/* define a few stats for querying */
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">/* define a few stats for querying */
 STATS_NAME_START(my_stat_section)
     STATS_NAME(my_stat_section, attempt_stat)
     STATS_NAME(my_stat_section, error_stat)
-STATS_NAME_END(my_stat_section)</code></pre>
+STATS_NAME_END(my_stat_section)
+</pre></div>
 
 
 <p><br></p>
 <p>When compiled by the preprocessor, it creates a structure that looks like this.</p>
-<pre class="codehilite"><code>struct stats_name_map g_stats_map_my_stat_section[] = {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct stats_name_map g_stats_map_my_stat_section[] = {
     { __builtin_offsetof (struct stats_my_stat_section, sattempt_stat), &quot;attempt_stat&quot; },
     { __builtin_offsetof (struct stats_my_stat_section, serror_stat), &quot;error_stat&quot; },
-};</code></pre>
+};
+</pre></div>
 
 
 <p><br></p>
@@ -684,11 +711,12 @@ stat.</p>
 <h4 id="implement-stats-in-your-code">Implement stats in your code.</h4>
 <p>You can use the <code>STATS_INC</code> or <code>STATS_INCN</code> macros to increment your statistics
 within your C-code.  For example, your code may do this:</p>
-<pre class="codehilite"><code>    STATS_INC(g_mystat, attempt_stat);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    STATS_INC(g_mystat, attempt_stat);
     rc = do_task();
     if(rc == ERR) { 
         STATS_INC(g_mystat, error_stat);        
-    }</code></pre>
+    }
+</pre></div>
 
 
 <p><br></p>
@@ -698,18 +726,20 @@ library.  As per our example above, it would look like the following.</p>
 <p>This tells the system how large each statistic is and the number of 
 statistics in the section.  It also initialize the name information for
 the statistics if enabled as shown above.</p>
-<pre class="codehilite"><code>    rc = stats_init(
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    rc = stats_init(
         STATS_HDR(g_mystat), 
         STATS_SIZE_INIT_PARMS(g_mystat, STATS_SIZE_32), 
         STATS_NAME_INIT_PARMS(my_stat_section));
-    assert(rc == 0);</code></pre>
+    assert(rc == 0);
+</pre></div>
 
 
 <p><br></p>
 <h4 id="register-the-statistic-section">Register the statistic section</h4>
 <p>If you want the system to know about your stats,  you must register them.</p>
-<pre class="codehilite"><code>    rc = stats_register(&quot;my_stats&quot;, STATS_HDR(g_mystat));
-    assert(rc == 0);</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    rc = stats_register(&quot;my_stats&quot;, STATS_HDR(g_mystat));
+    assert(rc == 0);
+</pre></div>
 
 
 <p><br></p>
@@ -720,16 +750,18 @@ same time,  called <code>stats_init_and_reg</code>.</p>
 <p>If you enable console in your project you can see stats through the 
 serial port defined.</p>
 <p>This is the stats as shown from the example above with names enabled.</p>
-<pre class="codehilite"><code>stat my_stats
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">stat my_stats
 12274:attempt_stat: 3
-12275:error_stat: 0</code></pre>
+12275:error_stat: 0
+</pre></div>
 
 
 <p><br></p>
 <p>This is the stats as shown from the example without names enabled.</p>
-<pre class="codehilite"><code>stat my_stats
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">stat my_stats
 29149:s0: 3
-29150:s1: 0</code></pre>
+29150:s1: 0
+</pre></div>
 
 
 <p><br></p>
