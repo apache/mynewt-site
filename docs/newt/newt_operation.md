@@ -37,39 +37,31 @@ When Newt sees a directory tree that contains a "project.yml" file it knows that
 
 #### "apps" Package Directory
 
-`apps` is where applications are stored, and applications are where the main() function is contained.  The base project directory comes with one simple app called `blinky` in the `apps` directory. The core repository `@apache-mynewt-core` comes with many additional sample apps in its `apps` directory. At the time of this writing, there are several example BLE apps, the boot app, slinky app for using newt manager protocol, and more in that directory.
+`apps` is where applications are stored, and applications are where the main() function is contained.  Along with the `targets` directory, `apps` represents the top-level of the build tree, and define the dependencies and features for the rest of the system.
 
-```
-@~/dev/myproj$ ls repos/apache-mynewt-core/apps/
-blecent		bleprph_oic	bleuart		ffs2native	slinky_oic	test
-blehci		bletest		boot		ocf_sample	spitest		timtest
-bleprph		bletiny		fat2native	slinky		splitty
-```
-
-Along with the `targets` directory, `apps` represents the top-level of the build tree for the particular project, and define the dependencies and features for the rest of the system. Mynewt users and developers can add their own apps to the project's `apps` directory.   
-
-The app definition is contained in a `pkg.yml` file. For example, blinky's `pkg.yml` file is:
+The app definition is contained in a `pkg.yml` file. An example of blinky's `pkg.yml` file is:
 
 ```
 $ more apps/blinky/pkg.yml
 <snip>
 pkg.name: apps/blinky
-pkg.type: app
+pkg.vers: 0.8.0
 pkg.description: Basic example application which blinks an LED.
 pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
+pkg.repository:
 pkg.keywords:
 
 pkg.deps:
-    - "@apache-mynewt-core/kernel/os"
-    - "@apache-mynewt-core/hw/hal"
-    - "@apache-mynewt-core/sys/console/full"
+     - "@apache-mynewt-core/libs/os"
+     - "@apache-mynewt-core/hw/hal"
+     - "@apache-mynewt-core/libs/console/full"
 ```
 
 <br>
 
 This file says that the name of the package is apps/blinky, and it 
-depends on kernel/os, hw/hal and sys/console/full packages.
+depends on libs/os, hw/hal and libs/console/full packages.
 
 **NOTE:** @apache-mynewt-core is a repository descriptor, and this will be 
 covered in the "repository" section. 
@@ -86,7 +78,7 @@ Most targets consist of:
 * bsp: The board support package to combine with that application
 * build_profile: Either debug or optimized.
 
-The `my_blinky_sim` target that is included by default has the following settings:
+The `my_blinky_sim` target in the example below has the following settings:
 
 ```
 $ newt target show
@@ -94,19 +86,16 @@ targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
-$ ls targets/my_blinky_sim/
+$ ls my_blinky_sim/
 pkg.yml		target.yml
 ```
-There are helper functions to aid the developer specify parameters for a target. 
-
-* **vals**: Displays all valid values for the specified parameter type (e.g. bsp for a target)
-* **target show**: Displays the build artifacts for specified or all targets
 
 In general, the three basic parameters of a target (`app`, `bsp`, and `build_profile`) are stored in the `target.yml` file in that target's build directory under `targets`. You will also see a `pkg.yml` file in the same directory. Since targets are packages, a `pkg.yml` is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:
 
 * Cflags: Any additional compiler flags you might want to specify to the build
 * Aflags: Any additional assembler flags you might want to specify to the build
 * Lflags: Any additional linker flags you might want to specify to the build
+* features: Any system level features you want to enable.
 
 <br>
 
@@ -191,6 +180,14 @@ $ tree
 implement, (i.e. pkg.api: hw-hal-impl), and other packages can require 
 those APIs (i.e. pkg.req_api: hw-hal-impl).
 
+- "Features" options are supported.  Packages can change what dependencies 
+they have, or what flags they are using based upon what features are enabled in the system.  As an example, many packages will add additional software, based on whether the shell package is present.  To do this, they can overwrite cflags or deps based upon the shell "feature."
+
+```
+pkg.cflags.SHELL: -DSHELL_PRESENT
+```
+
+<br>
 
 In order to properly resolve all dependencies in the build system, Newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.
 
@@ -249,36 +246,45 @@ As you can see, a number of files are generated:
 Once a target has been build, there are a number of helper functions 
 that work on the target.  These are:
 
-* **load**     Download built target to board
+* **download**     Download built target to board
 * **debug**        Open debugger session to target
-* **size**         Size of target components
-* **create-image**  Add image header to target binary
-* **run**  The equivalent of build, create-image, load, and debug on specified target
+* size         Size of target components
+* create-image Add image header to target binary
 
-`load` and `debug` handles driving GDB and the system debugger.  These 
+Download and debug handles driving GDB and the system debugger.  These 
 commands call out to scripts that are defined by the BSP.
 
 ```
-$ more repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh
+$ more repos/apache-mynewt-core/hw/bsp/nrf52pdk/nrf52pdk_debug.sh
 <snip>
-. $CORE_PATH/hw/scripts/jlink.sh
-
-FILE_NAME=$BIN_BASENAME.elf
-
-if [ $# -gt 2 ]; then
-    SPLIT_ELF_NAME=$3.elf
-    # TODO -- this magic number 0x42000 is the location of the second image
-    # slot. we should either get this from a flash map file or somehow learn
-    # this from the image itself
-    EXTRA_GDB_CMDS="add-symbol-file $SPLIT_ELF_NAME 0x8000 -readnow"
+#
+if [ $# -lt 1 ]; then
+     echo "Need binary to download"
+     exit 1
 fi
 
-JLINK_DEV="nRF52"
+FILE_NAME=$2.elf
+GDB_CMD_FILE=.gdb_cmds
 
-jlink_debug
+echo "Debugging" $FILE_NAME
 
+# Monitor mode. Background process gets it's own process group.
+set -m
+JLinkGDBServer -device nRF52 -speed 4000 -if SWD -port 3333 -singlerun &
+set +m
+
+echo "target remote localhost:3333" > $GDB_CMD_FILE
+
+arm-none-eabi-gdb -x $GDB_CMD_FILE $FILE_NAME
+
+rm $GDB_CMD_FILE
 ```
 
 The idea is that every BSP will add support for the debugger environment 
 for that board.  That way common tools can be used across various development boards and kits.
+
+**NOTE:** Both for compiler definitions and debugger scripts, the plan is to 
+create Dockerizable containers of these toolchains.  This should make 
+things much easier to support across Mac OS X, Linux and Windows.  Newt 
+will know how to call out to Docker to perform these processes.
 
