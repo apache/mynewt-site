@@ -165,6 +165,20 @@ Note: If you are using Windows and get an `open failed` or  `no device found` er
 * Click Install Driver.
 * Run the `newt load stm32f4disc_boot` command again.
 
+Note: If you are running Linux and get an `open failed` message, there are two common issues with this board. If you have a board produced before mid-2016, it is likely that you have an older version of the ST-LINK programmer. To correct this, open the `repos/apache-mynewt-core/hw/bsp/stm32f4discovery/f4discovery.cfg` file in a text editor, and change the line:
+
+```no-highlight
+source [find interface/stlink-v2-1.cfg]
+```
+
+to:
+
+```no-highlight
+source [find interface/stlink-v2.cfg]
+```
+
+If you receive an error like `libusb_open() failed with LIBUSB_ERROR_ACCESS`, it means that your `udev` rules are not correctly set up for this device. You can find some example `udev` rules for ST-LINK programmers [here](https://github.com/texane/stlink/tree/master/etc/udev/rules.d).
+
 <br>
 Run the `newt load stm32f4disc_blinky` command to load the Blinky application image onto the board.
 ```no-highlight
