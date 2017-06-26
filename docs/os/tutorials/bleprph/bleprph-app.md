@@ -23,7 +23,7 @@ which is a free app to browse and connect to BLE Peripheral devices.
 
 You can create a new project instead, but this tutorial will simply use the previously created bletiny project and add a new target for the BLE Peripheral
 
-```
+```no-highlight
 $ newt target create myperiph
 Target targets/myperiph successfully created
 $ newt target set myperiph bsp=@apache-mynewt-core/hw/bsp/nrf52dk
@@ -32,7 +32,7 @@ $ newt target set myperiph app=@apache-mynewt-core/apps/bleprph
 Target targets/myperiph successfully set target.app to @apache-mynewt-core/apps/bleprph
 $ newt target set myperiph build_profile=optimized
 Target targets/myperiph successfully set target.build_profile to optimized
-$ newt build myblerph
+$ newt build myperiph
 Building target targets/myperiph
 ...
 Linking ~/dev/nrf52dk/bin/targets/myperiph/app/apps/bleprph/bleprph.elf
