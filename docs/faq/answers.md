@@ -1,17 +1,32 @@
-### How do I submit a bug?
+## FAQ
+Here are a list of frequently asked questions. They are grouped by categories.
+
+**Mynewt software questions:**
+
+* [How do I reduce the code size for my Mynewt image?](/os/tutorials/codesize/)
+
+
+**Administrative questions:**
+
+* [How do I submit a bug?](#submit-a-bug)
+* [How do I request a feature?](#request-feature)
+* [How do I submit a patch if I am not a committer?](#not-committer-patch)
+* [Can I merge my own Pull Request into the git repo if I am a committer?](#committer-merge)
+* [How do I make changes to documentation?](#change-doc)
+* [How do I make changes to documentation using an editor on my laptop?](#doc-editor)
+
 
 <br>
-
+### <a name="summit-a-bug"></a> How do I submit a bug?
+<br>
 If you do not have a JIRA account sign up for an account on [JIRA](https://issues.apache.org/jira/secure/Signup!default.jspa).
 
 Submit a request to the @dev mailing list for your JIRA username to be added to the Apache Mynewt (MYNEWT) project. You can view the issues on JIRA for the MYNEWT project without an account but you need to log in for reporting a bug. 
 
 Log in. Choose the "MYNEWT" project. Click on the "Create" button to create a ticket. Choose "Bug" as the Issue Type. Fill in the bug description, how it is triggered, and other details. 
 
-### How do I request a feature?
-
+### <a name="request-feature"></a> How do I request a feature?
 <br>
-
 If you do not have a JIRA account sign up for an account on [JIRA](https://issues.apache.org/jira/secure/Signup!default.jspa).
 
 Submit a request to the @dev mailing list for your JIRA username to be added to the Apache Mynewt (MYNEWT) project. You can view the issues on JIRA for the MYNEWT project without an account but you need to log in for reporting a bug. 
@@ -20,23 +35,19 @@ Log in. Choose the "MYNEWT" project. Click on the "Create" button to create a ti
 
 If you are not a committer and you wish to work on it, someone who is on the committer list will have to review your request and assign it to you. You will have to refer to this JIRA ticket in your pull request.
 
-### I am not on the committer list. How do I submit a patch? 
-
+### <a name="not-committer-patch"></a>I am not on the committer list. How do I submit a patch? 
 <br>
-
 **You submit your proposed changes for your peers with committer status to review and merge.**
 
 The process to submit a Pull Request on github.com is described on the [Confluence page for the project](https://cwiki.apache.org/confluence/display/MYNEWT/Submitting+Pull+Requests). 
 
-### I am a committer in the project. Can I merge my own Pull Request into the git repository?
-
+### <a name="committer-merge"></a>I am a committer in the project. Can I merge my own Pull Request into the git repository?
+<br>
 Yes, but only if your Pull Request has been reviewed and approved by another committer in Apache Mynewt.
 The process to merge a Pull Request is described on the [Confluence page for the project](https://cwiki.apache.org/confluence/display/MYNEWT/Merging+Pull+Requests).
     
-### I would like to make some edits to the documentation. What do I do?
-
+### <a name="change-doc"></a>I would like to make some edits to the documentation. What do I do?
 <br>
-
 You submit your proposed changes for your peers with committer status to review and merge. 
 
 Go to the [documentation mirror](https://github.com/apache/incubator-mynewt-site) on github.com.
@@ -51,10 +62,8 @@ Upon receiving notification, one or more committers will review your work, ask f
 
 If you want to withdraw the pull request simply go to your fork `https://github.com/<your github username>/incubator-mynewt-site` and click on "branches". You should see your branch under "Your branches". Click on the delete icon.
 
-### I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?
-
+### <a name="doc-editor"></a>I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?
 <br>
-
 You submit your proposed changes for your peers with committer status to review and merge. 
 
 Go to the [documentation mirror](https://github.com/apache/incubator-mynewt-site) on github.com. You need to create your own fork of the repo in github.com by clicking on the "Fork" button on the top right. Clone the forked repository into your laptop (using `git clone` from a terminal or using the download buttons on the github page)and create a local branch for the edits and switching to it (using `git checkout -b <new-branchname>` or GitHub Desktop). 
