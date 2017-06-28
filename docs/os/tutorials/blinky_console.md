@@ -37,12 +37,6 @@ Modify the system configuration settings to enable Shell and Console ticks and p
 syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
-
-    # Enable Console OS Ticks
-    CONSOLE_TICKS: 1
-
-    # Enable Console Prompt
-    CONSOLE_PROMPT: 1 
 ```
 
 <br>
@@ -174,25 +168,23 @@ You can also use the Windows Device Manager to locate the COM port.
 To test and make sure that the Shell is running, first just hit <return>:
     
 ```no-highlight
-3534: >
+004543 shell>
 ```
 
 You can try some commands:
 
 ```no-highlight
-3609: > ?
-Commands:
-8841:     echo         ?    prompt     ticks     tasks  mempools
-8843:     date         b
-8844: > ticks off
- Console Ticks off
- > prompt off
- Prompt now off.
-ticks on
-33383: Console Ticks on
-
-33568:
-prompt on
-39108: Prompt now on.
-39108: >
+014930 shell> help
+015242 Available modules:
+015242 os
+015243 To select a module, enter 'select <module name>'.
+015244 shell> os <TAB>
+015525 help
+015525 tasks                         show os tasks
+015526 mpool                         show system mpool
+015526 date                          show system date
+015527 shell> os date
+016923 module: 0, command: date
+016924 1970-01-01T00:02:12.218736+00:00
+016925 shell>
 ```
