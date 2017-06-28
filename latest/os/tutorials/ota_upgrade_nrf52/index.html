@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/rbnano2/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/ota_upgrade_nrf52/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>Blinky on RedBear Nano 2 - Apache Mynewt</title>
+	    <title>Upgrade an Image Over-The-Air - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="Blinky on RedBear Nano 2">
+    <body class="Upgrade an Image Over-The-Air">
 
 
         <div class="container">
@@ -238,68 +238,6 @@
     <li ><a href="../blinky/">Project Blinky</a>
   
   
-    <ul>
-          
-              
-          
-              
-                
-    <li >
-      <a href="../arduino_zero/">Blinky on Arduino Zero</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../blinky_primo/">Blinky on Arduino Primo</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../olimex/">Blinky on Olimex</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../nRF52/">Blinky on nRF52 DK</a>
-    </li>
-
-              
-          
-              
-                
-    <li class="active">
-      <a href="./">Blinky on RedBear Nano 2</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../blinky_stm32f4disc/">Blinky on STM32F4-Discovery</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../blinky_console/">Add Console and Shell to Blinky</a>
-    </li>
-
-              
-          
-    </ul>
-  
     </li>
 
               
@@ -328,8 +266,8 @@
           
               
                 
-    <li >
-      <a href="../ota_upgrade_nrf52/">Upgrade an Image Over-The-Air</a>
+    <li class="active">
+      <a href="./">Upgrade an Image Over-The-Air</a>
     </li>
 
               
@@ -532,25 +470,25 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
+        
+          <li>&raquo; <a href="../../introduction/">Mynewt Documentation</a></li>
+        
+      
         
           <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
         
       
-        
-          <li>&raquo; <a href="../blinky/">Project Blinky</a></li>
-        
       
-      
-        <li>&raquo; Blinky on RedBear Nano 2</li>
+        <li>&raquo; Upgrade an Image Over-The-Air</li>
       
     
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/tutorials/rbnano2.md"
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/tutorials/ota_upgrade_nrf52.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -560,175 +498,170 @@
                         </div>
                         
                         
-                            <h2 id="blinky-your-hello-world-on-redbear-nano-2">Blinky, your "Hello World!", on RedBear Nano 2</h2>
-<p>This tutorial shows you how to create, build and run the Blinky application on a RedBear Nano 2 board.
-<br></p>
+                            <h2 id="over-the-air-image-upgrade">Over-the-Air Image Upgrade</h2>
+<p>Mynewt OS supports over-the-air image upgrades.  This tutorial shows you how to use the newtmgr tool to upgrade an image on a device over BLE communication. </p>
+<p>To support over-the-air image upgrade over BLE, a device must be running a Mynewt application that has newtmgr image management over BLE transport enabled.  For this tutorial, we use the <a href="../../../os/tutorials/bleprph/bleprph-app/">bleprph</a> application, which includes image management over BLE functionality, on an nRF52-DK board.  If you prefer to use a different BLE application, see <a href="../../../os/tutorials/add_newtmgr/">Enable Newt Manager in any app</a> to enable newtmgr image management over BLE transport support in your application. </p>
+<p><strong>Note:</strong> Over-the-air upgrade via newtmgr BLE transport is supported on Mac OS and Linux. It is not supported on Windows platforms.</p>
 <h3 id="prerequisites">Prerequisites</h3>
+<p>Ensure that you meet the following prerequisites:</p>
 <ul>
-<li>Meet the prerequisites listed in <a href="../blinky/">Project Blinky</a>.</li>
-<li>Have a RedBear Nano 2 board. </li>
-<li>Install a patched version of OpenOCD 0.10.0 described in <a href="../../../os/get_started/cross_tools/">Install OpenOCD</a>.</li>
+<li>Have Internet connectivity to fetch remote Mynewt components.</li>
+<li>Have a computer that supports Bluetooth to communicate with the board and to build a Mynewt application.  </li>
+<li>Have a Micro-USB cable to connect the board and the computer.</li>
+<li>Have a Nordic nRF52-DK Development Kit - PCA 10040</li>
+<li>Install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK software and documentation pack</a>.</li>
+<li>Install the newt tool and toolchains (See <a href="../../get_started/get_started/">Basic Setup</a>).</li>
+<li>Read the Mynewt OS <a href="../../get_started/vocabulary/">Concepts</a> section.</li>
+<li>Read the <a href="../../../os/modules/bootloader/bootloader">Bootloader</a> section and understand the Mynewt bootloader concepts.</li>
+<li>Build and load the <strong>bleprph</strong> application on to an nRF52-DK board via a serial connection. See <a href="../../../os/tutorials/bleprph/bleprph-app/">BLE Peripheral App</a>. </li>
 </ul>
-<h3 id="create-a-project">Create a Project</h3>
-<p>Create a new project if you do not have an existing one.  You can skip this step and proceed to <a href="#create_targets">create the targets</a> if you already have a project created.  </p>
-<p>Run the following commands to create a new project:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir ~/dev
-    $ cd ~/dev
-    $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
-    Installing skeleton in myproj...
-    Project myproj successfully created.
-    $ cd myproj
-    $ newt install
-    apache-mynewt-core
-    $
-</pre></div>
-
-
+<h3 id="upgrading-an-image-on-a-device">Upgrading an Image on a Device</h3>
+<p>Once you have an application with newtmgr image management with BLE transport support running on a device, you can use the newtmgr tool to upgrade an image over-the-air. </p>
+<p>You must perform the following steps to upgrade an image:</p>
+<p>Step 1: Create a newtmgr connection profile to communicate with the device over BLE.
+<br>
+Step 2: Upload the image to the secondary slot (slot 1)  on the device.
+<br>
+Step 3: Test the image.
+<br>
+Step 4: Confirm and make the image permanent. </p>
+<p>See the <a href="../../../os/modules/bootloader/bootloader">Bootloader</a> section for more information on the bootloader, image slots, and boot states.</p>
 <p><br></p>
-<h3 id="create-the-targets"><a name="create_targets"></a>Create the Targets</h3>
-<p>Create two targets for the RedBear Nano 2 board - one for the bootloader and one for the Blinky application.</p>
-<p>Run the following <code>newt target</code> commands, from your project directory, to create a bootloader target. We name the target <code>rbnano2_boot</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create rbnano2_boot
-$ newt target set rbnano2_boot app=@apache-mynewt-core/apps/boot
-$ newt target set rbnano2_boot bsp=@apache-mynewt-core/hw/bsp/rb-nano2
-$ newt target set rbnano2_boot build_profile=optimized
+<h3 id="step-1-creating-a-newtmgr-connection-profile">Step 1: Creating a Newtmgr Connection Profile</h3>
+<p>The <strong>bleprph</strong> application sets and advertises <code>nimble-bleprph</code> as its bluetooth device address. Run the <code>newtmgr conn add</code> command to create a newtmgr connection profile that uses this peer address to communicate with the device over BLE:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr conn add mybleprph type=ble connstring=&quot;peer_name=nimble-bleprph&quot;
+Connection profile mybleprph successfully added
 </pre></div>
 
 
 <p><br>
-Run the following <code>newt target</code> commands to create a target for the Blinky application. We name the target <code>nrf52_blinky</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create rbnano2_blinky
-$ newt target set rbnano2_blinky app=apps/blinky
-$ newt target set rbnano2_blinky bsp=@apache-mynewt-core/hw/bsp/rb-nano2
-$ newt target set rbnano2_blinky build_profile=debug
+Verify that the newtmgr tool can communicate with the device and check the image status on the device:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image list -c mybleprph 
+Images:
+ slot=0
+    version: 1.0.0
+    bootable: true
+    flags: active confirmed
+    hash: b8d17c77a03b37603cd9f89fdcfe0ba726f8ddff6eac63011dee2e959cc316c2
+Split status: N/A (0)
+</pre></div>
+
+
+<p>The device only has an image loaded on the primary slot (slot 0).  It does not have an image loaded on the secondary slot (slot 1).
+<br></p>
+<h3 id="step-2-uploading-an-image-to-the-device">Step 2: Uploading an Image to the Device</h3>
+<p>We create an image with version 2.0.0 for the bleprph application from the <code>myperiph</code> target and upload the new image. You can upload a different image.
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image myperiph 2.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/myperiph/app/apps/bleprph/bleprph.img
 </pre></div>
 
 
 <p><br>
-You can run the <code>newt target show</code> command to verify the target settings:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target show 
-targets/rbnano2_blinky
-    app=apps/blinky
-    bsp=@apache-mynewt-core/hw/bsp/rb-nano2
-    build_profile=debug
-targets/rbnano2_boot
-    app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/rb-nano2
-    build_profile=optimized
+Run the <code>newtmgr image upload</code> command to upload the image:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image upload -c mybleprph ~/dev/myproj/bin/targets/myperiph/app/apps/bleprph/bleprph.img
+215
+429
+642
+855
+1068
+1281
+
+...
+
+125953
+126164
+126375
+126586
+126704
+Done
 </pre></div>
 
 
-<p><br></p>
-<h3 id="build-the-target-executables">Build the Target Executables</h3>
-<p>Run the <code>newt build rbnano2_boot</code> command to build the bootloader:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt build rbnano2_boot
-Building target targets/rbnano2_boot
-Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
-
-      ...
-
-Archiving sys_sysinit.a
-Archiving util_mem.a
-Linking ~/dev/myproj/bin/targets/rbnano2_boot/app/apps/boot/boot.elf
-Target successfully built: targets/rbnano2_boot
-</pre></div>
-
-
+<p>The numbers indicate the number of bytes that the newtmgr tool has uploaded. </p>
 <p><br>
-Run the <code>newt build rbnano2_blinky</code> command to build the Blinky application:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt build rbnano2_blinky
-Building target targets/rbnano2_blinky
-Assembling repos/apache-mynewt-core/hw/bsp/rb-nano2/src/arch/cortex_m4/gcc_startup_nrf52_split.s
-Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
-Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
-Compiling repos/apache-mynewt-core/hw/bsp/rb-nano2/src/sbrk.c
-Compiling apps/blinky/src/main.c
-
-     ...
-
-Archiving sys_sysinit.a
-Archiving util_mem.a
-Linking ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky.elf
-Target successfully built: targets/rbnano2_blinky
+Verify that the image uploaded to the secondary slot on the device successfully:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image list -c mybleprph
+Images:
+ slot=0
+    version: 1.0.0
+    bootable: true
+    flags: active confirmed
+    hash: b8d17c77a03b37603cd9f89fdcfe0ba726f8ddff6eac63011dee2e959cc316c2
+ slot=1
+    version: 2.0.0
+    bootable: true
+    flags: 
+    hash: 291ebc02a8c345911c96fdf4e7b9015a843697658fd6b5faa0eb257a23e93682
+Split status: N/A (0)
 </pre></div>
 
 
-<p><br></p>
-<h3 id="sign-and-create-the-blinky-application-image">Sign and Create the Blinky Application Image</h3>
-<p>Run the <code>newt create-image rbnano2_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt create-image rbnano2_blinky 1.0.0
-App image succesfully generated: ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky.img
+<p>The device now has the uploaded image in the secondary slot (slot 1).
+<br></p>
+<h3 id="step-3-testing-the-image">Step 3: Testing the Image</h3>
+<p>The image is uploaded to the secondary slot but is not yet active. You must run the <code>newtmgr image test</code> command to set the image status to <strong>pending</strong> and reboot the device.  When the device reboots, the bootloader copies this image to the primary slot and runs the image.
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image test -c mybleprph 291ebc02a8c345911c96fdf4e7b9015a843697658fd6b5faa0eb257a23e93682
+Images:
+ slot=0
+    version: 1.0.0
+    bootable: true
+    flags: active confirmed
+    hash: b8d17c77a03b37603cd9f89fdcfe0ba726f8ddff6eac63011dee2e959cc316c2
+ slot=1
+    version: 2.0.0
+    bootable: true
+    flags: pending
+    hash: 291ebc02a8c345911c96fdf4e7b9015a843697658fd6b5faa0eb257a23e93682
+Split status: N/A (0)
 </pre></div>
 
 
-<p><br></p>
-<h3 id="connect-to-the-board">Connect to the Board</h3>
-<p>Connect the RedBear Nano 2 USB to a USB port on your computer. You should see an orange LED light up on the board.</p>
-<h3 id="load-the-bootloader">Load the Bootloader</h3>
-<p>Run the <code>newt load rbnano2_boot</code> command to load the bootloader onto the board: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load rbnano2_boot
-Loading bootloader
-$
-</pre></div>
-
-
-<p><br></p>
-<p><strong>Note:</strong> On Windows platforms, if you get an <code>unable to find CMSIS-DAP device</code> error, you will need to download and install the mbed Windows serial port driver from <a href="https://developer.mbed.org/handbook/Windows-serial-configuration">https://developer.mbed.org/handbook/Windows-serial-configuration</a>. Follow the instructions from the site to install the driver.  Here are some additional notes about the installation:</p>
-<ol>
-<li>The instructions indicate that the mbed Windows serial port driver is not required for Windows 10. If you are using Windows 10 and get the <code>unable to find CMSIS-DAP device</code> error, we recommend that you install the driver.</li>
-<li>If the driver installation fails, we recommend that you unplug the board, plug it back in, and retry the installation.</li>
-</ol>
-<p>Run the <code>newt load rbnano2_boot</code> command again.</p>
-<p><br></p>
-<h4 id="clear-the-write-protection-on-the-flash-memory">Clear the Write Protection on the Flash Memory</h4>
-<p>The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the <code>newt debug rbnano2_blinky</code> command and issue the following commands at the highlighted (gdb) prompts.  </p>
-<p><strong>Note:</strong> The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.</p>
-<p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$newt debug rbnano2_blinky
-[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/rb-nano2/rb-nano2_debug.sh  ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/rb-nano2 ~/dev/myproj/bin/targets/rbnano2_blinky/app/apps/blinky/blinky]
-Open On-Chip Debugger 0.10.0-dev-snapshot (2017-03-28-11:24)
-Licensed under GNU GPL v2
-
-     ...
-
-<span style="background-color: #ffffcc">(gdb) set {unsigned long}0x4001e504=2
-</span><span style="background-color: #ffffcc">(gdb) x/1wx 0x4001e504
-</span>0x4001e504:0x00000002
-<span style="background-color: #ffffcc">(gdb) set {unsigned long}0x4001e50c=1
-</span>Info : SWD DPIDR 0x2ba01477
-Error: Failed to read memory at 0x00009ef4
-<span style="background-color: #ffffcc">(gdb) x/32wx 0x00
-</span>0x0:0xffffffff0xffffffff0xffffffff0xffffffff
-0x10:0xffffffff0xffffffff0xffffffff0xffffffff
-0x20:0xffffffff0xffffffff0xffffffff0xffffffff
-0x30:0xffffffff0xffffffff0xffffffff0xffffffff
-0x40:0xffffffff0xffffffff0xffffffff0xffffffff
-0x50:0xffffffff0xffffffff0xffffffff0xffffffff
-0x60:0xffffffff0xffffffff0xffffffff0xffffffff
-0x70:0xffffffff0xffffffff0xffffffff0xffffffff
-(gdb)
-</pre></div>
-
-
-<p><br></p>
-<h3 id="load-the-blinky-application-image">Load the Blinky Application Image</h3>
+<p>The status of the image in the secondary slot is now set to <strong>pending</strong>. </p>
 <p><br>
-Run the <code>newt load rbnano2_blinky</code> command to load the Blinky application image onto the board:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load rbnano2_blinky
-Loading app image into slot 1
+Power the device OFF and ON and run the <code>newtmgr image list</code> command to check the image status on the device after the reboot:
+<br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image list -c mybleprph
+Images:
+ slot=0
+    version: 2.0.0
+    bootable: true
+    flags: active
+    hash: 291ebc02a8c345911c96fdf4e7b9015a843697658fd6b5faa0eb257a23e93682
+ slot=1
+    version: 1.0.0
+    bootable: true
+    flags: confirmed
+    hash: b8d17c77a03b37603cd9f89fdcfe0ba726f8ddff6eac63011dee2e959cc316c2
+Split status: N/A (0)
 </pre></div>
 
 
-<p>You should see a blue LED on the board blink!</p>
-<p>Note: If the LED does not blink, try resetting your board.</p>
+<p>The uploaded image is now active and running in the primary slot. The image, however, is not confirmed. The confirmed image is in the secondary slot. On the next reboot, the bootloader reverts to using the confirmed image. It copies the confirmed image to the primary slot and runs the image when the device reboots. You need to confirm and make the uploaded image in the primary slot permanent.
+<br></p>
+<h3 id="step-4-confirming-the-image">Step 4: Confirming the Image</h3>
+<p>Run the <code>newtmgr image confirm</code> command to confirm and make the uploaded image permanent. Since the uploaded image is currently the active image, you can confirm the image setup without specifying the image hash value in the command:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newtmgr image confirm -c mybleprph 
+Images:
+ slot=0
+    version: 2.0.0
+    bootable: true
+    flags: active confirmed
+    hash: 291ebc02a8c345911c96fdf4e7b9015a843697658fd6b5faa0eb257a23e93682
+ slot=1
+    version: 1.0.0
+    bootable: true
+    flags: 
+    hash: b8d17c77a03b37603cd9f89fdcfe0ba726f8ddff6eac63011dee2e959cc316c2
+Split status: N/A (0)
+</pre></div>
+
+
+<p>The uploaded image is now the active and confirmed image.  You have successfully upgraded an image over-the-air.</p>
                         
                         <div class="row">
                             
@@ -738,16 +671,16 @@ Loading app image into slot 1
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../nRF52/>
+    <a href=../project-stm32-slinky/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Blinky on nRF52 DK
+        Previous: Slinky on Olimex
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../blinky_stm32f4disc/>
-        Next: Blinky on STM32F4-Discovery
+    <a href=../ibeacon/>
+        Next: BLE iBeacon
         <span class="fa fa-arrow-right"></span>
     </a>
     
