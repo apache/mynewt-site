@@ -1,13 +1,19 @@
 ## Set up a NimBLE application
 
-This tutorial explains how to set up an application using the NimBLE stack. The end result will be a framework that you can use to create your own BLE application using the nimble stack.
+This tutorial explains how to set up an application using the NimBLE stack. The
+end result will be a framework that you can use to create your own BLE
+application using the nimble stack.
 
-This tutorial assumes that you have already installed the newt tool and are familiar with its concepts.
+This tutorial assumes that you have already installed the newt tool and are
+familiar with its concepts.
 
+### Create a Mynewt project
 
-### Create the application directory
-
-You start by creating a project space for your own application work using the Newt tool (`my_proj1` in this example) and installing all the additional apps and libraries available by adding the repo `apache-mynewt-core`. See the tutorial on [adding a repo](../../os/tutorials/repo/add_repos.md) for more on working with repos.
+You start by creating a project space for your own application work using the
+Newt tool (`my_proj1` in this example) and installing all the additional apps
+and libraries available by adding the repo `apache-mynewt-core`. See the
+tutorial on [adding a repo](../../os/tutorials/repo/add_repos.md) for more on
+working with repos.
 
 ```
 ~/dev$ newt new my_proj1
@@ -39,133 +45,61 @@ my_proj1
 ~/dev$ cd my_proj1
 ~/dev/my_proj1$ newt install
 apache-mynewt-core
-~/dev/my_proj1$ tree
-.
-├── DISCLAIMER
-├── LICENSE
-├── NOTICE
-├── README.md
-├── apps
-│   └── blinky
-│       ├── pkg.yml
-│       └── src
-│           └── main.c
-├── project.state
-├── project.yml
-├── repos
-│   └── apache-mynewt-core
-│       ├── DISCLAIMER
-│       ├── LICENSE
-│       ├── NOTICE
-│       ├── README.md
-│       ├── RELEASE_NOTES.md
-│       ├── apps
-│       │   ├── bleprph
-│       │   │   └── src
-│       │   │       ├── bleprph.h
-│       │   │       ├── gatt_svr.c
-│       │   │       └── main.c
-│       │   ├── bletest
-│       │   │   ├── pkg.yml
-│       │   │   └── src
-│       │   │       └── main.c
-│       │   ├── bletiny
-│       │   │   ├── pkg.yml
-│       │   │   └── src
-│       │   │       ├── bletiny_priv.h
-│       │   │       ├── cmd.c
-│       │   │       ├── main.c
-│       │   │       ├── parse.c
-│       │   │       └── periph.c
-<snip>
-
-232 directories, 846 files
 ```
 
-<br>
+Now it's time to create your own app.
 
-It's time to build your own app using one or more of the example apps available in the repo `apache-mynewt-core`. 
-
-```
-~/dev/my_proj1$ ls repos/apache-mynewt-core/apps
-bleprph		bletiny		boot		luatest		test
-bletest		blinky		ffs2native	slinky
-```
-
-<br>
-
-At the very least your app must contain a `main()` function and a `pkg.yml` file.  Use the following steps to create minimal ...
-
-*1. Create the app directory structure.*
-```no-highlight
-~/dev/my_proj1$ mkdir -p apps/ble_app/src
-```
-<br>
-*2. Paste the following contents into `apps/ble_app/pkg.yml`.*
+### Create an application package
 
 ```no-highlight
-pkg.name: apps/ble_app
-pkg.type: app
-
-pkg.deps:
-    - "@apache-mynewt-core/kernel/os"
-    - "@apache-mynewt-core/hw/hal"
-    - "@apache-mynewt-core/sys/console/full"
-    - "@apache-mynewt-core/sys/log/full"
-    - "@apache-mynewt-core/sys/stats/full"
-    - "@apache-mynewt-core/net/nimble/transport/ram"
-    - "@apache-mynewt-core/net/nimble/controller"
-    - "@apache-mynewt-core/net/nimble/host"
+~/dev/my_proj1$ newt pkg new apps/ble_app -t app
+Download package template for package type app.
+Package successfully installed into /home/me/dev/my_proj1/apps/ble_app.
 ```
-<br>
-*3. Paste the following contents into `apps/ble_app/src/main.c`.*
-```c
-#include <assert.h>
-#include "os/os.h"
 
-int
-main(void)
-{
-    /* Initialize OS */
-    os_init(NULL);
-
-    /* Start the OS */
-    os_start();
-
-    /* os_start should never return. If it does, this should be an error */
-    assert(0);
-}
-```
-In this _main()_ all we are doing is initializing the Mynewt OS and starting it.
-
-<br>
+You now have an application called `apps/ble_app`.  It isn't terribly
+interesting as far as applications go, but it does all the configuration and
+set up required of a Mynewt app.  It will be a useful starting point for our
+BLE application.
 
 ### Create the target
 
-Now you have to create the target that you will use to build your application. We will call this target "ble\_tgt". Type the `newt target create ble_tgt` command. You should get this:
+Now you have to create the target that ties your application to a BSP.  We will
+call this target "ble\_tgt".
 
 ```no-highlight
 ~/dev/my_proj1$ newt target create ble_tgt
 Target targets/ble_tgt successfully created
 ```
 
-What this command just did was to create a directory called `ble_tgt` in the targets directory of your project. Two files are created in that directory: pkg.yml and target.yml.
+We now have a new target:
 
-The target is not yet complete though! We need to set some target variables for this project. Currently, the nimble stack has been ported to the Nordic nrf5x chipsets; specifically the nrf51 and nrf52. This application will use the nrf52 but we will also show the setup for the nrf51 in case your project uses that chip.
+```
+~/dev/my_proj1]$ tree targets/ble_tgt
+targets/ble_tgt
+├── pkg.yml
+└── target.yml
+```
 
-Here is the command you will need to set up your target for the nrf52:
+The target is not yet complete though! We need to set some target variables for
+this project. Currently, the nimble stack has been ported to the Nordic nrf5x
+chipsets; specifically the nrf51 and nrf52. This application will use the nrf52
+but we will also show the setup for the nrf51 in case your project uses that
+chip.
+
+Here is the command you will need to set up your target for the nRF52dk:
 
 ```no-highlight
 ~/dev/my_proj1$ newt target set ble_tgt     \
     app=apps/ble_app                        \
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk \
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk  \
     build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
-Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
+Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
-Here is the command you will need to set up your target for the nrf51:
+Here is the command you will need to set up your target for the nRF51dk:
 
 ```no-highlight
 ~/dev/my_proj1$ newt target set ble_tgt     \
@@ -177,39 +111,65 @@ Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
-<br>
+### Enter BLE
 
-### Nimble stack initialization
+Since our application will support BLE functionality, we need to give it access
+to a BLE stack.  We do this by adding the necessary NimBLE packages to the
+app's dependency list.  To enable a combined host-controller in the app, add
+dependencies for the NimBLE controller, host, and in-RAM transport to
+`apps/ble_app/pkg.yml`:
 
-There are certain stack initialization steps that are required for a BLE application to be up and running. If you are running a canned example (e.g. bletiny), these steps are already done for you. When you are writing your own app, you may want to assign different initial values or initialize additional packages that you may have added to your project or written yourself. 
-
-Details of the initialization step requirements are covered in [Initialize Stack](ini_stack/ble_ini_intro.md) step.
-
-<br>
-
-### Building the application
-
-Now that we have created the application and the target we can build it and test it out. The command you need to run is the `newt build` command with the target we created (_ble\_tgt_). The output will show the files being compiled and linked. You should see this when all is done (except for the _..._ of course):
-
-```no-highlight
-~/dev/my_proj1$ newt build ble_tgt
-...
-Archiving os.a
-Compiling cons_fmt.c
-Compiling cons_tty.c
-Archiving full.a
-Linking ble_app.elf
-App successfully built: /Users/wes/dev/my_proj1/bin/ble_tgt/apps/ble_app/ble_app.elf
+```hl_lines="6 7 8"
+pkg.deps:
+    - "@apache-mynewt-core/kernel/os"
+    - "@apache-mynewt-core/sys/console/full"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/sys/stats/full"
+    - "@apache-mynewt-core/net/nimble/controller"
+    - "@apache-mynewt-core/net/nimble/host"
+    - "@apache-mynewt-core/net/nimble/transport/ram"
 ```
+
+### Build the target
+
+Now would be a good time for a basic sanity check.  Let's make sure the target builds.
+
+```
+~/dev/my_proj1$ newt build ble_tgt
+Building target targets/ble_tgt
+Compiling repos/apache-mynewt-core/hw/hal/src/hal_common.c
+Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
+<...snip...>
+Linking /home/me/dev/my_proj1/bin/targets/ble_tgt/app/apps/ble_app/ble_app.elf
+Target successfully built: targets/ble_tgt
+```
+
+Now let's try running our minimal application on actual hardware.  Attach the target device to your computer and run the application with `newt run`:
+
+```
+~/dev/my_proj1$ newt run ble_tgt 0
+App image succesfully generated: /home/me/dev/my_proj1/bin/targets/ble_tgt/app/apps/ble_app/ble_app.img
+<...snip...>
+Resetting target
+[Switching to Thread 57005]
+0x000000dc in ?? ()
+(gdb)
+```
+
+You can start the application by pressing `c <enter>` at the gdb prompt.  When the excitement of watching the idle loop run wears off, quit gdb with `<ctrl-c> q <enter>`.
+
+If your target fails to build or run, you might want to revisit the [project
+blinky tutorial](../../os/tutorials/blinky.md) to see if there is a setup step
+you missed.  You may also find help by posting a question to the [mailing
+list](../../community.md) or searching the archives.
 
 ### Conclusion
 
-You now have a fully functional BLE app (never mind the fact that it doesn't
-actually do anything yet!).  With all the necessary infrastructure in place,
-you can now start turning this into a real application.  Additional tutorials
-with focus on adding application-layer functionality to your Nimble application
-will be coming soon.  In the meantime, you might get some inspiration from
-apache-mynewt-core's example Nimble apps.  These apps can be found at the below locations, relative to your project's base directory:
-
-* _repos/apache-mynewt-core/apps/bleprph_
-* _repos/apache-mynewt-core/apps/bletiny_
+You now have a fully functional BLE app (never mind that it doesn't actually do
+anything yet!).  With all the necessary infrastructure in place, you can now
+start turning this into a real application.  A good next step would be to turn
+your app into a beaconing device.  The [BLE iBeacon
+tutorial](../../os/tutorials/ibeacon.md) builds on this one and ends with a
+functioning iBeacon.  For something a little more ambitious, the [BLE
+peripheral project tutorial](../../os/tutorials/bleprph.md) describes a NimBLE
+peripheral application in detail.
