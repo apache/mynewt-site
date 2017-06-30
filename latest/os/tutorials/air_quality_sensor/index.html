@@ -521,10 +521,9 @@
                             <h2 id="air-quality-sensor-project">Air quality sensor project</h2>
 <h3 id="setting-up-source-tree-for-stuff-you-need">Setting up source tree for stuff you need</h3>
 <p>To start with, you need to create a new project under which you will do this development. So you type in:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    $ mkdir $HOME/src
+<pre class="codehilite"><code class="language-no-highlight">    $ mkdir $HOME/src
     $ cd $HOME/src
-    $ newt new air_quality
-</pre></div>
+    $ newt new air_quality</code></pre>
 
 
 <p>Let's say you are using Arduino Primo -- which is based on the Nordic Semi NRF52 chip -- as the platform. 
@@ -532,14 +531,14 @@ You know you need the board support package for that hardware. You can look up i
 project, and fetch that along with the core OS components. Luckily, the Arduino Primo is supported in the 
 Mynewt Core, so there's nothing much to do here. </p>
 <p>Your project.yml file should look like this:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    [user@IsMyLaptop:~/src/air_quality]$ emacs project.yml &amp;
+<pre class="codehilite"><code class="language-no-highlight">    [user@IsMyLaptop:~/src/air_quality]$ emacs project.yml &amp;
     [user@IsMyLaptop:~/src/air_quality]$ cat project.yml
     project.name: &quot;air_quality&quot;
 
     project.repositories:
         - apache-mynewt-core
 
-    # Use github&#39;s distribution mechanism for core ASF libraries.
+    # Use github's distribution mechanism for core ASF libraries.
     # This provides mirroring automatically for us.
     #
     repository.apache-mynewt-core:
@@ -551,14 +550,13 @@ Mynewt Core, so there's nothing much to do here. </p>
     [user@IsMyLaptop:~/src/air_quality]$ newt install
     apache-mynewt-core
     [user@IsMyLaptop:~/src/air_quality]$ ls repos/
-    apache-mynewt-core
-</pre></div>
+    apache-mynewt-core</code></pre>
 
 
 <p>Good. You want to make sure you have all the needed bits for supporting your board; 
 so you decide to build the blinky project for the platform first.</p>
 <p>Now create a target for it and build it. Easiest way to proceed is to copy the existing target for blinky, and modify it to build for Arduino Primo board.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ newt target copy my_blinky_sim blink_primo
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt target copy my_blinky_sim blink_primo
 Target successfully copied; targets/my_blinky_sim --&gt; targets/blink_primo
 [user@IsMyLaptop:~/src/air_quality]$ newt target set blink_primo bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
 Target targets/blink_nrf successfully set target.bsp to @apache-mynewt-core/hw/bsp/arduino_primo_nrf52
@@ -566,13 +564,12 @@ Target targets/blink_nrf successfully set target.bsp to @apache-mynewt-core/hw/b
 Compiling hal_bsp.c
 ...
 Linking blinky.elf
-App successfully built: /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.elf
-</pre></div>
+App successfully built: /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.elf</code></pre>
 
 
 <p>Good.</p>
 <p>You know that this platform uses bootloader, which means you have to create a target for that too.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ newt target create boot_primo
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt target create boot_primo
 Target targets/boot_nrf successfully created
 [user@IsMyLaptop:~/src/air_quality]$ newt target show
 @apache-mynewt-core/targets/unittest
@@ -593,18 +590,16 @@ Target targets/boot_nrf successfully set target.bsp to @apache-mynewt-core/hw/bs
 [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf app=@apache-mynewt-core/apps/boot
 Target targets/boot_nrf successfully set target.app to @apache-mynewt-core/apps/boot
 [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf build_profile=optimized
-Target targets/boot_nrf successfully set target.build_profile to optimized
-</pre></div>
+Target targets/boot_nrf successfully set target.build_profile to optimized</code></pre>
 
 
 <p>And then build it, and load it onto the board.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">newt build boot_primo
+<pre class="codehilite"><code class="language-no-highlight">newt build boot_primo
 ....
 Linking boot.elf
 App successfully built: /Users/user/src/air_quality/bin/boot_primo/apps/boot/boot.elf
 [user@IsMyLaptop:~/src/air_quality]
-$ newt load boot_primo
-</pre></div>
+$ newt load boot_primo</code></pre>
 
 
 <p>At this point, you may (or may not) see a bunch of error messages about not being able to connect to
@@ -613,9 +608,9 @@ should most definitely go worth through the <a href="../blinky_primo/">blinky_pr
 can properly communicate with your board.</p>
 <p>Next you must download the targets to board, and see that the LED actually blinks. You plug in the 
 Arduino Primo board to your laptop, and say:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ newt load blink_primo
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt load blink_primo
 Loading app image into slot 1
-Error: couldn&#39;t open /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.img
+Error: couldn't open /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.img
 
 Error: exit status 1
 
@@ -632,19 +627,17 @@ Global Flags:
   -l, --loglevel string   Log level, defaults to WARN. (default &quot;WARN&quot;)
   -o, --outfile string    Filename to tee log output to
   -q, --quiet             Be quiet; only display error output.
-  -s, --silent            Be silent; don&#39;t output anything.
+  -s, --silent            Be silent; don't output anything.
   -v, --verbose           Enable verbose output when executing commands.
-exit status 1
-</pre></div>
+exit status 1</code></pre>
 
 
 <p>Ah. Forgot to create an image out of the blinky binary. Note that every time you want to build and 
 load a new firmware image to a target board, you need to run 'create-image' on it.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ newt create-image blink_primo 0.0.1
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt create-image blink_primo 0.0.1
 App image successfully generated: /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.img
 Build manifest: /Users/user/src/air_quality/bin/blink_nrf/apps/blinky/manifest.json
-[user@IsMyLaptop:~/src/air_quality]$ newt load blink_primo
-</pre></div>
+[user@IsMyLaptop:~/src/air_quality]$ newt load blink_primo</code></pre>
 
 
 <p>And it's blinking.</p>
@@ -655,16 +648,15 @@ out the usage from command line help.</p>
 First you want to create a project for yourself - you could start by using blinky as a project 
 template, but since we're going to want to be able to access the data via Bluetooth, let's 
 use the <code>bleprph</code> Bluetooth Peripheral project instead.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    [user@IsMyLaptop:~/src/air_quality]$ mkdir apps/air_quality
+<pre class="codehilite"><code class="language-no-highlight">    [user@IsMyLaptop:~/src/air_quality]$ mkdir apps/air_quality
     [user@IsMyLaptop:~/src/air_quality]$ cp repos/apache-mynewt-core/apps/bleprph/pkg.yml apps/air_quality/
-    [user@IsMyLaptop:~/src/air_quality]$ cp -Rp repos/apache-mynewt-core/apps/bleprph/src apps/air_quality/
-</pre></div>
+    [user@IsMyLaptop:~/src/air_quality]$ cp -Rp repos/apache-mynewt-core/apps/bleprph/src apps/air_quality/</code></pre>
 
 
 <p>Then you modify the apps/air_quality/pkg.yml for air_quality in order to change the <em>pkg.name</em> to be <em>apps/air_quality</em>.
 You'll need to add the <code>@apache-mynewt-core/</code> path to all the package dependencies, since the app no longer
 resides within the apache-mynewt-core repository.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ cat apps/air_quality/pkg.yml
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ cat apps/air_quality/pkg.yml
 pkg.name: apps/air_quality
 pkg.type: app
 pkg.description: BLE Air Quality application.
@@ -688,12 +680,11 @@ pkg.deps:
     - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/sysinit&quot;
-    - &quot;@apache-mynewt-core/sys/id&quot;
-</pre></div>
+    - &quot;@apache-mynewt-core/sys/id&quot;</code></pre>
 
 
 <p>And create a target for it:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ newt target create air_q
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt target create air_q
 Target targets/air_q successfully created
 [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
 Target targets/air_q successfully set target.bsp to @apache-mynewt-core/hw/bsp/arduino_primo_nrf52
@@ -704,119 +695,111 @@ Target targets/air_q successfully set target.build_profile to debug
 [user@IsMyLaptop:~/src/air_quality]$ newt build air_q
  ....
 Linking /Users/dsimmons/dev/myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf
-Target successfully built: targets/air_q
-</pre></div>
+Target successfully built: targets/air_q</code></pre>
 
 
 <h3 id="create-packages-for-drivers">Create packages for drivers</h3>
 <p>One of the sensors you want to enable is SenseAir K30, which will connect to the board over a serial port.
 To start development of the driver, you first need to create a package description for it, and add stubs for sources.</p>
 <p>The first thing to do is to create the directory structure for your driver:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ mkdir -p libs/my_drivers/senseair/include/senseair
-[user@IsMyLaptop:~/src/air_quality]$ mkdir -p libs/my_drivers/senseair/src
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ mkdir -p libs/my_drivers/senseair/include/senseair
+[user@IsMyLaptop:~/src/air_quality]$ mkdir -p libs/my_drivers/senseair/src</code></pre>
 
 
 <p>Now you can add the files you need. You'll need a pkg.yml to describe the driver, and then header stub followed by source stub.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml</code></pre>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#</span>
-<span style="color: #633820"># Licensed to the Apache Software Foundation (ASF) under one</span>
-<span style="color: #633820"># or more contributor license agreements.  See the NOTICE file</span>
-<span style="color: #633820"># distributed with this work for additional information</span>
-<span style="color: #633820"># regarding copyright ownership.  The ASF licenses this file</span>
-<span style="color: #633820"># to you under the Apache License, Version 2.0 (the</span>
-<span style="color: #633820"># &quot;License&quot;); you may not use this file except in compliance</span>
-<span style="color: #633820"># with the License.  You may obtain a copy of the License at</span>
-<span style="color: #633820"># </span>
-<span style="color: #633820">#  http:</span><span style="color: #177500">//www.apache.org/licenses/LICENSE-2.0</span>
-<span style="color: #633820">#</span>
-<span style="color: #633820"># Unless required by applicable law or agreed to in writing,</span>
-<span style="color: #633820"># software distributed under the License is distributed on an</span>
-<span style="color: #633820"># &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span style="color: #633820"># KIND, either express or implied.  See the License for the</span>
-<span style="color: #633820"># specific language governing permissions and limitations</span>
-<span style="color: #633820"># under the License.</span>
-<span style="color: #633820">#</span>
-<span style="color: #000000">pkg</span>.<span style="color: #000000">name</span>: <span style="color: #000000">libs/my_drivers/senseair</span>
-<span style="color: #000000">pkg</span>.<span style="color: #000000">description</span>: <span style="color: #000000">Host</span> <span style="color: #000000">side</span> <span style="color: #000000">of</span> <span style="color: #000000">the</span> <span style="color: #000000">nimble</span> <span style="color: #000000">Bluetooth</span> <span style="color: #000000">Smart</span> <span style="color: #000000">stack</span>.
-<span style="color: #000000">pkg</span>.<span style="color: #000000">author</span>: <span style="color: #C41A16">&quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;</span>
-<span style="color: #000000">pkg</span>.<span style="color: #000000">homepage</span>: <span style="color: #C41A16">&quot;http://mynewt.apache.org/&quot;</span>
-<span style="color: #000000">pkg</span>.<span style="color: #000000">keywords</span>:
-    <span style="color: #000000">-</span> <span style="color: #000000">ble</span>
-    <span style="color: #000000">-</span> <span style="color: #000000">bluetooth</span>
+<pre class="codehilite"><code class="language-c">#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# &quot;License&quot;); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+# 
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+pkg.name: libs/my_drivers/senseair
+pkg.description: Host side of the nimble Bluetooth Smart stack.
+pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;
+pkg.homepage: &quot;http://mynewt.apache.org/&quot;
+pkg.keywords:
+    - ble
+    - bluetooth
 
-<span style="color: #000000">pkg</span>.<span style="color: #000000">deps</span>:
-    <span style="color: #000000">-</span> <span style="color: #C41A16">&quot;@apache-mynewt-core/kernel/os&quot;</span>
-</pre></div>
-
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/include/senseair/senseair.h
-</pre></div>
+pkg.deps:
+    - &quot;@apache-mynewt-core/kernel/os&quot;</code></pre>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*</span>
-<span style="color: #177500"> * Licensed to the Apache Software Foundation (ASF) under one</span>
-<span style="color: #177500"> * or more contributor license agreements.  See the NOTICE file</span>
-<span style="color: #177500"> * distributed with this work for additional information</span>
-<span style="color: #177500"> * regarding copyright ownership.  The ASF licenses this file</span>
-<span style="color: #177500"> * to you under the Apache License, Version 2.0 (the</span>
-<span style="color: #177500"> * &quot;License&quot;); you may not use this file except in compliance</span>
-<span style="color: #177500"> * with the License.  You may obtain a copy of the License at</span>
-<span style="color: #177500"> * </span>
-<span style="color: #177500"> *  http://www.apache.org/licenses/LICENSE-2.0</span>
-<span style="color: #177500"> *</span>
-<span style="color: #177500"> * Unless required by applicable law or agreed to in writing,</span>
-<span style="color: #177500"> * software distributed under the License is distributed on an</span>
-<span style="color: #177500"> * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span style="color: #177500"> * KIND, either express or implied.  See the License for the</span>
-<span style="color: #177500"> * specific language governing permissions and limitations</span>
-<span style="color: #177500"> * under the License.</span>
-<span style="color: #177500">*/</span>
-<span style="color: #633820">#ifndef _SENSEAIR_H_</span>
-<span style="color: #633820">#define _SENSEAIR_H_</span>
-
-<span style="color: #A90D91">void</span> <span style="color: #000000">senseair_init</span>(<span style="color: #A90D91">void</span>);
-
-<span style="color: #633820">#endif </span><span style="color: #177500">/* _SENSEAIR_H_ */</span><span style="color: #633820"></span>
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/include/senseair/senseair.h</code></pre>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
-</pre></div>
+<pre class="codehilite"><code class="language-c">/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+*/
+#ifndef _SENSEAIR_H_
+#define _SENSEAIR_H_
+
+void senseair_init(void);
+
+#endif /* _SENSEAIR_H_ */</code></pre>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
-<span style="color: #177500"> * Licensed to the Apache Software Foundation (ASF) under one</span>
-<span style="color: #177500"> * or more contributor license agreements.  See the NOTICE file</span>
-<span style="color: #177500"> * distributed with this work for additional information</span>
-<span style="color: #177500"> * regarding copyright ownership.  The ASF licenses this file</span>
-<span style="color: #177500"> * to you under the Apache License, Version 2.0 (the</span>
-<span style="color: #177500"> * &quot;License&quot;); you may not use this file except in compliance</span>
-<span style="color: #177500"> * with the License.  You may obtain a copy of the License at</span>
-<span style="color: #177500"> * </span>
-<span style="color: #177500"> *  http://www.apache.org/licenses/LICENSE-2.0</span>
-<span style="color: #177500"> *</span>
-<span style="color: #177500"> * Unless required by applicable law or agreed to in writing,</span>
-<span style="color: #177500"> * software distributed under the License is distributed on an</span>
-<span style="color: #177500"> * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span style="color: #177500"> * KIND, either express or implied.  See the License for the</span>
-<span style="color: #177500"> * specific language governing permissions and limitations</span>
-<span style="color: #177500"> * under the License.</span>
-<span style="color: #177500"> */</span>
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c</code></pre>
 
-<span style="color: #A90D91">void</span>
-<span style="color: #000000">senseair_init</span>(<span style="color: #A90D91">void</span>)
+
+<pre class="codehilite"><code class="language-c">/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+void
+senseair_init(void)
 {
-}
-</pre></div>
+}</code></pre>
 
 
 <p>And add dependency to this package in your project yml file.</p>
 <p>Here's the listing from apps/air_quality/pkg.yml</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.name: apps/air_quality
+<pre class="codehilite"><code class="language-no-highlight">pkg.name: apps/air_quality
 pkg.type: app
 pkg.description: Air quality sensor test
 pkg.keywords:
@@ -829,79 +812,72 @@ pkg.deps:
     - &quot;@apache-mynewt-core/sys/config&quot;
     - &quot;@apache-mynewt-core/sys/log/full&quot;
     - &quot;@apache-mynewt-core/sys/stats/full&quot;
-    - libs/my_drivers/senseair
-</pre></div>
+    - libs/my_drivers/senseair</code></pre>
 
 
 <p>And add a call to your main() to initialize this driver.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    [user@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
+<pre class="codehilite"><code class="language-no-highlight">    [user@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
     28a29
     &gt; #include &lt;senseair/senseair.h&gt;
     190a192
     &gt; senseair_init();
-    [user@IsMyLaptop:~/src/air_quality
-</pre></div>
+    [user@IsMyLaptop:~/src/air_quality</code></pre>
 
 
 <p>The ble_prph app runs everything in one task handler. For this project, we're going to add a second
 task handler to respond to the shell, and then handle communicating with the senseair sensor for us.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** shell task settings. */</span>
-<span style="color: #633820">#define SHELL_TASK_PRIO           2</span>
-<span style="color: #633820">#define SHELL_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
+<pre class="codehilite"><code class="language-c">/** shell task settings. */
+#define SHELL_TASK_PRIO           2
+#define SHELL_STACK_SIZE          (OS_STACK_ALIGN(336))
 
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">shell_evq</span>;
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">shell_task</span>;
-<span style="color: #A90D91">bssnz_t</span> <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">shell_stack</span>[<span style="color: #000000">SHELL_STACK_SIZE</span>];
-</pre></div>
+struct os_eventq shell_evq;
+struct os_task shell_task;
+bssnz_t os_stack_t shell_stack[SHELL_STACK_SIZE];</code></pre>
 
 
 <p>That defines the task, now we need to initialize it, add a task handler, and we're going to 
 use this task as our default task handler.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
-<span style="color: #177500"> * Event loop for the main shell task.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">shell_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*unused</span>)
+<pre class="codehilite"><code class="language-c">/**
+ * Event loop for the main shell task.
+ */
+static void
+shell_task_handler(void *unused)
 {
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">&amp;shell_evq</span>);
+    while (1) {
+        os_eventq_run(&amp;shell_evq);
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p>And in your <code>main()</code> add:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #177500">/* Initialize shell eventq */</span>
-    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;shell_evq</span>);
+<pre class="codehilite"><code class="language-c">    /* Initialize shell eventq */
+    os_eventq_init(&amp;shell_evq);
 
-    <span style="color: #177500">/* Create the shell task.  </span>
-<span style="color: #177500">     * All shell operations are performed in this task.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;shell_task</span>, <span style="color: #C41A16">&quot;shell&quot;</span>, <span style="color: #000000">shell_task_handler</span>,
-                              <span style="color: #A90D91">NULL</span>, <span style="color: #000000">SHELL_TASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>,
-                              <span style="color: #000000">shell_stack</span>, <span style="color: #000000">SHELL_STACK_SIZE</span>);
-</pre></div>
+    /* Create the shell task.  
+     * All shell operations are performed in this task.
+     */
+    os_task_init(&amp;shell_task, &quot;shell&quot;, shell_task_handler,
+                              NULL, SHELL_TASK_PRIO, OS_WAIT_FOREVER,
+                              shell_stack, SHELL_STACK_SIZE);</code></pre>
 
 
 <p>Don't forget to change your default task handler!</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #000000">os_eventq_dflt_set</span>(<span style="color: #000000">&amp;shell_evq</span>);
-</pre></div>
+<pre class="codehilite"><code class="language-c">    os_eventq_dflt_set(&amp;shell_evq);</code></pre>
 
 
 <p>And then build it to make sure all goes well.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ newt build air_q
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ newt build air_q
 Compiling senseair.c
 Archiving senseair.a
 Linking air_quality.elf
-App successfully built: /Users/user/src/air_quality/bin/air_q/apps/air_quality/air_quality.elf
-</pre></div>
+App successfully built: /Users/user/src/air_quality/bin/air_q/apps/air_quality/air_quality.elf</code></pre>
 
 
 <p>All looks good.</p>
 <h3 id="add-cli-commands-for-testing-drivers">Add CLI commands for testing drivers</h3>
 <p>While developing the driver, you want to issue operations from console asking it to do stuff. We'll assume that you've already worked through the tutorial 
 on how to <a href="../add_shell/">enable the CLI</a>, so all we'll need to do is add the propper values to the project's <code>syscfg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">[user@IsMyLaptop:~/src/air_quality]$ cat targets/air_q/syscfg.yml
+<pre class="codehilite"><code class="language-no-highlight">[user@IsMyLaptop:~/src/air_quality]$ cat targets/air_q/syscfg.yml
 syscfg.vals:
     # Set as per blinky_primo
     OPENOCD_DEBUG: 1
@@ -909,45 +885,43 @@ syscfg.vals:
     SHELL_TASK: 1
     STATS_CLI: 1
     CONSOLE_TICKS: 1
-    CONSOLE_PROMPT: 1
-</pre></div>
+    CONSOLE_PROMPT: 1</code></pre>
 
 
 <p>Then register your senseair command with the shell by adding the following to <code>libs/my_drivers/senseair/src/senseair.c</code></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &lt;shell/shell.h&gt;</span>
-<span style="color: #633820">#include &lt;console/console.h&gt;</span>
-<span style="color: #633820">#include &lt;assert.h&gt;</span>
+<pre class="codehilite"><code class="language-c">#include &lt;shell/shell.h&gt;
+#include &lt;console/console.h&gt;
+#include &lt;assert.h&gt;
 
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span> <span style="color: #000000">senseair_shell_func</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>);
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">shell_cmd</span> <span style="color: #000000">senseair_cmd</span> <span style="color: #000000">=</span> {
-    .<span style="color: #000000">sc_cmd</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;senseair&quot;</span>,
-    .<span style="color: #000000">sc_cmd_func</span> <span style="color: #000000">=</span> <span style="color: #000000">senseair_shell_func</span>,
+static int senseair_shell_func(int argc, char **argv);
+static struct shell_cmd senseair_cmd = {
+    .sc_cmd = &quot;senseair&quot;,
+    .sc_cmd_func = senseair_shell_func,
 };
 
-<span style="color: #A90D91">void</span>
-<span style="color: #000000">senseair_init</span>(<span style="color: #A90D91">void</span>)
+void
+senseair_init(void)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    int rc;
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">shell_cmd_register</span>(<span style="color: #000000">&amp;senseair_cmd</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    rc = shell_cmd_register(&amp;senseair_cmd);
+    assert(rc == 0);
 }
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">senseair_shell_func</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+static int
+senseair_shell_func(int argc, char **argv)
 {
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Yay! Somebody called!\n&quot;</span>);
-    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+    console_printf(&quot;Yay! Somebody called!\n&quot;);
+    return 0;
 
-}
-</pre></div>
+}</code></pre>
 
 
 <p>Now you can you build this, download to target, and start minicom on your console port. If you haven't already, familiarize yourself with
 the tutorial on how to connect a serial port to your board <a href="../../get_started/serial_access/">here</a>.</p>
 <p>You'll need to wire up your Board to a Serial converter first. On the Arduino Primo Board pin 1 is TX and pin 0 is RX so wire 1 to RX on your serial board, and 0 to TX on your serial board.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    [user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
+<pre class="codehilite"><code class="language-no-highlight">    [user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
 
 
     Welcome to minicom 2.7
@@ -973,8 +947,7 @@ the tutorial on how to connect a serial port to your board <a href="../../get_st
     54068:  ble_ll   0   1        9    64986       80       58        0        0   0
     54079: bleprph   1   2        0        1      336       32        0        0   0
     54090:   shell   2   3        0     2077      336      262        0        0   0
-    54101: &gt;
-</pre></div>
+    54101: &gt;</code></pre>
 
 
 <p>That's great. Your shell task is running, and is responding appropriately!
@@ -985,286 +958,282 @@ We're using one for our shell/console. It also has a second UART set up as a 'bi
 communicate at 9600 baud, this bit-banged uart is plenty fast enough.</p>
 <p>You'll have to make a small change to the <code>syscfg.yml</code> file in your project's target directory to change  the pin definitions 
 for this second UART. Those changes are as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    UART_0_PIN_TX: 23
-    UART_0_PIN_RX: 24
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    UART_0_PIN_TX: 23
+    UART_0_PIN_RX: 24</code></pre>
 
 
 <p>With this in place, you can refer to serial port where your SenseAir sensor by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.</p>
 <p>You will now see what the driver code ends up looking like. Here's the header file, filled in from the stub you created earlier.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/*</span>
-<span style="color: #177500"> * Licensed to the Apache Software Foundation (ASF) under one</span>
-<span style="color: #177500"> * or more contributor license agreements.  See the NOTICE file</span>
-<span style="color: #177500"> * distributed with this work for additional information</span>
-<span style="color: #177500"> * regarding copyright ownership.  The ASF licenses this file</span>
-<span style="color: #177500"> * to you under the Apache License, Version 2.0 (the</span>
-<span style="color: #177500"> * &quot;License&quot;); you may not use this file except in compliance</span>
-<span style="color: #177500"> * with the License.  You may obtain a copy of the License at</span>
-<span style="color: #177500"> * </span>
-<span style="color: #177500"> *  http://www.apache.org/licenses/LICENSE-2.0</span>
-<span style="color: #177500"> *</span>
-<span style="color: #177500"> * Unless required by applicable law or agreed to in writing,</span>
-<span style="color: #177500"> * software distributed under the License is distributed on an</span>
-<span style="color: #177500"> * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span style="color: #177500"> * KIND, either express or implied.  See the License for the</span>
-<span style="color: #177500"> * specific language governing permissions and limitations</span>
-<span style="color: #177500"> * under the License.</span>
-<span style="color: #177500">*/</span>
-<span style="color: #633820">#ifndef _SENSEAIR_H_</span>
-<span style="color: #633820">#define _SENSEAIR_H_</span>
+<pre class="codehilite"><code class="language-c">/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+*/
+#ifndef _SENSEAIR_H_
+#define _SENSEAIR_H_
 
-<span style="color: #A90D91">enum</span> <span style="color: #000000">senseair_read_type</span> {
-        <span style="color: #000000">SENSEAIR_CO2</span>,
+enum senseair_read_type {
+        SENSEAIR_CO2,
 };
 
-<span style="color: #A90D91">int</span> <span style="color: #000000">senseair_init</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">uartno</span>);
+int senseair_init(int uartno);
 
-<span style="color: #A90D91">int</span> <span style="color: #000000">senseair_read</span>(<span style="color: #A90D91">enum</span> <span style="color: #000000">senseair_read_type</span>);
+int senseair_read(enum senseair_read_type);
 
-<span style="color: #633820">#endif </span><span style="color: #177500">/* _SENSEAIR_H_ */</span><span style="color: #633820"></span>
-</pre></div>
+#endif /* _SENSEAIR_H_ */</code></pre>
 
 
 <p>As you can see, logical UART number has been added to the init routine. A 'read' function has been added, 
 which is a blocking read. If you were making a commercial product, you would probably have a callback for reporting the results.</p>
 <p>And here is the source for the driver.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
-<span style="color: #177500"> * Licensed to the Apache Software Foundation (ASF) under one</span>
-<span style="color: #177500"> * or more contributor license agreements.  See the NOTICE file</span>
-<span style="color: #177500"> * distributed with this work for additional information</span>
-<span style="color: #177500"> * regarding copyright ownership.  The ASF licenses this file</span>
-<span style="color: #177500"> * to you under the Apache License, Version 2.0 (the</span>
-<span style="color: #177500"> * &quot;License&quot;); you may not use this file except in compliance</span>
-<span style="color: #177500"> * with the License.  You may obtain a copy of the License at</span>
-<span style="color: #177500"> *</span>
-<span style="color: #177500"> *  http://www.apache.org/licenses/LICENSE-2.0</span>
-<span style="color: #177500"> *</span>
-<span style="color: #177500"> * Unless required by applicable law or agreed to in writing,</span>
-<span style="color: #177500"> * software distributed under the License is distributed on an</span>
-<span style="color: #177500"> * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY</span>
-<span style="color: #177500"> * KIND, either express or implied.  See the License for the</span>
-<span style="color: #177500"> * specific language governing permissions and limitations</span>
-<span style="color: #177500"> * under the License.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #633820">#include &lt;string.h&gt;</span>
+<pre class="codehilite"><code class="language-c">/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * &quot;License&quot;); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+#include &lt;string.h&gt;
 
-<span style="color: #633820">#include &lt;shell/shell.h&gt;</span>
-<span style="color: #633820">#include &lt;console/console.h&gt;</span>
-<span style="color: #633820">#include &lt;os/os.h&gt;</span>
+#include &lt;shell/shell.h&gt;
+#include &lt;console/console.h&gt;
+#include &lt;os/os.h&gt;
 
-<span style="color: #633820">#include &lt;hal/hal_uart.h&gt;</span>
+#include &lt;hal/hal_uart.h&gt;
 
-<span style="color: #633820">#include &quot;senseair/senseair.h&quot;</span>
+#include &quot;senseair/senseair.h&quot;
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cmd_read_co2</span>[] <span style="color: #000000">=</span> {
-    <span style="color: #1C01CE">0xFE</span>, <span style="color: #1C01CE">0</span><span style="color: #000000">X44</span>, <span style="color: #1C01CE">0</span><span style="color: #000000">X00</span>, <span style="color: #1C01CE">0</span><span style="color: #000000">X08</span>, <span style="color: #1C01CE">0</span><span style="color: #000000">X02</span>, <span style="color: #1C01CE">0</span><span style="color: #000000">X9F</span>, <span style="color: #1C01CE">0</span><span style="color: #000000">X25</span>
+static const uint8_t cmd_read_co2[] = {
+    0xFE, 0X44, 0X00, 0X08, 0X02, 0X9F, 0X25
 };
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span> <span style="color: #000000">senseair_shell_func</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>);
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">shell_cmd</span> <span style="color: #000000">senseair_cmd</span> <span style="color: #000000">=</span> {
-    .<span style="color: #000000">sc_cmd</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;senseair&quot;</span>,
-    .<span style="color: #000000">sc_cmd_func</span> <span style="color: #000000">=</span> <span style="color: #000000">senseair_shell_func</span>,
+static int senseair_shell_func(int argc, char **argv);
+static struct shell_cmd senseair_cmd = {
+    .sc_cmd = &quot;senseair&quot;,
+    .sc_cmd_func = senseair_shell_func,
 };
 
-<span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> { 
-    <span style="color: #A90D91">int</span> <span style="color: #000000">uart</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">sema</span>;
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*tx_data</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">tx_off</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">tx_len</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">rx_data</span>[<span style="color: #1C01CE">32</span>]; 
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rx_off</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">value</span>;
-} <span style="color: #000000">senseair</span>;
+struct senseair { 
+    int uart;
+    struct os_sem sema;
+    const uint8_t *tx_data;
+    int tx_off;
+    int tx_len;
+    uint8_t rx_data[32]; 
+    int rx_off;
+    int value;
+} senseair;
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">senseair_tx_char</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+static int
+senseair_tx_char(void *arg)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> <span style="color: #000000">*s</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;senseair</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct senseair *s = &amp;senseair;
+    int rc;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">s-&gt;tx_off</span> <span style="color: #000000">&gt;=</span> <span style="color: #000000">s-&gt;tx_len</span>) {
-    <span style="color: #177500">/*</span>
-<span style="color: #177500">         * Command tx finished.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #000000">s-&gt;tx_data</span> <span style="color: #000000">=</span> <span style="color: #A90D91">NULL</span>;
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    if (s-&gt;tx_off &gt;= s-&gt;tx_len) {
+    /*
+         * Command tx finished.
+         */
+        s-&gt;tx_data = NULL;
+        return -1;
     }
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">s-&gt;tx_data</span>[<span style="color: #000000">s-&gt;tx_off</span>];
-    <span style="color: #000000">s-&gt;tx_off++</span>;
-    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    rc = s-&gt;tx_data[s-&gt;tx_off];
+    s-&gt;tx_off++;
+    return rc;
 }
 
-<span style="color: #177500">/*</span>
-<span style="color: #177500"> * CRC for modbus over serial port.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">mb_crc_tbl</span>[] <span style="color: #000000">=</span> {
-    <span style="color: #1C01CE">0x0000</span>, <span style="color: #1C01CE">0xcc01</span>, <span style="color: #1C01CE">0xd801</span>, <span style="color: #1C01CE">0x1400</span>, <span style="color: #1C01CE">0xf001</span>, <span style="color: #1C01CE">0x3c00</span>, <span style="color: #1C01CE">0x2800</span>, <span style="color: #1C01CE">0xe401</span>,
-    <span style="color: #1C01CE">0xa001</span>, <span style="color: #1C01CE">0x6c00</span>, <span style="color: #1C01CE">0x7800</span>, <span style="color: #1C01CE">0xb401</span>, <span style="color: #1C01CE">0x5000</span>, <span style="color: #1C01CE">0x9c01</span>, <span style="color: #1C01CE">0x8801</span>, <span style="color: #1C01CE">0x4400</span>
+/*
+ * CRC for modbus over serial port.
+ */
+static const uint16_t mb_crc_tbl[] = {
+    0x0000, 0xcc01, 0xd801, 0x1400, 0xf001, 0x3c00, 0x2800, 0xe401,
+    0xa001, 0x6c00, 0x7800, 0xb401, 0x5000, 0x9c01, 0x8801, 0x4400
 };
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">uint16_t</span>
-<span style="color: #000000">mb_crc</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*data</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">len</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">crc</span>)
+static uint16_t
+mb_crc(const uint8_t *data, int len, uint16_t crc)
 {
-    <span style="color: #A90D91">while</span> (<span style="color: #000000">len--</span> <span style="color: #000000">&gt;</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">crc</span> <span style="color: #000000">^=</span> <span style="color: #000000">*data++</span>;
-        <span style="color: #000000">crc</span> <span style="color: #000000">=</span> (<span style="color: #000000">crc</span> <span style="color: #000000">&gt;&gt;</span> <span style="color: #1C01CE">4</span>) <span style="color: #000000">^</span> <span style="color: #000000">mb_crc_tbl</span>[<span style="color: #000000">crc</span> <span style="color: #000000">&amp;</span> <span style="color: #1C01CE">0xf</span>];
-        <span style="color: #000000">crc</span> <span style="color: #000000">=</span> (<span style="color: #000000">crc</span> <span style="color: #000000">&gt;&gt;</span> <span style="color: #1C01CE">4</span>) <span style="color: #000000">^</span> <span style="color: #000000">mb_crc_tbl</span>[<span style="color: #000000">crc</span> <span style="color: #000000">&amp;</span> <span style="color: #1C01CE">0xf</span>];
+    while (len-- &gt; 0) {
+        crc ^= *data++;
+        crc = (crc &gt;&gt; 4) ^ mb_crc_tbl[crc &amp; 0xf];
+        crc = (crc &gt;&gt; 4) ^ mb_crc_tbl[crc &amp; 0xf];
     }
-    <span style="color: #A90D91">return</span> <span style="color: #000000">crc</span>;
+    return crc;
 }
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">mb_crc_check</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">void</span> <span style="color: #000000">*pkt</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">len</span>)
+static int
+mb_crc_check(const void *pkt, int len)
 {
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">crc</span>, <span style="color: #000000">cmp</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*bp</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*</span>)<span style="color: #000000">pkt</span>;
+    uint16_t crc, cmp;
+    uint8_t *bp = (uint8_t *)pkt;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">len</span> <span style="color: #000000">&lt;</span> <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">crc</span>) <span style="color: #000000">+</span> <span style="color: #1C01CE">1</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    if (len &lt; sizeof(crc) + 1) {
+        return -1;
     }
-    <span style="color: #000000">crc</span> <span style="color: #000000">=</span> <span style="color: #000000">mb_crc</span>(<span style="color: #000000">pkt</span>, <span style="color: #000000">len</span> <span style="color: #000000">-</span> <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">0xffff</span>);
-    <span style="color: #000000">cmp</span> <span style="color: #000000">=</span> <span style="color: #000000">bp</span>[<span style="color: #000000">len</span> <span style="color: #000000">-</span> <span style="color: #1C01CE">2</span>] <span style="color: #000000">|</span> (<span style="color: #000000">bp</span>[<span style="color: #000000">len</span> <span style="color: #000000">-</span> <span style="color: #1C01CE">1</span>] <span style="color: #000000">&lt;&lt;</span> <span style="color: #1C01CE">8</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">crc</span> <span style="color: #000000">!=</span> <span style="color: #000000">cmp</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
-    } <span style="color: #A90D91">else</span> {
-        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+    crc = mb_crc(pkt, len - 2, 0xffff);
+    cmp = bp[len - 2] | (bp[len - 1] &lt;&lt; 8);
+    if (crc != cmp) {
+        return -1;
+    } else {
+        return 0;
     }
 }
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">senseair_rx_char</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">data</span>)
+static int
+senseair_rx_char(void *arg, uint8_t data)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> <span style="color: #000000">*s</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> <span style="color: #000000">*</span>)<span style="color: #000000">arg</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct senseair *s = (struct senseair *)arg;
+    int rc;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">s-&gt;rx_off</span> <span style="color: #000000">&gt;=</span> <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">s-&gt;rx_data</span>)) {
-        <span style="color: #000000">s-&gt;rx_off</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+    if (s-&gt;rx_off &gt;= sizeof(s-&gt;rx_data)) {
+        s-&gt;rx_off = 0;
     }
-    <span style="color: #000000">s-&gt;rx_data</span>[<span style="color: #000000">s-&gt;rx_off</span>] <span style="color: #000000">=</span> <span style="color: #000000">data</span>;
-    <span style="color: #000000">s-&gt;rx_off++</span>;
+    s-&gt;rx_data[s-&gt;rx_off] = data;
+    s-&gt;rx_off++;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">s-&gt;rx_off</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">7</span>) {
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">mb_crc_check</span>(<span style="color: #000000">s-&gt;rx_data</span>, <span style="color: #000000">s-&gt;rx_off</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>) {
-            <span style="color: #000000">s-&gt;value</span> <span style="color: #000000">=</span> <span style="color: #000000">s-&gt;rx_data</span>[<span style="color: #1C01CE">3</span>] <span style="color: #000000">*</span> <span style="color: #1C01CE">256</span> <span style="color: #000000">+</span> <span style="color: #000000">s-&gt;rx_data</span>[<span style="color: #1C01CE">4</span>];
-            <span style="color: #000000">os_sem_release</span>(<span style="color: #000000">&amp;s-&gt;sema</span>);
+    if (s-&gt;rx_off == 7) {
+        rc = mb_crc_check(s-&gt;rx_data, s-&gt;rx_off);
+        if (rc == 0) {
+            s-&gt;value = s-&gt;rx_data[3] * 256 + s-&gt;rx_data[4];
+            os_sem_release(&amp;s-&gt;sema);
         }
     }
-    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+    return 0;
 }
 
-<span style="color: #A90D91">void</span>
-<span style="color: #000000">senseair_tx</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> <span style="color: #000000">*s</span>, <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*tx_data</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">data_len</span>)
+void
+senseair_tx(struct senseair *s, const uint8_t *tx_data, int data_len)
 {
-    <span style="color: #000000">s-&gt;tx_data</span> <span style="color: #000000">=</span> <span style="color: #000000">tx_data</span>;
-    <span style="color: #000000">s-&gt;tx_len</span> <span style="color: #000000">=</span> <span style="color: #000000">data_len</span>;
-    <span style="color: #000000">s-&gt;tx_off</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
-    <span style="color: #000000">s-&gt;rx_off</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+    s-&gt;tx_data = tx_data;
+    s-&gt;tx_len = data_len;
+    s-&gt;tx_off = 0;
+    s-&gt;rx_off = 0;
 
-    <span style="color: #000000">hal_uart_start_tx</span>(<span style="color: #000000">s-&gt;uart</span>);
+    hal_uart_start_tx(s-&gt;uart);
 }
 
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">senseair_read</span>(<span style="color: #A90D91">enum</span> <span style="color: #000000">senseair_read_type</span> <span style="color: #000000">type</span>)
+int
+senseair_read(enum senseair_read_type type)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> <span style="color: #000000">*s</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;senseair</span>;
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*cmd</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">cmd_len</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct senseair *s = &amp;senseair;
+    const uint8_t *cmd;
+    int cmd_len;
+    int rc;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">s-&gt;tx_data</span>) {
-        <span style="color: #177500">/*</span>
-<span style="color: #177500">         * busy</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    if (s-&gt;tx_data) {
+        /*
+         * busy
+         */
+        return -1;
     }
-    <span style="color: #A90D91">switch</span> (<span style="color: #000000">type</span>) {
-    <span style="color: #A90D91">case</span> <span style="color: #000000">SENSEAIR_CO2</span>:
-        <span style="color: #000000">cmd</span> <span style="color: #000000">=</span> <span style="color: #000000">cmd_read_co2</span>;
-        <span style="color: #000000">cmd_len</span> <span style="color: #000000">=</span> <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">cmd_read_co2</span>);
-        <span style="color: #A90D91">break</span>;
-    <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    switch (type) {
+    case SENSEAIR_CO2:
+        cmd = cmd_read_co2;
+        cmd_len = sizeof(cmd_read_co2);
+        break;
+    default:
+        return -1;
     }
-    <span style="color: #000000">senseair_tx</span>(<span style="color: #000000">s</span>, <span style="color: #000000">cmd</span>, <span style="color: #000000">cmd_len</span>);
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sem_pend</span>(<span style="color: #000000">&amp;s-&gt;sema</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span> <span style="color: #000000">/</span> <span style="color: #1C01CE">2</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #000000">OS_TIMEOUT</span>) {
-        <span style="color: #177500">/*</span>
-<span style="color: #177500">         * timeout</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">2</span>;
+    senseair_tx(s, cmd, cmd_len);
+    rc = os_sem_pend(&amp;s-&gt;sema, OS_TICKS_PER_SEC / 2);
+    if (rc == OS_TIMEOUT) {
+        /*
+         * timeout
+         */
+        return -2;
     }
-    <span style="color: #A90D91">return</span> <span style="color: #000000">s-&gt;value</span>;
+    return s-&gt;value;
 }
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">senseair_shell_func</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+static int
+senseair_shell_func(int argc, char **argv)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">value</span>;
-    <span style="color: #A90D91">enum</span> <span style="color: #000000">senseair_read_type</span> <span style="color: #000000">type</span>;
+    int value;
+    enum senseair_read_type type;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">argc</span> <span style="color: #000000">&lt;</span> <span style="color: #1C01CE">2</span>) {
-<span style="color: #000000">usage</span>:
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;%s co2\n&quot;</span>, <span style="color: #000000">argv</span>[<span style="color: #1C01CE">0</span>]);
-        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+    if (argc &lt; 2) {
+usage:
+        console_printf(&quot;%s co2\n&quot;, argv[0]);
+        return 0;
     }
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">!strcmp</span>(<span style="color: #000000">argv</span>[<span style="color: #1C01CE">1</span>], <span style="color: #C41A16">&quot;co2&quot;</span>)) {
-        <span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">SENSEAIR_CO2</span>;
-    } <span style="color: #A90D91">else</span> {
-        <span style="color: #A90D91">goto</span> <span style="color: #000000">usage</span>;
+    if (!strcmp(argv[1], &quot;co2&quot;)) {
+        type = SENSEAIR_CO2;
+    } else {
+        goto usage;
     }
-    <span style="color: #000000">value</span> <span style="color: #000000">=</span> <span style="color: #000000">senseair_read</span>(<span style="color: #000000">type</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">value</span> <span style="color: #000000">&gt;=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Got %d\n&quot;</span>, <span style="color: #000000">value</span>);
-    } <span style="color: #A90D91">else</span> {
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Error while reading: %d\n&quot;</span>, <span style="color: #000000">value</span>);
+    value = senseair_read(type);
+    if (value &gt;= 0) {
+        console_printf(&quot;Got %d\n&quot;, value);
+    } else {
+        console_printf(&quot;Error while reading: %d\n&quot;, value);
     }
-    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+    return 0;
 }
 
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">senseair_init</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">uartno</span>)
+int
+senseair_init(int uartno)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">senseair</span> <span style="color: #000000">*s</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;senseair</span>;
+    int rc;
+    struct senseair *s = &amp;senseair;
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">shell_cmd_register</span>(<span style="color: #000000">&amp;senseair_cmd</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    rc = shell_cmd_register(&amp;senseair_cmd);
+    if (rc) {
+        return rc;
     }
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sem_init</span>(<span style="color: #000000">&amp;s-&gt;sema</span>, <span style="color: #1C01CE">1</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    rc = os_sem_init(&amp;s-&gt;sema, 1);
+    if (rc) {
+        return rc;
     }
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">hal_uart_init_cbs</span>(<span style="color: #000000">uartno</span>, <span style="color: #000000">senseair_tx_char</span>, <span style="color: #A90D91">NULL</span>,
-      <span style="color: #000000">senseair_rx_char</span>, <span style="color: #000000">&amp;senseair</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    rc = hal_uart_init_cbs(uartno, senseair_tx_char, NULL,
+      senseair_rx_char, &amp;senseair);
+    if (rc) {
+        return rc;
     }
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">hal_uart_config</span>(<span style="color: #000000">uartno</span>, <span style="color: #1C01CE">9600</span>, <span style="color: #1C01CE">8</span>, <span style="color: #1C01CE">1</span>, <span style="color: #000000">HAL_UART_PARITY_NONE</span>,
-      <span style="color: #000000">HAL_UART_FLOW_CTL_NONE</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    rc = hal_uart_config(uartno, 9600, 8, 1, HAL_UART_PARITY_NONE,
+      HAL_UART_FLOW_CTL_NONE);
+    if (rc) {
+        return rc;
     }
-    <span style="color: #000000">s-&gt;uart</span> <span style="color: #000000">=</span> <span style="color: #000000">uartno</span>;
+    s-&gt;uart = uartno;
 
-    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
-}
-</pre></div>
+    return 0;
+}</code></pre>
 
 
 <p>And your modified main() for senseair driver init.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+<pre class="codehilite"><code class="language-c">int
+main(int argc, char **argv)
 {
     ....
-    <span style="color: #000000">senseair_init</span>(<span style="color: #1C01CE">0</span>);
+    senseair_init(0);
     ....
-    }
-</pre></div>
+    }</code></pre>
 
 
 <p>You can see from the code that you are using the HAL interface to open a UART port, and using OS 
@@ -1285,7 +1254,7 @@ straight to the board if you prefer.</p>
 <p>Here's what your Arduino Primo should now look like with everything wired in:</p>
 <p><img alt="SenseAir and Arduino Primo Wiring" src="../pics/Senseair2.png" /></p>
 <p>Everything is wired and you're ready to go! Build and load your new app:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build air_q
+<pre class="codehilite"><code class="language-no-highlight">$ newt build air_q
 Building target targets/air_q
 Compiling apps/air_quality/src/main.c
 Archiving apps_air_quality.a
@@ -1294,12 +1263,11 @@ Target successfully built: targets/air_q
 $ newt create-image air_q 1.0.0
 App image succesfully generated: myproj/bin/targets/air_q/app/apps/air_quality/air_quality.img
 $ newt load air_q
-Loading app image into slot 1
-</pre></div>
+Loading app image into slot 1</code></pre>
 
 
 <p>Now, you should be able to connect to your serial port and read values:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
+<pre class="codehilite"><code>user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
 
 
     Welcome to minicom 2.7
@@ -1317,8 +1285,7 @@ Loading app image into slot 1
     1395: &gt; senseair
     senseair co2
     2143: &gt; senseair co2
-    Got 973
-</pre></div>
+    Got 973</code></pre>
 
 
 <p>And you're getting valid readings! Congratulations!</p>

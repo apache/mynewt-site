@@ -499,162 +499,304 @@
                         
                         
                             <h2 id="ble-ibeacon">BLE iBeacon</h2>
-<p><br></p>
+<p>This tutorial guides you through the process of creating an iBeacon application using NimBLE and Mynewt.  At the conclusion of this tutorial, you will have a fully functional iBeacon app.</p>
 <h3 id="ibeacon-protocol">iBeacon Protocol</h3>
 <p>A beaconing device announces its presence to the world by broadcasting
 advertisements.  The iBeacon protocol is built on top of the standard BLE
-advertisement specification.  An iBeacon advertisement contains a single field:
-<em>Manufacturer Specific Data</em>; this field contains the iBeacon-specific
-sub-fields.  <a href="http://www.warski.org/blog/2014/01/how-ibeacons-work/">This page</a>
-provides a good summary of the iBeacon sub-fields.</p>
+advertisement specification.
+<a href="http://www.warski.org/blog/2014/01/how-ibeacons-work/">This page</a> provides a
+good summary of the iBeacon sub-fields.</p>
+<h3 id="create-an-empty-ble-application">Create an Empty BLE Application</h3>
+<p>This tutorial picks up where the
+<a href="../../../network/ble/nimble_setup/">Set up a NimBLE application</a> document
+concludes.  The first step in creating a beaconing device is to create an empty
+BLE app, as explained in that tutorial.  Before proceeding, you should have:</p>
+<ul>
+<li>An app called "ble_app".</li>
+<li>A target called "ble_tgt".</li>
+<li>Successfully executed the app on your target device.</li>
+</ul>
+<h3 id="add-beaconing">Add beaconing</h3>
+<p>Here is a brief specification of how we want our beaconing app to behave:</p>
+<ol>
+<li>Wait until the host and controller are in sync.</li>
+<li>Configure the NimBLE stack with an address to put in its advertisements.</li>
+<li>Advertise indefinitely.</li>
+</ol>
+<p>Let's take these one at a time.</p>
 <p><br></p>
-<h3 id="configuration">Configuration</h3>
-<p>Use the following function to configure your NimBLE device to send iBeacons:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*uuid128</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">major</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">minor</span>)
-</pre></div>
+<h4 id="1-wait-for-host-controller-sync">1. Wait for host-controller sync</h4>
+<p>The first step, waiting for host-controller-sync, is mandatory in all BLE
+applications.  The NimBLE stack is inoperable while the two components are out
+of sync.  In a combined host-controller app, the sync happens immediately at
+startup.  When the host and controller are separate, sync typically occurs
+in less than a second.</p>
+<p>We achieve this by configuring the NimBLE host with a callback function that
+gets called when sync takes place:</p>
+<pre class="codehilite"><code class="language-c">static void
+ble_app_set_addr()
+{ }
+
+static void
+ble_app_advertise();
+{ }
+
+static void
+ble_app_on_sync(void)
+{
+    /* Generate a non-resolvable private address. */
+    ble_app_set_addr();
+
+    /* Advertise indefinitely. */
+    ble_app_advertise();
+}
+
+int
+main(int argc, char **argv)
+{
+    sysinit();
+
+    ble_hs_cfg.sync_cb = ble_app_on_sync;
+
+    /* As the last thing, process events from default event queue. */
+    while (1) {
+        os_eventq_run(os_eventq_dflt_get());
+    }
+}</code></pre>
 
 
-<p>This function's parameters are documented below.</p>
+<p><code>ble_hs_cfg.sync_cb</code> points to the function that should be called when sync
+occurs.  Our callback function, <code>ble_app_on_sync()</code>, kicks off the control flow
+that we specified above.  Now we need to fill in the two stub functions.</p>
+<p><br></p>
+<h4 id="2-configure-the-nimble-stack-with-an-address">2. Configure the NimBLE stack with an address</h4>
+<p>A BLE device needs an address to do just about anything.  Some devices have a
+public Bluetooth address burned into them, but this is not always the case.
+Furthermore, the NimBLE controller might not know how to read an address out of
+your particular hardware.  For a beaconing device, we generally don't care what
+address gets used since nothing will be connecting to us.</p>
+<p>A reliable solution is to generate a <em>non-resolvable private address</em> (nRPA)
+each time the application runs.  Such an address contains no identifying
+information, and they are expected to change frequently.</p>
+<pre class="codehilite"><code class="language-c">static void
+ble_app_set_addr(void)
+{
+    ble_addr_t addr;
+    int rc;
+
+    rc = ble_hs_id_gen_rnd(1, &amp;addr);
+    assert(rc == 0);
+
+    rc = ble_hs_id_set_rnd(addr.val);
+    assert(rc == 0);
+}
+
+static void
+ble_app_advertise();
+{ }
+
+static void
+ble_app_on_sync(void)
+{
+    /* Generate a non-resolvable private address. */
+    ble_app_set_addr();
+
+    /* Advertise indefinitely. */
+    ble_app_advertise();
+}</code></pre>
+
+
+<p>Our new function, <code>ble_app_set_addr()</code>, makes two calls into the stack:</p>
+<ul>
+<li><a href="../../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_gen_rnd/"><code>ble_hs_id_gen_rnd</code></a>: Generate an nRPA.</li>
+<li><a href="../../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_set_rnd/"><code>ble_hs_id_set_rnd</code></a>: Configure NimBLE to use the newly-generated address.</li>
+</ul>
+<p>You can click either of the function names for more detailed documentation.</p>
+<p><br></p>
+<h4 id="3-advertise-indefinitely">3. Advertise indefinitely</h4>
+<p>The first step in advertising is to configure the host with advertising data.
+This operation tells the host what data to use for the contents of its
+advertisements.  The NimBLE host provides a special helper function for
+configuration iBeacon advertisement data:
+<a href="../../../network/ble/ble_hs/other/functions/ble_ibeacon_set_adv_data/"><code>ble_ibeacon_set_adv_data</code></a>.</p>
+<p>If you follow the API link, you'll see that this function takes three parameters: a 128-bit UUID, a major version, and a minor version.  This corresponds with the iBeacon specification, as these three items are the primary components in an iBeacon advertisement.</p>
+<p>For now, we'll advertise the following:
+<em> <em>UUID</em>: <code>11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11</code>
+</em> <em>Major</em>: 2
+* <em>Minor</em>: 10</p>
+<pre class="codehilite"><code class="language-c">static void
+ble_app_advertise(void)
+{
+    uint8_t uuid128[16];
+    int rc;
+
+    /* Fill the UUID buffer with a string of 0x11 bytes. */
+    memset(uuid128, 0x11, sizeof uuid128);
+
+    /* Major version=2; minor version=10. */
+    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+    assert(rc == 0);
+
+    /* TODO: Begin advertising. */
+}</code></pre>
+
+
+<p>Now that the host knows what to advertise, the next step is to actually begin
+advertising.  The function to initiate advertising is:
+<a href="../../../network/ble/ble_hs/ble_gap/functions/ble_gap_adv_start/"><code>ble_gap_adv_start</code></a>.
+This function takes several parameters.  For simplicity, we reproduce the
+function prototype here:</p>
+<pre class="codehilite"><code class="language-c">int
+ble_gap_adv_start(
+                            uint8_t  own_addr_type,
+                   const ble_addr_t *direct_addr,
+                            int32_t  duration_ms,
+    const struct ble_gap_adv_params *adv_params,
+                   ble_gap_event_fn *cb,
+                               void *cb_arg
+)</code></pre>
+
+
+<p>This function gives an application quite a bit of freedom in how advertising is to be done.  The default values are mostly fine for our simple beaconing application.  We will pass the following values to this function:</p>
 <table>
 <thead>
 <tr>
-<th><em>Parameter</em></th>
-<th><em>Purpose</em></th>
+<th>Parameter</th>
+<th>Value</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>UUID</td>
-<td>128-bit UUID identifying the application</td>
+<td>own_addr_type</td>
+<td>BLE_OWN_ADDR_RANDOM</td>
+<td>Use the nRPA we generated earlier.</td>
 </tr>
 <tr>
-<td>Major version number</td>
-<td>First number in your app's version</td>
+<td>direct_addr</td>
+<td>NULL</td>
+<td>We are broadcasting, not targeting a peer.</td>
 </tr>
 <tr>
-<td>Minor version number</td>
-<td>Second number in your app's version</td>
+<td>duration_ms</td>
+<td>BLE_HS_FOREVER</td>
+<td>Advertise indefinitely.</td>
+</tr>
+<tr>
+<td>adv_params</td>
+<td>defaults</td>
+<td>Can be used to specify low level advertising parameters.</td>
+</tr>
+<tr>
+<td>cb</td>
+<td>NULL</td>
+<td>We are non-connectable, so no need for an event callback.</td>
+</tr>
+<tr>
+<td>cb_arg</td>
+<td>NULL</td>
+<td>No callback implies no callback argument.</td>
 </tr>
 </tbody>
 </table>
-<p><br></p>
-<h3 id="modify-bleprph">Modify bleprph</h3>
-<p>To demonstrate how the above function is used, we will now modify the <em>bleprph</em>
-example application to send iBeacons.  For some background behind the <em>bleprph</em>
-app, we recommend you take a look at the <a href="../bleprph/bleprph-intro/">bleprph project
-tutorial</a>.  If you plan on making these modifications
-yourself, it might be a good idea to copy <em>bleprph</em> to your local repository
-and work with the copy.  In general, you should avoid changing a package that
-newt downloads, as you will lose your changes the next time you upgrade the
-package.</p>
-<p><em>bleprph</em> sets its advertisement data and begins advertising as follows (<em>main.c</em>):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<p>These arguments are mostly self-explanatory.  The exception is <code>adv_params</code>, which can be used to specify a number of low-level parameters.  For a beaconing application, the default settings are appropriate.  We specify default settings by providing a zero-filled instance of the <code>ble_gap_adv_params</code> struct as our argument.</p>
+<pre class="codehilite"><code class="language-c">static void
+bleprph_advertise(void)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct ble_gap_adv_params adv_params;
+    uint8_t uuid128[16];
+    int rc;
 
-    <span style="color: #177500">/**</span>
-<span style="color: #177500">     *  Set the advertisement data included in our advertisements:</span>
-<span style="color: #177500">     *     o Flags (indicates advertisement type and other general info).</span>
-<span style="color: #177500">     *     o Advertising tx power.</span>
-<span style="color: #177500">     *     o Device name.</span>
-<span style="color: #177500">     *     o 16-bit service UUIDs (alert notifications).</span>
-<span style="color: #177500">     */</span>
+    /* Arbitrarily set the UUID to a string of 0x11 bytes. */
+    memset(uuid128, 0x11, sizeof uuid128);
 
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;fields</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">fields</span>);
-
-    <span style="color: #177500">/* Advertise two flags:</span>
-<span style="color: #177500">     *     o Discoverability in forthcoming advertisement (general)</span>
-<span style="color: #177500">     *     o BLE-only (BR/EDR unsupported).</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">fields</span>.<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HS_ADV_F_DISC_GEN</span> <span style="color: #000000">|</span>
-                   <span style="color: #000000">BLE_HS_ADV_F_BREDR_UNSUP</span>;
-
-    <span style="color: #177500">/* Indicate that the TX power level field should be included; have the</span>
-<span style="color: #177500">     * stack fill this value automatically.  This is done by assiging the</span>
-<span style="color: #177500">     * special value BLE_HS_ADV_TX_PWR_LVL_AUTO.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">fields</span>.<span style="color: #000000">tx_pwr_lvl_is_present</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">tx_pwr_lvl</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HS_ADV_TX_PWR_LVL_AUTO</span>;
-
-    <span style="color: #000000">name</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_svc_gap_device_name</span>();
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*</span>)<span style="color: #000000">name</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name_len</span> <span style="color: #000000">=</span> <span style="color: #000000">strlen</span>(<span style="color: #000000">name</span>);
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-
-    <span style="color: #000000">fields</span>.<span style="color: #000000">uuids16</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">ble_uuid16_t</span>[]){
-        <span style="color: #000000">BLE_UUID16_INIT</span>(<span style="color: #000000">GATT_SVR_SVC_ALERT_UUID</span>)
-    };
-    <span style="color: #000000">fields</span>.<span style="color: #000000">num_uuids16</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">uuids16_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_set_fields</span>(<span style="color: #000000">&amp;fields</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting advertisement data; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
+    /* Major version=2; minor version=10. */
+    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+    if (rc != 0) {
+        BLEPRPH_LOG(ERROR, &quot;error setting iBeacon advertisement data; rc=%d\n&quot;,
+                    rc);
+        return;
     }
 
-    <span style="color: #177500">/* Begin advertising. */</span>
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
-    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_UND</span>;
-    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_GEN</span>;
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_PUBLIC</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
-                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
-}
-</pre></div>
+    /* Begin advertising. */
+    adv_params = (struct ble_gap_adv_params){ 0 };
+    rc = ble_gap_adv_start(BLE_OWN_ADDR_RANDOM, NULL, BLE_HS_FOREVER,
+                           &amp;adv_params, NULL, NULL);
+    assert(rc == 0);
+}</code></pre>
 
 
-<p>The call to <code>ble_gap_adv_set_fields()</code> configures the device with normal
-(non-iBeacon) advertisements; the call to <code>ble_gap_adv_start()</code> tells the
-NimBLE stack to start broadcasting.  We are now going to create an iBeacon app
-by making the following two changes:</p>
-<ul>
-<li>Call <code>ble_ibeacon_set_adv_data()</code> instead of <code>ble_gap_adv_set_fields()</code>.</li>
-<li>Modify the call to <code>ble_gap_adv_start()</code> such that the device is non-discoverable and non-connectable.</li>
-</ul>
-<p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<h3 id="conclusion">Conclusion</h3>
+<p>That's it!  Now when you run this app on your board, you should be able to see
+it with all your iBeacon-aware devices.  You can test it out with the
+<code>newt run</code> command.</p>
+<h3 id="source-listing">Source Listing</h3>
+<p>For reference, here is the complete application source:</p>
+<pre class="codehilite"><code class="language-c">#include &quot;sysinit/sysinit.h&quot;
+#include &quot;os/os.h&quot;
+#include &quot;console/console.h&quot;
+#include &quot;host/ble_hs.h&quot;
+
+static void
+ble_app_set_addr(void)
 {
-<span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
-</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
-</span>    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-<span style="background-color: #ffffcc">
-</span><span style="background-color: #ffffcc">    <span style="color: #177500">/* Arbitrarily set the UUID to a string of 0x11 bytes. */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">memset</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">0x11</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">uuid128</span>);
-</span>
-<span style="background-color: #ffffcc">    <span style="color: #177500">/* Major version=2; minor version=10. */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
-</span>    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
-                    <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
+    ble_addr_t addr;
+    int rc;
 
-    <span style="color: #177500">/* Begin advertising. */</span>
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
-<span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_NON</span>;
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_NON</span>;
-</span>    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_PUBLIC</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
-                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
+    rc = ble_hs_id_gen_rnd(1, &amp;addr);
+    assert(rc == 0);
+
+    rc = ble_hs_id_set_rnd(addr.val);
+    assert(rc == 0);
 }
-</pre></div>
 
+static void
+bleprph_advertise(void)
+{
+    struct ble_gap_adv_params adv_params;
+    uint8_t uuid128[16];
+    int rc;
 
-<p>Now when you run this app on your board, you should be able to see it with all
-your iBeacon-aware devices.</p>
+    /* Arbitrarily set the UUID to a string of 0x11 bytes. */
+    memset(uuid128, 0x11, sizeof uuid128);
+
+    /* Major version=2; minor version=10. */
+    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+    if (rc != 0) {
+        BLEPRPH_LOG(ERROR, &quot;error setting iBeacon advertisement data; rc=%d\n&quot;,
+                    rc);
+        return;
+    }
+
+    /* Begin advertising. */
+    adv_params = (struct ble_gap_adv_params){ 0 };
+    rc = ble_gap_adv_start(BLE_OWN_ADDR_RANDOM, NULL, BLE_HS_FOREVER,
+                           &amp;adv_params, NULL, NULL);
+    assert(rc == 0);
+}
+
+static void
+ble_app_on_sync(void)
+{
+    /* Generate a non-resolvable private address. */
+    ble_app_set_addr();
+
+    /* Advertise indefinitely. */
+    ble_app_advertise();
+}
+
+int
+main(int argc, char **argv)
+{
+    sysinit();
+
+    ble_hs_cfg.sync_cb = ble_app_on_sync;
+
+    /* As the last thing, process events from default event queue. */
+    while (1) {
+        os_eventq_run(os_eventq_dflt_get());
+    }
+}</code></pre>
                         
                         <div class="row">
                             

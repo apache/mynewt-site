@@ -813,8 +813,7 @@
                         
                         
                             <h2 id="os_arch_ctx_sw"><font color="#F2853F" style="font-size:24pt"> os_arch_ctx_sw </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> <span style="color: #000000">os_arch_ctx_sw</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*</span><span style="color: #A90D91">next_t</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">void os_arch_ctx_sw(struct os_task *next_t)</code></pre>
 
 
 <p>Change the state of task pointed by <code>next_t</code> to be <em>running</em>.</p>
@@ -839,24 +838,23 @@
 <p>This would get called from another task's context.</p>
 <h4 id="example">Example</h4>
 <p><Add text to set up the context for the example here></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-    <span style="color: #000000">os_sched</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*</span><span style="color: #A90D91">next_t</span>)
+<pre class="codehilite"><code class="language-c">void
+    os_sched(struct os_task *next_t)
     {
-        <span style="color: #A90D91">os_sr_t</span> <span style="color: #000000">sr</span>;
+        os_sr_t sr;
 
-        <span style="color: #000000">OS_ENTER_CRITICAL</span>(<span style="color: #000000">sr</span>);
+        OS_ENTER_CRITICAL(sr);
 
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">!</span><span style="color: #A90D91">next_t</span>) {
-            <span style="color: #A90D91">next_t</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sched_next_task</span>();
+        if (!next_t) {
+            next_t = os_sched_next_task();
         }
 
-        <span style="color: #A90D91">if</span> (<span style="color: #A90D91">next_t</span> <span style="color: #000000">!=</span> <span style="color: #000000">g_current_task</span>) {
-            <span style="color: #000000">os_arch_ctx_sw</span>(<span style="color: #A90D91">next_t</span>);
+        if (next_t != g_current_task) {
+            os_arch_ctx_sw(next_t);
         }
 
-        <span style="color: #000000">OS_EXIT_CRITICAL</span>(<span style="color: #000000">sr</span>);
-    }
-</pre></div>
+        OS_EXIT_CRITICAL(sr);
+    }</code></pre>
                         
                         <div class="row">
                             

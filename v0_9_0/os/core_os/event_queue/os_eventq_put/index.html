@@ -702,9 +702,8 @@
                         
                         
                             <h2 id="os_eventq_put"><font color="#F2853F" style="font-size:24pt"> os_eventq_put</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">os_eventq_put</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">void
+os_eventq_put(struct os_eventq *evq, struct os_event *ev)</code></pre>
 
 
 <p>Queues an event to tail of the event queue.</p>
@@ -732,20 +731,19 @@
 <h4 id="example">Example</h4>
 <p><Add text to set up the context for the example here>
 This is used to pass info about an event to a task handling it.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #177500">/* Get an event structure off the queue */</span>
-    <span style="color: #000000">ev</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*</span>)<span style="color: #000000">os_memblock_get</span>(<span style="color: #000000">&amp;g_hci_os_event_pool</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">!ev</span>) {
-        <span style="color: #000000">err</span> <span style="color: #000000">=</span> <span style="color: #000000">os_memblock_put</span>(<span style="color: #000000">&amp;g_hci_cmd_pool</span>, <span style="color: #000000">hci_ev</span>);
-        <span style="color: #000000">assert</span>(<span style="color: #000000">err</span> <span style="color: #000000">==</span> <span style="color: #000000">OS_OK</span>);
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+<pre class="codehilite"><code class="language-c">    /* Get an event structure off the queue */
+    ev = (struct os_event *)os_memblock_get(&amp;g_hci_os_event_pool);
+    if (!ev) {
+        err = os_memblock_put(&amp;g_hci_cmd_pool, hci_ev);
+        assert(err == OS_OK);
+        return -1;
     }
 
-    <span style="color: #177500">/* Fill out the event and post to Link Layer */</span>
-    <span style="color: #000000">ev-&gt;ev_queued</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
-    <span style="color: #000000">ev-&gt;ev_type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HOST_HCI_EVENT_CTLR_EVENT</span>;
-    <span style="color: #000000">ev-&gt;ev_arg</span> <span style="color: #000000">=</span> <span style="color: #000000">hci_ev</span>;
-    <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;ble_hs_evq</span>, <span style="color: #000000">ev</span>);
-</pre></div>
+    /* Fill out the event and post to Link Layer */
+    ev-&gt;ev_queued = 0;
+    ev-&gt;ev_type = BLE_HOST_HCI_EVENT_CTLR_EVENT;
+    ev-&gt;ev_arg = hci_ev;
+    os_eventq_put(&amp;ble_hs_evq, ev);</code></pre>
                         
                         <div class="row">
                             

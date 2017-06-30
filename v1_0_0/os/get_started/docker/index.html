@@ -406,25 +406,23 @@ you can start the newt container as yourself.</p>
 <h3 id="use-the-newt-wrapper-script">Use the newt wrapper script</h3>
 <p>Use the newt wrapper script to invoke newt.  Create the following file, name it
 <code>newt</code>, make it executable, and put it in your path. This will allow you to run newt as if it was natively installed.  You can now follow the normal tutorials using the newt wrapper script.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">#!/bin/bash</span>
+<pre class="codehilite"><code class="language-bash">#!/bin/bash
 
-<span style="color: #A90D91">if</span> <span style="color: #000000">[</span> <span style="color: #C41A16">&quot;</span><span style="color: #000000">$1</span><span style="color: #C41A16">&quot;</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;debug&quot;</span> <span style="color: #000000">]</span> <span style="color: #000000">||</span> <span style="color: #000000">[</span> <span style="color: #C41A16">&quot;</span><span style="color: #000000">$1</span><span style="color: #C41A16">&quot;</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;run&quot;</span> <span style="color: #000000">]</span>
-<span style="color: #A90D91">then</span>
-    <span style="color: #000000">ti=</span><span style="color: #C41A16">&quot;-ti&quot;</span>
-<span style="color: #A90D91">fi</span>
+if [ &quot;$1&quot; = &quot;debug&quot; ] || [ &quot;$1&quot; = &quot;run&quot; ]
+then
+    ti=&quot;-ti&quot;
+fi
 
-docker run -e <span style="color: #000000">NEWT_USER=</span><span style="color: #A90D91">$(</span>id -u<span style="color: #A90D91">)</span> -e <span style="color: #000000">NEWT_GROUP=</span><span style="color: #A90D91">$(</span>id -g<span style="color: #A90D91">)</span> -e <span style="color: #000000">NEWT_HOST=</span><span style="color: #A90D91">$(</span>uname<span style="color: #A90D91">)</span> <span style="color: #000000">$ti</span> --rm --device<span style="color: #000000">=</span>/dev/bus/usb --privileged -v <span style="color: #A90D91">$(pwd)</span>:/workspace -w /workspace mynewt/newt:latest /newt <span style="color: #C41A16">&quot;</span><span style="color: #000000">$@</span><span style="color: #C41A16">&quot;</span>
-</pre></div>
+docker run -e NEWT_USER=$(id -u) -e NEWT_GROUP=$(id -g) -e NEWT_HOST=$(uname) $ti --rm --device=/dev/bus/usb --privileged -v $(pwd):/workspace -w /workspace mynewt/newt:latest /newt &quot;$@&quot;</code></pre>
 
 
 <p><br></p>
 <p><strong>Note 1:</strong> Remember to point to the correct subdirectory level when invoking <code>newt</code>. For example, invoke it using <code>../newt</code> in the example below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">user@~/dockertest$ ls
+<pre class="codehilite"><code>user@~/dockertest$ ls
 myproj  newt
 user@~/dockertest$ cd myproj
-<span style="background-color: #ffffcc">user@~/dockertest/myproj$ ../newt version
-</span>Apache Newt (incubating) version: 0.8.0-b2
-</pre></div>
+user@~/dockertest/myproj$ ../newt version
+Apache Newt (incubating) version: 0.8.0-b2</code></pre>
 
 
 <p><br></p>

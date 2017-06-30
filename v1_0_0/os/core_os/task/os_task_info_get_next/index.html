@@ -757,8 +757,7 @@
                         
                         
                             <h2 id="os_task_info_get_next"><font color="F2853F" style="font-size:24pt"> os_task_info_get_next</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*os_task_info_get_next</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*prev</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task_info</span> <span style="color: #000000">*oti</span>);
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_task *os_task_info_get_next(const struct os_task *prev, struct os_task_info *oti);</code></pre>
 
 
 <p>Populates the os task info structure pointed to by <code>oti</code> with task information. 
@@ -793,32 +792,31 @@ structure used to populate <code>oti</code> is returned.</p>
 information structure. <strong>NULL</strong> means that no tasks were created.</p>
 <p><br></p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span> 
-<span style="color: #000000">get_task_info</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">void 
+get_task_info(void)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*prev_task</span>; 
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task_info</span> <span style="color: #000000">oti</span>; 
+    struct os_task *prev_task; 
+    struct os_task_info oti; 
 
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Tasks: \n&quot;</span>);
-    <span style="color: #000000">prev_task</span> <span style="color: #000000">=</span> <span style="color: #A90D91">NULL</span>;
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">prev_task</span> <span style="color: #000000">=</span> <span style="color: #000000">os_task_info_get_next</span>(<span style="color: #000000">prev_task</span>, <span style="color: #000000">&amp;oti</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">prev_task</span> <span style="color: #000000">==</span> <span style="color: #A90D91">NULL</span>) {
-            <span style="color: #A90D91">break</span>;
+    console_printf(&quot;Tasks: \n&quot;);
+    prev_task = NULL;
+    while (1) {
+        prev_task = os_task_info_get_next(prev_task, &amp;oti);
+        if (prev_task == NULL) {
+            break;
         }
 
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;  %s (prio: %u, tid: %u, lcheck: %lu, ncheck: %lu, &quot;</span>
-                <span style="color: #C41A16">&quot;flags: 0x%x, ssize: %u, susage: %u, cswcnt: %lu, &quot;</span>
-                <span style="color: #C41A16">&quot;tot_run_time: %lums)\n&quot;</span>,
-                <span style="color: #000000">oti</span>.<span style="color: #000000">oti_name</span>, <span style="color: #000000">oti</span>.<span style="color: #000000">oti_prio</span>, <span style="color: #000000">oti</span>.<span style="color: #000000">oti_taskid</span>, 
-                (<span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">long</span>)<span style="color: #000000">oti</span>.<span style="color: #000000">oti_last_checkin</span>,
-                (<span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">long</span>)<span style="color: #000000">oti</span>.<span style="color: #000000">oti_next_checkin</span>, <span style="color: #000000">oti</span>.<span style="color: #000000">oti_flags</span>,
-                <span style="color: #000000">oti</span>.<span style="color: #000000">oti_stksize</span>, <span style="color: #000000">oti</span>.<span style="color: #000000">oti_stkusage</span>, (<span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">long</span>)<span style="color: #000000">oti</span>.<span style="color: #000000">oti_cswcnt</span>,
-                (<span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">long</span>)<span style="color: #000000">oti</span>.<span style="color: #000000">oti_runtime</span>);
+        console_printf(&quot;  %s (prio: %u, tid: %u, lcheck: %lu, ncheck: %lu, &quot;
+                &quot;flags: 0x%x, ssize: %u, susage: %u, cswcnt: %lu, &quot;
+                &quot;tot_run_time: %lums)\n&quot;,
+                oti.oti_name, oti.oti_prio, oti.oti_taskid, 
+                (unsigned long)oti.oti_last_checkin,
+                (unsigned long)oti.oti_next_checkin, oti.oti_flags,
+                oti.oti_stksize, oti.oti_stkusage, (unsigned long)oti.oti_cswcnt,
+                (unsigned long)oti.oti_runtime);
 
     }
-}
-</pre></div>
+}</code></pre>
                         
                         <div class="row">
                             

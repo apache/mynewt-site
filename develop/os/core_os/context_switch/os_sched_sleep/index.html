@@ -813,9 +813,8 @@
                         
                         
                             <h2 id="os_sched_sleep"><font color="#F2853F" style="font-size:24pt"> os_sched_sleep </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">os_sched_sleep</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>, <span style="color: #A90D91">os_time_t</span> <span style="color: #000000">nticks</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int
+os_sched_sleep(struct os_task *t, os_time_t nticks)</code></pre>
 
 
 <p>Task <code>t</code> state is changed from <em>ready to run</em> to <em>sleeping</em>. Sleep time will be specified in <code>nticks</code>.</p>
@@ -846,34 +845,33 @@
 <p>Must be called with interrupts disabled.</p>
 <h4 id="example">Example</h4>
 <p><Add text to set up the context for the example here></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*</span>
-<span style="color: #000000">os_eventq_get</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*evq</span>)
+<pre class="codehilite"><code class="language-c">struct os_event *
+os_eventq_get(struct os_eventq *evq)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
-    <span style="color: #A90D91">os_sr_t</span> <span style="color: #000000">sr</span>;
+    struct os_event *ev;
+    os_sr_t sr;
 
-    <span style="color: #000000">OS_ENTER_CRITICAL</span>(<span style="color: #000000">sr</span>);
-<span style="color: #000000">pull_one</span>:
-    <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">STAILQ_FIRST</span>(<span style="color: #000000">&amp;evq-&gt;evq_list</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">ev</span>) {
-        <span style="color: #000000">STAILQ_REMOVE</span>(<span style="color: #000000">&amp;evq-&gt;evq_list</span>, <span style="color: #000000">ev</span>, <span style="color: #000000">os_event</span>, <span style="color: #000000">ev_next</span>);
-        <span style="color: #000000">ev-&gt;ev_queued</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
-    } <span style="color: #A90D91">else</span> {
-        <span style="color: #000000">evq-&gt;evq_task</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sched_get_current_task</span>();
-        <span style="color: #000000">os_sched_sleep</span>(<span style="color: #000000">evq-&gt;evq_task</span>, <span style="color: #000000">OS_TIMEOUT_NEVER</span>);
-        <span style="color: #000000">OS_EXIT_CRITICAL</span>(<span style="color: #000000">sr</span>);
+    OS_ENTER_CRITICAL(sr);
+pull_one:
+    ev = STAILQ_FIRST(&amp;evq-&gt;evq_list);
+    if (ev) {
+        STAILQ_REMOVE(&amp;evq-&gt;evq_list, ev, os_event, ev_next);
+        ev-&gt;ev_queued = 0;
+    } else {
+        evq-&gt;evq_task = os_sched_get_current_task();
+        os_sched_sleep(evq-&gt;evq_task, OS_TIMEOUT_NEVER);
+        OS_EXIT_CRITICAL(sr);
 
-        <span style="color: #000000">os_sched</span>(<span style="color: #A90D91">NULL</span>);
+        os_sched(NULL);
 
-        <span style="color: #000000">OS_ENTER_CRITICAL</span>(<span style="color: #000000">sr</span>);
-        <span style="color: #000000">evq-&gt;evq_task</span> <span style="color: #000000">=</span> <span style="color: #A90D91">NULL</span>;
-        <span style="color: #A90D91">goto</span> <span style="color: #000000">pull_one</span>;
+        OS_ENTER_CRITICAL(sr);
+        evq-&gt;evq_task = NULL;
+        goto pull_one;
     }
-    <span style="color: #000000">OS_EXIT_CRITICAL</span>(<span style="color: #000000">sr</span>);
+    OS_EXIT_CRITICAL(sr);
 
-    <span style="color: #A90D91">return</span> (<span style="color: #000000">ev</span>);
-}
-</pre></div>
+    return (ev);
+}</code></pre>
                         
                         <div class="row">
                             

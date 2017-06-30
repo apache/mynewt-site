@@ -577,23 +577,21 @@ the shell and console connectivity. You can use blinky on a different board.</p>
 <p><br></p>
 <h3 id="modify-the-dependencies-and-configuration">Modify the Dependencies and Configuration</h3>
 <p>Add the following dependencies to your application target's <code>pkg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
+<pre class="codehilite"><code>pkg.deps:
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/shell&quot;
-    - &quot;@apache-mynewt-core/sys/sysinit&quot;
-</pre></div>
+    - &quot;@apache-mynewt-core/sys/sysinit&quot;</code></pre>
 
 
 <p>This lets the newt system know that it needs to pull in the code for the console and the shell.</p>
 <p>Modify the system configuration settings to enable Shell and Console ticks and prompt.  Add the following to your application target's <code>syscfg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">syscfg.vals:
+<pre class="codehilite"><code class="language-no-highlight">syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
     # Enable Console OS Ticks
     CONSOLE_TICKS: 1
     # Enable Console Prompt
-    CONSOLE_PROMPT: 1 
-</pre></div>
+    CONSOLE_PROMPT: 1 </code></pre>
 
 
 <p><br></p>
@@ -608,58 +606,56 @@ the shell and console connectivity. You can use blinky on a different board.</p>
 <p><br></p>
 <h3 id="modify-mainc">Modify main.c</h3>
 <p>Initialize a os_callout timer and move the toggle code from the while loop in <code>main()</code> to the event callback function. Add the following code above the <code>main()</code> function:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* The timer callout */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">blinky_callout</span>;
+<pre class="codehilite"><code class="language-c">/* The timer callout */
+static struct os_callout blinky_callout;
 
-<span style="color: #177500">/*</span>
-<span style="color: #177500"> * Event callback function for timer events. It toggles the led pin.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
+/*
+ * Event callback function for timer events. It toggles the led pin.
+ */
+static void timer_ev_cb(struct os_event *ev)
 {
-    <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
+    assert(ev != NULL);
 
-    <span style="color: #000000">++g_task1_loops</span>;
-    <span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pin</span>);
+    ++g_task1_loops;
+    hal_gpio_toggle(g_led_pin);
 
-    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+    os_callout_reset(&amp;blinky_callout, OS_TICKS_PER_SEC);
 }
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">init_timer</span>(<span style="color: #A90D91">void</span>)
+static void init_timer(void)
 {
-    <span style="color: #177500">/*</span>
-<span style="color: #177500">     * Initialize the callout for a timer event.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">os_callout_init</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">os_eventq_dflt_get</span>(),
-                    <span style="color: #000000">timer_ev_cb</span>, <span style="color: #A90D91">NULL</span>);
+    /*
+     * Initialize the callout for a timer event.
+     */
+    os_callout_init(&amp;blinky_callout, os_eventq_dflt_get(),
+                    timer_ev_cb, NULL);
 
-    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+    os_callout_reset(&amp;blinky_callout, OS_TICKS_PER_SEC);
 
-}
-</pre></div>
+}</code></pre>
 
 
 <p>In <code>main()</code>, add the call to the <code>init_timer()</code> function before the while loop and modify the while loop to process events from the OS default event queue:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+<pre class="codehilite"><code class="language-c">main(int argc, char **argv)
 {
 
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    int rc;
 
-<span style="color: #633820">#ifdef ARCH_sim</span>
-    <span style="color: #000000">mcu_sim_parse_args</span>(<span style="color: #000000">argc</span>, <span style="color: #000000">argv</span>);
-<span style="color: #633820">#endif</span>
+#ifdef ARCH_sim
+    mcu_sim_parse_args(argc, argv);
+#endif
 
-    <span style="color: #000000">sysinit</span>();
+    sysinit();
 
-    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
-    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
-    <span style="color: #000000">init_timer</span>();
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+    g_led_pin = LED_BLINK_PIN;
+    hal_gpio_init_out(g_led_pin, 1);
+    init_timer();
+    while (1) {
+        os_eventq_run(os_eventq_dflt_get());
     }
-    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>)
-    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
-}
-</pre></div>
+    assert(0)
+    return rc;
+}</code></pre>
 
 
 <p><br></p>
@@ -667,31 +663,28 @@ the shell and console connectivity. You can use blinky on a different board.</p>
 <p>We're not going to build the bootloader here since we are assuming that you have already
 built and loaded it during previous tutorials.</p>
 <p>Run the <code>newt build nrf52_blinky</code> command to build the Blinky application:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build nrf52_blinky
+<pre class="codehilite"><code class="language-no-highlight">$ newt build nrf52_blinky
 
    ...
 
 Archiving util_mem.a
 Linking ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
-Target successfully built: targets/nrf52_blinky
-</pre></div>
+Target successfully built: targets/nrf52_blinky</code></pre>
 
 
 <p><br></p>
 <h3 id="sign-and-create-the-blinky-application-image">Sign and Create the Blinky Application Image</h3>
 <p>Run the <code>newt create-image nrf52_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image nrf52_blinky 1.0.0
-App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">$ newt create-image nrf52_blinky 1.0.0
+App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img</code></pre>
 
 
 <p><br></p>
 <h3 id="load-the-image">Load the Image</h3>
 <p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
 <p>Run the <code>newt load nrf52_blinky</code> command to load the Blinky application image onto the board.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt load nrf52_blinky
-Loading app image into slot 1
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">$ newt load nrf52_blinky
+Loading app image into slot 1</code></pre>
 
 
 <p><br></p>
@@ -712,12 +705,11 @@ Loading app image into slot 1
 </ul>
 <p><br>
 To test and make sure that the Shell is running, first just hit <return>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3534: &gt;
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">3534: &gt;</code></pre>
 
 
 <p>You can try some commands:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">3609: &gt; ?
+<pre class="codehilite"><code class="language-no-highlight">3609: &gt; ?
 Commands:
 8841:     echo         ?    prompt     ticks     tasks  mempools
 8843:     date         b
@@ -731,8 +723,7 @@ ticks on
 33568:
 prompt on
 39108: Prompt now on.
-39108: &gt;
-</pre></div>
+39108: &gt;</code></pre>
                         
                         <div class="row">
                             

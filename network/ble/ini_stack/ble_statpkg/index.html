@@ -461,51 +461,50 @@
                         
                             <h2 id="initialize-the-statistics-package">Initialize the statistics package</h2>
 <p>The NimBLE stack uses the statistics package and this must be initialized prior to initializing the Nimble stack. Initializing the statistics package is quite simple; all you need to do is call the initialization function <code>stats_module_init()</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc"><span style="color: #633820">#include &quot;stats/stats.h&quot;</span>
-</span>
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">#include &quot;stats/stats.h&quot;
+
+int
+main(void)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    int rc;
 
-    <span style="color: #177500">/* Initialize OS */</span>
-    <span style="color: #000000">os_init</span>();
+    /* Initialize OS */
+    os_init();
 
-    <span style="color: #177500">/* Set cputime to count at 1 usec increments */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">cputime_init</span>(<span style="color: #1C01CE">1000000</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Set cputime to count at 1 usec increments */
+    rc = cputime_init(1000000);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Create memory pool for Nimble packets and register with Msys */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mempool_init</span>(<span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_NUM_MBUFS</span>,
-            <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>, <span style="color: #000000">&amp;g_mbuf_buffer</span>[<span style="color: #1C01CE">0</span>], <span style="color: #C41A16">&quot;mbuf_pool&quot;</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    /* Create memory pool for Nimble packets and register with Msys */
+    rc = os_mempool_init(&amp;g_mbuf_mempool, MBUF_NUM_MBUFS,
+            MBUF_MEMBLOCK_SIZE, &amp;g_mbuf_buffer[0], &quot;mbuf_pool&quot;);
+    assert(rc == 0);
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_pool_init</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>, <span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>,
-                           <span style="color: #000000">MBUF_NUM_MBUFS</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    rc = os_mbuf_pool_init(&amp;g_mbuf_pool, &amp;g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
+                           MBUF_NUM_MBUFS);
+    assert(rc == 0);
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_msys_register</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    rc = os_msys_register(&amp;g_mbuf_pool);
+    assert(rc == 0);
 
-    <span style="color: #177500">/* Initialize our device address */</span>
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">0</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x33</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">1</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x22</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">2</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x11</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">3</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0xcc</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">4</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0xbb</span>;
-    <span style="color: #000000">g_dev_addr</span>[<span style="color: #1C01CE">5</span>] <span style="color: #000000">=</span> <span style="color: #1C01CE">0x0a</span>;
+    /* Initialize our device address */
+    g_dev_addr[0] = 0x33;
+    g_dev_addr[1] = 0x22;
+    g_dev_addr[2] = 0x11;
+    g_dev_addr[3] = 0xcc;
+    g_dev_addr[4] = 0xbb;
+    g_dev_addr[5] = 0x0a;
 
-<span style="background-color: #ffffcc">    <span style="color: #177500">/* Initialize the statistics package */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">stats_module_init</span>();
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
-</span>
-    <span style="color: #177500">/* Start the OS */</span>
-    <span style="color: #000000">os_start</span>();
+    /* Initialize the statistics package */
+    rc = stats_module_init();
+    assert(rc == 0);
 
-    <span style="color: #177500">/* os start should never return. If it does, this should be an error */</span>
-    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
-}
-</pre></div>
+    /* Start the OS */
+    os_start();
+
+    /* os start should never return. If it does, this should be an error */
+    assert(0);
+}</code></pre>
 
 
 <p><br></p>

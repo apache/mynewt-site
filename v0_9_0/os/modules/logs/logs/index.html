@@ -525,13 +525,11 @@ your app <code>pkg.cflags</code> files to set the compile time log level.   The
 log level are defined in <code>apache-mynewt-core/sys/log/include/log/log.h</code>
 but must be added by number to your <code>yml</code> file.</p>
 <p>For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    pkg.cflags -DLOG_LEVEL=8
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    pkg.cflags -DLOG_LEVEL=8</code></pre>
 
 
 <p>or </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    newt target set my_target cflags=-DLOG_LEVEL=8
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    newt target set my_target cflags=-DLOG_LEVEL=8</code></pre>
 
 
 <p>would both set the compile-time log level to <code>LOG_LEVEL_ERROR</code>.  All logs
@@ -570,77 +568,73 @@ specific purposes.  See below for an example.</p>
 <p>When writing an application that is using other's log modules, you 
 may want to override their log handlers and log levels.</p>
 <p>Add the logging to your package file.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    pkg.deps:
-        - &quot;@apache-mynewt-core/sys/log&quot;
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    pkg.deps:
+        - &quot;@apache-mynewt-core/sys/log&quot;</code></pre>
 
 
 <p><br></p>
 <p>Initialize the logs in your startup code. It may look like this </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &lt;module1/module1.h&gt;</span>
-<span style="color: #633820">#include &lt;module3/module2.h&gt;</span>
-<span style="color: #633820">#include &lt;module3/module3.h&gt;</span>
-<span style="color: #633820">#include &lt;log/log.h&gt;</span>
+<pre class="codehilite"><code class="language-c">#include &lt;module1/module1.h&gt;
+#include &lt;module3/module2.h&gt;
+#include &lt;module3/module3.h&gt;
+#include &lt;log/log.h&gt;
 
-<span style="color: #177500">/* log to console */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">log_handler</span> <span style="color: #000000">app_log_handler</span>;
+/* log to console */
+static struct log_handler app_log_handler;
 
-<span style="color: #177500">/* this has to be after all the modules are </span>
-<span style="color: #177500"> * initialized and have registered</span>
-<span style="color: #177500"> * their log modules */</span>
-<span style="color: #A90D91">void</span> <span style="color: #000000">app_log_init</span>(<span style="color: #A90D91">void</span>)
+/* this has to be after all the modules are 
+ * initialized and have registered
+ * their log modules */
+void app_log_init(void)
 {
 
-    <span style="color: #177500">/* create a log handler for all logs . FOr this application</span>
-<span style="color: #177500">    ** send them directly to the console port */</span>
-    <span style="color: #000000">log_console_handler_init</span>(<span style="color: #000000">&amp;app_log_handler</span>);
+    /* create a log handler for all logs . FOr this application
+    ** send them directly to the console port */
+    log_console_handler_init(&amp;app_log_handler);
     ...
-    <span style="color: #177500">/* set up logging for the modules appropriately */</span>
-    <span style="color: #000000">module1_log</span>.<span style="color: #000000">log_level</span> <span style="color: #000000">=</span> <span style="color: #000000">LOG_LEVEL_WARN</span>;
-    <span style="color: #000000">module2_log</span>.<span style="color: #000000">log_level</span> <span style="color: #000000">=</span> <span style="color: #000000">LOG_LEVEL_INFO</span>;
-    <span style="color: #000000">module3_log</span>.<span style="color: #000000">log_level</span> <span style="color: #000000">=</span> <span style="color: #000000">LOG_LEVEL_DEBUG</span>;
+    /* set up logging for the modules appropriately */
+    module1_log.log_level = LOG_LEVEL_WARN;
+    module2_log.log_level = LOG_LEVEL_INFO;
+    module3_log.log_level = LOG_LEVEL_DEBUG;
 
-    <span style="color: #177500">/* set up a single handler for all modules */</span>
-    <span style="color: #000000">module1_log</span>.<span style="color: #000000">log_handler</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;app_log_handler</span>;
-    <span style="color: #000000">module2_log</span>.<span style="color: #000000">log_handler</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;app_log_handler</span>;
-    <span style="color: #000000">module3_log</span>.<span style="color: #000000">log_handler</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;app_log_handler</span>;
-}
-</pre></div>
+    /* set up a single handler for all modules */
+    module1_log.log_handler = &amp;app_log_handler;
+    module2_log.log_handler = &amp;app_log_handler;
+    module3_log.log_handler = &amp;app_log_handler;
+}</code></pre>
 
 
 <p><br></p>
 <h3 id="typical-use-of-logging-when-writing-a-module">Typical use of Logging when writing a module</h3>
 <p>When creating a package using its own logging, you can have this type of
 structure.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* my_package.h*/</span>
+<pre class="codehilite"><code class="language-c">/* my_package.h*/
 
-<span style="color: #177500">/* pick a unique name here */</span>
-<span style="color: #A90D91">extern</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">log</span> <span style="color: #000000">my_log</span>;
-</pre></div>
+/* pick a unique name here */
+extern struct log my_log;</code></pre>
 
 
 <p><br></p>
 <p>with an implementation in your module that looks like this: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* my_package.c */</span>
+<pre class="codehilite"><code class="language-c">/* my_package.c */
 
-<span style="color: #A90D91">struct</span> <span style="color: #000000">log_handler</span> <span style="color: #000000">log_console_handler</span>;
-<span style="color: #A90D91">struct</span> <span style="color: #000000">log</span> <span style="color: #000000">my_log</span>;
+struct log_handler log_console_handler;
+struct log my_log;
 
 {
     ...
-    <span style="color: #177500">/* create a default handler for this log stream */</span>
-    <span style="color: #000000">log_console_handler_init</span>(<span style="color: #000000">&amp;log_console_handler</span>);
+    /* create a default handler for this log stream */
+    log_console_handler_init(&amp;log_console_handler);
 
-    <span style="color: #177500">/* register my log with a name to the system */</span>
-    <span style="color: #000000">log_register</span>(<span style="color: #C41A16">&quot;log&quot;</span>, <span style="color: #000000">&amp;my_log</span>, <span style="color: #000000">&amp;log_console_handler</span>);
+    /* register my log with a name to the system */
+    log_register(&quot;log&quot;, &amp;my_log, &amp;log_console_handler);
 
-    <span style="color: #177500">/* set up default log level for my package */</span>
-    <span style="color: #000000">my_log</span>.<span style="color: #000000">log_level</span> <span style="color: #000000">=</span> <span style="color: #000000">LOG_LEVEL_DEBUG</span>;
+    /* set up default log level for my package */
+    my_log.log_level = LOG_LEVEL_DEBUG;
 
-    <span style="color: #000000">LOG_DEBUG</span>(<span style="color: #000000">&amp;my_log</span>, <span style="color: #000000">LOG_MODULE_DEFAULT</span>, <span style="color: #C41A16">&quot;bla&quot;</span>);
-    <span style="color: #000000">LOG_DEBUG</span>(<span style="color: #000000">&amp;my_log</span>, <span style="color: #000000">LOG_MODULE_DEFAULT</span>, <span style="color: #C41A16">&quot;bab&quot;</span>);
-}
-</pre></div>
+    LOG_DEBUG(&amp;my_log, LOG_MODULE_DEFAULT, &quot;bla&quot;);
+    LOG_DEBUG(&amp;my_log, LOG_MODULE_DEFAULT, &quot;bab&quot;);
+}</code></pre>
                         
                         <div class="row">
                             

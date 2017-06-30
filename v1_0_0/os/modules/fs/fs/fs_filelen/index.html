@@ -776,8 +776,7 @@
                         
                         
                             <h2 id="fs95filelen"><font color="#F2853F" style="font-size:24pt">fs_filelen</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">fs_filelen</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span> <span style="color: #000000">*file</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">*out_len</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int fs_filelen(const struct fs_file *file, uint32_t *out_len)</code></pre>
 
 
 <p>Retrieves the current length of the specified open file.</p>
@@ -806,37 +805,35 @@
 <li><a href="../fs_return_codes/">FS error code</a> on failure</li>
 </ul>
 <h4 id="header-file">Header file</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;fs/fs.h&quot;</span>
-</pre></div>
+<pre class="codehilite"><code class="language-c">#include &quot;fs/fs.h&quot;</code></pre>
 
 
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">write_config</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">int
+write_config(void)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_file</span> <span style="color: #000000">*file</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct fs_file *file;
+    int rc;
 
-    <span style="color: #177500">/* If the file doesn&#39;t exist, create it.  If it does exist, truncate it to</span>
-<span style="color: #177500">     * zero bytes.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_open</span>(<span style="color: #C41A16">&quot;/settings/config.txt&quot;</span>, <span style="color: #000000">FS_ACCESS_WRITE</span> <span style="color: #000000">|</span> <span style="color: #000000">FS_ACCESS_TRUNCATE</span>,
-                 <span style="color: #000000">&amp;file</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #177500">/* Write 5 bytes of data to the file. */</span>
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_write</span>(<span style="color: #000000">file</span>, <span style="color: #C41A16">&quot;hello&quot;</span>, <span style="color: #1C01CE">5</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>) {
-            <span style="color: #177500">/* The file should now contain exactly five bytes. */</span>
-            <span style="color: #000000">assert</span>(<span style="color: #000000">fs_filelen</span>(<span style="color: #000000">file</span>) <span style="color: #000000">==</span> <span style="color: #1C01CE">5</span>);
+    /* If the file doesn't exist, create it.  If it does exist, truncate it to
+     * zero bytes.
+     */
+    rc = fs_open(&quot;/settings/config.txt&quot;, FS_ACCESS_WRITE | FS_ACCESS_TRUNCATE,
+                 &amp;file);
+    if (rc == 0) {
+        /* Write 5 bytes of data to the file. */
+        rc = fs_write(file, &quot;hello&quot;, 5);
+        if (rc == 0) {
+            /* The file should now contain exactly five bytes. */
+            assert(fs_filelen(file) == 5);
         }
 
-        <span style="color: #177500">/* Close the file. */</span>
-        <span style="color: #000000">fs_close</span>(<span style="color: #000000">file</span>);
+        /* Close the file. */
+        fs_close(file);
     }
 
-    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
-}
-</pre></div>
+    return rc == 0 ? 0 : -1;
+}</code></pre>
                         
                         <div class="row">
                             

@@ -502,9 +502,8 @@ provides a good summary of the iBeacon sub-fields.</p>
 <p><br></p>
 <h3 id="configuration">Configuration</h3>
 <p>Use the following function to configure your NimBLE device to send iBeacons:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
-<span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*uuid128</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">major</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">minor</span>)
-</pre></div>
+<pre class="codehilite"><code class="language-c">int
+ble_ibeacon_set_adv_data(void *uuid128, uint16_t major, uint16_t minor)</code></pre>
 
 
 <p>This function's parameters are documented below.</p>
@@ -541,67 +540,66 @@ and work with the copy.  In general, you should avoid changing a package that
 newt downloads, as you will lose your changes the next time you upgrade the
 package.</p>
 <p><em>bleprph</em> sets its advertisement data and begins advertising as follows (<em>main.c</em>):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">static void
+bleprph_advertise(void)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct ble_gap_adv_params adv_params;
+    struct ble_hs_adv_fields fields;
+    const char *name;
+    int rc;
 
-    <span style="color: #177500">/**</span>
-<span style="color: #177500">     *  Set the advertisement data included in our advertisements:</span>
-<span style="color: #177500">     *     o Flags (indicates advertisement type and other general info).</span>
-<span style="color: #177500">     *     o Advertising tx power.</span>
-<span style="color: #177500">     *     o Device name.</span>
-<span style="color: #177500">     *     o 16-bit service UUIDs (alert notifications).</span>
-<span style="color: #177500">     */</span>
+    /**
+     *  Set the advertisement data included in our advertisements:
+     *     o Flags (indicates advertisement type and other general info).
+     *     o Advertising tx power.
+     *     o Device name.
+     *     o 16-bit service UUIDs (alert notifications).
+     */
 
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;fields</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">fields</span>);
+    memset(&amp;fields, 0, sizeof fields);
 
-    <span style="color: #177500">/* Advertise two flags:</span>
-<span style="color: #177500">     *     o Discoverability in forthcoming advertisement (general)</span>
-<span style="color: #177500">     *     o BLE-only (BR/EDR unsupported).</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">fields</span>.<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HS_ADV_F_DISC_GEN</span> <span style="color: #000000">|</span>
-                   <span style="color: #000000">BLE_HS_ADV_F_BREDR_UNSUP</span>;
+    /* Advertise two flags:
+     *     o Discoverability in forthcoming advertisement (general)
+     *     o BLE-only (BR/EDR unsupported).
+     */
+    fields.flags = BLE_HS_ADV_F_DISC_GEN |
+                   BLE_HS_ADV_F_BREDR_UNSUP;
 
-    <span style="color: #177500">/* Indicate that the TX power level field should be included; have the</span>
-<span style="color: #177500">     * stack fill this value automatically.  This is done by assiging the</span>
-<span style="color: #177500">     * special value BLE_HS_ADV_TX_PWR_LVL_AUTO.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">fields</span>.<span style="color: #000000">tx_pwr_lvl_is_present</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">tx_pwr_lvl</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HS_ADV_TX_PWR_LVL_AUTO</span>;
+    /* Indicate that the TX power level field should be included; have the
+     * stack fill this value automatically.  This is done by assiging the
+     * special value BLE_HS_ADV_TX_PWR_LVL_AUTO.
+     */
+    fields.tx_pwr_lvl_is_present = 1;
+    fields.tx_pwr_lvl = BLE_HS_ADV_TX_PWR_LVL_AUTO;
 
-    <span style="color: #000000">name</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_svc_gap_device_name</span>();
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*</span>)<span style="color: #000000">name</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name_len</span> <span style="color: #000000">=</span> <span style="color: #000000">strlen</span>(<span style="color: #000000">name</span>);
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
+    name = ble_svc_gap_device_name();
+    fields.name = (uint8_t *)name;
+    fields.name_len = strlen(name);
+    fields.name_is_complete = 1;
 
-    <span style="color: #000000">fields</span>.<span style="color: #000000">uuids16</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">ble_uuid16_t</span>[]){
-        <span style="color: #000000">BLE_UUID16_INIT</span>(<span style="color: #000000">GATT_SVR_SVC_ALERT_UUID</span>)
+    fields.uuids16 = (ble_uuid16_t[]){
+        BLE_UUID16_INIT(GATT_SVR_SVC_ALERT_UUID)
     };
-    <span style="color: #000000">fields</span>.<span style="color: #000000">num_uuids16</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">uuids16_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
+    fields.num_uuids16 = 1;
+    fields.uuids16_is_complete = 1;
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_set_fields</span>(<span style="color: #000000">&amp;fields</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting advertisement data; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
+    rc = ble_gap_adv_set_fields(&amp;fields);
+    if (rc != 0) {
+        BLEPRPH_LOG(ERROR, &quot;error setting advertisement data; rc=%d\n&quot;, rc);
+        return;
     }
 
-    <span style="color: #177500">/* Begin advertising. */</span>
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
-    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_UND</span>;
-    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_GEN</span>;
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_PUBLIC</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
-                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
+    /* Begin advertising. */
+    memset(&amp;adv_params, 0, sizeof adv_params);
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+    rc = ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC, NULL, BLE_HS_FOREVER,
+                           &amp;adv_params, bleprph_gap_event, NULL);
+    if (rc != 0) {
+        BLEPRPH_LOG(ERROR, &quot;error enabling advertisement; rc=%d\n&quot;, rc);
+        return;
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p>The call to <code>ble_gap_adv_set_fields()</code> configures the device with normal
@@ -613,36 +611,35 @@ by making the following two changes:</p>
 <li>Modify the call to <code>ble_gap_adv_start()</code> such that the device is non-discoverable and non-connectable.</li>
 </ul>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<pre class="codehilite"><code class="language-c">static void
+bleprph_advertise(void)
 {
-<span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
-</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
-</span>    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-<span style="background-color: #ffffcc">
-</span><span style="background-color: #ffffcc">    <span style="color: #177500">/* Arbitrarily set the UUID to a string of 0x11 bytes. */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">memset</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">0x11</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">uuid128</span>);
-</span>
-<span style="background-color: #ffffcc">    <span style="color: #177500">/* Major version=2; minor version=10. */</span>
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
-</span>    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
-                    <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
+    struct ble_gap_adv_params adv_params;
+    uint8_t uuid128[16];
+    int rc;
+
+    /* Arbitrarily set the UUID to a string of 0x11 bytes. */
+    memset(uuid128, 0x11, sizeof uuid128);
+
+    /* Major version=2; minor version=10. */
+    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+    if (rc != 0) {
+        BLEPRPH_LOG(ERROR, &quot;error setting iBeacon advertisement data; rc=%d\n&quot;,
+                    rc);
+        return;
     }
 
-    <span style="color: #177500">/* Begin advertising. */</span>
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
-<span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_NON</span>;
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_NON</span>;
-</span>    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_PUBLIC</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
-                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
+    /* Begin advertising. */
+    memset(&amp;adv_params, 0, sizeof adv_params);
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_NON;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_NON;
+    rc = ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC, NULL, BLE_HS_FOREVER,
+                           &amp;adv_params, bleprph_gap_event, NULL);
+    if (rc != 0) {
+        BLEPRPH_LOG(ERROR, &quot;error enabling advertisement; rc=%d\n&quot;, rc);
+        return;
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p>Now when you run this app on your board, you should be able to see it with all

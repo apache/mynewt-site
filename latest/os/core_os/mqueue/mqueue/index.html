@@ -758,70 +758,68 @@
 </ul>
 <p>Not shown in the code example is a call <code>my_task_rx_data_func</code>. Presumably, some other code will call this API. </p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">uint32_t</span> <span style="color: #000000">pkts_rxd</span>;
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> <span style="color: #000000">rxpkt_q</span>;
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">my_task_evq</span>;
+<pre class="codehilite"><code class="language-c">uint32_t pkts_rxd;
+struct os_mqueue rxpkt_q;
+struct os_eventq my_task_evq;
 
-<span style="color: #177500">/**</span>
-<span style="color: #177500"> * Removes each packet from the receive queue and processes it.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">void</span>
-<span style="color: #000000">process_rx_data_queue</span>(<span style="color: #A90D91">void</span>)
+/**
+ * Removes each packet from the receive queue and processes it.
+ */
+void
+process_rx_data_queue(void)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>;
+    struct os_mbuf *om;
 
-    <span style="color: #A90D91">while</span> ((<span style="color: #000000">om</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mqueue_get</span>(<span style="color: #000000">&amp;rxpkt_q</span>)) <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>) {
-        <span style="color: #000000">++pkts_rxd</span>;
-        <span style="color: #000000">os_mbuf_free_chain</span>(<span style="color: #000000">om</span>);
+    while ((om = os_mqueue_get(&amp;rxpkt_q)) != NULL) {
+        ++pkts_rxd;
+        os_mbuf_free_chain(om);
     }
 }
 
-<span style="color: #177500">/**</span>
-<span style="color: #177500"> * Called when a packet is received.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">int</span>
-<span style="color: #000000">my_task_rx_data_func</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>)
+/**
+ * Called when a packet is received.
+ */
+int
+my_task_rx_data_func(struct os_mbuf *om)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    int rc;
 
-    <span style="color: #177500">/* Enqueue the received packet and wake up the listening task. */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mqueue_put</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #000000">&amp;my_task_evq</span>, <span style="color: #000000">om</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    /* Enqueue the received packet and wake up the listening task. */
+    rc = os_mqueue_put(&amp;rxpkt_q, &amp;my_task_evq, om);
+    if (rc != 0) {
+        return -1;
     }
 
-    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+    return 0;
 }
 
-<span style="color: #A90D91">void</span>
-<span style="color: #000000">my_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+void
+my_task_handler(void *arg)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout_func</span> <span style="color: #000000">*cf</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    struct os_event *ev;
+    struct os_callout_func *cf;
+    int rc;
 
-    <span style="color: #177500">/* Initialize eventq */</span>
-    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;my_task_evq</span>);
+    /* Initialize eventq */
+    os_eventq_init(&amp;my_task_evq);
 
-    <span style="color: #177500">/* Initialize mqueue */</span>
-    <span style="color: #000000">os_mqueue_init</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #A90D91">NULL</span>);
+    /* Initialize mqueue */
+    os_mqueue_init(&amp;rxpkt_q, NULL);
 
-    <span style="color: #177500">/* Process each event posted to our eventq.  When there are no events to</span>
-<span style="color: #177500">     * process, sleep until one arrives.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">&amp;my_task_evq</span>);
+    /* Process each event posted to our eventq.  When there are no events to
+     * process, sleep until one arrives.
+     */
+    while (1) {
+        os_eventq_run(&amp;my_task_evq);
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <h3 id="data-structures">Data Structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> {
-    <span style="color: #000000">STAILQ_HEAD</span>(, <span style="color: #000000">os_mbuf_pkthdr</span>) <span style="color: #000000">mq_head</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">mq_ev</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_mqueue {
+    STAILQ_HEAD(, os_mbuf_pkthdr) mq_head;
+    struct os_event mq_ev;
+};</code></pre>
 
 
 <p><br></p>

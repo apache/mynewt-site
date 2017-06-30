@@ -551,13 +551,11 @@ utilize HAL functionality.</p>
 <p>The light switch module needs a GPIO pin to set
 the light switch to on or off.  The module declares that the GPIO to 
 control the light switch is declared elsewhere in one of two methods.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   extern const int light_switch_gpio;
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">   extern const int light_switch_gpio;</code></pre>
 
 
 <p>or</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    extern int bsp_light_app_get_light_gpio();
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">    extern int bsp_light_app_get_light_gpio();</code></pre>
 
 
 <p>Which method a library uses 
@@ -571,7 +569,7 @@ slightly more code.</p>
 <p>Then the <code>libs/light</code> would go on to use the specified GPIO during its runtime
 execution. For example this shows both ways the library could interface to the 
 bsp to get the right GPIO:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void light_on(void) {
+<pre class="codehilite"><code class="language-no-highlight">    void light_on(void) {
         . . .
         /* finally time to turn the light on */
         hal_gpio_set(light_switch_gpio);
@@ -582,23 +580,20 @@ bsp to get the right GPIO:</p>
         int pin = bsp_light_app_get_light_gpio();
         /* finally time to turn the light on */
         hal_gpio_set(pin);
-    }
-</pre></div>
+    }</code></pre>
 
 
 <p>When you library user includes <code>libs/light</code> as a dependency and then builds
 with <strong>newt</strong>, they will get an unresolved external for either <code>light_switch_gpio</code> 
 or <code>bsp_light_app_get_light_gpio()</code> and will need to add to their BSP.</p>
 <p>In their BSP, they can add </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   const int light_switch_gpio = 5;
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">   const int light_switch_gpio = 5;</code></pre>
 
 
 <p>or</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">   int bsp_light_app_get_light_gpio(void) {
+<pre class="codehilite"><code class="language-no-highlight">   int bsp_light_app_get_light_gpio(void) {
         return my_configured_lightswitch_io();
-   }
-</pre></div>
+   }</code></pre>
 
 
 <p>So where did the number <code>5</code> come from.  Their BSP already includes the specific

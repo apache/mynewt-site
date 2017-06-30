@@ -564,7 +564,7 @@ in a section have the same size.</p>
 <p>Stats sections are currently stored in a single global stats group.  </p>
 <p>Statistics are stored in a simple structure which contains a small
 stats header followed by a list of stats.  The stats header contains:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct stats_hdr {
+<pre class="codehilite"><code class="language-no-highlight">struct stats_hdr {
      char *s_name;
      uint8_t s_size;
      uint8_t s_cnt;
@@ -574,8 +574,7 @@ stats header followed by a list of stats.  The stats header contains:</p>
      int s_map_cnt;
 #endif
      STAILQ_ENTRY(stats_hdr) s_next;
- };
-</pre></div>
+ };</code></pre>
 
 
 <p>The fields define with in the <code>#if MYNEWT_VAL(STATS_NAME)</code> directive are only inincluded when the <code>STATS_NAMES</code> syscfg setting is set to 1 and enables use statistic names.
@@ -585,17 +584,15 @@ stats header followed by a list of stats.  The stats header contains:</p>
 <p>To enable statistic names, set the <code>STATS_NAMES</code> value to 1 in the application <code>syscfg.yml</code> file or use the <code>newt target set</code> command to set the syscfg setting value.  Here are examples for each method:</p>
 <p>Method 1  - Set the value in the application <code>syscfg.yml</code> files:
 <br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"># Package: apps/myapp
+<pre class="codehilite"><code class="language-no-highlight"># Package: apps/myapp
 
 syscfg.vals:
-    STATS_NAMES: 1
-</pre></div>
+    STATS_NAMES: 1</code></pre>
 
 
 <p><br></p>
 <p>Method 2 - Set the target <code>syscfg</code> variable: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">newt target set myapp syscfg=STATS_NAMES=1
-</pre></div>
+<pre class="codehilite"><code class="language-no-highlight">newt target set myapp syscfg=STATS_NAMES=1</code></pre>
 
 
 <p><strong>Note:</strong>  This <code>newt target set</code> command only sets the syscfg variable for the <code>STATS_NAMES</code> setting as an example. For your target, you should set the syscfg variable with the other settings that you want to override. </p>
@@ -615,26 +612,23 @@ syscfg.vals:
 <h4 id="include-the-stats-header-file">Include the stats header file</h4>
 <p>Add the stats library to your pkg.yml file for your package or app by adding
 this line to your package dependencies.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
-    - &quot;@apache-mynewt-core/sys/stats&quot;
-</pre></div>
+<pre class="codehilite"><code>pkg.deps:
+    - &quot;@apache-mynewt-core/sys/stats&quot;</code></pre>
 
 
 <p><br></p>
 <p>Add this include directive to code files using the stats library.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">#include &lt;stats/stats.h&gt;
-</pre></div>
+<pre class="codehilite"><code>#include &lt;stats/stats.h&gt;</code></pre>
 
 
 <p><br></p>
 <h4 id="define-a-stats-section">Define a stats section</h4>
 <p>You must use the <code>stats.h</code> macros to define your stats table.  A 
 stats section definition looks like this.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">STATS_SECT_START(my_stat_section)
+<pre class="codehilite"><code>STATS_SECT_START(my_stat_section)
     STATS_SECT_ENTRY(attempt_stat)
     STATS_SECT_ENTRY(error_stat)
-STATS_SECT_END
-</pre></div>
+STATS_SECT_END</code></pre>
 
 
 <p><br></p>
@@ -646,12 +640,11 @@ different stats sizes through the following macros:</p>
 <li><code>STATS_SIZE_64</code> -- stats are 64-bits</li>
 </ul>
 <p>When this compiles/pre-processes, it produces a structure definition like this</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct stats_my_stat_section { 
+<pre class="codehilite"><code>struct stats_my_stat_section { 
     struct stats_hdr s_hdr;
     uint32_t sattempt_stat;
     uint32_t serror_stat;
-};
-</pre></div>
+};</code></pre>
 
 
 <p><br></p>
@@ -665,16 +658,14 @@ to include this definition in a header file.</p>
 have multiple copies of the same section (for example a stat section for
 each of 5 identical peripherals), the variable name of the stats section 
 must be unique.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">STATS_SECT_DECL(my_stat_section) g_mystat;
-</pre></div>
+<pre class="codehilite"><code>STATS_SECT_DECL(my_stat_section) g_mystat;</code></pre>
 
 
 <p><br></p>
 <p>Again, if your stats section is used in multiple C files you will need to 
 include the above definition in one of the C files and 'extern' this declaration 
 in your header file.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">extern STATS_SECT_DECL(my_stat_section) g_mystat;
-</pre></div>
+<pre class="codehilite"><code>extern STATS_SECT_DECL(my_stat_section) g_mystat;</code></pre>
 
 
 <p><br></p>
@@ -682,21 +673,19 @@ in your header file.</p>
 <p>Whether or not you have <code>STATS_NAMES</code> enabled, you must define 
 a stats name table.  If <code>STATS_NAMES</code> is not enabled, this will 
 not take any code space or image size.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">/* define a few stats for querying */
+<pre class="codehilite"><code>/* define a few stats for querying */
 STATS_NAME_START(my_stat_section)
     STATS_NAME(my_stat_section, attempt_stat)
     STATS_NAME(my_stat_section, error_stat)
-STATS_NAME_END(my_stat_section)
-</pre></div>
+STATS_NAME_END(my_stat_section)</code></pre>
 
 
 <p><br></p>
 <p>When compiled by the preprocessor, it creates a structure that looks like this.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct stats_name_map g_stats_map_my_stat_section[] = {
+<pre class="codehilite"><code>struct stats_name_map g_stats_map_my_stat_section[] = {
     { __builtin_offsetof (struct stats_my_stat_section, sattempt_stat), &quot;attempt_stat&quot; },
     { __builtin_offsetof (struct stats_my_stat_section, serror_stat), &quot;error_stat&quot; },
-};
-</pre></div>
+};</code></pre>
 
 
 <p><br></p>
@@ -706,12 +695,11 @@ stat.</p>
 <h4 id="implement-stats-in-your-code">Implement stats in your code.</h4>
 <p>You can use the <code>STATS_INC</code> or <code>STATS_INCN</code> macros to increment your statistics
 within your C-code.  For example, your code may do this:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    STATS_INC(g_mystat, attempt_stat);
+<pre class="codehilite"><code>    STATS_INC(g_mystat, attempt_stat);
     rc = do_task();
     if(rc == ERR) { 
         STATS_INC(g_mystat, error_stat);        
-    }
-</pre></div>
+    }</code></pre>
 
 
 <p><br></p>
@@ -721,20 +709,18 @@ library.  As per our example above, it would look like the following.</p>
 <p>This tells the system how large each statistic is and the number of 
 statistics in the section.  It also initialize the name information for
 the statistics if enabled as shown above.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    rc = stats_init(
+<pre class="codehilite"><code>    rc = stats_init(
         STATS_HDR(g_mystat), 
         STATS_SIZE_INIT_PARMS(g_mystat, STATS_SIZE_32), 
         STATS_NAME_INIT_PARMS(my_stat_section));
-    assert(rc == 0);
-</pre></div>
+    assert(rc == 0);</code></pre>
 
 
 <p><br></p>
 <h4 id="register-the-statistic-section">Register the statistic section</h4>
 <p>If you want the system to know about your stats,  you must register them.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    rc = stats_register(&quot;my_stats&quot;, STATS_HDR(g_mystat));
-    assert(rc == 0);
-</pre></div>
+<pre class="codehilite"><code>    rc = stats_register(&quot;my_stats&quot;, STATS_HDR(g_mystat));
+    assert(rc == 0);</code></pre>
 
 
 <p><br></p>
@@ -745,18 +731,16 @@ same time,  called <code>stats_init_and_reg</code>.</p>
 <p>If you enable console in your project you can see stats through the 
 serial port defined.</p>
 <p>This is the stats as shown from the example above with names enabled.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">stat my_stats
+<pre class="codehilite"><code>stat my_stats
 12274:attempt_stat: 3
-12275:error_stat: 0
-</pre></div>
+12275:error_stat: 0</code></pre>
 
 
 <p><br></p>
 <p>This is the stats as shown from the example without names enabled.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">stat my_stats
+<pre class="codehilite"><code>stat my_stats
 29149:s0: 3
-29150:s1: 0
-</pre></div>
+29150:s1: 0</code></pre>
 
 
 <p><br></p>

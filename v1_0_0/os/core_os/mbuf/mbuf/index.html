@@ -781,117 +781,113 @@
 <p>Mbufs are collected into "mbuf pools" much like memory blocks. The mbuf pool itself contains a pointer to a memory pool. The memory blocks in this memory pool are the actual mbufs; both normal and packet header mbufs. Thus, the memory block (and corresponding memory pool) must be sized correctly. In other words, the memory blocks which make up the memory pool used by the mbuf pool must be at least: <code>sizeof(struct os_mbuf)</code> + <code>sizeof(struct os_mbuf_pkthdr)</code> + <code>sizeof(struct user_defined_header)</code> + <em>desired minimum data buffer length</em>. For example, if the developer wants mbufs to contain at least 64 bytes of user data and they have a user header of 12 bytes, the size of the memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes, this is a fair amount of overhead. However, the flexibility provided by the mbuf library usually outweighs overhead concerns.</p>
 <h3 id="create-mbuf-pool">Create mbuf pool</h3>
 <p>Creating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called <code>struct user_hdr</code>). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro <code>MBUF_PKTHDR_OVERHEAD</code> to denote the amount of packet header overhead per mbuf and <code>MBUF_MEMBLOCK_OVERHEAD</code> to denote the total amount of overhead required per memory block. The macro <code>MBUF_BUF_SIZE</code> is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro <code>MBUF_MEMBLOCK_OVERHEAD</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)</span>
-<span style="color: #633820">#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD</span>
+<pre class="codehilite"><code class="language-c">#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)
+#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD
 
-<span style="color: #633820">#define MBUF_NUM_MBUFS      (32)</span>
-<span style="color: #633820">#define MBUF_PAYLOAD_SIZE   (64)</span>
-<span style="color: #633820">#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)</span>
-<span style="color: #633820">#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)</span>
-<span style="color: #633820">#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)</span>
+#define MBUF_NUM_MBUFS      (32)
+#define MBUF_PAYLOAD_SIZE   (64)
+#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)
+#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)
+#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)
 
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pool</span> <span style="color: #000000">g_mbuf_pool</span>; 
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">g_mbuf_mempool</span>;
-<span style="color: #A90D91">os_membuf_t</span> <span style="color: #000000">g_mbuf_buffer</span>[<span style="color: #000000">MBUF_MEMPOOL_SIZE</span>];
+struct os_mbuf_pool g_mbuf_pool; 
+struct os_mempool g_mbuf_mempool;
+os_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];
 
-<span style="color: #A90D91">void</span>
-<span style="color: #000000">create_mbuf_pool</span>(<span style="color: #A90D91">void</span>)
+void
+create_mbuf_pool(void)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    int rc;
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mempool_init</span>(<span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_NUM_MBUFS</span>, 
-                          <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>, <span style="color: #000000">&amp;g_mbuf_buffer</span>[<span style="color: #1C01CE">0</span>], <span style="color: #C41A16">&quot;mbuf_pool&quot;</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    rc = os_mempool_init(&amp;g_mbuf_mempool, MBUF_NUM_MBUFS, 
+                          MBUF_MEMBLOCK_SIZE, &amp;g_mbuf_buffer[0], &quot;mbuf_pool&quot;);
+    assert(rc == 0);
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_pool_init</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>, <span style="color: #000000">&amp;g_mbuf_mempool</span>, <span style="color: #000000">MBUF_MEMBLOCK_SIZE</span>, 
-                           <span style="color: #000000">MBUF_NUM_MBUFS</span>);
-    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
-}
-</pre></div>
+    rc = os_mbuf_pool_init(&amp;g_mbuf_pool, &amp;g_mbuf_mempool, MBUF_MEMBLOCK_SIZE, 
+                           MBUF_NUM_MBUFS);
+    assert(rc == 0);
+}</code></pre>
 
 
 <h3 id="using-mbufs">Using mbufs</h3>
 <p>The following examples illustrate typical mbuf usage. There are two basic mbuf allocation API: <code>os_mbuf_get()</code> and <code>os_mbuf_get_pkthdr()</code>. The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use <code>os_mbuf_get_pkthdr()</code> and rarely, if ever, need to call <code>os_mbuf_get()</code> as the rest of the mbuf API (e.g. <code>os_mbuf_append()</code>, <code>os_mbuf_copyinto()</code>, etc.) typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs.</p>
 <p>In <code>example1</code>, the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the "pullup" api (another very common mbuf api).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">mbuf_usage_example1</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*mydata</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">mydata_length</span>)
+<pre class="codehilite"><code class="language-c">void
+mbuf_usage_example1(uint8_t *mydata, int mydata_length)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>;
+    int rc;
+    struct os_mbuf *om;
 
-    <span style="color: #177500">/* get a packet header mbuf */</span>
-    <span style="color: #000000">om</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_get_pkthdr</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">user_hdr</span>));
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">om</span>) {
-        <span style="color: #177500">/* </span>
-<span style="color: #177500">         * Copy user data into mbuf. NOTE: if mydata_length is greater than the</span>
-<span style="color: #177500">         * mbuf payload size (64 bytes using above example), mbufs are allocated</span>
-<span style="color: #177500">         * and chained together to accommodate the total packet length.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_copyinto</span>(<span style="color: #000000">om</span>, <span style="color: #1C01CE">0</span>, <span style="color: #000000">mydata</span>, <span style="color: #000000">len</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span>) {
-            <span style="color: #177500">/* Error! Could not allocate enough mbufs for total packet length */</span>
-            <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    /* get a packet header mbuf */
+    om = os_mbuf_get_pkthdr(&amp;g_mbuf_pool, sizeof(struct user_hdr));
+    if (om) {
+        /* 
+         * Copy user data into mbuf. NOTE: if mydata_length is greater than the
+         * mbuf payload size (64 bytes using above example), mbufs are allocated
+         * and chained together to accommodate the total packet length.
+         */
+        rc = os_mbuf_copyinto(om, 0, mydata, len);
+        if (rc) {
+            /* Error! Could not allocate enough mbufs for total packet length */
+            return -1;
         }
 
-        <span style="color: #177500">/* Send packet to networking interface */</span>
-        <span style="color: #000000">send_pkt</span>(<span style="color: #000000">om</span>);
+        /* Send packet to networking interface */
+        send_pkt(om);
     }
-}
-</pre></div>
+}</code></pre>
 
 
 <p>In <code>example2</code> we show use of the pullup api as this illustrates some of the typical pitfalls developers encounter when using mbufs. The first pitfall is one of alignment/padding. Depending on the processor and/or compiler, the <code>sizeof()</code> a structure may vary. Thus, the size of <code>my_protocol_header</code> may be different inside the packet data of the mbuf than the size of the structure on the stack or as a global variable, for instance. While some networking protcols may align protocol information on convenient processor boundaries many others try to conserve bytes "on the air" (i.e inside the packet data). Typical methods used to deal with this are "packing" the structure (i.e. force compiler to not pad) or creating protocol headers that do not require padding. <code>example2</code> assumes that one of these methods was used when defining the <code>my_protocol_header</code> structure.</p>
 <p>Another common pitfall occurs around endianness. A network protocol may be little endian or big endian; it all depends on the protocol specification. Processors also have an endianness; this means that the developer has to be careful that the processor endianness and the protocol endianness are handled correctly. In <code>example2</code>, some common networking functions are used: <code>ntohs()</code> and <code>ntohl()</code>. These are shorthand for "network order to host order, short" and "network order to host order, long". Basically, these functions convert data of a certain size (i.e. 16 bits, 32 bits, etc) to the endianness of the host. Network byte order is big-endian (most significant byte first), so these functions convert big-endian byte order to host order (thus, the implementation of these functions is host dependent). Note that the BLE networking stack "on the air" format is least signigicant byte first (i.e. little-endian), so a <code>bletoh</code> function would have to take little-endian format and convert to host format.</p>
 <p>A long story short: the developer must take care when copying structure data to/from mbufs and flat buffers!</p>
 <p>A final note: these examples assume the same mbuf struture and definitions used in the first example. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">void</span>
-<span style="color: #000000">mbuf_usage_example2</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">mbuf</span> <span style="color: #000000">*rxpkt</span>)
+<pre class="codehilite"><code class="language-c">void
+mbuf_usage_example2(struct mbuf *rxpkt)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">packet_data</span>[<span style="color: #1C01CE">16</span>];
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">mbuf</span> <span style="color: #000000">*om</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">my_protocol_header</span> <span style="color: #000000">*phdr</span>;
+    int rc;
+    uint8_t packet_data[16];
+    struct mbuf *om;
+    struct my_protocol_header *phdr;
 
-    <span style="color: #177500">/* Make sure that &quot;my_protocol_header&quot; bytes are contiguous in mbuf */</span>
-    <span style="color: #000000">om</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_pullup</span>(<span style="color: #000000">&amp;g_mbuf_pool</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">my_protocol_header</span>));
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">!om</span>) {
-        <span style="color: #177500">/* Not able to pull up data into contiguous area */</span>
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+    /* Make sure that &quot;my_protocol_header&quot; bytes are contiguous in mbuf */
+    om = os_mbuf_pullup(&amp;g_mbuf_pool, sizeof(struct my_protocol_header));
+    if (!om) {
+        /* Not able to pull up data into contiguous area */
+        return -1;
     }
 
-    <span style="color: #177500">/* </span>
-<span style="color: #177500">     * Get the protocol information from the packet. In this example we presume that we</span>
-<span style="color: #177500">     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero</span>
-<span style="color: #177500">     * length, and have had some time in flight.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">phdr</span> <span style="color: #000000">=</span> <span style="color: #000000">OS_MBUF_DATA</span>(<span style="color: #000000">om</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">my_protocol_header</span> <span style="color: #000000">*</span>);
-    <span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">ntohs</span>(<span style="color: #000000">phdr-&gt;prot_type</span>);
-    <span style="color: #000000">length</span> <span style="color: #000000">=</span> <span style="color: #000000">ntohs</span>(<span style="color: #000000">phdr-&gt;prot_length</span>);
-    <span style="color: #000000">time_in_flight</span> <span style="color: #000000">=</span> <span style="color: #000000">ntohl</span>(<span style="color: #000000">phdr-&gt;prot_tif</span>);
+    /* 
+     * Get the protocol information from the packet. In this example we presume that we
+     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero
+     * length, and have had some time in flight.
+     */
+    phdr = OS_MBUF_DATA(om, struct my_protocol_header *);
+    type = ntohs(phdr-&gt;prot_type);
+    length = ntohs(phdr-&gt;prot_length);
+    time_in_flight = ntohl(phdr-&gt;prot_tif);
 
-    <span style="color: #A90D91">if</span> ((<span style="color: #000000">type</span> <span style="color: #000000">==</span> <span style="color: #000000">MY_PROTOCOL_TYPE</span>) <span style="color: #000000">&amp;&amp;</span> (<span style="color: #000000">length</span> <span style="color: #000000">&gt;</span> <span style="color: #1C01CE">0</span>) <span style="color: #000000">&amp;&amp;</span> (<span style="color: #000000">time_in_flight</span> <span style="color: #000000">&gt;</span> <span style="color: #1C01CE">0</span>)) {
-        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_copydata</span>(<span style="color: #000000">rxpkt</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">my_protocol_header</span>), <span style="color: #1C01CE">16</span>, <span style="color: #000000">packet_data</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">!rc</span>) {
-            <span style="color: #177500">/* Success! Perform operations on packet data */</span>
-            <span style="color: #000000">&lt;</span>... <span style="color: #000000">user</span> <span style="color: #000000">code</span> <span style="color: #000000">here</span> ...<span style="color: #000000">&gt;</span>
+    if ((type == MY_PROTOCOL_TYPE) &amp;&amp; (length &gt; 0) &amp;&amp; (time_in_flight &gt; 0)) {
+        rc = os_mbuf_copydata(rxpkt, sizeof(struct my_protocol_header), 16, packet_data);
+        if (!rc) {
+            /* Success! Perform operations on packet data */
+            &lt;... user code here ...&gt;
         }
     }
 
-    <span style="color: #177500">/* Free passed in packet (mbuf chain) since we don&#39;t need it anymore */</span>
-    <span style="color: #000000">os_mbuf_free_chain</span>(<span style="color: #000000">om</span>);
-}
-</pre></div>
+    /* Free passed in packet (mbuf chain) since we don't need it anymore */
+    os_mbuf_free_chain(om);
+}</code></pre>
 
 
 <p><br></p>
 <h3 id="data-structures">Data Structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pool</span> {
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_databuf_len</span>;
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_mbuf_count</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">*omp_pool</span>;
-    <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_mbuf_pool</span>) <span style="color: #000000">omp_next</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_mbuf_pool {
+    uint16_t omp_databuf_len;
+    uint16_t omp_mbuf_count;
+    struct os_mempool *omp_pool;
+    STAILQ_ENTRY(os_mbuf_pool) omp_next;
+};</code></pre>
 
 
 <table>
@@ -921,12 +917,11 @@
 </tbody>
 </table>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pkthdr</span> {
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_len</span>;
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_flags</span>;
-    <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_mbuf_pkthdr</span>) <span style="color: #000000">omp_next</span>;
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_mbuf_pkthdr {
+    uint16_t omp_len;
+    uint16_t omp_flags;
+    STAILQ_ENTRY(os_mbuf_pkthdr) omp_next;
+};</code></pre>
 
 
 <table>
@@ -952,16 +947,15 @@
 </tbody>
 </table>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> {
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*om_data</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">om_flags</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">om_pkthdr_len</span>;
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">om_len</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pool</span> <span style="color: #000000">*om_omp</span>;
-    <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">os_mbuf</span>) <span style="color: #000000">om_next</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">om_databuf</span>[<span style="color: #1C01CE">0</span>];
-};
-</pre></div>
+<pre class="codehilite"><code class="language-c">struct os_mbuf {
+    uint8_t *om_data;
+    uint8_t om_flags;
+    uint8_t om_pkthdr_len;
+    uint16_t om_len;
+    struct os_mbuf_pool *om_omp;
+    SLIST_ENTRY(os_mbuf) om_next;
+    uint8_t om_databuf[0];
+};</code></pre>
 
 
 <table>
