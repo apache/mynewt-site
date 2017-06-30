@@ -30,7 +30,8 @@ When a new release of MyNewt OS and its associated tools occurs, the documentati
 
 ### Build
 
-1. Merge `develop` to `master`.
+1. Merge pull requests to `develop` on github.
+1. While in `develop`, do 'git pull --rebase origin develop` to pull the latest merged changes.
 1. Switch to the master branch.
     * `git checkout master`
 1. Create a new _stanza_ in `mkdocs.yml` to reflect the new version.
