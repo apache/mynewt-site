@@ -4,8 +4,8 @@ The Apache MyNewt site is built using [MkDocs](http://www.mkdocs.org/).
 
 Clone the repo:
 
-    git clone https://github.com/apache/incubator-mynewt-site
-    cd incubator-mynewt-site
+    git clone https://github.com/apache/mynewt-site
+    cd mynewt-site
 
 Optional: it's a very good idea to use a `virtualenv`:
 
