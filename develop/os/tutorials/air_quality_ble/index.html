@@ -529,176 +529,184 @@ app most of the bluetooth plumbing has already been taken care of for us. What's
 to add the required GATT services for advertising the Carbon Dioxide sensor so that
 other devices can get those values.</p>
 <p>First, we'll define the GATT Services in <code>apps/air_quality/src/bleprph.h</code>.</p>
-<pre class="codehilite"><code class="language-c">/* Sensor Data */
-/* e761d2af-1c15-4fa7-af80-b5729002b340 */
-static const ble_uuid128_t gatt_svr_svc_co2_uuid =
-    BLE_UUID128_INIT(0x40, 0xb3, 0x20, 0x90, 0x72, 0xb5, 0x80, 0xaf,
-                     0xa7, 0x4f, 0x15, 0x1c, 0xaf, 0xd2, 0x61, 0xe7);
-#define CO2_SNS_TYPE          0xDEAD
-#define CO2_SNS_STRING &quot;SenseAir K30 CO2 Sensor&quot;
-#define CO2_SNS_VAL           0xBEAD
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* Sensor Data */</span>
+<span style="color: #177500">/* e761d2af-1c15-4fa7-af80-b5729002b340 */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">ble_uuid128_t</span> <span style="color: #000000">gatt_svr_svc_co2_uuid</span> <span style="color: #000000">=</span>
+    <span style="color: #000000">BLE_UUID128_INIT</span>(<span style="color: #1C01CE">0x40</span>, <span style="color: #1C01CE">0xb3</span>, <span style="color: #1C01CE">0x20</span>, <span style="color: #1C01CE">0x90</span>, <span style="color: #1C01CE">0x72</span>, <span style="color: #1C01CE">0xb5</span>, <span style="color: #1C01CE">0x80</span>, <span style="color: #1C01CE">0xaf</span>,
+                     <span style="color: #1C01CE">0xa7</span>, <span style="color: #1C01CE">0x4f</span>, <span style="color: #1C01CE">0x15</span>, <span style="color: #1C01CE">0x1c</span>, <span style="color: #1C01CE">0xaf</span>, <span style="color: #1C01CE">0xd2</span>, <span style="color: #1C01CE">0x61</span>, <span style="color: #1C01CE">0xe7</span>);
+<span style="color: #633820">#define CO2_SNS_TYPE          0xDEAD</span>
+<span style="color: #633820">#define CO2_SNS_STRING &quot;SenseAir K30 CO2 Sensor&quot;</span>
+<span style="color: #633820">#define CO2_SNS_VAL           0xBEAD</span>
 
-uint16_t gatt_co2_val; </code></pre>
+<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_co2_val</span>; 
+</pre></div>
 
 
 <p>You can use any hex values you choose for the sensor type and sensor values, and you can 
 even forget the sensor type and sensor string definitions altogether but they make
 the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we'll add those services to <code>apps/air_quality/src/gatt_svr.c</code>.</p>
-<pre class="codehilite"><code class="language-c">static int
-gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
-    struct ble_gatt_access_ctxt *ctxt,
-    void *arg);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">gatt_svr_sns_access</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
+    <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>);
 
-static uint16_t gatt_co2_val_len;</code></pre>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_co2_val_len</span>;
+</pre></div>
 
 
 <p>Make sure it is added as <em>primary</em> service.</p>
-<pre class="codehilite"><code class="language-c">static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
     {
-        /*** Service: Security test. */
-        .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = &amp;gatt_svr_svc_sec_test_uuid.u,
-        .characteristics = (struct ble_gatt_chr_def[]) { {
-            /*** Characteristic: Random number generator. */
-            .uuid = &amp;gatt_svr_chr_sec_test_rand_uuid.u,
-            .access_cb = gatt_svr_chr_access_sec_test,
-            .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_READ_ENC,
+        <span style="color: #177500">/*** Service: Security test. */</span>
+        .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
+        .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_svc_sec_test_uuid</span>.<span style="color: #000000">u</span>,
+        .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
+            <span style="color: #177500">/*** Characteristic: Random number generator. */</span>
+            .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_chr_sec_test_rand_uuid</span>.<span style="color: #000000">u</span>,
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span> <span style="color: #000000">|</span> <span style="color: #000000">BLE_GATT_CHR_F_READ_ENC</span>,
         }, {
-            /*** Characteristic: Static value. */
-            .uuid = &amp;gatt_svr_chr_sec_test_static_uuid,.u
-            .access_cb = gatt_svr_chr_access_sec_test,
-            .flags = BLE_GATT_CHR_F_READ |
-                     BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_ENC,
+            <span style="color: #177500">/*** Characteristic: Static value. */</span>
+            .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_chr_sec_test_static_uuid</span>,.<span style="color: #000000">u</span>
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span> <span style="color: #000000">|</span>
+                     <span style="color: #000000">BLE_GATT_CHR_F_WRITE</span> <span style="color: #000000">|</span> <span style="color: #000000">BLE_GATT_CHR_F_WRITE_ENC</span>,
         }, {
-            0, /* No more characteristics in this service. */
+            <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more characteristics in this service. */</span>
         } },
     },
         {
-            /*** CO2 Level Notification Service. */
-            .type = BLE_GATT_SVC_TYPE_PRIMARY,
-            .uuid = &amp;gatt_svr_svc_co2_uuid.u,
-            .characteristics = (struct ble_gatt_chr_def[]) { {
-                .uuid = BLE_UUID16_DECLARE(CO2_SNS_TYPE),
-                .access_cb = gatt_svr_sns_access,
-                .flags = BLE_GATT_CHR_F_READ,
+            <span style="color: #177500">/*** CO2 Level Notification Service. */</span>
+            .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
+            .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_svc_co2_uuid</span>.<span style="color: #000000">u</span>,
+            .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
+                .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_TYPE</span>),
+                .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_sns_access</span>,
+                .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
             }, {
-                .uuid = BLE_UUID16_DECLARE(CO2_SNS_VAL),
-                .access_cb = gatt_svr_sns_access,
-                .flags = BLE_GATT_CHR_F_NOTIFY,
+                .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_VAL</span>),
+                .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_sns_access</span>,
+                .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
             }, {
-                0, /* No more characteristics in this service. */
+                <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more characteristics in this service. */</span>
             } },
         },
 
         {
-            0, /* No more services. */
+            <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more services. */</span>
         },
-    };</code></pre>
+    };
+</pre></div>
 
 
 <p>Next we need to tell the GATT Server how to handle requests for CO<sub>2</sub> readings :</p>
-<pre class="codehilite"><code class="language-c">sstatic int
-gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
-                          struct ble_gatt_access_ctxt *ctxt,
-                          void *arg)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">sstatic</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">gatt_svr_sns_access</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
+                          <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
+                          <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    uint16_t uuid16;
-    int rc;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    uuid16 = ble_uuid_u16(ctxt-&gt;chr-&gt;uuid);
+    <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_u16</span>(<span style="color: #000000">ctxt-&gt;chr-&gt;uuid</span>);
 
-    switch (uuid16) {
-    case CO2_SNS_TYPE:
-        assert(ctxt-&gt;op == BLE_GATT_ACCESS_OP_READ_CHR);
-        rc = os_mbuf_append(ctxt-&gt;om, CO2_SNS_STRING, sizeof CO2_SNS_STRING);
-        BLEPRPH_LOG(INFO, &quot;CO2 SENSOR TYPE READ: %s\n&quot;, CO2_SNS_STRING);
-        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+    <span style="color: #A90D91">switch</span> (<span style="color: #000000">uuid16</span>) {
+    <span style="color: #A90D91">case</span> <span style="color: #000000">CO2_SNS_TYPE</span>:
+        <span style="color: #000000">assert</span>(<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_READ_CHR</span>);
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_append</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">CO2_SNS_STRING</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">CO2_SNS_STRING</span>);
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;CO2 SENSOR TYPE READ: %s\n&quot;</span>, <span style="color: #000000">CO2_SNS_STRING</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">BLE_ATT_ERR_INSUFFICIENT_RES</span>;
 
-    case CO2_SNS_VAL:
-        if (ctxt-&gt;op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
-            rc = gatt_svr_chr_write(ctxt-&gt;om, 0,
-                                    sizeof gatt_co2_val,
-                                    &amp;gatt_co2_val,
-                                    &amp;gatt_co2_val_len);
-            return rc;
-        } else if (ctxt-&gt;op == BLE_GATT_ACCESS_OP_READ_CHR) {
-            rc = os_mbuf_append(ctxt-&gt;om, &amp;gatt_co2_val,
-                                sizeof gatt_co2_val);
-            return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+    <span style="color: #A90D91">case</span> <span style="color: #000000">CO2_SNS_VAL</span>:
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_WRITE_CHR</span>) {
+            <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_write</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #1C01CE">0</span>,
+                                    <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_co2_val</span>,
+                                    <span style="color: #000000">&amp;gatt_co2_val</span>,
+                                    <span style="color: #000000">&amp;gatt_co2_val_len</span>);
+            <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+        } <span style="color: #A90D91">else</span> <span style="color: #A90D91">if</span> (<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_READ_CHR</span>) {
+            <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_append</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">&amp;gatt_co2_val</span>,
+                                <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_co2_val</span>);
+            <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">BLE_ATT_ERR_INSUFFICIENT_RES</span>;
         }
 
-    default:
-        assert(0);
-        return BLE_ATT_ERR_UNLIKELY;
+    <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
+        <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_UNLIKELY</span>;
     }
-}</code></pre>
+}
+</pre></div>
 
 
 <p>Now it's time to go into our <code>apps/air_quality/src/main.c</code> and change how we read CO<sub>2</sub> readings and 
 respond to requests. </p>
 <p>We'll need a task handler with an event queue for the CO<sub>2</sub> readings -- they were handled by the shell task in the previous tutorial but now it needs to be replaced by a different handler as shown below.</p>
-<pre class="codehilite"><code class="language-c">/* CO2 Task settings */
-#define CO2_TASK_PRIO           5
-#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))
-struct os_eventq co2_evq;
-struct os_task co2_task;
-bssnz_t os_stack_t co2_stack[CO2_STACK_SIZE];</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* CO2 Task settings */</span>
+<span style="color: #633820">#define CO2_TASK_PRIO           5</span>
+<span style="color: #633820">#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">co2_evq</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">co2_task</span>;
+<span style="color: #A90D91">bssnz_t</span> <span style="color: #A90D91">os_stack_t</span> <span style="color: #000000">co2_stack</span>[<span style="color: #000000">CO2_STACK_SIZE</span>];
+</pre></div>
 
 
 <p>And of course we'll need to go to our <code>main()</code> and do all the standard task and event setup we
 normally do by adding the following. Again, remember to delete all the shell event queues and tasks.</p>
-<pre class="codehilite"><code class="language-c">/* Initialize sensor eventq */
-os_eventq_init(&amp;co2_evq);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/* Initialize sensor eventq */</span>
+<span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;co2_evq</span>);
 
-/* Create the CO2 reader task.  
- * All sensor reading operations are performed in this task.
- */
-os_task_init(&amp;co2_task, &quot;sensor&quot;, co2_task_handler,
-            NULL, CO2_TASK_PRIO, OS_WAIT_FOREVER,
-            co2_stack, CO2_STACK_SIZE);</code></pre>
+<span style="color: #177500">/* Create the CO2 reader task.  </span>
+<span style="color: #177500"> * All sensor reading operations are performed in this task.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;co2_task</span>, <span style="color: #C41A16">&quot;sensor&quot;</span>, <span style="color: #000000">co2_task_handler</span>,
+            <span style="color: #A90D91">NULL</span>, <span style="color: #000000">CO2_TASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>,
+            <span style="color: #000000">co2_stack</span>, <span style="color: #000000">CO2_STACK_SIZE</span>);
+</pre></div>
 
 
 <p>We'll also need to add a task handler -- since we initialized it above:</p>
-<pre class="codehilite"><code class="language-c">/**
- * Event loop for the sensor task.
- */
-static void
-co2_task_handler(void *unused)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
+<span style="color: #177500"> * Event loop for the sensor task.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">co2_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*unused</span>)
 {    
-    while (1) {
-        co2_read_event();
-        /* Wait 2 second */
-        os_time_delay(OS_TICKS_PER_SEC * 2);
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">co2_read_event</span>();
+        <span style="color: #177500">/* Wait 2 second */</span>
+        <span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC</span> <span style="color: #000000">*</span> <span style="color: #1C01CE">2</span>);
 
     }
-}</code></pre>
+}
+</pre></div>
 
 
 <p>And finally, we'll take care of that <code>co2_read_event()</code> function:</p>
-<pre class="codehilite"><code class="language-c">int
-co2_read_event(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
+<span style="color: #000000">co2_read_event</span>(<span style="color: #A90D91">void</span>)
 {
-    int value;
-    enum senseair_read_type type = SENSEAIR_CO2;
-    uint16_t chr_val_handle;
-    int rc;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">value</span>;
+    <span style="color: #A90D91">enum</span> <span style="color: #000000">senseair_read_type</span> <span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">SENSEAIR_CO2</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">chr_val_handle</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    value = senseair_read(type);
-    if (value &gt;= 0) {
-        console_printf(&quot;Got %d\n&quot;, value);
-    } else {
-        console_printf(&quot;Error while reading: %d\n&quot;, value);
-        goto err;
+    <span style="color: #000000">value</span> <span style="color: #000000">=</span> <span style="color: #000000">senseair_read</span>(<span style="color: #000000">type</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">value</span> <span style="color: #000000">&gt;=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Got %d\n&quot;</span>, <span style="color: #000000">value</span>);
+    } <span style="color: #A90D91">else</span> {
+        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;Error while reading: %d\n&quot;</span>, <span style="color: #000000">value</span>);
+        <span style="color: #A90D91">goto</span> <span style="color: #000000">err</span>;
     }
-    gatt_co2_val = value;
-    rc = ble_gatts_find_chr(&amp;gatt_svr_svc_co2_uuid.u, BLE_UUID16_DECLARE(CO2_SNS_VAL), NULL, &amp;chr_val_handle);
-    assert(rc == 0);
-    ble_gatts_chr_updated(chr_val_handle);
-    return (0);
-err:
-    return (rc);
-}</code></pre>
+    <span style="color: #000000">gatt_co2_val</span> <span style="color: #000000">=</span> <span style="color: #000000">value</span>;
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gatts_find_chr</span>(<span style="color: #000000">&amp;gatt_svr_svc_co2_uuid</span>.<span style="color: #000000">u</span>, <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_VAL</span>), <span style="color: #A90D91">NULL</span>, <span style="color: #000000">&amp;chr_val_handle</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">ble_gatts_chr_updated</span>(<span style="color: #000000">chr_val_handle</span>);
+    <span style="color: #A90D91">return</span> (<span style="color: #1C01CE">0</span>);
+<span style="color: #000000">err</span>:
+    <span style="color: #A90D91">return</span> (<span style="color: #000000">rc</span>);
+}
+</pre></div>
 
 
 <p>You'll notice that it looks eeirily similar to a portion of the shell event we created 

@@ -707,69 +707,71 @@
 <h3 id="using-mqueue">Using Mqueue</h3>
 <p>The following code sample will demonstrate how to use an mqueue. This is a simple example where packets are put on a "receive queue" and a task processes that "receive queue" by incrementing the total number of packet received and then freeing the packet. Not shown in the code example is a call my_task_rx_data_func. Presumably, some other code will call this API. </p>
 <p><br></p>
-<pre class="codehilite"><code class="language-c">uint32_t pkts_rxd;
-struct os_mqueue rxpkt_q;
-struct os_eventq my_task_evq;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">uint32_t</span> <span style="color: #000000">pkts_rxd</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> <span style="color: #000000">rxpkt_q</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">my_task_evq</span>;
 
-void
-process_rx_data_queue(void)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">process_rx_data_queue</span>(<span style="color: #A90D91">void</span>)
 {
-    struct os_mbuf *om;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>;
 
-    /* Drain all packets off queue and process them */
-    while ((om = os_mqueue_get(&amp;rxpkt_q)) != NULL) {
-        ++pkts_rxd;
-        os_mbuf_free_chain(om);
+    <span style="color: #177500">/* Drain all packets off queue and process them */</span>
+    <span style="color: #A90D91">while</span> ((<span style="color: #000000">om</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mqueue_get</span>(<span style="color: #000000">&amp;rxpkt_q</span>)) <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>) {
+        <span style="color: #000000">++pkts_rxd</span>;
+        <span style="color: #000000">os_mbuf_free_chain</span>(<span style="color: #000000">om</span>);
     }
 }
 
-int
-my_task_rx_data_func(struct os_mbuf *om)
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">my_task_rx_data_func</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>)
 {
-    int rc;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    rc = os_mqueue_put(&amp;rxpkt_q, &amp;my_task_evq, om);
-    if (rc != 0) {
-        return -1;
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mqueue_put</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #000000">&amp;my_task_evq</span>, <span style="color: #000000">om</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
     }
 
-    return 0;
+    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
 
-void
-my_task_handler(void *arg)
+<span style="color: #A90D91">void</span>
+<span style="color: #000000">my_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    struct os_event *ev;
-    struct os_callout_func *cf;
-    int rc;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout_func</span> <span style="color: #000000">*cf</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Initialize eventq */
-    os_eventq_init(&amp;my_task_evq);
+    <span style="color: #177500">/* Initialize eventq */</span>
+    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;my_task_evq</span>);
 
-    /* Initialize mqueue */
-    os_mqueue_init(&amp;rxpkt_q, NULL);
+    <span style="color: #177500">/* Initialize mqueue */</span>
+    <span style="color: #000000">os_mqueue_init</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #A90D91">NULL</span>);
 
-    while (1) {
-        ev = os_eventq_get(&amp;my_task_evq);
-        switch (ev-&gt;ev_type) {
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;my_task_evq</span>);
+        <span style="color: #A90D91">switch</span> (<span style="color: #000000">ev-&gt;ev_type</span>) {
 
-        case OS_EVENT_T_MQUEUE_DATA:
-            process_rx_data_queue();
-            break;
+        <span style="color: #A90D91">case</span> <span style="color: #000000">OS_EVENT_T_MQUEUE_DATA</span>:
+            <span style="color: #000000">process_rx_data_queue</span>();
+            <span style="color: #A90D91">break</span>;
 
-        default:
-            assert(0);
-            break;
+        <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
+            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
+            <span style="color: #A90D91">break</span>;
         }
     }
-}</code></pre>
+}
+</pre></div>
 
 
 <h3 id="data-structures">Data Structures</h3>
-<pre class="codehilite"><code class="language-c">struct os_mqueue {
-    STAILQ_HEAD(, os_mbuf_pkthdr) mq_head;
-    struct os_event mq_ev;
-};</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> {
+    <span style="color: #000000">STAILQ_HEAD</span>(, <span style="color: #000000">os_mbuf_pkthdr</span>) <span style="color: #000000">mq_head</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">mq_ev</span>;
+};
+</pre></div>
 
 
 <p><br></p>

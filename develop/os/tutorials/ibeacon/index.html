@@ -533,36 +533,37 @@ startup.  When the host and controller are separate, sync typically occurs
 in less than a second.</p>
 <p>We achieve this by configuring the NimBLE host with a callback function that
 gets called when sync takes place:</p>
-<pre class="codehilite"><code class="language-c">static void
-ble_app_set_addr()
-{ }
-
-static void
-ble_app_advertise();
-{ }
-
-static void
-ble_app_on_sync(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+</span><span style="background-color: #ffffcc"><span style="color: #000000">ble_app_set_addr</span>()
+</span><span style="background-color: #ffffcc">{ }
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+</span><span style="background-color: #ffffcc"><span style="color: #000000">ble_app_advertise</span>();
+</span><span style="background-color: #ffffcc">{ }
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+</span><span style="background-color: #ffffcc"><span style="color: #000000">ble_app_on_sync</span>(<span style="color: #A90D91">void</span>)
+</span><span style="background-color: #ffffcc">{
+</span><span style="background-color: #ffffcc">    <span style="color: #177500">/* Generate a non-resolvable private address. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">ble_app_set_addr</span>();
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #177500">/* Advertise indefinitely. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">ble_app_advertise</span>();
+</span><span style="background-color: #ffffcc">}
+</span>
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
-    /* Generate a non-resolvable private address. */
-    ble_app_set_addr();
+    <span style="color: #000000">sysinit</span>();
 
-    /* Advertise indefinitely. */
-    ble_app_advertise();
-}
-
-int
-main(int argc, char **argv)
-{
-    sysinit();
-
-    ble_hs_cfg.sync_cb = ble_app_on_sync;
-
-    /* As the last thing, process events from default event queue. */
-    while (1) {
-        os_eventq_run(os_eventq_dflt_get());
+<span style="background-color: #ffffcc">    <span style="color: #000000">ble_hs_cfg</span>.<span style="color: #000000">sync_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_app_on_sync</span>;
+</span>
+    <span style="color: #177500">/* As the last thing, process events from default event queue. */</span>
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
     }
-}</code></pre>
+}
+</pre></div>
 
 
 <p><code>ble_hs_cfg.sync_cb</code> points to the function that should be called when sync
@@ -578,32 +579,33 @@ address gets used since nothing will be connecting to us.</p>
 <p>A reliable solution is to generate a <em>non-resolvable private address</em> (nRPA)
 each time the application runs.  Such an address contains no identifying
 information, and they are expected to change frequently.</p>
-<pre class="codehilite"><code class="language-c">static void
-ble_app_set_addr(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_set_addr</span>(<span style="color: #A90D91">void</span>)
 {
-    ble_addr_t addr;
-    int rc;
+<span style="background-color: #ffffcc">    <span style="color: #A90D91">ble_addr_t</span> <span style="color: #000000">addr</span>;
+</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_gen_rnd</span>(<span style="color: #1C01CE">1</span>, <span style="color: #000000">&amp;addr</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_set_rnd</span>(<span style="color: #000000">addr</span>.<span style="color: #000000">val</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span>}
 
-    rc = ble_hs_id_gen_rnd(1, &amp;addr);
-    assert(rc == 0);
-
-    rc = ble_hs_id_set_rnd(addr.val);
-    assert(rc == 0);
-}
-
-static void
-ble_app_advertise();
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_advertise</span>();
 { }
 
-static void
-ble_app_on_sync(void)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_on_sync</span>(<span style="color: #A90D91">void</span>)
 {
-    /* Generate a non-resolvable private address. */
-    ble_app_set_addr();
+    <span style="color: #177500">/* Generate a non-resolvable private address. */</span>
+    <span style="color: #000000">ble_app_set_addr</span>();
 
-    /* Advertise indefinitely. */
-    ble_app_advertise();
-}</code></pre>
+    <span style="color: #177500">/* Advertise indefinitely. */</span>
+    <span style="color: #000000">ble_app_advertise</span>();
+}
+</pre></div>
 
 
 <p>Our new function, <code>ble_app_set_addr()</code>, makes two calls into the stack:</p>
@@ -624,21 +626,22 @@ configuration iBeacon advertisement data:
 <em> <em>UUID</em>: <code>11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11</code>
 </em> <em>Major</em>: 2
 * <em>Minor</em>: 10</p>
-<pre class="codehilite"><code class="language-c">static void
-ble_app_advertise(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
 {
-    uint8_t uuid128[16];
-    int rc;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Fill the UUID buffer with a string of 0x11 bytes. */
-    memset(uuid128, 0x11, sizeof uuid128);
+    <span style="color: #177500">/* Fill the UUID buffer with a string of 0x11 bytes. */</span>
+    <span style="color: #000000">memset</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">0x11</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">uuid128</span>);
 
-    /* Major version=2; minor version=10. */
-    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
-    assert(rc == 0);
+    <span style="color: #177500">/* Major version=2; minor version=10. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
-    /* TODO: Begin advertising. */
-}</code></pre>
+    <span style="color: #177500">/* TODO: Begin advertising. */</span>
+}
+</pre></div>
 
 
 <p>Now that the host knows what to advertise, the next step is to actually begin
@@ -646,15 +649,16 @@ advertising.  The function to initiate advertising is:
 <a href="../../../network/ble/ble_hs/ble_gap/functions/ble_gap_adv_start/"><code>ble_gap_adv_start</code></a>.
 This function takes several parameters.  For simplicity, we reproduce the
 function prototype here:</p>
-<pre class="codehilite"><code class="language-c">int
-ble_gap_adv_start(
-                            uint8_t  own_addr_type,
-                   const ble_addr_t *direct_addr,
-                            int32_t  duration_ms,
-    const struct ble_gap_adv_params *adv_params,
-                   ble_gap_event_fn *cb,
-                               void *cb_arg
-)</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span>
+<span style="color: #000000">ble_gap_adv_start</span>(
+                            <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">own_addr_type</span>,
+                   <span style="color: #A90D91">const</span> <span style="color: #A90D91">ble_addr_t</span> <span style="color: #000000">*direct_addr</span>,
+                            <span style="color: #A90D91">int32_t</span>  <span style="color: #000000">duration_ms</span>,
+    <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">*adv_params</span>,
+                   <span style="color: #000000">ble_gap_event_fn</span> <span style="color: #000000">*cb</span>,
+                               <span style="color: #A90D91">void</span> <span style="color: #000000">*cb_arg</span>
+)
+</pre></div>
 
 
 <p>This function gives an application quite a bit of freedom in how advertising is to be done.  The default values are mostly fine for our simple beaconing application.  We will pass the following values to this function:</p>
@@ -700,30 +704,31 @@ ble_gap_adv_start(
 </tbody>
 </table>
 <p>These arguments are mostly self-explanatory.  The exception is <code>adv_params</code>, which can be used to specify a number of low-level parameters.  For a beaconing application, the default settings are appropriate.  We specify default settings by providing a zero-filled instance of the <code>ble_gap_adv_params</code> struct as our argument.</p>
-<pre class="codehilite"><code class="language-c">static void
-bleprph_advertise(void)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
 {
-    struct ble_gap_adv_params adv_params;
-    uint8_t uuid128[16];
-    int rc;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Arbitrarily set the UUID to a string of 0x11 bytes. */
-    memset(uuid128, 0x11, sizeof uuid128);
+    <span style="color: #177500">/* Arbitrarily set the UUID to a string of 0x11 bytes. */</span>
+    <span style="color: #000000">memset</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">0x11</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">uuid128</span>);
 
-    /* Major version=2; minor version=10. */
-    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
-    if (rc != 0) {
-        BLEPRPH_LOG(ERROR, &quot;error setting iBeacon advertisement data; rc=%d\n&quot;,
-                    rc);
-        return;
+    <span style="color: #177500">/* Major version=2; minor version=10. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
+                    <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
     }
 
-    /* Begin advertising. */
-    adv_params = (struct ble_gap_adv_params){ 0 };
-    rc = ble_gap_adv_start(BLE_OWN_ADDR_RANDOM, NULL, BLE_HS_FOREVER,
-                           &amp;adv_params, NULL, NULL);
-    assert(rc == 0);
-}</code></pre>
+    <span style="color: #177500">/* Begin advertising. */</span>
+<span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_RANDOM</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
+</span><span style="background-color: #ffffcc">                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #A90D91">NULL</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span>}
+</pre></div>
 
 
 <h3 id="conclusion">Conclusion</h3>
@@ -732,71 +737,72 @@ it with all your iBeacon-aware devices.  You can test it out with the
 <code>newt run</code> command.</p>
 <h3 id="source-listing">Source Listing</h3>
 <p>For reference, here is the complete application source:</p>
-<pre class="codehilite"><code class="language-c">#include &quot;sysinit/sysinit.h&quot;
-#include &quot;os/os.h&quot;
-#include &quot;console/console.h&quot;
-#include &quot;host/ble_hs.h&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;sysinit/sysinit.h&quot;</span>
+<span style="color: #633820">#include &quot;os/os.h&quot;</span>
+<span style="color: #633820">#include &quot;console/console.h&quot;</span>
+<span style="color: #633820">#include &quot;host/ble_hs.h&quot;</span>
 
-static void
-ble_app_set_addr(void)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_set_addr</span>(<span style="color: #A90D91">void</span>)
 {
-    ble_addr_t addr;
-    int rc;
+    <span style="color: #A90D91">ble_addr_t</span> <span style="color: #000000">addr</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    rc = ble_hs_id_gen_rnd(1, &amp;addr);
-    assert(rc == 0);
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_gen_rnd</span>(<span style="color: #1C01CE">1</span>, <span style="color: #000000">&amp;addr</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
-    rc = ble_hs_id_set_rnd(addr.val);
-    assert(rc == 0);
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_set_rnd</span>(<span style="color: #000000">addr</span>.<span style="color: #000000">val</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 }
 
-static void
-bleprph_advertise(void)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
 {
-    struct ble_gap_adv_params adv_params;
-    uint8_t uuid128[16];
-    int rc;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    /* Arbitrarily set the UUID to a string of 0x11 bytes. */
-    memset(uuid128, 0x11, sizeof uuid128);
+    <span style="color: #177500">/* Arbitrarily set the UUID to a string of 0x11 bytes. */</span>
+    <span style="color: #000000">memset</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">0x11</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">uuid128</span>);
 
-    /* Major version=2; minor version=10. */
-    rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
-    if (rc != 0) {
-        BLEPRPH_LOG(ERROR, &quot;error setting iBeacon advertisement data; rc=%d\n&quot;,
-                    rc);
-        return;
+    <span style="color: #177500">/* Major version=2; minor version=10. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
+                    <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
     }
 
-    /* Begin advertising. */
-    adv_params = (struct ble_gap_adv_params){ 0 };
-    rc = ble_gap_adv_start(BLE_OWN_ADDR_RANDOM, NULL, BLE_HS_FOREVER,
-                           &amp;adv_params, NULL, NULL);
-    assert(rc == 0);
+    <span style="color: #177500">/* Begin advertising. */</span>
+    <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_RANDOM</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
+                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 }
 
-static void
-ble_app_on_sync(void)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_on_sync</span>(<span style="color: #A90D91">void</span>)
 {
-    /* Generate a non-resolvable private address. */
-    ble_app_set_addr();
+    <span style="color: #177500">/* Generate a non-resolvable private address. */</span>
+    <span style="color: #000000">ble_app_set_addr</span>();
 
-    /* Advertise indefinitely. */
-    ble_app_advertise();
+    <span style="color: #177500">/* Advertise indefinitely. */</span>
+    <span style="color: #000000">ble_app_advertise</span>();
 }
 
-int
-main(int argc, char **argv)
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
-    sysinit();
+    <span style="color: #000000">sysinit</span>();
 
-    ble_hs_cfg.sync_cb = ble_app_on_sync;
+    <span style="color: #000000">ble_hs_cfg</span>.<span style="color: #000000">sync_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_app_on_sync</span>;
 
-    /* As the last thing, process events from default event queue. */
-    while (1) {
-        os_eventq_run(os_eventq_dflt_get());
+    <span style="color: #177500">/* As the last thing, process events from default event queue. */</span>
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
     }
-}</code></pre>
+}
+</pre></div>
                         
                         <div class="row">
                             

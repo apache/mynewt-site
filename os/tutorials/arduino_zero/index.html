@@ -533,35 +533,37 @@ the repository to the <code>project.yml</code> file in your base project directo
 <p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
 added. The sections with <code>mynewt_arduino_zero</code> that need to be added to 
 your project file are highlighted.</p>
-<pre class="codehilite"><code>$ more project.yml 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ more project.yml 
 project.name: &quot;my_project&quot;
 
 project.repositories:
     - apache-mynewt-core
-    - mynewt_arduino_zero
-
+<span style="background-color: #ffffcc">    - mynewt_arduino_zero
+</span>
 repository.apache-mynewt-core:
     type: github
     vers: 0-latest
     user: apache
     repo: incubator-mynewt-core
 
-repository.mynewt_arduino_zero:
-    type: github
-    vers: 0-latest
-    user: runtimeinc
-    repo: mynewt_arduino_zero
-$ </code></pre>
+<span style="background-color: #ffffcc">repository.mynewt_arduino_zero:
+</span><span style="background-color: #ffffcc">    type: github
+</span><span style="background-color: #ffffcc">    vers: 0-latest
+</span><span style="background-color: #ffffcc">    user: runtimeinc
+</span><span style="background-color: #ffffcc">    repo: mynewt_arduino_zero
+</span>$ 
+</pre></div>
 
 
 <p><br></p>
 <p>Once you've edited your <code>project.yml</code> file, the next step is to install the 
 project dependencies, this can be done with the <code>newt install</code> command 
 (to see more output, provide the <code>-v</code> verbose option.): </p>
-<pre class="codehilite"><code class="language-no-highlight">$ newt install 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt install 
 apache-mynewt-core
 mynewt_arduino_zero
-$</code></pre>
+$
+</pre></div>
 
 
 <p><br></p>
@@ -571,19 +573,22 @@ $</code></pre>
 <p>Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to 
 generate both a bootloader, and an image target.</p>
 <p>To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability. </p>
-<pre class="codehilite"><code class="language-no-highlight">$ newt target create arduino_boot 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_boot 
 $ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero 
 $ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
-$ newt target set arduino_boot build_profile=optimized</code></pre>
+$ newt target set arduino_boot build_profile=optimized
+</pre></div>
 
 
 <p><br></p>
 <p>If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:</p>
-<pre class="codehilite"><code>$ newt target set arduino_boot features=arduino_zero_pro </code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set arduino_boot features=arduino_zero_pro 
+</pre></div>
 
 
 <p>If you have an Arduino Zero, you have to set the following instead:</p>
-<pre class="codehilite"><code>$ newt target set arduino_boot features=arduino_zero </code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target set arduino_boot features=arduino_zero 
+</pre></div>
 
 
 <p><br></p>
@@ -603,7 +608,7 @@ $ newt target set arduino_boot build_profile=optimized</code></pre>
 <p><br></p>
 <h3 id="build-your-bootloader">Build your bootloader</h3>
 <p>Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the <code>newt build</code> command:</p>
-<pre class="codehilite"><code class="language-no-highlight">$ newt build arduino_boot 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_boot 
 Compiling asprintf.c
 Compiling atoi.c
 Compiling atol.c
@@ -614,7 +619,8 @@ Compiling calloc.c
 Compiling fgets.c
 Compiling inline.c
 &lt;snip&gt;
-App successfully built: myproject/bin/arduino_boot/apps/boot/boot.elf</code></pre>
+App successfully built: myproject/bin/arduino_boot/apps/boot/boot.elf
+</pre></div>
 
 
 <p>If this command finishes successfully, you have successfully built the Arduino 
@@ -624,7 +630,7 @@ board.</p>
 <h3 id="build-your-blinky-app">Build your blinky app</h3>
 <p>To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the default application that comes with your project, <code>apps/blinky</code>:</p>
 <p><strong>Note</strong>: Remember to set features to <code>arduino_zero</code> if your board is Arduino Zero and not a Pro!</p>
-<pre class="codehilite"><code>$ newt target create arduino_blinky 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt target create arduino_blinky 
 Target targets/arduino_blinky successfully created
 $ newt target set arduino_blinky app=apps/blinky 
 Target targets/arduino_blinky successfully set target.app to apps/blinky
@@ -632,14 +638,15 @@ $ newt target set arduino_blinky bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 Target targets/arduino_blinky successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_blinky build_profile=debug 
 Target targets/arduino_blinky successfully set target.build_profile to debug
-$ newt target set arduino_blinky features=arduino_zero_pro 
-Target targets/arduino_blinky successfully set pkg.features to arduino_zero_pro
-$ </code></pre>
+<span style="background-color: #ffffcc">$ newt target set arduino_blinky features=arduino_zero_pro 
+</span>Target targets/arduino_blinky successfully set pkg.features to arduino_zero_pro
+$ 
+</pre></div>
 
 
 <p><br></p>
 <p>You can now build the target, with <code>newt build</code>: </p>
-<pre class="codehilite"><code class="language-no-highlight">$ newt build arduino_blinky 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt build arduino_blinky 
 Compiling main.c
 Archiving blinky.a
 Compiling cons_fmt.c
@@ -650,7 +657,8 @@ Compiling suite.c
 Compiling testutil.c
 Archiving testutil.a
 &lt;snip&gt;
-App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf</code></pre>
+App successfully built: myproject/bin/arduino_blinky/apps/blinky/blinky.elf
+</pre></div>
 
 
 <p><font color="#FF0000"> Congratulations! </font> You have successfully built your application. Now it's time to load both the bootloader and application onto the target.</p>
@@ -668,7 +676,8 @@ debugger that can be accessed by Mynewt.</p>
 <p><br></p>
 <h3 id="download-the-bootloader">Download the Bootloader</h3>
 <p>Execute the command to download the bootloader. </p>
-<pre class="codehilite"><code class="language-c">    $ newt load arduino_boot</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">load</span> <span style="color: #000000">arduino_boot</span>
+</pre></div>
 
 
 <p>If the newt tool finishes without error, that means the bootloader has been 
@@ -683,13 +692,13 @@ your image onto the Arduino Zero.  The easiest way to do this, is to use the
 (if necessary), create an image, and load it onto the target device.</p>
 <p>Here, we will load our <code>arduino_blinky</code> target onto the device, and we 
 should see it run:</p>
-<pre class="codehilite"><code class="language-no-highlight">$ newt run arduino_blinky 0.0.0 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt run arduino_blinky 0.0.0 
 Debugging myproject/bin/arduino_blinky/apps/blinky/blinky.elf
 Open On-Chip Debugger 0.9.0 (2015-09-23-21:46)
 Licensed under GNU GPL v2
 For bug reports, read
     http://openocd.org/doc/doxygen/bugs.html
-Info : only one transport option; autoselect 'swd'
+Info : only one transport option; autoselect &#39;swd&#39;
 adapter speed: 500 kHz
 adapter_nsrst_delay: 100
 cortex_m reset_config sysresetreq
@@ -720,13 +729,14 @@ Reading symbols from myproject/bin/arduino_blinky/apps/blinky/blinky.elf...done.
 target state: halted
 target halted due to debug-request, current mode: Thread 
 xPSR: 0x21000000 pc: 0x0000030e msp: 0x20008000
-Info : accepting 'gdb' connection on tcp/3333
+Info : accepting &#39;gdb&#39; connection on tcp/3333
 Info : SAMD MCU: SAMD21G18A (256KB Flash, 32KB RAM)
 0x0000030e in ?? ()
 (gdb) r
 The &quot;remote&quot; target does not support &quot;run&quot;.  Try &quot;help target&quot; or &quot;continue&quot;.
 (gdb) c
-Continuing.</code></pre>
+Continuing.
+</pre></div>
 
 
 <p><br></p>

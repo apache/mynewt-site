@@ -530,48 +530,56 @@
 <p>The main.c file resides in the apps/blinky/src directory in your project folder so you can edit it with your favorite editor. You'll make the following changes:</p>
 <p><br></p>
 <p>Replace the line:</p>
-<pre class="codehilite"><code class="language-c">int g_led_pin;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">g_led_pin</span>;
+</pre></div>
 
 
 <p>With the line:</p>
-<pre class="codehilite"><code class="language-c">int g_led_pins[8] = {LED_BLINK_PIN_1, LED_BLINK_PIN_2, LED_BLINK_PIN_3, LED_BLINK_PIN_4, LED_BLINK_PIN_5, LED_BLINK_PIN_6, LED_BLINK_PIN_7, LED_BLINK_PIN_8};</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">g_led_pins</span>[<span style="color: #1C01CE">8</span>] <span style="color: #000000">=</span> {<span style="color: #000000">LED_BLINK_PIN_1</span>, <span style="color: #000000">LED_BLINK_PIN_2</span>, <span style="color: #000000">LED_BLINK_PIN_3</span>, <span style="color: #000000">LED_BLINK_PIN_4</span>, <span style="color: #000000">LED_BLINK_PIN_5</span>, <span style="color: #000000">LED_BLINK_PIN_6</span>, <span style="color: #000000">LED_BLINK_PIN_7</span>, <span style="color: #000000">LED_BLINK_PIN_8</span>};
+</pre></div>
 
 
 <p>So that you now have an array of all 8 LED Pins on the board.</p>
 <p>Delete the line:</p>
-<pre class="codehilite"><code class="language-c">g_led_pin = LED_BLINK_PIN;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
+</pre></div>
 
 
 <p>And in its place, add the following lines to initialize all the LED_PINS correctly:</p>
-<pre class="codehilite"><code class="language-c">int x;
-for(x = 0; x &lt; 8; x++){
-    hal_gpio_init_out(g_led_pins[x], 1);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">x</span>;
+<span style="color: #A90D91">for</span>(<span style="color: #000000">x</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>; <span style="color: #000000">x</span> <span style="color: #000000">&lt;</span> <span style="color: #1C01CE">8</span>; <span style="color: #000000">x++</span>){
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pins</span>[<span style="color: #000000">x</span>], <span style="color: #1C01CE">1</span>);
 }
-int p = 0;</code></pre>
+<span style="color: #A90D91">int</span> <span style="color: #000000">p</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+</pre></div>
 
 
 <p>We'll use that 'p' later. Next you'll want to change the line:</p>
-<pre class="codehilite"><code class="language-c">os_time_delay(1000);</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">1000</span>);
+</pre></div>
 
 
 <p>to a shorter time in order to make it a little more interesting. A full 1 second delay doesn't look great, so try 100 for starters and then you can adjust it to your liking.</p>
 <p>Finally, change the line:</p>
-<pre class="codehilite"><code class="language-c">hal_gpio_toggle(g_led_pin);</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pin</span>);
+</pre></div>
 
 
 <p>to look like this:</p>
-<pre class="codehilite"><code class="language-c">hal_gpio_toggle(g_led_pins[p++]);
-p = (p &gt; 7) ? 0 : p;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #000000">hal_gpio_toggle</span>(<span style="color: #000000">g_led_pins</span>[<span style="color: #000000">p++</span>]);
+<span style="color: #000000">p</span> <span style="color: #000000">=</span> (<span style="color: #000000">p</span> <span style="color: #000000">&gt;</span> <span style="color: #1C01CE">7</span>) <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">p</span>;
+</pre></div>
 
 
 <p><br></p>
 <h3 id="build-the-target-and-executables-and-download-the-images">Build the target and executables and download the images</h3>
 <p>Run the same commands you used on the blinky app to build and load this one:</p>
-<pre class="codehilite"><code class="language-no-highlight">$ newt create-image stmf3_blinky 1.2.3
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">$ newt create-image stmf3_blinky 1.2.3
 App image successfully generated: ~/dev/myproj/bin/stmf3_blinky/apps/blinky/blinky.img
 Build manifest:~/dev/myproj/bin/stmf3_blinky/apps/blinky/manifest.json
 $ newt -v load stmf3_boot
-$ newt -v load stmf3_blinky</code></pre>
+$ newt -v load stmf3_blinky
+</pre></div>
 
 
 <p><br></p>

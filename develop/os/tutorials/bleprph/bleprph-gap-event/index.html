@@ -557,16 +557,17 @@ application specifies a GAP event callback when it begins advertising.  NimBLE
 uses this callback to notify the application that a central has connected to
 your peripheral after receiving an advertisement.  Let's revisit how <em>bleprph</em> specifies its connection callback when advertising:</p>
 <p><br></p>
-<pre class="codehilite"><code class="language-c">    /* Begin advertising. */
-    memset(&amp;adv_params, 0, sizeof adv_params);
-    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
-    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
-    rc = ble_gap_adv_start(BLE_ADDR_TYPE_PUBLIC, 0, NULL, BLE_HS_FOREVER,
-                           &amp;adv_params, bleprph_gap_event, NULL);
-    if (rc != 0) {
-        BLEPRPH_LOG(ERROR, &quot;error enabling advertisement; rc=%d\n&quot;, rc);
-        return;
-    }</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #177500">/* Begin advertising. */</span>
+    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
+    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_UND</span>;
+    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_GEN</span>;
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_ADDR_TYPE_PUBLIC</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
+                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
+        <span style="color: #A90D91">return</span>;
+    }
+</pre></div>
 
 
 <p><br></p>
@@ -578,90 +579,91 @@ permanently associated with the connection; all subsequent events related to
 this connection are communicated through this callback.</p>
 <p>Now let's look at the function that <em>bleprph</em> uses for all its connection
 callbacks: <code>bleprph_gap_event()</code>.</p>
-<pre class="codehilite"><code class="language-c">/**
- * The nimble host executes this callback when a GAP event occurs.  The
- * application associates a GAP event callback with each connection that forms.
- * bleprph uses the same callback for all connections.
- *
- * @param event                 The type of event being signalled.
- * @param ctxt                  Various information pertaining to the event.
- * @param arg                   Application-specified argument; unuesd by
- *                                  bleprph.
- *
- * @return                      0 if the application successfully handled the
- *                                  event; nonzero on failure.  The semantics
- *                                  of the return code is specific to the
- *                                  particular GAP event being signalled.
- */
-static int
-bleprph_gap_event(struct ble_gap_event *event, void *arg)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
+<span style="color: #177500"> * The nimble host executes this callback when a GAP event occurs.  The</span>
+<span style="color: #177500"> * application associates a GAP event callback with each connection that forms.</span>
+<span style="color: #177500"> * bleprph uses the same callback for all connections.</span>
+<span style="color: #177500"> *</span>
+<span style="color: #177500"> * @param event                 The type of event being signalled.</span>
+<span style="color: #177500"> * @param ctxt                  Various information pertaining to the event.</span>
+<span style="color: #177500"> * @param arg                   Application-specified argument; unuesd by</span>
+<span style="color: #177500"> *                                  bleprph.</span>
+<span style="color: #177500"> *</span>
+<span style="color: #177500"> * @return                      0 if the application successfully handled the</span>
+<span style="color: #177500"> *                                  event; nonzero on failure.  The semantics</span>
+<span style="color: #177500"> *                                  of the return code is specific to the</span>
+<span style="color: #177500"> *                                  particular GAP event being signalled.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">bleprph_gap_event</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_event</span> <span style="color: #000000">*event</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    struct ble_gap_conn_desc desc;
-    int rc;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_conn_desc</span> <span style="color: #000000">desc</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    switch (event-&gt;type) {
-    case BLE_GAP_EVENT_CONNECT:
-        /* A new connection was established or a connection attempt failed. */
-        BLEPRPH_LOG(INFO, &quot;connection %s; status=%d &quot;,
-                       event-&gt;connect.status == 0 ? &quot;established&quot; : &quot;failed&quot;,
-                       event-&gt;connect.status);
-        if (event-&gt;connect.status == 0) {
-            rc = ble_gap_conn_find(event-&gt;connect.conn_handle, &amp;desc);
-            assert(rc == 0);
-            bleprph_print_conn_desc(&amp;desc);
+    <span style="color: #A90D91">switch</span> (<span style="color: #000000">event-&gt;type</span>) {
+    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_EVENT_CONNECT</span>:
+        <span style="color: #177500">/* A new connection was established or a connection attempt failed. */</span>
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;connection %s; status=%d &quot;</span>,
+                       <span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">status</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #C41A16">&quot;established&quot;</span> <span style="color: #000000">:</span> <span style="color: #C41A16">&quot;failed&quot;</span>,
+                       <span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">status</span>);
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">status</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>) {
+            <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_conn_find</span>(<span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">conn_handle</span>, <span style="color: #000000">&amp;desc</span>);
+            <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+            <span style="color: #000000">bleprph_print_conn_desc</span>(<span style="color: #000000">&amp;desc</span>);
         }
-        BLEPRPH_LOG(INFO, &quot;\n&quot;);
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;\n&quot;</span>);
 
-        if (event-&gt;connect.status != 0) {
-            /* Connection failed; resume advertising. */
-            bleprph_advertise();
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">status</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+            <span style="color: #177500">/* Connection failed; resume advertising. */</span>
+            <span style="color: #000000">bleprph_advertise</span>();
         }
-        return 0;
+        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 
-    case BLE_GAP_EVENT_DISCONNECT:
-        BLEPRPH_LOG(INFO, &quot;disconnect; reason=%d &quot;, event-&gt;disconnect.reason);
-        bleprph_print_conn_desc(&amp;event-&gt;disconnect.conn);
-        BLEPRPH_LOG(INFO, &quot;\n&quot;);
+    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_EVENT_DISCONNECT</span>:
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;disconnect; reason=%d &quot;</span>, <span style="color: #000000">event-&gt;disconnect</span>.<span style="color: #000000">reason</span>);
+        <span style="color: #000000">bleprph_print_conn_desc</span>(<span style="color: #000000">&amp;event-&gt;disconnect</span>.<span style="color: #000000">conn</span>);
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;\n&quot;</span>);
 
-        /* Connection terminated; resume advertising. */
-        bleprph_advertise();
-        return 0;
+        <span style="color: #177500">/* Connection terminated; resume advertising. */</span>
+        <span style="color: #000000">bleprph_advertise</span>();
+        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 
-    case BLE_GAP_EVENT_CONN_UPDATE:
-        /* The central has updated the connection parameters. */
-        BLEPRPH_LOG(INFO, &quot;connection updated; status=%d &quot;,
-                    event-&gt;conn_update.status);
-        rc = ble_gap_conn_find(event-&gt;connect.conn_handle, &amp;desc);
-        assert(rc == 0);
-        bleprph_print_conn_desc(&amp;desc);
-        BLEPRPH_LOG(INFO, &quot;\n&quot;);
-        return 0;
+    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_EVENT_CONN_UPDATE</span>:
+        <span style="color: #177500">/* The central has updated the connection parameters. */</span>
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;connection updated; status=%d &quot;</span>,
+                    <span style="color: #000000">event-&gt;conn_update</span>.<span style="color: #000000">status</span>);
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_conn_find</span>(<span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">conn_handle</span>, <span style="color: #000000">&amp;desc</span>);
+        <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+        <span style="color: #000000">bleprph_print_conn_desc</span>(<span style="color: #000000">&amp;desc</span>);
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;\n&quot;</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 
-    case BLE_GAP_EVENT_ENC_CHANGE:
-        /* Encryption has been enabled or disabled for this connection. */
-        BLEPRPH_LOG(INFO, &quot;encryption change event; status=%d &quot;,
-                    event-&gt;enc_change.status);
-        rc = ble_gap_conn_find(event-&gt;connect.conn_handle, &amp;desc);
-        assert(rc == 0);
-        bleprph_print_conn_desc(&amp;desc);
-        BLEPRPH_LOG(INFO, &quot;\n&quot;);
-        return 0;
+    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_EVENT_ENC_CHANGE</span>:
+        <span style="color: #177500">/* Encryption has been enabled or disabled for this connection. */</span>
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;encryption change event; status=%d &quot;</span>,
+                    <span style="color: #000000">event-&gt;enc_change</span>.<span style="color: #000000">status</span>);
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_conn_find</span>(<span style="color: #000000">event-&gt;connect</span>.<span style="color: #000000">conn_handle</span>, <span style="color: #000000">&amp;desc</span>);
+        <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+        <span style="color: #000000">bleprph_print_conn_desc</span>(<span style="color: #000000">&amp;desc</span>);
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;\n&quot;</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 
-    case BLE_GAP_EVENT_SUBSCRIBE:
-        BLEPRPH_LOG(INFO, &quot;subscribe event; conn_handle=%d attr_handle=%d &quot;
-                          &quot;reason=%d prevn=%d curn=%d previ=%d curi=%d\n&quot;,
-                    event-&gt;subscribe.conn_handle,
-                    event-&gt;subscribe.attr_handle,
-                    event-&gt;subscribe.reason,
-                    event-&gt;subscribe.prev_notify,
-                    event-&gt;subscribe.cur_notify,
-                    event-&gt;subscribe.prev_indicate,
-                    event-&gt;subscribe.cur_indicate);
-        return 0;
+    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_EVENT_SUBSCRIBE</span>:
+        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">INFO</span>, <span style="color: #C41A16">&quot;subscribe event; conn_handle=%d attr_handle=%d &quot;</span>
+                          <span style="color: #C41A16">&quot;reason=%d prevn=%d curn=%d previ=%d curi=%d\n&quot;</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">conn_handle</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">attr_handle</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">reason</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">prev_notify</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">cur_notify</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">prev_indicate</span>,
+                    <span style="color: #000000">event-&gt;subscribe</span>.<span style="color: #000000">cur_indicate</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
     }
 
-    return 0;
-}</code></pre>
+    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+}
+</pre></div>
 
 
 <p><br></p>

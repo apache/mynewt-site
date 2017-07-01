@@ -589,7 +589,8 @@
 a <code>disk_ops</code> struct that can be used by any FS. Currently only <code>fatfs</code> can run
 over MMC.</p>
 <h4 id="initialization">Initialization</h4>
-<pre class="codehilite"><code class="language-c">int mmc_init(int spi_num, void *spi_cfg, int ss_pin)</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">int</span> <span style="color: #000000">mmc_init</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">spi_num</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*spi_cfg</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">ss_pin</span>)
+</pre></div>
 
 
 <p>Initializes the mmc driver to be used by a FS.</p>
@@ -599,8 +600,9 @@ structure used by <code>hal_spi_init</code> to initialize the SPI subsystem.</p>
 <h4 id="dependencies">Dependencies</h4>
 <p>To include the <code>mmc</code> driver on a project, just include it as a dependency in your
 pkg.yml:</p>
-<pre class="codehilite"><code>pkg.deps:
-    - hw/drivers/mmc</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">pkg.deps:
+    - hw/drivers/mmc
+</pre></div>
 
 
 <h4 id="returned-values">Returned values</h4>
@@ -668,38 +670,40 @@ pkg.yml:</p>
 </tbody>
 </table>
 <h4 id="header-file">Header file</h4>
-<pre class="codehilite"><code class="language-c">#include &quot;mmc/mmc.h&quot;</code></pre>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #633820">#include &quot;mmc/mmc.h&quot;</span>
+</pre></div>
 
 
 <h4 id="example"><a name="Example"></a>Example</h4>
 <p>This example runs on the STM32F4-Discovery and prints out a listing of
 the root directory on the currently installed card.</p>
-<pre class="codehilite"><code class="language-c">// NOTE: error handling removed for clarity!
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">// NOTE: error handling removed for clarity!</span>
 
-struct stm32f4_hal_spi_cfg spi_cfg = {
-    .ss_pin   = SPI_SS_PIN,
-    .sck_pin  = SPI_SCK_PIN,
-    .miso_pin = SPI_MISO_PIN,
-    .mosi_pin = SPI_MOSI_PIN,
-    .irq_prio = 2
+<span style="color: #A90D91">struct</span> <span style="color: #000000">stm32f4_hal_spi_cfg</span> <span style="color: #000000">spi_cfg</span> <span style="color: #000000">=</span> {
+    .<span style="color: #000000">ss_pin</span>   <span style="color: #000000">=</span> <span style="color: #000000">SPI_SS_PIN</span>,
+    .<span style="color: #000000">sck_pin</span>  <span style="color: #000000">=</span> <span style="color: #000000">SPI_SCK_PIN</span>,
+    .<span style="color: #000000">miso_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">SPI_MISO_PIN</span>,
+    .<span style="color: #000000">mosi_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">SPI_MOSI_PIN</span>,
+    .<span style="color: #000000">irq_prio</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">2</span>
 };
 
-mmc_init(0, &amp;spi_cfg, spi_cfg.ss_pin);
-disk_register(&quot;mmc0&quot;, &quot;fatfs&quot;, &amp;mmc_ops);
+<span style="color: #000000">mmc_init</span>(<span style="color: #1C01CE">0</span>, <span style="color: #000000">&amp;spi_cfg</span>, <span style="color: #000000">spi_cfg</span>.<span style="color: #000000">ss_pin</span>);
+<span style="color: #000000">disk_register</span>(<span style="color: #C41A16">&quot;mmc0&quot;</span>, <span style="color: #C41A16">&quot;fatfs&quot;</span>, <span style="color: #000000">&amp;mmc_ops</span>);
 
-fs_opendir(&quot;mmc0:/&quot;, &amp;dir);
+<span style="color: #000000">fs_opendir</span>(<span style="color: #C41A16">&quot;mmc0:/&quot;</span>, <span style="color: #000000">&amp;dir</span>);
 
-while (1) {
-    rc = fs_readdir(dir, &amp;dirent);
-    if (rc == FS_ENOENT) {
-        break;
+<span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">fs_readdir</span>(<span style="color: #000000">dir</span>, <span style="color: #000000">&amp;dirent</span>);
+    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #000000">FS_ENOENT</span>) {
+        <span style="color: #A90D91">break</span>;
     }
 
-    fs_dirent_name(dirent, sizeof(out_name), out_name, &amp;u8_len);
-    printf(&quot;%s\n&quot;, out_name);
+    <span style="color: #000000">fs_dirent_name</span>(<span style="color: #000000">dirent</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">out_name</span>), <span style="color: #000000">out_name</span>, <span style="color: #000000">&amp;u8_len</span>);
+    <span style="color: #000000">printf</span>(<span style="color: #C41A16">&quot;%s\n&quot;</span>, <span style="color: #000000">out_name</span>);
 }
 
-fs_closedir(dir);</code></pre>
+<span style="color: #000000">fs_closedir</span>(<span style="color: #000000">dir</span>);
+</pre></div>
                         
                         <div class="row">
                             
