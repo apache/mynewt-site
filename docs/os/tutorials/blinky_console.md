@@ -111,7 +111,7 @@ main(int argc, char **argv)
     while (1) {
         os_eventq_run(os_eventq_dflt_get());
     }
-    assert(0)
+    assert(0);
     return rc;
 }
 
