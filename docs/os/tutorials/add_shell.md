@@ -51,10 +51,6 @@ If there isn't a `syscfg.yml` file in your target's directory, you will need to 
 syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
-    # Enable Console OS Ticks
-    CONSOLE_TICKS: 1
-    # Enable Console Prompt
-    CONSOLE_PROMPT: 1 
 ```
 
 ### Build targets
@@ -120,26 +116,46 @@ Once you have a connection set up, you can connect to your device as follows:
 To test and make sure that the Shell is running, first just hit <return>:
     
 ```no-highlight
-3534: >
+004543 compat>
 ```
 
-Remember, we turned the CONSOLE_PROMPT and the CONSOLE_TICKS on earlier. You can try some commands now:
+bletiny app uses legacy shell API to register command callbacks. That's why the prompt says "compat". All the legacy commands are registered to compat module to provide backward compatibility.
 
 ```no-highlight
-3609: > ?
-Commands:
-8841:     echo         ?    prompt     ticks     tasks  mempools
-8843:     date         b
-8844: > ticks off
- Console Ticks off
- > prompt off
- Prompt now off.
-ticks on
-33383: Console Ticks on
-
-33568:
-prompt on
-39108: Prompt now on.
-39108: >
+069822 compat> help
+070196 help
+070196 b
+070197 compat>
 ```
 
+You can run bletiny commands exactly the same way as in the old shell:
+
+```no-highlight
+098131 compat> b help
+098394 module: 1, command: b
+098394 Available commands:
+098395  adv
+098395  conn
+098396  chrup
+098396  datalen
+098397  disc
+098397  find
+098397  help
+098398  l2cap
+098398  mtu
+098398  passkey
+098399  read
+098399  rssi
+098400  scan
+098400  show
+098400  sec
+098401  set
+098401  store
+098401  term
+098402  update
+098402  tx
+098402  wl
+098403  write
+098403  svcchg
+098404 compat>
+```
