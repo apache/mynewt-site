@@ -7,8 +7,24 @@ This page shows you how to create a Mynewt project using the `newt` command-line
 This guide shows you how to:
 
 1. Create a new project and fetch the source repository and dependecies.
-2. Test the project packages (Not supported on Windows).
-3. Build and run the simulated blinky application (Not supported on Windows). 
+2. Test the project packages. (Not supported on Windows.)
+3. Build and run the simulated blinky application. (Not supported on Windows.) 
+
+**Note:** The apache-mynewt-core Git repository location has changed due to Mynewt's graduation from an incubator project to an Apache top level project. If you installed a binary version of newt 1.0 or built newt from source using Go version 1.7.5 or earlier, you will get the following error when you run the `newt install` step in this tutorial: 
+
+```no-highlight
+ReadDesc: No matching branch for apache-mynewt-core repo
+Error: No matching branch for apache-mynewt-core repo
+```
+To avoid this error, you must edit the `project.yml` file and change the line `repo: incubator-mynewt-core` to `repo: mynewt-core`:
+<br>
+```hl_lines="5"
+repository.apache-mynewt-core:
+    type: github
+    vers: 1-latest
+    user: apache
+    repo: incubator-mynewt-core
+```
 
 <br>
 
@@ -98,7 +114,7 @@ repository.apache-mynewt-core:
     type: github
     vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
 ```
 
 Changing vers to 0-dev will put you on the latest master branch. **This branch may not be stable and you may encounter bugs or other problems.**
@@ -112,8 +128,23 @@ Run the `newt install` command, from your project base directory (myproj), to fe
 $ newt install
 apache-mynewt-core
 ```
-
 **Note:** It may take a while to download the apache-mynewt-core reposistory.  Use the _-v_ (verbose) option to see the installation progress.
+<br>
+
+**Note:** If you get the following error: 
+```no-highlight
+ReadDesc: No matching branch for apache-mynewt-core repo
+Error: No matching branch for apache-mynewt-core repo
+```
+You must edit the `project.yml` file and change the line `repo: incubator-mynewt-core` to `repo: mynewt-core` as mentioned at the beginning of this tutorial:
+<br>
+```hl_lines="5"
+repository.apache-mynewt-core:
+    type: github
+    vers: 1-latest
+    user: apache
+    repo: incubator-mynewt-core
+```
 
 <br>
 
