@@ -127,26 +127,9 @@ If you are running Linux on a different architecture, you can install the Debian
 **Note**: Newt version 1.0.0 has been tested on Linux amd64 platforms. Version 1.0.0 does not build on 32 bit platforms but have been fixed for the next release.
 
 <br>
-#### Installing Go 1.7 
+#### Installing Go 
 
-You need Go version 1.7 or higher to build Newt version 1.0.0.  Currently, the latest Go version that Ubuntu installs is 1.6.  Run `go version` to check if you have Go 1.7 installed. 
-
-<br>
-
-Install Go version 1.7:
-
-```no-highlight
-$sudo apt-get install golang-1.7-go
-Reading package lists... Done
-     ...
-Unpacking golang-1.7-go (1.7.1-2ubuntu1) ...
-Setting up golang-1.7-go (1.7.1-2ubuntu1) ...
-$
-$sudo ln -sf ../lib/go-1.7/bin/go /usr/bin/go
-$go version
-go version go1.7.1 linux/amd64
-```
-You can also download version 1.7 from [https://golang.org/dl/](https://golang.org/dl/). 
+You need Go version 1.7.6 or higher to build Newt version 1.0.0.  Currently, the latest Go version that Ubuntu installs is 1.6.  Run `go version` to check if you have Go 1.7.6 installed. You can download Go from [https://golang.org/dl/](https://golang.org/dl/).
 
 <br>
 #### Installing from the Source Package

@@ -15,7 +15,7 @@ This guide shows you how to perform the following:
 
 
 ### Step 1: Installing Go 
-The latest master branch of newt and newtmgr requires GO version 1.6 or higher. You can skip this step and proceed to Step 2 if you already have Go version 1.6 or higher installed.
+The latest master branch of newt and newtmgr requires GO version 1.7.6 or higher. You can skip this step and proceed to Step 2 if you already have Go version 1.7.6 or higher installed.
 
 <br>
 #### Installing Go on Mac OS X
@@ -42,30 +42,8 @@ You can also download the Go package directly from (https://golang.org/dl/) inst
 
 <br>
 #### Installing Go on Linux
+You can download Go from [https://golang.org/dl/](https://golang.org/dl/).
 
-Use apt-get to install Go: 
-```no-highlight
-$sudo apt-get update
-$sudo apt-get install golang 
-Reading package lists... Done
-Building dependency tree       
-Reading state information... Done
-
-      ...
-
-The following NEW packages will be installed:
-  golang
-0 upgraded, 1 newly installed, 0 to remove and 43 not upgraded.
-Need to get 0 B/2,812 B of archives.
-After this operation, 10.2 kB of additional disk space will be used.
-Selecting previously unselected package golang.
-(Reading database ... 244990 files and directories currently installed.)
-Preparing to unpack .../golang_2%3a1.6.1+1ubuntu2_all.deb ...
-Unpacking golang (2:1.6.1+1ubuntu2) ...
-Setting up golang (2:1.6.1+1ubuntu2) ...
-$ go version
-go version go1.6.3 linux/amd64
-```
 <br>
 ###Step 2: Setting Up Your Go Environment 
 

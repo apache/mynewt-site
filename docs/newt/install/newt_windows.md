@@ -53,7 +53,7 @@ Download and install [Git for Windows](https://git-for-windows.github.io) if it 
 
 
 ### Step 3: Installing Go 
-Download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7 or higher.
+Download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7.6 or higher.
 
 ###Step 4: Setting Up Your Go Environment 
 

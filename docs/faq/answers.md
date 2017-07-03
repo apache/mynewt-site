@@ -1,5 +1,5 @@
 ## FAQ
-Here are a list of frequently asked questions. They are grouped by categories.
+Here are some lists, grouped by categories, of frequently asked questions. 
 
 **Mynewt software questions:**
 
