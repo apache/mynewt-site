@@ -1,6 +1,8 @@
 ## API for bletiny app
 
-"bletiny" is one of the sample applications that come with Mynewt. It is a simple shell application which provides a basic interface to the host-side of the BLE stack. "bletiny" includes all the possible roles (Central/Peripheral) and they may be run simultaneously. You can run bletiny on a board and issue commands that make it behave as a central or a peripheral with different peers. 
+"bletiny" is one of the sample applications that come with Mynewt. It is a shell application which provides a basic interface to the host-side of the BLE stack. "bletiny" includes all the possible roles (Central/Peripheral) and they may be run simultaneously. You can run bletiny on a board and issue commands that make it behave as a central or a peripheral with different peers. 
+
+"bletiny" is a legacy BLE application. If you want to use new BLE application please go to [btshell app](../btshell/btshell_api.md).
 
 Highlighted below are some of the ways you can use the API to establish connections and discover services and characteristics from peer devices. For descriptions of the full API, go to the next sections on [GAP in bletiny](bletiny_GAP.md) and [GATT in bletiny](bletiny_GATT.md).
 
@@ -12,7 +14,7 @@ All bletiny commands are prefixed with `b`.  This prefix distinguished bletiny c
 
 On startup, bletiny has the following identity address configuration:
 
-* Public address: `0a:0b:0c:0d:0e:0f`
+* Public address: None
 * Random address: None
 
 The below `set` commands can be used to change the address configuration:

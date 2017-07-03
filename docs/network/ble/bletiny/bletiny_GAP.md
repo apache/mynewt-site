@@ -32,25 +32,47 @@ Several different modes and procedures may be performed simultaneously over an L
 |    | General Discoverable mode   | `b adv conn=x disc=gen`  |
 |    | Limited Discovery procedure | `b scan dur=x disc=ltd type=active filt=no_wl`  |
 |    | General Discovery procedure | `b scan dur=x disc=gen type=active filt=no_wl`  |
-|    | Name Discovery procedure  | `b scan dur=x` <br> `b scan cancel` <br> `b conn peer_addr_type=x peer_addr=x` <br> `b read uuid=0x2a00` |
+|    | Name Discovery procedure  | `b scan dur=x` <br> `b scan cancel` <br> `b conn peer_addr_type=x peer_addr=x` <br> `b read conn=x uuid=0x2a00` |
 |  3 | Non-connectable mode   | `b adv conn=non disc=x`  |
-|   |  Directed connectable mode  | `b adv conn=dir disc=x addr_type=x addr=x`  |
-|   |  Undirected connectable mode  | `b adv conn=und disc=x`  |
-|   | Auto connection establishment procedure   | `b wl addr_type=x addr=x`  |
-|   | Auto connection establishment procedure   | `b conn addr_type=wl`  |
-|   |  General connection establishment procedure  | AVAILABLE SOON  |
-|   | Selective connection establishment procedure   | AVAILABLE SOON  |
-|   | Direct connection establishment procedure  | `b conn addr_type=x addr=x [params]`  |
-|   | Connection parameter update procedure   | `b update conn=x <params>`  |
-|   |  Terminate connection procedure  | `b term conn=x`  |
-|  4 |   Non-Bondable mode | AVAILABLE SOON |
-|   | Bondable mode   | AVAILABLE SOON |
-|   | Bonding procedure   | AVAILABLE SOON |<br>
-### Connection Parameters 
+|    | Directed connectable mode  | `b adv conn=dir [own_addr_type=x] [disc=x] [dur=x]`  |
+|    | Undirected connectable mode  | `b adv conn=und [own_addr_type=x] [disc=x] [dur=x]`  |
+|    | Auto connection establishment procedure   | `b wl addr_type=x addr=x [addr_type=y addr=y] [...]` <br> `b conn addr_type=wl`  |
+|    | General connection establishment procedure  | `b scan dur=x` <br> `b scan cancel` <br> `b conn peer_addr_type=x peer_addr=x` |
+|    | Selective connection establishment procedure | `b wl addr_type=x addr=x [addr_type=y addr=y] [...]` <br> `b scan filt=use_wl dur=x` <br> `b scan cancel` <br> `b conn peer_addr_type=x peer_addr=x [own_addr_type=x]` |
+|    | Direct connection establishment procedure  | `b conn addr_type=x addr=x [params]`  |
+|    | Connection parameter update procedure   | `b update conn=x <params>` |
+|    | Terminate connection procedure  | `b term conn=x`  |
+|  4 | Non-Bondable mode    | `b set sm_data bonding=0` [\*] |
+|    | Bondable mode        | `b set sm_data bonding=1` [\*] |
+|    | Bonding procedure    | `b sec start conn=x` [\*] |
 
-The Connection parameter definitions can be found in Section 7.8.12 of the BLUETOOTH SPECIFICATION Version 4.2 [Vol 2, Part E].|**Name** | **Description** | **nimBLE parameter** ||----|---------|---------------|
-| Minimum connection interval | Defines minimum allowed connection interval| itvl_min  |
-| Maximum connection interval | Defines maximum allowed connection interval |  itvl_max |
+**[\*]** Security is disabled by default in bletiny.  To use the bonding modes and procedures, add `BLE_SM_LEGACY: 1` or `BLE_SM_SC: 1` to your syscfg.yml file depending on your needs.
+
+<br>
+
+### Address Types
+
+| *bletiny string* | *Description* | *Notes* |
+|------------------|---------------|
+| public           | Public address. | |
+| random           | Random static address. | |
+| rpa_pub          | Resolvable private address, public identity. | Not available for all commands. |
+| rpa_rnd          | Resolvable private address, random static identity. | Not available for all commands. |
+| wl               | Use white list; ignore peer_addr parameter. | Only availble for "conn" command. |
+
+### Connection Parameters 
+
+The Connection parameter definitions can be found in Section 7.8.12 of the BLUETOOTH SPECIFICATION Version 4.2 [Vol 2, Part E].
+
+| *Name* | *Description* | *bletiny string* |
+|----|---------|---------------|
+| LE_Scan_Interval | Recommendation from the Host on how long the Controller should scan | scan_itvl  |
+| LE_Scan_Window | Recommendation from the Host on how frequently the Controller should scan | scan_window |
+| Peer_Address_Type | Whether the peer is using a public or random address (see Address types table). | peer_addr_type |
+| Peer_Address | The 6-byte device address of the peer; ignored if white list is used | peer_addr |
+| Own_Address_Type | The type of address to use when initiating the connection (see Address types table) | own_addr_type |
+| Conn_Interval_Min | Defines minimum allowed connection interval | itvl_min  |
+| Conn_Interval_Max | Defines maximum allowed connection interval |  itvl_max |
 | Conn_Latency | Defines the maximum allowed connection latency | latency |
 | Supervision_Timeout | Link supervision timeout for the connection. | timeout |
 |LE_Scan_Interval  | Recommendation from the Host on how long the Controller should scan | scan_itvl  |
