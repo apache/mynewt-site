@@ -16,7 +16,7 @@ This guide shows you how to:
 ReadDesc: No matching branch for apache-mynewt-core repo
 Error: No matching branch for apache-mynewt-core repo
 ```
-To avoid this error, you must edit the `project.yml` file and change the line `repo: incubator-mynewt-core` to `repo: mynewt-core`:
+To avoid this error, you must edit the `project.yml` file and change the line `repo: incubator-mynewt-core` as shown in the following example to `repo: mynewt-core`:
 <br>
 ```hl_lines="5"
 repository.apache-mynewt-core:
@@ -131,20 +131,12 @@ apache-mynewt-core
 **Note:** It may take a while to download the apache-mynewt-core reposistory.  Use the _-v_ (verbose) option to see the installation progress.
 <br>
 
-**Note:** If you get the following error: 
+**Note:** As mentioned in the beginning of this tutorial, if you get the following error: 
 ```no-highlight
 ReadDesc: No matching branch for apache-mynewt-core repo
 Error: No matching branch for apache-mynewt-core repo
 ```
-You must edit the `project.yml` file and change the line `repo: incubator-mynewt-core` to `repo: mynewt-core` as mentioned at the beginning of this tutorial:
-<br>
-```hl_lines="5"
-repository.apache-mynewt-core:
-    type: github
-    vers: 1-latest
-    user: apache
-    repo: incubator-mynewt-core
-```
+You must edit the `project.yml` file and change the line `repo: incubator-mynewt-core` to `repo: mynewt-core`.
 
 <br>
 
