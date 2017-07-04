@@ -1,8 +1,8 @@
-## Enabling an Off Board Sensor in an Existing Application
+## Enabling an Off-Board Sensor in an Existing Application
 
-This tutorial shows you how to enable an existing application to run on a device with an off board sensor device connected to it. It allows you to quickly bring up and run a Mynewt application on a device to view sensor data from a sensor device.   
+This tutorial shows you how to enable an existing application to run on a device with an off-board sensor device connected to it. It allows you to quickly bring up and run a Mynewt application on a device to view sensor data from a sensor device.   
 
-We use the **sensors_test** application running on an nRF52-DK board to communicate, via the I2C interface,  with the [Adafruit BNO055](https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview) sensor. The sensors_test application is a sample application that demonstrates all the features of the Mynewt OS sensor framework. The application includes the Mynewt OS `sensor` shell command that allows you to view the sensors and sensor data managed by the Mynewt sensor framework, and the `bno055` shell command that allows you to control and query the BNO055 device and to view the sensor data.
+We use the **sensors_test** application running on an nRF52-DK board to communicate, via the I2C interface,  with the [Adafruit BNO055](https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview) sensor. The sensors_test application is a sample application that demonstrates all the features of the Mynewt OS sensor framework. The application includes the sensor framework `sensor` shell command that allows you to view the sensors and sensor data managed by the sensor framework, and the `bno055` shell command that allows you to control and query the BNO055 device and to view the sensor data.
 
 <br>
 
@@ -48,7 +48,7 @@ $
 Create an application target that uses the `apache-mynewt-core/apps/sensors_test` application package. To add the BNO055 sensor support to the application, you create the target with the following syscfg settings enabled:
 
 * `I2C_0`: Enables the I2C interface 0 in the nrf52 BSP.
-* `BNO055_OFB`: The sensor framework creator package (`hw/sensor/creator`) that creates the off board sensors defines this setting. When this setting is enabled, the creator package:  
+* `BNO055_OFB`: The sensor framework creator package (`hw/sensor/creator`) that creates the off-board sensors defines this setting. When this setting is enabled, the creator package:  
 
 	* Includes the BNO055 driver package (`hw/drivers/sensors/bno055`) as a package dependency.
 	* Includes the code that creates a device in the Mynewt kernel and initializes the default sensor settings for the BNO055 sensor. 
@@ -191,7 +191,7 @@ Connect the pins from the BNO055 sensor to the nRF52-DK board as specified in th
 
 |Lines| BNO055 Pin | nRF52-DK Pin|
 |-----|-------|---------|
-|Power| V_in  |  5V     |
+|Power| Vin  |  5V     |
 |Clock| SCL   |  P0.27 - IC20 SDC|
 |Data | SDA   |  P0.26 - IC20 SDA|
 |Ground| GND  |  GND|
@@ -237,7 +237,7 @@ $
 <br>
 ### Step 8: Using a Terminal Emulator to Connect to the Application Console
 
-Start up a terminal emulator to connect the sensors_tests application console. You can use one of the terminal emulator listed below or one of your choice:
+Start up a terminal emulator to connect the sensors_tests application console. You can use one of the terminal emulators listed below or one of your choice:
 
 * On Mac OS and Linux platforms, you can run ```minicom -D /dev/tty.usbserial-<port> -b 115200``` to connect to the console of your app. Note that on Linux, the format of the port name is `/dev/ttyUSB<N>`, where N is a number.
 
@@ -442,15 +442,16 @@ sw_rev:0x311
 bl_rev:0x15   
 
 ```
-
+<br>
 ### Next Steps
 
-Now that you have successfully enabled an application to communicate a sensor,  We recommend that you:
+Now that you have successfully enabled an application to communicate with a sensor,  We recommend that you:
 
 1. Experiment with other other `sensor` and `bno055` shell commands in this tutorial to view other types of sensor data.
 
-2. Try a different off board sensor. You can follow most of the procedures in this tutorial to enable other sensors in the sensors_test application. The `syscfg.yml` file for the `hw/sensor/creator/` package specifies the off board sensors that Mynewt currently supports.  You will need to:
-    * Enable the correct interface in the nrf52-DK BSP to communicate with the sensor device.
-    * Enable the sensor device driver shell command if the driver implements the support supports the shell. You can check the `syscfg.yml` file for the sensor driver package in the in the `hw/drivers/sensor/<sensor_name>` directory.
+2. Try a different off-board sensor. You can follow most of the procedures in this tutorial to enable other sensors in the sensors_test application. The `syscfg.yml` file for the `hw/sensor/creator/` package specifies the off-board sensors that Mynewt currently supports.  You will need to:
+    * Enable the `<SENSOR_NAME>_OFB` setting to create the sensor device and to include the sensor driver in the application.
+    * Enable the correct interface in the nrf52 BSP to communicate with the sensor device.
+    * Enable the sensor device driver shell command if the driver supports the shell. You can check the `syscfg.yml` file for the sensor driver package in the in the `hw/drivers/sensor/<sensor_name>` directory.
 
 3. Try one of the other sensor tutorials listed in the [Sensor Tutorial Overview](/os/tutorials/sensors/sensors.md).

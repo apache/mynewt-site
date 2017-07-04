@@ -1,11 +1,11 @@
 ## Sensor Tutorials Overview
 
-This set of sensor tutorials allows you to explore the Mynewt Sensor Framework features and learn how to develop sensor enabled Mynewt applications.
+This set of sensor tutorials allows you to explore the Mynewt Sensor Framework features and learn how to develop sensor-enabled Mynewt applications.
 
 The Mynewt Sensor framework supports:
 
-* Onboard and off board sensors.
-* Retrieving sensor data and controlling sensor devices via the Mynewt OS Shell
+* Onboard and off-board sensors.
+* Retrieving sensor data and controlling sensor devices via the Mynewt OS Shell.
 * Retrieving sensor data over the OIC protocol and BLE transport.
 
 
@@ -13,7 +13,7 @@ The Mynewt Sensor framework supports:
 
 The tutorials are:
 
-* [Enabling an Off Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md). This tutorial allows you to quickly bring up a sensor enabled application that retrieves data from a sensor device. We recommend that you work through this tutorial before trying one of the other tutorials.
+* [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md). This tutorial allows you to quickly bring up a sensor enabled application that retrieves data from a sensor device. We recommend that you work through this tutorial before trying one of the other tutorials.
 
 * [Writing an Appliation for an Onboard Sensor](/os/tutorials/sensor_thingy_accelerator.md). This tutorial shows you how to develop a simple application for an device with an onboard sensor.
 
