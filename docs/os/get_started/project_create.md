@@ -10,7 +10,7 @@ This guide shows you how to:
 2. Test the project packages. (Not supported on Windows.)
 3. Build and run the simulated blinky application. (Not supported on Windows.) 
 
-**Note:** The apache-mynewt-core Git repository location has changed due to Mynewt's graduation from an incubator project to an Apache top level project. If you installed a binary version of newt 1.0 or built newt from source using Go version 1.7.5 or earlier, you will get the following error when you run the `newt install` step in this tutorial: 
+**Note:** The apache-mynewt-core Git repository location has changed due to Mynewt's graduation from an incubator project to an Apache top level project.  The HTTP redirect to the new location may fail and you may get the following error when you run the `newt install` step in this tutorial:
 
 ```no-highlight
 ReadDesc: No matching branch for apache-mynewt-core repo
