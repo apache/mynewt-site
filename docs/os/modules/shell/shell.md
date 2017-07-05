@@ -114,7 +114,7 @@ The `sc_cmd_func_t` is the command handler function type.
 typedef int (*shell_cmd_func_t)(int argc, char *argv[]);
 ```
 
-The `argc` parameter specifies the number of command line arguments and the `argv` parameter is an array of character pointers to the command arguments.  The `SHELL_CMD_ARGC_MAX` syscfg setting specifies the maximum number of command line arguments that any shell command can have. This value must be increased if a shell command requires more than `SHELL_CMD_MAX_ARGC_MAX` number of command line arguments. 
+The `argc` parameter specifies the number of command line arguments and the `argv` parameter is an array of character pointers to the command arguments.  The `SHELL_CMD_ARGC_MAX` syscfg setting specifies the maximum number of command line arguments that any shell command can have. This value must be increased if a shell command requires more than `SHELL_CMD_ARGC_MAX` number of command line arguments. 
 
 <br>
 
