@@ -137,12 +137,13 @@ You can click either of the function names for more detailed documentation.
 The first step in advertising is to configure the host with advertising data.
 This operation tells the host what data to use for the contents of its
 advertisements.  The NimBLE host provides a special helper function for
-configuration iBeacon advertisement data:
+configuring iBeacon advertisement data:
 [`ble_ibeacon_set_adv_data`](../../network/ble/ble_hs/other/functions/ble_ibeacon_set_adv_data.md).
 
 If you follow the API link, you'll see that this function takes three parameters: a 128-bit UUID, a major version, and a minor version.  This corresponds with the iBeacon specification, as these three items are the primary components in an iBeacon advertisement.
 
 For now, we'll advertise the following:
+
 * _UUID_: `11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11`
 * _Major_: 2
 * _Minor_: 10
@@ -197,9 +198,9 @@ This function gives an application quite a bit of freedom in how advertising is 
 
 These arguments are mostly self-explanatory.  The exception is `adv_params`, which can be used to specify a number of low-level parameters.  For a beaconing application, the default settings are appropriate.  We specify default settings by providing a zero-filled instance of the `ble_gap_adv_params` struct as our argument.
 
-```c hl_lines="20 21 22 23"
+```c hl_lines="4 15 16 17 18 19"
 static void
-bleprph_advertise(void)
+ble_app_advertise(void)
 {
     struct ble_gap_adv_params adv_params;
     uint8_t uuid128[16];
@@ -210,11 +211,7 @@ bleprph_advertise(void)
 
     /* Major version=2; minor version=10. */
     rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
-    if (rc != 0) {
-        BLEPRPH_LOG(ERROR, "error setting iBeacon advertisement data; rc=%d\n",
-                    rc);
-        return;
-    }
+    assert(rc == 0);
 
     /* Begin advertising. */
     adv_params = (struct ble_gap_adv_params){ 0 };
@@ -254,7 +251,7 @@ ble_app_set_addr(void)
 }
 
 static void
-bleprph_advertise(void)
+ble_app_advertise(void)
 {
     struct ble_gap_adv_params adv_params;
     uint8_t uuid128[16];
@@ -265,11 +262,7 @@ bleprph_advertise(void)
 
     /* Major version=2; minor version=10. */
     rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
-    if (rc != 0) {
-        BLEPRPH_LOG(ERROR, "error setting iBeacon advertisement data; rc=%d\n",
-                    rc);
-        return;
-    }
+    assert(rc == 0);
 
     /* Begin advertising. */
     adv_params = (struct ble_gap_adv_params){ 0 };
