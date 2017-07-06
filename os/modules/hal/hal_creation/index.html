@@ -152,14 +152,14 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
       Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
       Version: 0.9.0
     </option>
@@ -382,6 +382,17 @@
                 
   
   
+    <li ><a href="../../devmgmt/newtmgr/">Device Management with Newt Manager</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../imgmgr/imgmgr/">Image Manager</a>
   
   
@@ -435,6 +446,17 @@
   
   
     <li ><a href="../../logs/logs/">Logs</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../sysinitconfig/sysinitconfig/">System Configuration And Initialization</a>
   
   
     </li>
@@ -508,7 +530,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/v0_9_0/os/introduction">Docs</a></li>
+    <li><a href="/develop/os/introduction">Docs</a></li>
     
     
         
@@ -524,24 +546,16 @@
       
     
     
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/hal/hal_creation.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
+      </li>
+    
   </ul>
 </div>
                         </div>
-                        
-                          
-                            
-                          
-                            
-                              <div class="alert alert-danger">
-                                This is an old version of the documentation (0.9.0)!
-                                <a href="/latest/os/modules/hal/hal_creation/">
-                                   Click here to read the newest version.
-                                </a>
-                              </div>
-                            
-                          
-                            
-                          
                         
                         
                             <h1 id="creating-new-hal-interfaces">Creating New HAL Interfaces</h1>
@@ -552,7 +566,7 @@ The first argument of all functions in the interface include the virtual
 device_id of the device you are controlling.  </p>
 <p>For example, in <a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h"><code>hal_gpio.h</code></a> 
 the device enumeration is the first argument to all methods and called <code>pin</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void hal_gpio_set(int pin);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    void hal_gpio_set(int pin);
 </pre></div>
 
 
@@ -617,7 +631,7 @@ what it might look like for an indirect HAL.  </p>
 <p>In the indirect HAL there is an additional header file <code>hal_gpio_int.h</code>
  which describes the driver interface for underlying implementations.  It 
 looks similar to the HAL API except is driven by function pointers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">struct hal_gpio_funcs {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>struct hal_gpio_funcs {
     void (*hgpio_set)(void);
     . . .
 };
@@ -638,7 +652,7 @@ mapping has to be done in the BSP since that is the place where multiple
 disparate devices can be enumerated into a single <code>device_id</code> space.</p>
 <p>An interface file <code>hal/hal_gpio.c</code> would perform the mapping as 
 follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    void hal_gpio_set(int pin) {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    void hal_gpio_set(int pin) {
         const struct hal_gpio_int *pgpio;
         pgpio = bsp_get_gpio_device(pin);
         if(pgpio) {
@@ -650,7 +664,7 @@ follows:</p>
 
 <p>The implementer of GPIO functionality (say in <code>mcu/xxx/hal_gpio.c</code>) would 
 implement the structure and provide the function pointers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">void xxx_hal_gpio_set(void) {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>void xxx_hal_gpio_set(void) {
     /* implementation for this particular gpio device */
     . . .
 }
@@ -662,7 +676,7 @@ struct hal_gpio_int xxx_hal_gpio = {
 
 
 <p>This leaves the BSP implementation to complete the function </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
     switch(pin) {
         case 0:
             return &amp;xxx_hal_gpio;

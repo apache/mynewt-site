@@ -490,6 +490,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -557,7 +565,7 @@ whenever a peer device attempts to read or write the characteristic.</p>
 service.  Let's take another look at how <em>bleprph</em> specifies the first few
 characteristics in this service.</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
     {
         <span style="color: #177500">/*** Alert Notification Service. */</span>
         .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
@@ -580,7 +588,7 @@ service characteristics, but the developer could have implemented separate
 functions for each characteristic if they preferred.  Here is part of the
 <em>access_cb</em> function that the ANS service characteristics use:</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_chr_access_alert</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
                           <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
                           <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
@@ -625,7 +633,7 @@ functions for each characteristic if they preferred.  Here is part of the
 <p>After you've taken a moment to examine the structure of this function, let's explore some details.</p>
 <p><br></p>
 <h4 id="function-signature">Function signature</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_chr_access_alert</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
                           <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
                           <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
@@ -672,7 +680,7 @@ failures, the function returns the specific <a href="../../../../network/ble/ble
 stack should respond with.  <em>Note:</em> The return code is a formal code, <strong>not</strong> a NimBLE value!</p>
 <p><br></p>
 <h4 id="determine-characteristic-being-accessed">Determine characteristic being accessed</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">{
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>{
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
 
     <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_128_to_16</span>(<span style="color: #000000">ctxt-&gt;chr-&gt;uuid128</span>);
@@ -699,7 +707,7 @@ function for accesses to characteristics that it is registered with, and all
 ANS service characteristics have valid 16-bit UUIDs.</p>
 <p><br></p>
 <h4 id="read-access">Read access</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>:
         <span style="color: #000000">assert</span>(<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_READ_CHR</span>);
         <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_append</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">&amp;gatt_svr_new_alert_cat</span>,
                             <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_new_alert_cat</span>);
@@ -713,7 +721,7 @@ stack is doing its job; this characteristic was registered as read-only, so the
 stack should have prevented write accesses.</p>
 <p>To fulfill a characteristic read request, the application needs fill a buffer (<em>om</em>) with the characteristic value.  The NimBLE host will then include the contents of this buffer in its read response.  NimBLE uses <a href="../../../../os/core_os/mbuf/mbuf">mbufs</a> to exchange data between itself and the application.  To fill an mbuf with data that is available in a contiguous chunk of memory, the <em>os_mbuf_append()</em> function suffices.  The source of the data, <em>gatt_svr_new_alert_cat</em>, is is stored in read-only memory as follows:</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">gatt_svr_new_alert_cat</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0x01</span>; <span style="color: #177500">/* Simple alert. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">gatt_svr_new_alert_cat</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0x01</span>; <span style="color: #177500">/* Simple alert. */</span>
 </pre></div>
 
 
@@ -723,11 +731,11 @@ By returning 0, <em>bleprph</em> indicates that the characteristic data in
 to the peer.</p>
 <p><br></p>
 <h4 id="write-access">Write access</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #A90D91">static</span> <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>;
 </pre></div>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%">    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_UNR_ALERT_STAT_UUID</span>:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_UNR_ALERT_STAT_UUID</span>:
         <span style="color: #A90D91">if</span> (<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_WRITE_CHR</span>) {
             <span style="color: #A90D91">if</span> (<span style="color: #000000">OS_MBUF_PKTLEN</span>(<span style="color: #000000">ctxt-&gt;om</span>) <span style="color: #000000">!=</span> <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>) {
                 <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN</span>;
