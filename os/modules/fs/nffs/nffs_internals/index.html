@@ -152,14 +152,14 @@
     
     <option
       value="/develop/os/introduction"
-      
+      selected="selected"
     >
       Version: develop (latest)
     </option>
     
     <option
       value="/v0_9_0/os/introduction"
-      selected="selected"
+      
     >
       Version: 0.9.0
     </option>
@@ -413,6 +413,17 @@
                 
   
   
+    <li ><a href="../../../devmgmt/newtmgr/">Device Management with Newt Manager</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../imgmgr/imgmgr/">Image Manager</a>
   
   
@@ -466,6 +477,17 @@
   
   
     <li ><a href="../../../logs/logs/">Logs</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../sysinitconfig/sysinitconfig/">System Configuration And Initialization</a>
   
   
     </li>
@@ -539,7 +561,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/v0_9_0/os/introduction">Docs</a></li>
+    <li><a href="/develop/os/introduction">Docs</a></li>
     
     
         
@@ -555,30 +577,22 @@
       
     
     
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/fs/nffs/nffs_internals.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
+      </li>
+    
   </ul>
 </div>
                         </div>
-                        
-                          
-                            
-                          
-                            
-                              <div class="alert alert-danger">
-                                This is an old version of the documentation (0.9.0)!
-                                <a href="/latest/os/modules/fs/nffs/nffs_internals/">
-                                   Click here to read the newest version.
-                                </a>
-                              </div>
-                            
-                          
-                            
-                          
                         
                         
                             <h1 id="internals-of-nffs">Internals of nffs</h1>
 <h3 id="disk-structure">Disk structure</h3>
 <p>On disk, each area is prefixed with the following header:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** On-disk representation of an area header. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** On-disk representation of an area header. */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_area</span> {
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nda_magic</span>[<span style="color: #1C01CE">4</span>];  <span style="color: #177500">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nda_length</span>;    <span style="color: #177500">/* Total size of area, in bytes. */</span>
@@ -591,7 +605,7 @@
 
 
 <p>Beyond its header, an area contains a sequence of disk objects, representing the contents of the file system.  There are two types of objects: <em>inodes</em> and <em>data blocks</em>.  An inode represents a file or directory; a data block represents part of a file's contents.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** On-disk representation of an inode (file or directory). */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** On-disk representation of an inode (file or directory). */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_inode</span> {
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_magic</span>;         <span style="color: #177500">/* NFFS_INODE_MAGIC */</span>
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_id</span>;            <span style="color: #177500">/* Unique object ID. */</span>
@@ -611,7 +625,7 @@
 <li>/  (slash character)</li>
 <li>\0 (NUL character)</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** On-disk representation of a data block. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** On-disk representation of a data block. */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_block</span> {
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_magic</span>;     <span style="color: #177500">/* NFFS_BLOCK_MAGIC */</span>
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_id</span>;        <span style="color: #177500">/* Unique object ID. */</span>
@@ -666,7 +680,7 @@ follows:</p>
 <p>A valid nffs file system must contain a single "scratch area."  The scratch area does not contain any objects of its own, and is only used during garbage collection.  The scratch area must have a size greater than or equal to each of the other areas in flash.</p>
 <h3 id="ram-representation">RAM representation</h3>
 <p>Every object in the file system is stored in a 256-entry hash table.  An object's hash key is derived from its 32-bit ID.  Each list in the hash table is sorted by time of use; most-recently-used is at the front of the list. All objects are represented by the following structure:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/**</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/**</span>
 <span style="color: #177500"> * What gets stored in the hash table.  Each entry represents a data block or</span>
 <span style="color: #177500"> * an inode.</span>
 <span style="color: #177500"> */</span>
@@ -680,7 +694,7 @@ follows:</p>
 
 <p>For each data block, the above structure is all that is stored in RAM.  To acquire more information about a data block, the block header must be read from flash.</p>
 <p>Inodes require a fuller RAM representation to capture the structure of the file system.  There are two types of inodes: <em>files</em> and <em>directories</em>.  Each inode hash entry is actually an instance of the following structure:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Each inode hash entry is actually one of these. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Each inode hash entry is actually one of these. */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">nie_hash_entry</span>;
     <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">nffs_inode_entry</span>) <span style="color: #000000">nie_sibling_next</span>;
@@ -704,7 +718,7 @@ follows:</p>
 <p>The speed issues are addressed by a pair of caches.  Cached inodes entries contain the file length and a much more convenient doubly-linked list of cached data blocks.  The benefit of using caches is that the size of the caches need not be proportional to the size of the file system.  In other words, caches can address speed efficiency concerns without negatively impacting the file system's scalability.</p>
 <p>nffs requires both caches during normal operation, so it is not possible to disable them.  However, the cache sizes are configurable, and both caches can be configured with a size of one if RAM usage must be minimized.</p>
 <p>The following data structures are used in the inode and data block caches.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Full data block representation; not stored permanently in RAM. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Full data block representation; not stored permanently in RAM. */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_block</span> {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nb_hash_entry</span>;   <span style="color: #177500">/* Points to real block entry. */</span>
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nb_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
@@ -717,7 +731,7 @@ follows:</p>
 </pre></div>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Represents a single cached data block. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Represents a single cached data block. */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_block</span> {
     <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">nffs_cache_block</span>) <span style="color: #000000">ncb_link</span>; <span style="color: #177500">/* Next / prev cached block. */</span>
     <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_block</span> <span style="color: #000000">ncb_block</span>;            <span style="color: #177500">/* Full data block. */</span>
@@ -726,7 +740,7 @@ follows:</p>
 </pre></div>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Full inode representation; not stored permanently in RAM. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Full inode representation; not stored permanently in RAM. */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode</span> {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*ni_inode_entry</span>; <span style="color: #177500">/* Points to real inode entry. */</span>
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ni_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
@@ -738,7 +752,7 @@ follows:</p>
 </pre></div>
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #177500">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
 <span style="color: #000000">TAILQ_HEAD</span>(<span style="color: #000000">nffs_block_cache_list</span>, <span style="color: #000000">nffs_block_cache_entry</span>);
 
 <span style="color: #177500">/** Represents a single cached file inode. */</span>
