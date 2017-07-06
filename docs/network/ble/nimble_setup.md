@@ -130,6 +130,8 @@ pkg.deps:
     - "@apache-mynewt-core/net/nimble/transport/ram"
 ```
 
+**Important note:** Controller package affects system configuration, see [this page](app_setup/ble_lp_clock.md) for details.
+
 ### Build the target
 
 Now would be a good time for a basic sanity check.  Let's make sure the target builds.
