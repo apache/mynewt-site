@@ -1,9 +1,9 @@
 ### Latest Apache Mynewt OS Release
 
-* Release Version: Mynewt 0.9.0-incubating
-* Release Date: June 6, 2016
-* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating) 
-
+* Release Version: Apache Mynewt 1.0.0-incubating
+* Release Date: March 22, 2017
+* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-incubating)
+* [Release Download](http://www.apache.org/dyn/closer.lua/incubator/mynewt/apache-mynewt-1.0.0-incubating)
 
 #### Fresh install
 
@@ -23,26 +23,16 @@ $ newt upgrade
 
 While the use of one of the official releases listed above is generally recommended, you may be interested in seeing work in progress.
 
-The most recent code resides in the `develop` branch of the Mynewt git repository. You may view or fork the repositories for Mynewt OS and Newt Tool from the Apache mirror on github.com.
+The most recent code that is fairly stable over the full OS resides in the `master` branch of the Mynewt git repository. You may view or fork the repositories for Mynewt OS and Newt Tool from the Apache mirror on github.com.
 
-* [Apache Mynewt OS mirror on github.com](https://github.com/apache/incubator-mynewt-core/tree/develop)
-* [Apache Newt Tool mirror on github.com](https://github.com/apache/incubator-mynewt-newt/tree/develop)
+* [Apache Mynewt OS mirror on github.com](https://github.com/apache/incubator-mynewt-core/tree/master)
+* [Apache Newt Tool mirror on github.com](https://github.com/apache/incubator-mynewt-newt/tree/master)
 
-Alternatively, you can clone the desired branch using git:
-
-```
-$ git clone git://github.com/apache/incubator-mynewt-core.git -b develop
-$ git clone git://github.com/apache/incubator-mynewt-newt.git -b develop
-```
-
-<br>
-
-A relatively stable version of code in progress can be found in the `master` branch of the Mynewt git repository.
-You may access the code for Mynewt OS and Newt Tool from the 'master` branch of the Apache mirror on github.com or clone it using git:
+The most recent code to support a major feature (e.g. Bluetooth 5) can be found in a long-lived feature branch dedicated to that feature (bluetooth5, in the example for Bluetooth 5) and not the master. If you are interested in seeing the latest code for that feature,  you can clone the desired branch using git:
 
 ```
-$ git clone git://github.com/apache/incubator-mynewt-core.git
-$ git clone git://github.com/apache/incubator-mynewt-newt.git
+$ git clone git://github.com/apache/incubator-mynewt-core.git -b <feature-branch-name>
+$ git clone git://github.com/apache/incubator-mynewt-newt.git -b <feature-branch-name>
 ```
 
 <br>
@@ -51,10 +41,12 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 
 <br>
 
-### Release Archives
+### Prior Releases
 
-* Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating)
-* Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating)
-
+* Apache Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.8.0-b2-incubating/)
+* Apache Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.8.0-incubating/)
+* Apache Mynewt 0.9.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.9.0-incubating/)
+* Apache Mynewt 1.0.0-b1-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b1-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-1.0.0-b1-incubating/)
+* Apache Mynewt 1.0.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-b2-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-1.0.0-b2-incubating/)
 <br>
 <br>
