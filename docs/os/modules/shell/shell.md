@@ -50,11 +50,11 @@ There are two methods to register command handlers in Mynewt 1.1:
 
 	**Note:** The `SHELL_MAX_MODULES` syscfg setting specifies the maximum number of modules that can be registered. You can increase this value if your application and the packages it includes register more than the default value. 
 
-* Method 2: Register a command handler without defining a module. A package calls the `shell_cmd_register()` function defined in Mynewt 1.0 to register a command handler.  When a shell command is registered using this method, the command is automatically added to the `compat` module. The `compat` module supports backwards compatibility for all the shell commands that are registered using the `shell_cmd_register()` function.
+* Method 2: Register a command handler without defining a module. A package calls the `shell_cmd_register()` function defined in Mynewt 1.0 to register a command handler.  When a shell command is registered using this method, the command is automatically added to the `compat` module. The `compat` module supports backward compatibility for all the shell commands that are registered using the `shell_cmd_register()` function.
 
 	**Notes:** 
 
-	* The `SHELL_COMPAT` syscfg setting must be set to 1 to enable backwards compatibility support and the `shell_cmd_register()` function.  Since Mynewt packages use method 2 to register shell commands and Mynewt plans to continue this support in future releases, you must keep the default setting value of 1. 
+	* The `SHELL_COMPAT` syscfg setting must be set to 1 to enable backward compatibility support and the `shell_cmd_register()` function.  Since Mynewt packages use method 2 to register shell commands and Mynewt plans to continue this support in future releases, you must keep the default setting value of 1. 
 
   	* The `SHELL_MAX_COMPAT_COMMANDS` syscfg setting specifies the maximum number of command handlers that can be registered using this method. You can increase this value if your application and the packages it includes register more than the default value.
 
