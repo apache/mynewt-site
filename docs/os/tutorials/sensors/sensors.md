@@ -8,16 +8,18 @@ The Mynewt Sensor framework supports:
 * Retrieving sensor data and controlling sensor devices via the Mynewt OS Shell.
 * Retrieving sensor data over the OIC protocol and BLE transport.
 
-
 ### Available Tutorials
 
 The tutorials are:
 
-* [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md). This tutorial allows you to quickly bring up a sensor enabled application that retrieves data from a sensor device. We recommend that you work through this tutorial before trying one of the other tutorials.
+* [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) -  This is a introductory tutorial that allows you to quickly bring up a sensor enabled application that retrieves data from a sensor device. We recommend that you work through this tutorial before trying one of the other tutorials.
 
-* [Writing an Appliation for an Onboard Sensor](/os/tutorials/sensor_thingy_accelerator.md). This tutorial shows you how to develop a simple application for an device with an onboard sensor.
+* [Changing the Default Configuration for a Sensor](/os/tutorials/sensors/sensor_offboard_config.md) -  This tutorial shows you how to change the default configuration values for a sensor. 
 
-* [Enabling OIC Sensor Data Monitoring in an Existing Application](/os/tutorials/sensors/sensor_oic_nrf52_bno055.md). This tutorial shows you how to enable support for sensor data monitoring via OIC in an existing application.
+* [Writing an Application for an Onboard Sensor](/os/tutorials/sensor_thingy_accelerator.md) -  This tutorial shows you how to develop a simple application for an device with an onboard sensor.
+
+* [Enabling OIC Sensor Data Monitoring in an Existing Application](/os/tutorials/sensors/sensor_oic_nrf52_bno055.md) - This tutorial shows you how to enable support for sensor data monitoring via OIC in an existing sensor enabled application.
+
 
 <br>
 ### Prerequisites
