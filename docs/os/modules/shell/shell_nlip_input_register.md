@@ -4,23 +4,23 @@
 int shell_nlip_input_register(shell_nlip_input_func_t nf, void *arg)
 ```
 
-Registers a handler for incoming newtmgr messages. Shell receives incoming data stream from 
-UART and when it detects NLIP frame, it decodes it and passes it on by calling the function `nf`.
+Registers a handler for incoming newtmgr messages. The shell receives the incoming data stream from the UART,  and when it detects a NLIP frame, decodes the datagram, and calls the registered handler,`nf`.
 
-Handler function is of type `int (*shell_nlip_input_func_t)(struct os_mbuf *m, void *arg)`. 
-Shell passes the incoming newtmgr message inside `os_mbuf` `m`, and `arg` is the argument that 
-was passed in during handler registration.
+The handler function is of type `int (*shell_nlip_input_func_t)(struct os_mbuf *m, void *arg)`. 
+The shell passes the incoming newtmgr message stored in a `os_mbuf` and the `arg` that was passed to the `shell_nlip_input_register()` function as arguments to the handler function.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
 | `nf` | Handler for incoming newtmgr datagrams.  |
-| `arg` | Argument that gets passed to this handler, along with the datagram |
+| `arg` | Argument that is passed to this handler, along with the datagram.|
 
 #### Returned values
 
 Returns 0 on success.
+
+Non-zero on failure.
 
 #### Example
 
