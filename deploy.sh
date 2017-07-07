@@ -9,10 +9,10 @@ if [[ "$1" != "build"  ]]; then
 fi
 
 echo Remove unwanted html templates
-find site -name "*.html" | xargs grep '{%.*%}' -l | xargs rm
+find site -name "*.html" | xargs grep '{%.*%}' -l | xargs rm -f
 
 echo Copy extra static pages into site
-cp -a extras/ site/
+cp -a extras/* site/
 
 echo Change git branch to asf-site
 git checkout asf-site
@@ -21,7 +21,7 @@ echo Remove old content
 ls | grep -v site | xargs rm -rf
 
 echo Copy contents of site to serving directory
-cp -a site/ .
+cp -a site/* .
 
 echo ---
 echo --- You are now on the asf-site branch
