@@ -81,6 +81,14 @@ struct ble_gap_event {
          */
         struct ble_gap_disc_desc disc;
 
+#if MYNEWT_VAL(BLE_EXT_ADV)
+        /**
+         * Represents an extended advertising report received during a discovery
+         * procedure.  Valid for the following event types:
+         *     o BLE_GAP_EVENT_EXT_DISC
+         */
+        struct ble_gap_ext_disc_desc ext_disc;
+#endif
         /**
          * Represents an attempt to update a connection's parameters.  If the
          * attempt was successful, the connection's descriptor reflects the
@@ -283,6 +291,72 @@ struct ble_gap_event {
             /** Whether the peer is currently subscribed to indications. */
             uint8_t cur_indicate:1;
         } subscribe;
+
+        /**
+         * Represents a change in an L2CAP channel's MTU.
+         *
+         * Valid for the following event types:
+         *     o BLE_GAP_EVENT_MTU
+         */
+        struct {
+            /** The handle of the relevant connection. */
+            uint16_t conn_handle;
+
+            /**
+             * Indicates the channel whose MTU has been updated; either
+             * BLE_L2CAP_CID_ATT or the ID of a connection-oriented channel.
+             */
+            uint16_t channel_id;
+
+            /* The channel's new MTU. */
+            uint16_t value;
+        } mtu;
+
+        /**
+         * Represents a change in peer's identity. This is issued after
+         * successful pairing when Identity Address Information was received.
+         *
+         * Valid for the following event types:
+         *     o BLE_GAP_EVENT_IDENTITY_RESOLVED
+         */
+        struct {
+            /** The handle of the relevant connection. */
+            uint16_t conn_handle;
+        } identity_resolved;
+
+        /**
+         * Represents a peer's attempt to pair despite a bond already existing.
+         * The application has two options for handling this event type:
+         *     o Retry: Return BLE_GAP_REPEAT_PAIRING_RETRY after deleting the
+         *              conflicting bond.  The stack will verify the bond has
+         *              been deleted and continue the pairing procedure.  If
+         *              the bond is still present, this event will be reported
+         *              again.
+         *     o Ignore: Return BLE_GAP_REPEAT_PAIRING_IGNORE.  The stack will
+         *               silently ignore the pairing request.
+         *
+         * Valid for the following event types:
+         *     o BLE_GAP_EVENT_REPEAT_PAIRING
+         */
+        struct ble_gap_repeat_pairing repeat_pairing;
+
+        /**
+         * Represents a change of PHY. This is issue after successful
+         * change on PHY.
+         */
+        struct {
+            int status;
+            uint16_t conn_handle;
+
+            /**
+             * Indicates enabled TX/RX PHY. Possible values:
+             *     o BLE_GAP_LE_PHY_1M
+             *     o BLE_GAP_LE_PHY_2M
+             *     o BLE_GAP_LE_PHY_CODED
+             */
+            uint8_t tx_phy;
+            uint8_t rx_phy;
+        } phy_updated;
     };
 };
 ```
@@ -401,6 +475,14 @@ struct ble_gap_conn_params {
 ```
 
 ```c
+struct ble_gap_ext_disc_params {
+    uint16_t itvl;
+    uint16_t window;
+    uint8_t passive:1;
+};
+```
+
+```c
 struct ble_gap_disc_params {
     uint16_t itvl;
     uint16_t window;
@@ -449,6 +531,44 @@ struct ble_gap_disc_desc {
      */
     uint8_t direct_addr_type;
     uint8_t direct_addr[6];
+};
+```
+
+```c
+struct ble_gap_disc_desc {
+    /*** Common fields. */
+    uint8_t event_type;
+    uint8_t length_data;
+    ble_addr_t addr;
+    int8_t rssi;
+    uint8_t *data;
+
+    /***
+     * LE direct advertising report fields; direct_addr is BLE_ADDR_ANY if
+     * direct address fields are not present.
+     */
+    ble_addr_t direct_addr;
+};
+```
+
+```c
+struct ble_gap_repeat_pairing {
+    /** The handle of the relevant connection. */
+    uint16_t conn_handle;
+
+    /** Properties of the existing bond. */
+    uint8_t cur_key_size;
+    uint8_t cur_authenticated:1;
+    uint8_t cur_sc:1;
+
+    /**
+     * Properties of the imminent secure link if the pairing procedure is
+     * allowed to continue.
+     */
+    uint8_t new_key_size;
+    uint8_t new_authenticated:1;
+    uint8_t new_sc:1;
+    uint8_t new_bonding:1;
 };
 ```
 
