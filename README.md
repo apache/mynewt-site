@@ -52,6 +52,12 @@ When a new release of MyNewt OS and its associated tools occurs, the documentati
 1. This will leave you on the `asf-site` branch.
 1. Commit & push the changes.
 
+The runtime-bot github user does a build every ~15 minutes and opens a Pull
+Request against the asf-site branch if there are any changes. It is recommended
+that the runtime-bot PRs are used to deploy changes to the site instead of PRs
+from individual contributors. The runtime-bot PRs give us repeatable builds
+using known versions of the build tools.
+
 ## Links to Documentation
 
 For the deployed site a version prefix is added to the URL for each mkdocs page. When developing there is no version prefix. If you want to link from a _site page_ to a _documentation page_ you should prefix the URL with */DOCSLINK/* so that the user is taken to the correct location when browsing in production.
