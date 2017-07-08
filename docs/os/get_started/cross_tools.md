@@ -163,7 +163,7 @@ For bug reports, read
 You should see version: **0.10.0**. 
 
 <br>
-###Installing SEGGAR J-Link 
+###Installing SEGGER J-Link 
 You can download and install Segger J-LINK Software and documentation pack from [SEGGER](https://www.segger.com/jlink-software.html). 
 
 **Note:** On Windows, perform the following after the installation:
