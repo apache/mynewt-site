@@ -18,7 +18,7 @@ The tutorials are:
 
 * [Writing an Application for an Onboard Sensor](/os/tutorials/sensor_thingy_accelerator.md) -  This tutorial shows you how to develop a simple application for an device with an onboard sensor.
 
-* [Enabling OIC Sensor Data Monitoring in an Existing Application](/os/tutorials/sensors/sensor_oic_nrf52_bno055.md) - This tutorial shows you how to enable support for sensor data monitoring via OIC in an existing sensor enabled application.
+* [Enabling OIC Sensor Data Monitoring in an Existing Application](/os/tutorials/sensors/sensor_oic_overview.md) - This tutorial shows you how to enable support for sensor data monitoring via OIC in an existing application.
 
 
 <br>
