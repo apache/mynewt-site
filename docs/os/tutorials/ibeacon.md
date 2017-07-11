@@ -13,9 +13,10 @@ good summary of the iBeacon sub-fields.
 ### Create an Empty BLE Application
 
 This tutorial picks up where the
-[Set up a NimBLE application](../../network/ble/nimble_setup.md) document
-concludes.  The first step in creating a beaconing device is to create an empty
-BLE app, as explained in that tutorial.  Before proceeding, you should have:
+[BLE bare bones application tutorial](../../os/tutorials/ble_bare_bones.md)
+document concludes.  The first step in creating a beaconing device is to create
+an empty BLE app, as explained in that tutorial.  Before proceeding, you should
+have:
 
 * An app called "ble_app".
 * A target called "ble_tgt".

@@ -1,25 +1,22 @@
-## Set up a NimBLE application
+## Set up a bare bones NimBLE application
 
-This tutorial explains how to set up an application using the NimBLE stack. The
-end result will be a framework that you can use to create your own BLE
-application using the nimble stack.
-
-This tutorial assumes that you have already installed the newt tool and are
-familiar with its concepts.
+This tutorial explains how to set up a minimal application using the NimBLE
+stack.  This tutorial assumes that you have already installed the newt tool and are familiar with its concepts.
 
 ### Create a Mynewt project
 
-You start by creating a project space for your own application work using the
-Newt tool (`my_proj1` in this example) and installing all the additional apps
-and libraries available by adding the repo `apache-mynewt-core`. See the
-tutorial on [adding a repo](../../os/tutorials/repo/add_repos.md) for more on
-working with repos.
+We start by creating a project space for your own application work using the
+Newt tool.  We will call our project `my_proj`.
 
 ```
 ~/dev$ newt new my_proj1
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in my_proj1...
 Project my_proj1 successfully created.
+```
+
+The above command created the following directory tree:
+```
 ~/dev$ tree my_proj1
 my_proj1
 ├── DISCLAIMER
@@ -41,7 +38,19 @@ my_proj1
         └── target.yml
 
 6 directories, 11 files
-    
+```
+
+Next, we need to retrieve the Mynewt repositories that our app will depend on.
+When you retrieve a repository, your project gains access to the libraries and
+applications that the repo contains.
+
+A new project automatically depends on the Apache Mynewt core repo
+(`apache-mynewt-core`).  The core repo contains the Apache Mynewt operating
+system, NimBLE stack, and other system libraries.  Later, our app may need
+packages from additional repos, but for now the core repo suits our needs.
+
+We download the dependent repos using the `newt install` command:
+```
 ~/dev$ cd my_proj1
 ~/dev/my_proj1$ newt install
 apache-mynewt-core
@@ -81,13 +90,23 @@ targets/ble_tgt
 └── target.yml
 ```
 
-The target is not yet complete though! We need to set some target variables for
-this project. Currently, the nimble stack has been ported to the Nordic nrf5x
-chipsets; specifically the nrf51 and nrf52. This application will use the nrf52
-but we will also show the setup for the nrf51 in case your project uses that
-chip.
+We need to fill out a few details in our target before it is usable.  At a
+minimum, a target must specify three bits of information:
 
-Here is the command you will need to set up your target for the nRF52dk:
+* Application pacakge
+* BSP package
+* Build profile
+
+The application package is straightforward; this is the ble_app package that we
+created in the previous step.
+
+For the BSP package, this tutorial chooses to target the nRF52dk BSP.  If you
+would like to use a different platform, substitute the name of the appropriate
+BSP package in the command below.
+
+Finally, the build profile specifies the set of compiler and linker options to
+use during the build.  Apache Mynewt supports two build profiles: `debug` and
+`optimized`.
 
 ```no-highlight
 ~/dev/my_proj1$ newt target set ble_tgt     \
@@ -96,18 +115,6 @@ Here is the command you will need to set up your target for the nRF52dk:
     build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
 Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
-Target targets/ble_tgt successfully set target.build_profile to optimized
-```
-
-Here is the command you will need to set up your target for the nRF51dk:
-
-```no-highlight
-~/dev/my_proj1$ newt target set ble_tgt     \
-    app=apps/ble_app                        \
-    bsp=@apache-mynewt-core/hw/bsp/nrf51dk  \
-    build_profile=optimized
-Target targets/ble_tgt successfully set target.app to apps/ble_app
-Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf51dk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 
