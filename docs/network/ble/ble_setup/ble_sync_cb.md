@@ -19,12 +19,12 @@ delay all BLE operations until the sync callback has been called.
 
 ### reset
 
-Another event that the host notifies the application of is a *controller
-reset*.  The NimBLE stack resets itself when a catstrophic error occurs, such
-as loss of communication between the host and controller.  Upon resetting, the
-host drops all BLE connections and considers itself to be out of sync with the
-controller.  After a reset, the application should refrain from using the host
-until sync is again signalled via the sync callback.
+Another event indicated by the host is a *controller reset*.  The NimBLE stack
+resets itself when a catstrophic error occurs, such as loss of communication
+between the host and controller.  Upon resetting, the host drops all BLE
+connections and loses sync with the controller.  After a reset, the application
+should refrain from using the host until sync is again signalled via the sync
+callback.
 
 An application learns of a host reset by configuring the host's *reset
 callback*: `ble_hs_cfg.reset_cb`.  This callback has the following form:
@@ -34,7 +34,7 @@ typedef void ble_hs_reset_fn(int reason);
 ```
 
 The `reason` parameter is a
-[NimBLE host return code](../../network/ble/ble_hs/ble_hs_return_codes/).
+[NimBLE host return code](../../../network/ble/ble_hs/ble_hs_return_codes/).
 
 ### Example
 

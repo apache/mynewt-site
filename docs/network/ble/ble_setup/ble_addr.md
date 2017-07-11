@@ -2,9 +2,10 @@
 
 A BLE device needs an address to do just about anything.  For information on
 the various types of Bluetooth addresses, see the
-[NimBLE Host Identity Reference](../../network/ble/ble_hs/ble_hs_id/ble_hs_id.md).
+[NimBLE Host Identity Reference](../../../network/ble/ble_hs/ble_hs_id/ble_hs_id.md).
 
-There are several methods for assigning an address to a NimBLE device.  The various options are documented below:
+There are several methods for assigning an address to a NimBLE device.  The
+available options are documented below:
 
 ### Method 1: Configure nRF hardware with a public address
 
@@ -20,8 +21,8 @@ programmed in the *DEVICEADDR[0]* and *DEVICEADDR[1]* FICR registers.
 
 ### Method 2: Hardcode a public address in the Mynewt target
 
-The NimBLE controller package exports a public address
-[syscfg](../../os/modules/sysinitconfig/sysinitconfig.md) setting called
+The NimBLE controller package exports a 
+[syscfg](../../../os/modules/sysinitconfig/sysinitconfig.md) setting called
 `BLE_PUBLIC_DEV_ADDR`.  This setting can be overridden at the application or
 target level to configure a public Bluetooth address.  For example, a target
 can assign the public address *11:22:33:44:55:66* as follows:
@@ -44,11 +45,11 @@ Note: this method takes precedence over method 1.  Whatever is written to the
 Random addresses get configured through the NimBLE host.  The following two
 functions are used in random address configuration:
 
-* [ble_hs_id_gen_rnd](../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_gen_rnd/): Generates a new random address.
-* [ble_hs_id_set_rnd](../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_set_rnd/): Sets the device's random address.
+* [ble_hs_id_gen_rnd](../../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_gen_rnd/): Generates a new random address.
+* [ble_hs_id_set_rnd](../../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_set_rnd/): Sets the device's random address.
 
 For an example of how this is done, see the
-[BLE iBeacon tutorial](../../os/tutorials/ibeacon/).
+[BLE iBeacon tutorial](../../../os/tutorials/ibeacon/).
 
 <br>
 
