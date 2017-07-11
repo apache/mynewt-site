@@ -275,6 +275,14 @@
               
                 
     <li >
+      <a href="../ble_bare_bones/">BLE Bare Bones Application</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../ibeacon/">BLE iBeacon</a>
     </li>
 
@@ -284,6 +292,17 @@
                 
     <li class="active">
       <a href="./">BLE Eddystone</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../bleprph/bleprph-intro/">BLE Peripheral Project</a>
+  
+  
     </li>
 
               
@@ -348,17 +367,6 @@
                 
     <li >
       <a href="../bletiny_project/">BLE app to check stats via console</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
-  
-  
     </li>
 
               
@@ -511,7 +519,7 @@
 <h3 id="eddystone-beacon-protocol">Eddystone Beacon Protocol</h3>
 <p>A beaconing device announces its presence to the world by broadcasting
 advertisements.  The Eddystone protocol is built on top of the standard BLE
-advertisement specification.  Eddystone supports multiple data packet types</p>
+advertisement specification.  Eddystone supports multiple data packet types:</p>
 <ul>
 <li>Eddystone-UID: a unique, static ID with a 10-byte Namespace component and a 6-byte Instance component.</li>
 <li>Eddystone-URL: a compressed URL that, once parsed and decompressed, is directly usable by the client.</li>
@@ -519,195 +527,356 @@ advertisement specification.  Eddystone supports multiple data packet types</p>
 <li>Eddystone-EID to broadcast an ephemeral identifier that changes every few minutes and allow only parties that can resolve the identifier to use the beacon. </li>
 </ul>
 <p><a href="https://developers.google.com/beacons/eddystone">This page</a> describes the Eddystone open beacon format developed by Google.</p>
-<p>Apache Mynewt currently supports Eddystone-UID and Eddystone-URL formats only. This tutorial will explain how to get an Eddystone-URL beacon going on a peripheral device.</p>
+<p>Apache Mynewt currently supports Eddystone-UID and Eddystone-URL formats only.
+This tutorial will explain how to get an Eddystone-URL beacon going on a
+peripheral device.</p>
 <p><br></p>
-<h3 id="configuration">Configuration</h3>
-<p>Use the following function to configure your NimBLE device to send Eddystone-URL beacons:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
-<span style="color: #000000">ble_eddystone_set_adv_data_url</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">*adv_fields</span>,
-                               <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">url_scheme</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">*url_body</span>,
-                               <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">url_body_len</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">url_suffix</span>)
+<h3 id="create-an-empty-ble-application">Create an Empty BLE Application</h3>
+<p>This tutorial picks up where the
+<a href="../ble_bare_bones/">BLE bare bones application tutorial</a>
+concludes.  The first step in creating a beaconing device is to create an empty
+BLE app, as explained in that tutorial.  Before proceeding, you should have:</p>
+<ul>
+<li>An app called "ble_app".</li>
+<li>A target called "ble_tgt".</li>
+<li>Successfully executed the app on your target device.</li>
+</ul>
+<h3 id="add-beaconing">Add beaconing</h3>
+<p>Here is a brief specification of how we want our beaconing app to behave:</p>
+<ol>
+<li>Wait until the host and controller are in sync.</li>
+<li>Configure the NimBLE stack with an address to put in its advertisements.</li>
+<li>Advertise an eddystone URL beacon indefinitely.</li>
+</ol>
+<p>Let's take these one at a time.</p>
+<p><br></p>
+<h4 id="1-wait-for-host-controller-sync">1. Wait for host-controller sync</h4>
+<p>The first step, waiting for host-controller-sync, is mandatory in all BLE
+applications.  The NimBLE stack is inoperable while the two components are out
+of sync.  In a combined host-controller app, the sync happens immediately at
+startup.  When the host and controller are separate, sync typically occurs
+in less than a second.</p>
+<p>We achieve this by configuring the NimBLE host with a callback function that
+gets called when sync takes place:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+</span><span style="background-color: #ffffcc"><span style="color: #000000">ble_app_set_addr</span>()
+</span><span style="background-color: #ffffcc">{ }
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+</span><span style="background-color: #ffffcc"><span style="color: #000000">ble_app_advertise</span>();
+</span><span style="background-color: #ffffcc">{ }
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+</span><span style="background-color: #ffffcc"><span style="color: #000000">ble_app_on_sync</span>(<span style="color: #A90D91">void</span>)
+</span><span style="background-color: #ffffcc">{
+</span><span style="background-color: #ffffcc">    <span style="color: #177500">/* Generate a non-resolvable private address. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">ble_app_set_addr</span>();
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #177500">/* Advertise indefinitely. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">ble_app_advertise</span>();
+</span><span style="background-color: #ffffcc">}
+</span>
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+    <span style="color: #000000">sysinit</span>();
+
+<span style="background-color: #ffffcc">    <span style="color: #000000">ble_hs_cfg</span>.<span style="color: #000000">sync_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_app_on_sync</span>;
+</span>
+    <span style="color: #177500">/* As the last thing, process events from default event queue. */</span>
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+    }
+}
 </pre></div>
 
 
-<p>This function's parameters are documented below.</p>
+<p><code>ble_hs_cfg.sync_cb</code> points to the function that should be called when sync
+occurs.  Our callback function, <code>ble_app_on_sync()</code>, kicks off the control flow
+that we specified above.  Now we need to fill in the two stub functions.</p>
+<p><br></p>
+<h4 id="2-configure-the-nimble-stack-with-an-address">2. Configure the NimBLE stack with an address</h4>
+<p>A BLE device needs an address to do just about anything.  Some devices have a
+public Bluetooth address burned into them, but this is not always the case.
+Furthermore, the NimBLE controller might not know how to read an address out of
+your particular hardware.  For a beaconing device, we generally don't care what
+address gets used since nothing will be connecting to us.</p>
+<p>A reliable solution is to generate a <em>non-resolvable private address</em> (nRPA)
+each time the application runs.  Such an address contains no identifying
+information, and they are expected to change frequently.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_set_addr</span>(<span style="color: #A90D91">void</span>)
+{
+<span style="background-color: #ffffcc">    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">addr</span>;
+</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_gen_rnd</span>(<span style="color: #1C01CE">1</span>, <span style="color: #000000">&amp;addr</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span><span style="background-color: #ffffcc">
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_set_rnd</span>(<span style="color: #000000">addr</span>.<span style="color: #000000">val</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span>}
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_advertise</span>();
+{ }
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_on_sync</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #177500">/* Generate a non-resolvable private address. */</span>
+    <span style="color: #000000">ble_app_set_addr</span>();
+
+    <span style="color: #177500">/* Advertise indefinitely. */</span>
+    <span style="color: #000000">ble_app_advertise</span>();
+}
+</pre></div>
+
+
+<p>Our new function, <code>ble_app_set_addr()</code>, makes two calls into the stack:</p>
+<ul>
+<li><a href="../../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_gen_rnd/"><code>ble_hs_id_gen_rnd</code></a>: Generate an nRPA.</li>
+<li><a href="../../../network/ble/ble_hs/ble_hs_id/functions/ble_hs_id_set_rnd/"><code>ble_hs_id_set_rnd</code></a>: Configure NimBLE to use the newly-generated address.</li>
+</ul>
+<p>You can click either of the function names for more detailed documentation.</p>
+<p><br></p>
+<h4 id="3-advertise-indefinitely">3. Advertise indefinitely</h4>
+<p>The first step in advertising is to configure the host with advertising data.
+This operation tells the host what data to use for the contents of its
+advertisements.  The NimBLE host provides special helper functions for
+configuring eddystone advertisement data:</p>
+<ul>
+<li><a href="../../../network/ble/ble_hs/other/functions/ble_eddystone_set_adv_data_uid/"><code>ble_eddystone_set_adv_data_uid</code></a></li>
+<li><a href="../../../network/ble/ble_hs/other/functions/ble_eddystone_set_adv_data_url/"><code>ble_eddystone_set_adv_data_url</code></a></li>
+</ul>
+<p>Our application will advertise eddystone URL beacons, so we are interested in
+the second function.  We reproduce the function prototype here:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
+<span style="color: #000000">ble_eddystone_set_adv_data_url</span>(
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">*adv_fields</span>,
+                     <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">url_scheme</span>,
+                        <span style="color: #A90D91">char</span> <span style="color: #000000">*url_body</span>,
+                     <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">url_body_len</span>,
+                     <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">url_suffix</span>
+)
+</pre></div>
+
+
+<p>We'll advertise the Mynewt URL: <em>https://mynewt.apache.org</em>.  Eddystone beacons
+use a form of URL compression to accommodate the limited space available in
+Bluetooth advertisements.  The <code>url_scheme</code> and <code>url_suffix</code> fields implement
+this compression; they are single byte fields which correspond to strings
+commonly found in URLs.  The following arguments translate to the
+https://mynewt.apache.org URL:</p>
 <table>
 <thead>
 <tr>
-<th><em>Parameter</em></th>
-<th><em>Purpose</em></th>
+<th>Parameter</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>adv_fields</td>
-<td>The base advertisement fields to transform into an eddystone beacon.</td>
-</tr>
-<tr>
 <td>url_scheme</td>
-<td>The prefix of the URL; one of the BLE_EDDYSTONE_URL_SCHEME values from ble_eddystone.h</td>
+<td><code>BLE_EDDYSTONE_URL_SCHEME_HTTPS</code></td>
 </tr>
 <tr>
 <td>url_body</td>
-<td>The middle of the url specified within "".</td>
-</tr>
-<tr>
-<td>url_body_len</td>
-<td>The string length of the url_body argument.</td>
+<td>"mynewt.apache"</td>
 </tr>
 <tr>
 <td>url_suffix</td>
-<td>The suffix of the URL; one of the BLE_EDDYSTONE_URL_SUFFIX values from ble_eddystone.h</td>
+<td><code>BLE_EDDYSTONE_URL_SUFFIX_ORG</code></td>
 </tr>
 </tbody>
 </table>
-<p><br></p>
-<h3 id="modify-bleprph">Modify bleprph</h3>
-<p>To demonstrate how the above function is used, we will now modify the <em>bleprph</em>
-example application to send Eddystone beacons.  For some background behind the <em>bleprph</em>
-app, we recommend you take a look at the <a href="../bleprph/bleprph-intro/">bleprph project
-tutorial</a>.  If you plan on making these modifications
-yourself, it might be a good idea to copy <em>bleprph</em> to your local repository
-and work with the copy.  In general, you should avoid changing a package that
-newt downloads, as you will lose your changes the next time you upgrade the
-package.</p>
-<p><em>bleprph</em> sets its advertisement data and begins advertising as follows (<em>main.c</em>):</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #177500">/* Configure an eddystone URL beacon to be advertised;</span>
+<span style="color: #177500">     * URL: https://apache.mynewt.org </span>
+<span style="color: #177500">     */</span>
+    <span style="color: #000000">fields</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span>){ <span style="color: #1C01CE">0</span> };
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_eddystone_set_adv_data_url</span>(<span style="color: #000000">&amp;fields</span>,
+                                        <span style="color: #000000">BLE_EDDYSTONE_URL_SCHEME_HTTPS</span>,
+                                        <span style="color: #C41A16">&quot;mynewt.apache&quot;</span>,
+                                        <span style="color: #1C01CE">13</span>,
+                                        <span style="color: #000000">BLE_EDDYSTONE_URL_SUFFIX_ORG</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #177500">/* TODO: Begin advertising. */</span>
+}
+</pre></div>
+
+
+<p>Now that the host knows what to advertise, the next step is to actually begin
+advertising.  The function to initiate advertising is:
+<a href="../../../network/ble/ble_hs/ble_gap/functions/ble_gap_adv_start/"><code>ble_gap_adv_start</code></a>.
+This function takes several parameters.  For simplicity, we reproduce the
+function prototype here:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
+<span style="color: #000000">ble_gap_adv_start</span>(
+                            <span style="color: #A90D91">uint8_t</span>  <span style="color: #000000">own_addr_type</span>,
+                   <span style="color: #A90D91">const</span> <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">*direct_addr</span>,
+                            <span style="color: #A90D91">int32_t</span>  <span style="color: #000000">duration_ms</span>,
+    <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">*adv_params</span>,
+                   <span style="color: #000000">ble_gap_event_fn</span> <span style="color: #000000">*cb</span>,
+                               <span style="color: #A90D91">void</span> <span style="color: #000000">*cb_arg</span>
+)
+</pre></div>
+
+
+<p>This function gives an application quite a bit of freedom in how advertising is
+to be done.  The default values are mostly fine for our simple beaconing
+application.  We will pass the following values to this function:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>own_addr_type</td>
+<td>BLE_OWN_ADDR_RANDOM</td>
+<td>Use the nRPA we generated earlier.</td>
+</tr>
+<tr>
+<td>direct_addr</td>
+<td>NULL</td>
+<td>We are broadcasting, not targeting a peer.</td>
+</tr>
+<tr>
+<td>duration_ms</td>
+<td>BLE_HS_FOREVER</td>
+<td>Advertise indefinitely.</td>
+</tr>
+<tr>
+<td>adv_params</td>
+<td>defaults</td>
+<td>Can be used to specify low level advertising parameters.</td>
+</tr>
+<tr>
+<td>cb</td>
+<td>NULL</td>
+<td>We are non-connectable, so no need for an event callback.</td>
+</tr>
+<tr>
+<td>cb_arg</td>
+<td>NULL</td>
+<td>No callback implies no callback argument.</td>
+</tr>
+</tbody>
+</table>
+<p>These arguments are mostly self-explanatory.  The exception is <code>adv_params</code>,
+which can be used to specify a number of low-level parameters.  For a beaconing
+application, the default settings are appropriate.  We specify default settings
+by providing a zero-filled instance of the <code>ble_gap_adv_params</code> struct as our
+argument.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
+{
+<span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
+</span>    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #177500">/* Configure an eddystone URL beacon to be advertised;</span>
+<span style="color: #177500">     * URL: https://apache.mynewt.org </span>
+<span style="color: #177500">     */</span>
+    <span style="color: #000000">fields</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span>){ <span style="color: #1C01CE">0</span> };
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_eddystone_set_adv_data_url</span>(<span style="color: #000000">&amp;fields</span>,
+                                        <span style="color: #000000">BLE_EDDYSTONE_URL_SCHEME_HTTPS</span>,
+                                        <span style="color: #C41A16">&quot;mynewt.apache&quot;</span>,
+                                        <span style="color: #1C01CE">13</span>,
+                                        <span style="color: #000000">BLE_EDDYSTONE_URL_SUFFIX_ORG</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+
+<span style="background-color: #ffffcc">    <span style="color: #177500">/* Begin advertising. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_RANDOM</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
+</span><span style="background-color: #ffffcc">                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #A90D91">NULL</span>);
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+</span>}
+</pre></div>
+
+
+<h3 id="conclusion">Conclusion</h3>
+<p>That's it!  Now when you run this app on your board, you should be able to see
+it with all your eddystone-aware devices.  You can test it out with the
+<code>newt run</code> command.</p>
+<h3 id="source-listing">Source Listing</h3>
+<p>For reference, here is the complete application source:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&quot;sysinit/sysinit.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;os/os.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;console/console.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;host/ble_hs.h&quot;</span><span style="color: #633820"></span>
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_set_addr</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">addr</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_gen_rnd</span>(<span style="color: #1C01CE">1</span>, <span style="color: #000000">&amp;addr</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_id_set_rnd</span>(<span style="color: #000000">addr</span>.<span style="color: #000000">val</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+}
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
     <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
-    <span style="color: #177500">/**</span>
-<span style="color: #177500">     *  Set the advertisement data included in our advertisements:</span>
-<span style="color: #177500">     *     o Flags (indicates advertisement type and other general info).</span>
-<span style="color: #177500">     *     o Advertising tx power.</span>
-<span style="color: #177500">     *     o Device name.</span>
-<span style="color: #177500">     *     o 16-bit service UUIDs (alert notifications).</span>
+    <span style="color: #177500">/* Configure an eddystone URL beacon to be advertised;</span>
+<span style="color: #177500">     * URL: https://apache.mynewt.org </span>
 <span style="color: #177500">     */</span>
-
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;fields</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">fields</span>);
-
-    <span style="color: #177500">/* Advertise two flags:</span>
-<span style="color: #177500">     *     o Discoverability in forthcoming advertisement (general)</span>
-<span style="color: #177500">     *     o BLE-only (BR/EDR unsupported).</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">fields</span>.<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HS_ADV_F_DISC_GEN</span> <span style="color: #000000">|</span>
-                   <span style="color: #000000">BLE_HS_ADV_F_BREDR_UNSUP</span>;
-
-    <span style="color: #177500">/* Indicate that the TX power level field should be included; have the</span>
-<span style="color: #177500">     * stack fill this value automatically.  This is done by assiging the</span>
-<span style="color: #177500">     * special value BLE_HS_ADV_TX_PWR_LVL_AUTO.</span>
-<span style="color: #177500">     */</span>
-    <span style="color: #000000">fields</span>.<span style="color: #000000">tx_pwr_lvl_is_present</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">tx_pwr_lvl</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_HS_ADV_TX_PWR_LVL_AUTO</span>;
-
-    <span style="color: #000000">name</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_svc_gap_device_name</span>();
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*</span>)<span style="color: #000000">name</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name_len</span> <span style="color: #000000">=</span> <span style="color: #000000">strlen</span>(<span style="color: #000000">name</span>);
-    <span style="color: #000000">fields</span>.<span style="color: #000000">name_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-
-    <span style="color: #000000">fields</span>.<span style="color: #000000">uuids16</span> <span style="color: #000000">=</span> (<span style="color: #000000">ble_uuid16_t</span>[]){
-        <span style="color: #000000">BLE_UUID16_INIT</span>(<span style="color: #000000">GATT_SVR_SVC_ALERT_UUID</span>)
-    };
-    <span style="color: #000000">fields</span>.<span style="color: #000000">num_uuids16</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-    <span style="color: #000000">fields</span>.<span style="color: #000000">uuids16_is_complete</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
-
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_set_fields</span>(<span style="color: #000000">&amp;fields</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting advertisement data; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
+    <span style="color: #000000">fields</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span>){ <span style="color: #1C01CE">0</span> };
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_eddystone_set_adv_data_url</span>(<span style="color: #000000">&amp;fields</span>,
+                                        <span style="color: #000000">BLE_EDDYSTONE_URL_SCHEME_HTTPS</span>,
+                                        <span style="color: #C41A16">&quot;mynewt.apache&quot;</span>,
+                                        <span style="color: #1C01CE">13</span>,
+                                        <span style="color: #000000">BLE_EDDYSTONE_URL_SUFFIX_ORG</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
     <span style="color: #177500">/* Begin advertising. */</span>
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
-    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_UND</span>;
-    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_GEN</span>;
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_PUBLIC</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
-                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
+    <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_RANDOM</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
+                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+}
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">ble_app_on_sync</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #177500">/* Generate a non-resolvable private address. */</span>
+    <span style="color: #000000">ble_app_set_addr</span>();
+
+    <span style="color: #177500">/* Advertise indefinitely. */</span>
+    <span style="color: #000000">ble_app_advertise</span>();
+}
+
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+    <span style="color: #000000">sysinit</span>();
+
+    <span style="color: #000000">ble_hs_cfg</span>.<span style="color: #000000">sync_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_app_on_sync</span>;
+
+    <span style="color: #177500">/* As the last thing, process events from default event queue. */</span>
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
     }
 }
 </pre></div>
-
-
-<p>The call to <code>ble_gap_adv_set_fields()</code> configures the device with normal
-(non-Eddystone) advertisements; the call to <code>ble_gap_adv_start()</code> tells the
-NimBLE stack to start broadcasting.  We are now going to create an Eddystone app
-by making the following changes:</p>
-<ul>
-<li>Call <code>ble_eddystone_set_adv_data()</code> instead of <code>ble_gap_adv_set_fields()</code>. The tutorial shows how to emit "`https://mynewt.apache.org".</li>
-<li>Remove advertisement data such as device name, flags, tx levels etc. that are not required. </li>
-<li>Remove unnecessary local variables e.g. <code>name</code> pointer.  </li>
-<li>Modify the call to <code>ble_gap_adv_start()</code> such that the device is non-discoverable and non-connectable.</li>
-</ul>
-<p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
-{   
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">fields</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-
-    <span style="color: #177500">/** </span>
-<span style="background-color: #ffffcc"><span style="color: #177500">     *  Remove the advertisement data typically included in our advertisements: </span>
-</span><span style="color: #177500">     *     o Flags (indicates advertisement type and other general info).</span>
-<span style="color: #177500">     *     o Advertising tx power.</span>
-<span style="color: #177500">     *     o Device name.</span>
-<span style="color: #177500">     *     o 16-bit service UUIDs (alert notifications).</span>
-<span style="color: #177500">     */</span>
-
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;fields</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">fields</span>);
-
-<span style="background-color: #ffffcc">     <span style="color: #177500">/* No flags are needed for Eddystone URL. Remove all from default app.*/</span>
-</span>
-<span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_eddystone_set_adv_data_url</span>(<span style="color: #000000">&amp;fields</span>, <span style="color: #000000">BLE_EDDYSTONE_URL_SCHEME_HTTPS</span>, <span style="color: #C41A16">&quot;mynewt.apache&quot;</span>, 
-</span>                        <span style="color: #1C01CE">13</span>, <span style="color: #000000">BLE_EDDYSTONE_URL_SUFFIX_ORG</span>); 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting eddystone advertisement data; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
-
-    <span style="color: #177500">/* Begin advertising. */</span>
-    <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;adv_params</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span> <span style="color: #000000">adv_params</span>);
-<span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span>.<span style="color: #000000">conn_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_CONN_MODE_NON</span>;
-</span><span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span>.<span style="color: #000000">disc_mode</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GAP_DISC_MODE_NON</span>;
-</span>    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_PUBLIC</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
-                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #000000">bleprph_gap_event</span>, <span style="color: #A90D91">NULL</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error enabling advertisement; rc=%d\n&quot;</span>, <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
-}
-</pre></div>
-
-
-<p>Also include the header file for the eddystone beacon <code>ble_eddystone.h</code> in the app's main.c file. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&quot;host/ble_eddystone.h&quot;</span><span style="color: #633820"></span>
-</pre></div>
-
-
-<p>If you have copied the bleprph app into your local repository then make sure that the pkg.yml for the app has the <code>@apache-mynewt-core/</code> prefix; otherwise the package dependencies will not be resolved correctly.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps: 
-    - &quot;@apache-mynewt-core/boot/split&quot;
-    - &quot;@apache-mynewt-core/kernel/os&quot;
-&lt;snip&gt;
-</pre></div>
-
-
-<p>Finally, enable the <code>BLE_EDDYSTONE</code> sysconfig in the syscfg.yml of either your target or your app.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>syscfg.vals:
-    &lt;snip&gt;
-    BLE_EDDYSTONE: 1 
-</pre></div>
-
-
-<p>Now when you run this app on your board, you should be able to see it with all
-your Eddystone-aware devices.</p>
                         
                         <div class="row">
                             
@@ -725,8 +894,8 @@ your Eddystone-aware devices.</p>
     </li>
     <li class="pull-right">
     
-    <a href=../add_newtmgr/>
-        Next: Enable Newt Manager in any app
+    <a href=../bleprph/bleprph-intro/>
+        Next: BLE Peripheral Project
         <span class="fa fa-arrow-right"></span>
     </a>
     

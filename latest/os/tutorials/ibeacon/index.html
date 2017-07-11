@@ -274,6 +274,14 @@
           
               
                 
+    <li >
+      <a href="../ble_bare_bones/">BLE Bare Bones Application</a>
+    </li>
+
+              
+          
+              
+                
     <li class="active">
       <a href="./">BLE iBeacon</a>
     </li>
@@ -284,6 +292,17 @@
                 
     <li >
       <a href="../eddystone/">BLE Eddystone</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../bleprph/bleprph-intro/">BLE Peripheral Project</a>
+  
+  
     </li>
 
               
@@ -348,17 +367,6 @@
                 
     <li >
       <a href="../bletiny_project/">BLE app to check stats via console</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
-  
-  
     </li>
 
               
@@ -516,9 +524,10 @@ advertisement specification.
 good summary of the iBeacon sub-fields.</p>
 <h3 id="create-an-empty-ble-application">Create an Empty BLE Application</h3>
 <p>This tutorial picks up where the
-<a href="../../../network/ble/nimble_setup/">Set up a NimBLE application</a> document
-concludes.  The first step in creating a beaconing device is to create an empty
-BLE app, as explained in that tutorial.  Before proceeding, you should have:</p>
+<a href="../ble_bare_bones/">BLE bare bones application tutorial</a>
+document concludes.  The first step in creating a beaconing device is to create
+an empty BLE app, as explained in that tutorial.  Before proceeding, you should
+have:</p>
 <ul>
 <li>An app called "ble_app".</li>
 <li>A target called "ble_tgt".</li>
@@ -627,13 +636,15 @@ information, and they are expected to change frequently.</p>
 <p>The first step in advertising is to configure the host with advertising data.
 This operation tells the host what data to use for the contents of its
 advertisements.  The NimBLE host provides a special helper function for
-configuration iBeacon advertisement data:
+configuring iBeacon advertisement data:
 <a href="../../../network/ble/ble_hs/other/functions/ble_ibeacon_set_adv_data/"><code>ble_ibeacon_set_adv_data</code></a>.</p>
 <p>If you follow the API link, you'll see that this function takes three parameters: a 128-bit UUID, a major version, and a minor version.  This corresponds with the iBeacon specification, as these three items are the primary components in an iBeacon advertisement.</p>
-<p>For now, we'll advertise the following:
-<em> <em>UUID</em>: <code>11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11</code>
-</em> <em>Major</em>: 2
-* <em>Minor</em>: 10</p>
+<p>For now, we'll advertise the following:</p>
+<ul>
+<li><em>UUID</em>: <code>11:11:11:11:11:11:11:11:11:11:11:11:11:11:11:11</code></li>
+<li><em>Major</em>: 2</li>
+<li><em>Minor</em>: 10</li>
+</ul>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
 <span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
 {
@@ -713,10 +724,10 @@ function prototype here:</p>
 </table>
 <p>These arguments are mostly self-explanatory.  The exception is <code>adv_params</code>, which can be used to specify a number of low-level parameters.  For a beaconing application, the default settings are appropriate.  We specify default settings by providing a zero-filled instance of the <code>ble_gap_adv_params</code> struct as our argument.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
+<span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
+</span>    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 
     <span style="color: #177500">/* Arbitrarily set the UUID to a string of 0x11 bytes. */</span>
@@ -724,14 +735,10 @@ function prototype here:</p>
 
     <span style="color: #177500">/* Major version=2; minor version=10. */</span>
     <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
-                    <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
-    <span style="color: #177500">/* Begin advertising. */</span>
-<span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
+<span style="background-color: #ffffcc">    <span style="color: #177500">/* Begin advertising. */</span>
+</span><span style="background-color: #ffffcc">    <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
 </span><span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_gap_adv_start</span>(<span style="color: #000000">BLE_OWN_ADDR_RANDOM</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">BLE_HS_FOREVER</span>,
 </span><span style="background-color: #ffffcc">                           <span style="color: #000000">&amp;adv_params</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #A90D91">NULL</span>);
 </span><span style="background-color: #ffffcc">    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
@@ -764,7 +771,7 @@ it with all your iBeacon-aware devices.  You can test it out with the
 }
 
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">bleprph_advertise</span>(<span style="color: #A90D91">void</span>)
+<span style="color: #000000">ble_app_advertise</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> <span style="color: #000000">adv_params</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">uuid128</span>[<span style="color: #1C01CE">16</span>];
@@ -775,11 +782,7 @@ it with all your iBeacon-aware devices.  You can test it out with the
 
     <span style="color: #177500">/* Major version=2; minor version=10. */</span>
     <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_ibeacon_set_adv_data</span>(<span style="color: #000000">uuid128</span>, <span style="color: #1C01CE">2</span>, <span style="color: #1C01CE">10</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #000000">BLEPRPH_LOG</span>(<span style="color: #000000">ERROR</span>, <span style="color: #C41A16">&quot;error setting iBeacon advertisement data; rc=%d\n&quot;</span>,
-                    <span style="color: #000000">rc</span>);
-        <span style="color: #A90D91">return</span>;
-    }
+    <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
     <span style="color: #177500">/* Begin advertising. */</span>
     <span style="color: #000000">adv_params</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span>){ <span style="color: #1C01CE">0</span> };
@@ -820,9 +823,9 @@ it with all your iBeacon-aware devices.  You can test it out with the
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../ota_upgrade_nrf52/>
+    <a href=../ble_bare_bones/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Upgrade an Image Over-The-Air
+        Previous: BLE Bare Bones Application
     </a>
     
     </li>
