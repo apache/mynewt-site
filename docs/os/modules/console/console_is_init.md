@@ -4,7 +4,7 @@
    int console_is_init(void)
 ```
 
-  Returns whether console has been initialized or not. I.e. whether `console_init()` has been called yet.
+Returns whether console has been initialized or not. 
 
 #### Arguments
 
@@ -12,7 +12,9 @@ None
 
 #### Returned values
 
-Returns 1 if console has been initialized. 0 if not.
+1 if console has been initialized. 
+
+0 if console has not been initialized.
 
 
 #### Example

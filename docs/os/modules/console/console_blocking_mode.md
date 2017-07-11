@@ -4,7 +4,7 @@
    void
    console_blocking_mode(void)
 ```
-   Calls the `console_blocking_tx` function to flush the buffered console output (transmit) queue. The function `OS_ENTER_CRITICAL()` is called to disable interrupts and `OS_EXIT_CRITICAL()` is called to enable interrupts back again once the buffer is flushed.
+Sets the transmit mode to blocking. The function flushes the buffered console output.  The function `OS_ENTER_CRITICAL()` is called to disable interrupts and `OS_EXIT_CRITICAL()` is called to enable interrupts back again once the buffer is flushed.
 
 #### Arguments
 
