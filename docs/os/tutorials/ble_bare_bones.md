@@ -137,7 +137,8 @@ pkg.deps:
     - "@apache-mynewt-core/net/nimble/transport/ram"
 ```
 
-**Important note:** Controller package affects system configuration, see [this page](app_setup/ble_lp_clock.md) for details.
+**Important note:** The controller package affects system configuration, see
+[this page](../../../network/ble/ble_setup/ble_lp_clock/) for details.
 
 ### Build the target
 
@@ -168,8 +169,8 @@ Resetting target
 You can start the application by pressing `c <enter>` at the gdb prompt.  When the excitement of watching the idle loop run wears off, quit gdb with `<ctrl-c> q <enter>`.
 
 If your target fails to build or run, you might want to revisit the [project
-blinky tutorial](../../os/tutorials/blinky.md) to see if there is a setup step
-you missed.  You may also find help by posting a question to the [mailing
+blinky tutorial](../../../os/tutorials/blinky/) to see if there is a setup
+step you missed.  You may also find help by posting a question to the [mailing
 list](../../community.md) or searching the archives.
 
 ### Conclusion
@@ -177,8 +178,8 @@ list](../../community.md) or searching the archives.
 You now have a fully functional BLE app (never mind that it doesn't actually do
 anything yet!).  With all the necessary infrastructure in place, you can now
 start turning this into a real application.  A good next step would be to turn
-your app into a beaconing device.  The [BLE iBeacon
-tutorial](../../os/tutorials/ibeacon.md) builds on this one and ends with a
-functioning iBeacon.  For something a little more ambitious, the [BLE
-peripheral project tutorial](../../os/tutorials/bleprph.md) describes a NimBLE
-peripheral application in detail.
+your app into a beaconing device.  The
+[BLE iBeacon tutorial](../../../os/tutorials/ibeacon/) builds on this one and
+ends with a functioning iBeacon.  For something a little more ambitious, the
+[BLE peripheral project tutorial](../../../os/tutorials/bleprph/bleprph-intro/)
+describes a NimBLE peripheral application in detail.
