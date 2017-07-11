@@ -26,4 +26,5 @@ Initiates a connection parameter update procedure.
 | 0 | Success. |
 | BLE\_HS\_ENOTCONN | The there is no connection with the specified handle. |
 | BLE\_HS\_EALREADY | A connection update procedure for this connection is already in progress. |
+| BLE\_HS\_EINVAL | Requested parameters are invalid. |
 | [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

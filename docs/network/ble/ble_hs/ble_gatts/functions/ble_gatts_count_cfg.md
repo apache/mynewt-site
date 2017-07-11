@@ -2,10 +2,7 @@
 
 ```c
 int
-ble_gatts_count_cfg(
-    const struct ble_gatt_svc_def *defs,
-                struct ble_hs_cfg *cfg
-)
+ble_gatts_count_cfg(const struct ble_gatt_svc_def *defs)
 ```
 
 ### Description

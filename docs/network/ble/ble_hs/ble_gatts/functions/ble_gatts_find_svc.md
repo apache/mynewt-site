@@ -3,8 +3,8 @@
 ```c
 int
 ble_gatts_find_svc(
-    const void *uuid128,
-      uint16_t *out_handle
+    const ble_uuid_t *uuid,
+            uint16_t *out_handle
 )
 ```
 

@@ -17,7 +17,7 @@ Retrieves one of the device's identity addresses.  The device can have two ident
 
 | *Parameter* | *Description* |
 |-------------|---------------|
-| id\_addr\_type | The type of identity address to retrieve. Valid values are: <ul><li>BLE\_ADDR\_TYPE\_PUBLIC</li> <li>BLE\_ADDR\_TYPE\_RANDOM</li></ul> |
+| id\_addr\_type | The type of identity address to retrieve. Valid values are: <ul><li>BLE\_ADDR\_PUBLIC</li> <li>BLE\_ADDR\_RANDOM</li></ul> |
 | out\_id\_addr | On success, the requested identity address is copied into this buffer.  The buffer must be at least six bytes in size. |
 | out\_is\_nrpa | On success, the pointed-to value indicates whether the retrieved address is a non-resolvable private address. |
 

@@ -17,4 +17,4 @@ Retrieves the ATT MTU of the specified connection.  If an MTU exchange for this 
 
 ### Returned values
 
-The specified connection's ATT MTU.
+The specified connection's ATT MTU, or 0 if there is no such connection.
