@@ -264,54 +264,61 @@ $ minicom -D /dev/tty.usbserial-1d13 -b 115200
 <br>
 Type `wifi start` to start Wi-Fi.
 
-```hl_lines="9"
-Welcome to minicom 2.7
+```hl_lines="11"
+
+Welcome to minicom 2.7.1
 
 OPTIONS: 
-Compiled on Mar 18 2016, 04:59:47.
-Port /dev/tty.usbserial-1d13, 17:06:09
+Compiled on May 17 2017, 15:29:14.
+Port /dev/tty.usbserial, 15:12:10
 
 Press Meta-Z for help on special keys
 
-wifi start
-3293703:(APP)(INFO)Chip ID 1503a0
+
+138465 compat> wifi start
+144570 compat> (APP)(INFO)Chip ID 1503a0
 (APP)(INFO)Firmware ver   : 19.4.4
 (APP)(INFO)Min driver ver : 19.3.0
 (APP)(INFO)Curr driver ver: 19.3.0
 wifi_init : 0
+
 ```
 <br>
 Connect to the local Wi-Fi network.   Note that the MKR1000 board only supports 2.4 GHz Wi-Fi networks.
 
 Run the `wifi connect` command and specify your network <ssid> and <password>. After you are connected to your wi-fi network, run the `net service` command to start network services.
 
-```hl_lines="1 8"
-wifi connect  <ssid> <password>
-3362937:wifi_request_scan : 0
-3363843:scan_results 9: 0
-3363855:wifi_connect : 0
-3364852:connect_done : 0
-3364861:dhcp done 10.0.0.4
-3365470:get sys time response 2017.3.31-0.9.57                                  
-net service   
+```hl_lines="2 9"
+
+wifi connect <ssid> <password>
+037624 wifi_request_scan : 0
+037627 compat> scan_results 7: 0
+038454 wifi_connect : 0
+039451 connect_done : 0
+039958 dhcp done 192.168.0.135
+040169 get sys time response 2017.7.12-22.41.33
+net service                                                      
+
 ```
 
-The board is connected to the network succesfully and has IP address: 10.0.0.4
+The board is connected to the network succesfully and has IP address: 192.168.0.135
 
 ### Establish TCP Connection and Talk!
 
 From a terminal on your computer, telnet to ports 7, 9, or 19 using the IP address your board has been assigned. Type something on this terminal and see the console output (on minicom). Can you see the difference in the behaviors?
 
 ```no-highlight
-$telnet 10.0.0.4 7
-Trying 10.0.0.4...
-Connected to 10.0.0.4.
+
+$telnet  192.168.0.135 7
+Trying 192.168.0.135...
+Connected to 192.168.0.135.
 Escape character is '^]'.
 hello
 hello
 ^]
 telnet> q
 $
+
 ```
 
 One port echoes whatever is typed, one discards everything it gets, and the third spews out bits constantly. Type `wifi stop` to disable WiFi on the Arduino board.
