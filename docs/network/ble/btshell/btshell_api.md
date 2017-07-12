@@ -2,7 +2,7 @@
 
 "btshell" is one of the sample applications that come with Mynewt. It is a shell application which provides a basic interface to the host-side of the BLE stack. "btshell" includes all the possible roles (Central/Peripheral) and they may be run simultaneously. You can run btshell on a board and issue commands that make it behave as a central or a peripheral with different peers. 
 
-"btshell" is a new application that uses new shell features and has updated command and parameter names. If you want to use legacy BLE application pleas go to [bletiny app](../bletiny/bletiny_api.md).
+"btshell" is a new application that uses Mynewt 1.1 shell features and has updated command and parameter names.
 
 Highlighted below are some of the ways you can use the API to establish connections and discover services and characteristics from peer devices. For descriptions of the full API, go to the next sections on [GAP in btshell](btshell_GAP.md) and [GATT in btshell](btshell_GATT.md).
 
@@ -84,7 +84,7 @@ gatt-show-conn
 This is how you discover and then display the services of the peer you established earlier across connection-1.
 
 ```hl_lines="1 2"
-gatt-disc-full conn=1
+gatt-discover-full conn=1
 gatt-show
 [ts=132425ssb, mod=64 level=2] CONNECTION: handle=1 addr=d4:f5:13:53:d2:43
 [ts=132428ssb, mod=64 level=2]     start=1 end=5 uuid=0x1800

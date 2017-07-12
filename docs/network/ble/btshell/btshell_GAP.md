@@ -1,5 +1,5 @@
 
-## GAP API for bletiny
+## GAP API for btshell
 
 <br>
 
@@ -51,13 +51,13 @@ Several different modes and procedures may be performed simultaneously over an L
 |    | Bondable mode        | `security-set-data bonding=1` [\*] |
 |    | Bonding procedure    | `security-start conn=x` [\*] |
 
-**[\*]** Security is disabled by default in bletiny.  To use the bonding modes and procedures, add `BLE_SM_LEGACY: 1` or `BLE_SM_SC: 1` to your syscfg.yml file depending on your needs.
+**[\*]** Security is disabled by default in btshell.  To use the bonding modes and procedures, add `BLE_SM_LEGACY: 1` or `BLE_SM_SC: 1` to your syscfg.yml file depending on your needs.
 
 <br>
 
 ### Address Types
 
-| *bletiny string* | *Description*                                       | *Notes*                              |
+| *btshell string* | *Description*                                       | *Notes*                              |
 |------------------|-----------------------------------------------------|--------------------------------------|
 | public           | Public address.                                     |                                      |
 | random           | Random static address.                              |                                      |
@@ -69,7 +69,7 @@ Several different modes and procedures may be performed simultaneously over an L
 
 The Connection parameter definitions can be found in Section 7.8.12 of the BLUETOOTH SPECIFICATION Version 4.2 [Vol 2, Part E].
 
-| *Name*              | *Description*                                                                                           | *bletiny string*   |
+| *Name*              | *Description*                                                                                           | *btshell string*   |
 |---------------------|---------------------------------------------------------------------------------------------------------|--------------------|
 | LE_Scan_Interval    | Recommendation from the Host on how long the Controller should scan                                     | scan_interval      |
 | LE_Scan_Window      | Recommendation from the Host on how frequently the Controller should scan                               | scan_window        |
@@ -86,7 +86,7 @@ The Connection parameter definitions can be found in Section 7.8.12 of the BLUET
 
 ### Advertisment Parameters
 
-| *bletiny string* | *Description*                         | *Notes*                                                      | *Default*                 |
+| *btshell string* | *Description*                         | *Notes*                                                      | *Default*                 |
 |------------------|---------------------------------------|--------------------------------------------------------------|---------------------------|
 | conn             | Connectable mode                      | See Connectable Modes table.                                 | und                       |
 | discov           | Discoverable mode                     | See Discoverable Modes table.                                | gen                       |
@@ -102,7 +102,7 @@ The Connection parameter definitions can be found in Section 7.8.12 of the BLUET
 
 ### Advertisement Filter Policies
 
-| *bletiny string*  | *Description*                                                          | *Notes*   |
+| *btshell string*  | *Description*                                                          | *Notes*   |
 | ----------------- | ---------------                                                        | --------- |
 | none              | No filtering. No whitelist used.                                       | Default   |
 | scan              | Process all connection requests but only scans from white list.        |           |
