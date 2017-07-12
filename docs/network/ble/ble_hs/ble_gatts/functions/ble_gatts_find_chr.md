@@ -3,10 +3,10 @@
 ```c
 int
 ble_gatts_find_chr(
-    const void *svc_uuid128,
-    const void *chr_uuid128,
-      uint16_t *out_def_handle,
-      uint16_t *out_val_handle
+    const ble_uuid_t *svc_uuid,
+    const ble_uuid_t *chr_uuid,
+            uint16_t *out_def_handle,
+            uint16_t *out_val_handle
 )
 ```
 

@@ -4,7 +4,7 @@
 int
 ble_gattc_disc_svc_by_uuid(
                 uint16_t  conn_handle,
-              const void *svc_uuid128,
+        const ble_uuid_t *uuid,
     ble_gatt_disc_svc_fn *cb,
                     void *cb_arg
 )

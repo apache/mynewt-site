@@ -11,7 +11,7 @@ struct ble_gatt_error {
 struct ble_gatt_svc {
     uint16_t start_handle;
     uint16_t end_handle;
-    uint8_t uuid128[16];
+    ble_uuid_any_t uuid;
 };
 ```
 
@@ -28,14 +28,14 @@ struct ble_gatt_chr {
     uint16_t def_handle;
     uint16_t val_handle;
     uint8_t properties;
-    uint8_t uuid128[16];
+    ble_uuid_any_t uuid;
 };
 ```
 
 ```c
 struct ble_gatt_dsc {
     uint16_t handle;
-    uint8_t uuid128[16];
+    ble_uuid_any_t uuid;
 };
 ```
 

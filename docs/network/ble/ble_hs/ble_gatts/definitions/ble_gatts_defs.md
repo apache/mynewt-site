@@ -12,10 +12,10 @@ typedef uint16_t ble_gatt_chr_flags;
 ```c
 struct ble_gatt_chr_def {
     /**
-     * Pointer to first element in a uint8_t[16]; use the BLE_UUID16 macro for
-     * 16-bit UUIDs; NULL if there are no more characteristics in the service.
+     * Pointer to characteristic UUID; use BLE_UUIDxx_DECLARE macros to declare
+     * proper UUID; NULL if there are no more characteristics in the service.
      */
-    const uint8_t *uuid128;
+    const ble_uuid_t *uuid;
 
     /**
      * Callback that gets executed when this characteristic is read or
@@ -36,6 +36,9 @@ struct ble_gatt_chr_def {
     /** Specifies the set of permitted operations for this characteristic. */
     ble_gatt_chr_flags flags;
 
+    /** Specifies minimum required key size to access this characteristic. */
+    uint8_t min_key_size;
+
     /** 
      * At registration time, this is filled in with the characteristic's value
      * attribute handle.
@@ -55,10 +58,10 @@ struct ble_gatt_svc_def {
     uint8_t type;
 
     /**
-     * Pointer to first element in a uint8_t[16]; use the BLE_UUID16 macro for
-     * 16-bit UUIDs.
+     * Pointer to service UUID; use BLE_UUIDxx_DECLARE macros to declare
+     * proper UUID; NULL if there are no more characteristics in the service.
      */
-    const uint8_t *uuid128;
+    const ble_uuid_t *uuid;
 
     /**
      * Array of pointers to other service definitions.  These services are
@@ -78,13 +81,16 @@ struct ble_gatt_svc_def {
 ```c
 struct ble_gatt_dsc_def {
     /**
-     * The first element in a uint8_t[16]; use the BLE_UUID16 macro for 16-bit
-     * UUIDs; NULL if there are no more descriptors in the characteristic.
+     * Pointer to descriptor UUID; use BLE_UUIDxx_DECLARE macros to declare
+     * proper UUID; NULL if there are no more characteristics in the service.
      */
-    uint8_t *uuid128;
+    const ble_uuid_t *uuid;
 
     /** Specifies the set of permitted operations for this descriptor. */
     uint8_t att_flags;
+
+    /** Specifies minimum required key size to access this descriptor. */
+    uint8_t min_key_size;
 
     /** Callback that gets executed when the descriptor is read or written. */
     ble_gatt_access_fn *access_cb;
@@ -141,7 +147,7 @@ struct ble_gatt_access_ctxt {
          */
         const struct ble_gatt_dsc_def *dsc;
     };
-};
+}
 ```
 
 ```c
@@ -149,98 +155,81 @@ struct ble_gatt_access_ctxt {
  * Context passed to the registration callback; represents the GATT service,
  * characteristic, or descriptor being registered.
  */
-union ble_gatt_register_ctxt {
-    /** Service; valid if op == BLE_GATT_REGISTER_OP_SVC. */
-    struct {
-        /** The ATT handle of the service definition attribute. */
-        uint16_t handle;
-
-        /**
-         * The service definition representing the service being
-         * registered.
-         */
-        const struct ble_gatt_svc_def *svc_def;
-    } svc;
-
-    /** Characteristic; valid if op == BLE_GATT_REGISTER_OP_CHR. */
-    struct {
-        /** The ATT handle of the characteristic definition attribute. */
-        uint16_t def_handle;
-
-        /** The ATT handle of the characteristic value attribute. */
-        uint16_t val_handle;
-
-        /**
-         * The characteristic definition representing the characteristic being
-         * registered.
-         */
-        const struct ble_gatt_chr_def *chr_def;
-
-        /**
-         * The service definition corresponding to the characteristic's parent
-         * service.
-         */
-        const struct ble_gatt_svc_def *svc_def;
-    } chr;
-
-    /** Descriptor; valid if op == BLE_GATT_REGISTER_OP_DSC. */
-    struct {
-        /** The ATT handle of the descriptor definition attribute. */
-        uint16_t handle;
-
-        /**
-         * The descriptor definition corresponding to the descriptor being
-         * registered.
-         */
-        const struct ble_gatt_dsc_def *dsc_def;
-
-        /**
-         * The characteristic definition corresponding to the descriptor's
-         * parent characteristic.
-         */
-        const struct ble_gatt_chr_def *chr_def;
-
-        /**
-         * The service definition corresponding to the descriptor's grandparent
-         * service
-         */
-        const struct ble_gatt_svc_def *svc_def;
-    } dsc;
-};
-```
-
-```c
-typedef void ble_gatt_register_fn(uint8_t op,
-                                  union ble_gatt_register_ctxt *ctxt,
-                                  void *arg);
-```
-
-```c
-/**
- * Contains counts of resources required by the GATT server.  The contents of
- * this struct are generally used to populate a configuration struct before
- * the host is initialized.
- */
-struct ble_gatt_resources {
-    /** Number of services. */
-    uint16_t svcs;
-
-    /** Number of included services. */
-    uint16_t incs;
-
-    /** Number of characteristics. */
-    uint16_t chrs;
-
-    /** Number of descriptors. */
-    uint16_t dscs;
+struct ble_gatt_register_ctxt {
+    /**
+     * Indicates the gatt registration operation just performed.  This is
+     * equal to one of the following values:
+     *     o BLE_GATT_REGISTER_OP_SVC
+     *     o BLE_GATT_REGISTER_OP_CHR
+     *     o BLE_GATT_REGISTER_OP_DSC
+     */
+    uint8_t op;
 
     /**
-     * Number of client characteristic configuration descriptors.  Each of
-     * these also contributes to the total descriptor count.
+     * The value of the op field determines which field in this union is valid.
      */
-    uint16_t cccds;
+    union {
+        /** Service; valid if op == BLE_GATT_REGISTER_OP_SVC. */
+        struct {
+            /** The ATT handle of the service definition attribute. */
+            uint16_t handle;
 
-    /** Total number of ATT attributes. */
-    uint16_t attrs;
+            /**
+             * The service definition representing the service being
+             * registered.
+             */
+            const struct ble_gatt_svc_def *svc_def;
+        } svc;
+
+        /** Characteristic; valid if op == BLE_GATT_REGISTER_OP_CHR. */
+        struct {
+            /** The ATT handle of the characteristic definition attribute. */
+            uint16_t def_handle;
+
+            /** The ATT handle of the characteristic value attribute. */
+            uint16_t val_handle;
+
+            /**
+             * The characteristic definition representing the characteristic
+             * being registered.
+             */
+            const struct ble_gatt_chr_def *chr_def;
+
+            /**
+             * The service definition corresponding to the characteristic's
+             * parent service.
+             */
+            const struct ble_gatt_svc_def *svc_def;
+        } chr;
+
+        /** Descriptor; valid if op == BLE_GATT_REGISTER_OP_DSC. */
+        struct {
+            /** The ATT handle of the descriptor definition attribute. */
+            uint16_t handle;
+
+            /**
+             * The descriptor definition corresponding to the descriptor being
+             * registered.
+             */
+            const struct ble_gatt_dsc_def *dsc_def;
+
+            /**
+             * The characteristic definition corresponding to the descriptor's
+             * parent characteristic.
+             */
+            const struct ble_gatt_chr_def *chr_def;
+
+            /**
+             * The service definition corresponding to the descriptor's
+             * grandparent service
+             */
+            const struct ble_gatt_svc_def *svc_def;
+        } dsc;
+    };
 };
+```
+
+```c
+typedef void ble_gatt_register_fn(struct ble_gatt_register_ctxt *ctxt,
+                                  void *arg);
 ```

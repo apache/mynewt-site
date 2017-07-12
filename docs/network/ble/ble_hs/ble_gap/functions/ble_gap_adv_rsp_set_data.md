@@ -1,19 +1,23 @@
-## <font color="#F2853F" style="font-size:24pt">ble\_gap\_adv\_rsp\_set\_fields</font>
+## <font color="#F2853F" style="font-size:24pt">ble\_gap\_adv\_rsp\_set\_data</font>
 
 ```c
 int
-ble_gap_adv_rsp_set_fields(const struct ble_hs_adv_fields *rsp_fields)
+ble_gap_adv_rsp_set_data(
+    const uint8_t *data,
+              int  data_len
+)
 ```
 
 ### Description
 
-Configures the fields to include in subsequent scan responses.  This is a convenience wrapper for ble\_gap\_adv\_rsp\_set\_data().
+Configures the data to include in subsequent scan responses.
 
 ### Parameters
 
 | *Parameter* | *Description* |
 |-------------|---------------|
-| adv\_fields | Specifies the scan response data. |
+| data | Buffer containing the scan response data. |
+| data\_len | The size of the response data, in bytes. |
 
 ### Returned values
 

@@ -7,7 +7,7 @@ ble_gap_adv_set_fields(const struct ble_hs_adv_fields *adv_fields)
 
 ### Description
 
-Configures the data to include in subsequent advertisements.
+Configures the fields to include in subsequent advertisements.  This is a convenience wrapper for ble\_gap\_adv\_set\_data().
 
 ### Parameters
 
