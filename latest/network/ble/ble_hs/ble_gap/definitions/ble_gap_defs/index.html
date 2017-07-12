@@ -303,17 +303,6 @@
                 
   
   
-    <li ><a href="../../../init/init/">Init and config</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../ble_gap/">GAP</a>
   
   
@@ -547,6 +536,9 @@
 <span style="color: #633820">#define BLE_GAP_EVENT_NOTIFY_RX             12</span>
 <span style="color: #633820">#define BLE_GAP_EVENT_NOTIFY_TX             13</span>
 <span style="color: #633820">#define BLE_GAP_EVENT_SUBSCRIBE             14</span>
+<span style="color: #633820">#define BLE_GAP_EVENT_MTU                   15</span>
+<span style="color: #633820">#define BLE_GAP_EVENT_IDENTITY_RESOLVED     16</span>
+<span style="color: #633820">#define BLE_GAP_EVENT_REPEAT_PAIRING        17</span>
 </pre></div>
 
 
@@ -810,6 +802,54 @@
             <span style="color: #177500">/** Whether the peer is currently subscribed to indications. */</span>
             <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_indicate</span>:<span style="color: #1C01CE">1</span>;
         } <span style="color: #000000">subscribe</span>;
+
+        <span style="color: #177500">/**</span>
+<span style="color: #177500">         * Represents a change in an L2CAP channel&#39;s MTU.</span>
+<span style="color: #177500">         *</span>
+<span style="color: #177500">         * Valid for the following event types:</span>
+<span style="color: #177500">         *     o BLE_GAP_EVENT_MTU</span>
+<span style="color: #177500">         */</span>
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #177500">/** The handle of the relevant connection. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * Indicates the channel whose MTU has been updated; either</span>
+<span style="color: #177500">             * BLE_L2CAP_CID_ATT or the ID of a connection-oriented channel.</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">channel_id</span>;
+
+            <span style="color: #177500">/* The channel&#39;s new MTU. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">value</span>;
+        } <span style="color: #000000">mtu</span>;
+
+        <span style="color: #177500">/**</span>
+<span style="color: #177500">         * Represents a change in peer&#39;s identity. This is issued after</span>
+<span style="color: #177500">         * successful pairing when Identity Address Information was received.</span>
+<span style="color: #177500">         *</span>
+<span style="color: #177500">         * Valid for the following event types:</span>
+<span style="color: #177500">         *     o BLE_GAP_EVENT_IDENTITY_RESOLVED</span>
+<span style="color: #177500">         */</span>
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #177500">/** The handle of the relevant connection. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
+        } <span style="color: #000000">identity_resolved</span>;
+
+        <span style="color: #177500">/**</span>
+<span style="color: #177500">         * Represents a peer&#39;s attempt to pair despite a bond already existing.</span>
+<span style="color: #177500">         * The application has two options for handling this event type:</span>
+<span style="color: #177500">         *     o Retry: Return BLE_GAP_REPEAT_PAIRING_RETRY after deleting the</span>
+<span style="color: #177500">         *              conflicting bond.  The stack will verify the bond has</span>
+<span style="color: #177500">         *              been deleted and continue the pairing procedure.  If</span>
+<span style="color: #177500">         *              the bond is still present, this event will be reported</span>
+<span style="color: #177500">         *              again.</span>
+<span style="color: #177500">         *     o Ignore: Return BLE_GAP_REPEAT_PAIRING_IGNORE.  The stack will</span>
+<span style="color: #177500">         *               silently ignore the pairing request.</span>
+<span style="color: #177500">         *</span>
+<span style="color: #177500">         * Valid for the following event types:</span>
+<span style="color: #177500">         *     o BLE_GAP_EVENT_REPEAT_PAIRING</span>
+<span style="color: #177500">         */</span>
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_repeat_pairing</span> <span style="color: #000000">repeat_pairing</span>;
     };
 };
 </pre></div>
@@ -824,13 +864,6 @@
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#define BLE_GAP_DISC_MODE_NON               0</span>
 <span style="color: #633820">#define BLE_GAP_DISC_MODE_LTD               1</span>
 <span style="color: #633820">#define BLE_GAP_DISC_MODE_GEN               2</span>
-</pre></div>
-
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_white_entry</span> {
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">addr_type</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">addr</span>[<span style="color: #1C01CE">6</span>];
-};
 </pre></div>
 
 
@@ -854,25 +887,26 @@
     <span style="color: #A90D91">unsigned</span> <span style="color: #000000">encrypted</span>:<span style="color: #1C01CE">1</span>;
     <span style="color: #A90D91">unsigned</span> <span style="color: #000000">authenticated</span>:<span style="color: #1C01CE">1</span>;
     <span style="color: #A90D91">unsigned</span> <span style="color: #000000">bonded</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">unsigned</span> <span style="color: #000000">key_size</span>:<span style="color: #1C01CE">5</span>;
 };
 </pre></div>
 
 
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/**</span>
-<span style="color: #177500"> * @param discoverable_mode     One of the following constants:</span>
-<span style="color: #177500"> *                                  o BLE_GAP_DISC_MODE_NON</span>
-<span style="color: #177500"> *                                      (non-discoverable; 3.C.9.2.2).</span>
-<span style="color: #177500"> *                                  o BLE_GAP_DISC_MODE_LTD</span>
-<span style="color: #177500"> *                                      (limited-discoverable; 3.C.9.2.3).</span>
-<span style="color: #177500"> *                                  o BLE_GAP_DISC_MODE_GEN</span>
-<span style="color: #177500"> *                                      (general-discoverable; 3.C.9.2.4).</span>
-<span style="color: #177500"> * @param connectable_mode      One of the following constants:</span>
+<span style="color: #177500"> * conn_mode:                   One of the following constants:</span>
 <span style="color: #177500"> *                                  o BLE_GAP_CONN_MODE_NON</span>
 <span style="color: #177500"> *                                      (non-connectable; 3.C.9.3.2).</span>
 <span style="color: #177500"> *                                  o BLE_GAP_CONN_MODE_DIR</span>
 <span style="color: #177500"> *                                      (directed-connectable; 3.C.9.3.3).</span>
 <span style="color: #177500"> *                                  o BLE_GAP_CONN_MODE_UND</span>
 <span style="color: #177500"> *                                      (undirected-connectable; 3.C.9.3.4).</span>
+<span style="color: #177500"> * disc_mode:                   One of the following constants:</span>
+<span style="color: #177500"> *                                  o BLE_GAP_DISC_MODE_NON</span>
+<span style="color: #177500"> *                                      (non-discoverable; 3.C.9.2.2).</span>
+<span style="color: #177500"> *                                  o BLE_GAP_DISC_MODE_LTD</span>
+<span style="color: #177500"> *                                      (limited-discoverable; 3.C.9.2.3).</span>
+<span style="color: #177500"> *                                  o BLE_GAP_DISC_MODE_GEN</span>
+<span style="color: #177500"> *                                      (general-discoverable; 3.C.9.2.4).</span>
 <span style="color: #177500"> */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_adv_params</span> {
     <span style="color: #177500">/*** Mandatory fields. */</span>
@@ -896,18 +930,14 @@
 
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_conn_desc</span> {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_sec_state</span> <span style="color: #000000">sec_state</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">peer_ota_addr</span>[<span style="color: #1C01CE">6</span>];
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">peer_id_addr</span>[<span style="color: #1C01CE">6</span>];
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">our_id_addr</span>[<span style="color: #1C01CE">6</span>];
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">our_ota_addr</span>[<span style="color: #1C01CE">6</span>];
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">our_id_addr</span>;
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">peer_id_addr</span>;
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">our_ota_addr</span>;
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">peer_ota_addr</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_itvl</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_latency</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">supervision_timeout</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">peer_ota_addr_type</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">peer_id_addr_type</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">our_id_addr_type</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">our_ota_addr_type</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">role</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">master_clock_accuracy</span>;
 };
@@ -959,21 +989,37 @@
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_disc_desc</span> {
     <span style="color: #177500">/*** Common fields. */</span>
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">event_type</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">addr_type</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">length_data</span>;
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">addr</span>;
     <span style="color: #A90D91">int8_t</span> <span style="color: #000000">rssi</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">addr</span>[<span style="color: #1C01CE">6</span>];
-
-    <span style="color: #177500">/*** LE advertising report fields; both null if no data present. */</span>
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*data</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_adv_fields</span> <span style="color: #000000">*fields</span>;
 
     <span style="color: #177500">/***</span>
-<span style="color: #177500">     * LE direct advertising report fields; direct_addr_type is</span>
-<span style="color: #177500">     * BLE_GAP_ADDR_TYPE_NONE if direct address fields are not present.</span>
+<span style="color: #177500">     * LE direct advertising report fields; direct_addr is BLE_ADDR_ANY if</span>
+<span style="color: #177500">     * direct address fields are not present.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">direct_addr_type</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">direct_addr</span>[<span style="color: #1C01CE">6</span>];
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">direct_addr</span>;
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_repeat_pairing</span> {
+    <span style="color: #177500">/** The handle of the relevant connection. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
+
+    <span style="color: #177500">/** Properties of the existing bond. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_key_size</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_authenticated</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_sc</span>:<span style="color: #1C01CE">1</span>;
+
+    <span style="color: #177500">/**</span>
+<span style="color: #177500">     * Properties of the imminent secure link if the pairing procedure is</span>
+<span style="color: #177500">     * allowed to continue.</span>
+<span style="color: #177500">     */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_key_size</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_authenticated</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_sc</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_bonding</span>:<span style="color: #1C01CE">1</span>;
 };
 </pre></div>
                         
