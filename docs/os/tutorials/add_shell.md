@@ -21,9 +21,9 @@ Ensure that you have met the following prerequisites before continuing with this
 
 Since all we're doing is adding the shell and console capability to a project, we assume 
 that you have worked through at least some of the other tutorials, and have an existing project.
-For this example, we'll be modifying the `bletiny` app to enable 
-the shell and console connectivity.
-We call our target `myble`.  You can create the target using any name you choose. 
+For this example, we'll be modifying the [bletiny](bletiny_project.md) project to enable
+the shell and console connectivity. We'll be calling our app myble as in that project as well. 
+Feel free to use whatever project you'd like though.
 
 <br>
 
@@ -119,20 +119,13 @@ To test and make sure that the Shell is running, first just hit <return>:
 004543 compat>
 ```
 
-bletiny app uses legacy shell API to register command callbacks. That's why the prompt says "compat". All the legacy commands are registered to compat module to provide backward compatibility.
+bletiny app uses the 1.0 shell API to register command callbacks. Commands registered using the 1.0 shell API are automatically registered to the "compat" module and have "compat" for the prompt.
 
 ```no-highlight
 069822 compat> help
 070196 help
 070196 b
-070197 compat>
-```
-
-You can run bletiny commands exactly the same way as in the old shell:
-
-```no-highlight
 098131 compat> b help
-098394 module: 1, command: b
 098394 Available commands:
 098395  adv
 098395  conn

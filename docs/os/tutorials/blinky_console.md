@@ -37,6 +37,7 @@ Modify the system configuration settings to enable Shell and Console ticks and p
 syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
+    SHELL_PROMPT_MODULE: 1
 ```
 
 <br>
@@ -174,17 +175,17 @@ To test and make sure that the Shell is running, first just hit <return>:
 You can try some commands:
 
 ```no-highlight
-014930 shell> help
-015242 Available modules:
-015242 os
-015243 To select a module, enter 'select <module name>'.
-015244 shell> os <TAB>
-015525 help
-015525 tasks                         show os tasks
-015526 mpool                         show system mpool
-015526 date                          show system date
-015527 shell> os date
-016923 module: 0, command: date
-016924 1970-01-01T00:02:12.218736+00:00
-016925 shell>
+003005 shell> help
+003137 Available modules:
+003137 os
+003138 prompt
+003138 To select a module, enter 'select <module name>'.
+003140 shell> prompt
+003827 help
+003827 ticks                         shell ticks command
+004811 shell> prompt ticks off
+005770  Console Ticks off
+shell> prompt ticks on
+006404  Console Ticks on
+006404 shell>
 ```
