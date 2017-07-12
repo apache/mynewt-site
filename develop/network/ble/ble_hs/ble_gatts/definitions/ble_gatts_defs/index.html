@@ -303,17 +303,6 @@
                 
   
   
-    <li ><a href="../../../init/init/">Init and config</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../../ble_gap/ble_gap/">GAP</a>
   
   
@@ -373,7 +362,7 @@
   
   
     <li><a href="
-  ../../functions/ble_gatts_count_cfg/
+  ../../functions/ble_gatts_add_svcs/
 ">Functions</a>
   
   
@@ -539,10 +528,10 @@
 
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span> {
     <span style="color: #177500">/**</span>
-<span style="color: #177500">     * Pointer to first element in a uint8_t[16]; use the BLE_UUID16 macro for</span>
-<span style="color: #177500">     * 16-bit UUIDs; NULL if there are no more characteristics in the service.</span>
+<span style="color: #177500">     * Pointer to characteristic UUID; use BLE_UUIDxx_DECLARE macros to declare</span>
+<span style="color: #177500">     * proper UUID; NULL if there are no more characteristics in the service.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*uuid128</span>;
+    <span style="color: #A90D91">const</span> <span style="color: #000000">ble_uuid_t</span> <span style="color: #000000">*uuid</span>;
 
     <span style="color: #177500">/**</span>
 <span style="color: #177500">     * Callback that gets executed when this characteristic is read or</span>
@@ -563,6 +552,9 @@
     <span style="color: #177500">/** Specifies the set of permitted operations for this characteristic. */</span>
     <span style="color: #000000">ble_gatt_chr_flags</span> <span style="color: #000000">flags</span>;
 
+    <span style="color: #177500">/** Specifies minimum required key size to access this characteristic. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">min_key_size</span>;
+
     <span style="color: #177500">/** </span>
 <span style="color: #177500">     * At registration time, this is filled in with the characteristic&#39;s value</span>
 <span style="color: #177500">     * attribute handle.</span>
@@ -582,10 +574,10 @@
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">type</span>;
 
     <span style="color: #177500">/**</span>
-<span style="color: #177500">     * Pointer to first element in a uint8_t[16]; use the BLE_UUID16 macro for</span>
-<span style="color: #177500">     * 16-bit UUIDs.</span>
+<span style="color: #177500">     * Pointer to service UUID; use BLE_UUIDxx_DECLARE macros to declare</span>
+<span style="color: #177500">     * proper UUID; NULL if there are no more characteristics in the service.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*uuid128</span>;
+    <span style="color: #A90D91">const</span> <span style="color: #000000">ble_uuid_t</span> <span style="color: #000000">*uuid</span>;
 
     <span style="color: #177500">/**</span>
 <span style="color: #177500">     * Array of pointers to other service definitions.  These services are</span>
@@ -605,13 +597,16 @@
 
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_dsc_def</span> {
     <span style="color: #177500">/**</span>
-<span style="color: #177500">     * The first element in a uint8_t[16]; use the BLE_UUID16 macro for 16-bit</span>
-<span style="color: #177500">     * UUIDs; NULL if there are no more descriptors in the characteristic.</span>
+<span style="color: #177500">     * Pointer to descriptor UUID; use BLE_UUIDxx_DECLARE macros to declare</span>
+<span style="color: #177500">     * proper UUID; NULL if there are no more characteristics in the service.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*uuid128</span>;
+    <span style="color: #A90D91">const</span> <span style="color: #000000">ble_uuid_t</span> <span style="color: #000000">*uuid</span>;
 
     <span style="color: #177500">/** Specifies the set of permitted operations for this descriptor. */</span>
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">att_flags</span>;
+
+    <span style="color: #177500">/** Specifies minimum required key size to access this descriptor. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">min_key_size</span>;
 
     <span style="color: #177500">/** Callback that gets executed when the descriptor is read or written. */</span>
     <span style="color: #000000">ble_gatt_access_fn</span> <span style="color: #000000">*access_cb</span>;
@@ -668,7 +663,7 @@
 <span style="color: #177500">         */</span>
         <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_dsc_def</span> <span style="color: #000000">*dsc</span>;
     };
-};
+}
 </pre></div>
 
 
@@ -676,100 +671,83 @@
 <span style="color: #177500"> * Context passed to the registration callback; represents the GATT service,</span>
 <span style="color: #177500"> * characteristic, or descriptor being registered.</span>
 <span style="color: #177500"> */</span>
-<span style="color: #A90D91">union</span> <span style="color: #000000">ble_gatt_register_ctxt</span> {
-    <span style="color: #177500">/** Service; valid if op == BLE_GATT_REGISTER_OP_SVC. */</span>
-    <span style="color: #A90D91">struct</span> {
-        <span style="color: #177500">/** The ATT handle of the service definition attribute. */</span>
-        <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">handle</span>;
-
-        <span style="color: #177500">/**</span>
-<span style="color: #177500">         * The service definition representing the service being</span>
-<span style="color: #177500">         * registered.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svc_def</span>;
-    } <span style="color: #000000">svc</span>;
-
-    <span style="color: #177500">/** Characteristic; valid if op == BLE_GATT_REGISTER_OP_CHR. */</span>
-    <span style="color: #A90D91">struct</span> {
-        <span style="color: #177500">/** The ATT handle of the characteristic definition attribute. */</span>
-        <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">def_handle</span>;
-
-        <span style="color: #177500">/** The ATT handle of the characteristic value attribute. */</span>
-        <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">val_handle</span>;
-
-        <span style="color: #177500">/**</span>
-<span style="color: #177500">         * The characteristic definition representing the characteristic being</span>
-<span style="color: #177500">         * registered.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span> <span style="color: #000000">*chr_def</span>;
-
-        <span style="color: #177500">/**</span>
-<span style="color: #177500">         * The service definition corresponding to the characteristic&#39;s parent</span>
-<span style="color: #177500">         * service.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svc_def</span>;
-    } <span style="color: #000000">chr</span>;
-
-    <span style="color: #177500">/** Descriptor; valid if op == BLE_GATT_REGISTER_OP_DSC. */</span>
-    <span style="color: #A90D91">struct</span> {
-        <span style="color: #177500">/** The ATT handle of the descriptor definition attribute. */</span>
-        <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">handle</span>;
-
-        <span style="color: #177500">/**</span>
-<span style="color: #177500">         * The descriptor definition corresponding to the descriptor being</span>
-<span style="color: #177500">         * registered.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_dsc_def</span> <span style="color: #000000">*dsc_def</span>;
-
-        <span style="color: #177500">/**</span>
-<span style="color: #177500">         * The characteristic definition corresponding to the descriptor&#39;s</span>
-<span style="color: #177500">         * parent characteristic.</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span> <span style="color: #000000">*chr_def</span>;
-
-        <span style="color: #177500">/**</span>
-<span style="color: #177500">         * The service definition corresponding to the descriptor&#39;s grandparent</span>
-<span style="color: #177500">         * service</span>
-<span style="color: #177500">         */</span>
-        <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svc_def</span>;
-    } <span style="color: #000000">dsc</span>;
-};
-</pre></div>
-
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">typedef</span> <span style="color: #A90D91">void</span> <span style="color: #000000">ble_gatt_register_fn</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">op</span>,
-                                  <span style="color: #A90D91">union</span> <span style="color: #000000">ble_gatt_register_ctxt</span> <span style="color: #000000">*ctxt</span>,
-                                  <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>);
-</pre></div>
-
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/**</span>
-<span style="color: #177500"> * Contains counts of resources required by the GATT server.  The contents of</span>
-<span style="color: #177500"> * this struct are generally used to populate a configuration struct before</span>
-<span style="color: #177500"> * the host is initialized.</span>
-<span style="color: #177500"> */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_resources</span> {
-    <span style="color: #177500">/** Number of services. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">svcs</span>;
-
-    <span style="color: #177500">/** Number of included services. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">incs</span>;
-
-    <span style="color: #177500">/** Number of characteristics. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">chrs</span>;
-
-    <span style="color: #177500">/** Number of descriptors. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">dscs</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_register_ctxt</span> {
+    <span style="color: #177500">/**</span>
+<span style="color: #177500">     * Indicates the gatt registration operation just performed.  This is</span>
+<span style="color: #177500">     * equal to one of the following values:</span>
+<span style="color: #177500">     *     o BLE_GATT_REGISTER_OP_SVC</span>
+<span style="color: #177500">     *     o BLE_GATT_REGISTER_OP_CHR</span>
+<span style="color: #177500">     *     o BLE_GATT_REGISTER_OP_DSC</span>
+<span style="color: #177500">     */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">op</span>;
 
     <span style="color: #177500">/**</span>
-<span style="color: #177500">     * Number of client characteristic configuration descriptors.  Each of</span>
-<span style="color: #177500">     * these also contributes to the total descriptor count.</span>
+<span style="color: #177500">     * The value of the op field determines which field in this union is valid.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">cccds</span>;
+    <span style="color: #A90D91">union</span> {
+        <span style="color: #177500">/** Service; valid if op == BLE_GATT_REGISTER_OP_SVC. */</span>
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #177500">/** The ATT handle of the service definition attribute. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">handle</span>;
 
-    <span style="color: #177500">/** Total number of ATT attributes. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attrs</span>;
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * The service definition representing the service being</span>
+<span style="color: #177500">             * registered.</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svc_def</span>;
+        } <span style="color: #000000">svc</span>;
+
+        <span style="color: #177500">/** Characteristic; valid if op == BLE_GATT_REGISTER_OP_CHR. */</span>
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #177500">/** The ATT handle of the characteristic definition attribute. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">def_handle</span>;
+
+            <span style="color: #177500">/** The ATT handle of the characteristic value attribute. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">val_handle</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * The characteristic definition representing the characteristic</span>
+<span style="color: #177500">             * being registered.</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span> <span style="color: #000000">*chr_def</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * The service definition corresponding to the characteristic&#39;s</span>
+<span style="color: #177500">             * parent service.</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svc_def</span>;
+        } <span style="color: #000000">chr</span>;
+
+        <span style="color: #177500">/** Descriptor; valid if op == BLE_GATT_REGISTER_OP_DSC. */</span>
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #177500">/** The ATT handle of the descriptor definition attribute. */</span>
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">handle</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * The descriptor definition corresponding to the descriptor being</span>
+<span style="color: #177500">             * registered.</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_dsc_def</span> <span style="color: #000000">*dsc_def</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * The characteristic definition corresponding to the descriptor&#39;s</span>
+<span style="color: #177500">             * parent characteristic.</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span> <span style="color: #000000">*chr_def</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * The service definition corresponding to the descriptor&#39;s</span>
+<span style="color: #177500">             * grandparent service</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">*svc_def</span>;
+        } <span style="color: #000000">dsc</span>;
+    };
 };
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">typedef</span> <span style="color: #A90D91">void</span> <span style="color: #000000">ble_gatt_register_fn</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_register_ctxt</span> <span style="color: #000000">*ctxt</span>,
+                                  <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>);
 </pre></div>
                         
                         <div class="row">
@@ -788,8 +766,8 @@
     </li>
     <li class="pull-right">
     
-    <a href=../../functions/ble_gatts_count_cfg/>
-        Next: ble_gatts_count_cfg
+    <a href=../../functions/ble_gatts_add_svcs/>
+        Next: ble_gatts_add_svcs
         <span class="fa fa-arrow-right"></span>
     </a>
     
