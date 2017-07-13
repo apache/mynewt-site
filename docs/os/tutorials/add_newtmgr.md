@@ -79,9 +79,11 @@ syscfg.vals:
     CRASH_TEST_NEWTMGR: 1
     RUNTEST_NEWTMGR: 1
     SHELL_TASK: 1
+    SHELL_NEWTMGR: 1
 ```
+<br>
 The first five configuration settings enable support for the Newt Manager `log`, `stat`, `config`, `crash`, 
-and `run` commands. The `SHELL_TASK` setting enables the shell for serial transport.
+and `run` commands. The `SHELL_TASK` setting enables the shell for serial transport. The `SHELL_NEWTMGR` setting enables newtmgr support in the shell.
 
 Note that you may need to override additional configuration settings that are specific to each package to customize the 
 package functionality.
@@ -176,40 +178,43 @@ Issue the `echo` command to ensure that your application is communicating with t
 hello
 
 ```
-
+<br>
 Test your application to ensure that it can process a Newt Manager command that is supported by a different package.
 Issue the `stat` command to see the BLE stats. 
 
 ```no-highlight
 
-newtmgr -c myconn stat ble_att
-Return Code = 0
-Stats Name: ble_att
-  prep_write_req_tx: 0
-  indicate_req_tx: 0
-  write_rsp_tx: 0
-  find_info_req_tx: 0
-  read_rsp_rx: 0
-  read_group_type_rsp_tx: 0
-  indicate_req_rx: 0
-  find_type_value_rsp_tx: 0
+stat group: ble_att
+         0 error_rsp_rx
+         0 error_rsp_tx
+         0 exec_write_req_rx
+         0 exec_write_req_tx
+         0 exec_write_rsp_rx
+         0 exec_write_rsp_tx
+         0 find_info_req_rx
+         0 find_info_req_tx
+         0 find_info_rsp_rx
+         0 find_info_rsp_tx
+         0 find_type_value_req_rx
 
-       ...
+               ...
 
-  read_req_rx: 0
-  read_type_req_rx: 0
-  notify_req_tx: 0
-  mtu_rsp_tx: 0
-  find_type_value_req_rx: 0
-  read_blob_rsp_rx: 0
-  read_group_type_req_tx: 0
-  exec_write_req_tx: 0
+         0 read_type_req_tx
+         0 read_type_rsp_rx
+         0 read_type_rsp_tx
+         0 write_cmd_rx
+         0 write_cmd_tx
+         0 write_req_rx
+         0 write_req_tx
+         0 write_rsp_rx
+         0 write_rsp_tx
+
 ```
 
 Your application is now able to communicate with the newtmgr tool.
 
-
-###Other Configuration Options
+<br>
+### Other Configuration Options
 
 This section explains how to customize your application to use other Newt Manager protocol options.
 
@@ -220,7 +225,7 @@ and `syscfg.yml` files as follows:
 
 * Add the `mgmt/newtmgr/transport/ble` package to the `pkg.deps` parameter to enable BLE transport.
 * Add the `mgmt/newtmgr/transport/nmgr_shell` package to 
-the `pkg.deps` parameter, and add `SHELL_TASK: 1` to the `syscfg.vals` parameter to enable serial transport when your application also uses the [Shell](/os/modules/shell/shell.md).
+the `pkg.deps` parameter, and add `SHELL_TASK: 1` and `SHELL_NEWTMGR` to the `syscfg.vals` parameter to enable serial transport when your application also uses the [Shell](/os/modules/shell/shell.md).
 * Add the `mgmt/newtmgr/transport/nmgr_uart` package to the `pkg.deps` parameter to enable serial transport over a UART port. You can use this package instead of the `nmgr_shell` package when your application does not use the [Shell](/os/modules/shell/shell.md) or you want to use a dedicated UART port to communicate with newtmgr.  You can change the `NMGR_UART` and `NMGR_URART_SPEED` sysconfig values to specify a different port.
 
 <br>
@@ -239,7 +244,7 @@ set the configuration setting values in the `syscfg.vals` parameter as follows:
 
 * Add `OC_TRANSPORT_IP: 1` to enable IP transport. 
 * Add `OC_TRANSPORT_GATT: 1` to enable BLE transport.
-* Add `OC_TRANSPORT_SERIAL: 1` and `SHELL_TASK: 1`  to enable serial transport.
+* Add `OC_TRANSPORT_SERIAL: 1`, `SHELL_TASK: 1`, `SHELL_NEWTMGR:1` to enable serial transport.
 
 <br>
 
