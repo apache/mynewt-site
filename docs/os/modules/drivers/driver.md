@@ -1,6 +1,6 @@
 # Drivers
 
-###Description
+### Description
 
 Device drivers in the Mynewt context includes libraries that interface with devices external to the CPU. These devices are connected to the CPU via standard peripherals such as SPI, GPIO, I2C etc. Device drivers leverage the base HAL services in Mynewt to provide friendly abstractions to application developers. 
 
@@ -42,7 +42,7 @@ Device drivers in the Mynewt context includes libraries that interface with devi
 * Device drivers should be searchable. The plan is to have the newt tool offer a `newt pkg search` capability. This is work in progress. You are welcome to join the conversation on the dev@ mailing list!
 
 
-###Example
+### Example
 
 The Mynewt core repo includes an example of a driver using the HAL to provide extra functionality - the UART driver. It uses HAL GPIO and UART to provide multiple serial ports on the NRF52 (but allowed on other platforms too.)
 

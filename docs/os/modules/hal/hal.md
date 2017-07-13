@@ -1,6 +1,6 @@
 # Hardware Abstraction Layer
 
-###Description
+### Description
 
 The Hardware Abstraction Layer (HAL) includes a set of APIs 
 (Application Programmer Interface) to connect to 
@@ -14,7 +14,7 @@ to commonly used MCU components and peripherals to make development easier.
 Nothing in the HAL precludes the user of the underlying physical devices,
 it only limits the portability of the end application.
 
-###Example
+### Example
 
 A Mynewt contributor might write a light-switch 
 module (`libs/light`) that provides the functionality of an intelligent light 
@@ -29,7 +29,7 @@ The Mynewt team ensures that the underlying HAL devices all work equivalently
 through the HAL APIs. The contributors library is independent of the specifics
 of the hardware.  
 
-###Dependency
+### Dependency
 
 To include the HAL within your project,  simply add it to your package
 dependencies as follows:
@@ -40,7 +40,7 @@ pkg.deps:
     hw/hal
 ```
 
-###Platform Support
+### Platform Support
 
 Not all platforms (MCU and BSP) support all HAL devices. Consult your MCU
 or BSP documentation to find out if you have hardware support for the 
@@ -55,7 +55,7 @@ externals.
 Visit the [HAL architecture](./hal_architecture.md) page to get a understanding 
 of our current hal and its evolution.
 
-###Implementing HAL Interfaces
+### Implementing HAL Interfaces
 
 It might be that a specific HAL interface is not supported on your MCU or
 platform.  See the specific HAL documentation for that interface for tips

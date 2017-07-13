@@ -5,7 +5,7 @@ The set of Blinky tutorials show you how to create, build, and run  a "Hello Wor
 
 Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink a LED light on the target board.
 
-###Available Tutorials
+### Available Tutorials
 Tutorials are available for the following boards:
 
 * [Blinky on an Arduino Zero](/os/tutorials/arduino_zero.md)
@@ -27,7 +27,7 @@ Ensure that you meet the following prerequisites before continuing with one of t
 * Create a project space (directory structure) and populate it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section. 
 <br>
-###Overview of Steps
+### Overview of Steps
 These are the general steps to create, load and run the Blinky application on your board:
 
 * Create a project.

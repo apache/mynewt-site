@@ -25,7 +25,7 @@ The coredownload subcommand uses the following local flags:
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 The image command provides subcommands to manage core and image files on a device.  Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
 Sub-command  | Explanation
@@ -39,7 +39,7 @@ list         | The newtmgr image list command displays information for the image
 test         | The newtmgr test &lt;hex-image-hash&gt; command tests the image, identified by the `hex-image-hash` hash value, on next reboot.
 upload       | The newtmgr image upload &lt;image-file&gt; command uploads the `image-file` image file to a device.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

@@ -7,7 +7,7 @@ If you have an existing project that has a different application and you wish to
 <br>
 
 
-###Prerequisites
+### Prerequisites
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 
 * Have a STM32-E407 development board from Olimex. 
@@ -46,7 +46,7 @@ apache-mynewt-core
 
 <br>
 
-###<a name="create_targets"></a> Create the Targets
+### <a name="create_targets"></a> Create the Targets
 Create two targets for the STM32-E407 board - one for the bootloader and one for the Slinky application.
 
 Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `
@@ -129,7 +129,7 @@ $
 <br>
 
 
-###Connect to the Board
+### Connect to the Board
 
 * Connect the USB A-B type cable to the ARM-USB-TINY-H debugger connector. 
 * Connect the ARM-USB-Tiny-H debugger connector to your computer and the board.

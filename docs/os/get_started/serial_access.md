@@ -1,4 +1,4 @@
-#Using the Serial Port with Mynewt OS
+# Using the Serial Port with Mynewt OS
 
 Some of the projects and tutorials here will allow you to use a serial port
 to interact with your Mynewt project. While most modern PCs and laptops
@@ -24,7 +24,7 @@ So let's get started!
 
 <br>
 
-##Setup FT232H 
+## Setup FT232H 
 
 This is a great board because it's so easy to set up, and it can do Serial UART,
 SPI, I2C and GPIO as well. There's full documentation on the board [here](https://learn.adafruit.com/adafruit-ft232h-breakout/overview)
@@ -44,7 +44,7 @@ It should look like this:
 
 <br>
 
-##Setup Nordic Semiconductor NRF52DK
+## Setup Nordic Semiconductor NRF52DK
 
 On the NRF52DK developer kit board, the Rx pin is P0.08, so you'll attach your
 jumper wire from the Tx pin (D0) of the FT232H board here.
@@ -59,7 +59,7 @@ done, your wiring should look like this:
 
 <br>
 
-##Setup Arduino M0 Pro
+## Setup Arduino M0 Pro
 
 On the Arduino M0 Pro, the Tx and Rx pins are clearly labeled as such, as is the GND
 pin. Just make sure you wire Rx from the FT232H to TX on the M0 Pro, and vice-versa.
@@ -70,7 +70,7 @@ Your Arduino M0 Pro should look like this:
 
 <br>
 
-##Setup Serial Communications
+## Setup Serial Communications
 
 As mentioned earlier, we'll be using the built in `screen` command for this, but we'll still 
 need to know which serial port to connect to. So, before plugging in the FT232H Board, 

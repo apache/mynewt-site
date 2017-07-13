@@ -16,7 +16,7 @@ Read memory pool statistics from a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Reads and displays the memory pool statistics from a device.  Newtmgr uses the `conn_profile` connection profile to connect to the device.  It lists the following statistics for each memory pool: 
 
 * **name**: Memory pool name
@@ -26,7 +26,7 @@ Reads and displays the memory pool statistics from a device.  Newtmgr uses the `
 * **min**: The lowest number of free blocks that were available
 
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

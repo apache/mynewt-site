@@ -70,7 +70,7 @@ $ sudo apt-get install gdb-arm-none-eabi
 
 <br>
 
-###Install OpenOCD
+### Install OpenOCD
 
 OpenOCD (Open On-Chip Debugger) is open-source software that allows your
 computer to interface with the JTAG debug connector on a variety of boards.  A

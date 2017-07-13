@@ -23,7 +23,7 @@ apache-mynewt-core
 
 <br>
 
-###<a name="create_targets"></a> Create the Targets
+### <a name="create_targets"></a> Create the Targets
 
 Create two targets for the nRF52-DK board - one for the bootloader and one for the Slinky application.
 

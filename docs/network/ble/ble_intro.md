@@ -25,11 +25,20 @@ NimBLE supports features from older specifications including,
 * LE Ping
 * 32 bits UUID
 * L2CAP Connection Oriented Channels
-<br>
-
+<br>
+
 ### Components
 
-A Bluetooth low energy stack (NimBLE included) consists of two components with several subcomponents:* **Controller**    * **Physical Layer**: adaptive frequency-hopping Gaussian Frequency Shift Keying (GFSK) radio using 40 RF channels (0-39), with 2 MHz spacing.    * **Link Layer**: with one of five states (Standby, Advertising, Scanning, Initiating, Connection states) active at any time    * **Host**    * **Logical Link Control and Adaptation Protocol (L2CAP)**: provides logical channels, named L2CAP channels, which are multiplexed over one or more logical links to provide packet segmentation and reassembly, flow control, error control, streaming, QoS etc.     * **Security Manager (SM)**: uses Security Manager Protocol (SMP) for pairing and transport specific key distribution for securing radio communication     * **Attribute protocol (ATT)**: allows a device (*Server*) to expose certain pieces of data, known as *Attributes*, to another device (*Client*)
+A Bluetooth low energy stack (NimBLE included) consists of two components with several subcomponents:
+
+* **Controller**
+    * **Physical Layer**: adaptive frequency-hopping Gaussian Frequency Shift Keying (GFSK) radio using 40 RF channels (0-39), with 2 MHz spacing.
+    * **Link Layer**: with one of five states (Standby, Advertising, Scanning, Initiating, Connection states) active at any time
+
+* **Host**
+    * **Logical Link Control and Adaptation Protocol (L2CAP)**: provides logical channels, named L2CAP channels, which are multiplexed over one or more logical links to provide packet segmentation and reassembly, flow control, error control, streaming, QoS etc.
+    * **Security Manager (SM)**: uses Security Manager Protocol (SMP) for pairing and transport specific key distribution for securing radio communication
+    * **Attribute protocol (ATT)**: allows a device (*Server*) to expose certain pieces of data, known as *Attributes*, to another device (*Client*)
     * **Generic Attribute Profile (GATT)**: a framework for using the ATT protocol to exchange attributes encapsulated as *Characteristics* or *Services* 
     * **Generic Access Profile (GAP)**: a base profile which all Bluetooth devices implement, which in the case of LE, defines the Physical Layer, Link Layer, L2CAP, Security Manager, Attribute Protocol and Generic Attribute Profile. 
     * **Host Controller Interface (HCI)**: the interface between the host and controller either through software API or by a hardware interface such as SPI, UART or USB.

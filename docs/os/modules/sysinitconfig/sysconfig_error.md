@@ -1,4 +1,4 @@
-##Validation and Error Messages 
+## Validation and Error Messages 
 
 With multiple packages defining and overriding system configuration settings, it 
 is easy to introduce conflicts and violations that are difficult to find.  The 
@@ -16,7 +16,7 @@ The command outputs the package setting definitions and values after it
 outputs the error messages. It is easy to miss the error messages at the top. 
 
 
-###Value Override Violations
+### Value Override Violations
 
 The newt tool uses package priorities to resolve override conflicts. It uses 
 the value override from the highest priority package when multiple 
@@ -28,7 +28,7 @@ different values. And no higher priority package overrides the setting.
 * Priority Violation - A package overrides a setting defined by a package with higher or 
 equal priority (TODO: Change error message to indicate a more general priority violation instead of only lateral overrides)
 
-####Example: Ambiguity Violation Error Message
+#### Example: Ambiguity Violation Error Message
 
 The following example shows the error message that newt outputs for an ambiguity violation:
 
@@ -68,7 +68,7 @@ syscfg.vals:
 
 ```
 
-####Example: Priority Violation Error Message
+#### Example: Priority Violation Error Message
 
 The following example shows the error message that newt outputs for a lateral violation where a package tries to change the setting that was defined by another package at the same priority level:
 
@@ -103,7 +103,7 @@ syscfg.vals:
 ```
 <br>
 
-###Flash Area Violations
+### Flash Area Violations
 
 For `flash_owner` type setting definitions, newt checks 
 for the following violations:
@@ -111,7 +111,7 @@ for the following violations:
 * An undefined flash area is assigned to a setting.
 * A flash area is assigned to multiple settings.
 
-####Example: Undefined Flash Area Error Message
+#### Example: Undefined Flash Area Error Message
 
 The following example shows the error message that newt outputs for an undefined flash area.
 
@@ -145,7 +145,7 @@ syscfg.vals:
 
 ```
 
-####Example: Multiple Flash Area Assignment Error Message
+#### Example: Multiple Flash Area Assignment Error Message
 
 The following example shows the error message that newt outputs when multiple 
 settings are assigned the same flash area:
@@ -197,7 +197,7 @@ syscfg.vals:
 
 ```
 <br>
-###Restriction Violations
+### Restriction Violations
 For setting definitions with `restrictions` specified, newt checks for 
 the following violations:
 
@@ -205,7 +205,7 @@ the following violations:
 * For a setting with expression restrictions, some required setting 
 values in the expressions evaluate to false. 
 
-####Example: $notnull Restriction Violation Error Message
+#### Example: $notnull Restriction Violation Error Message
 
 The following example shows the error message that newt outputs when
 a setting with `$notnull` restriction does not have a value:
@@ -235,7 +235,7 @@ syscfg.defs:
         restrictions:
             - $notnull
 ```
-####Example: Expression Restriction Violation Error Message
+#### Example: Expression Restriction Violation Error Message
 
 The following example shows the error message that newt outputs for 
 an expression restriction violation:
@@ -272,14 +272,14 @@ syscfg.vals:
     CONFIG_FCB: 1
 ```
 <br>
-###Task Priority Violations
+### Task Priority Violations
 
 For `task_priority` type setting definitions, newt checks for the following violations:
 
 * A task priority number is assigned to multiple settings.  
 * The task priority number is greater than 239.
 
-####Example: Duplicate Task Priority Assignment Error Message
+#### Example: Duplicate Task Priority Assignment Error Message
 
 The following example shows the error message that newt outputs when
 a task priority number is assigned to multiple settings.
@@ -298,7 +298,7 @@ The above error occurs because the `apps/slinky` package defines a `SLINKY_TASK_
 setting with a default task priority of 1 and the `sys/shell` package also defines a 
 `SHELL_TASK_PRIORITY` setting with a default task priority of 1.
 
-####Example: Invalid Task Priority Error Message
+#### Example: Invalid Task Priority Error Message
 
 The following example shows the error message that newt outputs when
 a setting is assigned an invalid task priority value:
@@ -316,7 +316,7 @@ with 240 for the default task priority value.
 
 
 <br>
-###Duplicate System Configuration Setting Definition
+### Duplicate System Configuration Setting Definition
 
 A setting definition must be unique.  Newt checks that only one package in the 
 target defines a setting. The following example shows the error message that newt 

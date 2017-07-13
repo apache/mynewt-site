@@ -5,7 +5,7 @@ logging of information within a Mynewt application.
 
 <br>
 
-###Description
+### Description
 
 Logging API is provided in `apache-mynewt-core/sys/log/include/log/log.h`.
 

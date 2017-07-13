@@ -16,10 +16,10 @@ Send a reset request to a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Resets a device.  Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

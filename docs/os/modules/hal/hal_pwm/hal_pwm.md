@@ -2,7 +2,7 @@
 
 The hardware independent interface to Pulse Width Modulators
 
-###Description
+### Description
 
 Pulse Width Modulators (PWMs) are hardware devices that output digital waveforms
 with programmable duty cycle and frequency.  They use a digital waveform
@@ -12,11 +12,11 @@ drive LEDs at various intensities, and control DC or servo motors.
 
 For a description of PSM, see [wikipedia](https://en.wikipedia.org/wiki/Pulse-width_modulation)
 
-###Definition
+### Definition
 
 [hal_pwm.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_pwm.h)
 
-###HAL_PWM Theory Of Operation
+### HAL_PWM Theory Of Operation
 
 The HAL_PWM interface was designed with some specific use cases in mind.  It
 was also designed to exploit a subset of the functionality provided by 

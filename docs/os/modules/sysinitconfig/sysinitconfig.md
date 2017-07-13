@@ -1,5 +1,5 @@
 
-#System Configuration and Initialization
+# System Configuration and Initialization
 
 This guide describes how Mynewt manages system configuration and initialization. It shows you how to 
 tell Mynewt to use default or customized values to initialize packages that you develop or use to build a target. This guide:
@@ -23,7 +23,7 @@ The benefits with this approach include:
 
 <br>
 
-###System Configuration Setting Definitions and Values 
+### System Configuration Setting Definitions and Values 
 
 A package can optionally:
 
@@ -112,7 +112,7 @@ defined in the BSP flash map for your target board.
 
 <br>
 
-####Examples of configuration settings
+#### Examples of configuration settings
 
 **Example 1:** The following example is an excerpt from the `sys/log` package `syscfg.yml` file. It defines the 
 `LOG_LEVEL` configuration setting to specify the log level and the `LOG_NEWTMGR` configuration setting to specify whether
@@ -187,7 +187,7 @@ Note that the `fs/nffs/syscfg.yml` file indicates that the `NFFS_FLASH_AREA` set
 
 <br>
 
-###Overriding System Configuration Setting Values
+### Overriding System Configuration Setting Values
 
 A package may use the `vals` parameter in its `syscfg.yml` file to override the configuration values defined
 by other packages.  This mechanism allows:
@@ -212,7 +212,7 @@ Note: The newt tool ignores overrides of undefined system configuration settings
 
 <br>
 
-####Resolving Override Conflicts
+#### Resolving Override Conflicts
 
 The newt tool uses package priorities to determine whether a package can override a value and resolve conflicts when multiple packages override the same system configuration setting. The following rules apply:
 
@@ -236,7 +236,7 @@ package `syscfg.yml` files.
 
 <br>
 
-####Examples of Overrides
+#### Examples of Overrides
 
 **Example 4:** The following example is an excerpt from the `apps/slinky` package `syscfg.yml` file.  The application package overrides, 
 in addition to other packages, the `sys/log` package system configuration settings defined in *Example 1*. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
@@ -291,7 +291,7 @@ syscfg.vals:
 
 <br>
 
-###Generated syscfg.h
+### Generated syscfg.h
 
 The newt tool processes all the package `syscfg.yml` files and generates the
 `<target-path>/generated/include/syscfg/syscfg.h` include file with `#define` statements for each system configuration 
@@ -449,7 +449,7 @@ sysinit_app(void)
 
 <br>
 
-###Conditional Configurations
+### Conditional Configurations
 You can use the system configuration setting values to conditionally specify parameter values
 in `pkg.yml` and `syscfg.yml` files. The syntax is:
 
