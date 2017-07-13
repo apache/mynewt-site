@@ -28,6 +28,9 @@ different values. And no higher priority package overrides the setting.
 * Priority Violation - A package overrides a setting defined by a package with higher or 
 equal priority. 
 
+    **Note:** A package may override the default value for a setting that it defines. For example, a package defines a setting with a default value but needs to conditionally override the value based on another setting value.
+
+<br>
 ####Example: Ambiguity Violation Error Message
 
 The following example shows the error message that newt outputs for an ambiguity violation:
