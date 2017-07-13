@@ -62,7 +62,7 @@ Create two targets - one for the bootloader and one for the nrf52 board.
 <font color="#F2853F">
 Note: The correct bsp must be chosen for the board you are using. </font>
 
-* For the Nordic Preview Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52pdk (as shown below)
+* For the Nordic Preview Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52840pdk (as shown below)
 * For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)
 * For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)
 
@@ -70,22 +70,22 @@ Note: The correct bsp must be chosen for the board you are using. </font>
 ```hl_lines="3 8"
 $ newt target create blink_nordic
 $ newt target set blink_nordic app=apps/blinky
-$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set blink_nordic bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
 $ newt target set blink_nordic build_profile=debug
 
 $ newt target create nrf52_boot
 $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
 $ newt target set nrf52_boot build_profile=optimized
 
 $ newt target show 
 targets/blink_nordic
     app=apps/blinky
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
     build_profile=debug
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
     build_profile=optimized
 ```
 

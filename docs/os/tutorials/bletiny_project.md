@@ -59,11 +59,11 @@ targets/nrf52_boot
 
 <br>
 
-Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52pdk version). 
+Define the targets further. Note that you are using the example app `bletiny` for the application target. Set the bsp correctly (nrf52840pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52840pdk version).
 
 ```
-$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
-Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
+Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52840pdk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
 Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
 $ newt target set myble build_profile=optimized
@@ -77,7 +77,7 @@ Use the same `newt target set` command to set the following definition for the b
 ```
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
     build_profile=optimized
 ```
 
@@ -91,12 +91,12 @@ targets/my_blinky_sim
     build_profile=debug
 targets/myble
     app=@apache-mynewt-core/apps/bletiny
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
     build_profile=optimized
     cflags=-DSTATS_NAME_ENABLE 
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk
     build_profile=optimized
 ```
 

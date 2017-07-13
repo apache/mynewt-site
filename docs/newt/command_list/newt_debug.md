@@ -32,4 +32,4 @@ debug         | Opens the appropriate debugging session for the image built for 
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-debug       | newt debug myble2  | Opens J-Link connection and starts a GNU gdb session to debug bin/myble2/apps/bletiny/bletiny.elf when the target is as follows: <br> <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE 
+debug       | newt debug myble2  | Opens J-Link connection and starts a GNU gdb session to debug bin/myble2/apps/bletiny/bletiny.elf when the target is as follows: <br> <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE
