@@ -37,6 +37,10 @@ The tutorials fall into a few broad categories. Some examples in each category a
     * [Adding a unit test for a package](unit_test.md)
     * [Adding task to manage multiple events](event_queue.md)
 
+* Tooling
+    * [SEGGER RTT](segger_rtt.md)
+    * [SEGGER SystemView](segger_sysview.md)
+
 <br>
 
 * Bluetooth Low Energy
