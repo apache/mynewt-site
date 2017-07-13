@@ -20,7 +20,7 @@ Build one or more targets.
 ```
 
 #### Description
-Compiles, links, and builds an ELF binary for the target named &lt;target-name&gt;.  It builds an ELF file for the application specified by the `app` variable for the `target-name` target. The image can be loaded and run on the hardware specified by the `bsp` variable for the target. The command creates the 'bin/' directory under the project's base directory (that the `newt new` command created) and stores the executable in the 'bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt;' directory.
+Compiles, links, and builds an ELF binary for the target named &lt;target-name&gt;.  It builds an ELF file for the application specified by the `app` variable for the `target-name` target. The image can be loaded and run on the hardware specified by the `bsp` variable for the target. The command creates the 'bin/' directory under the project's base directory (that the `newt new` command created) and stores the executable in the 'bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt;' directory.  A `manifest.json` build manifest file is also generated in the same directory. This build manifest contains information such as build time, version, image name, a hash to identify the image, packages actually used to create the build, and the target for which the image is built.
 
 You can specify a list of target names, separated by a space, to build multiple targets. 
 
