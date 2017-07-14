@@ -26,7 +26,7 @@ Performs the Limited or General Discovery Procedures.
 | *Parameter* | *Description* |
 |-------------|---------------|
 | own\_addr\_type | The type of address the stack should use for itself when sending scan requests.  Valid values are: <ul><li>BLE\_ADDR\_TYPE\_PUBLIC</li> <li>BLE\_ADDR\_TYPE\_RANDOM</li> <li>BLE\_ADDR\_TYPE\_RPA\_PUB\_DEFAULT</li> <li>BLE\_ADDR\_TYPE\_RPA\_RND\_DEFAULT</li></ul> This parameter is ignored unless active scanning is being used. |
-| duration | The duration of the discovery procedure. On expiration, the procedure ends and a BLE\_GAP\_EVENT\_DISC\_COMPLETE event is reported.  Units are as per Bluetooth spec.  Specify BLE\_HS\_FOREVER for no expiration. |
+| duration | The duration of the discovery procedure. On expiration, the procedure ends and a BLE\_GAP\_EVENT\_DISC\_COMPLETE event is reported. Unit is 10ms.  Specify 0 for no expiration.       |
 | period | Time interval between each scan (valid when duration non-zero). |
 | filter\_duplicates | Filter duplicates flag. |
 | filter\_policy | Filter policy as specified by Bluetooth specification. |

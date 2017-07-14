@@ -24,8 +24,7 @@ Initiates a connect procedure.
 | *Parameter* | *Description* |
 |-------------|---------------|
 | own\_addr\_type | The type of address the stack should use for itself during connection establishment. <ul><li>BLE\_ADDR\_TYPE\_PUBLIC</li> <li>BLE\_ADDR\_TYPE\_RANDOM</li> <li>BLE\_ADDR\_TYPE\_RPA\_PUB\_DEFAULT</li> <li>BLE\_ADDR\_TYPE\_RPA\_RND\_DEFAULT</li></ul> |
-| peer\_addr\_type | The peer's address type.  One of: <ul><li>BLE\_HCI\_CONN\_PEER\_ADDR\_PUBLIC</li> <li>BLE\_HCI\_CONN\_PEER\_ADDR\_RANDOM</li> <li>BLE\_HCI\_CONN\_PEER\_ADDR\_PUBLIC\_IDENT</li> <li>BLE\_HCI\_CONN\_PEER\_ADDR\_RANDOM\_IDENT</li> <li>BLE\_GAP\_ADDR\_TYPE\_WL</li></ul> |
-| peer\_addr | The identity address of the peer to connect to. This parameter is ignored when the white list is used. |
+| peer\_addr | The identity address of the peer to connect to. White list is used when this parameters is set to NULL. |
 | duration\_ms | The duration of the discovery procedure. On expiration, the procedure ends and a BLE\_GAP\_EVENT\_DISC\_COMPLETE event is reported.  Units are milliseconds. |
 | phy\_mask | Define on which PHYs connection attempt should be done |
 | phy\_1m\_conn\_params | Additional arguments specifying the particulars of the connect procedure. When BLE_GAP_LE_PHY_1M_MASK is set in phy_mask this parameter can be specify to null for default values. |
