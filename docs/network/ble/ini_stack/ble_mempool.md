@@ -1,4 +1,4 @@
-##  Create the System Memory Buffer Pool
+## Create the System Memory Buffer Pool
 
 The Nimble stack allocates packet buffers (called mbufs) from the system memory buffer pool (msys). The system memory buffer pool and mbufs are described in the OS manual; we suggest reading that section in order to become familiar with mbufs if you are not already familiar with them. Note that the application itself (the unique application code that you are writing) does not need to use mbufs and none of the BLE host API exposed to the application developer uses them. However, the Nimble stack does require the existence of the system memory pool.
 

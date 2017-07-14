@@ -1,4 +1,4 @@
-##Enabling Newt Manager (newtmgr) in a project
+## Enabling Newt Manager (newtmgr) in a project
 
 <br>
 
@@ -35,7 +35,7 @@ Now the application will know to pull in the newtmgr code.
 
 <br>
 
-###Modify the source
+### Modify the source
 
 First, you'll need to include the newtmgr header file:
 
@@ -114,7 +114,7 @@ Newtmgr requires a connection profile in order to connect to your board. If you 
 
 <br>
 
-###Connecting with your app
+### Connecting with your app
 
 Once you have a connection profile set up, you can connect to your device with ```newtmgr -c myconn <command>``` to run commands agains your app. 
     

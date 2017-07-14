@@ -3,7 +3,7 @@
 
 The hardware independent interface to system time.
 
-###Description
+### Description
 
 Contains several different interface.
 
@@ -11,11 +11,11 @@ Contains several different interface.
 * Interfaces to convert between CPU time and clock time (microseconds etc.)
 * An Interface to set up a software timer based on CPU time.
 
-###Definition
+### Definition
 
 [hal_cputime.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_cputime.h)
 
-###CPU Time
+### CPU Time
 
 The CPU time is not the same as the [os_time](TBD).  Typically,
 the os_time is set to a much slower tick rate than the CPU time.  The CPU

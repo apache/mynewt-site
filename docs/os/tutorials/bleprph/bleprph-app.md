@@ -1,6 +1,6 @@
 ## BLE Peripheral Project
 
-###Overview
+### Overview
 
 <br>
 
@@ -9,7 +9,7 @@ let's try out a BLE Peripheral App to see how it all works.
 
 <br>
 
-###Prerequisites
+### Prerequisites
 
 <br>
 
@@ -19,7 +19,7 @@ which is a free app to browse and connect to BLE Peripheral devices.
 
 <br>
 
-###Create a New Target
+### Create a New Target
 
 You can create a new project instead, but this tutorial will simply use the previously created bletiny project and add a new target for the BLE Peripheral
 

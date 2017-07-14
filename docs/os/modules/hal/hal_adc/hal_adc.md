@@ -2,17 +2,17 @@
 
 The hardware independent interface to Analog To Digital Controllers
 
-###Description
+### Description
 
 Analog to Digital converters (ADCs) read analog values (voltage) and convert
 them to digital values to be used in your applications.  For a description
 of ADC, see [wikipedia](https://en.wikipedia.org/wiki/Analog-to-digital_converter)
 
-###Definition
+### Definition
 
 [hal_adc.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_adc.h)
 
-###HAL_ADCs Theory Of Operation
+### HAL_ADCs Theory Of Operation
 
 ADCs have different conversion rates, resolution (bits) and reference voltages.
 

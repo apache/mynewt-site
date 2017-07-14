@@ -1,4 +1,4 @@
-##Enabling The Console and Shell in a project
+## Enabling The Console and Shell in a project
 
 <br>
 
@@ -30,7 +30,7 @@ Feel free to use whatever project you'd like though.
 
 <br>
 
-###Modify the Dependencies and Configuration
+### Modify the Dependencies and Configuration
 
 The first thing you'll need to add is a few new dependencies for your app. To add shell support to 
 your app make sure the following `pkg.deps` are defined in your target's pkg.yml file:
@@ -107,7 +107,7 @@ Tutorial for more information on setting up your serial communications.
 
 <br>
 
-###Connecting with your app
+### Connecting with your app
 
 Once you have a connection set up, you can connect to your device with ```minicom -D /dev/tty.usbmodem<port> -b 115200``` to run connect
 to the console of your app. 

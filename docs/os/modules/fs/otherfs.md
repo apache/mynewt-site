@@ -55,7 +55,7 @@ nffs_init(void)
 }
 ```
 
-### Header Files 
+### Header Files
 To gain access to `fs/fs`'s registration interface, include the following header:
 
 ```c

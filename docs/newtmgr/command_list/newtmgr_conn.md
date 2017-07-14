@@ -16,7 +16,7 @@ Manage newtmgr connection profiles.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 The conn command provides subcommands to add, delete, and view configuration profiles.
 
 Sub-command  | Explanation
@@ -26,7 +26,7 @@ delete    | The newtmgr conn delete &lt;conn_profile&gt; command deletes the `co
 show      | The newtmgr conn show [conn_profile] command shows the information for the `conn_profile` connection profile. It shows information for all the connection profiles if `conn_profile` is not specified.
     
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

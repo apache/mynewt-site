@@ -1,32 +1,32 @@
 
-#Core OS Lesson: Tasks and Priority Management
+# Core OS Lesson: Tasks and Priority Management
 **Target Platform: Arduino M0 Pro** (or legacy Arduino Zero or Zero Pro, but not Arduino M0)
 
 This lesson is designed to teach core OS concepts and strategies encountered when 
 building applications using Mynewt. Specifically, this lesson will cover tasks, 
 simple multitasking, and priority management running on an Arduino M0 Pro.
 
-##Prerequisites
+## Prerequisites
 Before starting, you should read about Mynewt in the [*Introduction*](http://mynewt.apache.org/os/introduction/) 
 section and complete the [*QuickStart*](http://mynewt.apache.org/os/get_started/get_started/) 
 guide and the [*Blinky*](http://mynewt.apache.org/os/tutorials/arduino_zero/) tutorial. 
 Furthermore, it may be helpful to take a peek at the [*task documentation*](http://mynewt.apache.org/os/core_os/task/task/) 
 for additional insights.
 
-##Equipment
+## Equipment
 You will need the following equipment:
 
 -   Arduino M0 Pro (or legacy Arduino Zero or Zero Pro, but not Arduino M0)
 -   Computer with Mynewt installed
 -   USB to Micro USB Cable
 
-##Build Your Application
+## Build Your Application
 To save time, we will simply modify the Blinky app. We'll add the Task Management code to
 the Blinky app. Follow the [*Arduino Zero Blinky tutorial*](http://mynewt.apache.org/os/tutorials/arduino_zero/) 
 to create a new project and build your bootloader and application. Finally, build and 
 load the application to your Arduino to verify that everything is in order. Now let’s get started!
 
-##Create a New Task
+## Create a New Task
 The purpose of this section is to give an introduction to the important aspects of tasks 
 and how to properly initialize them. First, let’s define a second task called `work_task` 
 in main.c (located in apps/blinky/src):
@@ -150,7 +150,7 @@ os_task_init(&mytask, "mytask", mytask_handler, NULL,
             MYTASK_STACK_SIZE);
 ```
 
-##Task Priority, Preempting, and Context Switching
+## Task Priority, Preempting, and Context Switching
 A preemptive RTOS is one in which a higher priority task that is *ready to run* will preempt (i.e. take the 
 place of) the lower priority task which is *running*. When a lower priority task is preempted by a higher 
 priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new 
@@ -198,7 +198,7 @@ loops, then blink again for another three seconds while `work_task` sleeps.
 Voila, you should see that our prediction was correct! 
 
 
-###Priority Management Considerations
+### Priority Management Considerations
 When projects grow in scope, from blinking LEDs into more sophisticated applications, the number of 
 tasks needed increases alongside complexity. It remains important, then, that each of our tasks is 
 capable of doing its work within a reasonable amount of time.
@@ -217,7 +217,7 @@ executed during the millisecond delays in `blinky_task`, saving us idle time com
 
 **Note:** Defining the same priority for two tasks leads to somewhat undefined behavior and should be avoided.
 
-##Comparing Priority Strategies
+## Comparing Priority Strategies
 
 Instead of stepping through a bunch of changes to our blinky app, clone my task lesson application from 
 github and copy an existing target.
@@ -398,7 +398,7 @@ rate, Task B would take over a minute to finish one cycle.
 
 Feel free to play around with the testing parameters to study the different changes yourself!
 
-##Conclusion
+## Conclusion
 Moving forward, tasks are just the tip of the iceberg. The [*scheduler*](http://mynewt.apache.org/latest/os/core_os/context_switch/context_switch/), 
 [*event queues*](http://mynewt.apache.org/latest/os/core_os/event_queue/event_queue/), 
 [*semaphores*](http://mynewt.apache.org/latest/os/core_os/semaphore/semaphore/), and 

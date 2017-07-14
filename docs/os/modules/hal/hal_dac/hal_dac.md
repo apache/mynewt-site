@@ -4,16 +4,16 @@
 
 The hardware independent interface to Digital To Analog Converters.
 
-###Description
+### Description
 
 For a description of Digital to Analog Converters, see 
 [wikipedia](https://en.wikipedia.org/wiki/Digital-to-analog_converter)
 
-###Definition
+### Definition
 
 [hal_dac.h](https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_dac.h)
 
-###HAL_DAC Theory Of Operation
+### HAL_DAC Theory Of Operation
 
 DACs have differing conversion resolution (bits), reference voltages (Volts)
 and conversion times (sample rate).

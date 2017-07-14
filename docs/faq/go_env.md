@@ -67,7 +67,7 @@ $ go version
 go version go1.6.3 linux/amd64
 ```
 <br>
-###Step 2: Setting Up Your Go Environment 
+### Step 2: Setting Up Your Go Environment
 Go provides an environment to compile Go code, construct Go packages,  and import Go code.  You will use Go commands to import the **newt** repository into your local Go environment.  The Go language environment dictates a specific directory structure, or workspace in Go parlance. It must contain three sibling directories with the names **src**, **pkg** and **bin**: 
 
 * src contains Go source files organized into packages (one package per directory)
@@ -93,7 +93,7 @@ $ source ~/.bash_profile
 <br>
 
 
-###Step 3: Downloading the Source
+### Step 3: Downloading the Source
 
 Use Go commands to retrieve the latest source from the newt repository (currently the ASF incubator directory). Check that the directories are installed.
 

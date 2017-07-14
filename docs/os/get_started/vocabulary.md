@@ -10,9 +10,9 @@ The project is the base directory of your embedded software tree.  It is a
 workspace that contains a logical collection of source code, for one or 
 more of your applications.  A project consists of the following items:
   
-  * Project Definition: defines project level dependencies, and parameters
-    (located in ```project.yml```)
-  * Packages
+* Project Definition: defines project level dependencies, and parameters
+  (located in ```project.yml```)
+* Packages
 
 [Packages](#package) are described in detail in the section below.  
 
@@ -69,10 +69,10 @@ about repositories can be found in the Newt documentation.
 A package is a collection items that form a fundamental unit in the Mynewt 
 Operating System.  Packages can be:
 
-  * Applications
-  * Libraries
-  * Compiler definitions
-  * Targets
+* Applications
+* Libraries
+* Compiler definitions
+* Targets
 
 A package is identified by having a ```pkg.yml``` file in it's base 
 directory.  Here is a sample ```pkg.yml``` file for the blinky applicaton:
@@ -95,13 +95,13 @@ pkg.deps:
 
 Packages have a few features worth noting:
 
-  * Dependencies: Packages can rely upon other packages, and when they do
-    they will inherit their functionality (header files, library definitions, etc.)
-  * APIs: Packages can export named APIs, and they can require that certain 
-    APIs be present, in order to compile.
-  * Features: Packages can operate differently depending on what named features are 
-    present in the system.  Packages can also export features to the rest of the 
-    Mynewt system.
+* Dependencies: Packages can rely upon other packages, and when they do
+  they will inherit their functionality (header files, library definitions, etc.)
+* APIs: Packages can export named APIs, and they can require that certain 
+  APIs be present, in order to compile.
+* Features: Packages can operate differently depending on what named features are 
+  present in the system.  Packages can also export features to the rest of the 
+  Mynewt system.
 
 Everything that newt knows about within a project's directory is a package.  This 
 makes it very clean and easy to write re-usable components, which can describe their 
@@ -117,19 +117,20 @@ the target level, cascade down to all dependencies.
 Targets are also packages, and are stored in the ```targets/``` directory at the base 
 of your project.  Most targets consist of: 
 
-  * ```app```: The application to build.
-  * ```bsp```: The board support package to combine with that application
-  * ```build_profile```: Either ```debug``` or ```optimized```. 
+* ```app```: The application to build.
+* ```bsp```: The board support package to combine with that application
+* ```build_profile```: Either ```debug``` or ```optimized```. 
 
 Targets can also have additional items specified, including: 
 
-  * ```cflags```: Any additional compiler flags you might want to specify to the build.
-  * ```features```: Any system level features you want to enable.
+* ```cflags```: Any additional compiler flags you might want to specify to the build.
+* ```features```: Any system level features you want to enable.
 
 In order to create and manipulate targets, the *newt* tool offers a set of helper commands,
 you can find more information about these by issuing:
 
-```no-highlight
+```no-highos_time.md
+light
 $ newt target
 
 Usage: 

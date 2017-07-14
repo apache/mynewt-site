@@ -119,16 +119,16 @@ $ newt target set arduino_boot features=arduino_zero
 
 These commands do a few things: 
 
-  * Create a target named ```arduino_boot```, in order to build the Arduino Zero Bootloader.
-  * Set the application for the ```arduino_boot``` target to the default Apache Mynewt 
-    bootloader (```@apache-mynewt-core/apps/boot```)
-  * Set the board support package for the target to 
-    ```@mynewt_arduino_zero/hw/bsp/arduino_zero```.  This is a reference to the downloaded 
-    Arduino Zero support from Github.
-  * Use the "optimized" build profile for the `arduino_boot` target.  This
-    instructs Newt to generate smaller and more efficient code for this target.
-    This setting is necessary due to the bootloader's strict size constraints.
-  * Tells the Board Support Package to enable support for the Arduino Zero Pro or the Arduino Zero. Set it to `arduino_zero` or `arduino_zero_pro` depending on the board you have.
+* Create a target named ```arduino_boot```, in order to build the Arduino Zero Bootloader.
+* Set the application for the ```arduino_boot``` target to the default Apache Mynewt 
+  bootloader (```@apache-mynewt-core/apps/boot```)
+* Set the board support package for the target to 
+  ```@mynewt_arduino_zero/hw/bsp/arduino_zero```.  This is a reference to the downloaded 
+  Arduino Zero support from Github.
+* Use the "optimized" build profile for the `arduino_boot` target.  This
+  instructs Newt to generate smaller and more efficient code for this target.
+  This setting is necessary due to the bootloader's strict size constraints.
+* Tells the Board Support Package to enable support for the Arduino Zero Pro or the Arduino Zero. Set it to `arduino_zero` or `arduino_zero_pro` depending on the board you have.
 
 <br>
 

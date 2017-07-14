@@ -6,19 +6,19 @@ The `newt` tool is the build software used to build Mynewt OS images or executab
 
 However, Mynewt OS images for a simulated target are built on the Windows machine by using Linux versions of the build software (newt)in a virtual machine on your Windows box. The Linux VM is set up by installing the Docker Toolbox. Your Windows machine will communicate with the Linux VM via transient ssh connections. You will then download a Docker image (`newtvm.exe`)that allows you to run the newt commands in the Linux Docker instance. The Docker image contains:
 
-   * The newt command-line tool
-   * Go
-   * A multilib-capable native gcc / glibc
-   * An arm-none-eabi gcc
-   * Native gdb
-       
-   The sequence of events when using the Docker image is as follows:
+* The newt command-line tool
+* Go
+* A multilib-capable native gcc / glibc
+* An arm-none-eabi gcc
+* Native gdb
+   
+The sequence of events when using the Docker image is as follows:
 
-   1. A new docker environment is created in the Linux VM.
-   2. The specified command with the newtvm prefix (`newtvm newt` command) is sent to the docker environment via ssh.
-   3. The Linux command runs.
-   4. The output from the command is sent back to Windows via ssh.
-   5. The output is displayed in the Windows command prompt.
+1. A new docker environment is created in the Linux VM.
+2. The specified command with the newtvm prefix (`newtvm newt` command) is sent to the docker environment via ssh.
+3. The Linux command runs.
+4. The output from the command is sent back to Windows via ssh.
+5. The output is displayed in the Windows command prompt.
 
 
 #### Install Linux virtual machine
@@ -152,18 +152,18 @@ tutorial for a Windows machine assumes the specified folders.
     * GOPATH: C:\dev\go
     * PATH: C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q3\bin;%GOPATH%\bin;C:\win-builds-x86_64\bin;C:\win-builds-i686\bin;C:\msys\bin
 ```  
-  Steps:
-   
-   1. Right-click the start button
-   2. Click "Control panel"
-   3. Click "System and Security"
-   4. Click "System"
-   5. Click "Advanced system settings" in the left panel
-   6. Click the "Envoronment Variables..." button
-   7. There will be two sets of environment variables: user variables
-      in the upper half of the screen, and system variables in the lower
-      half.  Configuring the user variables is recommended and tested 
-      (though system variables will work as well).
+Steps:
+ 
+1. Right-click the start button
+2. Click "Control panel"
+3. Click "System and Security"
+4. Click "System"
+5. Click "Advanced system settings" in the left panel
+6. Click the "Envoronment Variables..." button
+7. There will be two sets of environment variables: user variables
+  in the upper half of the screen, and system variables in the lower
+  half.  Configuring the user variables is recommended and tested 
+  (though system variables will work as well).
 
  
 * Next, install godep. Note that the following command produces no output.
@@ -250,12 +250,12 @@ tutorial for a Windows machine assumes the specified folders.
 
 * Use Zadig to configure the USB driver for your Olimex debugger.  If your debugger is already set up, you can skip this step.
 
-   1. Plug in your Olimex debugger.
-   2. Start Zadig.
-   3. Check the Options -> List All Devices checkbox.    
-   4. Select "Olimex OpenOCD JTAG ARM-USB-TINY-H" in the dropdown menu.
-   5. Select the "WinUSB" driver.
-   6. Click the "Install Driver" button.
+1. Plug in your Olimex debugger.
+2. Start Zadig.
+3. Check the Options -> List All Devices checkbox.    
+4. Select "Olimex OpenOCD JTAG ARM-USB-TINY-H" in the dropdown menu.
+5. Select the "WinUSB" driver.
+6. Click the "Install Driver" button.
 
 * Proceed to the section on how to [make an LED blink](#using-sram-to-make-led-blink) section.
 

@@ -23,10 +23,10 @@ Prerequisites:
 * This guide uses Visual Studio Code on Windows. Visual Studio Code is supported on Linux and Mac OS but may have some variations in the keyboard shortcuts and command names for these platforms. 
 * You can also use the Eclipse IDE to develop Mynewt applications. See [https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse](https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse) for more details.
 
-###Installing Visual Studio Code
+### Installing Visual Studio Code
 Download and install Visual Studio Code from [https://code.visualstudio.com/](https://code.visualstudio.com/).
 
-###Installing the C/C++ and Debugger Extensions
+### Installing the C/C++ and Debugger Extensions
 
 You need to install two extensions:
 
@@ -48,20 +48,20 @@ To install the Native Debugger:
 2. Type `ext install webfreak.debug` in the search box and press Enter.  You should see the Native Debug extension at the top of the list.
 3. Click `Install` to install the extension. 
 <br>
-###Defining Tasks for Mynewt Projects
+### Defining Tasks for Mynewt Projects
 
 Two main concepts in Visual Studio Code are workspaces and tasks.  A workspace represents a folder that is open.  You can open multiple workspaces and switch between workspaces. 
 
 Tasks allow you to integrate the external tools and operations that are used to build or test your project into Visual Studio Code. Tasks are run from and the task results can be analyzed in Visual Studio Code.  Tasks are defined within the scope of a workspace. This means that the tasks you define for a workspace only apply to the given workspace.
 
 <br>
-####Associating a Mynewt Project to a Workspace 
+#### Associating a Mynewt Project to a Workspace
 For your Mynewt project, your Visual Studio Code workspace is the Mynewt project base directory. For example, if you create a project named `myproj` under the `~/dev` directory, then you open the `~/dev/myproj` folder for your workspace.  
 
 Select **File** > **Open Folder**, and select the `myproj` folder from the `Select Folder` dialog box to open the folder.
 
 <br>
-####Defining Visual Studio Code Tasks to Build and Debug Mynewt Applications
+#### Defining Visual Studio Code Tasks to Build and Debug Mynewt Applications
 
 You define Visual Studio Code tasks to build and debug your Mynewt targets in Visual Studio Code. We use the Blinky application for the Arduino Zero board from the [Blinky On Arduino Zero Tutorial](/os/tutorials/arduino_zero.md) to illustrate how to define the tasks to build and debug the Arduino blinky bootloader and application targets.
 
@@ -131,7 +131,7 @@ The following tasks are defined in this example:
 For more information on tasks and all supported properties, see the [Visual Studio Code Task documentation](https://code.visualstudio.com/docs/editor/tasks).
 
 <br>
-####Running a Task
+#### Running a Task
 
 To run a task, select `Ctrl-Shift-P`, type `task`, and select **Tasks: Run Task**.  The tasks that you define in the `tasks.json` file are listed.  Select the task to run. 
 
@@ -143,7 +143,7 @@ The following is an example of running the `build_arduino_boot` task:
 <p align="center"><img src="/faq/pics/task_start_small.png"></p>
 
 <br>
-####Defining Tasks for Other Newt Commands
+#### Defining Tasks for Other Newt Commands
 
 Other newt commands, such as the `newt load` command, do not need to run from within Visual Studio Code. You can define tasks for them as a convenience or run them on the command line from the Visual Studio Code integrated terminal (or an external terminal).
 
@@ -167,7 +167,7 @@ To run the commands from the Visual Studio integrated terminal, press ``Ctrl-` `
 <br>
 <p align="center"><img src="/faq/pics/integrated_terminal_small.png"></p>
 <br>
-###Defining Debugger Configurations
+### Defining Debugger Configurations
 You need to define a debugger configuration to launch the GDB debugger from within Visual Studio Code: 
 
 Step 1: Select **Debug** > **Open Configuration**, and select the **GDB** environment.
@@ -211,7 +211,7 @@ This defines a `gdb_arduino_blinky` debugger configuration. It specifies:
 * To use port 3333 to connect with the remote target.
 * To use arm-none-eabi-gdb for the GDB program. 
 <br>
-###Debugging Your Application
+### Debugging Your Application
 To debug your application, start the GDB server and launch the GDB session from Visual Studio Code. For the the arduino blinky example, perform the following:
 
 Step 1: Run the debug_arduino_blinky task to start the GDB server. Perform the following:
@@ -238,6 +238,6 @@ Step 3: Debug your application. You should see a debug session similar to the on
 For more information on how to use the Visual Studio Code Debugger, see the [Visual Studio Code debugging documentation](https://code.visualstudio.com/docs/editor/debugging).
 
 
-###Working with Multiple Mynewt Applications
+### Working with Multiple Mynewt Applications
 
 As mentioned previously,  each mynewt project corresponds to a Visual Studio Code workspace.  If you have multiple Mynewt application targets defined in same project, you will need to define build and debug tasks for each target in the `tasks.json` file and debugger configurations for the targets in the `launch.json` file for the workspace. If you have a different Mynewt project for each mynewt application, you will need to define build and debug tasks in the `tasks.json` file and the debugger configuration in the `launch.json` file for each workspace. 

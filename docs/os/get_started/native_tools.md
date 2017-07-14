@@ -15,7 +15,7 @@ If you have not already installed Homebrew from the
 
 <br>
 
-###Install gcc/libc 
+### Install gcc/libc 
 
 OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.
 
@@ -84,7 +84,7 @@ A third option is to simply **downgrade to gcc 5.x**.
 
 <br>
 
-###Install gdb 
+### Install gdb 
 
 ```no-highlight
 $ brew install gdb
@@ -112,14 +112,14 @@ that your distro uses.
 
 <br>
 
-###Install gcc/libc that will produce 32-bit executables: 
+### Install gcc/libc that will produce 32-bit executables: 
 ```no-highlight
 $ sudo apt-get install gcc-multilib libc6-i386
 ``` 
 
 <br>
        
-###Install gdb 
+### Install gdb 
 
 ```no-highlight
 $ sudo apt-get install gdb

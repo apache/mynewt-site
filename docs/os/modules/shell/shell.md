@@ -2,7 +2,7 @@
 
 The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing newtmgr line protocol over serial line. Shell runs on its own task.
 
-###Description
+### Description
 
 * Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.
 
@@ -87,7 +87,7 @@ stat stat
 ```
 
 
-###Data structures
+### Data structures
 
 This data structure is used in holding information about registered command handlers.
 
@@ -105,7 +105,7 @@ struct shell_cmd {
 | sc_cmd_func | Pointer to the command handler |
 | sc_next | Bookkeeping linkage internal for shell |
 
-###List of Functions
+### List of Functions
 
 <Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 

@@ -1,8 +1,8 @@
-#File System Abstraction
+# File System Abstraction
 
 Mynewt provides a file system abstraction layer (`fs/fs`) to allow client code to be file system agnostic.  By accessing the file system via the `fs/fs` API, client code can perform file system operations without being tied to a particular implementation.  When possible, library code should use the `fs/fs` API rather than accessing the underlying file system directly.
 
-###Description
+### Description
 
 Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the `fs/fs` package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
 
@@ -57,17 +57,17 @@ pkg.deps:
 
 The `libs/imgmgr` package uses the `fs/fs` API for all file system operations.
 
-###Thread Safety
+### Thread Safety
 All `fs/fs` functions are thread safe.
 
-###Header Files 
+### Header Files 
 All code which uses the `fs/fs` package needs to include the following header:
 
 ```c
 #include "fs/fs.h"
 ```
 
-###Data Structures
+### Data Structures
 All `fs/fs` data structures are opaque to client code.
 
 ```c
@@ -76,7 +76,7 @@ struct fs_dir;
 struct fs_dirent;
 ```
 
-###API
+### API
 
 Functions in `fs/fs` that indicate success or failure do so with the following set of return codes:
 

@@ -6,11 +6,11 @@ The code is based on klibc and tinyprintf modules, and licensed under the BSD li
 
 Baselibc comes from https://github.com/PetteriAimonen/Baselibc.git
 
-###Description
+### Description
 
 Mynewt OS can utilize libc which comes with compiler (e.g. newlib bundled with some binary distributions of arm-none-eabi-gcc). However, you may choose to replace the libc with baselibc for a reduced image size. Baselibc optimizes for size rather than performance, which is usually a more important goal in embedded environments.
 
-###How to switch to baselibc
+### How to switch to baselibc
 
 In order to switch from using libc to using baselibc you have to add the baselibc pkg as a dependency in the project pkg. Specifying this dependency ensures that the linker first looks for the functions in baselibc before falling back to libc while creating the executable. For example, project `boot` uses baselibc. Its project description file `boot.yml` looks like the following:
 
@@ -26,7 +26,7 @@ In order to switch from using libc to using baselibc you have to add the baselib
        - libs/baselibc
  ```
 
-###List of Functions
+### List of Functions
 
 Documentation for libc functions is available from multiple places. One example are the on-line manual pages at [https://www.freebsd.org/cgi/man.cgi](#https://www.freebsd.org/cgi/man.cgi).
 
