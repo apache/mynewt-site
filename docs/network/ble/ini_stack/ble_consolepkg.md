@@ -1,4 +1,4 @@
-##  Initializing the console package
+## Initializing the console package
 The console is also required by the Nimble stack. The console is currently used for log output so it needs to be initialized. For this example, we are not going to use a console receive callback. All this means is that input from the console will not be accepted by default; the developer will have to install their own handler or use one provided by another package (the shell, for example). Just like statistics, the console is initialized by calling the console initialization function `console_init()`.
 
 ```c hl_lines="1 39 40 41"

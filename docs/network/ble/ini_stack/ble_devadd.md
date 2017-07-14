@@ -1,4 +1,4 @@
-##  Initialize the Device Address
+## Initialize the Device Address
 
 The BLE specification requires that devices have an address (called a device address). This address can be either a public device address or a random device address. The current Nimble stack implementation requires that these addresses be defined somewhere in the application; they are not defined within the Nimble stack itself. This was done so that the entire application could have access to these addresses. We expect that we will move these addresses into the Nimble stack in a future release.
 

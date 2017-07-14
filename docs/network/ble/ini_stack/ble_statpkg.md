@@ -1,4 +1,4 @@
-##  Initialize the statistics package
+## Initialize the statistics package
 
 The NimBLE stack uses the statistics package and this must be initialized prior to initializing the Nimble stack. Initializing the statistics package is quite simple; all you need to do is call the initialization function `stats_module_init()`.
 

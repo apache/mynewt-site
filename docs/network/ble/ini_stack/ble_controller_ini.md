@@ -1,5 +1,5 @@
 
-##  Initialize the NimBLE controller
+## Initialize the NimBLE controller
 
 The NimBLE controller is initialized via a call to `ble_ll_init()`.  This function is declared as follows:
 
