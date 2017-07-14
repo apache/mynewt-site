@@ -2,7 +2,7 @@
 
 Flash circular buffer provides an abstration through which you can treat flash like a FIFO. You append entries to the end, and read data from the beginning.
 
-###Description
+### Description
 
 Elements in the flash contain the length of the element, the data within the element, and checksum over the element contents.
 
@@ -29,7 +29,7 @@ Alternatively:
 * Use flash_area_read() to read element contents.
 * Call fcb_getnext() with pointer to current element to get the next one. And so on.
 
-###Data structures
+### Data structures
 
 This data structure describes the element location in the flash. You would use it figure out what parameters to pass to flash_area_read() to read element contents. Or to flash_area_write() when adding a new element.
 
@@ -82,7 +82,7 @@ struct fcb {
 | f_active_id | Flash sectors are assigned ever-increasing serial numbers. This is how FCB figures out where oldest data is on system restart. |
 | f_align | Some flashes have restrictions on alignment for writes. FCB keeps a copy of this number for the flash here. |
 
-###List of Functions
+### List of Functions
 
 The functions available in this OS feature are:
 

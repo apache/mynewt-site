@@ -26,10 +26,10 @@ Prerequisites:
 * This guide uses Visual Studio Code on Windows. Visual Studio Code is supported on Linux and Mac OS but may have some variations in the keyboard shortcuts and command names for these platforms. 
 * You can also use the Eclipse IDE to develop Mynewt applications. See [https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse](https://www.codecoup.pl/blog/hacking-mynewt-in-eclipse) for more details. On Windows platforms, you must also ensure the MinGW bash is set in your Windows Path as described in the prerequisites.
 
-###Installing Visual Studio Code
+### Installing Visual Studio Code
 Download and install Visual Studio Code from [https://code.visualstudio.com/](https://code.visualstudio.com/).
 
-###Installing the C/C++ and Debugger Extensions
+### Installing the C/C++ and Debugger Extensions
 
 You need to install two extensions:
 
@@ -247,6 +247,6 @@ Step 3: Debug your application. You should see a debug session similar to the on
 For more information on how to use the Visual Studio Code Debugger, see the [Visual Studio Code debugging documentation](https://code.visualstudio.com/docs/editor/debugging).
 
 
-###Working with Multiple Mynewt Applications
+### Working with Multiple Mynewt Applications
 
 As mentioned previously,  each mynewt project corresponds to a Visual Studio Code workspace.  If you have multiple Mynewt application targets defined in same project, you will need to define build and debug tasks for each target in the `tasks.json` file and debugger configurations for the targets in the `launch.json` file for the workspace. If you have a different Mynewt project for each mynewt application, you will need to define build and debug tasks in the `tasks.json` file and the debugger configuration in the `launch.json` file for each workspace. 

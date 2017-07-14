@@ -1,4 +1,4 @@
-#Bootloader
+# Bootloader
 
 The "bootloader" is the code that loads the Mynewt OS image into memory and conducts some checks before allowing the OS to be run. It manages images for the embedded system and upgrades of those images using protocols over various interfaces (e.g. serial, BLE, etc.). Typically, systems with bootloaders have at least two program images coexisting on the same microcontroller, and hence must include branch code that performs a check to see if an attempt to update software is already underway and manage the progress of the process.
 
@@ -23,7 +23,7 @@ manner for the following two reasons:
    reused among several boot loaders.
 2. By excluding the last boot step from the library, the bootloader can be unit tested since a library can be unit tested but an applicant can't.
 
-###Limitations
+### Limitations
 
 The boot loader currently only supports images with the following
 characteristics:
@@ -32,7 +32,7 @@ characteristics:
 * Build to run from a fixed location (i.e., position-independent).
 
 
-###Image Format
+### Image Format
 
 The following definitions describe the image header format.
 
@@ -97,7 +97,7 @@ struct image_tlv {
 ```
 
 
-###Flash Map
+### Flash Map
 
 A Mynewt device's flash is partitioned according to its _flash map_.  At a high
 level, the flash map maps numeric IDs to _flash areas_.  A flash area is a
@@ -115,7 +115,7 @@ The boot loader uses the following flash areas:
 #define FLASH_AREA_IMAGE_SCRATCH                 3
 ```
 
-###Image Slots
+### Image Slots
 
 A portion of the flash memory is partitioned into two image slots: a primary
 slot and a secondary slot.  The boot loader will only run an image from the
@@ -126,7 +126,7 @@ secondary slot, it must swap the two images in flash prior to booting.
 In addition to the two image slots, the boot loader requires a scratch area to
 allow for reliable image swapping.
 
-###Boot States
+### Boot States
 
 Logically, you can think of a pair of flags associated with each image slot:
 pending and confirmed.  On startup, the boot loader determines the state of the
@@ -182,7 +182,7 @@ device can be in:
     ---------------------------------'
 
 
-###Boot Vector
+### Boot Vector
 
 At startup, the boot loader determines which of the above three boot states a device is in by inspecting the boot vector.  The boot vector consists of two
 records (called "image trailers"), one written at the end of each image slot.
@@ -294,7 +294,7 @@ purposes; they are not actually present in the boot vector.
     -----------------------------------'
 
 
-###High-level Operation
+### High-level Operation
 
 With the terms defined, we can now explore the boot loader's operation.  First,
 a high-level overview of the boot process is presented.  Then, the following
@@ -322,7 +322,7 @@ Procedure:
     C. Boot into image in slot 0.
 
 
-###Image Swapping
+### Image Swapping
 
 The boot loader swaps the contents of the two image slots for two reasons:
 
@@ -376,7 +376,7 @@ reverted:
         o Write slot0.image_ok = 1
         (should now be in state IV)
 
-###Swap Status
+### Swap Status
 
 The swap status region allows the boot loader to recover in case it restarts in
 the middle of an image swap operation.  The swap status region consists of a
@@ -450,7 +450,7 @@ example, if a slot uses 64 sectors, the first sector index that gets swapped is
 63, which corresponds to the exact halfway point within the region.
 
 
-###Reset Recovery
+### Reset Recovery
 
 If the boot loader resets in the middle of a swap operation, the two images may
 be discontiguous in flash.  Bootutil recovers from this condition by using the
@@ -511,7 +511,7 @@ area-swap procedure, depending on whether the part belongs to image 0 or image
 After the swap operation has been completed, the boot loader proceeds as though
 it had just been started.
 
-###Integrity Check
+### Integrity Check
 
 An image is checked for integrity immediately before it gets copied into the
 primary slot.  If the boot loader doesn't perform an image swap, then it
@@ -526,7 +526,7 @@ an image:
 * Image *may* contain a signature TLV.  If it does, its contents must be
   verifiable using a key embedded in the boot loader.
 
-###Image Signing and Verification
+### Image Signing and Verification
 
 As indicated above, the final step of the integrity check is signature
 verification.  The boot loader can have one or more public keys embedded in it

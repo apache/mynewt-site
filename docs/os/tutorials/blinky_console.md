@@ -1,4 +1,4 @@
-##Enabling The Console and Shell for Blinky
+## Enabling The Console and Shell for Blinky
 
 This tutorial shows you how to add the Console and Shell to the Blinky application and interact with it over a serial line connection.
 <br>
@@ -19,7 +19,7 @@ the shell and console connectivity. You can use blinky on a different board.
 
 <br>
 
-###Modify the Dependencies and Configuration
+### Modify the Dependencies and Configuration
 
 Add the following dependencies to your application target's `pkg.yml` file:
 

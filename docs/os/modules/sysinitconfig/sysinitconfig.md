@@ -1,4 +1,4 @@
-##System Configuration and Initialization
+## System Configuration and Initialization
 
 This guide describes how Mynewt manages system configuration and initialization. It shows you how to 
 tell Mynewt to use default or customized values to initialize packages that you develop or use to build a target. This guide:
@@ -22,7 +22,7 @@ The benefits with this approach include:
 
 <br>
 
-###System Configuration Setting Definitions and Values 
+### System Configuration Setting Definitions and Values 
 
 A package can optionally:
 

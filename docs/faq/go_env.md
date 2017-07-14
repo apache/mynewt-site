@@ -71,7 +71,7 @@ export PATH=$GOPATH/bin:$PATH
 ```
 <br>
 
-###Step 3: Downloading the Source and Installing the Tools 
+### Step 3: Downloading the Source and Installing the Tools 
 Newt and newtmgr are individual Go packages and have their own git repositories. You can download the source and install one or both tools.
 
 We use the `go get` command to download the source, build, and install the binary in the **$GOPATH/bin** directory. 

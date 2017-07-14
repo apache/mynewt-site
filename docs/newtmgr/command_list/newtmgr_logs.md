@@ -16,7 +16,7 @@ Manage logs on a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 The log command provides subcommands to manage logs on a device. Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
 Sub-command  | Explanation
@@ -28,7 +28,7 @@ module_list | The newtmgr log module_list command shows the log module names on 
 show      | The newtmgr log show command shows the logs on a device.
     
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

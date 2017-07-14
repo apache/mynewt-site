@@ -1,6 +1,6 @@
 # Drivers
 
-###Description
+### Description
 
 Device drivers in the Mynewt context includes libraries that interface with devices external to the CPU. These devices are connected to the CPU via standard peripherals such as SPI, GPIO, I2C etc. Device drivers leverage the base HAL services in Mynewt to provide friendly abstractions to application developers. 
 

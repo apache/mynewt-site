@@ -1,6 +1,6 @@
 # Hardware Abstraction Layer
 
-###Description
+### Description
 
 The Hardware Abstraction Layer (HAL) in Mynewt is a low-level, base peripheral abstraction. HAL provides a core set of services that is implemented for each MCU supported by Mynewt. Device drivers are typically the software libraries that initialize the hardware and manage access to the hardware by higher layers of software. In the Mynewt OS, the layers can be depicted in the following manner.
 
@@ -29,7 +29,7 @@ The Hardware Abstraction Layer (HAL) in Mynewt is a low-level, base peripheral a
 
 * The HAL API should portable across all the various MCUs supported in Mynewt (e.g. Nordic's nRF51, Nordic's nRF52, NXP's MK64F12 etc.).
 
-###Example
+### Example
 
 A Mynewt contributor might write a light-switch driver that provides the functionality of an intelligent light
 switch.  This might involve using a timer, a General Purpose Output (GPO)
@@ -43,7 +43,7 @@ The Mynewt team ensures that the underlying HAL devices all work equivalently
 through the HAL APIs. The contributors library is independent of the specifics
 of the hardware.  
 
-###Dependency
+### Dependency
 
 To include the HAL within your project,  simply add it to your package
 dependencies as follows:
@@ -54,7 +54,7 @@ pkg.deps:
     hw/hal
 ```
 
-###Platform Support
+### Platform Support
 
 Not all platforms (MCU and BSP) support all HAL devices. Consult your MCU
 or BSP documentation to find out if you have hardware support for the

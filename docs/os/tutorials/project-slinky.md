@@ -4,7 +4,7 @@ The goal of the project is to use a sample application called "Slinky" included 
 
 If you have an existing project using a target that does not use the Slinky application and you wish to add newtmgr functionality to it, check out the tutorial titled [Enable newtmgr in any app](add_newtmgr.md). 
 
-###Available Tutorials
+### Available Tutorials
 Tutorials are available for the following boards:
 
 * [Slinky on a simulated device](/os/tutorials/project-sim-slinky). This is supported on Mac OS and Linux platforms.

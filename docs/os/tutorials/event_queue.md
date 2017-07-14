@@ -24,7 +24,7 @@ It also shows you how to:
 
 To reduce an application's memory requirement,  we recommend that you use the Mynewt default event queue if your application or package does not have real-time timing requirements. 
 
-###Prerequisites
+### Prerequisites
 
 Ensure that you have met the following prerequisites before continuing with this tutorial:
 

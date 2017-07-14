@@ -162,7 +162,7 @@ Use "newt target [command] --help" for more information about a command.
 $ 
 ```
 
-###Configuration
+### Configuration
 
 There are a lot of configuration options available when building your application in MyNewt. System Configuration options are set in 
 a file called `syscfg.yml` and you will find these configuration files throughout the MyNewt packages. While you can edit these

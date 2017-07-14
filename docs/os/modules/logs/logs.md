@@ -1,8 +1,8 @@
-##Logging
+## Logging
 
 Mynewt log package supports logging of information within a Mynewt application.  It allows packages to define their own log streams with separate names.  It also allows an application to control the output destination of logs. 
 <br>
-###Description
+### Description
 
 In the Mynewt OS, the log package comes in two versions:
 
@@ -112,7 +112,7 @@ Typically, a package that uses logging defines a global variable, such as `my_pa
 * Make the `my_package_log` variable external and let the application call the `log_register()` function to specify a log handler for its specific purpose.	
 
 
-###Configuring Logging for Packages that an Application Uses
+### Configuring Logging for Packages that an Application Uses
 Here is an example of how an application can set the log handlers for the logs of the packages that the application includes.  
 
 In this example, the `package1` package defines the variable  `package1_log` of type `struct log` and externs the variable. Similarly, the `package2` package defines the variable `package2_log` and externs the variable.  The application sets logs for `package1` to use console and sets logs  for `package2` to use a circular buffer.
@@ -174,6 +174,6 @@ struct log my_package_log;
 }
 ```
 
-###Log API and Log Levels
+### Log API and Log Levels
 For more information on the `log` API and log levels, see the `sys/log/full/include/log/log.h` header file.
 

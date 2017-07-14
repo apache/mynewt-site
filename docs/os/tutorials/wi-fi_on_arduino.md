@@ -42,7 +42,7 @@ Run the following commands to create a new project:
 <br>
 
 
-###<a name="fetchexternal"></a> Fetch External Packages
+### <a name="fetchexternal"></a> Fetch External Packages
 
 Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in

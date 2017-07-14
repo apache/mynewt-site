@@ -6,16 +6,16 @@ commonly used to connect components in embedded systems.
 
 For a detailed description of SPI, see [Wikipedia](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus).
 
-###Description
+### Description
 
 The Mynewt HAL interface supports the SPI master functionality with both blocking and non-blocking interface.  SPI slave functionality is supported in non-blocking mode.
 
 
-###Definition
+### Definition
 
 [hal_spi.h](https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_spi.h)
 
-###HAL_SPI Theory Of Operation
+### HAL_SPI Theory Of Operation
 
 SPI is called a 4-wire interface because of the 4 signals, MISO, MOSI, CLK, 
 and SS.  The SS signal (slave select) is an active low signal that activates

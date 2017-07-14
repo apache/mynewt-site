@@ -5,7 +5,7 @@ To support over-the-air image upgrade over BLE, a device must be running a Mynew
 
 **Note:** Over-the-air upgrade via newtmgr BLE transport is supported on Mac OS and Linux. It is not supported on Windows platforms.
 
-###Prerequisites
+### Prerequisites
 Ensure that you meet the following prerequisites:
 
 * Have Internet connectivity to fetch remote Mynewt components.

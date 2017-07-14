@@ -1,5 +1,5 @@
 
-##Enabling Newt Manager in Your Application
+## Enabling Newt Manager in Your Application
 
 <br>
 In order for your application to communicate with the newtmgr tool and process Newt Manager commands, you must 
@@ -36,7 +36,7 @@ We assume that you have worked through at least some of the other tutorials and 
 In this example, we modify the [ble_tiny](bletiny_project.md) project to enable Newt Manager support. 
 We call our application `myble`.  You can create the application using any name you choose. 
 
-###Modify Package Dependencies and Configurations
+### Modify Package Dependencies and Configurations
 
 
 Add the following packages to the `pkg.deps` parameter in your target or application `pkg.yml` file:
@@ -90,7 +90,7 @@ package functionality.
 
 <br>
 
-###Modify the Source
+### Modify the Source
 
 By default, the `mgmt` package uses the Mynewt default event queue to receive request events from the newtmgr tool. These events are processed in the context of the application main task. 
 
@@ -166,7 +166,7 @@ follow the [instructions](../../newtmgr/command_list/newtmgr_conn.md) for settin
 
 <br>
 
-###Communicate with Your Application
+### Communicate with Your Application
 
 Once you have a connection profile set up, you can connect to your device with ```newtmgr -c myconn <command>``` to run commands in your application. 
     
@@ -218,7 +218,7 @@ Your application is now able to communicate with the newtmgr tool.
 
 This section explains how to customize your application to use other Newt Manager protocol options.
 
-####Newtmgr Framework Transport Protocol Options
+#### Newtmgr Framework Transport Protocol Options
 The newtmgr framework currently supports BLE and serial transport protocols. 
 To configure the transport protocols that are supported, modify the `pkg.yml` 
 and `syscfg.yml` files as follows:

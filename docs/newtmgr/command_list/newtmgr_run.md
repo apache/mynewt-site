@@ -16,7 +16,7 @@ Run test procedures on a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 The run command provides subcommands to run test procedures on a device. Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
 Sub-command  | Explanation
@@ -24,7 +24,7 @@ Sub-command  | Explanation
 list       | The newtmgr run list command lists the registered tests on a device.
 test       | The newtmgr run test [all&#124;testname] [token-value] command runs the `testname` test or all tests on a device.  All tests are run if `all` or no `testname` is specified. If a `token-value` is specified, the token value is output with the log messages.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

@@ -1,4 +1,4 @@
-##<font color="#F2853F" style="font-size:24pt">os_started</font>
+## <font color="#F2853F" style="font-size:24pt">os_started</font>
 
 ```c
 int os_started(void)
