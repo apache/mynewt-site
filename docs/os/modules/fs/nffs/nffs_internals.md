@@ -205,7 +205,7 @@ If the system is unable to allocate a cached block entry at any point during the
 
 Because the system imposes a minimum block cache size of one, the above procedure will always reclaim at least one cache block entry.  The above procedure may result in the freeing of the block list that belongs to the very inode being operated on.  This is OK, as the final block to get cached is always the block being requested.
 
-# Detection
+### Detection
 
 The file system detection process consists of scanning a specified set of flash regions for valid nffs areas, and then populating the RAM representation of the file system with the detected objects.  Detection is initiated with the [nffs_detect()](nffs_detect.md) function.
 
@@ -244,13 +244,13 @@ When objects are migrated to the lost+found directory, their parent inode refere
 
 In addition, a single scratch area is identified during the detection process.  The first area whose *fda\_id* value is set to 0xff is designated as the file system scratch area.  If no valid scratch area is found, the cause could be that the system was restarted while a garbage collection cycle was in progress.  Such a condition is identified by the presence of two areas with the same ID.  In such a case, the shorter of the two areas is erased and designated as the scratch area.
 
-# Formatting
+### Formatting
 
 A new nffs file system is created via formatting.  Formatting is achieved via the [nffs\_format()](nffs_format.md) function.
 
 During a successful format, an area header is written to each of the specified locations.  One of the areas in the set is designated as the initial scratch area.
 
-# Flash writes
+### Flash writes
 
 The nffs implementation always writes in a strictly sequential fashion within an area.  For each area, the system keeps track of the current offset.  Whenever an object gets written to an area, it gets written to that area's current offset, and the offset is increased by the object's disk size.
 
@@ -306,7 +306,7 @@ The following procedure is used whenever the application code writes to a file. 
 
 Appended data can only be written to the end of the file.  That is, "holes" are not supported.
 
-# Garbage collection
+### Garbage collection
 
 When the file system is too full to accommodate a write operation, the system must perform garbage collection to make room.  The garbage collection procedure is described below:
 
