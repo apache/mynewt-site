@@ -27,7 +27,7 @@ Run the following commands to create a new project:
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Downloading project skeleton from apache/mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
     $ cd myproj
@@ -64,7 +64,7 @@ repository.apache-mynewt-core:
     type: github
     vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
 
 repository.mynewt_arduino_zero:
     type: github

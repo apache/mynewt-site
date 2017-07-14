@@ -88,7 +88,7 @@ There might be projects that need to read and write data on a serial connection 
 pkg.name: apps/boot
 pkg.type: app
 pkg.description: Boot loader application.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
     - loader

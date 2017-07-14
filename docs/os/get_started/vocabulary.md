@@ -34,7 +34,7 @@ repository.apache-mynewt-core:
     type: github
     vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
 $ 
 ```
 
@@ -87,7 +87,7 @@ $ more pkg.yml
 pkg.name: apps/blinky
 pkg.type: app
 pkg.description: Basic example application which blinks an LED.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 

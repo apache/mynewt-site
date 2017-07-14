@@ -32,7 +32,7 @@ Your project.yml file should look like this:
         type: github
         vers: 0-latest
         user: apache
-        repo: incubator-mynewt-core
+        repo: mynewt-core
 
     [user@IsMyLaptop:~/src/air_quality]$ newt install
     apache-mynewt-core
@@ -167,7 +167,7 @@ resides within the apache-mynewt-core repository.
 pkg.name: apps/air_quality
 pkg.type: app
 pkg.description: BLE Air Quality application.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 
@@ -245,7 +245,7 @@ Now you can add the files you need. You'll need a pkg.yml to describe the driver
 #
 pkg.name: libs/my_drivers/senseair
 pkg.description: Host side of the nimble Bluetooth Smart stack.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
     - ble

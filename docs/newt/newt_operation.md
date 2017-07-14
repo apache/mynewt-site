@@ -4,7 +4,7 @@ Newt has a fairly smart package manager that can read a directory tree, build a 
 
 ### Building dependencies
 
-Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in incubator-mynewt-blinky/develop:
+Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in mynewt-blinky/develop:
 
 ```hl_lines="7 12"
 $ tree -L 3 
@@ -57,7 +57,7 @@ $ more apps/blinky/pkg.yml
 pkg.name: apps/blinky
 pkg.type: app
 pkg.description: Basic example application which blinks an LED.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 
