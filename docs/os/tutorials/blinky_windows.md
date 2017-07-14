@@ -152,18 +152,18 @@ tutorial for a Windows machine assumes the specified folders.
     * GOPATH: C:\dev\go
     * PATH: C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q3\bin;%GOPATH%\bin;C:\win-builds-x86_64\bin;C:\win-builds-i686\bin;C:\msys\bin
 ```  
-  Steps:
-   
-   1. Right-click the start button
-   2. Click "Control panel"
-   3. Click "System and Security"
-   4. Click "System"
-   5. Click "Advanced system settings" in the left panel
-   6. Click the "Envoronment Variables..." button
-   7. There will be two sets of environment variables: user variables
-      in the upper half of the screen, and system variables in the lower
-      half.  Configuring the user variables is recommended and tested 
-      (though system variables will work as well).
+Steps:
+
+1. Right-click the start button
+2. Click "Control panel"
+3. Click "System and Security"
+4. Click "System"
+5. Click "Advanced system settings" in the left panel
+6. Click the "Envoronment Variables..." button
+7. There will be two sets of environment variables: user variables
+  in the upper half of the screen, and system variables in the lower
+  half.  Configuring the user variables is recommended and tested 
+  (though system variables will work as well).
 
  
 * Next, install godep. Note that the following command produces no output.
@@ -250,12 +250,12 @@ tutorial for a Windows machine assumes the specified folders.
 
 * Use Zadig to configure the USB driver for your Olimex debugger.  If your debugger is already set up, you can skip this step.
 
-   1. Plug in your Olimex debugger.
-   2. Start Zadig.
-   3. Check the Options -> List All Devices checkbox.    
-   4. Select "Olimex OpenOCD JTAG ARM-USB-TINY-H" in the dropdown menu.
-   5. Select the "WinUSB" driver.
-   6. Click the "Install Driver" button.
+1. Plug in your Olimex debugger.
+2. Start Zadig.
+3. Check the Options -> List All Devices checkbox.    
+4. Select "Olimex OpenOCD JTAG ARM-USB-TINY-H" in the dropdown menu.
+5. Select the "WinUSB" driver.
+6. Click the "Install Driver" button.
 
 * Proceed to the section on how to [make an LED blink](#using-sram-to-make-led-blink) section.
 
