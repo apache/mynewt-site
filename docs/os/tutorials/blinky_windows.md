@@ -6,19 +6,19 @@ The `newt` tool is the build software used to build Mynewt OS images or executab
 
 However, Mynewt OS images for a simulated target are built on the Windows machine by using Linux versions of the build software (newt)in a virtual machine on your Windows box. The Linux VM is set up by installing the Docker Toolbox. Your Windows machine will communicate with the Linux VM via transient ssh connections. You will then download a Docker image (`newtvm.exe`)that allows you to run the newt commands in the Linux Docker instance. The Docker image contains:
 
-   * The newt command-line tool
-   * Go
-   * A multilib-capable native gcc / glibc
-   * An arm-none-eabi gcc
-   * Native gdb
-       
-   The sequence of events when using the Docker image is as follows:
+* The newt command-line tool
+* Go
+* A multilib-capable native gcc / glibc
+* An arm-none-eabi gcc
+* Native gdb
+   
+The sequence of events when using the Docker image is as follows:
 
-   1. A new docker environment is created in the Linux VM.
-   2. The specified command with the newtvm prefix (`newtvm newt` command) is sent to the docker environment via ssh.
-   3. The Linux command runs.
-   4. The output from the command is sent back to Windows via ssh.
-   5. The output is displayed in the Windows command prompt.
+1. A new docker environment is created in the Linux VM.
+2. The specified command with the newtvm prefix (`newtvm newt` command) is sent to the docker environment via ssh.
+3. The Linux command runs.
+4. The output from the command is sent back to Windows via ssh.
+5. The output is displayed in the Windows command prompt.
 
 
 #### Install Linux virtual machine
