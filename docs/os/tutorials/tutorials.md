@@ -39,15 +39,15 @@ The tutorials fall into a few broad categories. Some examples in each category a
 
 <br>
 
-* Tooling
-    * [SEGGER RTT](segger_rtt.md)
-    * [SEGGER SystemView](segger_sysview.md)
+* Bluetooth Low Energy
+    * [Building a Bare Bones BLE Application](ble_bare_bones.md)
+    * [Building a BLE iBeacon Application](ibeacon.md)
 
 <br>
 
-* Bluetooth Low Energy
-    * [Running the example BLE app included in the repo](bletiny_project.md)
-    * [Working with another example BLE app for a peripheral device](bleprph/bleprph-intro.md)
+* Tooling
+    * [SEGGER RTT](segger_rtt.md)
+    * [SEGGER SystemView](segger_sysview.md)
 
 <br>
 
