@@ -33,7 +33,7 @@ pkg.deps.LOG_CLI:
 
 ```
 
-##Description
+## Description
 
 ### Processing Console Input Commands
 The shell's first job is to direct incoming commands to other subsystems. It parses the incoming character string into tokens and uses the first token to determine the subsystem  command handler to call to process the command. When the shell calls the command handler, it passes the other tokens as arguments to the handler.  
@@ -86,6 +86,7 @@ The shell supports command name completion. The `SHELL_COMPLETION` syscfg settin
 
 The shell's second job is to handle packet framing, encoding, and decoding of newtmgr protocol messages that are sent over the console. The Newtmgr serial transport package (`mgmt/newtmgr/transport/newtmgr_shell`) calls the `shell_nlip_input_register()` function to register a handler that the shell calls when it receives newtmgr request messages.
 
+The `SHELL_NEWTMGR` syscfg setting specifies whether newtmgr is enabled over shell. The setting is enabled by default.
 <br>
 
 ##Data Structures
