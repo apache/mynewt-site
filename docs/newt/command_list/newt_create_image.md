@@ -32,4 +32,4 @@ create-image | Signs and adds image header to the created binary file for target
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-create-image   | newt create-image myble2 1.0.1.0 | Creates a signed image for target `myble2` and assigns it the version `1.0.1.0`. <br> <br> If the target is as follows: <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE <br> <br> then, the created image is `bin/myble2/apps/bletiny/bletiny.img` and the manifest is `bin/myble2/apps/bletiny/manifest.json`
+create-image   | newt create-image myble2 1.0.1.0 | Creates a signed image for target `myble2` and assigns it the version `1.0.1.0`. <br> <br> If the target is as follows: <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk <br> build_profile=optimized <br> cflags=-DSTATS_NAME_ENABLE <br> <br> then, the created image is `bin/myble2/apps/bletiny/bletiny.img` and the manifest is `bin/myble2/apps/bletiny/manifest.json`

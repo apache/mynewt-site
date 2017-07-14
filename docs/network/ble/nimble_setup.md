@@ -155,10 +155,10 @@ Here is the command you will need to set up your target for the nrf52:
 ```no-highlight
 ~/dev/my_proj1$ newt target set ble_tgt     \
     app=apps/ble_app                        \
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk \
+    bsp=@apache-mynewt-core/hw/bsp/nrf52840pdk \
     build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
-Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
+Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52840pdk
 Target targets/ble_tgt successfully set target.build_profile to optimized
 ```
 

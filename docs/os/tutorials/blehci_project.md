@@ -43,7 +43,7 @@ apache-mynewt-core successfully installed version 0.9.0-none
 
 ### Create targets 
 
-You will create two targets - one for the bootloader, the other for the application. Then you will add the definitions for them. Note that you are using the example app `blehci` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively).
+You will create two targets - one for the bootloader, the other for the application. Then you will add the definitions for them. Note that you are using the example app `blehci` for the application target. Set the bsp correctly (nrf52840pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively).
 
 ```
 $ newt target create nrf52_boot
