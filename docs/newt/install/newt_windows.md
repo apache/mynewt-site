@@ -1,6 +1,6 @@
 ## Installing Newt on Windows
 
-You can develop and build Mynewt OS applications for your target boards on the Windows platform.  This page shows you how to build the newt tool from the lastest source on the master branch of the [Mynewt newt git repository](https://github.com/apache/incubator-mynewt-newt).  The tool is written in Go (golang).
+You can develop and build Mynewt OS applications for your target boards on the Windows platform.  This page shows you how to build the newt tool from the lastest source on the master branch of the [Mynewt newt git repository](https://github.com/apache/mynewt-newt).  The tool is written in Go (golang).
   
 In Windows, we use MinGW as the development environment to build and run Mynewt OS applications for target boards. MinGW runs the bash shell and provides a Unix-like environment. This provides a uniform way to build Mynewt OS applications. The Mynewt documentation and tutorials use Unix commands and you can use the same Unix commands on MinGW to follow the tutorials. The documentation will note any commands or behaviors that are specific to Windows.
 
@@ -83,7 +83,7 @@ export PATH=$GOPATH/bin:$PATH
 
 ###Step 5: Downloading the Source and Installing the Newt Tool 
 
-The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/incubator-mynewt-newt).  We use the `go get` command to download the source, build, and install the newt tool binary in the **$GOPATH/bin** directory. 
+The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/mynewt-newt).  We use the `go get` command to download the source, build, and install the newt tool binary in the **$GOPATH/bin** directory. 
 
 <br>
 Download the newt package source and install the tool:

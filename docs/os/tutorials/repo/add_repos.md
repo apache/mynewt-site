@@ -80,7 +80,7 @@ repository.apache-Mynewt-core:
     type: github
     vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
 ```
 
 A repo descriptor starts with `repository.<name>.`.  In this example, the 
@@ -101,12 +101,12 @@ for a detailed description of the format of this field.
 
 * **user** -- The username for the repo.  On github, this is the name
 after `github.com` in the repo path.  Consider the repository 
-`https://github.com/apache/incubator-mynewt-core`. It has username `apache`.  
+`https://github.com/apache/mynewt-core`. It has username `apache`.  
 
 * **repo** -- The name of the repo.  On github, this is the name after
 the username described above.  Consider the repository 
-`https://github.com/apache/incubator-mynewt-core`. It has path 
-`incubator-mynewt-core`.  This is a path to the source control
+`https://github.com/apache/mynewt-core`. It has path 
+`mynewt-core`.  This is a path to the source control
 and should not be confused with the name of the repo that you used in the 
 `repository.<name>` declaration above.   That name is contained elsewhere
 within the repo. See Below.
@@ -139,7 +139,7 @@ repository.apache-Mynewt-core:
     type: github
     vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
     
 # a special repo to hold hardware specific stuff for arduino zero
 repository.Mynewt_arduino_zero:

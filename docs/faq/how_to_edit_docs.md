@@ -6,7 +6,7 @@ Learn the process of editing docs by adding some content to a test document.
 
 ### Markdown, MkDocs, Mou
 
-The Mynewt documentation you see on the Apache incubator website is a bunch of HTML files generated using MkDocs which is a simple static site generation tool geared towards building project documentation. You can read about it at [http://www.mkdocs.org](http://www.mkdocs.org). Documentation source files are written in Markdown, and configured with a single YAML configuration file. Markdown is a lightweight markup language with plain text formatting syntax designed so that it can be converted to HTML and many other formats using a tool (which in our case is MkDocs).
+The Mynewt documentation you see on the Apache website is a bunch of HTML files generated using MkDocs which is a simple static site generation tool geared towards building project documentation. You can read about it at [http://www.mkdocs.org](http://www.mkdocs.org). Documentation source files are written in Markdown, and configured with a single YAML configuration file. Markdown is a lightweight markup language with plain text formatting syntax designed so that it can be converted to HTML and many other formats using a tool (which in our case is MkDocs).
 
 The HTML pages are generated periodically after changes have been reviewed and accepted into the master branch.
 
@@ -19,7 +19,7 @@ If you are not a committer, you may follow the proposed non-committer workflow t
 
 ### Editing an existing page
 
-* Create a fork on the [github mirror](https://github.com/apache/incubator-mynewt-site).
+* Create a fork on the [github mirror](https://github.com/apache/mynewt-site).
 * Create a new branch to work on your documentation and move to that branch.
 ```
         $ git checkout -b <your-branch-name>
@@ -44,7 +44,7 @@ You have the option to install MkDocs and do a local conversion yourself to prev
         pip 1.5.2
         $ pip install mkdocs
 ```
-You will then run the built-in webserver from the root of the documentation directory using the command `mkdocs serve`. The root directory for documentation is `incubator-mynewt-site` or the directory with the `mkdocs.yml` file.
+You will then run the built-in webserver from the root of the documentation directory using the command `mkdocs serve`. The root directory for documentation is `mynewt-site` or the directory with the `mkdocs.yml` file.
 ```
         $ ls
         docs		images		mkdocs.yml

@@ -29,7 +29,7 @@ A good build system must allow the user to take a few common steps while develop
 * Download debug images to a target board using a debugger
 * Conditionally compile libraries & code based upon build settings
 
-Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in incubator-mynewt-blinky/develop:
+Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in mynewt-blinky/develop:
 
 ```hl_lines="7 12"
 $ tree -L 3 
