@@ -51,7 +51,7 @@ show        | The show [target-name] command shows the values of the variables (
  Sub-command  | Usage                  | Explanation 
 --------------| -----------------------|-----------------
 amend         | newt target amend myble syscfg=CONFIG_NEWTMGR=0 cflags="-DTEST"|Changes (or adds) the `CONFIG_NEWTMGR` variable to value 0 in the `syscfg.yml` file and adds the -DTEST flag to `pkg.cflags` in the `pkg.yml` file for the `myble` target. Other syscfg setting values and cflags values are not changed. 
-amend         | newt target amend myble -d syscfg=LOG_LEVEL:CONFIG_NEWTMGR cflags="-DNDEBUG"|Deletes `LOG_LEVEL` and `CONFIG_NEWTMGR` settings from the `syscfg.yml` file  and the -DTEST flag from `pkg.cflags` for the `myble` target. Other syscfg setting values and cflags values are not changed.         
+amend         | newt target amend myble -d syscfg=LOG_LEVEL:CONFIG_NEWTMGR cflags="-DTEST"|Deletes the `LOG_LEVEL` and `CONFIG_NEWTMGR` settings from the `syscfg.yml` file  and the -DTEST flag from `pkg.cflags` for the `myble` target. Other syscfg setting values and cflags values are not changed.         
 config show   | newt target config show rb_blinky | Shows the system configuration settings for all the packages that the `rb_blinky` target includes.
 config init   | newt target config init my_blinky | Creates and populates the `my_blinky` target's `syscfg.yml` file with the system configuration setting values from all the packages that the `my_blinky` target includes.
 copy          | newt target copy <br>rb_blinky rb_bletiny | Creates the `rb_bletiny` target by cloning the `rb_blinky` target. 
