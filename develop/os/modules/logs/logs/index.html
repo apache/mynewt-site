@@ -579,30 +579,14 @@ A project that requires the full logging capability must list the <code>sys/log/
 <p><br>
 You can use the <code>sys/log/stub</code> package if you want to build your application without logging to reduce code size.</p>
 <p><br></p>
-<h4 id="compile-time-settings">Compile Time Settings</h4>
-<p>To save space at compile time, there is a compile time log level that
-includes/excludes certain logs at compile time, saving image space.  For 
-example, during debug, you can have significant logs present, but disable
-these at compile time to ensure the code size limits are met.</p>
-<p>A compiler flag <code>LOG_LEVEL</code> can be set  in your <code>target.cflags</code> or within
-your app <code>pkg.cflags</code> files to set the compile time log level.   The 
-log level are defined in <code>/sys/log/full/include/log/log.h</code>
-but must be added by number to your <code>yml</code> file.</p>
-<p>For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    pkg.cflags -DLOG_LEVEL=3
+<h4 id="syscfg-settings">Syscfg Settings</h4>
+<p>The <code>LOG_LEVEL</code> syscfg setting allows you to specify the level of logs to enable in your application. Only logs for levels higher or equal to the value of <code>LOG_LEVEL</code> are enabled. The amount of logs you include affects your application code size. <code>LOG_LEVEL: 0</code> specifies LOG_LEVEL_DEBUG and includes all logs. You set <code>LOG_LEVEL: 255</code> to disable all logging. The <code>#defines</code> for the log levels are specified in the <code>sys/log/full/include/log/log.h</code> file.  For example the following setting corresponds to LOG_LEVEL_ERROR:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>syscfg.vals:
+    LOG_LEVEL: 3   
 </pre></div>
 
 
-<p>or </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    newt target set my_target cflags=-DLOG_LEVEL=3
-</pre></div>
-
-
-<p>would both set the compile-time log level to <code>LOG_LEVEL_ERROR</code>.  All logs
-of less than <code>LOG_LEVEL_ERROR</code> severity would be disabled at compile 
-time and take no space within the Mynewt application image.</p>
-<p>These compile time settings are applicable to all logs registered with the
-system.</p>
+<p>The <code>LOG_LEVEL</code> setting applies to all modules registered with the log package.</p>
 <p><br></p>
 <h3 id="log">Log</h3>
 <p>Each log stream requires a <code>log</code> structure to define its  logging properties. 
