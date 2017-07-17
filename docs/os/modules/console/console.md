@@ -14,7 +14,7 @@ The `CONSOLE_TICKS` setting enables the console to print the current OS ticks in
 
 **Notes:** 
 
-* SEGGER RTT support is not available in the Mynewt 1.0 console package .
+* SEGGER RTT support is not available in the Mynewt 1.0 console package.
 * The console package is initialized during system initialization (sysinit) so you do not need to initialize the console. However, if you use the Mynewt 1.0 console API to read from the console, you will need to call the `console_init()` function to enable backward compatibility support.
 
 ### Description
@@ -120,16 +120,6 @@ pkg.deps.BOOT_SERIAL.OVERWRITE:
 
 You use the `console_write()` function to write raw output and the `console_printf()` function to write a C-style formatted string to the console.
 
-The console has two transmit modes:
-
-* **Non-blocking**: The output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts. 
-
-* **Blocking mode**: This mode is used when we don't want TX completion interrupts. It is used when the system crashes and we still want to output info related to that crash.
-
-The default mode is non-blocking. You use the `console_blocking_mode()` function to set the mode to blocking and the `console_non_blocking_mode()` function to set the mode to nonblocking.
-
-**Note**: Blocking and non-blocking transmit modes only apply when the console communicates via a UART.
-
 <br>
 #### Input from the Console
 
@@ -145,7 +135,7 @@ The Mynewt 1.1 console package adds a new API for reading input data from the co
 <br>
 ##### Mynewt 1.0 Console API
 
-To use the Mynewt 1.0 Console API for reading input from the console, you perform the follow steps:
+To use the Mynewt 1.0 console API for reading input from the console, you perform the follow steps:
 
 1. Call the `console_init()` function and pass either a pointer to a callback function or NULL for the argument. The console calls this callback function, if specified, when it receives a full line of data. 
 
@@ -156,7 +146,7 @@ To use the Mynewt 1.0 Console API for reading input from the console, you perfor
 <br>
 ##### Mynewt 1.1 Console API
 
-Mynewt 1.1 Console API adds the `console_set_queues(struct os_eventq *avail_queue, struct os_eventq *lines_queue)` function.  An application or the package, such as the shell, calls this function to specify two event queues that the console uses to manage input data buffering and to send notification when a full line of data is received. The two event queues are used as follows:
+Mynewt 1.1 console API adds the `console_set_queues(struct os_eventq *avail_queue, struct os_eventq *lines_queue)` function.  An application or the package, such as the shell, calls this function to specify two event queues that the console uses to manage input data buffering and to send notification when a full line of data is received. The two event queues are used as follows:
 
 * **avail_queue**: Each event in this queue indicates that a buffer is available for the console to use for buffering input data.  
 
@@ -249,11 +239,9 @@ The functions available in console are:
 
 | Function | Description |
 |---------|-------------|
-| [console_blocking_mode](console_blocking_mode.md) | Sets the console transmit mode to blocking.|
 | [console_echo](console_echo.md) | Controls whether echoing is on or off for the console. |
 | [console_init (Mynewt 1.0 API)](console_init.md) | Initializes the console. |
 | [console_is_init](console_is_init.md) | Returns a value indicating whether the console has been initialized or not. |
-| [console_non_blocking_mode](console_blocking_mode.md) | Sets the console transmit mode to non-blocking.|
 | [console_printf](console_printf.md) | Writes a formatted message instead of raw output to the console. |
 | [console_read](console_read.md) | Copies up the to given number of bytes to the input string. |
 | [console_set_queues](console_set_queues.md) | Specifies the event queues for the console to use to manage input data. 
