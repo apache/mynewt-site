@@ -1,7 +1,6 @@
 ## SEGGER SystemView
 
-<br>
-
+<br> 
 ### Objective
 
 With [SEGGER's SystemView](https://www.segger.com/systemview.html) you can "record data from the target system while it is running. The recorded data is analyzed and the system behavior is visualized in different views." 
@@ -58,8 +57,22 @@ Resetting target
 <br>
 
 ### Launch the app
-
-Launch app and start recording events
+<br>
+Launch the app and press **OK** in the System Information dialog box.
 
 ![SEGGER SystemView](pics/segger_sysview1.png)
+
+<br>
+
+Select ** Target > Start Recording ** and press **OK** in the Configuration dialog box.  
+
+![SEGGER SystemView Start Recording](pics/segger_sysview_start_record.png)
+
+<br>
+
+You should see the recording for your Mynewt application. 
+
+
+![SEGGER SystemView Recording](pics/segger_sysview_recording.png)
+
 
