@@ -14,7 +14,12 @@ You'll need a SEGGER J-Link programmer in order to use this advanced functionali
 
 ### Setup the target
 
-We'll assume you have an existing project with some kind of console/shell like [Check stats on a BLE device](bletiny_project.md) that we're switching over to RTT from UART. We can disable uart and enable rtt with the newt target command:
+We'll assume you have an existing project with some kind of console/shell like [Check stats on a BLE device](bletiny_project.md) that we're switching over to RTT from UART. 
+
+**Note:** We have tested RTT with J-Link version V6.14h. We recommend that you upgrade your J-Link if you have an earlier version of J-Link installed. Earlier versions of J-Link use the BUFFER_SIZE_DOWN value defined in hw/drivers/rtt/include/rtt/SEGGER_RTT_Conf.h for the maximum number of input characters. If an input line exceeds the BUFFER_SIZE_DOWN number of characters, RTT ignores the extra characters. The default value is 16 characters. For example, this limit causes shell commands with more than 16 characters of input to fail. You may set the Mynewt `RTT_BUFFER_SIZE_DOWN` syscfg setting in your target to increase this value if you do not upgrade your J-Link version.
+
+We can disable uart and enable rtt with the newt target command:
+
 ```
 newt target amend myble syscfg=CONSOLE_UART=0
 newt target amend myble syscfg=CONSOLE_RTT=1
