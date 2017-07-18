@@ -4,7 +4,7 @@ This tutorial shows you how to enable sensor data monitoring via the OIC protoco
 
 This tutorial has two parts:
 
-* [Part 1](/os/tutorials/sensors/sensor_bno055_oic_test.md) shows you how to enable OIC sensor support in the sensors_test application. The procedure only requires setting the appropriate syscfg setting values for the application target. The objective is to allow you to quickly bring up the sensors_test application and view the sensor data with the Mynewt Smart Device Controller OIC app that is available for iOS and Android devices.
+* [Part 1](/os/tutorials/sensors/sensor_bno055_oic.md) shows you how to enable OIC sensor support in the sensors_test application. The procedure only requires setting the appropriate syscfg setting values for the application target. The objective is to allow you to quickly bring up the sensors_test application and view the sensor data with the Mynewt Smart Device Controller OIC app that is available for iOS and Android devices.
 
 * [Part 2](/os/tutorials/sensors/sensor_bleprph_oic.md) shows you how to modify the bleprph_oic application code to add OIC sensor support. The objective is to show you how to use the Sensor Framework API and OIC server API to develop an OIC over BLE sensor server application.
 <br>
