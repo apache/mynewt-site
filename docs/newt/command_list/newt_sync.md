@@ -1,15 +1,17 @@
 ## <font color="#F2853F" style="font-size:24pt">newt sync </font>
 
-Synchronize project dependencies.
+Synchronize and refresh the contents of the local copy of all the repositories used in the project with the latest updates maintained in the remote repositories. 
 
 #### Usage:
 
 ```no-highlight
-    newt version [flags]
+    newt sync [flags]
 ```
 #### Flags:
 ```no-highlight
-    -f, --force             Force overwrite of existing remote repository   
+    -f, --force             Force overwrite of existing remote repository
+```   
+
 #### Global Flags:
 ```no-highlight
     -h, --help              Help for newt commands
@@ -21,4 +23,5 @@ Synchronize project dependencies.
     -v, --verbose           Enable verbose output when executing commands
 ```
 #### Description
-Synchronize project dependencies and repositories. Use -f to force overwrite of existing repository.
+
+Synchronize project dependencies and repositories. Prior to 1.0.0 release, the command deletes and resynchronizes each repository. Post 1.0.0, it will abort the synchronization if there are any local changes to any repository. Using the -f to force overwrite of existing repository will stash and save the changes while pulling in all the latest changes from the remote repository. 

@@ -8,42 +8,39 @@ The host used in this specific example is the BlueZ Bluetooth stack. Since BlueZ
 
 <br>
 
-### Pre-Requisites
+### Prerequisites
+Ensure that you meet the following prerequisites before continuing with one of the tutorials.
 
-* Ensure you have installed [newt](../../newt/install/newt_mac.md) and that the 
-newt command is in your system path. 
-* You must have Internet connectivity to fetch remote Mynewt components.
-* If you are not using the Docker container for newt and other tools, you must [install the compiler tools](../get_started/native_tools.md) to 
-support native compiling to build the project this tutorial creates.  
-* You have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
-* USB TTL Serial Cable that supports hardware flow control such as ones found at [http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm](http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm) to establish a serial USB connection between the board and the laptop.
-* You have installed a BLE host such as BlueZ on a Linux machine to talk to the nrf52 board running Mynewt. Use `sudo apt-get install bluez` to install it on your Linux machine. 
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.
+* Have a USB TTL Serial Cable that supports hardware flow control such as ones found at [http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm](http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm) to establish a serial USB connection between the board and the laptop.
+* Install the newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Install a BLE host such as BlueZ on a Linux machine to talk to the nrf52 board running Mynewt. Use `sudo apt-get install bluez` to install it on your Linux machine. 
 
 <br>
 
 ### Create a project
 
-Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. Make sure the downloaded version is 0.9.0 or later.
+Use the newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory. 
 
 ```
 $ newt new blehciproj 
-Downloading project skeleton from apache/incubator-mynewt-blinky...
+Downloading project skeleton from apache/mynewt-blinky...
 Installing skeleton in blehciproj ...
 Project blehciproj  successfully created.
 $ cd mblehciproj 
 
-$ newt install -v 
+$ newt install
 apache-mynewt-core
-Downloading repository description for apache-mynewt-core... success!
-...
-apache-mynewt-core successfully installed version 0.9.0-none
 ```
 
 <br>
 
 ### Create targets 
 
-You will create two targets - one for the bootloader, the other for the application. Then you will add the definitions for them. Note that you are using the example app `blehci` for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively).
+You will create two targets - one for the bootloader, the other for the application. Then you will add the definitions for them. Note that you are using the example app `blehci` for the application target. Set the bsp to nrf52dk. 
+
+**NOTE:** The preview version, nrf52pdk, is no longer supported. If you do not see PCA100040 on the top of your board, you have a preview version of the board and will need to upgrade your developer board before continuing.
 
 ```
 $ newt target create nrf52_boot
@@ -85,17 +82,19 @@ $ newt target show
 
 Then build the two targets.
 
-```
+```no-highlight
 $ newt build nrf52_boot
 <snip>
-App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
+Linking ~/dev/blehciproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
+
 $ newt build myble2
-Compiling hci_common.c
-Compiling util.c
-Archiving nimble.a
-Compiling os.c
 <snip>
+Linking ~/dev/blehciproj/bin/targets/myble2/app/apps/blehci/blehci.elf
+Target successfully built: targets/myble2
+$
 ```
+
 
 <br>
 
@@ -103,20 +102,30 @@ Compiling os.c
 
 Generate a signed application image for the `myble2` target. The version number is arbitrary.
 
-```
+```no-highlight
 $ newt create-image myble2 1.0.0
-App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
-Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
+App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/bletiny/bletiny.img
 ```
 
 <br>
 
-### Load the image
+### Load the bootloader and the application image
 
 Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.
 
+Load the bootloader:
+
+```no-highlight
+$ newt load nrf52_boot
+Loading bootloader
+$
 ```
-$ newt -v load myble
+<br>
+Load the application image:
+```no-highlight
+$ newt load myble2
+Loading app image into slot 1
+$
 ```
 
 <br>
@@ -146,11 +155,16 @@ Bluetooth monitor ver 5.37
 In a different terminal, attach the blehci device to the BlueZ daemon (substitute the correct /dev filename for ttyUSB0).
 
 ```
-$ sudo btattach -B /dev/ttyUSB0 -S 115200 
+$ sudo btattach -B /dev/ttyUSB0 -S 1000000
 Attaching BR/EDR controller to /dev/ttyUSB0
 Switched line discipline from 0 to 15
 Device index 1 attached
 ```
+
+The baud rate used to connect to the controller may be changed by overriding the default value of 1000000 in the `net/nimble/transport/uart/syscfg.yml`. Settings in the serial transport `syscfg.yml` file can be overridden by a higher priority package such as the application. So, for example, you may set the `BLE_HCI_UART_BAUD` to a different value in `apps/blehci/syscfg.yml`.
+
+If there is no CTS/RTS lines present in the test environment, flow control should be turned off. This can be done with
+-N option for btattach. **Note:** -N option came with BlueZ ver 5.44.
 
 <br>
 

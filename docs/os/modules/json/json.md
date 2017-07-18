@@ -47,7 +47,7 @@ struct json_value {
 ```
 This data structure is filled with data to be encoded. It is best to fill this using the macros *JSON_VALUE_STRING()* or *JSON_VALUE_STRINGN()* when value is string, *JSON_VALUE_INT()* when value is an integer, and so forth.
 
-###Decoding
+### Decoding
 ```c
 /* when you implement a json buffer, you must implement these functions */
 

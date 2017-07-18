@@ -14,7 +14,6 @@ The host sits directly below the application, and it serves as the interface to 
 ### Reference
 
 * [NimBLE Host Return Codes](ble_hs_return_codes.md)
-* [Initialization and Configuration](init/init.md)
 * [Generic Access Protocol (GAP)](ble_gap/ble_gap.md)
 * [Generic Attribute Profile (GATT) Client](ble_gattc/ble_gattc.md)
 * [Generic Attribute Profile (GATT) Server](ble_gatts/ble_gatts.md)

@@ -1,6 +1,6 @@
 # CPU Time
 
-The MyNewt `cputime` module provides high resolution time and timer support. This module is intended for use by BSPs, drivers, and network controllers. 
+The MyNewt `cputime` module provides high resolution time and timer support. 
 
 ## Description
 

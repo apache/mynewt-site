@@ -3,7 +3,7 @@
 
 
 
-###Description
+### Description
 
 This library accepts incoming image management commands from newtmgr and acts on them.
 
@@ -17,11 +17,11 @@ Image manager also can upload files to filesystem as well as download them.
 
 Note that commands accessing filesystems (next boot target, file upload/download) will not be available unless project includes filesystem implementation.
 
-###Data structures
+### Data structures
 
 N/A.
 
-###List of Functions
+### List of Functions
 
 <Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
@@ -29,6 +29,5 @@ The functions available in imgmgr are:
 
 | Function | Description |
 |---------|-------------|
-| [imgmgr_module_init](imgmgr_module_init.md) | Registers image manager commands with newtmgr. |
 | [imgr_ver_parse](imgr_ver_parse.md) | Parses character string containing specified image version number and writes that to given image_version struct. |
 | [imgr_ver_str](imgr_ver_str.md) | Takes version string from specified image_version struct and formats it into a printable string. |

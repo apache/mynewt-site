@@ -14,14 +14,25 @@ Several different modes and procedures may be performed simultaneously over an L
     - allow updating of parameters of the connection 
     - allow termination of the connection 4. **Bonding modes and procedures**
     - Bonding allows two connected devices to exchange and store security and identity information to create a trusted relationship. 
-    - Bonding can occur only between two devices in bondable mode.<br>
-###Usage API
-|**Item No.** | **Modes and Procedures** | **nimBLE command** ||----|---------|---------------|
-|  1 | Broadcast Mode | `b adv conn=non disc=x` ||   | Observation Procedure | `b scan dur=x disc=x type=x filt=x`  |
-|  2 | Non-Discoverable mode   | `b adv conn=x disc=non`  ||   | Limited Discoverable mode   | `b adv conn=x disc=ltd`  |
-|   | General Discoverable mode   | `b adv conn=x disc=gen`  ||   |  Limited Discovery procedure  | `b scan dur=x disc=ltd type=active filt=no_wl`  |
-|   | General Discovery procedure   | `b scan dur=x disc=gen type=active filt=no_wl`  |
-|   |  Name Discovery procedure  | UNSUPPORTED  |
+    - Bonding can occur only between two devices in bondable mode.
+
+
+<br>
+
+
+### Usage API
+
+
+|**Item No.** | **Modes and Procedures** | **nimBLE command** |
+|----|---------|---------------|
+|  1 | Broadcast Mode | `b adv conn=non disc=x` |
+|    | Observation Procedure | `b scan dur=x disc=x type=x filt=x`  |
+|  2 | Non-Discoverable mode   | `b adv conn=x disc=non`  |
+|    | Limited Discoverable mode   | `b adv conn=x disc=ltd`  |
+|    | General Discoverable mode   | `b adv conn=x disc=gen`  |
+|    | Limited Discovery procedure | `b scan dur=x disc=ltd type=active filt=no_wl`  |
+|    | General Discovery procedure | `b scan dur=x disc=gen type=active filt=no_wl`  |
+|    | Name Discovery procedure  | `b scan dur=x` <br> `b scan cancel` <br> `b conn peer_addr_type=x peer_addr=x` <br> `b read uuid=0x2a00` |
 |  3 | Non-connectable mode   | `b adv conn=non disc=x`  |
 |   |  Directed connectable mode  | `b adv conn=dir disc=x addr_type=x addr=x`  |
 |   |  Undirected connectable mode  | `b adv conn=und disc=x`  |

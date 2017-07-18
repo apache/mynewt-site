@@ -7,7 +7,7 @@ ble_gap_adv_rsp_set_fields(const struct ble_hs_adv_fields *rsp_fields)
 
 ### Description
 
-Configures the data to include in subsequent scan responses.
+Configures the fields to include in subsequent scan responses.  This is a convenience wrapper for ble\_gap\_adv\_rsp\_set\_data().
 
 ### Parameters
 
@@ -21,5 +21,4 @@ Configures the data to include in subsequent scan responses.
 |---------|-------------|
 | 0 | Success. |
 | BLE\_HS\_EBUSY | Advertising is in progress. |
-| BLE\_HS\_EMSGSIZE | The specified data is too large to fit in an advertisement. |
 | [Core return code](../../ble_hs_return_codes/#return-codes-core) | Unexpected error. |

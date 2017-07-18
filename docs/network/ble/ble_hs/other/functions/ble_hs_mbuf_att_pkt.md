@@ -7,7 +7,7 @@ ble_hs_mbuf_att_pkt(void)
 
 ### Description
 
-Allocates an mbuf suitable for an ATT command packet.  The resulting packet has sufficient leading space for: o ACM data header o L2CAP B-frame header o Largest ATT command base (prepare write request / response).
+Allocates an mbuf suitable for an ATT command packet.  The resulting packet has sufficient leading space for: <ul><li>ACL data header</li> <li>L2CAP B-frame header</li> <li>Largest ATT command base (prepare write request / response).</li></ul>
 
 ### Parameters
 

@@ -19,27 +19,29 @@ Install the requirements:
 ## Submitting updates
 
 1. Fork the repo.
-1. Work on the `develop` branch.
+1. Work on the `master` branch.
 1. Preview your changes using MkDocs.
     * `mkdocs serve`
     * visit [http://localhost:8000](http://localhost:8000)
 1. Submit a pull request.
 
 ## Releasing a versioned set of MyNewt documentation
-When a release of MyNewt OS and its associated tools occurs, a new branch should be created to hold all docs pertaining to that release. The documentation in the git `develop` branch of this repository always shows the latest docs under development (beyond the latest release). The following steps will create a documentation branch for a new release and make it available from the mynewt-site.
+When a release of MyNewt OS and its associated tools occurs, a new version directory should be created to hold all docs pertaining to that release. The documentation in the git `master` branch of this repository always shows the latest docs under development. The following steps will create a documentation directory for a new release and make it available from the mynewt-site.
 
 ### Build
 
-1. Merge pull requests to `develop` on github.
-1. Checkout `develop`.
-    *  `git pull --rebase origin develop` to pull the latest merged changes.
+1. Merge pull requests to `master` on github.
 1. Switch to the master branch.
     * `git checkout master`
+1. While in master, do `git pull --rebase origin master` to pull the latest merged changes.
 1. Create a new _stanza_ in `mkdocs.yml` to reflect the new version. (SKIP THIS STEP IF NOT A NEW RELEASE)
     * and update the `latest` flag, only one release should be marked latest.
-    * **and update version to match the new branch name.**
+    * **and update version to match the new directory name.**
 1. Commit this change. (SKIP THIS STEP IF NOT A NEW RELEASE)
-1. Create a branch from master to reflect this new version. (SKIP THIS STEP IF NOT A NEW RELEASE)
+1. Create a new directory in the versions directory to reflect this new version. (SKIP THIS STEP IF NOT A NEW RELEASE)
+    * Copy the latest docs directory and mkdocs.yml file into the new version directory
+    * Set extra.version to the new version in the copied mkdocs.yml file
+    * Create a symbolic link to the customer-theme
 1. Run: `./build.py`
 
 ### Test
@@ -52,6 +54,12 @@ When a release of MyNewt OS and its associated tools occurs, a new branch should
 1. Run: `./deploy.sh build`
 1. This will leave you on the `asf-site` branch.
 1. Commit & push the changes.
+
+The runtime-bot github user does a build every ~15 minutes and opens a Pull
+Request against the asf-site branch if there are any changes. It is recommended
+that the runtime-bot PRs are used to deploy changes to the site instead of PRs
+from individual contributors. The runtime-bot PRs give us repeatable builds
+using known versions of the build tools.
 
 ## Links to Documentation
 

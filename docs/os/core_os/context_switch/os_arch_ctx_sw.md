@@ -1,6 +1,5 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_arch_ctx_sw </font>
 
-
 void os_arch_ctx_sw(struct os_task *next_t)
 
 

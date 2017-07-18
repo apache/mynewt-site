@@ -36,6 +36,7 @@ The functions available in context_switch are:
 | [os_sched_insert](os_sched_insert.md) | Insert task into scheduler's ready to run list. |
 | [os_sched_next_task](os_sched_next_task.md) | Returns the pointer to highest priority task from the list which are *ready to run*. |
 | [os_sched_os_timer_exp](os_sched_os_timer_exp.md) | Inform scheduler that OS time has moved forward. |
+| [os_sched_remove](os_sched_remove.md) | Stops a task and removes it from all the OS task lists. |
 | [os_sched_resort](os_sched_resort.md) | Inform scheduler that the priority of the given task has changed and the *ready to run* list should be re-sorted. |
 | [os_sched_set_current_task](os_sched_set_current_task.md) | Sets the given task to *running*. |
 | [os_sched_sleep](os_sched_sleep.md) | The given task's state is changed from *ready to run* to *sleeping*. |

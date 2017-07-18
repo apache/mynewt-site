@@ -1,50 +1,40 @@
-#File System Abstraction
+# File System Abstraction
 
 Mynewt provides a file system abstraction layer (`fs/fs`) to allow client code to be file system agnostic.  By accessing the file system via the `fs/fs` API, client code can perform file system operations without being tied to a particular implementation.  When possible, library code should use the `fs/fs` API rather than accessing the underlying file system directly.
 
-###Description
+### Description
 
-Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the `fs/fs` package.  In the simplest case, the only code which needs to know which file system is in use is the code which initializes the file system.  In terms of the Mynewt hierarchy, the **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
+Applications should aim to minimize the amount of code which depends on a particular file system implementation.  When possible, only depend on the
+`fs/fs` package.
+In terms of the Mynewt hierarchy, an **app** package must depend on a specific file system package, while **library** packages should only depend on `fs/fs`.
 
-The following example illustrates how file system dependencies should be managed.  In the slinky application, the app is responsible for initializing the file system, so it depends on a concrete file system package called `fs/nffs` (Newtron Flash File System). The app explicitly initializes nffs via calls to `nffs_init()`, `nffs_detect()` and `nffs_format()`.
+Applications wanting to access a filesystem are required to include the necessary packages in their applications pkg.yml file.
+In the following example, the [`Newtron Flash File System`](../nffs/nffs.md)
+is used.
 
 ```no-highlight
 # repos/apache-mynewt-core/apps/slinky/pkg.yml
 
 pkg.name: repos/apache-mynewt-core/apps/slinky
 pkg.deps:
-    - fs/nffs
+    - fs/fs         # include the file operations interfaces
+    - fs/nffs       # include the NFFS filesystem implementation
+```
+
+```
+# repos/apache-mynewt-core/apps/slinky/syscfg.yml
+# [...]
+ # Package: apps/<example app>
+# [...]
+    CONFIG_NFFS: 1  # initialize and configure NFFS into the system
+#   NFFS_DETECT_FAIL: 1   # Ignore NFFS detection issues 
+#   NFFS_DETECT_FAIL: 2   # Format a new NFFS file system on failure to detect
 
 # [...]
 ```
+Consult the documentation for [`nffs`](../nffs/nffs.md) for a more detailed explanation of NFFS_DETECT_FAIL
 
-```c
-/* repos/apache-mynewt-core/apps/slinky/src/main.c */
-
-#include "nffs/nffs.h"
-
-int
-main(int argc, char **argv)
-{
-    int rc;
-    int cnt;
-    struct nffs_area_desc descs[NFFS_AREA_MAX];
-
-    rc = nffs_init();
-    assert(rc == 0);
-
-    cnt = NFFS_AREA_MAX;
-    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &cnt, descs);
-    assert(rc == 0);
-    if (nffs_detect(descs) == FS_ECORRUPT) {
-        rc = nffs_format(descs);
-        assert(rc == 0);
-    }
-    // [...]
-}
-```
-
-On the other hand, code which uses the file system after it has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the main app has initialized the file system, and therefore only depends on the `fs/fs` package.
+Code which uses the file system after the system has been initialized need only depend on `fs/fs`.  For example, the `libs/imgmgr` package is a library which provides firmware upload and download functionality via the use of a file system.  This library is only used after the system has been initialized, and therefore only depends on the `fs/fs` package.
 
 ```no-highlight
 # repos/apache-mynewt-core/libs/imgmgr/pkg.yml
@@ -57,17 +47,59 @@ pkg.deps:
 
 The `libs/imgmgr` package uses the `fs/fs` API for all file system operations.
 
-###Thread Safety
+### Support for multiple filesystems
+
+When using a single filesystem/disk, it is valid to provide paths in the standard
+unix way, eg, `/<dir-name>/<file-name>`. When trying to run more than one filesystem
+or a single filesystem in multiple devices simultaneosly, an extra name has to be
+given to the disk that is being used. The abstraction for that was added as the
+`fs/disk` package which is a dependency of `fs/fs`. It adds the following extra
+user function:
+
+```c
+int disk_register(const char *disk_name, const char *fs_name, struct disk_ops *dops)
+```
+
+As an example os usage:
+
+```c
+disk_register("mmc0", "fatfs", &mmc_ops);
+disk_register("flash0", "nffs", NULL);
+```
+
+This registers the name `mmc0` to use `fatfs` as the filesystem and `mmc_ops` for
+the low-level disk driver and also registers `flash0` to use `nffs`. `nffs` is
+currently strongly bound to the `hal_flash` interface, ignoring any other possible
+`disk_ops` given.
+
+#### struct disk_ops
+
+To support a new low-level disk interface, the `struct disk_ops` interface must
+be implemented by the low-level driver. Currently only `read` and `write` are
+effectively used (by `fatfs`).
+
+```c
+struct disk_ops {
+    int (*read)(uint8_t, uint32_t, void *, uint32_t);
+    int (*write)(uint8_t, uint32_t, const void *, uint32_t);
+    int (*ioctl)(uint8_t, uint32_t, void *);
+    SLIST_ENTRY(disk_ops) sc_next;
+}
+```
+
+### Thread Safety
+
 All `fs/fs` functions are thread safe.
 
-###Header Files 
+### Header Files
+
 All code which uses the `fs/fs` package needs to include the following header:
 
 ```c
 #include "fs/fs.h"
 ```
 
-###Data Structures
+### Data Structures
 All `fs/fs` data structures are opaque to client code.
 
 ```c
@@ -76,7 +108,7 @@ struct fs_dir;
 struct fs_dirent;
 ```
 
-###API
+### <a name="API"></a>API
 
 Functions in `fs/fs` that indicate success or failure do so with the following set of return codes:
 

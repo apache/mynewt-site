@@ -6,31 +6,33 @@ The full list of tutorials can be seen in the navigation bar on the left. New on
 
 <br>
 
-###Prerequisites:
+### Prerequisites:
 
 * You have installed Docker container of Newt tool and toolchains or you have installed them natively on your machine
 * You have created a new project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](../get_started/project_create).
+* You have at least one of the supported development boards:
+    * [Arduino Zero hardware](arduino_zero.md)
+    * [Olimex/STM32F407ZGT6 Cortex-M4 hardware](olimex.md)
+    * [nRF52 Development Kit from Nordic Semiconductor](nRF52.md)
+
+The Nordic nrf52 developer kit supports Bluetooth Low Energy. We are always looking to add new hardware to the list, so if you want to develop the required Board Support Package (bsp) and/or Hardware Abstraction Layer (HAL) for a new board, you can look [here](../core_os/porting/port_os/) to get started.
+
 
 <br>
 
-###Tutorial categories:
+### Tutorial categories:
 
 The tutorials fall into a few broad categories. Some examples in each category are listed below.
 
 * Making an LED blink (the "Hello World" equivalent in the electronics world)
     * [Blinky on Arduino Zero hardware](arduino_zero.md)
     * [Blinky on Olimex/STM32F407ZGT6 Cortex-M4 hardware](olimex.md)
-    * [Blinky on STM32F3 discovery kit from ST Micro](STM32F303.md)
     * [Blinky on nRF52 Development Kit from Nordic Semiconductor](nRF52.md) **Note:** This supports BLE.
-    
-    <br>
-    
-* Tweaking available apps to customize behavior e.g. making a more exciting LED blink pattern
-    * [Pinwheel Blinky on STM32F3 discovery board](pin-wheel-mods.md)
-    
-    <br>
-    
-* Navigating the code and adding functionality  
+    * [Blinky on Redbear Nano2](rbnano2.md)
+
+<br>
+
+* Navigating the code and adding functionality
     * [Adding more repositories to your project](repo/add_repos.md)
     * [Adding a unit test for a package](unit_test.md)
     * [Adding task to manage multiple events](event_queue.md)
@@ -42,7 +44,14 @@ The tutorials fall into a few broad categories. Some examples in each category a
 <br>
 
 * Bluetooth Low Energy
-    * [Running the example BLE app included in the repo](bletiny_project.md)
+    * [Building a Bare Bones BLE Application](ble_bare_bones.md)
+    * [Building a BLE iBeacon Application](ibeacon.md)
+
+<br>
+
+* Tooling
+    * [SEGGER RTT](segger_rtt.md)
+    * [SEGGER SystemView](segger_sysview.md)
 
 <br>
 

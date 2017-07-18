@@ -1,39 +1,44 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_eventq_get</font>
 
 ```c
-void
+struct os_event *
 os_eventq_get(struct os_eventq *evq)
 ```
 
-Fetches the first event from a queue. Task will sleep until something gets queued.
+Dequeues and returns an event from the head of an event queue. When the event queue is empty, 
+the function puts the task into the `sleeping` state.
 
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| evq |  Queue to wait on  |
+| `evq` |  Event queue to retrieve the event from |
 
 
 #### Returned values
 
-Will return with a pointer to first *struct event* which is in the queue.
+A pointer to the `os_event` structure for the event dequeued from the queue. 
 
 #### Notes 
-
+In most cases, you do not need to call this function directly. You should call the `os_eventq_run()` wrapper
+function that calls this function to retrieve an event and then calls the callback function to process the event. 	
 
 #### Example
 
-Main loop of an example task.
+Example of the `os_eventq_run()` wrapper function that calls this function:
 
 ```c
-    while (1) {
-        ev = os_eventq_get(&task1_evq);
-        assert(ev);
-        if (ev->ev_type == CONS_EV_TYPE) {
-			/* XXX do stuff */
-        }
-    }
+void
+os_eventq_run(struct os_eventq *evq)
+{
+    struct os_event *ev;
+
+    ev = os_eventq_get(evq);
+    assert(ev->ev_cb != NULL);
+
+    ev->ev_cb(ev);
+}
 
 ```
 

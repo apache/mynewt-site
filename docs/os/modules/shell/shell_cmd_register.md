@@ -4,21 +4,27 @@
 int shell_cmd_register(struct shell_cmd *sc)
 ```
 
-Registers a handler for incoming console commands. Within the structure there is the command string and the handler for those commands. Caller must allocate the memory for this structure and keep it around as shell links this to its own internal data structures.
+Registers a handler for incoming shell commands.  The function adds the shell command to the `compat` module.  
 
-Command handler is of type `int(*shell_cmd_func_t)(int argc, char **argv)`. Command line arguments are passed to it as an array of character pointers.
+The caller must initialize the  `shell_cmd` structure with the command name and the pointer to the command handler. The caller must not free the memory for the command name string because the shell keeps a reference to the memory for internal use.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| sc | Structure containing info about the command.  |
+| `sc` | Pointer to the `shell_cmd` structure for the command to register.  |
 
 #### Returned values
 
 Returns 0 on success.
-Non-zero on failure.
 
+Non-zero on failure.
+<br>
+#### Notes
+
+The `SHELL_MAX_COMPAT_COMMANDS` syscfg setting specifies the maximum number of shell commands that the `compat` module supports.  This function aborts if the number of handlers registered exceeds this limit.   You can increase the value for this setting.
+
+<br>
 #### Example
 
 ```no-highlight

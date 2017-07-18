@@ -17,7 +17,7 @@ Read statistics from a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Displays statistic for the Stats named `stats_name` from a device.  You can use the `list` subcommand to get a list of the Stats names from the device.  Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
 Sub-command  |  Explanation
@@ -26,7 +26,7 @@ Sub-command  |  Explanation
 list         | The newtmgr stat list command displays the list of Stats names from a device.  
 
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

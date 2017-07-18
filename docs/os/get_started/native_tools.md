@@ -1,21 +1,20 @@
-# Installing Native Mynewt Tools
+# Installing Native Toolchain
 
-This page shows how to install tools for native Mynewt targets (simulated targets on your laptop/computer) without using a Docker container. In other words, it allows you to run Mynewt OS as a native application on your Mac or Linux machine to simulate a target and use the Newt tool running natively on your machine to manage the simulated target. It also allows you to run the test suites for all packages not requiring HW support. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.
+This page shows you how to install the toolchain to build Mynewt OS applications that run native on Mac OS and Linux. The applications run on  Mynewt's simulated hardware.  It also allows you to run the test suites for all packages that do not require HW support. 
 
-This page provides guidance for MAC and Linux. See the relevant sections below.
-
-<br>
-
-## Set up toolchain for Mac
-
-### Install Brew
-
-If you have not already installed Homebrew from the 
-[`newt` tutorials pages](../../newt/install/newt_mac.md), install it. 
+**Note:** This is not supported on Windows.
 
 <br>
 
-###Install gcc/libc 
+## Setting Up the Toolchain for Mac
+
+### Installing Brew
+
+If you have not already installed Homebrew from the [`newt` tutorials pages](../../newt/install/newt_mac.md), install it. 
+
+<br>
+
+### Installing gcc/libc 
 
 OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.
 
@@ -33,8 +32,8 @@ Check the gcc version you have installed (either using brew or previously instal
 
 ```hl_lines="2 3"
 # OS X.
-compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
-compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.cc.DARWIN.OVERWRITE: "gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "gcc-5"
 compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
 compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
 compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
@@ -42,8 +41,8 @@ compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
 with the following:
 
 ```no-highlight
-compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6"
-compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-6 -x assembler-with-cpp”
+compiler.path.cc.DARWIN.OVERWRITE: "gcc-6"
+compiler.path.as.DARWIN.OVERWRITE: "gcc-6”
 ```
 
 <br>
@@ -52,8 +51,8 @@ In case you wish to use Clang, you can change your `<mynewt-src-directory>/repos
 
 ```hl_lines="2 3"
 # OS X.
-compiler.path.cc.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5"
-compiler.path.as.DARWIN.OVERWRITE: "/usr/local/bin/gcc-5 -x assembler-with-cpp"
+compiler.path.cc.DARWIN.OVERWRITE: "gcc-5"
+compiler.path.as.DARWIN.OVERWRITE: "gcc-5"
 compiler.path.objdump.DARWIN.OVERWRITE: "gobjdump"
 compiler.path.objsize.DARWIN.OVERWRITE: "objsize"
 compiler.path.objcopy.DARWIN.OVERWRITE: "gobjcopy"
@@ -84,7 +83,7 @@ A third option is to simply **downgrade to gcc 5.x**.
 
 <br>
 
-###Install gdb 
+### Installing gdb 
 
 ```no-highlight
 $ brew install gdb
@@ -103,7 +102,7 @@ continue without the ability to debug your mynewt application on your PC.*
 
 <br>
 
-## Set up toolchain for Linux 
+## Setting Up the Toolchain for Linux 
 
 The below procedure can be used to set up a Debian-based Linux system (e.g.,
 Ubuntu).  If you are running a different Linux distribution, you will need to
@@ -112,14 +111,14 @@ that your distro uses.
 
 <br>
 
-###Install gcc/libc that will produce 32-bit executables: 
+### Install gcc/libc that will produce 32-bit executables: 
 ```no-highlight
 $ sudo apt-get install gcc-multilib libc6-i386
 ``` 
 
 <br>
        
-###Install gdb 
+### Install gdb 
 
 ```no-highlight
 $ sudo apt-get install gdb
@@ -139,4 +138,4 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
 
 <br>
 
-At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the [Create Your First Project](project_create.md) section.
+At this point you have installed all the necessary software to build and run your first project on a simluator on your Mac OS or Linux computer. You may proceed to the [Create Your First Project](project_create.md) section or continue to the next section and install the cross tools for ARM.

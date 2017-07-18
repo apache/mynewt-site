@@ -1,4 +1,4 @@
-##Validation and Error Messages 
+## Validation and Error Messages 
 
 With multiple packages defining and overriding system configuration settings, it 
 is easy to introduce conflicts and violations that are difficult to find.  The 
@@ -16,7 +16,7 @@ The command outputs the package setting definitions and values after it
 outputs the error messages. It is easy to miss the error messages at the top. 
 
 
-###Value Override Violations
+### Value Override Violations
 
 The newt tool uses package priorities to resolve override conflicts. It uses 
 the value override from the highest priority package when multiple 
@@ -26,8 +26,11 @@ override violations:
 * Ambiguity Violation - Two packages of the same priority override a setting with 
 different values. And no higher priority package overrides the setting.
 * Priority Violation - A package overrides a setting defined by a package with higher or 
-equal priority (TODO: Change error message to indicate a more general priority violation instead of only lateral overrides)
+equal priority. 
 
+    **Note:** A package may override the default value for a setting that it defines. For example, a package defines a setting with a default value but needs to conditionally override the value based on another setting value.
+
+<br>
 ####Example: Ambiguity Violation Error Message
 
 The following example shows the error message that newt outputs for an ambiguity violation:
@@ -37,13 +40,13 @@ The following example shows the error message that newt outputs for an ambiguity
 Error: Syscfg ambiguities detected:
     Setting: LOG_NEWTMGR, Packages: [apps/slinky, apps/splitty]
 Setting history (newest -> oldest):
-    LOG_NEWTMGR: [apps/splitty:0, apps/slinky:1, sys/log:0]
+    LOG_NEWTMGR: [apps/splitty:0, apps/slinky:1, sys/log/full:0]
 
 ```
 
 The above error occurs because the `apps/slinky` and `apps/splitty` packages 
 in the split image target both override the same setting with different 
-values.  The `apps/slinky` package sets the `sys/log` package `LOG_NEWTMGR` 
+values.  The `apps/slinky` package sets the `sys/log/full` package `LOG_NEWTMGR` 
 setting to 1, and the `apps/splitty` package sets the setting to 0. The 
 overrides are ambiguous because both are `app` packages and 
 have the same priority.  The following are excerpts of the defintion 
@@ -52,7 +55,7 @@ and the two overrides from the `syscfg.yml` files that cause the error:
 
 ```no-highlight
 
-#Package: sys/log/
+#Package: sys/log/full
 syscfg.defs:
     LOG_NEWTMGR:
         description: 'Enables or disables newtmgr command tool logging'
@@ -68,29 +71,30 @@ syscfg.vals:
 
 ```
 
-####Example: Priority Violation Error Message
+#### Example: Priority Violation Error Message
 
-The following example shows the error message that newt outputs for a lateral violation where a package tries to change the setting that was defined by another package at the same priority level:
+The following example shows the error message that newt outputs for a priority violation 
+where a package tries to change the setting that was defined by another package at 
+the same priority level:
 
 ```no-highlight
 
-
-Error: Lateral overrides detected (bottom-priority packages cannot override settings):
-    Package: mgmt/newtmgr, Setting: LOG_NEWTMGR
+Error: Priority violations detected (Packages can only override settings defined by packages of lower priority):
+    Package: mgmt/newtmgr overriding setting: LOG_NEWTMGR defined by sys/log/full
 
 Setting history (newest -> oldest):
-    LOG_NEWTMGR: [sys/log:0]
+    LOG_NEWTMGR: [sys/log/full:0]
 
 ```
 
 The above error occurs because the `mgmt/newtmgr` lib package 
-overrides the `LOG_NEWTMGR` setting that the `sys/log` lib package 
+overrides the `LOG_NEWTMGR` setting that the `sys/log/full` lib package 
 defines. The following are excerpts of the definition and the override from the 
 `syscfg.yml` files that cause this error: 
 
 ```no-highlight
 
-#Package: sys/log
+#Package: sys/log/full
 syscfg.defs:
      LOG_NEWTMGR:
         description: 'Enables or disables newtmgr command tool logging'
@@ -103,7 +107,7 @@ syscfg.vals:
 ```
 <br>
 
-###Flash Area Violations
+### Flash Area Violations
 
 For `flash_owner` type setting definitions, newt checks 
 for the following violations:
@@ -111,7 +115,7 @@ for the following violations:
 * An undefined flash area is assigned to a setting.
 * A flash area is assigned to multiple settings.
 
-####Example: Undefined Flash Area Error Message
+#### Example: Undefined Flash Area Error Message
 
 The following example shows the error message that newt outputs for an undefined flash area.
 
@@ -145,7 +149,7 @@ syscfg.vals:
 
 ```
 
-####Example: Multiple Flash Area Assignment Error Message
+#### Example: Multiple Flash Area Assignment Error Message
 
 The following example shows the error message that newt outputs when multiple 
 settings are assigned the same flash area:
@@ -205,7 +209,7 @@ the following violations:
 * For a setting with expression restrictions, some required setting 
 values in the expressions evaluate to false. 
 
-####Example: $notnull Restriction Violation Error Message
+#### Example: $notnull Restriction Violation Error Message
 
 The following example shows the error message that newt outputs when
 a setting with `$notnull` restriction does not have a value:
@@ -279,7 +283,7 @@ For `task_priority` type setting definitions, newt checks for the following viol
 * A task priority number is assigned to multiple settings.  
 * The task priority number is greater than 239.
 
-####Example: Duplicate Task Priority Assignment Error Message
+#### Example: Duplicate Task Priority Assignment Error Message
 
 The following example shows the error message that newt outputs when
 a task priority number is assigned to multiple settings.
@@ -298,7 +302,7 @@ The above error occurs because the `apps/slinky` package defines a `SLINKY_TASK_
 setting with a default task priority of 1 and the `sys/shell` package also defines a 
 `SHELL_TASK_PRIORITY` setting with a default task priority of 1.
 
-####Example: Invalid Task Priority Error Message
+#### Example: Invalid Task Priority Error Message
 
 The following example shows the error message that newt outputs when
 a setting is assigned an invalid task priority value:
@@ -328,3 +332,99 @@ Error: setting LOG_NEWTMGR redefined
 
 ```
 **Note:** Newt does not output the `Setting history` with duplicate setting error messages. 
+<br>
+###Override of Undefined System Configuration Setting
+
+The `newt build` command ignores overrides of undefined system configuration settings. The command does not print a warning when you run it with the default log level.  If you override a setting and the value is not assigned to the setting, you may have misspelled the setting name or a package no longer defines the setting.  You have two options to troubleshoot this problem:
+
+* Run the `newt target config show` command to see the configuration setting definitions and overrides.
+* Run the `newt build -ldebug` command to build your target with DEBUG log level. 
+
+Note: The `newt build -ldebug` command generates lots of output and we recommend that you use the `newt target config show` command option.
+<br>
+####Example: Ignoring Override of Undefined Setting Message
+
+The following example shows that the `apps/slinky` application overrides the `LOG_NEWTMGR` setting but omits the **T** as an example of an error and overrides the misspelled **LOG_NEWMGR** setting.  Here is an excerpt from its `syscfg.yml` file: 
+```no-highlight
+#package: apps/slinky
+syscfg.vals:
+    # Enable the shell task.
+    SHELL_TASK: 1
+        ...
+
+    # Enable newtmgr commands.
+    STATS_NEWTMGR: 1
+    LOG_NEWMGR: 1
+
+```
+<br>
+The  `newt target config show slinky_sim` command outputs the following WARNING message:
+
+```no-highlight
+
+2017/02/18 17:19:12.119 [WARNING] Ignoring override of undefined settings:
+2017/02/18 17:19:12.119 [WARNING]     LOG_NEWMGR
+2017/02/18 17:19:12.119 [WARNING]     NFFS_FLASH_AREA
+2017/02/18 17:19:12.119 [WARNING] Setting history (newest -> oldest):
+2017/02/18 17:19:12.119 [WARNING]     LOG_NEWMGR: [apps/slinky:1]
+2017/02/18 17:19:12.119 [WARNING]     NFFS_FLASH_AREA: [hw/bsp/native:FLASH_AREA_NFFS]
+
+```
+<br>
+
+The `newt build -ldebug slinky_sim` command outputs the following  DEBUG message: 
+```no-highlight
+
+2017/02/18 17:06:21.451 [DEBUG] Ignoring override of undefined settings:
+2017/02/18 17:06:21.451 [DEBUG]     LOG_NEWMGR
+2017/02/18 17:06:21.451 [DEBUG]     NFFS_FLASH_AREA
+2017/02/18 17:06:21.451 [DEBUG] Setting history (newest -> oldest):
+2017/02/18 17:06:21.451 [DEBUG]     LOG_NEWMGR: [apps/slinky:1]
+2017/02/18 17:06:21.451 [DEBUG]     NFFS_FLASH_AREA: [hw/bsp/native:FLASH_AREA_NFFS]
+
+```
+
+<br>
+#### BSP Package Overrides Undefined Configuration Settings
+
+You might see a warning that indicates your application's BSP package is overriding some undefined settings. As you can see from the previous example, the WARNING message shows that the `hw/bsp/native` package is overriding the undefined `NFFS_FLASH_AREA` setting. This is not an error because of the way a BSP package defines and assigns its flash areas to packages that use flash memory.
+
+A BSP package defines, in its `bsp.yml` file, a flash area map of the flash areas on the board. A package that uses flash memory must define a flash area configuration setting name. The BSP package overrides the package's flash area setting with one of the flash areas from its flash area map.   A BSP package overrides the flash area settings for all packages that use flash memory because it does not know the packages that an application uses.  When an application does not include one of these packages, the flash area setting for the package is undefined. You will see a message that indicates the BSP package overrides this undefined setting.
+
+Here are excerpts from the `hw/bsp/native` package's `bsp.yml` and `syscfg.yml` files for the `slinky_sim` target.  The BSP package defines the flash area map in its `bsp.yml` file and overrides the flash area settings for all packages in its `syscfg.yml` file. The `slinky_sim` target does not use the `fs/nffs` package which defines the `NFFS_FLASH_AREA` setting. Newt warns that the `hw/bsp/native` packages overrides the undefined `NFFS_FLASH_AREA` setting.
+
+```no-highlights
+
+# hw/bsp/native bsp.yml
+bsp.flash_map:
+    areas:
+        # System areas.
+        FLASH_AREA_BOOTLOADER:
+            device: 0
+            offset: 0x00000000
+            size: 16kB
+
+            ...
+
+        FLASH_AREA_IMAGE_SCRATCH:
+            device: 0
+            offset: 0x000e0000
+            size: 128kB
+
+        # User areas.
+        FLASH_AREA_REBOOT_LOG:
+            user_id: 0
+            device: 0
+            offset: 0x00004000
+            size: 16kB
+        FLASH_AREA_NFFS:
+            user_id: 1
+            device: 0
+            offset: 0x00008000
+
+# hw/bsp/native syscfg.yml
+syscfg.vals:
+    NFFS_FLASH_AREA: FLASH_AREA_NFFS
+    CONFIG_FCB_FLASH_AREA: FLASH_AREA_NFFS
+    REBOOT_LOG_FLASH_AREA: FLASH_AREA_REBOOT_LOG
+```

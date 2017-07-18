@@ -18,19 +18,19 @@ First, we'll define the GATT Services in `apps/air_quality/src/bleprph.h`.
 ```c
 /* Sensor Data */
 /* e761d2af-1c15-4fa7-af80-b5729002b340 */
-static const uint8_t gatt_svr_svc_co2_uuid[16] = {
-    0x40, 0xb3, 0x20, 0x90, 0x72, 0xb5, 0x80, 0xaf,
-    0xa7, 0x4f, 0x15, 0x1c, 0xaf, 0xd2, 0x61, 0xe7 };
+static const ble_uuid128_t gatt_svr_svc_co2_uuid =
+    BLE_UUID128_INIT(0x40, 0xb3, 0x20, 0x90, 0x72, 0xb5, 0x80, 0xaf,
+                     0xa7, 0x4f, 0x15, 0x1c, 0xaf, 0xd2, 0x61, 0xe7);
 #define CO2_SNS_TYPE          0xDEAD
 #define CO2_SNS_STRING "SenseAir K30 CO2 Sensor"
-#define CO2_SNS_VAL               0xBEAD
+#define CO2_SNS_VAL           0xBEAD
 
 uint16_t gatt_co2_val; 
 ```
 
 You can use any hex values you choose for the sensor type and sensor values, and you can 
 even forget the sensor type and sensor string definitions altogether but they make
-the results look nice in our Bleutooth App.
+the results look nice in our Bluetooth App for Mac OS X and iOS.
 
 Next we'll add those services to `apps/air_quality/src/gatt_svr.c`.
 
@@ -51,15 +51,15 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
         /*** Service: Security test. */
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid128 = gatt_svr_svc_sec_test_uuid,
+        .uuid = &gatt_svr_svc_sec_test_uuid.u,
         .characteristics = (struct ble_gatt_chr_def[]) { {
             /*** Characteristic: Random number generator. */
-            .uuid128 = gatt_svr_chr_sec_test_rand_uuid,
+            .uuid = &gatt_svr_chr_sec_test_rand_uuid.u,
             .access_cb = gatt_svr_chr_access_sec_test,
             .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_READ_ENC,
         }, {
             /*** Characteristic: Static value. */
-            .uuid128 = gatt_svr_chr_sec_test_static_uuid,
+            .uuid = &gatt_svr_chr_sec_test_static_uuid,.u
             .access_cb = gatt_svr_chr_access_sec_test,
             .flags = BLE_GATT_CHR_F_READ |
                      BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_ENC,
@@ -70,29 +70,31 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         {
             /*** CO2 Level Notification Service. */
             .type = BLE_GATT_SVC_TYPE_PRIMARY,
-            .uuid128 = gatt_svr_svc_co2_uuid,
+            .uuid = &gatt_svr_svc_co2_uuid.u,
             .characteristics = (struct ble_gatt_chr_def[]) { {
-                .uuid128 = BLE_UUID16(CO2_SNS_TYPE),
+                .uuid = BLE_UUID16_DECLARE(CO2_SNS_TYPE),
                 .access_cb = gatt_svr_sns_access,
                 .flags = BLE_GATT_CHR_F_READ,
             }, {
-                .uuid128 = BLE_UUID16(CO2_SNS_VAL),
+                .uuid = BLE_UUID16_DECLARE(CO2_SNS_VAL),
                 .access_cb = gatt_svr_sns_access,
                 .flags = BLE_GATT_CHR_F_NOTIFY,
             }, {
                 0, /* No more characteristics in this service. */
             } },
         },
-    {
-        0, /* No more services. */
-    },
-};
+
+        {
+            0, /* No more services. */
+        },
+    };
+            
 ```
 
 Next we need to tell the GATT Server how to handle requests for CO<sub>2</sub> readings :
 
 ```c
-static int
+sstatic int
 gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
                           struct ble_gatt_access_ctxt *ctxt,
                           void *arg)
@@ -100,8 +102,7 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
     uint16_t uuid16;
     int rc;
 
-    uuid16 = ble_uuid_128_to_16(ctxt->chr->uuid128);
-    assert(uuid16 != 0);
+    uuid16 = ble_uuid_u16(ctxt->chr->uuid);
 
     switch (uuid16) {
     case CO2_SNS_TYPE:
@@ -109,7 +110,7 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
         rc = os_mbuf_append(ctxt->om, CO2_SNS_STRING, sizeof CO2_SNS_STRING);
         BLEPRPH_LOG(INFO, "CO2 SENSOR TYPE READ: %s\n", CO2_SNS_STRING);
         return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
-    
+
     case CO2_SNS_VAL:
         if (ctxt->op == BLE_GATT_ACCESS_OP_WRITE_CHR) {
             rc = gatt_svr_chr_write(ctxt->om, 0,
@@ -122,11 +123,11 @@ gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
                                 sizeof gatt_co2_val);
             return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
         }
-    
+
     default:
         assert(0);
         return BLE_ATT_ERR_UNLIKELY;
-    }                              
+    }
 }
 ```
 
@@ -197,7 +198,7 @@ co2_read_event(void)
         goto err;
     }
     gatt_co2_val = value;
-    rc = ble_gatts_find_chr(gatt_svr_svc_co2_uuid, BLE_UUID16(CO2_SNS_VAL), NULL, &chr_val_handle);
+    rc = ble_gatts_find_chr(&gatt_svr_svc_co2_uuid.u, BLE_UUID16_DECLARE(CO2_SNS_VAL), NULL, &chr_val_handle);
     assert(rc == 0);
     ble_gatts_chr_updated(chr_val_handle);
     return (0);

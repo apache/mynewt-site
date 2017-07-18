@@ -1,53 +1,57 @@
-## Start Wi-Fi on Arduino Zero
+## Enable Wi-Fi on Arduino MKR1000
 
-This tutorial walks you through the steps to get your Arduino board on a Wi-Fi network.
-
-**Note:** Wi-Fi support is currently available in the `develop` branch of Mynewt only. It will be merged into `master` branch when version 0.10 is released.
-
+This tutorial shows you how to enable Wi-Fi on an Arduino MKR1000  board and connect to a Wi-Fi network.
 
 ### Prerequisites
 
-Before tackling this tutorial, it's best to read about Mynewt in the [Introduction](../get_started/get_started) section of this documentation.
+Ensure that you have met the following prerequisites before continuing with this tutorial:
 
-### Equipment
+* Have an Arduino MKR1000 board.
+* Have Internet connectivity to fetch remote Mynewt components.
+* Have a computer to build a Mynewt application and connect to the board over USB.
+* Have a Micro-USB cable to connect the board and the computer.
+* Have local Wi-Fi network that the computer is connected to and that the MKR1000 board can join.
+* Have a [Serial Port Setup](/os/get_started/serial_access.md).
+* Have a [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html).
+* Have a [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems
+* Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
+* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
+* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
+* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
 
-You will need the following equipment
 
-* An Arduino Zero, Zero Pro or M0 Pro.  
-**Note:** Mynewt has not been tested on Arduino M0 which has no internal debugger support.
-* An [Arduino Wi-Fi Shield 101](https://www.adafruit.com/product/2891)
-* A computer that can connect to the Arduino board over USB
-* A local Wi-Fi network that the computer is connected to and which the Arduino board can join.
-* A USB cable (Type A to micro B) that can connect the computer to the Arduino (or a USB hub between the computer and the Arduino board)
-* The Mynewt Release
+### Create a Project
+Create a new project if you do not have an existing one.  You can skip this step and proceed to [fetch external packages](#
+fetchexternal) if you already created a project.
 
+Run the following commands to create a new project:
 
-### Install Mynewt and Newt
-
-* If you have not already done so, install Newt as shown in the [Newt install tutorial](../../newt/install/newt_mac.md).
-* If you installed Newt previously but need to update it, go to the newt git repo directory, pull the latest code from `develop` branch, and install the updated code.
-
+```no-highlight
+    $ mkdir ~/dev
+    $ cd ~/dev
+    $ newt new arduinowifi
+    Downloading project skeleton from apache/mynewt-blinky...
+    Installing skeleton in arduinowifi...
+    Project arduinowifi successfully created.
+    $ cd arduinowifi
+    $ newt install
+    apache-mynewt-core
+    $
 ```
-   user@~/dev$ cd $GOPATH/src/mynewt.apache.org/newt
-   user@~/dev/go/src/mynewt.apache.org/newt$ git remote -v
-   origin	https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git (fetch)
-   origin	https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git (push)
-   user@~/dev/go/src/mynewt.apache.org/newt$ git pull origin develop
-   remote: Counting objects: 59, done.
-   <snip>
-   user@~/dev/go/src/mynewt.apache.org/newt$ cd newt
-   user@~/dev/go/src/mynewt.apache.org/newt/newt$ go install
-   user@~/dev$ cd ~/dev
-```
-
-* If you have not already done so, create a project as shown in the Quick Start guide on how to [Create Your First Project](../get_started/project_create.md). Skip the testing and building the project steps in that tutorial since you will be defining a target for your Arduino board in this tutorial.
-
-Let's say your new project is named `arduinowifi`. You will henceforth be working in that project directory.
-
 
 <br>
 
-### Fetch External Packages, Set correct version to download
+
+### <a name="fetchexternal"></a> Fetch External Packages
+
+Mynewt uses source code provided directly from the chip manufacturer for
+low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in
+the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's git
+hub repository hosts such external third-party packages and the Newt tool can fetch them.
+
+To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
+the repository to the `project.yml` file in your base project directory.
+
 
 Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.
@@ -55,17 +59,13 @@ low level operations. Sometimes this code is licensed only for the specific manu
 To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
 the repository to the `project.yml` file in your base project directory (`arduinowifi`).
 
-```
-user@~/dev/arduinowifi$ vi project.yml
-```
-
 Here is an example ```project.yml``` file with the Arduino Zero repository
 added. The sections with ```mynewt_arduino_zero``` that need to be added to
 your project file are highlighted.
 
-Also highlighted is the `0-dev` version for both the repositories to ensure code is downloaded from the `develop` branch.
+**Note:** On Windows platforms: You need to set `vers` to `0-dev` and use the latest master branch for both repositories.
 
-```hl_lines="6 10 14 15 16 17 18"
+```hl_lines="6 14 15 16 17 18"
 $ more project.yml
 project.name: "my_project"
 
@@ -75,24 +75,21 @@ project.repositories:
 
 repository.apache-mynewt-core:
     type: github
-    vers: 0-dev
+    vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
 
 repository.mynewt_arduino_zero:
     type: github
-    vers: 0-dev
-    user: runtimeinc
+    vers: 1-latest
+    user: runtimeco
     repo: mynewt_arduino_zero
 $
 ```
 
 <br>
-
-Once you've edited your ```project.yml``` file, the next step is to install the
-project dependencies, this can be done with the ```newt install``` command
-(to see more output, provide the ```-v``` verbose option.):
-
+<br>
+Install the project dependencies using the `newt install` command (you can specify ```-v``` for verbose output):
 ```no-highlight
 $ newt install
 apache-mynewt-core
@@ -100,195 +97,228 @@ mynewt_arduino_zero
 $
 ```
 
+**NOTE:** If there has been a new release of a repo used in your project since you last installed it, the `1-latest` version for the repo in the `project.yml` file will refer to the new release and will not match the installed files. In that case you will get an error message saying so and you will need to run `newt upgrade` to overwrite the existing files with the latest codebase.
+
 <br>
 
-### Create your bootloader target
-
-Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to
-generate both a bootloader, and an image target.
-
-To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability.
+### Create a Target for the Bootloader
+You need to create two targets for the MKR1000 board, one for the bootloader and one for the `winc1500_wifi` application. 
+<br>
+Run the following `newt target` commands, from your project directory, to create a bootloader target.  We name the target `mkr1000_boot`.
 
 ```no-highlight
-$ newt target create arduino_boot
-$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
-$ newt target set arduino_boot build_profile=optimized
+$ newt target create mkr1000_boot
+$ newt target set mkr1000_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_mkr1000
+$ newt target set mkr1000_boot app=@apache-mynewt-core/apps/boot
+$ newt target set mkr1000_boot build_profile=optimized
+$ newt target set mkr1000_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
 ```
 
 <br>
 
-If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:
+### Create a Target for the Wi-Fi Application
+Run the following `newt target` commands to create a target for the `winc1500_wifi` application in the arduino repository.  We name the application target `mkr1000_wifi`.
 
 ```
-$ newt target set arduino_boot features=arduino_zero_pro
+$ newt target create mkr1000_wifi
+$ newt target set mkr1000_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
+$ newt target set mkr1000_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_mkr1000
+$ newt target set mkr1000_wifi build_profile=debug
+$ newt target set mkr1000_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
 ```
-
-If you have an Arduino Zero, you have to set the following instead:
-
-```
-$ newt target set arduino_boot features=arduino_zero
-```
-
 <br>
+### Build the Bootloader
 
-
-### Build your bootloader
-
-Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the ```newt build``` command:
+Run the `newt build mkr1000_boot` command to build the bootloader:
 
 ```no-highlight
-$ newt build arduino_boot
-Compiling boot.c
-Archiving boot.a
-Compiling fs_cli.c
-Compiling fs_dirent.c
-Compiling fs_file.c
-Compiling fs_mkdir.c
-<snip>
-App successfully built: ~/dev/arduinowifi/bin/arduino_boot/apps/boot/boot.elf
-```
+$ newt build mkr1000_boot
+Building target targets/mkr1000_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
 
-If this command finishes successfully, you have successfully built the Arduino
-bootloader, and the next step is to build your application for the Arduino
-board.
+       ...
 
-<br>
-
-### Build your blinky app
-
-To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the Wi-Fi application that comes in the arduino repository, `apps/winc1500_wifi`:
-
-**Note**: Remember to set features to `arduino_zero` if your board is Arduino Zero and not a Pro!
-
-```hl_lines="5"
-$ newt target create arduino_wifi
-$ newt target set arduino_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
-$ newt target set arduino_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-$ newt target set arduino_wifi build_profile=debug
-$ newt target set arduino_wifi features=arduino_zero_pro
-```
-
-<br>
-
-You can now build the target, with ```newt build```:
-
-```no-highlight
-$ newt build arduino_wifi
-Building target targets/arduino_wifi
-Compiling main.c
-Archiving winc1500_wifi.a
-Compiling fs_cli.c
-Compiling fs_dirent.c
-Compiling fs_file.c
-Compiling fs_mkdir.c
-<snip>
-Linking winc1500_wifi.elf
-App successfully built: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/winc1500_wifi.elf
-```
-<font color="#FF0000"> Congratulations! </font> You have successfully built your Wi-Fi application. Now it's time to load both the bootloader and application onto the target.
-
-<br>
-
-### Connect the Target
-
-Place the Wi-Fi shield on top of the Arduino board and push it in place, making sure the pins and pinholes are properly aligned. Connect your computer to the Arduino board with the Micro-USB cable through the Programming Port as shown below. Mynewt will download and debug the target through this port. You should see a little green LED come on. That means the board has power.
-
-No external debugger is required.  The Arduino boards listed in this tutorial come with an internal debugger that can be accessed by Mynewt.
-
-The picture below shows the setup.
-
-![Arduino with Wi-Fi shield](pics/arduino_wifi.png "WifiShield")
-
-<br>
-
-### Download the Bootloader
-
-Execute the command to download the bootloader.
-
-```c
-    $ newt load arduino_boot
-```
-
-If the newt tool finishes without error, that means the bootloader has been
-successfully loaded onto the target.
-
-<br>
-
-<font color="#FF0000"> Reminder if you are using Docker: </font> When working with actual hardware, remember that each board has an ID. If you swap boards and do not refresh the USB Device Filter on the VirtualBox UI, the ID might be stale and the Docker instance may not be able to see the board correctly. For example, you may see an error message like `Error: unable to find CMSIS-DAP device` when you try to load or run an image on the board. In that case, you need to click on the USB link in VirtualBox UI, remove the existing USB Device Filter (e.g. "Atmel Corp. EDBG CMSIS-DAP[0101]") by clicking on the "Removes selected USB filter" button, and add a new filter by clicking on the "Adds new USB filter" button.
-
-<br>
-
-### Load the Application Image
-
-Now that the bootloader is downloaded to the target, the next steps are to create an image and load it onto the target device.
-
-
-```no-highlight
-$ newt create-image arduino_wifi 1.0.0
-App image succesfully generated: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/winc1500_wifi.img
-Build manifest: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/manifest.json
-$ newt load arduino_wifi
-Loading image
+Archiving util_mem.a
+Linking ~/dev/arduinowifi/bin/targets/mkr1000_boot/app/apps/boot/boot.elf
+Target successfully built: targets/mkr1000_boot
 $
 ```
 
 <br>
 
+### Build the Wi-Fi Application
+
+Run the `newt build mkr1000_wifi` command to build the wi-fi application image:
+
+```no-highlight
+$newt build mkr1000_wifi
+Building target targets/mkr1000_wifi
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+           ...
+
+Archiving util_mem.a
+Linking ~/dev/arduinowifi/bin/targets/mkr1000_wifi/app/apps/winc1500_wifi/winc1500_wifi.elf
+Target successfully built: targets/mkr1000_wifi
+$
+```
+<br>
+### Sign and Create the Wi-Fi Application Image
+
+Run the `newt create-image mkr1000_wifi 1.0.0` command to sign and create an image file for the Wi-Fi application. You may assign an arbitrary version (e.g. 1.0.0) number.
+
+
+```no-highlight
+$newt create-image  mkr1000_wifi 1.0.0
+Compiling bin/targets/mkr1000_wifi/generated/src/mkr1000_wifi-sysinit-app.c
+Archiving mkr1000_wifi-sysinit-app.a
+Linking ~/dev/arduinowifi/bin/targets/mkr1000_wifi/app/apps/winc1500_wifi/winc1500_wifi.elf
+App image succesfully generated: ~/dev/arduinowifi/bin/targets/mkr1000_wifi/app/apps/winc1500_wifi/winc1500_wifi.img
+$
+```
+
+<br>
+
+### Connect to the Board 
+
+* Connect your computer to the MKR1000 board with the Micro-USB cable. 
+* Connect the debug probe to the JTAG port on the board using the Jlink 9-pin adapter and cable. 
+
+<br>
+![J-Link debug probe to MKR1000](pics/mkr1000-jlink.jpg "Connecting J-Link debug probe to MKR1000")
+<br>
+<p>
+<br>
+Mynewt will download and debug the target through this port. You should see a green LED come on and indicates the board has power. 
+
+<br>
+
+
+### Load the Bootloader onto the Board
+
+Run the `newt load mkr1000_boot` command to load the bootloader onto the board:
+
+```no-highlight
+$ newt load mkr1000_boot
+Loading bootloader
+$
+```
+<br>
+
+### Load the Wi-Fi Application Image onto the Board
+Run the `newt load mkr1000_wifi` command to load the wifi application onto the board:
+
+```no-highlight
+$ newt load mkr1000_wifi
+Loading app image into slot 1
+$
+```
+
+<br>
+### Setup a Serial Connection Between Your Computer and the Board
+
+Set up a serial connection from your computer to the MKR1000 board (See [Serial Port Setup](/os/get_started/serial_access.md)). On the MKR1000 board, the TX pin is PIN 14  and the RX pin in PIN 13.
+<br>
+<br>
+![Serial Connection to MKR1000](pics/mkr1000-serial.jpg "Connecting to the MKR1000 Serial Port")
+<br>
+<p>
+<br>
+<br>
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is
+ platform dependent:
+
+
+* Mac OS uses the format `tty.usbserial-<some identifier>`.
+* Linux uses the format `TTYUSB<N>`, where `N` is a number.  For example, TTYUSB2.
+* MinGW on Windows uses the format `ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `
+/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
+	
+	You can also use the Windows Device Manager to find the COM port number.
+
+<br>
+```no-highlight
+$ ls /dev/tty*usbserial*
+/dev/tty.usbserial-1d13
+$
+```
+
 
 ### Start Wi-Fi via console
 
-Use a terminal emulation program to communicate with the board over the serial port. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your computer/laptop (`ls /dev`) and specify it as the -D flag value. Type `wifi start` to start Wi-Fi.
+Use a terminal emulation program to communicate with the board over the serial port. This tutorial shows a Minicom set up. Run the minicom command with the serial port you located on your computer:
 
-```hl_lines="12"
-$ minicom -D /dev/tty.usbmodem141122 -b 115200
+**Note:** On Windows, you can use the PuTTY application. 
 
+```no-highlight
+$ minicom -D /dev/tty.usbserial-1d13 -b 115200
+```
+<br>
+Type `wifi start` to start Wi-Fi.
 
-Welcome to minicom 2.7
+```hl_lines="11"
 
-OPTIONS:
-Compiled on Nov 24 2015, 16:14:21.
-Port /dev/tty.usbmodem141122, 10:11:40
+Welcome to minicom 2.7.1
+
+OPTIONS: 
+Compiled on May 17 2017, 15:29:14.
+Port /dev/tty.usbserial, 15:12:10
 
 Press Meta-Z for help on special keys
 
-wifi start
-119470:(APP)(INFO)Chip ID 1502b1
+
+138465 compat> wifi start
+144570 compat> (APP)(INFO)Chip ID 1503a0
 (APP)(INFO)Firmware ver   : 19.4.4
 (APP)(INFO)Min driver ver : 19.3.0
-(APP)(INFO)Curr driver ver: 19.3.0                                              
-wifi_init : 0                        
-```
-
-Connect to the local Wi-Fi network. Then start network services. The commands to be issued are highlighted below. In the example below, the network interface on the Arduino board gets an IP address of `192.168.0.117`.
-
-```hl_lines="1 8"
-wifi connect <Wi-Fi network name> <password>
-16906:wifi_request_scan : 0
-17805:scan_results 16: 0
-17816:wifi_connect : 0
-18813:connect_done : 0
-18821:dhcp done 192.168.0.117
-18932:get sys time response 2016.8.2-18.4.43
-net service
-```
-
-### Establish TCP connection and talk!
-
-From a terminal on your computer/laptop, try telneting to ports 7, 9, or 19 using the IP address your board has been assigned. Type something on this terminal and see the console output (on minicom). Can you see the difference in the behaviors?
+(APP)(INFO)Curr driver ver: 19.3.0
+wifi_init : 0
 
 ```
-$ telnet 192.168.0.117 7
-Trying 192.168.0.117...
-Connected to 192.168.0.117.
+<br>
+Connect to the local Wi-Fi network.   Note that the MKR1000 board only supports 2.4 GHz Wi-Fi networks.
+
+Run the `wifi connect` command and specify your network <ssid> and <password>. After you are connected to your wi-fi network, run the `net service` command to start network services.
+
+```hl_lines="2 9"
+
+wifi connect <ssid> <password>
+037624 wifi_request_scan : 0
+037627 compat> scan_results 7: 0
+038454 wifi_connect : 0
+039451 connect_done : 0
+039958 dhcp done 192.168.0.135
+040169 get sys time response 2017.7.12-22.41.33
+net service                                                      
+
+```
+
+The board is connected to the network succesfully and has IP address: 192.168.0.135
+
+### Establish TCP Connection and Talk!
+
+From a terminal on your computer, telnet to ports 7, 9, or 19 using the IP address your board has been assigned. Type something on this terminal and see the console output (on minicom). Can you see the difference in the behaviors?
+
+```no-highlight
+
+$telnet  192.168.0.135 7
+Trying 192.168.0.135...
+Connected to 192.168.0.135.
 Escape character is '^]'.
 hello
 hello
 ^]
 telnet> q
 $
+
 ```
 
 One port echoes whatever is typed, one discards everything it gets, and the third spews out bits constantly. Type `wifi stop` to disable WiFi on the Arduino board.
-
-Hope you had fun!

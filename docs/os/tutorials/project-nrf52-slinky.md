@@ -4,6 +4,7 @@ This tutorial shows you how to create, build and run the Slinky application and 
 ### Prerequisites
 * Meet the prerequisites listed in [Project Slinky](/os/tutorials/project-slinky.md).  
 * Have a Nordic nRF52-DK board.  
+* Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
 
 ### Create a New Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created or completed the [Sim Slinky](project-slinky.md) tutorial. 
@@ -12,7 +13,7 @@ Run the following commands to create a new project. We name the project `slinky`
 
 ```no-highlight
 $ newt new slinky
-Downloading project skeleton from apache/incubator-mynewt-blinky...
+Downloading project skeleton from apache/mynewt-blinky...
 ...
 Installing skeleton in slink...
 Project slinky successfully created
@@ -23,7 +24,7 @@ apache-mynewt-core
 
 <br>
 
-###<a name="create_targets"></a> Create the Targets
+### <a name="create_targets"></a> Create the Targets
 
 Create two targets for the nRF52-DK board - one for the bootloader and one for the Slinky application.
 
@@ -138,23 +139,38 @@ $
 
 Set up a serial connection from your computer to the nRF52-DK board (See [Serial Port Setup](/os/get_started/serial_access.md)).  
 
-Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is platform dependent:
 
+* Mac OS uses the format `tty.usbserial-<some identifier>`.
+* Linux uses the format `TTYUSB<N>`, where `N` is a number.  For example, TTYUSB2.
+* MinGW on Windows uses the format `ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.  
+	
+	You can also use the Windows Device Manager to find the COM port number.
+
+<br>
 ```no-highlight
 $ ls /dev/tty*usbserial*
 /dev/tty.usbserial-1d11
 $
 ```
 <br>
+
 Setup a newtmgr connection profile for the serial port. For our example, the port is  `/dev/tty.usbserial-1d11`. 
 
-Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `nrf52serial`.  You will need to replace the `connstring` with the specific port for your serial connection. 
+Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `nrf52serial`.  
 
+**Note**: 
+
+* You will need to replace the `connstring` with the specific port for your serial connection. 
+* On Windows, you must specify `COM<N+1>` for the connstring if `/dev/ttyS<N>` is the serial port.
+
+<br>
 ```no-highlight
 $ newtmgr conn add nrf52serial type=serial connstring=/dev/tty.usbserial-1d11
 Connection profile nrf52serial successfully added
 $
 ```
+
 <br>
 You can run the `newt conn show` command to see all the newtmgr connection profiles:
 
@@ -168,7 +184,7 @@ $
 
 <br>
 ### Use Newtmgr to Query the Board
-Run some newtmgr commands to query and receive responses back from the board (See the [Newt Manager Guide](newtmgr/overview) for more information on the newtmgr commands). 
+Run some newtmgr commands to query and receive responses back from the board (See the [Newt Manager Guide](../../newtmgr/overview) for more information on the newtmgr commands). 
 
 
 Run the `newtmgr echo hello -c nrf52serial` command. This is the simplest command that requests the board to echo back the text. 
@@ -194,10 +210,10 @@ $
 ```
 
 <br>
-Run the `newtmgr taskstats -c nrf52serial` command to display the task statistics on the board:
+Run the `newtmgr taskstat -c nrf52serial` command to display the task statistics on the board:
 
 ```no-highlight
-$ newtmgr taskstats -c nrf52serial
+$ newtmgr taskstat -c nrf52serial
 Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
      task1   8   2        0     1751      192      110        0        0

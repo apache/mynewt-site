@@ -5,7 +5,7 @@
    *os_eventq_dflt_get(void)
 ```
 
-Get the default event queue that was set
+Gets the OS default event queue that Mynewt creates at startup.
 
 #### Arguments
 
@@ -13,7 +13,7 @@ None
 
 #### Returned values
 
-`struct os_eventq *` A pointer to the default event queue, if set.  
+`struct os_eventq *`: Pointer to OS the default event queue.  
 
 #### Notes
 
@@ -23,19 +23,20 @@ None
 #### Example
 
 <Add text to set up the context for the example here>
-This checks the default event queue and sets it if not already set.
+
+This example shows an application's `main()` function processing events from the OS default event queue.
 
 
 ```c
-struct os_eventq g_my_evq;
+void main(int argc, char**argv)
+{
+     sysinit();
 
-int
-event_q_check()
-{    
-    if(os_eventq_dflt_get() == NULL)
-    {
-        os_eventq_dflt_set(g_my_evq);
-    }
+      ...
+
+     while (1) {
+         os_eventq_run(os_eventq_dflt_get());
+     }
 
 }
 ```

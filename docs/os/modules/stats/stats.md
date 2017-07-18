@@ -32,41 +32,51 @@ Stats sections are currently stored in a single global stats group.
 Statistics are stored in a simple structure which contains a small
 stats header followed by a list of stats.  The stats header contains:
 
-```c
+```no-highlight
 struct stats_hdr {
      char *s_name;
      uint8_t s_size;
      uint8_t s_cnt;
      uint16_t s_pad1;
- #ifdef STATS_NAME_ENABLE
-     struct stats_name_map *s_map;
+#if MYNEWT_VAL(STATS_NAMES)
+     const struct stats_name_map *s_map;
      int s_map_cnt;
- #endif
+#endif
      STAILQ_ENTRY(stats_hdr) s_next;
  };
 ```
  
- <br>
+The fields define with in the `#if MYNEWT_VAL(STATS_NAME)` directive are only inincluded when the `STATS_NAMES` syscfg setting is set to 1 and enables use statistic names.
+<br>
  
-#### Compile Time Options
+#### Enabling Statistic Names
 
-When building your app, there is a single compile time option for
-statistics.  When querying statistics, they are always queried by number,
-but if you want to see the results by name, you need to define 
-`STATS_NAME_ENABLE`.  This is defined using 
+By default, statistics are queried by number. You can use the `STATS_NAMES` syscfg setting to enable statistic names and view the results by name.  Enabling statistic names provides better descriptions in the reported statistics, but takes code space to store the strings within the image.
+
+To enable statistic names, set the `STATS_NAMES` value to 1 in the application `syscfg.yml` file or use the `newt target set` command to set the syscfg setting value.  Here are examples for each method:
+
+Method 1  - Set the value in the application `syscfg.yml` files:
+<br>
+```no-highlight
+
+# Package: apps/myapp
+
+syscfg.vals:
+    STATS_NAMES: 1
 
 ```
-pkg.clfags: -DSTATS_NAME_ENABLE
-```
-in your apps pkg.yml file or 
+<br>
+
+
+Method 2 - Set the target `syscfg` variable: 
+
+```no-highlight
+
+newt target set myapp syscfg=STATS_NAMES=1
 
 ```
-target.clfags: -DSTATS_NAME_ENABLE
-```
-in your target definition.
 
-Enabling stat names provides better descriptions in the reported stats,
-but takes code space to store the strings within the image.
+**Note:**  This `newt target set` command only sets the syscfg variable for the `STATS_NAMES` setting as an example. For your target, you should set the syscfg variable with the other settings that you want to override. 
 
 <br>
 
@@ -170,8 +180,8 @@ extern STATS_SECT_DECL(my_stat_section) g_mystat;
 
 #### Define the stats section name table
 
-Whether or not you are using `STATS_NAME_ENABLE`, you must define 
-a stats name table.  If `STATS_NAME_ENABLE` is not enabled, this will 
+Whether or not you have `STATS_NAMES` enabled, you must define 
+a stats name table.  If `STATS_NAMES` is not enabled, this will 
 not take any code space or image size.  
 
 ```

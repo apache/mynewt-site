@@ -18,6 +18,7 @@ Mynewt documentation.  Before proceeding with this tutorial, you might want to
 familiarize yourself with the following pages:
 
 * [Create Your First Mynewt Project](../../get_started/project_create/)
+* [BLE Bare Bones Application Tutorial](../../../os/tutorials/ble_bare_bones/)
 * [NimBLE Stack Initialization](../../../network/ble/ini_stack/ble_ini_intro/)
 
 <br>

@@ -16,10 +16,10 @@ Read and write config values on a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Reads and sets the value for the `var-name` config variable on a device. Specify a `var-value` to set the value for the `var-name` variable.   Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

@@ -1,111 +1,173 @@
 # Shell
 
-The shell is package sitting on top of console, handling 2 jobs: processing console input and implementing newtmgr line protocol over serial line. Shell runs on its own task.
+The shell runs above the console and provides two functionalities:
 
-###Description
+* Processes console input.  See the [Enabling the Console and Shell tutorial](/os/tutorials/add_shell.md) for example of the shell. 
+* Implements the [newtmgr](../../../newtmgr/overview.md) line protocol over serial transport.  
 
-* Shell's first job is directing incoming commands to other subsystems. It parses the incoming character string, and splits it into tokens. Then it looks for the subsystem to handle this command based on the first token of input.
+The shell uses the OS default event queue for shell events and runs in the context of the main task. An application can, optionally, specify a dedicated event queue for the shell to use.
 
-    Subsystems register their command handlers using `shell_cmd_register()`. When shell calls the command handler, it passes the other tokens as arguments.
+The `sys/shell` package implements the shell.  To use the shell you must:
 
-    A few commands are currently available in the shell - `tasks`, `log`, and `stat stat`. A $ prompt sign will be coming soon!
+* Include the `sys/shell` package.
+* Set the `SHELL_TASK` syscfg setting value to 1 to enable the shell.
+  
+**Note:** The functions for the shell API are only compiled and linked with the application when the `SHELL_TASK` setting is enabled. When you develop a package that supports shell commands, we recommend that your pakcage  define:
 
-* Shell's second job is doing framing, encoding and decoding newtmgr protocol when it's carried over the console. Protocol handler (libs/newtmgr) registers itself using `shell_nlip_input_register()`, and shell calls the registered handler for every frame. Outgoing frames for the protocol are sent using `shell_nlip_output()`.
+1.  A syscfg setting that enables shell command processing for your package, with a restriction that when this setting is enabled, the `SHELL_TASK` setting must also be enabled. 
+2. A conditional dependency on the `sys/shell` package when the setting defined in 1 above is enabled.  
+
+Here are example definitions from the `syscfg.yml` and `pkg.yml` files for the `sys/log/full` package. It defines the `LOG_CLI` setting to enable the log command in the shell:
+
+```no-highlight
+# sys/log/full syscfg.yml
+ LOG_CLI:
+        description: 'Expose "log" command in shell.'
+        value: 0
+        restrictions:
+            - SHELL_TASK
+
+# sys/log/full pkg.yml
+pkg.deps.LOG_CLI:
+    - sys/shell
+
+```
+
+## Description
+
+### Processing Console Input Commands
+The shell's first job is to direct incoming commands to other subsystems. It parses the incoming character string into tokens and uses the first token to determine the subsystem  command handler to call to process the command. When the shell calls the command handler, it passes the other tokens as arguments to the handler.  
+
+#### Registering Command Handlers
+
+A package that implements a shell command must register a command handler to process the command. 
+
+**New in release 1.1**: The shell supports the concept of modules and allows a package to group shell commands under a name space. To run a command in the shell, you enter the module name and the command name. You can set a default module, using the `select` command, so that you only need to enter the command name to run a command from the default module. You can switch the module you designate as the default module. 
+
+There are two methods to register command handlers in Mynewt 1.1:
+
+* Method 1 (New in release 1.1): Define and register a set of commands for a module. This method allows grouping shell commands into namespaces. A package calls the `shell_register()` function to define a module and register the command handlers for the module.  
+
+	**Note:** The `SHELL_MAX_MODULES` syscfg setting specifies the maximum number of modules that can be registered. You can increase this value if your application and the packages it includes register more than the default value. 
+
+* Method 2: Register a command handler without defining a module. A package calls the `shell_cmd_register()` function defined in Mynewt 1.0 to register a command handler.  When a shell command is registered using this method, the command is automatically added to the `compat` module. The `compat` module supports backward compatibility for all the shell commands that are registered using the `shell_cmd_register()` function.
+
+	**Notes:** 
+
+	* The `SHELL_COMPAT` syscfg setting must be set to 1 to enable backward compatibility support and the `shell_cmd_register()` function.  Since Mynewt packages use method 2 to register shell commands and Mynewt plans to continue this support in future releases, you must keep the default setting value of 1. 
+
+  	* The `SHELL_MAX_COMPAT_COMMANDS` syscfg setting specifies the maximum number of command handlers that can be registered using this method. You can increase this value if your application and the packages it includes register more than the default value.
+
+
+<br>
+####Enabling Help Information for Shell Commands
+
+The shell supports command help. A package that supports command help initializes the `struct shell_cmd` data structure with help text for the command before it registers the command with the shell. The `SHELL_CMD_HELP` syscfg setting enables or disbles help support for all shell commands. The feature is enabled by default.
+
+**Note:** A package that implements help for a shell command should only initialize the help data structures within the `#if MYNEWT_VAL(SHELL_CMD_HELP)` preprocessor directive.  
 
 <br>
 
-Create a sim target to check out these commands available in shell.
+#### Enabling the OS and Prompt Shell Modules
+The shell implements the `os` and `prompt` modules. These modules support the shell commands to view OS resources.  
 
-```no-highlight
-user@~/dev/larva$ newt target create blinky_sim
-Creating target blinky_sim
-Target blinky_sim successfully created!
-user@~/dev/larva$ newt target set blinky_sim name=blinky_sim
-Target blinky_sim successfully set name to blinky_sim
-user@~/dev/larva$ newt target set blinky_sim arch=sim
-Target blinky_sim successfully set arch to sim
-user@~/dev/larva$ newt target set blinky_sim project=blinky
-Target blinky_sim successfully set project to blinky
-user@~/dev/larva$ newt target set blinky_sim bsp=hw/bsp/native
-Target blinky_sim successfully set bsp to hw/bsp/native
-user@~/dev/larva$ newt target set blinky_sim compiler_def=debug
-Target blinky_sim successfully set compiler_def to debug
-user@~/dev/larva$ newt target set blinky_sim compiler=sim
-Target blinky_sim successfully set compiler to sim
-user@~/dev/larva$ newt target show
-blinky_sim
-	arch: sim
-	bsp: hw/bsp/native
-	compiler: sim
-	compiler_def: debug
-	name: blinky_sim
-	project: blinky
-user@~/dev/larva$ newt target build blinky_sim
-Building target blinky_sim (project = blinky)
-Compiling case.c
-Compiling suite.c
-Compiling testutil.c
-..
-..
-Building project blinky
-Linking blinky.elf
-Successfully run!
-
-user@~/dev/larva$ ./project/blinky/bin/blinky_sim/blinky.elf
-uart0 at /dev/ttys005
-
-```
-
-Open up a new terminal to run minicom, a text-based serial port control and terminal emulation program. Set device name to the serial port of the target. 
-
-```no-highlight
-user@~$ minicom -D /dev/ttys005
-Welcome to minicom 2.7
-
-OPTIONS: 
-Compiled on Nov 24 2015, 16:14:21.
-Port /dev/ttys005, 11:32:17
-
-Press Meta-Z for help on special keys
-
-log 
-174578:[0] bla
-174578:[0] bab
-
-tasks
-217809:6 tasks: 
-217809:  shell (prio: 3, nw: 0, flags: 0x0, ssize: 0, cswcnt: 59, tot_run_time: 0ms)
-217840:  idle (prio: 255, nw: 0, flags: 0x0, ssize: 0, cswcnt: 18763, tot_run_time: 217809ms)
-217878:  uart_poller (prio: 0, nw: 217819, flags: 0x0, ssize: 0, cswcnt: 18667, tot_run_time: 0ms)
-217923:  task1 (prio: 1, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
-217953:  os_sanity (prio: 254, nw: 218710, flags: 0x0, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
-218010:  task2 (prio: 2, nw: 217709, flags: 0x3, ssize: 0, cswcnt: 218, tot_run_time: 0ms)
-
-stat stat
-229881:s0: 1
-
-```
+The `os` module implements commands to list task and mempool usage information and to view and change the time of day. The `SHELL_OS_MODULE` syscfg setting enables or disables the module. The module is enabled by default. 
 
 
-###Data structures
+The `prompt` module implements the `ticks` command that controls whether to print the current os ticks in the prompt. The `SHELL_PROMPT_MODULE` syscfg setting enables or disables this module. The module is disabled by default. 
 
-This data structure is used in holding information about registered command handlers.
+<br>
+#### Enabling Command Name Completion
+
+The shell supports command name completion. The `SHELL_COMPLETION` syscfg setting enables or disables the feature. The feature is enabled by default.
+
+<br>
+### Processing Newtmgr Line Protocol Over Serial Transport
+
+The shell's second job is to handle packet framing, encoding, and decoding of newtmgr protocol messages that are sent over the console. The Newtmgr serial transport package (`mgmt/newtmgr/transport/newtmgr_shell`) calls the `shell_nlip_input_register()` function to register a handler that the shell calls when it receives newtmgr request messages.
+
+The `SHELL_NEWTMGR` syscfg setting specifies whether newtmgr is enabled over shell. The setting is enabled by default.
+<br>
+
+## Data Structures
+<br>
+The `struct shell_cmd` data structure represents a shell command and is used to register a command. 
 
 ```no-highlight
 struct shell_cmd {
-    char *sc_cmd;
+    const char *sc_cmd;
     shell_cmd_func_t sc_cmd_func;
-    STAILQ_ENTRY(shell_cmd) sc_next;
+    const struct shell_cmd_help *help;
 };
 ```
 
 | Element | Description |
 |---------|-------------|
-| sc_cmd | Character string of the command |
-| sc_cmd_func | Pointer to the command handler |
-| sc_next | Bookkeeping linkage internal for shell |
+| `sc_cmd` | Character string of the command name. |
+| `sc_cmd_func_t` | Pointer to the command handler that processes the command.| 
+| `help` | Pointer to the shell_cmd_help structure. If the pointer is NULL, help information is not provided.|
 
-###List of Functions
+<br>
+
+The `sc_cmd_func_t` is the command handler function type. 
+
+```c
+typedef int (*shell_cmd_func_t)(int argc, char *argv[]);
+```
+
+The `argc` parameter specifies the number of command line arguments and the `argv` parameter is an array of character pointers to the command arguments.  The `SHELL_CMD_ARGC_MAX` syscfg setting specifies the maximum number of command line arguments that any shell command can have. This value must be increased if a shell command requires more than `SHELL_CMD_ARGC_MAX` number of command line arguments. 
+
+<br>
+
+The `struct shell_module` data structure represents a shell module.  It is used to register a shell module and the shell commands for the module.
+
+```c
+struct shell_module {
+    const char *name;
+    const struct shell_cmd *commands;
+};
+
+```
+
+| Element | Description |
+|---------|-------------|
+| `name` | Character string of the module name.|
+| `commands` | Array of `shell_cmd` structures that specify the commands for the module. The `sc_cmd`, `sc_cmd_func`, and `help` fields in the last entry must be set to NULL to indicate the last entry in the array.|
+
+**Note**: A command handler registered via the `shell_cmd_register()` function is automatically added to the `compat` module.
+
+<br>
+The `struct shell_param` and `struct shell_cmd_help` data structures hold help texts for a shell command. 
+
+```c
+struct shell_param {
+    const char *param_name;
+    const char *help;
+};`
+
+``` 
+| Element | Description |
+|---------|-------------|
+| `param_name` | Character string of the command parameter name.|
+| `help` | Character string of the help text for the parameter.|
+
+<br>
+```c
+struct shell_cmd_help {
+    const char *summary;
+    const char *usage;
+    const struct shell_param *params;
+};
+```
+
+| Element | Description |
+|---------|-------------|
+| `summary` | Character string of a short description of the command.|
+| `usage` | Character string of a usage description for the command.|
+| `params` | Array of `shell_param` structures that describe each parameter for the command. The last `struct shell_param` in the array must have the `param_name` and `help` fields set to NULL to indicate the last entry in the array. | 
+
+<br>
+##List of Functions
 
 <Comments such as these instructions are placed within angle brackets. List all the functions here. Note how the anchors work. You put the text you want to show up as a link within [] and the relevant #heading within (). Note that the header has to have at least 2 words for the anchor to work - that's how it is. "no-highlight" disables syntax highlighting. You can enable it for a particular language by specifying what the language is instead of "no-highlight". Be warned that this highlighting or no-highlighting specification may not show up nicely on Mou.>
 
@@ -113,8 +175,10 @@ The functions available in this OS feature are:
 
 | Function | Description |
 |---------|-------------|
-| [shell_task_init](shell_task_init.md) | Initializes the shell package. This creates a task for shell, and registers few commands on its own. |
 | [shell_cmd_register](shell_cmd_register.md) | Registers a handler for incoming console commands. |
+| [shell_evq_set](shell_evq_set.md) | Specifies a dedicated event queue for shell events. |
 | [shell_nlip_input_register](shell_nlip_input_register.md) | Registers a handler for incoming newtmgr messages. |
 | [shell_nlip_output](shell_nlip_output.md) | Queue outgoing newtmgr message for transmission. |
-
+| [shell_register](shell_register.md) |Registers a shell module and the commands for the module. |
+| [shell_register_app_cmd_handler](shell_register_app_cmd_handler.md) |Registers  a command handler as an application handler. The shell calls this handler when a command does not have a handler registered.|
+| [shell_register_default_module](shell_register_default_module.md) |Registers  a module with a specified name as the default module.|

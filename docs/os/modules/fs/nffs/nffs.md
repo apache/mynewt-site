@@ -7,9 +7,9 @@ Mynewt includes the Newtron Flash File System (nffs).  This file system is desig
 
 Mynewt also provides an abstraction layer API (fs) to allow you to swap out nffs with a different file system of your choice.
 
-###Description
+### Description
 
-####Areas
+#### Areas
 
 At the top level, an nffs disk is partitioned into *areas*.  An area is a region of disk with the following properties:
 
@@ -22,82 +22,25 @@ At the top level, an nffs disk is partitioned into *areas*.  An area is a region
 
 Thus, each area must comprise a discrete number of blocks.
 
-####Initialization
+#### Initialization
 
-Before nffs can be used, it must be initialized.  There are two means of initializing an nffs file system:
+As part of overall system initialization, mynewt re-initialized the filesystem as follows:
 
-1. Restore an existing file system via detection.
-2. Create a new file system via formatting.
+1. Restores an existing file system via detection.
+2. Creates a new file system via formatting.
 
 A typical initialization sequence is the following:
 
 1. Detect an nffs file system in a specific region of flash.
-2. If no file system was detected, format a new file system in the same flash region.
+2. If no file system was detected, if configured to do so, format a new file system in the same flash region.
 
-Both methods require the user to describe how the flash memory should be divided into nffs areas.  This is accomplished with an array of [struct nffs\_area\_desc](nffs_area_desc.md).
+Note that in the latter case, the behavior is controlled with a variable in the syscfg.yml file.  If NFFS_DETECT_FAIL is set to 1, the system ignores NFFS filesystem detection issues, but unless a new filesystem is formatted manually, all filesystem access will fail. If NFFS_DETECT_FAIL is set to 2, the system will format a new filesystem - note however this effectively deletes all existing data in the NFFS flash areas.
 
-Typically, a product's flash layout is exposed via its BSP-specific `bsp_flash_dev()` function.  This function retrieves the layout of the specified flash device resident in the BSP.  The result of this function can then be converted into the `struct nffs_area_desc[]` that nffs requires.  The below example, taken from the slinky project, illustrates the nffs initialization procedure.
-
-```c
-/*** hw/hal/include/hal/flash_map.h */
-
-/*
- * Flash area types
- */
-#define FLASH_AREA_BOOTLOADER           0
-#define FLASH_AREA_IMAGE_0              1
-#define FLASH_AREA_IMAGE_1              2
-#define FLASH_AREA_IMAGE_SCRATCH        3
-#define FLASH_AREA_NFFS                 4
-```
-
-```c
-/*** project/slinky/src/main.c */
-
-int
-main(int argc, char **argv)
-{
-    int rc;
-    int cnt;
-
-    /* NFFS_AREA_MAX is defined in the BSP-specified bsp.h header file. */
-    struct nffs_area_desc descs[NFFS_AREA_MAX];
-
-    /* Initialize nffs's internal state. */
-    rc = nffs_init();
-    assert(rc == 0);
-
-    /* Convert the set of flash blocks we intend to use for nffs into an array
-     * of nffs area descriptors.
-     */
-    cnt = NFFS_AREA_MAX;
-    rc = flash_area_to_nffs_desc(FLASH_AREA_NFFS, &cnt, descs);
-    assert(rc == 0);
-
-    /* Attempt to restore an existing nffs file system from flash. */
-    if (nffs_detect(descs) == FS_ECORRUPT) {
-        /* No valid nffs instance detected; format a new one. */
-        rc = nffs_format(descs);
-        assert(rc == 0);
-    }
-    /* [ ... ] */
-}
-```
+Both methods require the user to describe how the flash memory should be divided into nffs areas.  This is accomplished with an array of [struct nffs\_area\_desc](nffs_area_desc.md) configured as part of the BSP configureation.
 
 After nffs has been initialized, the application can access the file system via the [file system abstraction layer](../fs/fs.md).
 
-###Configuration
-
-The nffs file system is configured by populating fields in a global [struct nffs\_config](nffs_config.md) instance.  Each field in the structure corresponds to a setting.  All configuration must be done prior to calling nffs\_init().
-
-
-The global `struct nffs_config` instance is exposed in `nffs/nffs.h` as follows:
-
-```c
-extern struct nffs_config nffs_config;
-```
-
-###Data Structures
+### Data Structures
 
 The `fs/nffs` package exposes the following data structures:
 
@@ -106,7 +49,7 @@ The `fs/nffs` package exposes the following data structures:
 | [struct nffs\_area\_desc](nffs_area_desc.md) | Descriptor for a single nffs area. |
 | [struct nffs\_config](nffs_config.md) | Configuration struct for nffs. |
 
-###API
+### API
 
 The functions available in this OS feature are:
 
@@ -116,7 +59,7 @@ The functions available in this OS feature are:
 | [nffs\_format](nffs_format.md) | Erases all the specified areas and initializes them with a clean nffs file system. |
 | [nffs\_init](nffs_init.md) | Initializes internal nffs memory and data structures. |
 
-###Miscellaneous measures
+### Miscellaneous measures
 
 * RAM usage:
     * 24 bytes per inode
@@ -127,13 +70,13 @@ The functions available in this OS feature are:
 * Maximum filename size: 256 characters (no null terminator required)
 * Disallowed filename characters: '/' and '\0'
 
-###Internals
+### Internals
 
 nffs implementation details can be found here:
 
 * [nffs\_internals](nffs_internals.md)
 
-###Future enhancements
+### Future enhancements
 
 * Error correction.
 * Encryption.

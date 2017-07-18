@@ -39,7 +39,8 @@ repo.versions:
 It contains the following:
 
 * **repo.name** The external name that is used to include the library in 
-your `project.yml` file.   This is the name you in include in the `project.repositories` variable when adding this repository to your project.
+your `project.yml` file.   This is the name you include in the `project.repositories` 
+variable when adding this repository to your project.
 * **repo.versions** A description of what versions to give the user depending 
 on the settings in their `project.yml` file.  See below for a thorough description
 on versioning. Its a flexible mapping between version numbers and git branches.
@@ -77,7 +78,7 @@ The stability string can be one of 3 pre-defined stability values.
 In your `project.yml` file you can specify different combinations of 
 the version number and stability value.  For example:
 
-* `0-latest`      -- The latest version with major number 0
+* `1-latest`      -- The latest version with major number 1
 * `1.2-stable`    -- The latest stable version with major and minor number 1.2
 * `1.2-dev`       -- The development version from 1.2
 * `1.1.1`         -- a specific version 1.1.1

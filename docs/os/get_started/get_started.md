@@ -3,11 +3,14 @@
 If you are curious about Mynewt and want to get a quick feel for the project, you've come to the right place. We have two options for you:
 
 <br>
+**Option 1 (Recommended)** allows you to install the Newt tool, instances of the Mynewt OS (for simulated targets), and toolchains for developing embedded software (e.g. GNU toolchain) natively on your laptop or computer. We have tried to make the process easy. For example, for the Mac OS we created brew formulas. 
 
-**Option 1** allows you to install the Newt tool, instances of the Mynewt OS (for simulated targets), and toolchains for developing embedded software (e.g. GNU toolchain) natively on your laptop or computer. You may want this if you are already familiar with such environments or are concerned about performance on your machine. Follow the instructions to [install native tools](native_tools.md) and [install cross tools for ARM](cross_tools.md) if you prefer this option.
+We recommend this option if you are familiar with such environments or are concerned about performance on your machine. Follow the instructions in the [Native Install Option](native_install_intro.md) if you prefer this option.
 
 
-**Option 2** is a bundled option to get up and running with Mynewt for a quick look at the OS. The Newt tool and build toolchains are all available in a single [All-in-one Docker Container](docker.md) that you can install on your laptop or computer.
+**Option 2** is an easy, self-contained way to get up and running with Mynewt - but has limitations! The Newt tool and build toolchains are all available in a single [All-in-one Docker Container](docker.md) that you can install on your laptop or computer.
+
+However, this is not a long-term option since support is not likely for all features useful or critical to embedded systems development. For example, USB device mapping available in the Docker toolkit is no longer available in the new Docker releases. The Docker option is also typically slower than the native install option. 
 
 <br>
 

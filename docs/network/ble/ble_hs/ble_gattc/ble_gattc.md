@@ -26,6 +26,7 @@ The Generic Attribute Profile (GATT) manages all activities involving services, 
 | [ble_gattc_exchange_mtu](functions/ble_gattc_exchange_mtu.md) | Initiates GATT procedure: Exchange MTU. |
 | [ble_gattc_find_inc_svcs](functions/ble_gattc_find_inc_svcs.md) | Initiates GATT procedure: Find Included Services. |
 | [ble_gattc_indicate](functions/ble_gattc_indicate.md) | Sends a characteristic indication. |
+| [ble_gattc_indicate_custom](functions/ble_gattc_indicate_custom.md) | Sends a characteristic indication. |
 | [ble_gattc_notify](functions/ble_gattc_notify.md) | Sends a characteristic notification. |
 | [ble_gattc_notify_custom](functions/ble_gattc_notify_custom.md) | Sends a "free-form" characteristic notification. |
 | [ble_gattc_read](functions/ble_gattc_read.md) | Initiates GATT procedure: Read Characteristic Value. |

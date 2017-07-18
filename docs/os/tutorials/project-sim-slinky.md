@@ -1,6 +1,6 @@
 ## Project Sim Slinky  
 
-This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for a simulated device.
+This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for a simulated device. This is supported on Mac OS and Linux platforms.
 
 <br>
 ### Prerequisites
@@ -15,7 +15,7 @@ We will list only the steps here for brevity.  We will name the project `slinky`
 
 ```no-highlight
 $ newt new slinky
-Downloading project skeleton from apache/incubator-mynewt-blinky...
+Downloading project skeleton from apache/mynewt-blinky...
 ...
 Installing skeleton in slink...
 Project slinky successfully created
@@ -100,7 +100,7 @@ As an example, we will query the running mynewt OS for the usage of its
 memory pools.  
 
 ```no-highlight
-    $ newtmgr -c sim1 mpstats
+    $ newtmgr -c sim1 mpstat
     Return Code = 0
                             name blksz  cnt free  min
                           msys_1   292   12   10   10

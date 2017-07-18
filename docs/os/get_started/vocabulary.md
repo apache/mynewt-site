@@ -10,9 +10,9 @@ The project is the base directory of your embedded software tree.  It is a
 workspace that contains a logical collection of source code, for one or 
 more of your applications.  A project consists of the following items:
   
-  * Project Definition: defines project level dependencies, and parameters
-    (located in ```project.yml```)
-  * Packages
+* Project Definition: defines project level dependencies, and parameters
+  (located in ```project.yml```)
+* Packages
 
 [Packages](#package) are described in detail in the section below.  
 
@@ -32,9 +32,9 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 0-latest
+    vers: 1-latest
     user: apache
-    repo: incubator-mynewt-core
+    repo: mynewt-core
 $ 
 ```
 
@@ -45,6 +45,10 @@ relies upon.
 
 * ```repository.apache-mynewt-core```: Defines the repository information for 
 the ```apache-mynewt-core``` repository.
+
+* ```vers=1-latest```: Defines the repository version. This string will use the 
+latest stable version in the 'Master' github branch. To use the latest version in the 
+master branch, just change it to ```vers=0-dev```. Note that this branch might not be stable. 
 
 Repositories are versioned collections of packages.  
 
@@ -69,10 +73,10 @@ about repositories can be found in the Newt documentation.
 A package is a collection items that form a fundamental unit in the Mynewt 
 Operating System.  Packages can be:
 
-  * Applications
-  * Libraries
-  * Compiler definitions
-  * Targets
+* Applications
+* Libraries
+* Compiler definitions
+* Targets
 
 A package is identified by having a ```pkg.yml``` file in it's base 
 directory.  Here is a sample ```pkg.yml``` file for the blinky applicaton:
@@ -83,7 +87,7 @@ $ more pkg.yml
 pkg.name: apps/blinky
 pkg.type: app
 pkg.description: Basic example application which blinks an LED.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
 pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 
@@ -95,13 +99,10 @@ pkg.deps:
 
 Packages have a few features worth noting:
 
-  * Dependencies: Packages can rely upon other packages, and when they do
-    they will inherit their functionality (header files, library definitions, etc.)
-  * APIs: Packages can export named APIs, and they can require that certain 
-    APIs be present, in order to compile.
-  * Features: Packages can operate differently depending on what named features are 
-    present in the system.  Packages can also export features to the rest of the 
-    Mynewt system.
+* Dependencies: Packages can rely upon other packages, and when they do
+  they will inherit their functionality (header files, library definitions, etc.)
+* APIs: Packages can export named APIs, and they can require that certain 
+  APIs be present, in order to compile.
 
 Everything that newt knows about within a project's directory is a package.  This 
 makes it very clean and easy to write re-usable components, which can describe their 
@@ -117,46 +118,69 @@ the target level, cascade down to all dependencies.
 Targets are also packages, and are stored in the ```targets/``` directory at the base 
 of your project.  Most targets consist of: 
 
-  * ```app```: The application to build.
-  * ```bsp```: The board support package to combine with that application
-  * ```build_profile```: Either ```debug``` or ```optimized```. 
+* ```app```: The application to build.
+* ```bsp```: The board support package to combine with that application
+* ```build_profile```: Either ```debug``` or ```optimized```. 
 
 Targets can also have additional items specified, including: 
 
-  * ```cflags```: Any additional compiler flags you might want to specify to the build.
-  * ```features```: Any system level features you want to enable.
+* ```aflags```: Any additional assembler flags you might want to specify to the build.
+* ```cflags```: Any additional compiler flags you might want to specify to the build.
+* ```lflags```: Any additional linker flags you might want to specify to the build.
 
 In order to create and manipulate targets, the *newt* tool offers a set of helper commands,
 you can find more information about these by issuing:
 
 ```no-highlight
 $ newt target
-
-Usage: 
+```no-highlight
+newt target
+Usage:
   newt target [flags]
   newt target [command]
 
-Available Commands: 
-  show        View target configuration variables
-  set         Set target configuration variable
+Available Commands:
+  config      View or populate a target's system configuration
+  copy        Copy target
   create      Create a target
   delete      Delete target
-  copy        Copy target
-  vars        Show variable names
-
-Flags:
-  -h, --help=false: help for target
+  dep         View target's dependency graph
+  revdep      View target's reverse-dependency graph
+  set         Set target configuration variable
+  show        View target configuration variables
 
 Global Flags:
-  -l, --loglevel="WARN": Log level, defaults to WARN.
-  -o, --outfile="": Filename to tee log output to
-  -q, --quiet=false: Be quiet; only display error output.
-  -s, --silent=false: Be silent; don't output anything.
-  -v, --verbose=false: Enable verbose output when executing commands.
+  -h, --help              Help for newt commands
+  -j, --jobs int          Number of concurrent build jobs (default 8)
+  -l, --loglevel string   Log level (default "WARN")
+  -o, --outfile string    Filename to tee output to
+  -q, --quiet             Be quiet; only display error output
+  -s, --silent            Be silent; don't output anything
+  -v, --verbose           Enable verbose output when executing commands
+
+Use "newt target [command] --help" for more information about a command.
+
+$ 
+```
+
+### Configuration
 
 Additional help topics:
 
 
-Use "newt help [command]" for more information about a command.
-$ 
+```no-highlight
+$ newt target config show <target-name>
+...
+* PACKAGE: sys/stats
+  * Setting: STATS_CLI
+    * Description: Expose the "stat" shell command.
+    * Value: 0
+  * Setting: STATS_NAMES
+    * Description: Include and report the textual name of each statistic.
+    * Value: 0
+  * Setting: STATS_NEWTMGR
+    * Description: Expose the "stat" newtmgr command.
+    * Value: 0
+...
+$
 ```

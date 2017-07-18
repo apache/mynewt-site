@@ -16,7 +16,7 @@ Access files on a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 The fs command provides the subcommands to download a file from and upload a file to a device.  Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
 Sub-command  | Explanation
@@ -24,7 +24,7 @@ Sub-command  | Explanation
 download     | The newtmgr download &lt;src-filename&gt; &lt;dst-filename&gt; command downloads the file named &lt;src-filename&gt; from a device and names it &lt;dst-filename&gt; on your host.
 upload       | The newtmgr upload &lt;src-filename&gt; &lt;dst-filename&gt; command uploads the file named &lt;src-filename&gt; to a device and names the file &lt;dst-filename&gt; on the device.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

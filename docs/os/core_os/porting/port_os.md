@@ -2,7 +2,7 @@
 
 This chapter describes how to adapt the Mynewt OS to different platforms. 
 
-###Description
+### Description
 
 The Mynewt OS is a complete multi-tasking environment with scheduler, time 
 control, buffer management, and synchronization objects. it also includes 
@@ -22,7 +22,7 @@ SoC within your target platform
 * **BSP Dependencies** -- Specific code or configuration to accommodate the 
 specific layout and functionality of your target platform 
 
-###BSP Dependency
+### Board Support Package (BSP) Dependency
 
 With all of the functionality provided by the core, MCU, and MCU HAL (Hardware Abstraction Layer), there are still some things that must be specified for your particular system. This 
 is provided in Mynewt to allow you the flexibility to design for the exact
@@ -54,7 +54,7 @@ the UART pins should appear to match the hardware layout of your system.
 * If your BSP is already supported my Mynewt, there is no additional BSP work involved in porting to your platform.  You need only to set the `bsp` attribute in your Mynewt target using the [newt command tool](../../../../newt/newt_intro). 
 * If your BSP is not yet supported by Mynewt, you can add support following the instructions on [how to add BSP support to Mynewt](port_bsp.md)
 
-###MCU Dependency
+### MCU Dependency
 
 Some OS code depends on the MCU or SoC that the system contains. For example, the MCU may specify the potential memory map of the system - where code and data can reside.
 
@@ -67,7 +67,7 @@ Some OS code depends on the MCU or SoC that the system contains. For example, th
 Mynewt's architecture supports a hardware abstraction layer (HAL) for common on or off-chip MCU peripherals such as GPIO, UARTs, flash memory etc.  Even if your MCU is supported for the core OS, you may find that you need to implement the HAL functionality for a new peripheral.   For a description of the HAL abstraction and implementation information,
 see the [HAL API](../../modules/hal/hal.md)
 
-###CPU Core Dependency 
+### CPU Core Dependency
 
 Some OS code depends on the CPU core that your system is using.  For example, a given CPU core has a specific assembly language instruction set, and may require special cross compiler or compiler settings to use the appropriate instruction set.  
 

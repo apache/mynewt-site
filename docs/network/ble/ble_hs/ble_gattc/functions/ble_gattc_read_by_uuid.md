@@ -6,7 +6,7 @@ ble_gattc_read_by_uuid(
             uint16_t  conn_handle,
             uint16_t  start_handle,
             uint16_t  end_handle,
-          const void *uuid128,
+    const ble_uuid_t *uuid,
     ble_gatt_attr_fn *cb,
                 void *cb_arg
 )
