@@ -600,6 +600,14 @@
 <span style="color: #177500">         */</span>
         <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_disc_desc</span> <span style="color: #000000">disc</span>;
 
+<span style="color: #633820">#if MYNEWT_VAL(BLE_EXT_ADV)</span>
+        <span style="color: #177500">/**</span>
+<span style="color: #177500">         * Represents an extended advertising report received during a discovery</span>
+<span style="color: #177500">         * procedure.  Valid for the following event types:</span>
+<span style="color: #177500">         *     o BLE_GAP_EVENT_EXT_DISC</span>
+<span style="color: #177500">         */</span>
+        <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_ext_disc_desc</span> <span style="color: #000000">ext_disc</span>;
+<span style="color: #633820">#endif</span>
         <span style="color: #177500">/**</span>
 <span style="color: #177500">         * Represents an attempt to update a connection&#39;s parameters.  If the</span>
 <span style="color: #177500">         * attempt was successful, the connection&#39;s descriptor reflects the</span>
@@ -850,6 +858,24 @@
 <span style="color: #177500">         *     o BLE_GAP_EVENT_REPEAT_PAIRING</span>
 <span style="color: #177500">         */</span>
         <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_repeat_pairing</span> <span style="color: #000000">repeat_pairing</span>;
+
+        <span style="color: #177500">/**</span>
+<span style="color: #177500">         * Represents a change of PHY. This is issue after successful</span>
+<span style="color: #177500">         * change on PHY.</span>
+<span style="color: #177500">         */</span>
+        <span style="color: #A90D91">struct</span> {
+            <span style="color: #A90D91">int</span> <span style="color: #000000">status</span>;
+            <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
+
+            <span style="color: #177500">/**</span>
+<span style="color: #177500">             * Indicates enabled TX/RX PHY. Possible values:</span>
+<span style="color: #177500">             *     o BLE_GAP_LE_PHY_1M</span>
+<span style="color: #177500">             *     o BLE_GAP_LE_PHY_2M</span>
+<span style="color: #177500">             *     o BLE_GAP_LE_PHY_CODED</span>
+<span style="color: #177500">             */</span>
+            <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">tx_phy</span>;
+            <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">rx_phy</span>;
+        } <span style="color: #000000">phy_updated</span>;
     };
 };
 </pre></div>
@@ -957,6 +983,14 @@
 </pre></div>
 
 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_ext_disc_params</span> {
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">itvl</span>;
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">window</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">passive</span>:<span style="color: #1C01CE">1</span>;
+};
+</pre></div>
+
+
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_disc_params</span> {
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">itvl</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">window</span>;
@@ -982,6 +1016,44 @@
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_passkey_params</span> {
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">action</span>;
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">numcmp</span>;
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_disc_desc</span> {
+    <span style="color: #177500">/*** Common fields. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">event_type</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">length_data</span>;
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">addr</span>;
+    <span style="color: #A90D91">int8_t</span> <span style="color: #000000">rssi</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*data</span>;
+
+    <span style="color: #177500">/***</span>
+<span style="color: #177500">     * LE direct advertising report fields; direct_addr is BLE_ADDR_ANY if</span>
+<span style="color: #177500">     * direct address fields are not present.</span>
+<span style="color: #177500">     */</span>
+    <span style="color: #000000">ble_addr_t</span> <span style="color: #000000">direct_addr</span>;
+};
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gap_repeat_pairing</span> {
+    <span style="color: #177500">/** The handle of the relevant connection. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>;
+
+    <span style="color: #177500">/** Properties of the existing bond. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_key_size</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_authenticated</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">cur_sc</span>:<span style="color: #1C01CE">1</span>;
+
+    <span style="color: #177500">/**</span>
+<span style="color: #177500">     * Properties of the imminent secure link if the pairing procedure is</span>
+<span style="color: #177500">     * allowed to continue.</span>
+<span style="color: #177500">     */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_key_size</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_authenticated</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_sc</span>:<span style="color: #1C01CE">1</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">new_bonding</span>:<span style="color: #1C01CE">1</span>;
 };
 </pre></div>
 
