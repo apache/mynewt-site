@@ -2,7 +2,7 @@
 
 The hardware independent interface to I2C Devices.
 
-###Description
+### Description
 
 An Inter-Integrated Circuit (I²C ] I-squared-C) bus is a multi-master,
 multi-save serial interface used to connect components on a circuit board
@@ -13,11 +13,11 @@ to send data between devices.
 
 For a detailed description of I2C, see the [I²C wikipedia page](https://en.wikipedia.org/wiki/I²C)
 
-###Definition
+### Definition
 
 [hal_i2c.h](https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_i2c.h)
 
-###HAL_I2C Theory Of Operation
+### HAL_I2C Theory Of Operation
 
 An I²C transaction typically involves acquiring the bus, sending and/or receiving
 data and release the bus.  The bus acquisition portion is important because
@@ -54,7 +54,7 @@ not appear with this command.
 
 A slave API is pending for further release.
 
-###HAL_I2C Data
+### HAL_I2C Data
 
 Data to read/write is passed to the hal_i2c APIs via the 
 

@@ -1,4 +1,4 @@
-#Porting Mynewt to a new CPU Architecture
+# Porting Mynewt to a new CPU Architecture
 
 A new CPU architecture typically requires the following:
 
@@ -8,7 +8,7 @@ A new CPU architecture typically requires the following:
 
 These are discussed below:
 
-###Create A New Compiler
+### Create A New Compiler
 
 NOTE: Newt does not automatically install the compilers require to build all platforms. 
 It's up to the user using their local machines package manager to install the compilers. 
@@ -26,7 +26,7 @@ Most are self-explanatory paths to different compiler and linker tools. There ar
 | `compiler.flags.optimized` | additional flags when the newt tool builds an optimized image |
 | `compiler.flags.debug` |   additional flags when the newt tool builds a debug image|
 
-###Implement Architecture-specific OS code
+### Implement Architecture-specific OS code
 
 There are several architecture-specific code functions that are required when implementing a 
 new architecture. You can find examples in the `sim` architecture within Mynewt.

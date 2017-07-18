@@ -22,7 +22,7 @@ Bluetooth LE uses four association models depending on the I/O capabilities of t
 
 * **Passkey Entry**: designed for the scenario where one device has input capability but does not have the capability to display six digits and the other device has output capabilities. A good example of this model is the PC and keyboard scenario.
 
-###Key Generation
+### Key Generation
 
 Key generation for all purposes in Bluetooth LE is performed by the *Host* on each LE device independent of any other LE device. 
 

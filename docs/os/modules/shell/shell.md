@@ -89,7 +89,7 @@ The shell's second job is to handle packet framing, encoding, and decoding of ne
 The `SHELL_NEWTMGR` syscfg setting specifies whether newtmgr is enabled over shell. The setting is enabled by default.
 <br>
 
-##Data Structures
+## Data Structures
 <br>
 The `struct shell_cmd` data structure represents a shell command and is used to register a command. 
 

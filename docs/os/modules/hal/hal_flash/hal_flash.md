@@ -2,15 +2,15 @@
 
 The hardware independent interface to flash memory that is used by applications.
 
-###Description
+### Description
 
 The API offers basic initialization, read, write, erase, sector erase, and other operations.
 
-###Definition
+### Definition
 
 [hal_flash.h](https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_flash.h)
 
-###Examples
+### Examples
 
 
 

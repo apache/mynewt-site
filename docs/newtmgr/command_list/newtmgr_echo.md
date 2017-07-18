@@ -16,7 +16,7 @@ Send data to a device and display the echoed back data.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Sends the `text` to a device and outputs the text response from the device. Newtmgr uses the `conn_profile` connection profile to connect to the device. 
 
 #### Examples

@@ -55,7 +55,7 @@ Download and install [Git for Windows](https://git-for-windows.github.io) if it 
 ### Step 3: Installing Go 
 Download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7.6 or higher.
 
-###Step 4: Setting Up Your Go Environment 
+### Step 4: Setting Up Your Go Environment 
 
 This section describes the Go environment and how to setup a Go workspace.  Go provides an environment to compile Go code,  construct Go packages,  and import Go code.  You will use Go commands to import the newt package repository into your local Go environment.  The Go language environment dictates a specific directory structure, or workspace in Go parlance. It must contain three sibling directories with the names **src**, **pkg** and **bin**: 
 
@@ -81,7 +81,7 @@ export PATH=$GOPATH/bin:$PATH
 ```
 <br>
 
-###Step 5: Downloading the Source and Installing the Newt Tool 
+### Step 5: Downloading the Source and Installing the Newt Tool 
 
 The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/mynewt-newt).  We use the `go get` command to download the source, build, and install the newt tool binary in the **$GOPATH/bin** directory. 
 

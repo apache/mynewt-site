@@ -21,7 +21,7 @@ Manage newtmgr connection profiles.
     -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 
-####Description
+#### Description
 The conn command provides subcommands to add, delete, and view connection profiles. A connection profile specifies information on how to connect and communicate with a remote device.  Newtmgr commands use the information from a connection profile to send newtmgr requests to remote devices.
 
 Sub-command  | Explanation
@@ -32,7 +32,7 @@ delete    | The newtmgr conn delete &lt;conn_profile&gt; command deletes the `co
 show      | The newtmgr conn show [conn_profile] command shows the information for the `conn_profile` connection profile. It shows information for all the connection profiles if `conn_profile` is not specified.
     
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

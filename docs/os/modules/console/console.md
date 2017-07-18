@@ -1,4 +1,4 @@
-#Console
+# Console
 
 
 The console is an operating system window where users interact with the OS subsystems or a console 
@@ -8,7 +8,7 @@ monitor.  The text are sent as a sequence of characters between the user and the
 Support is currently available for console access via the serial port on the hardware board.
 
 
-###Description
+### Description
 
 In the Mynewt OS, the console library comes in three versions:
 
@@ -80,7 +80,7 @@ pkg.deps:
 ```
 <br>
 
-####Using the Minimal Console Package
+#### Using the Minimal Console Package
 
 There might be projects that need to read and write data on a serial connection but do not need the full console capability. An example might be a project that supports serial image upgrade but does not need full newtmgr capability.  The project would use the console minimal API and has the following `pkg.yml` file: 
 
@@ -118,11 +118,11 @@ know that the console is connected and responsive. Whether echoing happens or no
 The Console also has a prompt that is configurable. It is off by default but can be turned on programmatically. The
 prompt character can also be changed by the user.
 
-###Data structures
+### Data structures
 
 N/A
 
-###List of Functions
+### List of Functions
 
 The functions available in console are:
 

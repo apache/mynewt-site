@@ -47,7 +47,7 @@ list         | The newtmgr image list command displays information for the image
 test         | The newtmgr test &lt;hex-image-hash&gt; command tests the image, identified by the `hex-image-hash` hash value, on next reboot.
 upload       | The newtmgr image upload &lt;image-file&gt; command uploads the `image-file` image file to a device.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

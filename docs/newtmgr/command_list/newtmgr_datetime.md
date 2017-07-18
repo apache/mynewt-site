@@ -16,12 +16,12 @@ Manage datetime on a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Reads or sets the datetime on a device. Specify a `datetime-value` in the command to set the datetime on the device. Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
 **Note**: You must specify the  `datetime-value` in the RFC 3339 format.  
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

@@ -1,4 +1,4 @@
-##<font color="#F2853F" style="font-size:24pt"> os_sched </font>
+## <font color="#F2853F" style="font-size:24pt"> os_sched </font>
 
 ```c
 void os_sched(struct os_task *next_t)

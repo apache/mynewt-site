@@ -38,7 +38,7 @@ Run the following commands to create a new project:
 
 <br>
 
-###<a name="fetchexternal"></a> Fetch External Packages
+### <a name="fetchexternal"></a> Fetch External Packages
 
 Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the newt tool can fetch them.
@@ -108,16 +108,16 @@ $
 
 These commands perform the following:
 
-  * Create a target named ```arduino_boot```  for the Arduino Zero Bootloader. 
-  * Set the application for the ```arduino_boot``` target to the default Apache Mynewt
-    bootloader (```@apache-mynewt-core/apps/boot```)
-  * Set the board support package for the target to
-    ```@mynewt_arduino_zero/hw/bsp/arduino_zero```.  This is a reference to the downloaded
-    Arduino Zero support from Github.
-  * Use the "optimized" build profile for the `arduino_boot` target.  This
-    instructs Newt to generate smaller and more efficient code for this target.
-    This setting is necessary due to the bootloader's strict size constraints.
-  * Sets the system configuration setting for Board Support Package to support the Arduino Zero Pro. 
+* Create a target named ```arduino_boot```  for the Arduino Zero Bootloader. 
+* Set the application for the ```arduino_boot``` target to the default Apache Mynewt
+  bootloader (```@apache-mynewt-core/apps/boot```)
+* Set the board support package for the target to
+  ```@mynewt_arduino_zero/hw/bsp/arduino_zero```.  This is a reference to the downloaded
+  Arduino Zero support from Github.
+* Use the "optimized" build profile for the `arduino_boot` target.  This
+  instructs Newt to generate smaller and more efficient code for this target.
+  This setting is necessary due to the bootloader's strict size constraints.
+* Sets the system configuration setting for Board Support Package to support the Arduino Zero Pro. 
 
 See the [Concepts](../get_started/vocabulary.md) section for more information on setting options.
 <br>

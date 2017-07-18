@@ -42,7 +42,7 @@ or just follow the commands below.
 
 <br>
 
-###Add Additional Repositories
+### Add Additional Repositories
 
 The board-specific libraries for the NRF52dk board are in an external repository at present, so
 you'll need to include that remote repository and install it as well. If you're not familiar
@@ -77,7 +77,7 @@ repository.mynewt_nordic:
 
 <br>
 
-###Install Everything
+### Install Everything
 
 Now that you have defined the needed repositories, it's time to install everything so
 that you can get started.

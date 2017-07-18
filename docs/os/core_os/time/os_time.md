@@ -72,8 +72,8 @@ Ensure that comparison of OS time always uses the macros above (to compensate fo
 
 The following macros help adding or subtracting time when represented as `struct os_timeval`. All parameters to the following macros are pointers to `struct os_timeval`.
 
- - `os_timeradd(tvp, uvp, vvp)` --  Add `uvp` to `tvp` and store result in `vvp`.
- - `os_timersub(tvp, uvp, vvp)` -- Subtract `uvp` from `tvp` and store result in `vvp`.
+- `os_timeradd(tvp, uvp, vvp)` --  Add `uvp` to `tvp` and store result in `vvp`.
+- `os_timersub(tvp, uvp, vvp)` -- Subtract `uvp` from `tvp` and store result in `vvp`.
 
 ## Special Notes
 

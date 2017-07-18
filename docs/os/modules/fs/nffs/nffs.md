@@ -7,9 +7,9 @@ Mynewt includes the Newtron Flash File System (nffs).  This file system is desig
 
 Mynewt also provides an abstraction layer API (fs) to allow you to swap out nffs with a different file system of your choice.
 
-###Description
+### Description
 
-####Areas
+#### Areas
 
 At the top level, an nffs disk is partitioned into *areas*.  An area is a region of disk with the following properties:
 
@@ -22,7 +22,7 @@ At the top level, an nffs disk is partitioned into *areas*.  An area is a region
 
 Thus, each area must comprise a discrete number of blocks.
 
-####Initialization
+#### Initialization
 
 As part of overall system initialization, mynewt re-initialized the filesystem as follows:
 
@@ -40,7 +40,7 @@ Both methods require the user to describe how the flash memory should be divided
 
 After nffs has been initialized, the application can access the file system via the [file system abstraction layer](../fs/fs.md).
 
-###Data Structures
+### Data Structures
 
 The `fs/nffs` package exposes the following data structures:
 
@@ -49,7 +49,7 @@ The `fs/nffs` package exposes the following data structures:
 | [struct nffs\_area\_desc](nffs_area_desc.md) | Descriptor for a single nffs area. |
 | [struct nffs\_config](nffs_config.md) | Configuration struct for nffs. |
 
-###API
+### API
 
 The functions available in this OS feature are:
 
@@ -59,7 +59,7 @@ The functions available in this OS feature are:
 | [nffs\_format](nffs_format.md) | Erases all the specified areas and initializes them with a clean nffs file system. |
 | [nffs\_init](nffs_init.md) | Initializes internal nffs memory and data structures. |
 
-###Miscellaneous measures
+### Miscellaneous measures
 
 * RAM usage:
     * 24 bytes per inode
@@ -70,13 +70,13 @@ The functions available in this OS feature are:
 * Maximum filename size: 256 characters (no null terminator required)
 * Disallowed filename characters: '/' and '\0'
 
-###Internals
+### Internals
 
 nffs implementation details can be found here:
 
 * [nffs\_internals](nffs_internals.md)
 
-###Future enhancements
+### Future enhancements
 
 * Error correction.
 * Encryption.

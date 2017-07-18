@@ -16,7 +16,7 @@ Read task statistics from a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Reads and displays the task statistics from a device. Newtmgr uses the `conn_profile` connection profile to connect to the device.  It lists the following statistics for each task: 
 
 * **task**: Task name
@@ -29,7 +29,7 @@ Reads and displays the task statistics from a device. Newtmgr uses the `conn_pro
 * **next_checkin**: Next sanity checkin
 
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------
