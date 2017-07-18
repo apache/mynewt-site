@@ -29,39 +29,18 @@ You can use the `sys/log/stub` package if you want to build your application wit
 
 <br>
 
-#### Compile Time Settings
+#### Syscfg Settings 
 
-To save space at compile time, there is a compile time log level that
-includes/excludes certain logs at compile time, saving image space.  For 
-example, during debug, you can have significant logs present, but disable
-these at compile time to ensure the code size limits are met.
-
-A compiler flag `LOG_LEVEL` can be set  in your `target.cflags` or within
-your app `pkg.cflags` files to set the compile time log level.   The 
-log level are defined in `/sys/log/full/include/log/log.h`
-but must be added by number to your `yml` file.
-
-For example:
+The `LOG_LEVEL` syscfg setting allows you to specify the level of logs to enable in your application. Only logs for levels higher or equal to the value of `LOG_LEVEL` are enabled. The amount of logs you include affects your application code size. `LOG_LEVEL: 0` specifies LOG_LEVEL_DEBUG and includes all logs. You set `LOG_LEVEL: 255` to disable all logging. The `#defines` for the log levels are specified in the `sys/log/full/include/log/log.h` file.  For example the following setting corresponds to LOG_LEVEL_ERROR:
 
 ```no-highlight
-    pkg.cflags -DLOG_LEVEL=3
+syscfg.vals:
+    LOG_LEVEL: 3   
 ```
 
-or 
-
-```no-highlight
-    newt target set my_target cflags=-DLOG_LEVEL=3
-```
-
-would both set the compile-time log level to `LOG_LEVEL_ERROR`.  All logs
-of less than `LOG_LEVEL_ERROR` severity would be disabled at compile 
-time and take no space within the Mynewt application image.
-
-These compile time settings are applicable to all logs registered with the
-system.
+The `LOG_LEVEL` setting applies to all modules registered with the log package.
 
 <br>
-
 ### Log
 
 Each log stream requires a `log` structure to define its  logging properties. 

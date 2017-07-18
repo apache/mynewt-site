@@ -84,6 +84,14 @@ struct ble_gap_event {
          */
         struct ble_gap_disc_desc disc;
 
+#if MYNEWT_VAL(BLE_EXT_ADV)
+        /**
+         * Represents an extended advertising report received during a discovery
+         * procedure.  Valid for the following event types:
+         *     o BLE_GAP_EVENT_EXT_DISC
+         */
+        struct ble_gap_ext_disc_desc ext_disc;
+#endif
         /**
          * Represents an attempt to update a connection's parameters.  If the
          * attempt was successful, the connection's descriptor reflects the
@@ -334,6 +342,24 @@ struct ble_gap_event {
          *     o BLE_GAP_EVENT_REPEAT_PAIRING
          */
         struct ble_gap_repeat_pairing repeat_pairing;
+
+        /**
+         * Represents a change of PHY. This is issue after successful
+         * change on PHY.
+         */
+        struct {
+            int status;
+            uint16_t conn_handle;
+
+            /**
+             * Indicates enabled TX/RX PHY. Possible values:
+             *     o BLE_GAP_LE_PHY_1M
+             *     o BLE_GAP_LE_PHY_2M
+             *     o BLE_GAP_LE_PHY_CODED
+             */
+            uint8_t tx_phy;
+            uint8_t rx_phy;
+        } phy_updated;
     };
 };
 ```
@@ -442,6 +468,14 @@ struct ble_gap_conn_params {
 ```
 
 ```c
+struct ble_gap_ext_disc_params {
+    uint16_t itvl;
+    uint16_t window;
+    uint8_t passive:1;
+};
+```
+
+```c
 struct ble_gap_disc_params {
     uint16_t itvl;
     uint16_t window;
@@ -467,6 +501,44 @@ struct ble_gap_upd_params {
 struct ble_gap_passkey_params {
     uint8_t action;
     uint32_t numcmp;
+};
+```
+
+```c
+struct ble_gap_disc_desc {
+    /*** Common fields. */
+    uint8_t event_type;
+    uint8_t length_data;
+    ble_addr_t addr;
+    int8_t rssi;
+    uint8_t *data;
+
+    /***
+     * LE direct advertising report fields; direct_addr is BLE_ADDR_ANY if
+     * direct address fields are not present.
+     */
+    ble_addr_t direct_addr;
+};
+```
+
+```c
+struct ble_gap_repeat_pairing {
+    /** The handle of the relevant connection. */
+    uint16_t conn_handle;
+
+    /** Properties of the existing bond. */
+    uint8_t cur_key_size;
+    uint8_t cur_authenticated:1;
+    uint8_t cur_sc:1;
+
+    /**
+     * Properties of the imminent secure link if the pairing procedure is
+     * allowed to continue.
+     */
+    uint8_t new_key_size;
+    uint8_t new_authenticated:1;
+    uint8_t new_sc:1;
+    uint8_t new_bonding:1;
 };
 ```
 
