@@ -836,7 +836,7 @@ follows:</p>
 </li>
 </ul>
 <p>Because the system imposes a minimum block cache size of one, the above procedure will always reclaim at least one cache block entry.  The above procedure may result in the freeing of the block list that belongs to the very inode being operated on.  This is OK, as the final block to get cached is always the block being requested.</p>
-<h1 id="detection">Detection</h1>
+<h3 id="detection">Detection</h3>
 <p>The file system detection process consists of scanning a specified set of flash regions for valid nffs areas, and then populating the RAM representation of the file system with the detected objects.  Detection is initiated with the <a href="../nffs_detect/">nffs_detect()</a> function.</p>
 <p>Not every area descriptor passed to <code>nffs_detect()</code> needs to reference a valid nffs area.  Detection is successful as long as a complete file system is detected somewhere in the specified regions of flash.  If an application is unsure where a file system might be located, it can initiate detection across the entire flash region.</p>
 <p>A detected file system is valid if:</p>
@@ -867,10 +867,10 @@ follows:</p>
 <p>When an object is deleted during this sweep, it is only deleted from the RAM representation; nothing is written to disk.</p>
 <p>When objects are migrated to the lost+found directory, their parent inode reference is permanently updated on the disk.</p>
 <p>In addition, a single scratch area is identified during the detection process.  The first area whose <em>fda_id</em> value is set to 0xff is designated as the file system scratch area.  If no valid scratch area is found, the cause could be that the system was restarted while a garbage collection cycle was in progress.  Such a condition is identified by the presence of two areas with the same ID.  In such a case, the shorter of the two areas is erased and designated as the scratch area.</p>
-<h1 id="formatting">Formatting</h1>
+<h3 id="formatting">Formatting</h3>
 <p>A new nffs file system is created via formatting.  Formatting is achieved via the <a href="../nffs_format/">nffs_format()</a> function.</p>
 <p>During a successful format, an area header is written to each of the specified locations.  One of the areas in the set is designated as the initial scratch area.</p>
-<h1 id="flash-writes">Flash writes</h1>
+<h3 id="flash-writes">Flash writes</h3>
 <p>The nffs implementation always writes in a strictly sequential fashion within an area.  For each area, the system keeps track of the current offset.  Whenever an object gets written to an area, it gets written to that area's current offset, and the offset is increased by the object's disk size.</p>
 <p>When a write needs to be performed, the nffs implementation selects the appropriate destination area by iterating though each area until one with sufficient free space is encountered.</p>
 <p>There is no write buffering.  Each call to a write function results in a write operation being sent to the flash hardware.</p>
@@ -919,7 +919,7 @@ follows:</p>
 </li>
 </ol>
 <p>Appended data can only be written to the end of the file.  That is, "holes" are not supported.</p>
-<h1 id="garbage-collection">Garbage collection</h1>
+<h3 id="garbage-collection">Garbage collection</h3>
 <p>When the file system is too full to accommodate a write operation, the system must perform garbage collection to make room.  The garbage collection procedure is described below:</p>
 <ul>
 <li>The non-scratch area with the lowest garbage collection sequence number is selected as the "source area."  If there are other areas with the same sequence number, the one with the smallest flash offset is selected. </li>
