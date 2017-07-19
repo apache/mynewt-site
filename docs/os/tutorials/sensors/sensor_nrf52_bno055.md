@@ -317,7 +317,7 @@ To view the command syntax, enter `sensor`
 
 ```
 <br>
-####Listing the Registered Sensors<br>
+#### Listing the Registered Sensors<br>
 You use the `sensor list` command to list all the registered sensor devices:
 <br>
 ```no-highlight
@@ -332,7 +332,7 @@ The output shows one sensor, **bno055_0**, registered, and the configured types 
 
 <br>
 
-####Listing the Types that a Sensor Supports 
+#### Listing the Types that a Sensor Supports 
 
 You use the `sensor type` command to list the types that a sensor supports:
 
@@ -353,7 +353,7 @@ type =
 ```
 
 <br>
-####Viewing Sensor Data Samples
+#### Viewing Sensor Data Samples
 You use the `sensor read` command to read data samples for a configured type. You can specify the number of samples to read, a poll interval, and a poll duration. You can only view sensor data for the sensor types that a sensor device is configured for.
 
 **Example 1:** Read 5 samples of accelerometer data from the **bno055_0** sensor:

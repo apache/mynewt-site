@@ -2,7 +2,7 @@
 
 This tutorial shows you how to change default configuration values for an off-board sensor. It continues with the example in the  [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_offboard_config.md) tutorial.
 
-###Prerequisite 
+### Prerequisite 
 
 Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_offboard_config.md) tutorial. 
 

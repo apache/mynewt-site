@@ -1,4 +1,4 @@
-##Enabling OIC Sensor Data Monitoring in the sensors_test Application
+## Enabling OIC Sensor Data Monitoring in the sensors_test Application
 
 This tutorial shows you how to enable sensor data monitoring via the OIC protocol over BLE transport in the sensors_test application. It extends the example application in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) tutorial and assumes that you have worked through that tutorial. 
 
