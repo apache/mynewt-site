@@ -45,25 +45,25 @@ code.
 
 <br>
 
-### Newt ###
-In order to provide all this functionality, and operate in an 
-extremely low resource environment, Mynewt provides a very fine-grained source 
-package management and build system tool, called *newt*. 
+### Newt
+In order to provide all this functionality, and operate in an
+extremely low resource environment, Mynewt provides a very fine-grained source
+package management and build system tool, called *newt*.
 
-You can install and build *newt* for [Linux](..//newt/install/newt_linux/) or [Mac](../newt/install/newt_mac/). 
-
-<br>
-
-### Newt Manager ###
-
-
-In order to enable a user to communicate with remote instances of Mynewt OS and query, configure, and operate them, Mynewt provides an application tool called Newt Manager or `newtmgr`.
-
-You can install and build *newtmgr* from source code on [Linux or Mac](../newtmgr/installing/). 
+You can install *newt* for [Mac OS](../newt/install/newt_mac/), [Linux](../newt/install/newt_linux/), or [Windows](../newt/install/newt_windows/).
 
 <br>
 
-### Build your first Mynewt App with Newt ###
+### Newt Manager
+
+
+In order to enable a user to communicate with remote instances of Mynewt OS and query, configure, and operate them, Mynewt provides an application tool called Newt Manager or *newtmgr*.
+
+You can install *newtmgr* for [Mac OS](../newtmgr/install_mac/), [Linux](../newtmgr/install_linux/), or [Windows](../newtmgr/install_newtmgr/).
+
+<br>
+
+### Build your first Mynewt App with Newt
 
 With the introductions out of the way, now is a good time to [get set up and 
 started](../get_started/get_started/) with your first Mynewt application.

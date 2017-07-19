@@ -9,7 +9,7 @@ This tutorial shows you how to create, build, and run the Blinky application on 
 * Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a STM32F4-Discovery board.
 * Have a USB type A to Mini-B cable.    
-* Install a patched version of OpenOCD 0.10.0 described in [Install OpenOCD](os/get_started/cross_tools/).  
+* Install a patched version of OpenOCD 0.10.0 described in [Install OpenOCD](/os/get_started/cross_tools/).  
 
 ### Create a Project  
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created.  
@@ -20,7 +20,7 @@ Run the following commands to create a new project:
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Downloading project skeleton from apache/mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
     $ cd myproj
@@ -156,6 +156,29 @@ Run the `newt load stm32f4disc_boot` command to load the bootloader onto the boa
 $newt load stm32f4disc_boot
 Loading bootloader
 ```
+
+Note: If you are using Windows and get an `open failed` or  `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
+
+* Select Options > List All Devices.
+* Select `STM32 STLink` from the drop down menu.
+* Select the `WinUSB` driver.
+* Click Install Driver.
+* Run the `newt load stm32f4disc_boot` command again.
+
+Note: If you are running Linux and get an `open failed` message, there are two common issues with this board. If you have a board produced before mid-2016, it is likely that you have an older version of the ST-LINK programmer. To correct this, open the `repos/apache-mynewt-core/hw/bsp/stm32f4discovery/f4discovery.cfg` file in a text editor, and change the line:
+
+```no-highlight
+source [find interface/stlink-v2-1.cfg]
+```
+
+to:
+
+```no-highlight
+source [find interface/stlink-v2.cfg]
+```
+
+If you receive an error like `libusb_open() failed with LIBUSB_ERROR_ACCESS`, it means that your `udev` rules are not correctly set up for this device. You can find some example `udev` rules for ST-LINK programmers [here](https://github.com/texane/stlink/tree/master/etc/udev/rules.d).
+
 <br>
 Run the `newt load stm32f4disc_blinky` command to load the Blinky application image onto the board.
 ```no-highlight
@@ -169,7 +192,11 @@ Note: If the LED does not blink, try resetting your board.
 
 <br>
 
-**Note:** If you want to erase the flash and load the image again, start a debug session, and enter `mon  stm32f2x mass_erase 0` at the gdb prompt:
+If you want to erase the flash and load the image again, start a debug session, and enter `mon  stm32f2x mass_erase 0` at the gdb prompt:
+
+**Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
+
+<br>
 ```no-highlight
 $newt debug stm32f4disc_blinky
 [~/dev/myproj/repos/apache-mynewt-core/hw/bsp/stm32f4discovery/stm32f4discovery_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/stm32f4discovery ~/dev/myproj/bin/targets/stm32f4disc_blinky/app/apps/blinky/blinky]

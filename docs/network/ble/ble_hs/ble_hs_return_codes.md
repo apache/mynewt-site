@@ -104,28 +104,35 @@ The precise meaning of each of these error codes depends on the function that re
 
 | Value | Name           | Condition                                    |
 |-------|----------------|----------------------------------------------|
-| 0x00  | _N/A_                    | Success                                      |
-| 0x01  | BLE\_HS\_EAGAIN          | Temporary failure; try again.                |
-| 0x02  | BLE\_HS\_EALREADY        | Operation already in progress or completed.  |
-| 0x03  | BLE\_HS\_EINVAL          | One or more arguments are invalid.           |
-| 0x04  | BLE\_HS\_EMSGSIZE        | The provided buffer is too small.            |
-| 0x05  | BLE\_HS\_ENOENT          | No entry matching the specified criteria.    |
-| 0x06  | BLE\_HS\_ENOMEM          | Operation failed due to resource exhaustion. |
-| 0x07  | BLE\_HS\_ENOTCONN        | No open connection with the specified handle.|
-| 0x08  | BLE\_HS\_ENOTSUP         | Operation disabled at compile time.          |
-| 0x09  | BLE\_HS\_EAPP            | Application callback behaved unexpectedly.   |
-| 0x0a  | BLE\_HS\_EBADDATA        | Command from peer is invalid.                |
-| 0x0b  | BLE\_HS\_EOS             | Mynewt OS error.                             |
-| 0x0c  | BLE\_HS\_ECONTROLLER     | Event from controller is invalid.            |
-| 0x0d  | BLE\_HS\_ETIMEOUT        | Operation timed out.                         |
-| 0x0e  | BLE\_HS\_EDONE           | Operation completed successfully.            |
-| 0x0f  | BLE\_HS\_EBUSY           | Operation cannot be performed until procedure completes. |
-| 0x10  | BLE\_HS\_EREJECT         | Peer rejected a connection parameter update request. |
-| 0x11  | BLE\_HS\_EUNKNOWN        | Unexpected failure; catch all. |
-| 0x12  | BLE\_HS\_EROLE           | Operation requires different role (e.g., central vs. peripheral). |
-| 0x13  | BLE\_HS\_ETIMEOUT\_HCI   | HCI request timed out; controller unresponsive. |
-| 0x14  | BLE\_HS\_ENOMEM\_EVT     | Controller failed to send event due to memory exhaustion (combined host-controller only). |
-| 0x15  | BLE\_HS\_ENOADDR         | Operation requires an identity address but none configured. |
+| 0x00  | _N/A_                         | Success                                      |
+| 0x01  | BLE\_HS\_EAGAIN               | Temporary failure; try again.                |
+| 0x02  | BLE\_HS\_EALREADY             | Operation already in progress or completed.  |
+| 0x03  | BLE\_HS\_EINVAL               | One or more arguments are invalid.           |
+| 0x04  | BLE\_HS\_EMSGSIZE             | The provided buffer is too small.            |
+| 0x05  | BLE\_HS\_ENOENT               | No entry matching the specified criteria.    |
+| 0x06  | BLE\_HS\_ENOMEM               | Operation failed due to resource exhaustion. |
+| 0x07  | BLE\_HS\_ENOTCONN             | No open connection with the specified handle.|
+| 0x08  | BLE\_HS\_ENOTSUP              | Operation disabled at compile time.          |
+| 0x09  | BLE\_HS\_EAPP                 | Application callback behaved unexpectedly.   |
+| 0x0a  | BLE\_HS\_EBADDATA             | Command from peer is invalid.                |
+| 0x0b  | BLE\_HS\_EOS                  | Mynewt OS error.                             |
+| 0x0c  | BLE\_HS\_ECONTROLLER          | Event from controller is invalid.            |
+| 0x0d  | BLE\_HS\_ETIMEOUT             | Operation timed out.                         |
+| 0x0e  | BLE\_HS\_EDONE                | Operation completed successfully.            |
+| 0x0f  | BLE\_HS\_EBUSY                | Operation cannot be performed until procedure completes. |
+| 0x10  | BLE\_HS\_EREJECT              | Peer rejected a connection parameter update request. |
+| 0x11  | BLE\_HS\_EUNKNOWN             | Unexpected failure; catch all. |
+| 0x12  | BLE\_HS\_EROLE                | Operation requires different role (e.g., central vs. peripheral). |
+| 0x13  | BLE\_HS\_ETIMEOUT\_HCI        | HCI request timed out; controller unresponsive. |
+| 0x14  | BLE\_HS\_ENOMEM\_EVT          | Controller failed to send event due to memory exhaustion (combined host-controller only). |
+| 0x15  | BLE\_HS\_ENOADDR              | Operation requires an identity address but none configured. |
+| 0x16  | BLE\_HS\_ENOTSYNCED           | Attempt to use the host before it is synced with controller. |
+| 0x17  | BLE\_HS\_EAUTHEN              | Insufficient authentication. |
+| 0x18  | BLE\_HS\_EAUTHOR              | Insufficient authorization. |
+| 0x19  | BLE\_HS\_EENCRYPT             | Insufficient encryption level. |
+| 0x1a  | BLE\_HS\_EENCRYPT\_KEY\_SZ    | Insufficient key size. |
+| 0x1b  | BLE\_HS\_ESTORE\_CAP          | Storage at capacity. |
+| 0x1c  | BLE\_HS\_ESTORE\_FAIL         | Storage IO error. |
 
 
 #### Return codes - ATT

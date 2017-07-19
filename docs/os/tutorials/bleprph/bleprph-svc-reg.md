@@ -65,8 +65,8 @@ definition consists of the following fields:
 | *Field* | *Meaning* | *Notes* |
 | ------- | --------- | ------- |
 | uuid128     | The 128-bit UUID of this characteristic. | If the characteristic has a 16-bit UUID, you can convert it to its corresponding 128-bit UUID with the `BLE_UUID16()` macro. |
-| access_cb   | A callback function that gets executed whenever a peer device accesses this characteristic. | *For reads:* this function generates the value that gets sent back to the peer.<br>*For writes:* this function provides the written value as an argument. |
-| flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/incubator-mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).|
+| access\_cb  | A callback function that gets executed whenever a peer device accesses this characteristic. | *For reads:* this function generates the value that gets sent back to the peer.<br>*For writes:* this function receives the written value as an argument. |
+| flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).|
 
 The access callback is what implements the characteristic's behavior.  Access
 callbacks are described in detail in the next section:

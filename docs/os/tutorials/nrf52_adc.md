@@ -33,7 +33,7 @@ or just follow the commands below.
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myadc
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Downloading project skeleton from apache/mynewt-blinky...
     Installing skeleton in myadc...
     Project myadc successfully created.
     $ cd myadc
@@ -42,18 +42,18 @@ or just follow the commands below.
 
 <br>
 
-###Add Additional Repositories
+### Add Additional Repositories
 
 The board-specific libraries for the NRF52dk board are in an external repository at present, so
 you'll need to include that remote repository and install it as well. If you're not familiar
 with using repositories, see the section on [repositories](repo/add_repos.md) before
 continuing. Or just copy and paste the following.
 
-In your `project.yml` file, add `- mynewt_nordic` to the `project.repositories` section, and 
+In your `project.yml` file, add `mynewt_nordic` to the `project.repositories` section, and 
 then add the proper repository definition. When you're done, your `project.yml` file
 should look like this:
 
-```
+```hl_lines="5 15 16 17 18 19"
 project.name: "my_project"
 
 project.repositories:
@@ -65,19 +65,19 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 0-dev
+    vers: 1-latest
     user: apache
     repo: incubator-mynewt-core
 repository.mynewt_nordic:
     type: github
-    vers: 0-latest
-    user: runtimeinc
+    vers: 1-latest
+    user: runtimeco
     repo: mynewt_nordic
 ```
 
 <br>
 
-###Install Everything
+### Install Everything
 
 Now that you have defined the needed repositories, it's time to install everything so
 that you can get started.

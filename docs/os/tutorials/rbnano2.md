@@ -1,27 +1,13 @@
 ## Blinky, your "Hello World!", on RedBear Nano 2
 
-<br>
-
-### Objective
-
-Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink the LED lights on the target board.
-
-Create a project with a simple application that blinks an LED on a RedBear Nano 2 board.  Download the application to the target and watch it blink!
-
+This tutorial shows you how to create, build and run the Blinky application on a RedBear Nano 2 board.
 <br>
 
 ### Prerequisites
 
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Blinky](/os/tutorials/blinky.md).
 * Have a RedBear Nano 2 board. 
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
-* Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section.
-
-**Note:** You must install a patched version of OpenOCD .10.0 (See [Debugger Option 2 in the Arduino Primo Blinky Tutorial](/os/tutorials/blinky_primo)).
+* Install a patched version of OpenOCD 0.10.0 described in [Install OpenOCD](/os/get_started/cross_tools/).
 
 ### Create a Project  
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created.  
@@ -32,7 +18,7 @@ Run the following commands to create a new project:
     $ mkdir ~/dev
     $ cd ~/dev
     $ newt new myproj
-    Downloading project skeleton from apache/incubator-mynewt-blinky...
+    Downloading project skeleton from apache/mynewt-blinky...
     Installing skeleton in myproj...
     Project myproj successfully created.
     $ cd myproj
@@ -144,7 +130,7 @@ App image succesfully generated: ~/dev/myproj/bin/targets/rbnano2_blinky/app/app
 Connect the RedBear Nano 2 USB to a USB port on your computer. You should see an orange LED light up on the board.
 
         
-### Load the Bootloader and the Blinky Application Image
+### Load the Bootloader 
 
 Run the `newt load rbnano2_boot` command to load the bootloader onto the board: 
 
@@ -154,7 +140,21 @@ Loading bootloader
 $
 ```
 <br>
-Note: The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the `newt debug rbnano2_blinky` command and issue the following commands at the highlighted (gdb) prompts.  
+
+**Note:** On Windows platforms, if you get an `unable to find CMSIS-DAP device` error, you will need to download and install the mbed Windows serial port driver from [https://developer.mbed.org/handbook/Windows-serial-configuration](https://developer.mbed.org/handbook/Windows-serial-configuration). Follow the instructions from the site to install the driver.  Here are some additional notes about the installation:
+
+1. The instructions indicate that the mbed Windows serial port driver is not required for Windows 10. If you are using Windows 10 and get the `unable to find CMSIS-DAP device` error, we recommend that you install the driver.
+2. If the driver installation fails, we recommend that you unplug the board, plug it back in, and retry the installation.
+
+Run the `newt load rbnano2_boot` command again.
+
+<br>
+####Clear the Write Protection on the Flash Memory
+The flash memory on the RedBear Nano 2 comes write protected from the factory. If you get an error loading the bootloader and you are using a brand new chip, you need to clear the write protection from the debugger and then load the bootloader again.  Run the `newt debug rbnano2_blinky` command and issue the following commands at the highlighted (gdb) prompts.  
+
+**Note:** The output of the debug session below is for Mac OS and Linux platforms. On Windows, openocd and gdb are started in separate Windows Command Prompt terminals, and the terminals are automatically closed when you quit gdb. In addition,  the output of openocd is logged to the openocd.log file in your project's base directory instead of the terminal.
+
+<br>
 
 ```hl_lines="8 9 11 14"
 $newt debug rbnano2_blinky
@@ -181,9 +181,10 @@ Error: Failed to read memory at 0x00009ef4
 0x70:0xffffffff0xffffffff0xffffffff0xffffffff
 (gdb)
 ```
-
 <br>
-Run the `newt load rbnano2_blinky` command to load the Blinky application image onto the board.
+### Load the Blinky Application Image
+<br>
+Run the `newt load rbnano2_blinky` command to load the Blinky application image onto the board:
 ```no-highlight
 $ newt load rbnano2_blinky
 Loading app image into slot 1
@@ -192,15 +193,3 @@ Loading app image into slot 1
 You should see a blue LED on the board blink!
 
 Note: If the LED does not blink, try resetting your board.
-
-
-### Conclusion
-
-You have created, setup, compiled, loaded, and ran your first mynewt application for a RedBear Nano 2 board.
-
-We have more fun tutorials for you to get your hands dirty. Be bold and work on the OS with tutorials on [writing a test suite](unit_test.md) or try enabling additional functionality such as [remote comms](project-target-slinky.md) or [Bluetooth Low Energy](bletiny_project.md) on your current board.
-
-If you see anything missing or want to send us feedback, please do so by signing up for appropriate mailing lists on our [Community Page](../../community.md).
-
-Keep on hacking and blinking!
-

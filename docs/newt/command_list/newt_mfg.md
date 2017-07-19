@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt">newt mfg </font>
 
-Provides commands to create, build, and upload manufacturing image. 
+Commands to create, build, and upload manufacturing image. 
 
 #### Usage: 
 
@@ -12,30 +12,26 @@ Provides commands to create, build, and upload manufacturing image.
 
 ```no-highlight
     create      Create a manufacturing flash image
-    deploy      Builds and uploads a manufacturing image (build + load)
+    deploy      Build and upload a manufacturing image (build + load)
     load        Load a manufacturing flash image onto a device
-```
-
-#### Flags:
-
-```no-highlight
-    -h, --help=false: help for mfg
 ```
 
 #### Global Flags:
 
 ```no-highlight
-    -l, --loglevel="WARN": Log level, defaults to WARN.
-    -o, --outfile string    Filename to tee log output to
-    -q, --quiet=false: Be quiet; only display error output.
-    -s, --silent=false: Be silent; don't output anything.
-    -v, --verbose=false: Enable verbose output when executing commands.
+    -h, --help              Help for newt commands
+    -j, --jobs int          Number of concurrent build jobs (default 8)
+    -l, --loglevel string   Log level (default "WARN")
+    -o, --outfile string    Filename to tee output to
+    -q, --quiet             Be quiet; only display error output
+    -s, --silent            Be silent; don't output anything
+    -v, --verbose           Enable verbose output when executing commands
 ```
 #### Description
 
 Sub-command  | Explanation
 -------------| ------------------------
-create     | A manufacturing image specifies 1) a boot loader target, and 2) one or more image targets. Assuming the manufacturing entity has been created and defined in the `mfgs/<mfg image name>/` package(see Examples below), this command collects the manufacturing related files in the newly created `bin/mfgs/<mfg image name>` directory. The collection includes manifests with the image build time, version, manufacturing package build time, image ID (or hash) etc. It is essentially a snapshot of the image data and metadata uploaded to the device flash at manufacturing time. Note that the command expects the targets and images to have already been built using `newt build` and `newt create-image` commands.
+create     | A manufacturing image specifies 1) a boot loader target, and 2) one or more image targets. Assuming the manufacturing entity has been created and defined in the `mfgs/<mfg image name>/` package (see Examples below), this command collects the manufacturing related files in the newly created `bin/mfgs/<mfg image name>` directory. The collection includes the image file, the hex file, and the  manifests with the image build time, version, manufacturing package build time, image ID (or hash) etc. It is essentially a snapshot of the image data and metadata uploaded to the device flash at manufacturing time. Note that the command expects the targets and images to have already been built using `newt build` and `newt create-image` commands.
 deploy     | A combination of build and load commands to put together and upload manufacturing image on to the device.
 load      | Loads the manufacturing package onto to the flash of the connected device.
 
@@ -60,21 +56,13 @@ targets/rb_boot
     build_profile=optimized
 ```
 
-Build the bootloader and app images.
-
-```
-$ newt build rb_boot
-$ newt build rb_boot
-$ newt create-image rb_blinky 0.0.1
-```
-
-Create the directory and package to hold the manufacturing images.
+Create the directory to hold the mfg packages.
 
 ```
 $ mkdir -p mfgs/rb_blinky_rsa
 ```
 
-The `rb_blinky_rsa` package needs a pkg.yml file. In addition it is needs a mfg.yml file where the two constituent targets are defined. An example of each file is shown below.
+The `rb_blinky_rsa` package needs a pkg.yml file. In addition it is needs a mfg.yml file to specify the two constituent targets. An example of each file is shown below.
 
 ```
 $  more mfgs/rb_blinky_rsa/pkg.yml 
@@ -92,6 +80,13 @@ mfg.images:
     - 'targets/rb_blinky'
 ```
 
+Build the bootloader and app images.
+
+```
+$ newt build rb_boot
+$ newt create-image rb_blinky 0.0.1
+```
+
 Run the `newt mfg create` command to collect all the manufacturing snapshot files.
 
 ```
@@ -101,3 +96,4 @@ Creating a manufacturing image from the following files:
 Generated the following files:
 <snip>
 $
+```

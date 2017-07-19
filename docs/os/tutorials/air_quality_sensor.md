@@ -10,9 +10,12 @@ To start with, you need to create a new project under which you will do this dev
     $ newt new air_quality
 ```
 
-Let's say you are using STM32F3discovery board as the platform. You know you need the board support package for that hardware. You can look up its location, add it your project, and fetch that along with the core OS components.
+Let's say you are using Arduino Primo -- which is based on the Nordic Semi NRF52 chip -- as the platform. 
+You know you need the board support package for that hardware. You can look up its location, add it your 
+project, and fetch that along with the core OS components. Luckily, the Arduino Primo is supported in the 
+Mynewt Core, so there's nothing much to do here. 
 
-To make this happen, you'll need to modify the project.yml in your project's root directory.
+Your project.yml file should look like this:
 
 ```no-highlight
     [user@IsMyLaptop:~/src/air_quality]$ emacs project.yml &
@@ -21,7 +24,6 @@ To make this happen, you'll need to modify the project.yml in your project's roo
 
     project.repositories:
         - apache-mynewt-core
-        - mynewt_stm32f3
 
     # Use github's distribution mechanism for core ASF libraries.
     # This provides mirroring automatically for us.
@@ -30,34 +32,29 @@ To make this happen, you'll need to modify the project.yml in your project's roo
         type: github
         vers: 0-latest
         user: apache
-        repo: incubator-mynewt-core
+        repo: mynewt-core
 
-    repository.mynewt_stm32f3:
-        type: github
-        vers: 0-latest
-        user: runtimeinc
-        repo: mynewt_stm32f3
     [user@IsMyLaptop:~/src/air_quality]$ newt install
     apache-mynewt-core
-    mynewt_stm32f3
     [user@IsMyLaptop:~/src/air_quality]$ ls repos/
-    apache-mynewt-core	mynewt_stm32f3
+    apache-mynewt-core
 ```
 
-Good. You want to make sure you have all the needed bits for supporting your board; so you decide to build the blinky project for the platform first.
+Good. You want to make sure you have all the needed bits for supporting your board; 
+so you decide to build the blinky project for the platform first.
 
-Now create a target for it and build it. Easiest way to proceed is to copy the existing target for blinky, and modify it to build for STM32F3Discovery board.
+Now create a target for it and build it. Easiest way to proceed is to copy the existing target for blinky, and modify it to build for Arduino Primo board.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target copy my_blinky_sim blink_f3
-Target successfully copied; targets/my_blinky_sim --> targets/blink_f3
-[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_f3 bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
-Target targets/blink_f3 successfully set target.bsp to @mynewt_stm32f3/hw/bsp/stm32f3discovery
-[user@IsMyLaptop:~/src/air_quality]$ newt build blink_f3
+[user@IsMyLaptop:~/src/air_quality]$ newt target copy my_blinky_sim blink_primo
+Target successfully copied; targets/my_blinky_sim --> targets/blink_primo
+[user@IsMyLaptop:~/src/air_quality]$ newt target set blink_primo bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
+Target targets/blink_nrf successfully set target.bsp to @apache-mynewt-core/hw/bsp/arduino_primo_nrf52
+[user@IsMyLaptop:~/src/air_quality]$ newt build blink_primo
 Compiling hal_bsp.c
 ...
 Linking blinky.elf
-App successfully built: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.elf
+App successfully built: /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.elf
 ```
 
 Good.
@@ -65,50 +62,52 @@ Good.
 You know that this platform uses bootloader, which means you have to create a target for that too.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target create boot_f3
-Target targets/boot_f3 successfully created
+[user@IsMyLaptop:~/src/air_quality]$ newt target create boot_primo
+Target targets/boot_nrf successfully created
 [user@IsMyLaptop:~/src/air_quality]$ newt target show
 @apache-mynewt-core/targets/unittest
     bsp=hw/bsp/native
     build_profile=debug
     compiler=compiler/sim
-targets/blink_f3
+targets/blink_primo
     app=apps/blinky
-    bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
+    bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
     build_profile=debug
-targets/boot_f3
+targets/boot_primo
 targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
-Target targets/boot_f3 successfully set target.bsp to @mynewt_stm32f3/hw/bsp/stm32f3discovery
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 app=@apache-mynewt-core/apps/boot
-Target targets/boot_f3 successfully set target.app to @apache-mynewt-core/apps/boot
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_f3 build_profile=optimized
-Target targets/boot_f3 successfully set target.build_profile to optimized
+[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
+Target targets/boot_nrf successfully set target.bsp to @apache-mynewt-core/hw/bsp/arduino_primo_nrf52
+[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf app=@apache-mynewt-core/apps/boot
+Target targets/boot_nrf successfully set target.app to @apache-mynewt-core/apps/boot
+[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf build_profile=optimized
+Target targets/boot_nrf successfully set target.build_profile to optimized
 ```
 
 And then build it, and load it onto the board.
 ```no-highlight
-newt build boot_f3
+newt build boot_primo
 ....
 Linking boot.elf
-App successfully built: /Users/user/src/air_quality/bin/boot_f3/apps/boot/boot.elf
+App successfully built: /Users/user/src/air_quality/bin/boot_primo/apps/boot/boot.elf
 [user@IsMyLaptop:~/src/air_quality]
-$ newt load boot_f3
+$ newt load boot_primo
 ```
 
-Next you must download the targets to board, and see that the LED actually blinks. You plug in the STM32F3 discovery board to your laptop, and say:
+At this point, you may (or may not) see a bunch of error messages about not being able to connect to
+your board, not being able to load the image, etc. If that's the case, and you haven't already, you
+should most definitely go worth through the [blinky_primo](blinky_primo.md) tutorial so that you
+can properly communicate with your board.
+
+Next you must download the targets to board, and see that the LED actually blinks. You plug in the 
+Arduino Primo board to your laptop, and say:
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt load blink_f3
-Downloading /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img to 0x08009000
-Open On-Chip Debugger 0.9.0 (2015-05-28-12:05)
-....
-xPSR: 0x01000000 pc: 0x0800026c msp: 0x10002000
-auto erase enabled
-Error: couldn't open /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img
+[user@IsMyLaptop:~/src/air_quality]$ newt load blink_primo
+Loading app image into slot 1
+Error: couldn't open /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.img
 
 Error: exit status 1
 
@@ -130,75 +129,96 @@ Global Flags:
 exit status 1
 ```
 
-Ah. Forgot to create an image out of the blinky binary. Note that every time you want to build and load a new firmware image to target board, you need to run 'create-image' on it.
+Ah. Forgot to create an image out of the blinky binary. Note that every time you want to build and 
+load a new firmware image to a target board, you need to run 'create-image' on it.
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt create-image blink_f3 0.0.1
-App image successfully generated: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/blinky.img
-Build manifest: /Users/user/src/air_quality/bin/blink_f3/apps/blinky/manifest.json
-[user@IsMyLaptop:~/src/air_quality]$ newt load blink_f3 0.0.1
+[user@IsMyLaptop:~/src/air_quality]$ newt create-image blink_primo 0.0.1
+App image successfully generated: /Users/user/src/air_quality/bin/blink_primo/apps/blinky/blinky.img
+Build manifest: /Users/user/src/air_quality/bin/blink_nrf/apps/blinky/manifest.json
+[user@IsMyLaptop:~/src/air_quality]$ newt load blink_primo
 ```
 
 And it's blinking.
 
-Shortcut for doing build/create-image/load/debug steps all in one is 'newt run' command. Check out the usage from command line help.
+Shortcut for doing build/create-image/load/debug steps all in one is 'newt run' command. Check 
+out the usage from command line help.
 
 ### Create test project
 
 Now that you have your system setup, you can start creating your own stuff.
-First you want to create a project for yourself - you can start by getting project template from blinky, as it pretty much has what you want.
+First you want to create a project for yourself - you could start by using blinky as a project 
+template, but since we're going to want to be able to access the data via Bluetooth, let's 
+use the `bleprph` Bluetooth Peripheral project instead.
 
 ```no-highlight
     [user@IsMyLaptop:~/src/air_quality]$ mkdir apps/air_quality
-    [user@IsMyLaptop:~/src/air_quality]$ cp repos/apache-mynewt-core/apps/blinky/pkg.yml apps/air_quality/
-    [user@IsMyLaptop:~/src/air_quality]$ mkdir apps/air_quality/src
-    [user@IsMyLaptop:~/src/air_quality]$ cp repos/apache-mynewt-core/apps/blinky/src/main.c apps/air_quality/src/
+    [user@IsMyLaptop:~/src/air_quality]$ cp repos/apache-mynewt-core/apps/bleprph/pkg.yml apps/air_quality/
+    [user@IsMyLaptop:~/src/air_quality]$ cp -Rp repos/apache-mynewt-core/apps/bleprph/src apps/air_quality/
 ```
 
 Then you modify the apps/air_quality/pkg.yml for air_quality in order to change the *pkg.name* to be *apps/air_quality*.
-You also need to point the package dependencies to point to packages in apache-mynewt-core repository.
-STM32F3discovery board has limited amount of memory, so you must also switch your libc to be baselibc, instead of the standard one.
+You'll need to add the `@apache-mynewt-core/` path to all the package dependencies, since the app no longer
+resides within the apache-mynewt-core repository.
+
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat apps/air_quality/pkg.yml
 pkg.name: apps/air_quality
 pkg.type: app
-pkg.description: Air quality sensor test
+pkg.description: BLE Air Quality application.
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
+pkg.homepage: "http://mynewt.apache.org/"
 pkg.keywords:
 
-pkg.deps:
-    - "@apache-mynewt-core/libs/console/full"
-    - "@apache-mynewt-core/libs/newtmgr"
-    - "@apache-mynewt-core/libs/os"
-    - "@apache-mynewt-core/libs/shell"
-    - "@apache-mynewt-core/sys/config"
-    - "@apache-mynewt-core/sys/log"
-    - "@apache-mynewt-core/sys/stats"
-    - "@apache-mynewt-core/libs/baselibc"
+pkg.deps: 
+    - "@apache-mynewt-core/kernel/os"
+    - "@apache-mynewt-core/sys/shell"
+    - "@apache-mynewt-core/sys/stats/full"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/mgmt/newtmgr"
+    - "@apache-mynewt-core/mgmt/newtmgr/transport/ble"
+    - "@apache-mynewt-core/net/nimble/controller"
+    - "@apache-mynewt-core/net/nimble/host"
+    - "@apache-mynewt-core/net/nimble/host/services/ans"
+    - "@apache-mynewt-core/net/nimble/host/services/gap"
+    - "@apache-mynewt-core/net/nimble/host/services/gatt"
+    - "@apache-mynewt-core/net/nimble/host/store/ram"
+    - "@apache-mynewt-core/net/nimble/transport/ram"
+    - "@apache-mynewt-core/sys/console/full"
+    - "@apache-mynewt-core/sys/sysinit"
+    - "@apache-mynewt-core/sys/id"
 ```
 
 And create a target for it:
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ newt target create air_q
 Target targets/air_q successfully created
-[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=@mynewt_stm32f3/hw/bsp/stm32f3discovery
-Target targets/air_q successfully set target.bsp to @mynewt_stm32f3/hw/bsp/stm32f3discovery
+[user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
+Target targets/air_q successfully set target.bsp to @apache-mynewt-core/hw/bsp/arduino_primo_nrf52
 [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q app=apps/air_quality 
 Target targets/air_q successfully set target.app to apps/air_quality
 [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q build_profile=debug
 Target targets/air_q successfully set target.build_profile to debug
 [user@IsMyLaptop:~/src/air_quality]$ newt build air_q
  ....
-Linking air_quality.elf
-App successfully built: /Users/user/src/air_quality/bin/air_q/apps/air_quality/air_quality.elf
+Linking /Users/dsimmons/dev/myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf
+Target successfully built: targets/air_q
 ```
 
 ### Create packages for drivers
 
-One of the sensors you want to enable is SenseAir K30, which will connect to the board over serial port.
+One of the sensors you want to enable is SenseAir K30, which will connect to the board over a serial port.
 To start development of the driver, you first need to create a package description for it, and add stubs for sources.
 
-So you add few files. pkg.yml to describe the driver, and then header stub followed by source stub.
+The first thing to do is to create the directory structure for your driver:
+
+```no-highlight
+[user@IsMyLaptop:~/src/air_quality]$ mkdir -p libs/my_drivers/senseair/include/senseair
+[user@IsMyLaptop:~/src/air_quality]$ mkdir -p libs/my_drivers/senseair/src
+```
+
+Now you can add the files you need. You'll need a pkg.yml to describe the driver, and then header stub followed by source stub.
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/pkg.yml
@@ -224,8 +244,15 @@ So you add few files. pkg.yml to describe the driver, and then header stub follo
 # under the License.
 #
 pkg.name: libs/my_drivers/senseair
+pkg.description: Host side of the nimble Bluetooth Smart stack.
+pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
+pkg.homepage: "http://mynewt.apache.org/"
+pkg.keywords:
+    - ble
+    - bluetooth
+
 pkg.deps:
-    - "@apache-mynewt-core/hw/hal"
+    - "@apache-mynewt-core/kernel/os"
 ```
 
 ```no-highlight
@@ -289,9 +316,9 @@ senseair_init(void)
 }
 ```
 
-And add dependency to this package in my project yml file.
+And add dependency to this package in your project yml file.
 
-Here's from apps/air_quality/pkg.yml
+Here's the listing from apps/air_quality/pkg.yml
 
 ```no-highlight
 pkg.name: apps/air_quality
@@ -305,9 +332,8 @@ pkg.deps:
     - "@apache-mynewt-core/libs/os"
     - "@apache-mynewt-core/libs/shell"
     - "@apache-mynewt-core/sys/config"
-    - "@apache-mynewt-core/sys/log"
-    - "@apache-mynewt-core/sys/stats"
-    - "@apache-mynewt-core/libs/baselibc"
+    - "@apache-mynewt-core/sys/log/full"
+    - "@apache-mynewt-core/sys/stats/full"
     - libs/my_drivers/senseair
 ```
 
@@ -320,6 +346,52 @@ And add a call to your main() to initialize this driver.
     190a192
     > senseair_init();
     [user@IsMyLaptop:~/src/air_quality
+```
+
+The ble_prph app runs everything in one task handler. For this project, we're going to add a second
+task handler to respond to the shell, and then handle communicating with the senseair sensor for us.
+
+```c
+/** shell task settings. */
+#define SHELL_TASK_PRIO           2
+#define SHELL_STACK_SIZE          (OS_STACK_ALIGN(336))
+
+struct os_eventq shell_evq;
+struct os_task shell_task;
+bssnz_t os_stack_t shell_stack[SHELL_STACK_SIZE];
+```
+That defines the task, now we need to initialize it, add a task handler, and we're going to 
+use this task as our default task handler.
+
+```c
+/**
+ * Event loop for the main shell task.
+ */
+static void
+shell_task_handler(void *unused)
+{
+    while (1) {
+        os_eventq_run(&shell_evq);
+    }
+}
+```
+And in your `main()` add:
+
+```c
+    /* Initialize shell eventq */
+    os_eventq_init(&shell_evq);
+
+    /* Create the shell task.  
+     * All shell operations are performed in this task.
+     */
+    os_task_init(&shell_task, "shell", shell_task_handler,
+                              NULL, SHELL_TASK_PRIO, OS_WAIT_FOREVER,
+                              shell_stack, SHELL_STACK_SIZE);
+```
+Don't forget to change your default task handler!
+
+```c
+    os_eventq_dflt_set(&shell_evq);
 ```
 
 And then build it to make sure all goes well.
@@ -336,54 +408,57 @@ All looks good.
 
 ### Add CLI commands for testing drivers
 
-While developing the driver, you want to issue operations from console asking it to do stuff. The way to do this is to register your command handler with shell. Whenever your custom command is issued, you can respond to it.
-
-The way you do this is first adding a dependency to shell package for your senseair driver. So you change libs/my_drivers/senseair/pkg.yml to have the following:
-
-```no-highlight
-pkg.name: libs/my_drivers/senseair
-pkg.deps:
-    - "@apache-mynewt-core/hw/hal"
-    - "@apache-mynewt-core/libs/shell"
-```
-
-And then register your shell command in *senseair_init()*.
+While developing the driver, you want to issue operations from console asking it to do stuff. We'll assume that you've already worked through the tutorial 
+on how to [enable the CLI](add_shell.md), so all we'll need to do is add the propper values to the project's `syscfg.yml` file:
 
 ```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ cat libs/my_drivers/senseair/src/senseair.c
- ....
+[user@IsMyLaptop:~/src/air_quality]$ cat targets/air_q/syscfg.yml
+syscfg.vals:
+    # Set as per blinky_primo
+    OPENOCD_DEBUG: 1
+    # Enable the shell task.
+    SHELL_TASK: 1
+    STATS_CLI: 1
+    CONSOLE_TICKS: 1
+    CONSOLE_PROMPT: 1
 ```
+
+Then register your senseair command with the shell by adding the following to `libs/my_drivers/senseair/src/senseair.c`
 
 ```c
 #include <shell/shell.h>
 #include <console/console.h>
-    
+#include <assert.h>
+
+
 static int senseair_shell_func(int argc, char **argv);
 static struct shell_cmd senseair_cmd = {
-	.sc_cmd = "senseair",
-	.sc_cmd_func = senseair_shell_func,
+    .sc_cmd = "senseair",
+    .sc_cmd_func = senseair_shell_func,
 };
-	
+
 void
 senseair_init(void)
 {
-	int rc;
+    int rc;
 
-	rc = shell_cmd_register(&senseair_cmd);
-	assert(rc == 0);
+    rc = shell_cmd_register(&senseair_cmd);
+    assert(rc == 0);
 }
-    
+
 static int
 senseair_shell_func(int argc, char **argv)
 {
-	console_printf("Yay! Somebody called!\n");
-	return 0;
+    console_printf("Yay! Somebody called!\n");
+    return 0;
+
 }
 ```
 
-Then you build this, download to target, and start minicom on your console port.
+Now you can you build this, download to target, and start minicom on your console port. If you haven't already, familiarize yourself with
+the tutorial on how to connect a serial port to your board [here](../get_started/serial_access.md).
 
-You'll need to wire up your Board to a Serial converter first. On the STM32F3-Discovery Board pin PA9 is TX and pin PA10 is RX so wire PA9 to RX on your serial board, and PA10 to TX on your serial board.
+You'll need to wire up your Board to a Serial converter first. On the Arduino Primo Board pin 1 is TX and pin 0 is RX so wire 1 to RX on your serial board, and 0 to TX on your serial board.
 
 ```no-highlight
     [user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
@@ -398,84 +473,43 @@ You'll need to wire up your Board to a Serial converter first. On the STM32F3-Di
     Press CTRL-X Z for help on special keys
     
     ?
-    141964:Unknown command ?
-    ?
-    143804:config   log     echo    ?       tasks   mempools 
-    143806:stat     senseair 
-    senseair
-    150644:Yay! Somebody called!
+    419: > ?
+    Commands:
+    641:     stat      echo         ?    prompt     ticks     tasks
+    643: mempools      date  senseair
+    644: > senseair
+    Yay! Somebody called!
+    1125: >
+    53611: > tasks
+    Tasks:
+    54047:    task pri tid  runtime      csw    stksz   stkuse   lcheck   ncheck flg
+    54057:    idle 255   0    54048    66890       64       30        0        0   0
+    54068:  ble_ll   0   1        9    64986       80       58        0        0   0
+    54079: bleprph   1   2        0        1      336       32        0        0   0
+    54090:   shell   2   3        0     2077      336      262        0        0   0
+    54101: >
 ```
 
-Now that's great. You can connect the hardware to board and start developing code for the driver itself.
+That's great. Your shell task is running, and is responding appropriately!
+You can connect the hardware to your board and start developing code for the driver itself.
 
 ### Use of HAL for drivers
 
-The sensor has a serial port connection, and that's how you are going to connect to it. Your original BSP, hw/bsp/stm32f3discovery, has only one UART set up (as specified in src/hal_bsp.c, include/hal/bsp.h). Therefore, you need to create your own bsp which has configuration for this added hardware.
+The sensor has a serial port connection, and that's how you are going to connect to it. Your original BSP, hw/bsp/arduino_primo_nrf52, has two UARTs set up.
+We're using one for our shell/console. It also has a second UART set up as a 'bit-bang' UART but since the SenseAir only needs to
+communicate at 9600 baud, this bit-banged uart is plenty fast enough.
 
-So in the shell you make a copy of the original BSP, and then change the package file a little.
-```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ mkdir hw
-[user@IsMyLaptop:~/src/air_quality]$ mkdir hw/bsp
-
-[user@IsMyLaptop:~/src/air_quality]$ cp -R repos/mynewt_stm32f3/hw/bsp/stm32f3discovery hw/bsp/stm32f3discovery_with_senseair
-```
-
-Then you modify the pkg.yml in the copied BSP to assign name for this package. And modify the dependency for MCU package to point to mynewt_stm32f3 repository.
+You'll have to make a small change to the `syscfg.yml` file in your project's target directory to change  the pin definitions 
+for this second UART. Those changes are as follows:
 
 ```no-highlight
-    [user@IsMyLaptop:~/src/air_quality]$ grep pkg.name hw/bsp/stm32f3discovery_with_senseair/pkg.yml
-    pkg.name: "hw/bsp/stm32f3discovery_with_senseair"
-    [user@IsMyLaptop:~/src/air_quality]$ tail -2 hw/bsp/stm32f3discovery_with_senseair/pkg.yml
-pkg.deps:
-    - "@mynewt_stm32f3/hw/mcu/stm/stm32f3xx"
-
+    UART_0_PIN_TX: 23
+    UART_0_PIN_RX: 24
 ```
 
-And you want to use this BSP with my target. So you change the BSP in the target definition.
+With this in place, you can refer to serial port where your SenseAir sensor by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.
 
-Here's your new target.
-```no-highlight
-[user@IsMyLaptop:~/src/air_quality]$ newt target show air_q
-targets/air_q
-    app=apps/air_quality
-    bsp=hw/bsp/stm32f3discovery_with_senseair
-    build_profile=debug
-```
-
-You add the 2nd serial port to my new BSP. Go to hw/bsp/stm32f3discovery_with_senseair directory to do this.
-
-Modify the include/hal/bsp.h to increase UART_CNT to 2, and add a definition of the 2nd logical UART. You will use this in your sensor driver.
-
-```c 
-static const struct stm32f3_uart_cfg uart_cfg[UART_CNT] = {
-    [0] = {
-        .suc_uart = USART1,
-        .suc_rcc_cmd = RCC_APB2PeriphClockCmd,
-        .suc_rcc_dev = RCC_APB2Periph_USART1,
-        .suc_pin_tx = 9,
-        .suc_pin_rx = 10,
-        .suc_pin_rts = 12,
-        .suc_pin_cts = 11,
-        .suc_pin_af = GPIO_AF_7,
-        .suc_irqn = USART1_IRQn
-    },
-    [1] = {
-        .suc_uart = USART2,
-        .suc_rcc_cmd = RCC_APB1PeriphClockCmd,
-        .suc_rcc_dev = RCC_APB1Periph_USART2,
-        .suc_pin_tx = 19, /* PB3 */
-        .suc_pin_rx = 20, /* PB4 */
-        .suc_pin_rts = 1,
-        .suc_pin_cts = 0,
-        .suc_pin_af = GPIO_AF_7,
-        .suc_irqn = USART2_IRQn
-    }
-};
-```
-
-With this in place, you can refer to serial port where your SenseAir sensor is by a logical number. This makes the code more platform independent - you could connect this sensor to another board, like Olimex. You will also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don't need to have any platform dependent pieces within your little driver.
-
-You will now see what the driver code ends up looking like. Here's the header file, filled in from stub you created earlier.
+You will now see what the driver code ends up looking like. Here's the header file, filled in from the stub you created earlier.
 
 ```c
 /*
@@ -501,8 +535,6 @@ You will now see what the driver code ends up looking like. Here's the header fi
 
 enum senseair_read_type {
         SENSEAIR_CO2,
-        SENSEAIR_TEMPERATURE,
-        SENSEAIR_HUMIDITY
 };
 
 int senseair_init(int uartno);
@@ -512,7 +544,8 @@ int senseair_read(enum senseair_read_type);
 #endif /* _SENSEAIR_H_ */
 ```
 
-As you can see, logical UART number has been added to the init routine. A 'read' function has been added, which is a blocking read. If you were making a commercial product, you would probably have a callback for reporting the results.
+As you can see, logical UART number has been added to the init routine. A 'read' function has been added, 
+which is a blocking read. If you were making a commercial product, you would probably have a callback for reporting the results.
 
 
 And here is the source for the driver.
@@ -548,12 +581,6 @@ And here is the source for the driver.
     
 static const uint8_t cmd_read_co2[] = {
     0xFE, 0X44, 0X00, 0X08, 0X02, 0X9F, 0X25
-};
-static const uint8_t cmd_read_temp[] = {
-    0xFE, 0X44, 0X00, 0X12, 0X02, 0X94, 0X45
-};
-static const uint8_t cmd_read_humidity[] = {
-    0xFE, 0x44, 0x00, 0x14, 0x02, 0x97, 0xE5
 };
     
 static int senseair_shell_func(int argc, char **argv);
@@ -681,14 +708,6 @@ senseair_read(enum senseair_read_type type)
         cmd = cmd_read_co2;
         cmd_len = sizeof(cmd_read_co2);
         break;
-    case SENSEAIR_TEMPERATURE:
-        cmd = cmd_read_temp;
-        cmd_len = sizeof(cmd_read_temp);
-        break;
-    case SENSEAIR_HUMIDITY:
-        cmd = cmd_read_humidity;
-        cmd_len = sizeof(cmd_read_humidity);
-        break;
     default:
         return -1;
     }
@@ -711,39 +730,11 @@ senseair_shell_func(int argc, char **argv)
     
     if (argc < 2) {
 usage:
-        console_printf("%s <co2|temp|humidity>\n", argv[0]);
+        console_printf("%s co2\n", argv[0]);
         return 0;
     }
     if (!strcmp(argv[1], "co2")) {
         type = SENSEAIR_CO2;
-    } else if (!strcmp(argv[1], "temp")) {
-        type = SENSEAIR_TEMPERATURE;
-    } else if (!strcmp(argv[1], "humidity")) {
-        /*
-         * timeout
-         */
-        return -2;
-    }
-    return s->value;
-}
-    
-static int
-senseair_shell_func(int argc, char **argv)
-{
-    int value;
-    enum senseair_read_type type;
-    
-    if (argc < 2) {
-usage:
-        console_printf("%s <co2|temp|humidity>\n", argv[0]);
-        return 0;
-    }
-    if (!strcmp(argv[1], "co2")) {
-        type = SENSEAIR_CO2;
-    } else if (!strcmp(argv[1], "temp")) {
-        type = SENSEAIR_TEMPERATURE;
-    } else if (!strcmp(argv[1], "humidity")) {
-        type = SENSEAIR_HUMIDITY;
     } else {
         goto usage;
     }
@@ -787,15 +778,85 @@ senseair_init(int uartno)
 }
 ```
 
-And you modified your main() for senseair driver init.
+And your modified main() for senseair driver init.
 
 ```c
 int
 main(int argc, char **argv)
 {
     ....
-    senseair_init(1);
+    senseair_init(0);
     ....
     }
 ```
-You can see from the code that you are using the HAL interface to open a UART port, and using OS semaphore as a way of blocking the task when waiting for read response to come back from the sensor.
+
+You can see from the code that you are using the HAL interface to open a UART port, and using OS 
+semaphore as a way of blocking the task when waiting for read response to come back from the sensor.
+
+Now comes the fun part: Hooking up the sensor! It's fun because a) hooking up a sensor is always 
+fun and b) the SenseAir sensor's PCB is entirely unlabeled, so you'll have to trust us on how to hook it up. 
+
+So here we go. 
+
+You'll have to do a little soldering. I soldered some header pins to the SenseAir K30 board to
+make connecting wires easier using standard jumper wires, but you can also just solder wires
+straight to the board if you prefer.
+
+Here's what your SenseAir board should look like once it's wired up:
+
+![SenseAir Wiring](pics/Senseair1.png)
+
+Now that you have that wired up, let's get the Arduino Primo wired up. A couple of things to note:
+
+* The Arduino Primo's 'console' UART is actually UART1. 
+* The secondary (bit-banged) UART is UART0, so that's where we'll have to hook up the SenseAir.
+
+Here's what your Arduino Primo should now look like with everything wired in:
+
+![SenseAir and Arduino Primo Wiring](pics/Senseair2.png)
+
+Everything is wired and you're ready to go! Build and load your new app:
+
+```no-highlight
+$ newt build air_q
+Building target targets/air_q
+Compiling apps/air_quality/src/main.c
+Archiving apps_air_quality.a
+Linking myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf
+Target successfully built: targets/air_q
+$ newt create-image air_q 1.0.0
+App image succesfully generated: myproj/bin/targets/air_q/app/apps/air_quality/air_quality.img
+$ newt load air_q
+Loading app image into slot 1
+```
+
+Now, you should be able to connect to your serial port and read values:
+
+```
+user@IsMyLaptop:~]$ minicom -D /dev/tty.usbserial-AH02MIE2
+    
+    
+    Welcome to minicom 2.7
+    
+    OPTIONS: 
+    Compiled on Oct 12 2015, 07:48:30.
+    Port /dev/tty.usbserial-AH02MIE2, 13:44:40
+    
+    Press CTRL-X Z for help on special keys
+    
+    1185: > ?
+    Commands:
+    1382:     stat      echo         ?    prompt     ticks     tasks
+    1390: mempools      date  senseair
+    1395: > senseair
+    senseair co2
+    2143: > senseair co2
+    Got 973
+    
+```
+
+And you're getting valid readings! Congratulations!
+
+Next we'll hook this all up via Bluetooth so that you can read those values remotely. 
+
+

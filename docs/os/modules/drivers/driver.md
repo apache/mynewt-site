@@ -1,6 +1,6 @@
 # Drivers
 
-###Description
+### Description
 
 Device drivers in the Mynewt context includes libraries that interface with devices external to the CPU. These devices are connected to the CPU via standard peripherals such as SPI, GPIO, I2C etc. Device drivers leverage the base HAL services in Mynewt to provide friendly abstractions to application developers. 
 
@@ -28,7 +28,7 @@ Device drivers in the Mynewt context includes libraries that interface with devi
 * Device drivers should have a consistent structure and unified interface whenever possible. For example, we have a top-level package, “adc”, which contains the interface for all ADC drivers, and then we have the individual implementation of the driver itself.  The following source files point to this:
 
     * high-level ADC API: `hw/drivers/adc/include/adc/adc.h` 
-    * implementation of ADC for STM32F4: `hw/drivers/adc/adc_stm32f4/src/adc_stm32f4.c` (As of the 1.0.0-beta release, ADC for nRF51 and nRF52 are available at an external [repo](https://github.com/runtimeinc/mynewt_nordic/tree/master/hw/drivers/adc). They are expected to be pulled into the core repo on Apache Mynewt after the license terms are clarified.). The only exported call in this example is `int stm32f4_adc_dev_init(struct os_dev *, void *)` which is passed as a function pointer to `os_dev_create()` in `hal_bsp.c`, when the adc device is created.
+    * implementation of ADC for STM32F4: `hw/drivers/adc/adc_stm32f4/src/adc_stm32f4.c` (As of the 1.0.0-beta release, ADC for nRF51 and nRF52 are available at an external [repo](https://github.com/runtimeco/mynewt_nordic/tree/master/hw/drivers/adc). They are expected to be pulled into the core repo on Apache Mynewt after the license terms are clarified.). The only exported call in this example is `int stm32f4_adc_dev_init(struct os_dev *, void *)` which is passed as a function pointer to `os_dev_create()` in `hal_bsp.c`, when the adc device is created.
 
 * Device drivers should be easy to use. In Mynewt, creating a device initializes it as well, making it readily available for the user to open, use (e.g. read, configure etc.) and close. Creating a device is simple using `os_dev_create(struct os_dev *dev, char *name, uint8_t stage, uint8_t priority, os_dev_init_func_t od_init, void *arg)`. The `od_init` function is defined within the appropriate driver directory e.g. `stm32f4_adc_dev_init` in `hw/drivers/adc/adc_stm32f4/src/adc_stm32f4.c` for the ADC device initialization function. 
 
@@ -41,10 +41,22 @@ Device drivers in the Mynewt context includes libraries that interface with devi
 
 * Device drivers should be searchable. The plan is to have the newt tool offer a `newt pkg search` capability. This is work in progress. You are welcome to join the conversation on the dev@ mailing list!
 
-
-###Example
+### Example
 
 The Mynewt core repo includes an example of a driver using the HAL to provide extra functionality - the UART driver. It uses HAL GPIO and UART to provide multiple serial ports on the NRF52 (but allowed on other platforms too.)
 
 The gist of the driver design is that there is an API for the driver (for use by applications), and then sub-packages to that driver that implement that driver API using the HAL and BSP APIs.
 
+### Implemented drivers
+
+Drivers live under `hw/drivers`. The current list of supported drivers includes:
+
+| Driver | Description |
+|---------|-------------|
+| [adc](adc.md) | TODO: ADC driver. |
+| [flash](flash.md) | SPI/I2C flash drivers. |
+| [lwip](lwip.md) | TODO: LWIP. |
+| [mmc](mmc.md) | MMC/SD card driver. |
+| [nimble](/network/ble/ble_intro/) | NIMBLE. |
+| [sensors](sensors.md) | TODO: sensors. |
+| [uart](uart.md) | TODO: UART driver. |

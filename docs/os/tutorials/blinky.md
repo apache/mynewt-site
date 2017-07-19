@@ -5,14 +5,15 @@ The set of Blinky tutorials show you how to create, build, and run  a "Hello Wor
 
 Learn how to use packages from a default application repository of Mynewt to build your first *Hello World* application (Blinky) on a target board. Once built using the *newt* tool, this application will blink a LED light on the target board.
 
-###Available Tutorials
+### Available Tutorials
 Tutorials are available for the following boards:
 
 * [Blinky on an Arduino Zero](/os/tutorials/arduino_zero.md)
 * [Blinky on an Arduino Primo](/os/tutorials/blinky_primo.md)
 * [Blinky on an Olimex](/os/tutorials/olimex.md)
-* [Blinky on a nRF52](/os/tutorials/nRF52.md)
+* [Blinky on a nRF52 Development Kit](/os/tutorials/nRF52.md)
 * [Blinky on a RedBear Nano 2](/os/tutorials/rbnano2.md)
+* [Blinky on a STM32F4-Discovery](/os/tutorials/blinky_stm32f4disc.md)
 
 We also have a tutorial that shows you how to add [Console and Shell to the Blinky Application](/os/tutorials/blinky_console.md).
 <br>
@@ -22,10 +23,9 @@ Ensure that you meet the following prerequisites before continuing with one of t
 * Have Internet connectivity to fetch remote Mynewt components.
 * Have a computer to build a Mynewt application and connect to the board over USB.
 * Have a Micro-USB cable to connect the board and the computer.
-* Install the Newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
-* Install either the Jlink or OpenOCD debugger.
-* Create a project space (directory structure) and populate it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
+* Install the newt tool and toolchains (See [Basic Setup](/os/get_started/get_started.md)).
 * Read the Mynewt OS [Concepts](/os/get_started/vocabulary.md) section. 
+* Create a project space (directory structure) and populate it with the core code repository (apache-mynewt-core) or know how to as explained in [Creating Your First Project](/os/get_started/project_create).
 <br>
 ###Overview of Steps
 These are the general steps to create, load and run the Blinky application on your board:

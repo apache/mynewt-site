@@ -5,6 +5,7 @@ int
 ble_gattc_write_long(
             uint16_t  conn_handle,
             uint16_t  attr_handle,
+            uint16_t  offset,
       struct os_mbuf *txom,
     ble_gatt_attr_fn *cb,
                 void *cb_arg

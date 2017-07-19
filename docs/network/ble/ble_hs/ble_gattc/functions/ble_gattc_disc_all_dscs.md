@@ -4,8 +4,8 @@
 int
 ble_gattc_disc_all_dscs(
            uint16_t  conn_handle,
-           uint16_t  chr_val_handle,
-           uint16_t  chr_end_handle,
+           uint16_t  start_handle,
+           uint16_t  end_handle,
     ble_gatt_dsc_fn *cb,
                void *cb_arg
 )

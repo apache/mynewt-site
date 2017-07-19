@@ -1,5 +1,4 @@
-
-#System Configuration and Initialization
+## System Configuration and Initialization
 
 This guide describes how Mynewt manages system configuration and initialization. It shows you how to 
 tell Mynewt to use default or customized values to initialize packages that you develop or use to build a target. This guide:
@@ -23,7 +22,7 @@ The benefits with this approach include:
 
 <br>
 
-###System Configuration Setting Definitions and Values 
+### System Configuration Setting Definitions and Values 
 
 A package can optionally:
 
@@ -56,7 +55,7 @@ syscfg.defs:
 Each setting definition consists of the following key-value mapping:  
 
 * A setting name for the key, such as `PKGA_SYSCFG_NAME1` in the syntax example above.
-Note: A system configuration setting name must be unique.  The newt tool aborts the build 
+**Note:** A system configuration setting name must be unique.  The newt tool aborts the build 
 when multiple packages define the same setting. 
 * A mapping of fields for the value.  Each field itself is a key-value pair of attributes.  The field keys are `description`, `value`, `type`, and `restrictions`. They are described in 
 following table:
@@ -101,8 +100,8 @@ defined in the BSP flash map for your target board.
 <li><code>expression</code> - Specifies a boolean expression of the form <code>[!]&ltrequired-setting>[if &ltbase-value>]</code>
 <br>Examples:
 <ul>
-<li><code>restrictions: !LOG_FCB</code> - Can only enable this setting when <code>LOG_FCB</code> is false.
-<li><code>restrictions: LOG_FCB if 0 </code> - Can only disable this setting when <code>LOG_FCB</code> is true.
+<li><code>restrictions: !LOG_FCB</code> - When this setting is enabled, <code>LOG_FCB</code> must be disabled.
+<li><code>restrictions: LOG_FCB if 0 </code> - When this setting is disabled, <code>LOG_FCB</code> must be enabled.
 </ul>
 </li>
 </ul>
@@ -112,9 +111,9 @@ defined in the BSP flash map for your target board.
 
 <br>
 
-####Examples of configuration settings
+####Examples of Configuration Settings
 
-**Example 1:** The following example is an excerpt from the `sys/log` package `syscfg.yml` file. It defines the 
+**Example 1:** The following example is an excerpt from the `sys/log/full` package `syscfg.yml` file. It defines the 
 `LOG_LEVEL` configuration setting to specify the log level and the `LOG_NEWTMGR` configuration setting to specify whether
 to enable or disable the newtmgr logging feature.
 
@@ -194,7 +193,7 @@ by other packages.  This mechanism allows:
 
 * Mynewt developers to implement a package and easily override the system configuration setting values 
    that are defined by the packages it depends on. 
-* Application developers to easily and cleanly override default configuration settings in a single place and build a customized target. You can use the `newt target config <target-name>` command to check all the system configuration setting definitions and
+* Application developers to easily and cleanly override default configuration settings in a single place and build a customized target. You can use the `newt target config show <target-name>` command to check all the system configuration setting definitions and
    values in your target to determine the setting values to override. See [newt target](/newt/command_list/newt_target.md). 
 
 `vals` specifies the mappings of system configuration setting name-value pairs as follows: 
@@ -208,7 +207,7 @@ syscfg.vals:
     PKGN_SYSCFG_NAME1: VALUEN
 
 ```
-Note: The newt tool ignores overrides of undefined system configuration settings.  
+**Note**: The newt tool ignores overrides of undefined system configuration settings.  
 
 <br>
 
@@ -229,7 +228,7 @@ The following package types are listed from highest to lowest priority:
 * App
 * unittest - A target can include either an app or unit test package, but not both.
 * BSP
-* Lib - Includes all other system level packages such as os, lib, sdk, and compiler.
+* Lib - Includes all other system level packages such as os, lib, sdk, and compiler. (Note that a Lib package cannot override other Lib package settings.)
 
 It is recommended that you override defaults at the target level instead of updating individual 
 package `syscfg.yml` files.
@@ -239,7 +238,7 @@ package `syscfg.yml` files.
 ####Examples of Overrides
 
 **Example 4:** The following example is an excerpt from the `apps/slinky` package `syscfg.yml` file.  The application package overrides, 
-in addition to other packages, the `sys/log` package system configuration settings defined in *Example 1*. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
+in addition to other packages, the `sys/log/full` package system configuration settings defined in **Example 1**. It changes the LOG_NEWTMGR system configuration setting value from `0` to `1`.
 
 ```no-highlight
 
@@ -291,31 +290,51 @@ syscfg.vals:
 
 <br>
 
-###Generated syscfg.h
+###Generated syscfg.h and Referencing System Configuration Settings 
 
 The newt tool processes all the package `syscfg.yml` files and generates the
 `<target-path>/generated/include/syscfg/syscfg.h` include file with `#define` statements for each system configuration 
-setting defined.  newt creates a `#define` for a setting name as follows: 
+setting defined.  Newt creates a `#define` for a setting name as follows: 
 
 * Adds the prefix `MYNEWT_VAL_`.
 * Replaces all occurrences of "/", "-", and " " in the setting name with "_".
 * Converts all characters to upper case.
 
-For example, the #define for `my-config-name` setting name  is `MYNEWT_VAL_MY_CONFIG_NAME`.
+For example, the #define for my-config-name setting name is MYNEWT_VAL_MY_CONFIG_NAME.
 
 Newt groups the settings in `syscfg.h` by the packages that defined them. It also indicates the 
 package that changed a system configuration setting value.  
 
+You must use the `MYNEWT_VAL()` macro to reference a #define of a setting name in your header and source files. 
+For example, to reference the `my-config-name` setting name,  you use `MYNEWT_VAL(MY_CONFIG_NAME)`.
+
 **Note:** You only need to include `syscfg/syscfg.h` in your source files to access the `syscfg.h` file.  The newt tool sets the correct include path to build your target. 
 
-Here is an excerpt from a sample `syscfg.h` file generated for an app/slinky target.  It lists 
-the `sys/log` package definitions and also indicates that `app/slinky` changed the value 
-for the `LOG_NEWTMGR` settings.  
+####Example of syscfg.h and How to Reference a Setting Name
+**Example 6**: The following example are excerpts from a sample `syscfg.h` file generated for an app/slinky target and 
+from the `sys/log/full` package `log.c` file that shows how to reference a setting name.
+
+The `syscfg.h` file shows the `sys/log/full` package definitions and also indicates that `app/slinky` 
+changed the value for the `LOG_NEWTMGR` settings. 
 
 ```no-highlight
 
+/**
+ * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
+ */
+
 #ifndef H_MYNEWT_SYSCFG_
 #define H_MYNEWT_SYSCFG_
+
+/**
+ * This macro exists to ensure code includes this header when needed.  If code
+ * checks the existence of a setting directly via ifdef without including this
+ * header, the setting macro will silently evaluate to 0.  In contrast, an
+ * attempt to use these macros without including this header will result in a
+ * compiler error.
+ */
+#define MYNEWT_VAL(x)                           MYNEWT_VAL_ ## x
+
 
      ...
 
@@ -330,7 +349,7 @@ for the `LOG_NEWTMGR` settings.
 
      ...
 
-/*** sys/log */
+/*** sys/log/full */
 
 #ifndef MYNEWT_VAL_LOG_LEVEL
 #define MYNEWT_VAL_LOG_LEVEL (0)
@@ -338,114 +357,210 @@ for the `LOG_NEWTMGR` settings.
 
      ...
 
-/* Overridden by apps/slinky (defined by sys/log) */
+/* Overridden by apps/slinky (defined by sys/log/full) */
 #ifndef MYNEWT_VAL_LOG_NEWTMGR
 #define MYNEWT_VAL_LOG_NEWTMGR (1)
 #endif
 
 #endif
+
+```
+
+The `log_init()` function in the `sys/log/full/src/log.c` file initializes the `sys/log/full` package. It checks the 
+`LOG_NEWTMGR` setting value, using `MYNEWT_VAL(LOG_NEWTMGR)`, to determine whether the target application
+has enabled the `newtmgr log` functionality. It only registers the the callbacks to process the
+`newtmgr log` commands when the setting value is non-zero.
+
+```no-highlight
+
+void
+log_init(void)
+{
+    int rc;
+
+    /* Ensure this function only gets called by sysinit. */
+    SYSINIT_ASSERT_ACTIVE();
+
+    (void)rc;
+
+    if (log_inited) {
+        return;
+    }
+    log_inited = 1;
+        ...
+
+#if MYNEWT_VAL(LOG_NEWTMGR)
+    rc = log_nmgr_register_group();
+    SYSINIT_PANIC_ASSERT(rc == 0);
+#endif
+}
+
 ```
 
 <br>
 
 ### System Initialization
 
-An application's `main()` function must first call the Mynewt `sysinit()` function to 
-initialize the software before it performs any other processing.
-`sysinit()` calls the `sysinit_app()` function to perform system 
-initialization for the packages in the target.  You can, optionally, specify an 
-initialization function that `sysinit_app()` calls to initialize a package. 
+During system startup, Mynewt creates a default event queue and a main task to process events from this queue. 
+You can override the `OS_MAIN_TASK_PRIO` and `OS_MAIN_TASK_STACK_SIZE` setting values defined by the 
+`kernel/os` package to specify different task priority and stack size values.
 
-A package init function must have the following prototype:
+Your application's `main()` function executes in the context of the main task and must perform the following:
+
+* At the start of `main()`, call the Mynewt `sysinit()` function to initialize 
+the packages before performing any other processing.
+* At the end of `main()`, wait for and dispatch events from the default event queue in an infinite loop. 
+
+**Note:** You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
+
+Here is an example of a `main()` function:
+
+```no-highlight
+
+int
+main(int argc, char **argv)
+{
+    /* First, call sysinit() to perform the system and package initialization */
+    sysinit();
+
+      ... other application initialization processing....
+
+     
+    /*  Last, process events from the default event queue.  */
+    while (1) {
+       os_eventq_run(os_eventq_dflt_get());
+    }
+    /* main never returns */   
+}
+
+```
+<br>
+
+####Specifying Package Initialization Functions
+
+The `sysinit()` function calls the `sysinit_app()` function to perform system 
+initialization for the packages in the target.   You can, optionally, 
+specify one or more package initialization functions 
+that `sysinit_app()` calls to initialize a package. 
+
+A package initialization function must have the following prototype:
 
 ```no-highlight
 
 void init_func_name(void)
 
 ```
-Package init functions are called in stages to ensure that lower priority packages 
-are initialized before higher priority packages.
+Package initialization functions are called in stages to ensure that lower priority
+packages are initialized before higher priority packages.  A stage is an 
+integer value, 0 or higher, that specifies when an initialization function is 
+called.  Mynewt calls the package initialization functions 
+in increasing stage number order.  The call order for initialization functions with the 
+same stage number depends on the order the packages are processed,
+and you cannot rely on a specific call order for these functions.  
 
-You specify an init function in the `pkg.yml` file for a package as follows:
+You use the `pkg.init` parameter in the 
+`pkg.yml` file to specify an initialization function and the stage number to call the function.
+You can specify multiple initialization functions, with a different stage number for each function,
+for the parameter values.  This feature allows packages with interdependencies to
+perform initialization in multiple stages.  
 
-* Use the `init_function` parameter to specify an init function name. 
+The `pkg.init` parameter has the following syntax in the `pkg.yml` file: 
 
-           pkg.init_function: pkg_init_func_name
+```no-highlight 
 
-      where `pkg_init_func_name` is the C function name of package init function. 
+pkg.init: 
+    pkg_init_func1_name: pkg_init_func1_stage 
+    pkg_init_func2_name: pkg_init_func2_stage 
 
-* Use the `init_stage` parameter to specify when to call the package init function.
+              ...
 
-           pkg.init_stage: stage_number
+    pkg_init_funcN_name: pkg_init_funcN_stage
 
-       where `stage_number` is a number that indicates when this init function is called relative to the other 
-       package init functions.  Mynewt calls the package init functions in increasing stage number order
-       and in alphabetic order of init function names for functions in the same stage.
-       *Note:* The init function will be called at stage 0 if `pkg.init_stage` is not specified.
- 
-*Note:* You must include the `sysinit/sysinit.h` header file to access the `sysinit()` function.
+```
+where `pkg_init_func#_name` is the C function name of an initialization function, and `pkg_init_func#_stage` 
+is an integer value, 0 or higher, that indicates the stage when the `pkg_init_func#_name` function is called.  
+
+
+**Note:** The `pkg.init_function` and `pkg.init_stage` parameters introduced in a previous release for 
+specifying a package initialization function and a stage number are deprecated and have been 
+retained to support the legacy format.  They will not 
+be maintained for future releases and we recommend that you migrate to use the `pkg.init` parameter.
 
 <br>
 
 #### Generated sysinit_app() Function
 
-The newt tool processes the `init_function` and `init_stage` parameters in all the pkg.yml files for a target,
+The newt tool processes the `pkg.init` parameters in all the `pkg.yml` files for a target,
 generates the `sysinit_app()` function in the `<target-path>/generated/src/<target-name>-sysinit_app.c` file, and 
 includes the file in the build. Here is an example `sysinit_app()` function:
 
 ```no-highlight
 
-/**
+**
  * This file was generated by Apache Newt (incubating) version: 1.0.0-dev
  */
 
 #if !SPLIT_LOADER
 
-void os_init(void);
 void split_app_init(void);
 void os_pkg_init(void);
 void imgmgr_module_init(void);
-void nmgr_pkg_init(void);
 
       ...
 
-void console_pkg_init(void);
-void log_init(void);
-
-      ...
+void stats_module_init(void);
 
 void
 sysinit_app(void)
 {
-    os_init();
 
     /*** Stage 0 */
     /* 0.0: kernel/os */
     os_pkg_init();
-    /* 0.1: sys/console/full */
+
+    /*** Stage 2 */
+    /* 2.0: sys/flash_map */
+    flash_map_init();
+
+    /*** Stage 10 */
+    /* 10.0: sys/stats/full */
+    stats_module_init();
+
+    /*** Stage 20 */
+    /* 20.0: sys/console/full */
     console_pkg_init();
 
-        ...
-
-    /*** Stage 1 */
-    /* 1.0: sys/log */
+    /*** Stage 100 */
+    /* 100.0: sys/log/full */
     log_init();
+    /* 100.1: sys/mfg */
+    mfg_init();
 
-        ...
+         ....
 
-    /*** Stage 5 */
-    /* 5.0: boot/split */
-    split_app_init();
-    /* 5.1: mgmt/imgmgr */
+    /*** Stage 300 */
+    /* 300.0: sys/config */    
+    config_pkg_init();
+
+    /*** Stage 500 */
+    /* 500.0: sys/id */
+    id_init();
+    /* 500.1: sys/shell */
+    shell_init();
+
+          ...
+
+    /* 500.4: mgmt/imgmgr */
     imgmgr_module_init();
-    /* 5.2: mgmt/newtmgr */
-    nmgr_pkg_init();
-        ...
-}
 
+    /*** Stage 501 */
+    /* 501.0: mgmt/newtmgr/transport/nmgr_shell */
+    nmgr_shell_pkg_init();
+}
 #endif
 
 ```
+
 
 <br>
 

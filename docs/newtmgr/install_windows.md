@@ -1,8 +1,8 @@
 ## Installing Newtmgr on Windows
 You can build and install the newtmgr tool from the latest source on the master branch.  Newtmgr is a Go (golang) package.  This guide shows you how to install the tool from source. It assumes that you already installed the [newt tool on Windows](/newt/install/newt_windows/) and have the Windows development environment and Go workspace set up.
 
-###Downloading and Installing the Newtmgr Tool
-The newtmgr Go package is **mynewt.apache.org/newtmgr/newtmgr**. It is stored in the [Apache Mynewt newtmgr tool repository mirrored on github](https://github.com/apache/incubator-mynewt-newtmgr).
+### Downloading and Installing the Newtmgr Tool
+The newtmgr Go package is **mynewt.apache.org/newtmgr/newtmgr**. It is stored in the [Apache Mynewt newtmgr tool repository mirrored on github](https://github.com/apache/mynewt-newtmgr).
 
 
 Run the `go get` command, from your Go workspace, to download, build, and install the newtmgr tool:
@@ -26,7 +26,7 @@ Check that the newtmgr binary is installed and you are using the one from **$GOP
 ```no-highlight
 $ls $GOPATH/bin/newtmgr
 ~/dev/go/bin/newtmgr
-$which newt
+$which newtmgr
 ~/dev/go/bin/newtmgr
 ```
 <br>

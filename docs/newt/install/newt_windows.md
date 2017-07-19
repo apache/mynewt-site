@@ -1,6 +1,6 @@
 ## Installing Newt on Windows
 
-You can develop and build Mynewt OS applications for your target boards on the Windows platform.  This page shows you how to build the newt tool from the lastest source on the master branch of the [Mynewt newt git repository](https://github.com/apache/incubator-mynewt-newt).  The tool is written in Go (golang).
+You can develop and build Mynewt OS applications for your target boards on the Windows platform.  This page shows you how to build the newt tool from the lastest source on the master branch of the [Mynewt newt git repository](https://github.com/apache/mynewt-newt).  The tool is written in Go (golang).
   
 In Windows, we use MinGW as the development environment to build and run Mynewt OS applications for target boards. MinGW runs the bash shell and provides a Unix-like environment. This provides a uniform way to build Mynewt OS applications. The Mynewt documentation and tutorials use Unix commands and you can use the same Unix commands on MinGW to follow the tutorials. The documentation will note any commands or behaviors that are specific to Windows.
 
@@ -22,6 +22,9 @@ MSYS2/MinGW provides a bash shell and tools to build applications that run on Wi
 
 The subsystems run the bash shell and provide a Unix-like environment. You can also run Windows applications from the shell. We will use the MinGW subsystem.
 
+**Note:** You can skip this installation step if you already have MinGW installed (from an earlier MSYS2/MinGW or Git Bash installation), but you must list the **bin** path for your installation in your Windows Path. For example: if you installed MSYS2/MinGW in the ** C:\msys64 ** directory,  add **C:\msys64\usr\bin** to your Windows Path. If you are using Windows 10 WSL, ensure that you use the **C:\msys64\usr\bin\bash.exe** and not the Windows 10 WSL bash.
+
+
 To install and setup MSYS2 and MinGW:
 
 1. Download and run the [MSYS2 installer](http://www.msys2.org).  Select the 64 bit version if you are running on a 64 bit platform. Follow the prompts and check the `Run MSYS2 now` checkbox on the `Installation Complete` dialog. 
@@ -33,7 +36,12 @@ To install and setup MSYS2 and MinGW:
 	
 	To add the variable,  select properties for your computer > Advanced system settings > Environment Variables > New
 
-4. Run the `pacman -Su vim` command to install the vim editor. 
+4. Add the MinGW **bin** path to your Windows Path. For example: if you install MSYS2/MinGW in the **C:\msys64** directory,  add **C:\msys64\usr\bin** to your Windows Path. 
+
+	**Note:** If you are using Windows 10 WSL,  ensure that you use the **C:\msys64\usr\bin\bash.exe** and not the Windows 10 WSL bash.
+
+
+5. Run the `pacman -Su vim` command to install the vim editor. 
 	
 	**Note:**You can also use a Windows editor. You can access your files from the **C:\&lt;msys-install-folder&gt;\home\&lt;username&gt;** folder, where **msys-install-folder** is the folder you installed MSYS2 in. For example, if you installed MSYS2 in the **msys64** folder, your files are stored in **C:\msys64\home\&lt;username&gt;**
 
@@ -45,9 +53,9 @@ Download and install [Git for Windows](https://git-for-windows.github.io) if it 
 
 
 ### Step 3: Installing Go 
-Download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7 or higher.
+Download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7.6 or higher.
 
-###Step 4: Setting Up Your Go Environment 
+### Step 4: Setting Up Your Go Environment 
 
 This section describes the Go environment and how to setup a Go workspace.  Go provides an environment to compile Go code,  construct Go packages,  and import Go code.  You will use Go commands to import the newt package repository into your local Go environment.  The Go language environment dictates a specific directory structure, or workspace in Go parlance. It must contain three sibling directories with the names **src**, **pkg** and **bin**: 
 
@@ -73,9 +81,9 @@ export PATH=$GOPATH/bin:$PATH
 ```
 <br>
 
-###Step 5: Downloading the Source and Installing the Newt Tool 
+### Step 5: Downloading the Source and Installing the Newt Tool 
 
-The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/incubator-mynewt-newt).  We use the `go get` command to download the source, build, and install the newt tool binary in the **$GOPATH/bin** directory. 
+The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/mynewt-newt).  We use the `go get` command to download the source, build, and install the newt tool binary in the **$GOPATH/bin** directory. 
 
 <br>
 Download the newt package source and install the tool:
@@ -95,11 +103,10 @@ README.md		newtvm
 Check that the newt tool is installed and it is in your path:
 
 ```no-highlight
-$ls go/bin
-$ ls bin/newt
-bin/newt
-$which go
-/home/<user>/dev/go/bin/newt
+$ls $GOPATH/bin/newt
+~/dev/go/bin/newt
+$which newt
+~/dev/go/bin/newt
 $ newt version
 Apache Newt (incubating) version: 1.0.0-dev
 ```

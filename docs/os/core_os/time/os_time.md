@@ -48,11 +48,13 @@ The functions available in time are:
 
 | **Function** | **Description** |
 |-----------|-------------|
+| [os_time_advance](os_time_advance.md) | Increments the OS time tick for the system. |
 | [os_time_delay](os_time_delay.md) | Put the current task to sleep for the given number of ticks. |
 | [os_time_get](os_time_get.md) | Get the current value of OS time. |
-| [os_time_tick](os_time_tick.md) | Increments the OS time tick for the system. |
-| [os_settimeofday](os_settimeofday.md) | Set the current time of day to the given time structs. |
+| [os_time_ms_to_ticks](os_time_ms_to_ticks.md) | Converts milliseconds to os ticks. |
+| [os_get_uptime_usec](os_get_uptime_usec.md) | Gets the time duration since boot. | 
 | [os_gettimeofday](os_gettimeofday.md) | Populate the given timeval and timezone structs with current time data. |
+| [os_settimeofday](os_settimeofday.md) | Set the current time of day to the given time structs. |
 
 ## List of Macros
 
@@ -68,8 +70,8 @@ Ensure that comparison of OS time always uses the macros above (to compensate fo
 
 The following macros help adding or subtracting time when represented as `struct os_timeval`. All parameters to the following macros are pointers to `struct os_timeval`.
 
- - `os_timeradd(tvp, uvp, vvp)` --  Add `uvp` to `tvp` and store result in `vvp`.
- - `os_timersub(tvp, uvp, vvp)` -- Subtract `uvp` from `tvp` and store result in `vvp`.
+- `os_timeradd(tvp, uvp, vvp)` --  Add `uvp` to `tvp` and store result in `vvp`.
+- `os_timersub(tvp, uvp, vvp)` -- Subtract `uvp` from `tvp` and store result in `vvp`.
 
 ## Special Notes
 

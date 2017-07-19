@@ -8,7 +8,8 @@ Commands for creating and manipulating packages.
 ```    
 #### Flags:
 ```no-highlight
- -t, --type string   Type of package to create: pkg, bsp, sdk. (default "pkg")
+ -t, --type string   Type of package to create: app, bsp, lib, sdk, unittest. (default "lib")
+
 ```
 #### Global Flags:
 ```no-highlight
@@ -28,7 +29,7 @@ Sub-command             | Explanation
 ------------------------| ------------------------
 copy    | The copy &lt;src-pkg&gt; &lt;dst-pkg&gt; command creates the new `dst-pkg` package by cloning the `src-pkg` package. 
 move    | The move &lt;old-pkg&gt; &lt;new-pkg&gt; command moves the `old-pkg` package to the `new-pkg` package.
-new     | The new &lt;new-pkg&gt; command creates a new package named `new-pkg`, from a template, in the current directory. You can create a package of type `pkg`, `bsp`, or `sdk`. The default package type is `pkg`. You use the -t flag to specify a different package type.  
+new     | The new &lt;new-pkg&gt; command creates a new package named `new-pkg`, from a template, in the current directory. You can create a package of type `app`, `bsp`, `lib`, `sdk`, or `unittest`. The default package type is `lib`. You use the -t flag to specify a different package type.  
 remove  | The remove &lt;my-pkg&gt;  command deletes the `my-pkg` package.
 
 #### Examples

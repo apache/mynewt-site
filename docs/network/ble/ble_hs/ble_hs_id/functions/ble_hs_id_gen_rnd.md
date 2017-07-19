@@ -3,8 +3,8 @@
 ```c
 int
 ble_hs_id_gen_rnd(
-        int  nrpa,
-    uint8_t *out_addr
+           int  nrpa,
+    ble_addr_t *out_addr
 )
 ```
 

@@ -5,7 +5,7 @@ Send a crash command to a device.
 #### Usage:
 
 ```no-highlight
-    newtmgr crash <div0|jump0|ref0|assert|wdog> -c <conn_profile>; [flags] 
+    newtmgr crash <div0|jump0|ref0|assert|wdog> -c <conn_profile> [flags] 
 ```
 
 #### Global Flags:
@@ -17,10 +17,10 @@ Send a crash command to a device.
     -t, --trace             print all bytes transmitted and received
 ```
 
-####Description
+#### Description
 Sends a crash command to a device to run one of the following crash tests: `div0`, `jump0`, `ref0`, `assert`, `wdog`.  Newtmgr uses the `conn_profile` connection profile to connect to the device.
 
-####Examples
+#### Examples
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------

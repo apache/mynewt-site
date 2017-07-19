@@ -1,41 +1,21 @@
-## Project Slinky Using STM32 Board
+## Project Slinky Using Olimex Board
 
-The goal of the project is to enable and demonstrate remote communications with the Mynewt OS via newt manager (newtmgr) by leveraging a sample app "Slinky" included under the /apps directory in the repository. In this project we will define a target for the STM32-E407 board and assign the app "Slinky" to it.
-
-If you have an existing project that has a different application and you wish to add newtmgr functionality to it, check out the [Enable newtmgr in any app](add_newtmgr.md) tutorial.
-
+This tutorial shows you how to create, build and run the Slinky application and communicate with newtmgr for an Olimex STM-E407 board.
 <br>
-
-
 ###Prerequisites
-Ensure that you have met the following prerequisites before continuing with this tutorial:
-
+* Meet the prerequisites listed in [Project Slinky](/os/tutorials/project-slinky.md).
 * Have a STM32-E407 development board from Olimex. 
 * Have a ARM-USB-TINY-H connector with JTAG interface for debugging ARM microcontrollers (comes with the ribbon cable to hook up to the board)
+* Have a USB A-B type cable to connect the debugger to your computer. 
 * Have a USB to TTL Serial Cable with female wiring harness.
-* Have a USB Micro-A cable to connect your computer to the board.
-* Have Internet connectivity to fetch remote Mynewt components.
-* Have a computer to build a Mynewt application and connect to the board over USB.
-* Install the newt tool and the toolchains (See Basic Setup).
-* Install the newtmgr tool.
-* Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in Creating Your First Project.
-* Read the Mynewt OS Concepts section.
-
-### Overview of Steps
-
-* Install dependencies
-* Define a target using the newt tool
-* Build executables for the targets using the newt tool
-* Set up serial connection with the targets
-* Create a connection profile using the newtmgr tool
-* Use the newtmgr tool to communicate with the targets
+* Install the [OpenOCD debugger](/os/get_started/cross_tools/).
 
 ### Create a New Project
 Create a new project if you do not have an existing one.  You can skip this step and proceed to [create the targets](#create_targets) if you already have a project created or completed the [Sim Slinky](project-slinky.md) tutorial.
 
 ```no-highlight
 $ newt new slinky
-Downloading project skeleton from apache/incubator-mynewt-blinky...
+Downloading project skeleton from apache/mynewt-blinky...
 ...
 Installing skeleton in slink...
 Project slink successfully created
@@ -46,7 +26,7 @@ apache-mynewt-core
 
 <br>
 
-###<a name="create_targets"></a> Create the Targets
+### <a name="create_targets"></a> Create the Targets
 Create two targets for the STM32-E407 board - one for the bootloader and one for the Slinky application.
 
 Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `
@@ -129,7 +109,7 @@ $
 <br>
 
 
-###Connect to the Board
+### Connect to the Board
 
 * Connect the USB A-B type cable to the ARM-USB-TINY-H debugger connector. 
 * Connect the ARM-USB-Tiny-H debugger connector to your computer and the board.
@@ -148,6 +128,15 @@ $ newt load stm32_boot
 Loading bootloader
 $
 ```
+<br>
+Note: If you are using Windows and get a `no device found` error, you will need to install the usb driver. Download [Zadig](http://zadig.akeo.ie) and run it:
+
+* Select Options > List All Devices.
+* Select `Olimex OpenOCD JTAG ARM-USB-TINY-H` from the drop down menu.
+* Select the `WinUSB` driver.
+* Click Install Driver.
+* Run the `newt load stm32_boot` command again.
+
 <br>
 Run the `newt load stm32_slinky` command to load the Slinky application image onto the board:
 ```no-highlight
@@ -169,8 +158,16 @@ Locate the PC6/USART6_TX (pin 3), PC7/USART6_RX (pin 4), and GND (pin 2) of the 
 * Connect the GND pin of the USB-TTL serial cable to the GND (Pin 2) of the UEXT connector on the board.
 
 <br>
-Locate the port, in the /dev directory on your computer, that the serial connection uses. It should be of the type `tty.usbserial-<some identifier>`.
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is platform dependent:
 
+
+* Mac OS uses the format `tty.usbserial-<some identifier>`.
+* Linux uses the format `TTYUSB<N>`, where `N` is a number.  For example, TTYUSB2.
+* MinGW on Windows uses the format `ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
+	
+	You can also use the Windows Device Manager to find the COM port number.
+
+<br>
 ```no-highlight
 $ ls /dev/tty*usbserial*
 /dev/tty.usbserial-1d13
@@ -180,8 +177,14 @@ $
 <br>
 Setup a newtmgr connection profile for the serial port. For our example, the port is  `/dev/tty.usbserial-1d13`.
 
-Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `stm32serial`.  You will need to replace the `connstring` with the specific port for your serial connection.
+Run the `newtmgr conn add` command to define a newtmgr connection profile for the serial port.  We name the connection profile `stm32serial`.  
+ 
+**Note**:
 
+* You will need to replace the `connstring` with the specific port for your serial connection.
+* On Windows, you must specify `COM<N+1>` for the connstring if `/dev/ttyS<N>` is the serial port.
+
+<br>
 ```no-highlight
 $ newtmgr conn add stm32serial type=serial connstring=/dev/tty.usbserial-1d13
 Connection profile stm32serial successfully added
@@ -227,10 +230,10 @@ $
 
 
 <br>
-Run the `newtmgr taskstats -c stm32serial` command to display the task statistics on the board:
+Run the `newtmgr taskstat -c stm32serial` command to display the task statistics on the board:
 
 ```no-highlight
-$ newtmgr taskstats -c stm32serial
+$ newtmgr taskstat -c stm32serial
 Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
      task1   8   2        0       90      192      110        0        0

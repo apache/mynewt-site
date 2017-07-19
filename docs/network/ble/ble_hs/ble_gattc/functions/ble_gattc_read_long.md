@@ -5,6 +5,7 @@ int
 ble_gattc_read_long(
             uint16_t  conn_handle,
             uint16_t  handle,
+            uint16_t  offset,
     ble_gatt_attr_fn *cb,
                 void *cb_arg
 )
