@@ -21,9 +21,9 @@ Ensure that you have met the following prerequisites before continuing with this
 
 Since all we're doing is adding the shell and console capability to a project, we assume 
 that you have worked through at least some of the other tutorials, and have an existing project.
-For this example, we'll be modifying the [ble_tiny](bletiny_project.md) project to enable 
-the shell and console connectivity. We'll be calling our app myble as in that project as well. 
-Feel free to use whatever project you'd like though.
+For this example, we'll be modifying the `bletiny` app to enable 
+the shell and console connectivity.
+We call our target `myble`.  You can create the target using any name you choose. 
 
 <br>
 
@@ -78,7 +78,7 @@ Target successfully built: targets/myble
 
 ### Create the app image
 
-Generate a signed application image for the `myble` target. The version number is arbitrary.
+Generate an application image for the `myble` target. The version number is arbitrary.
 
 ```
 $ newt create-image myble 1.0.0

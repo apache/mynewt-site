@@ -13,7 +13,6 @@ let's try out a BLE Peripheral App to see how it all works.
 
 <br>
 
-* You should already have completed the previous [BLE Tiny Project](../bletiny_project.md), though it's not required.
 * You should have a BLE Central App of some sort to connect with. On Mac OS or iOS, you can use [LightBlue](https://itunes.apple.com/us/app/lightblue-explorer-bluetooth/id557428110?mt=8)
 which is a free app to browse and connect to BLE Peripheral devices. 
 
