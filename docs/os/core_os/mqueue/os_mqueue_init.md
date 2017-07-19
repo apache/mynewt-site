@@ -26,8 +26,8 @@ Initializes an mqueue. Sets the event argument in the os event of the mqueue to 
 
 | Arguments | Description |
 |-----------|-------------|
-| `mq` | Pointer to a mqueue structure  |
-| `arg` | Event argument |
+| mq | Pointer to a mqueue structure  |
+| arg | Event argument |
 
 <br>
 

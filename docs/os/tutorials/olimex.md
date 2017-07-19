@@ -201,7 +201,7 @@ Type `c` to continue inside the gdb session.
     (info)
     ...
     target state: halted
-    target halted due to debug-request, current mode: Thread
+    target halted due to debug-request, current mode: Thread 
     xPSR: 0x01000000 pc: 0x08000250 msp: 0x10010000
     Info : accepting 'gdb' connection from 3333
     Info : device id = 0x10036413
@@ -218,9 +218,9 @@ If you want to erase the flash and load the image again you may use the followin
     (gdb) monitor flash erase_sector 0 0 4
     erased sectors 0 through 4 on flash bank 0 in 2.296712s
     (gdb) monitor mdw 0x08000000 16
-    0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-    (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
-    (0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff
+    0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+    (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
+    (0x08000000: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff 
     (0x08000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff         
     (gdb) monitor flash info 0
 ```

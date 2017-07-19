@@ -43,17 +43,17 @@ Run the following commands to create a new project:
 Mynewt uses source code provided directly from the chip manufacturer for
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the newt tool can fetch them.
 
-To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
+To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add 
 the repository to the `project.yml` file in your base project directory.
 
 Here is an example ```project.yml``` file with the Arduino Zero repository
-added. The sections with ```mynewt_arduino_zero``` that need to be added to
+added. The sections with ```mynewt_arduino_zero``` that need to be added to 
 your project file are highlighted.
 
 **Note:** On Windows platforms: You need to set `vers` to `0-dev` and use the latest master branch for both repositories.
 
 ```hl_lines="6 14 15 16 17 18"
-$ more project.yml
+$ more project.yml 
 project.name: "my_project"
 
 project.repositories:
@@ -71,13 +71,13 @@ repository.mynewt_arduino_zero:
     vers: 1-latest
     user: runtimeco
     repo: mynewt_arduino_zero
-$
+$ 
 ```
 
 <br>
 Install the project dependencies using the `newt install` command (you can specify ```-v``` for verbose output):
 ```no-highlight
-$ newt install
+$ newt install 
 apache-mynewt-core
 mynewt_arduino_zero
 $
@@ -93,11 +93,9 @@ You need to create two targets for the Arduino Zero Pro board, one for the bootl
 Run the following `newt target` commands, from your project directory, to create a bootloader target.  We name the target `arduino_boot`.
 
 ```no-highlight
-$ newt target create arduino_boot
-$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-Target targets/arduino_boot successfully created
-$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
-Target targets/arduino_boot successfully set target.app to @apache-mynewt-core/apps/boot
+$ newt target create arduino_boot 
+$ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero 
+$ newt target set arduino_boot app=@apache-mynewt-core/apps/boot 
 $ newt target set arduino_boot build_profile=optimized
 Target targets/arduino_boot successfully set target.build_profile to optimized
 $ newt target set arduino_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
@@ -127,11 +125,11 @@ Run the following `newt target` commands to create the Blinky application target
 ```no-highlight
 $ newt target create arduino_blinky
 Target targets/arduino_blinky successfully created
-$ newt target set arduino_blinky app=apps/blinky
+$ newt target set arduino_blinky app=apps/blinky 
 Target targets/arduino_blinky successfully set target.app to apps/blinky
 $ newt target set arduino_blinky bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 Target targets/arduino_blinky successfully set target.bsp to @mynewt_arduino_zero/hw/bsp/arduino_zero
-$ newt target set arduino_blinky build_profile=debug
+$ newt target set arduino_blinky build_profile=debug 
 Target targets/arduino_blinky successfully set target.build_profile to debug
 $ newt target set arduino_blinky syscfg=BSP_ARDUINO_ZERO_PRO=1
 Target targets/arduino_boot successfully set target.syscfg to BSP_ARDUINO_ZERO_PRO=1
@@ -344,9 +342,8 @@ Continuing.
 
 **NOTE:** The 1.0.0 is the version number to assign to the image. You may assign an arbitrary version number. If you are not providing remote upgrade, and are just developing locally, you can provide 1.0.0 for every image version.
 
-If you want the image to run without the debugger connected, simply quit the
-debugger and restart the board.  The image you programmed will come up and run on 
-the Arduino on the next boot!  
+If you want the image to run without the debugger connected, simply quit the 
+debugger and restart the board.  The image you programmed will come and run on the Arduino on next boot!  
 
 <br>
 You should see the LED blink!

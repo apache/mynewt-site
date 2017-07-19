@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> shell_nlip_input_register </font>
 
-```c
+```no-highlight
 int shell_nlip_input_register(shell_nlip_input_func_t nf, void *arg)
 ```
 
@@ -24,7 +24,7 @@ Non-zero on failure.
 
 #### Example
 
-```c
+```no-highlight
 static int
 nmgr_shell_in(struct os_mbuf *m, void *arg)
 {

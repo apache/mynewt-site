@@ -93,7 +93,7 @@ The `SHELL_NEWTMGR` syscfg setting specifies whether newtmgr is enabled over she
 <br>
 The `struct shell_cmd` data structure represents a shell command and is used to register a command. 
 
-```c
+```no-highlight
 struct shell_cmd {
     const char *sc_cmd;
     shell_cmd_func_t sc_cmd_func;

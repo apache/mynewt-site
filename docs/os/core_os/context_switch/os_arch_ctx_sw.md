@@ -1,16 +1,15 @@
 ## <font color="#F2853F" style="font-size:24pt"> os_arch_ctx_sw </font>
 
-```c
 void os_arch_ctx_sw(struct os_task *next_t)
-```
 
-Change the state of task pointed by `next_t` to be *running*.
+
+Change the state of task pointed by *next_t* to be *running*.
 
 #### Arguments
 
 | Arguments | Description |
 |-----------|-------------|
-| `next_t` | Pointer to task which must run next |
+| next_t | Pointer to task which must run next |
 
 #### Returned values
 

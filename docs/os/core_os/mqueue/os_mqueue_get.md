@@ -18,7 +18,7 @@ Retrieves a packet off an mqueue. Returns a pointer to the mbuf at the head of t
 
 #### Returned values
 
-The packet at the head of the queue or **NULL** if no packets are on the queue.
+The packet at the head of the queue or NULL if no packets are on the queue.
 
 <br>
 

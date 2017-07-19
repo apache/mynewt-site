@@ -7,13 +7,13 @@ If you are curious about Mynewt and want to get a quick feel for the project, yo
 
 We recommend this option if you are familiar with such environments or are concerned about performance on your machine. Follow the instructions in the [Native Install Option](native_install_intro.md) if you prefer this option.
 
-<br>
 
 **Option 2** is an easy, self-contained way to get up and running with Mynewt - but has limitations! The Newt tool and build toolchains are all available in a single [All-in-one Docker Container](docker.md) that you can install on your laptop or computer.
 
 However, this is not a long-term option since support is not likely for all features useful or critical to embedded systems development. For example, USB device mapping available in the Docker toolkit is no longer available in the new Docker releases. The Docker option is also typically slower than the native install option. 
 
 <br>
+
 
 You can then proceed with the instructions on how to 
 * [Create Your First Project](project_create.md) - on simulated hardware.

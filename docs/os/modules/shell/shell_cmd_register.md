@@ -1,6 +1,6 @@
 ## <font color="#F2853F" style="font-size:24pt"> shell_cmd_register </font>
 
-```c
+```no-highlight
 int shell_cmd_register(struct shell_cmd *sc)
 ```
 
@@ -27,7 +27,7 @@ The `SHELL_MAX_COMPAT_COMMANDS` syscfg setting specifies the maximum number of s
 <br>
 #### Example
 
-```c
+```no-highlight
 static int fs_ls_cmd(int argc, char **argv);
 
 static struct shell_cmd fs_ls_struct = {

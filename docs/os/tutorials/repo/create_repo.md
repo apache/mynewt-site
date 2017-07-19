@@ -1,19 +1,10 @@
 ## Create a Repo out of a Project
 
-In order to create a repository out of a project, all you need to do is create a 
-`repository.yml` file, and check it into the master branch of your project.
+In order to create a repository out of a project, all you need to do is create a `repository.yml` file, and check it into the master branch of your project.
 
-**NOTE:** Currently only github source control service is supported by our 
-package management system, but support for plain git is planned for a future
-version.
+**NOTE:** Currently only github source control service is supported by our package management system, but support for plain git will be added soon.
 
-The `repository.yml` defines all versions of the repository and the corresponding 
-source control tags that these versions correspond to.  As an example, if the 
-`repository.yml` file has the following content, it means there is one version 
-of the apache-mynewt-core operating system available, which is `0.0.0` (implying we 
-haven't released yet!). Such a version number corresponds to the "develop" branch 
-in this repository. `0-latest` would also resolved to this same `0.0.0` version. 
-The next section explains the versioning system a bit more.
+The repository.yml defines all versions of the repository and the corresponding source control tags that these versions correspond to.  As an example, if the repository.yml file has the following content, it means there is one version of the apache-mynewt-core operating system available, which is `0.0.0` (implying we haven't released yet!). Such a version number corresponds to the "develop" branch in this repository. `0-latest` would also resolved to this same `0.0.0` version. The next section explains the versioning system a bit more.
 
 ```
 $ more repository.yml
@@ -80,9 +71,9 @@ or
 
 The stability string can be one of 3 pre-defined stability values.
 
-1. `stable` -- A stable release version of the repository
-2. `dev`    -- A development version from the repository
-3. `latest` -- The latest from the repository
+1. stable -- A stable release version of the repository
+2. dev    -- A development version from the repository
+3. latest -- The latest from the repository
 
 In your `project.yml` file you can specify different combinations of 
 the version number and stability value.  For example:
@@ -105,9 +96,7 @@ You **cannot** specify a stability string with a fully numbered version, e.g.
 A `repository.yml` file contains information to match this version request
 into a git branch to fetch for your project.
 
-It's up to you as the repository maintainer to map these to actual github branches 
-of the repository.  For example, let's say in a fictitious repository the 
-following are defined.
+It's up to you as the repository maintainer to map these to actual github branches of the repository.  For example, let's say in a fictitious repository the following are defined.
 
 ```no-highlight
 repo.versions:
@@ -127,8 +116,7 @@ repo.versions:
 ```
 
 When the `project.yml` file asks for `1.2-stable` it will be resolved to version
-`1.2.0` which in turn will resolve to a specific branch `xxx_branch_1_2_0`.  
-This is the branch that `newt` will then fetch into the project with that `project.yml` file.
+`1.2.0` which in turn will resolve to a specific branch `xxx_branch_1_2_0`.  This is the branch that `newt` will fetch into the project with that `project.yml` file.
 
 <br>
 
@@ -153,16 +141,13 @@ develop.repositories:
 This would tell Newt that for anything that resolves to the develop 
 branch, this repository requires the sterlys-little-repo repository. 
 
-Dependencies are resolved circularly by the newt tool, and every 
-dependent repository is placed as a sibling in the repos directory. 
-Currently, if two repositories have the same name, they will conflict 
-and bad things will happen.
+Dependencies are resolved circularly by the newt tool, and every dependent repository is placed as a sibling in the repos directory. Currently, if two repositories have the same name, they will conflict and bad things will happen.
 
 When a repository is installed to the repos/ directory, the current 
-version of that repository is written to the `project.state` file.  The 
+version of that repository is written to the "project.state" file.  The 
 project state file contains the currently installed version of any given 
 repository.  This way, the current set of repositories can be recreated 
-from the `project.state` file reliably, whereas the `project.yml` file can 
+from the project.state file reliably, whereas the project.yml file can 
 have higher level directives (i.e. include 0.8-stable.)
 
 

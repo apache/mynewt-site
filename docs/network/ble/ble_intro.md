@@ -9,7 +9,7 @@ Note that BLE is not compatible with standard Bluetooth.
 
 <br>
 
-### Feature Support
+### Features
 
 NimBLE complies with Bluetooth Core Specification 5.0 which makes it an ideal wireless technology for the Internet of Things (IoT).
 
@@ -47,22 +47,9 @@ Subsequent chapters in this manual will go into the details of the implementatio
 
 ### Example NimBLE projects
 
-Mynewt comes with several built-in projects or applications using NimBLE. These allow users to try out NimBLE, understand how to use available services, and build their own applications using one or more of the examples as seed.
+Mynewt comes with two built-in projects that allow users to play with NimBLE, try the tutorials out with, and see how to use available services.
 
-1. **bletiny** : A simple shell application which provides a basic interface to the host-side of the BLE stack. Supported operations include GAP, GATT, and L2CAP.
-
+1. **bletiny** : A simple shell application which provides a basic interface to the host-side of the BLE stack. 
 2. **bleprph**: A basic peripheral device with no user interface. It advertises automatically on startup, and resumes advertising whenever a connection is terminated. It supports a maximum of one connection.
-
-3. **blecent**: A basic central device with no user interface.  This application scans for a peripheral that supports the alert notification service (ANS).  Upon discovering such a peripheral, blecent connects and performs the following actions:
-
-    * Reads the ANS Supported New Alert Category characteristic.
-    * Writes the ANS Alert Notification Control Point characteristic.
-    * Subscribes to notifications for the ANS Unread Alert Status characteristic.
-
-
-4. **blehci**: Implements a BLE controller-only application.  A separate host-only implementation, such as Linux's BlueZ, can interface with this application via HCI over UART.
-
-5. **bleuart**:  Implements a simple BLE peripheral that supports the Nordic
-[UART / Serial Port Emulation service](https://developer.nordicsemi.com/nRF5_SDK/nRF51_SDK_v8.x.x/doc/8.0.0/s110/html/a00072.html)
 
 <br>

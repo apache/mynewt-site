@@ -4,9 +4,10 @@ Apache Mynewt currently offers two ways to quickly get set up, each appealing to
 
 <br>
 
-* **Option 1:** All-in-one docker container that bundles Newt tool, developer toolchains and libraries. For this option, go to [Docker instructions](/DOCSLINK/os/get_started/docker/)
+* **Option 1:** Step-by-step instructions to install the Newt tool, developer toolchains and libraries natively on your computer. This is the recommended option. For this option, go to [Native Setup](/DOCSLINK/os/get_started/native_tools/)
 
-* **Option 2:** Step-by-step instructions to install the Newt tool, developer toolchains and libraries natively on your computer. For this option, go to [Native Setup](/DOCSLINK/os/get_started/native_tools/)
+* **Option 2:** All-in-one docker container that bundles Newt tool, developer toolchains and libraries. This option is only for a quick look at the project. For this option, go to [Docker instructions](/DOCSLINK/os/get_started/docker/)
+
 
 <br>
 
@@ -18,7 +19,7 @@ Start a new project as explained under [Create Your First Project](/DOCSLINK/os/
 
 * When you [Create Your First Project](/DOCSLINK/os/get_started/project_create/) you define a simulated target and run Project Blinky, the Hello World equivalent in the embedded world.
 
-* If you have one of the supported [boards](/), you can make real LEDs blink in [Project Blinky](/DOCSLINK/os/tutorials/arduino_zero/). Simply choose the appropriate tutorial for the board and proceed.
+* If you have one of the supported [boards](../), you can make real LEDs blink in [Project Blinky](/DOCSLINK/os/tutorials/arduino_zero/). Simply choose the appropriate tutorial for the board and proceed.
 
 <br>
 

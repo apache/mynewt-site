@@ -1,12 +1,21 @@
-# Console
+## Console
 
+The console is an operating system window where users interact with the OS subsystems or a console application.  A user typically inputs text from a keyboard and reads the OS output text on a computer monitor.  The text is  sent as a sequence of characters between the user and the OS. 
 
-The console is an operating system window where users interact with the OS subsystems or a console 
-application.  A user typically inputs text from a keyboard and reads the OS output text on a computer
-monitor.  The text are sent as a sequence of characters between the user and the OS. 
- 
-Support is currently available for console access via the serial port on the hardware board.
+You can configure the console to communicate via a UART or the SEGGER Real Time Terminal (RTT) .  The `CONSOLE_UART` syscfg setting enables the communication via a UART and is enabled by default. The `CONSOLE_RTT` setting enables the communication via the RTT and is disabled by default. When the `CONSOLE_UART` setting is enabled, the following settings apply:
 
+* `CONSOLE_UART_DEV`: Specifies the UART device to use. The default is `uart0`.  
+* `CONSOLE_UART_BAUD`: Specifies the UART baud rate. The default is 115200.
+* `CONSOLE_UART_FLOW_CONTROL`: Specifies the UART flow control. The default is `UART_FLOW_CONTROL_NONE`.
+* ` CONSOLE_UART_TX_BUF_SIZE`: Specifies the transmit buffer size and must be a power of 2. The default is 32.
+<br>
+
+The `CONSOLE_TICKS` setting enables the console to print the current OS ticks in each output line. 
+
+**Notes:** 
+
+* SEGGER RTT support is not available in the Mynewt 1.0 console package.
+* The console package is initialized during system initialization (sysinit) so you do not need to initialize the console. However, if you use the Mynewt 1.0 console API to read from the console, you will need to call the `console_init()` function to enable backward compatibility support.
 
 ### Description
 
@@ -34,7 +43,7 @@ pkg.req_apis:
 The project `pkg.yml` file also specifies the version of the console package to use.
 
 <br>
-####Using the Full Console Package
+#### Using the Full Console Package
 A project that requires the full console capability must list the `sys/console/full` package as a dependency in its `pkg.yml` file.
 
 An example is the `slinky` application. It requires the full console capability and has the following
@@ -54,8 +63,9 @@ pkg.deps:
        ...
     - sys/id
 ```
+
 <br>
-####Using the Stub Console Package
+#### Using the Stub Console Package
 
 A project that uses console stub API must list the `sys/console/stub` package as a dependency in its `pkg.yml` file.
 
@@ -70,6 +80,7 @@ keep the size small.
 
 The project would use the console stub API and has the following `pkg.yml` file: 
 
+Another example would be the bootloader project where we want to keep the size of the image small. It includes the `libs/os` pkg that can print out messages on a console (e.g. if there is a hard fault) and the `libs/util` pkg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead, and the pkg.yml file for the project boot pkg looks like the following:
 ```no-highlight
 pkg.name: apps/boot
 pkg.deps:
@@ -105,22 +116,122 @@ pkg.deps.BOOT_SERIAL.OVERWRITE:
 ```			
 
 <br>
-Console has 2 modes for transmit; *blocking mode* and *non-blocking mode*. Usually the *non-blocking mode* is the 
-active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added 
-based on these interrupts.
+#### Output to the Console
 
-*Blocking mode* is used when we don't want TX completion interrupts. It is used when system crashes, and we still 
-want to output info related to that crash.
+You use the `console_write()` function to write raw output and the `console_printf()` function to write a C-style formatted string to the console.
 
-Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to 
-know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.
+<br>
+#### Input from the Console
 
-The Console also has a prompt that is configurable. It is off by default but can be turned on programmatically. The
-prompt character can also be changed by the user.
+The following syscfg settings control input from the console:
 
-### Data structures
+* `CONSOLE_INPUT`: Enables input from the console. The setting is enabled by default.
+* `CONSOLE_ECHO`:  Enables echoing of the received data back to the console. Echoing is enabled by default.  Terminal programs expect this, and is a way for the user to know that the console is connected and responsive.  You can also use the `console_echo()` function to set echo on or off programatically. 
+* `CONSOLE_MAX_INPUT_LEN`: Specifies the maximum input line length.
 
-N/A
+<br>
+The Mynewt 1.1 console package adds a new API for reading input data from the console.  The package supports backward compatibility for the Mynewt 1.0 console API.  The steps you use to receive data from the console for each API version are provided below.
+
+<br>
+##### Mynewt 1.0 Console API
+
+To use the Mynewt 1.0 console API for reading input from the console, you perform the follow steps:
+
+1. Call the `console_init()` function and pass either a pointer to a callback function or NULL for the argument. The console calls this callback function, if specified, when it receives a full line of data. 
+
+2. Call the `console_read()` function to read the input data. 
+
+**Note:** The `CONSOLE_COMPAT` syscfg setting must be set to 1 to enable backward compatibility support. The setting is enabled by default. 
+
+<br>
+##### Mynewt 1.1 Console API
+
+Mynewt 1.1 console API adds the `console_set_queues(struct os_eventq *avail_queue, struct os_eventq *lines_queue)` function.  An application or the package, such as the shell, calls this function to specify two event queues that the console uses to manage input data buffering and to send notification when a full line of data is received. The two event queues are used as follows:
+
+* **avail_queue**: Each event in this queue indicates that a buffer is available for the console to use for buffering input data.  
+
+    The caller must initialize the avail_queue and initialize and add an [os_event](/os/core_os/event_queue/event_queue.md) to the avail_queue before calling the `console_set_queues()` function. The fields for the event should be set as follows: 
+
+    * **`ev_cb`**: Pointer to the callback function to call when a full line of data is received.
+    * **`ev_arg`**: Pointer to a `console_input` structure. This structure contains a data buffer to store the current input. 
+
+
+    The console removes an event from this queue and uses the `console_input` buffer from this event to buffer the received characters until it receives a new line, '/n',  character.  When the console receives a full line of data, it adds this event to the **lines_queue**.
+
+* **lines_queue**: Each event in this queue indicates a full line of data is received and ready for processing. The console adds an event to this queue when it receives a full line of data. This event is the same event that the console removes from the avail_queue. 
+
+    The task that manages the lines_queue removes an event from the queue and calls the event callback function to process the input line.  The event callback function must add the event back to the avail_queue when it completes processing the current input data, and allows the console to use the `console_input` buffer set for this event to buffer input data.
+
+
+    We recommend that you use the OS default queue for the lines_queue so that the callback is processed in the context of the OS main task. If you do not use the OS default event queue, you must initialize an event queue and create a task to process events from the queue.
+
+    **Note**: If the callback function needs to read another line of input from the console while processing the current line, it may use the `console_read()` function to read the next line of input from the console. The console will need another `console_input` buffer to store the next input line, so two events, initialized with the pointers to the callback and the `console_input` buffer, must be added to the avail_queue. 
+
+
+<br>
+Here is a code excerpt that shows  how to use the `console_set_queues()` function. The example adds one event to the avail_queue and uses the OS default event queue for the lines_queue.
+
+```c
+
+static void myapp_process_input(struct os_event *ev);
+
+static struct os_eventq avail_queue;
+
+static struct console_input myapp_console_buf;
+
+static struct os_event myapp_console_event = {
+    .ev_cb = myapp_process_input,
+    .ev_arg = &myapp_console_buf
+};
+
+/* Event callback to process a line of input from console. */
+static void
+myapp_process_input(struct os_event *ev)
+{
+    char *line;
+    struct console_input *input;
+
+    input = ev->ev_arg;
+    assert (input != NULL);
+
+    line = input->line;
+    /* Do some work with line */
+         ....
+    /* Done processing line. Add the event back to the avail_queue */
+    os_eventq_put(&avail_queue, ev);
+    return;
+}
+
+static void 
+myapp_init(void)
+{
+    os_eventq_init(&avail_queue);
+    os_eventq_put(&avail_queue, &myapp_console_event);
+    
+    console_set_queues(&avail_queue, os_eventq_dflt_get());
+}
+
+```
+
+
+<br>
+###Data structures
+
+The `struct console_input` data structure represents a console input buffer. Each event added to the console avail_queue must have the `ev_arg` field point to a `console_input` structure.
+
+
+```c
+
+struct console_input {
+    char line[MYNEWT_VAL(CONSOLE_MAX_INPUT_LEN)];
+};
+
+```
+
+| Element | Description |
+|---------|-------------|
+| `line` | Data buffer that the console uses to save received characters until a new line is received.|
+
 
 ### List of Functions
 
@@ -128,12 +239,12 @@ The functions available in console are:
 
 | Function | Description |
 |---------|-------------|
-| [console_blocking_mode](console_blocking_mode.md) | Calls the `console_blocking_tx` function to flush the buffered console output (transmit) queue. |
 | [console_echo](console_echo.md) | Controls whether echoing is on or off for the console. |
-| [console_init](console_init.md) | Initialize the console. |
-| [console_is_init](console_is_init.md) | Returns whether console has been initialized or not. |
+| [console_init (Mynewt 1.0 API)](console_init.md) | Initializes the console. |
+| [console_is_init](console_is_init.md) | Returns a value indicating whether the console has been initialized or not. |
 | [console_printf](console_printf.md) | Writes a formatted message instead of raw output to the console. |
 | [console_read](console_read.md) | Copies up the to given number of bytes to the input string. |
+| [console_set_queues](console_set_queues.md) | Specifies the event queues for the console to use to manage input data. 
 | [console_write](console_write.md) | Queues characters to console display over serial port. |
 
 

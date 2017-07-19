@@ -389,6 +389,8 @@ Reading symbols from /bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf...don
 Type `r` at the `(gdb)` prompt to run the project. You will see an output indicating that the hal_gpio pin is toggling between 1 and 0 in a simulated blink.
 
 
+Type `r` at the `(gdb)` prompt to run the project. You will see an output indicating that the `hal_gpio` pin is toggling between 1 and 0 in a simulated blink. 
+
 <br>
 
 ### Exploring other Mynewt OS Features

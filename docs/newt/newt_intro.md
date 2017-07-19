@@ -189,7 +189,6 @@ pkg.deps:
 <br>
 
 
-### Autocompletion in Bash
 
 Newt has the ability to autocomplete within `bash`.  The following instructions allow MAC users to enable autocomplete within `bash`.
 

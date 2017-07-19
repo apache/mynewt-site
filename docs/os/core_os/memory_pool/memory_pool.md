@@ -16,7 +16,7 @@ The next order of business is to allocate the memory used by the memory pool. Th
 
 In order to simplify this for the user two macros have been provided: `OS_MEMPOOL_BYTES(n, blksize)` and `OS_MEMPOOL_SIZE(n, blksize)`. The first macro returns the number of bytes needed for the memory pool while the second returns the number of `os_membuf_t` elements required by the memory pool. The `os_membuf_t` type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary. 
 
-Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. `OS_ALIGNMENT`).
+Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. OS_ALIGNMENT).
 
 ```c
 void *my_memory_buffer;

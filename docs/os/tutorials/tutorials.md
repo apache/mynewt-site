@@ -1,6 +1,6 @@
 ## Tutorials
 
-If the introduction to Mynewt has piqued your interest and you want to familiarize yourself with some of its functionality, this series of tutorials is for you. The lessons are aimed at the beginner.
+If the introduction to Mynewt has piqued your interest and you want to familiarize yourself with some of its functionality, this series of tutorials is for you. The lessons are aimed at the beginner. 
 
 The full list of tutorials can be seen in the navigation bar on the left. New ones are being constantly added and will show up there automatically.
 
@@ -37,6 +37,10 @@ The tutorials fall into a few broad categories. Some examples in each category a
     * [Adding a unit test for a package](unit_test.md)
     * [Adding task to manage multiple events](event_queue.md)
 
+* Tooling
+    * [SEGGER RTT](segger_rtt.md)
+    * [SEGGER SystemView](segger_sysview.md)
+
 <br>
 
 * Bluetooth Low Energy
@@ -51,14 +55,13 @@ The tutorials fall into a few broad categories. Some examples in each category a
 
 <br>
 
-* Using NewtMgr
+* Using NewtMgr 
     * [Enabling remote communication with a device running Mynewt OS](project-slinky.md)
 
 <br>
 
-* Additional network connectivity
-    * [Connect Arduino to a Wi-Fi network](wi-fi_on_arduino.md)
 
 **Send us an email on the dev@ mailing list if you have comments or suggestions!** If you haven't joined the mailing list, you will find the links [here](../../community.md).
 
 <br>
+

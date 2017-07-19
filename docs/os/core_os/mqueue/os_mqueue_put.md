@@ -22,7 +22,7 @@ Adds a packet (i.e. packet header mbuf) to an mqueue. The event associated with 
 
 0: success
 
-`OS_EINVAL`: the mbuf is not a packet header mbuf.
+OS_EINVAL: the mbuf is not a packet header mbuf.
 
 <br>
 

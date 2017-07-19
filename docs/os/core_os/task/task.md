@@ -3,8 +3,9 @@
 A task, along with the scheduler, forms the basis of the Mynewt OS. A task 
 consists of two basic elements: a task stack and a task function. The task 
 function is basically a forever loop, waiting for some "event" to wake it up. 
-There are two methods used to signal a task that it has work to do: [event queues](../event_queue/event_queue.md) 
-and [semaphores](../semaphore/semaphore.md) .
+There are two methods used to signal a task that it has work to do: event queues 
+and semaphores (see the appropriate manual sections for descriptions of these 
+features).
  
 The Mynewt OS is a multi-tasking, preemptive OS. Every task is assigned a task 
 priority (from 0 to 255), with 0 being the highest priority task. If a higher 
@@ -15,11 +16,11 @@ stack of the higher priority task and the task resumes execution where it left
 off.
 
 Tasks run to completion unless they are preempted by a higher priority task. The 
-developer must ensure that tasks eventually "sleep"; otherwise lower priority 
+developer must insure that tasks eventually "sleep"; otherwise lower priority 
 tasks will never get a chance to run (actually, any task lower in priority than 
 the task that never sleeps). A task will be put to sleep in the following cases: 
-it puts itself to sleep using `os_time_delay()`, it waits on an [event queue](../event_queue/event_queue.md)  
-which is empty or attempts to obtain a mutex or a [semaphore](../semaphore/semaphore.md)  that is currently 
+it puts itself to sleep using `os_time_delay()`, it waits on an event queue 
+which is empty or attempts to obtain a mutex or a semaphore that is currently 
 owned by another task.
  
 Note that other sections of the manual describe these OS features in more 
@@ -28,7 +29,7 @@ detail.
 ## Description
 
 In order to create a task two data structures need to be defined: the task 
-object (`struct os_task`) and its associated stack. Determining the stack size can 
+object (struct os_task) and its associated stack. Determining the stack size can 
 be a bit tricky; generally developers should not declare large local variables 
 on the stack so that task stacks can be of limited size. However, all 
 applications are different and the developer must choose the stack size 
@@ -46,7 +47,7 @@ scheduler, the `os_task_init()` function is called. Once `os_task_init()` is
 called, the task is made ready to run and is added to the active task list. Note 
 that a task can be initialized (started) before or after the os has started 
 (i.e. before `os_start()` is called) but must be initialized after the os has 
-been initialized (i.e. 'os_init()' has been called). In most of the examples and 
+been initialized (i.e. 'os_init' has been called). In most of the examples and 
 current Mynewt projects, the os is initialized, tasks are initialized, and the 
 the os is started. Once the os has started, the highest priority task will be 
 the first task set to run.
