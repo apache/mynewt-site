@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -258,8 +258,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -281,7 +281,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -454,6 +465,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -482,6 +504,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -525,17 +558,6 @@
                 
     <li >
       <a href="../../../modules/baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -625,6 +647,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -636,7 +666,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -651,7 +681,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -667,7 +697,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/core_os/task/task.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/core_os/task/task.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -751,23 +781,21 @@ task simply toggles an LED at a one second interval.</p>
 }
 
 <span style="color: #177500">/* This is the main function for the project */</span>
-<span style="color: #A90D91">int</span> <span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>) {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+<span style="color: #A90D91">int</span> <span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>) 
+{
 
-    <span style="color: #177500">/* Initialize OS */</span>
-    <span style="color: #000000">os_init</span>();
+    <span style="color: #177500">/* Perform system and package initialization */</span>
+    <span style="color: #000000">sysinit</span>();
 
     <span style="color: #177500">/* Initialize the task */</span>
     <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;my_task</span>, <span style="color: #C41A16">&quot;my_task&quot;</span>, <span style="color: #000000">my_task_func</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">MY_TASK_PRIO</span>, 
                  <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">my_task_stack</span>, <span style="color: #000000">MY_STACK_SIZE</span>);
 
-    <span style="color: #177500">/* Start the OS */</span>
-    <span style="color: #000000">os_start</span>();
-
-    <span style="color: #177500">/* os start should never return. If it does, this should be an error */</span>
-    <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
-
-    <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
+    <span style="color: #177500">/*  Process events from the default event queue.  */</span>
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+       <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+    }
+    <span style="color: #177500">/* main never returns */</span>  
 }
 </pre></div>
 
@@ -1007,6 +1035,10 @@ task simply toggles an LED at a one second interval.</p>
 <tr>
 <td><a href="../os_task_info_get_next/">os_task_info_get_next</a></td>
 <td>Populates the os task info structure given with task information.</td>
+</tr>
+<tr>
+<td><a href="../os_task_remove/">os_task_remove</a></td>
+<td>Removes a task from the task list.</td>
 </tr>
 </tbody>
 </table>

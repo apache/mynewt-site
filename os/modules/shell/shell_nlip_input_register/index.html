@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -291,7 +291,7 @@
   
   
     <li><a href="
-  ../shell_task_init/
+  ../shell_cmd_register/
 ">Functions</a>
   
   
@@ -300,7 +300,7 @@
               
                 
     <li >
-      <a href="../shell_task_init/">shell_task_init</a>
+      <a href="../shell_cmd_register/">shell_cmd_register</a>
     </li>
 
               
@@ -308,7 +308,7 @@
               
                 
     <li >
-      <a href="../shell_cmd_register/">shell_cmd_register</a>
+      <a href="../shell_evq_set/">shell_evq_set</a>
     </li>
 
               
@@ -329,6 +329,30 @@
 
               
           
+              
+                
+    <li >
+      <a href="../shell_register/">shell_register</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../shell_register_app_cmd_handler/">shell_register_app_cmd_handler</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../shell_register_default_module/">shell_register_default_module</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -336,6 +360,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../split/split/">Split Images</a>
+  
   
     </li>
 
@@ -383,6 +418,17 @@
                 
   
   
+    <li ><a href="../../drivers/driver/">Drivers</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../testutil/testutil/">Test Utilities</a>
   
   
@@ -416,17 +462,6 @@
                 
     <li >
       <a href="../../baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -516,6 +551,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -527,7 +570,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -542,7 +585,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -550,7 +593,7 @@
         
       
         
-          <li>&raquo; <a href="../shell_task_init/">Functions</a></li>
+          <li>&raquo; <a href="../shell_cmd_register/">Functions</a></li>
         
       
       
@@ -560,7 +603,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/shell/shell_nlip_input_register.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/shell/shell_nlip_input_register.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -575,8 +618,9 @@
 </pre></div>
 
 
-<p>Registers a handler for incoming newtmgr messages. Shell receives incoming data stream from UART and when it detects NLIP frame, it decodes it and passes it on by calling the function <code>nf</code>.</p>
-<p>Handler function is of type <code>int (*shell_nlip_input_func_t)(struct os_mbuf *m, void *arg)</code>. Shell passes the incoming newtmgr message inside os_mbuf <em>m</em>, and <em>arg</em> is the argument that was passed in during handler registration.</p>
+<p>Registers a handler for incoming newtmgr messages. The shell receives the incoming data stream from the UART,  and when it detects a NLIP frame, decodes the datagram, and calls the registered handler,<code>nf</code>.</p>
+<p>The handler function is of type <code>int (*shell_nlip_input_func_t)(struct os_mbuf *m, void *arg)</code>. 
+The shell passes the incoming newtmgr message stored in a <code>os_mbuf</code> and the <code>arg</code> that was passed to the <code>shell_nlip_input_register()</code> function as arguments to the handler function.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -587,17 +631,18 @@
 </thead>
 <tbody>
 <tr>
-<td>nf</td>
+<td><code>nf</code></td>
 <td>Handler for incoming newtmgr datagrams.</td>
 </tr>
 <tr>
-<td>arg</td>
-<td>Argument that gets passed to this handler, along with the datagram</td>
+<td><code>arg</code></td>
+<td>Argument that is passed to this handler, along with the datagram.</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
 <p>Returns 0 on success.</p>
+<p>Non-zero on failure.</p>
 <h4 id="example">Example</h4>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static int
 nmgr_shell_in(struct os_mbuf *m, void *arg)
@@ -627,9 +672,9 @@ nmgr_task_init(uint8_t prio, os_stack_t *stack_ptr, uint16_t stack_len)
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../shell_cmd_register/>
+    <a href=../shell_evq_set/>
         <span class="fa fa-arrow-left"></span>
-        Previous: shell_cmd_register
+        Previous: shell_evq_set
     </a>
     
     </li>

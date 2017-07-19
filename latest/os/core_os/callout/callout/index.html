@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -577,17 +577,6 @@
                 
   
   
-    <li ><a href="../../../modules/fcb/fcb/">Flash Circular Buffer</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../../modules/stats/stats/">Stats</a>
   
   
@@ -708,7 +697,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/mynewt-site/blob/develop/docs/os/core_os/callout/callout.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/core_os/callout/callout.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -729,12 +718,12 @@
 <p>Time unit when arming the timer is OS ticks. This rate of this ticker depends on the platform this is running on. You should use OS define <em>OS_TICKS_PER_SEC</em> to convert wallclock time to OS  ticks.</p>
 <p>Callout timer fires out just once. For periodic timer type of operation you need to rearm it once it fires.</p>
 <h3 id="data-structures">Data structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> {
-        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">c_ev</span>;
-        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*c_evq</span>;
-        <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">c_ticks</span>;
-        <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">os_callout</span>) <span style="color: #000000">c_next</span>;
-    };
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>struct os_callout {
+    struct os_event c_ev;
+    struct os_eventq *c_evq;
+    uint32_t c_ticks;
+    TAILQ_ENTRY(os_callout) c_next;
+};
 </pre></div>
 
 
@@ -747,28 +736,28 @@
 </thead>
 <tbody>
 <tr>
-<td><code>c_ev</code></td>
+<td>c_ev</td>
 <td>Event structure of this callout</td>
 </tr>
 <tr>
-<td><code>c_evq</code></td>
+<td>c_evq</td>
 <td>Event queue where this callout is placed on timer expiry</td>
 </tr>
 <tr>
-<td><code>c_ticks</code></td>
+<td>c_ticks</td>
 <td>OS tick amount when timer fires</td>
 </tr>
 <tr>
-<td><code>c_next</code></td>
+<td>c_next</td>
 <td>Linkage to other unexpired callouts</td>
 </tr>
 </tbody>
 </table>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout_func</span> {
-        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">cf_c</span>;
-        <span style="color: #000000">os_callout_func_t</span> <span style="color: #000000">cf_func</span>;
-        <span style="color: #A90D91">void</span> <span style="color: #000000">*cf_arg</span>;
-    };
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>struct os_callout_func {
+    struct os_callout cf_c;
+    os_callout_func_t cf_func;
+    void *cf_arg;
+};
 </pre></div>
 
 
@@ -781,15 +770,15 @@
 </thead>
 <tbody>
 <tr>
-<td><code>cf_c</code></td>
+<td>cf_c</td>
 <td>struct os_callout. See above</td>
 </tr>
 <tr>
-<td><code>cf_func</code></td>
+<td>cf_func</td>
 <td>Function pointer which should be called by event queue processing</td>
 </tr>
 <tr>
-<td><code>cf_arg</code></td>
+<td>cf_arg</td>
 <td>Generic void * argument to that function</td>
 </tr>
 </tbody>

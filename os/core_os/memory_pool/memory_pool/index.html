@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -258,8 +258,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -281,7 +281,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -454,6 +465,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -482,6 +504,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -525,17 +558,6 @@
                 
     <li >
       <a href="../../../modules/baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -625,6 +647,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -636,7 +666,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -651,7 +681,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -667,7 +697,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/core_os/memory_pool/memory_pool.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/core_os/memory_pool/memory_pool.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -712,10 +742,19 @@ Once the memory pool has been initialized the developer can allocate memory bloc
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_block_size</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_num_blocks</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_num_free</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">mp_min_free</span>;
     <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">mp_membuf_addr</span>;
     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_mempool</span>) <span style="color: #000000">mp_list</span>;    
     <span style="color: #000000">SLIST_HEAD</span>(,<span style="color: #000000">os_memblock</span>);
     <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
+};
+
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool_info</span> {
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_block_size</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_num_blocks</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_num_free</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">omi_min_free</span>;
+    <span style="color: #A90D91">char</span> <span style="color: #000000">omi_name</span>[<span style="color: #000000">OS_MEMPOOL_INFO_NAME_LEN</span>];
 };
 </pre></div>
 
@@ -740,6 +779,10 @@ Once the memory pool has been initialized the developer can allocate memory bloc
 <tr>
 <td>mp_num_free</td>
 <td>Number of free blocks left</td>
+</tr>
+<tr>
+<td>mp_min_free</td>
+<td>Lowest number of free blocks seen</td>
 </tr>
 <tr>
 <td>mp_membuf_addr</td>
@@ -780,6 +823,10 @@ Once the memory pool has been initialized the developer can allocate memory bloc
 <tr>
 <td><a href="../os_memblock_put">os_memblock_put</a></td>
 <td>Releases previously allocated element back to the pool.</td>
+</tr>
+<tr>
+<td><a href="../os_mempool_info_get_next">os_mempool_info_get_next</a></td>
+<td>Retrieves memory pool information for the next memory pool.</td>
 </tr>
 <tr>
 <td><a href="../OS_MEMPOOL_BYTES">OS_MEMPOOL_BYTES</a></td>

@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -481,17 +481,6 @@
                 
   
   
-    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../stats/stats/">Stats</a>
   
   
@@ -614,7 +603,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/mynewt-site/blob/develop/docs/os/modules/console/console_read.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/console/console_read.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -629,8 +618,7 @@
 </pre></div>
 
 
-<p>Copies up to <code>cnt</code> bytes of received data to buffer pointed by <code>str</code>. Function tries to break the input into 
-separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.</p>
+<p>Copies up to <em>cnt</em> bytes of received data to buffer pointed by <em>str</em>. Function tries to break the input into separate lines; once it encounters a newline character, it replaces that with end-of-string and returns.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -658,27 +646,23 @@ separate lines; once it encounters a newline character, it replaces that with en
 <p>Returns the number of characters copied. 0 if there was no data
 available, or if the first received character was '\n'.</p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
-<span style="color: #000000">task1_loop</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>void
+task1_loop(void *arg)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
-    <span style="color: #A90D91">char</span> <span style="color: #000000">rx_msg</span>[<span style="color: #1C01CE">128</span>];
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rx_len</span>;
-    <span style="color: #A90D91">int</span> <span style="color: #000000">newline</span>;
+    struct os_event *ev;
+    char rx_msg[128];
+    int rx_len;
+    int newline;
 
-    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;task1_evq</span>);
-        <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span>);
-        <span style="color: #A90D91">if</span> (<span style="color: #000000">ev-&gt;ev_type</span> <span style="color: #000000">==</span> <span style="color: #000000">CONS_EV_TYPE</span>) {
-            <span style="color: #000000">rx_len</span> <span style="color: #000000">=</span> <span style="color: #000000">console_read</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">rx_msg</span>), <span style="color: #000000">&amp;newline</span>);
-            <span style="color: #A90D91">if</span> (<span style="color: #000000">rx_len</span>) {
-                    <span style="color: #A90D91">if</span> (<span style="color: #000000">!strncmp</span>(<span style="color: #000000">rx_msg</span>, <span style="color: #C41A16">&quot;reset&quot;</span>, <span style="color: #000000">rx_len</span>)) {
-                            <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
+    while (1) {
+        ev = os_eventq_get(&amp;task1_evq);
+        assert(ev);
+        if (ev-&gt;ev_type == CONS_EV_TYPE) {
+            rx_len = console_read(rx_msg, sizeof(rx_msg), &amp;newline);
+            if (rx_len) {
+                    if (!strncmp(rx_msg, &quot;reset&quot;, rx_len)) {
+                            assert(0);
                     }
-            }
-        }
-    }
-}    
 </pre></div>
                         
                         <div class="row">

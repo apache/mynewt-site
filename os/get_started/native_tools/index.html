@@ -10,7 +10,7 @@
         <link rel="canonical" href="http://mynewt.apache.org/os/get_started/native_tools/"> -->
         <link rel="shortcut icon" href="../../../img/favicon.ico">
 
-	    <title>toc - Apache Mynewt</title>
+	    <title>Install Native Toolchain - Apache Mynewt</title>
 
         <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="toc">
+    <body class="Install Native Toolchain">
 
 
         <div class="container">
@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -216,7 +216,7 @@
                 
   
   
-    <li class="active"><a href="./">Native install Option</a>
+    <li ><a href="../native_install_intro/">Native Install Option</a>
   
   
     <ul>
@@ -235,6 +235,22 @@
                 
     <li >
       <a href="../../../newt/install/newt_linux/">Install Newt on Linux</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../newt/install/newt_windows/">Install Newt on Windows</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Install Native Toolchain</a>
     </li>
 
               
@@ -265,6 +281,14 @@
                 
     <li >
       <a href="../project_create/">Create Your First Project</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../serial_access/">Serial Port Setup</a>
     </li>
 
               
@@ -340,6 +364,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -351,7 +383,7 @@
   
   
     <li><a href="
-  ../../../faq/how_to_edit_docs/
+  ../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -366,7 +398,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -374,15 +406,17 @@
         
       
         
-          <li>&raquo; Native install Option</li>
+          <li>&raquo; <a href="../native_install_intro/">Native Install Option</a></li>
         
       
+      
+        <li>&raquo; Install Native Toolchain</li>
       
     
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/get_started/native_tools.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/get_started/native_tools.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -392,16 +426,15 @@
                         </div>
                         
                         
-                            <h1 id="installing-native-mynewt-tools">Installing Native Mynewt Tools</h1>
-<p>This page shows how to install tools for native Mynewt targets (simulated targets on your laptop/computer) without using a Docker container. In other words, it allows you to run Mynewt OS as a native application on your Mac or Linux machine to simulate a target and use the Newt tool running natively on your machine to manage the simulated target. It also allows you to run the test suites for all packages not requiring HW support. You may choose to do this instead of using the build toolchain and Newt tool available in a Docker container.</p>
-<p>This page provides guidance for MAC and Linux. See the relevant sections below.</p>
+                            <h1 id="installing-native-toolchain">Installing Native Toolchain</h1>
+<p>This page shows you how to install the toolchain to build Mynewt OS applications that run native on Mac OS and Linux. The applications run on  Mynewt's simulated hardware.  It also allows you to run the test suites for all packages that do not require HW support. </p>
+<p><strong>Note:</strong> This is not supported on Windows.</p>
 <p><br></p>
-<h2 id="set-up-toolchain-for-mac">Set up toolchain for Mac</h2>
-<h3 id="install-brew">Install Brew</h3>
-<p>If you have not already installed Homebrew from the 
-<a href="../../../newt/install/newt_mac/"><code>newt</code> tutorials pages</a>, install it. </p>
+<h2 id="setting-up-the-toolchain-for-mac">Setting Up the Toolchain for Mac</h2>
+<h3 id="installing-brew">Installing Brew</h3>
+<p>If you have not already installed Homebrew from the <a href="../../../newt/install/newt_mac/"><code>newt</code> tutorials pages</a>, install it. </p>
 <p><br></p>
-<h3 id="install-gcclibc">Install gcc/libc</h3>
+<h3 id="installing-gcclibc">Installing gcc/libc</h3>
 <p>OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ brew install gcc
 ...
@@ -414,8 +447,8 @@
 <p><br></p>
 <p>Check the gcc version you have installed (either using brew or previously installed). The brew-installed version can be checked using <code>brew list gcc</code>. The default compiler.yml configuration file in Mynewt expects version 5.x for Mac users, so if the installed version is 6.x and you wish to continue with this newer version, modify the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file to change the default <code>gcc-5</code> defined there to <code>gcc-6</code>. In other words, replace the lines shown highlighted below:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># OS X.
-<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
-</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
+<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;gcc-5&quot;
+</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;gcc-5&quot;
 </span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
 compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
 compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
@@ -423,16 +456,16 @@ compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
 
 
 <p>with the following:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6&quot;
-compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6 -x assembler-with-cpp”
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>compiler.path.cc.DARWIN.OVERWRITE: &quot;gcc-6&quot;
+compiler.path.as.DARWIN.OVERWRITE: &quot;gcc-6”
 </pre></div>
 
 
 <p><br></p>
 <p>In case you wish to use Clang, you can change your <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> to use Clang. Delete the gcc-5 DARWIN.OVERWRITE lines highlighted below.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># OS X.
-<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
-</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
+<span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;gcc-5&quot;
+</span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;gcc-5&quot;
 </span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
 compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
 compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
@@ -456,7 +489,7 @@ compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
 
 <p>A third option is to simply <strong>downgrade to gcc 5.x</strong>.</p>
 <p><br></p>
-<h3 id="install-gdb">Install gdb</h3>
+<h3 id="installing-gdb">Installing gdb</h3>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ brew install gdb
 ...
 ...
@@ -471,7 +504,7 @@ executable.  <a href="https://gcc.gnu.org/onlinedocs/gnat_ugn/Codesigning-the-De
 shows a recipe for gdb signing. Alternately you can skip this step and
 continue without the ability to debug your mynewt application on your PC.*</p>
 <p><br></p>
-<h2 id="set-up-toolchain-for-linux">Set up toolchain for Linux</h2>
+<h2 id="setting-up-the-toolchain-for-linux">Setting Up the Toolchain for Linux</h2>
 <p>The below procedure can be used to set up a Debian-based Linux system (e.g.,
 Ubuntu).  If you are running a different Linux distribution, you will need to
 substitute invocations of <em>apt-get</em> in the below steps with the package manager
@@ -483,7 +516,7 @@ that your distro uses.</p>
 
 
 <p><br></p>
-<h3 id="install-gdb_1">Install gdb</h3>
+<h3 id="install-gdb">Install gdb</h3>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ sudo apt-get install gdb
 
 Reading package lists... Done
@@ -500,7 +533,7 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
 
 
 <p><br></p>
-<p>At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the <a href="../project_create/">Create Your First Project</a> section.</p>
+<p>At this point you have installed all the necessary software to build and run your first project on a simluator on your Mac OS or Linux computer. You may proceed to the <a href="../project_create/">Create Your First Project</a> section or continue to the next section and install the cross tools for ARM.</p>
                         
                         <div class="row">
                             
@@ -510,16 +543,16 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../get_started/>
+    <a href=../../../newt/install/newt_windows/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Basic Setup
+        Previous: Install Newt on Windows
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../../../newt/install/newt_mac/>
-        Next: Install Newt on Mac
+    <a href=../cross_tools/>
+        Next: Install Cross Tools for ARM
         <span class="fa fa-arrow-right"></span>
     </a>
     

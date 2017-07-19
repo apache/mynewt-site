@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -258,8 +258,8 @@
   
   
     <li><a href="
-  ../../os_init/
-">System-level Functions</a>
+  ../../os_started/
+">Functions</a>
   
   
     </li>
@@ -281,7 +281,18 @@
                 
   
   
-    <li ><a href="../../time/os_time/">Time</a>
+    <li ><a href="../../cputime/os_cputime/">CPU Time</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../time/os_time/">OS Time</a>
   
   
     </li>
@@ -519,6 +530,17 @@
                 
   
   
+    <li ><a href="../../../modules/split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../modules/bootloader/bootloader/">Bootloader</a>
   
   
@@ -547,6 +569,17 @@
   
   
     <li ><a href="../../../modules/hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../modules/drivers/driver/">Drivers</a>
   
   
     </li>
@@ -590,17 +623,6 @@
                 
     <li >
       <a href="../../../modules/baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../../modules/elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -690,6 +712,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -701,7 +731,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -716,7 +746,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -734,7 +764,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/core_os/mqueue/os_mqueue_init.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/core_os/mqueue/os_mqueue_init.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -745,13 +775,39 @@
                         
                         
                             <h2 id="os_mqueue_init"><font color="#F2853F" style="font-size:24pt">os_mqueue_init</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span> <span style="color: #000000">os_mqueue_init</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> <span style="color: #000000">*mq</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
+<span style="color: #000000">os_mqueue_init</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> <span style="color: #000000">*mq</span>, <span style="color: #000000">os_event_fn</span> <span style="color: #000000">*ev_cb</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 </pre></div>
 
 
-<p>Initializes an queue. Sets the event argument in the os event of the mqueue to <em>arg</em>. Sets type of event to OS_EVENT_T_MQUEUE_DATA.</p>
-<p><br></p>
+<p>Initializes an mqueue.  An mqueue is a queue of mbufs that ties to a particular task's event queue.  Mqueues form a helper API around a common paradigm: wait on an event queue until at least one packet is available, then process a queue of packets.</p>
 <h4 id="arguments">Arguments</h4>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mq</code></td>
+<td>The mqueue to initialize</td>
+</tr>
+<tr>
+<td><code>ev_cb</code></td>
+<td>The callback to associate with the mqeueue event.  Typically, this callback pulls each packet off the mqueue and processes them.</td>
+</tr>
+<tr>
+<td><code>arg</code></td>
+<td>The argument to associate with the mqueue event.</td>
+</tr>
+</tbody>
+</table>
+<p>@return 0 on success, non-zero on failure.</p>
+<p>Initializes an mqueue. Sets the event argument in the os event of the mqueue to <code>arg</code>.</p>
+<p><br></p>
+<h4 id="arguments_1">Arguments</h4>
 <table>
 <thead>
 <tr>
@@ -775,11 +831,14 @@
 <p>0: success. All other values indicate an error</p>
 <p><br></p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/* Declare mqueue */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/* Event callback to execute when a packet is received. */</span>
+<span style="color: #A90D91">extern</span> <span style="color: #A90D91">void</span> <span style="color: #000000">process_rx_data_queue</span>(<span style="color: #A90D91">void</span>);
+
+<span style="color: #177500">/* Declare mqueue */</span>
 <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mqueue</span> <span style="color: #000000">rxpkt_q</span>;
 
 <span style="color: #177500">/* Initialize mqueue */</span>
-<span style="color: #000000">os_mqueue_init</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #A90D91">NULL</span>);
+<span style="color: #000000">os_mqueue_init</span>(<span style="color: #000000">&amp;rxpkt_q</span>, <span style="color: #000000">process_rx_data_queue</span>, <span style="color: #A90D91">NULL</span>);
 </pre></div>
                         
                         <div class="row">

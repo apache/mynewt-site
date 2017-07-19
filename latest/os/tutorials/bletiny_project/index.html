@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -477,7 +477,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/mynewt-site/blob/develop/docs/os/tutorials/bletiny_project.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/bletiny_project.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -531,22 +531,22 @@ targets/nrf52_boot
 
 
 <p><br></p>
-<p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp </p>
-<p><strong>NOTE:</strong> The preview version, nrf52pdk, is no longer supported. If you do not see PCA100040 on the top of your board, you have a preview version of the board and will need to upgrade your developer board before continuing.</p>
-<p><br></p>
+<p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52pdk version). </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52dk
 Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
 Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
 $ newt target set myble build_profile=optimized
 Target targets/myble successfully set target.build_profile to optimized
+$ newt target set myble cflags=-DSTATS_NAME_ENABLE
+Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
 </pre></div>
 
 
 <p>Use the same <code>newt target set</code> command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
 </pre></div>
 
@@ -559,11 +559,11 @@ targets/my_blinky_sim
     build_profile=debug
 targets/myble
     app=@apache-mynewt-core/apps/bletiny
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
 </pre></div>
 
@@ -672,21 +672,7 @@ Press Meta-Z for help on special keys
 
 
 <p><br></p>
-<p>If you'd like a shell prompt, try the <code>prompt</code> command.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">prompt
-</span>14025:Usage: prompt [set|show] [prompt_char]
-prompt set &gt;
-15086:Prompt set to: &gt;
-15086:Usage: prompt [set|show] [prompt_char]
-15087: &gt;
-</pre></div>
-
-
-<p>You'll notice that there is an ever-increasing counter before the prompt (and before any output to the terminal).
-This is just a counter kept by the MCU.</p>
-<p><strong>Note</strong>: If you want to have a shell prompt by default, simply add the line: <code>CONSOLE_PROMPT: 1</code> to your <code>syscfg.yml</code> file and it will be turned on by default.</p>
-<p><br></p>
-<p>Try the <code>tasks</code> command. </p>
+<p>Try the <code>stat</code> command. </p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">&gt; tasks
 </span>Tasks: 
 46682:    task pri tid  runtime      csw    stksz   stkuse   lcheck   ncheck fg

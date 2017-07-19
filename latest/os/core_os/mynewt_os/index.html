@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -558,17 +558,6 @@
                 
   
   
-    <li ><a href="../../modules/fcb/fcb/">Flash Circular Buffer</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../modules/stats/stats/">Stats</a>
   
   
@@ -689,7 +678,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/mynewt-site/blob/develop/docs/os/core_os/mynewt_os.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/core_os/mynewt_os.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -700,7 +689,7 @@
                         
                         
                             <h1 id="mynewt-core-os">Mynewt Core OS</h1>
-<p>The Mynewt Core OS is a multitasking, preemptive real-time operating system combining a scheduler with typical RTOS features such as mutexes, semaphores, memory pools, etc. The Mynewt Core OS also provides a number of useful utilities such as a task watchdog, networking stack, memory buffers and time management API. Each of these features is described in detail in its own section of the manual.</p>
+<p>The Mynewt Core OS is a multitasking, preemptive real-time operating system combining a scheduler with typical RTOS features such as mutexes, semaphores, memory pools, etc. The Mynewt Core OS also provides a number of useful utilities such as a task watchdog, networking stack memory buffers and time management API. Each of these features is described in detail in its own section of the manual.</p>
 <p>A multitasking, preemptive operating system is one in which a number of different tasks can be instantiated and assigned a priority, with higher priority tasks running before lower priority tasks. Furthermore, if a lower priority task is running and a higher priority task wants to run, the lower priority task is halted and the higher priority task is allowed to run. In other words, the lower priority task is preempted by the higher priority task.</p>
 <h3 id="why-use-an-os">Why use an OS?</h3>
 <p>You may ask yourself "why do I need a multitasking preemptive OS"? The answer may indeed be that you do not. Some applications are simple and only require a polling loop. Others are more complex and may require that certain jobs are executed in a timely manner or before other jobs are executed. If you have a simple polling loop, you cannot move on to service a job until the current job is done being serviced. With the Mynewt OS, the application developer need not worry about certain jobs taking too long or not executing in a timely fashion; the OS provides mechanisms to deal with these situations. Another benefit of using an OS is that it helps shield application developers from other application code being written; the developer does not have to worry (or has to worry less) about other application code behaving badly and causing undesirable behavior or preventing their code from executing properly. Other benefits of using an OS (and the Mynewt OS in particular) is that it also provides features that the developer would otherwise need to create on his/her own. </p>
@@ -737,7 +726,7 @@ queue in an infinite loop. (See <a href="../../modules/sysinitconfig/sysinitconf
 <p>One way to avoid initialization issues like the one described above is for the application to 
 initialize the objects that are accessed by multiple tasks before it initializes the tasks with the OS.</p>
 <p>The code example shown below illustrates this concept. The application initializes system and  packages,  calls an application specific "task initialization" function, and dispatches events from the default event queue. The application task initialization function is responsible for initializing all the data objects that each task exposes to the other tasks. The tasks themselves are also initialized at this time (by calling <code>os_task_init()</code>). </p>
-<p>In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called <code>os_sem_init()</code> for task2_sem inside <code>task2_handler()</code>, task 1 would have called <code>os_sem_pend()</code> using task2_sem before task2_sem was initialized.</p>
+<p>In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called os_sem_init() for task2_sem inside task2_handler(), task 1 would have called os_sem_pend() using task2_sem before task2_sem was initialized.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">task1_sem</span>;
     <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">task2_sem</span>;
 
