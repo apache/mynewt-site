@@ -11,7 +11,7 @@ This tutorial shows you how to:
 
 ### Prerequisites
 
-* Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensors_oic_overview.md).
+* Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensor_oic_overview.md).
 * Complete the tasks described in the [Enabling OIC Sensor Data Monitoring in the sensors_test Application](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) tutorial. 
 <br>
 ### Overview on How to Add OIC Sensor Support to an Application

@@ -16,7 +16,7 @@ The tutorials are:
 
 * [Changing the Default Configuration for a Sensor](/os/tutorials/sensors/sensor_offboard_config.md) -  This tutorial shows you how to change the default configuration values for a sensor. 
 
-* [Writing an Application for an Onboard Sensor](/os/tutorials/sensor_thingy_accelerator.md) -  This tutorial shows you how to develop a simple application for an device with an onboard sensor.
+* [Developing an Application for an Onboard Sensor](/os/tutorials/sensors/sensor_thingy_lis2dh12_onb.md) -  This tutorial shows you how to develop a simple application for an device with an onboard sensor.
 
 * [Enabling OIC Sensor Data Monitoring in an Existing Application](/os/tutorials/sensors/sensor_oic_overview.md) - This tutorial shows you how to enable support for sensor data monitoring via OIC in an existing application.
 

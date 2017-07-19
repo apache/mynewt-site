@@ -12,7 +12,8 @@ This tutorial shows you how to:
 
 ### Prerequisite
 
-Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) tutorial. 
+* Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensor_oic_overview.md).
+* Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) tutorial. 
 
 ### Step 1: Creating and Building the sensors_test Application Image
 

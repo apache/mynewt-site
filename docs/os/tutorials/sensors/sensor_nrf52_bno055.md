@@ -29,7 +29,7 @@ For your reference, we describe the packages and the setting values that enable 
 
 * **hw/sensor**: The sensor framework package. This package defines the `SENSOR_CLI` setting that specifies whether the `sensor` shell command is enabled. This setting is enabled by default.
 
-* **hw/sensors/creator**: The sensor creator package. This package supports off-board sensor devices.  This package creates the os devices in the kernel for the sensors and configures the sensor devices with default values. It defines a syscfg setting for each sensor device and uses the naming convention `<SENSORNAME>_OFB`.  For example, the syscfg setting for the BNO055 sensor is  `BNO055_OFB`.  The `<SENSORNAME>_OFB` setting specifies whether the sensor named SENSORNAME is enabled. The setting is disabled by default. This package includes the sensor device driver package `hw/drivers/sensors/<sensorname>` and creates and configures a sensor named SENSORNAME when the `SENSORNAME_OFB` setting is enabled by the application. 
+* **hw/sensor/creator**: The sensor creator package. This package supports off-board sensor devices.  This package creates the os devices in the kernel for the sensors and configures the sensor devices with default values. It defines a syscfg setting for each sensor device and uses the naming convention `<SENSORNAME>_OFB`.  For example, the syscfg setting for the BNO055 sensor is  `BNO055_OFB`.  The `<SENSORNAME>_OFB` setting specifies whether the sensor named SENSORNAME is enabled. The setting is disabled by default. This package includes the sensor device driver package `hw/drivers/sensors/<sensorname>` and creates and configures a sensor named SENSORNAME when the `SENSORNAME_OFB` setting is enabled by the application. 
 * **hw/drivers/sensors/bno055**: The driver package for the BNO055 sensor. The creator package adds this package as a package dependency when the `BNO055_OFB` setting is enabled. The driver package defines the `BNO055_CLI` setting that specfies whether the `bno055` shell command is enabled. This setting is disabled by default and is enabled by the application.  The package also exports the `bno055_shell_init()` function that an application calls to initialize the driver shell support. The sensor_test application enables this setting by default and calls the `bno055_shell_init()` function.
 
 	**Note:** All sensor driver packages that support a sensor shell command define a syscfg setting to specify whether the shell command is enabled. They also export a shell initialization function that an application must call. The naming convention is `<SENSORNAME>_CLI` for the syscfg setting  and `<sensorname>_shell_init()` for the initialization function. 
@@ -305,15 +305,15 @@ To view the command syntax, enter `sensor`
 
 ```no-highlight
 
-010674 compat> sensor
-016726 Possible commands for sensor are:
-016727   list
-016727       list of sensors registered
-016728   read <sensor_name> <type> [-n nsamples] [-i poll_itvl(ms)] [-d poll_du]
-016730       read <no_of_samples> from sensor<sensor_name> of type:<type> at pr 
-016733       at <poll_interval> rate for <poll_duration>  type <sensor_name>
-016735       types supported by registered sensor
-016736 compat> 
+002340 Possible commands for sensor are:
+002341   list
+002341       list of sensors registered
+002342   read <sensor_name> <type> [-n nsamples] [-i poll_itvl(ms)] [-d poll_du]
+002344       read <no_of_samples> from sensor<sensor_name> of type:<type> at pr 
+002347       at <poll_interval> rate for <poll_duration>
+002348   type <sensor_name>
+002349       types supported by registered sensor
+002350 compat> 
 
 ```
 <br>
@@ -395,21 +395,33 @@ These two lines are for the last sample:
 ```
 <br>
 
-**Example 2:** Read vector data at 5 ms poll interval for 25 ms duration:
+**Example 2:** Read vector data at 20 ms poll interval. You can enter `ctrl-c`, `q <return>`, or `Q <return>` to stop the polling.
 <br>
 
 ```no-highlight
-003914 compat> sensor read bno055_0 0x200 -i 5 -d 25                           
-014805 ts: [ secs: 115 usecs: 669041 cputime: 115920751 ]                       
-014806 x = 0.044677736 y = 0.918701184 z = 3.921203584 w = 0.384338368          
-014808 ts: [ secs: 115 usecs: 689368 cputime: 115941078 ]                       
-014809 x = 0.048095704 y = 0.921386688 z = 3.920471168 w = 0.377441408          
-014811 ts: [ secs: 115 usecs: 712806 cputime: 115964516 ]                       
-014812 x = 0.062805176 y = 0.923156736 z = 3.915344256 w = 0.369750976          
-014814 ts: [ secs: 115 usecs: 736244 cputime: 115987954 ]                       
-014815 x = 0.578002944 y = 0.717773440 z = 3.717590336 w = 0.266296384
-014817 ts: [ secs: 115 usecs: 759682 cputime: 116011392 ]
-014818 x = 0.584716800 y = 0.699584960 z = 3.730285632 w = 0.309814464
+002350 compat> sensor read bno055_0 0x200 -i 20 
+019271 ts: [ secs: 150 usecs: 560056 cputime: 151019584 ]
+019272 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984 
+019274 ts: [ secs: 150 usecs: 580598 cputime: 151040126 ]
+019275 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019277 ts: [ secs: 150 usecs: 604036 cputime: 151063564 ]                       
+019278 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019280 ts: [ secs: 150 usecs: 627474 cputime: 151087002 ]                       
+019281 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019283 ts: [ secs: 150 usecs: 650912 cputime: 151110440 ]                       
+019284 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019286 ts: [ secs: 150 usecs: 674350 cputime: 151133878 ]                       
+019287 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019289 ts: [ secs: 150 usecs: 697788 cputime: 151157316 ]                       
+019290 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019292 ts: [ secs: 150 usecs: 721225 cputime: 151180753 ]                       
+019293 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019295 ts: [ secs: 150 usecs: 744663 cputime: 151204191 ]                       
+019296 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019298 ts: [ secs: 150 usecs: 768101 cputime: 151227629 ]                       
+019299 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984          
+019301 ts: [ secs: 150 usecs: 791539 cputime: 151251067 ]                       
+019302 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984   
 
 ```
 <br>
