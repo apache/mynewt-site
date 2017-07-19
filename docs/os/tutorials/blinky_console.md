@@ -27,7 +27,6 @@ Add the following dependencies to your application target's `pkg.yml` file:
 pkg.deps:
     - "@apache-mynewt-core/sys/console/full"
     - "@apache-mynewt-core/sys/shell"
-    - "@apache-mynewt-core/sys/sysinit"
 ```
 
 This lets the newt system know that it needs to pull in the code for the console and the shell.
@@ -35,18 +34,21 @@ This lets the newt system know that it needs to pull in the code for the console
 Modify the system configuration settings to enable Shell and Console ticks and prompt.  Add the following to your application target's `syscfg.yml` file:
 
 ```no-highlight
-
 syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
+
     # Enable Console OS Ticks
     CONSOLE_TICKS: 1
+
     # Enable Console Prompt
     CONSOLE_PROMPT: 1 
 ```
 
 <br>
+
 ### Use the OS Default Event Queue to Process Blinky Timer and Shell Events
+
 Mynewt creates a main task that executes the application `main()` function. It also creates an OS default event queue that packages can use to queue their events.   Shell uses the OS default event queue for Shell events,  and `main()` can process the events in the context of the main task. 
 
 Blinky's main.c is very simple. It only has a `main()` function that executes an infinite loop to toggle the LED and sleep for one second.  We will modify blinky:
@@ -57,6 +59,7 @@ Blinky's main.c is very simple. It only has a `main()` function that executes an
 This allows the main task to process both Shell events and the timer events to toggle the LED from the OS default event queue.
 
 <br>
+
 ### Modify main.c
 
 Initialize a os_callout timer and move the toggle code from the while loop in `main()` to the event callback function. Add the following code above the `main()` function:
@@ -68,7 +71,8 @@ static struct os_callout blinky_callout;
 /*
  * Event callback function for timer events. It toggles the led pin.
  */
-static void timer_ev_cb(struct os_event *ev)
+static void
+timer_ev_cb(struct os_event *ev)
 {
     assert(ev != NULL);
 
@@ -78,7 +82,8 @@ static void timer_ev_cb(struct os_event *ev)
     os_callout_reset(&blinky_callout, OS_TICKS_PER_SEC);
 }
 
-static void init_timer(void)
+static void
+init_timer(void)
 {
     /*
      * Initialize the callout for a timer event.
@@ -87,13 +92,13 @@ static void init_timer(void)
                     timer_ev_cb, NULL);
 
     os_callout_reset(&blinky_callout, OS_TICKS_PER_SEC);
-
 }
 ```
 
 In `main()`, add the call to the `init_timer()` function before the while loop and modify the while loop to process events from the OS default event queue:
 
-```c
+```c hl_lines="15 17"
+int
 main(int argc, char **argv)
 {
 
@@ -117,44 +122,32 @@ main(int argc, char **argv)
 
 ```
 <br>
-### Build the Blinky Application Target
+
+### Build, Run, and Upload the Blinky Application Target
 
 We're not going to build the bootloader here since we are assuming that you have already
 built and loaded it during previous tutorials.
 
-Run the `newt build nrf52_blinky` command to build the Blinky application:
+We will use the `newt run` command to build and deploy our improved blinky image.  The run command performs the following tasks for us:
+
+1. Builds a binary Mynewt executable
+2. Wraps the executable in an image header and footer, turning it into a Mynewt image.
+3. Uploads the image to the target hardware.
+4. Starts a gdb process to remotely debug the Mynewt device.
+
+Run the `newt run nrf52_blinky 0` command.  The `0` is the version number that should be written to the image header.  Any version will do, so we choose 0.
 
 ```no-highlight
-$ newt build nrf52_blinky
+$ newt run nrf52_blinky 0
 
    ...
 
 Archiving util_mem.a
-Linking ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
-Target successfully built: targets/nrf52_blinky
-```
-
-<br>
-
-### Sign and Create the Blinky Application Image
-
-Run the `newt create-image nrf52_blinky 1.0.0` command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.
-
-```no-highlight
-$ newt create-image nrf52_blinky 1.0.0
-App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
-```
-
-<br>
-
-### Load the Image
-
-Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.
-
-Run the `newt load nrf52_blinky` command to load the Blinky application image onto the board.
-```no-highlight
-$ newt load nrf52_blinky
+Linking /home/me/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
+App image succesfully generated: /home/me/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
 Loading app image into slot 1
+[/home/me/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh /home/me/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52dk /home/me/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky]
+Debugging /home/me/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
 ```
 
 <br>
@@ -164,7 +157,8 @@ Loading app image into slot 1
 You'll need a Serial connection to see the output of your program. You can reference the [Serial Port Setup](../get_started/serial_access.md) Tutorial for more information on setting up your serial communication.
 
 <br>
-###Communicate with the Application
+
+### Communicate with the Application
 
 Once you have a connection set up, you can connect to your device as follows:
 
@@ -172,9 +166,9 @@ Once you have a connection set up, you can connect to your device as follows:
 
 * On Windows, you can use a terminal application such as PuTTY to connect to the device.
 	
-	If you located your port from a MinGW terminal,  the port name format is `/dev/ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
+If you located your port from a MinGW terminal,  the port name format is `/dev/ttyS<N>`, where `N` is a number. You must map the port name to a Windows COM port: `/dev/ttyS<N>` maps to `COM<N+1>`. For example, `/dev/ttyS2` maps to  `COM3`.
 	
-	You can also use the Windows Device Manager to locate the COM port.
+You can also use the Windows Device Manager to locate the COM port.
     
 <br>
 To test and make sure that the Shell is running, first just hit <return>:
@@ -202,4 +196,3 @@ prompt on
 39108: Prompt now on.
 39108: >
 ```
-
