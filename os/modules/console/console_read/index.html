@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -369,6 +369,17 @@
                 
   
   
+    <li ><a href="../../split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../bootloader/bootloader/">Bootloader</a>
   
   
@@ -397,6 +408,17 @@
   
   
     <li ><a href="../../hal/hal/">Hardware Abstraction Layer</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../drivers/driver/">Drivers</a>
   
   
     </li>
@@ -440,17 +462,6 @@
                 
     <li >
       <a href="../../baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -540,6 +551,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -551,7 +570,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -566,7 +585,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -584,7 +603,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/console/console_read.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/console/console_read.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -595,8 +614,7 @@
                         
                         
                             <h2 id="console_read"><font color="#F2853F" style="font-size:24pt"> console_read </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>  int
-  console_read(char *str, int cnt)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span> <span style="color: #000000">console_read</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*str</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">cnt</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">*newline</span>)
 </pre></div>
 
 
@@ -611,12 +629,16 @@
 </thead>
 <tbody>
 <tr>
-<td>str</td>
+<td><code>str</code></td>
 <td>Buffer where data is copied to.</td>
 </tr>
 <tr>
-<td>cnt</td>
+<td><code>cnt</code></td>
 <td>Maximum number of characters to copy.</td>
+</tr>
+<tr>
+<td><code>newline</code></td>
+<td>Pointer to an integer variable that is set to 1 when an newline character is received and set to 0 otherwise.</td>
 </tr>
 </tbody>
 </table>
@@ -630,12 +652,13 @@ task1_loop(void *arg)
     struct os_event *ev;
     char rx_msg[128];
     int rx_len;
+    int newline;
 
     while (1) {
         ev = os_eventq_get(&amp;task1_evq);
         assert(ev);
         if (ev-&gt;ev_type == CONS_EV_TYPE) {
-            rx_len = console_read(rx_msg, sizeof(rx_msg));
+            rx_len = console_read(rx_msg, sizeof(rx_msg), &amp;newline);
             if (rx_len) {
                     if (!strncmp(rx_msg, &quot;reset&quot;, rx_len)) {
                             assert(0);

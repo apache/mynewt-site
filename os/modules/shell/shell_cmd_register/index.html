@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -291,7 +291,7 @@
   
   
     <li><a href="
-  ../shell_task_init/
+  ./
 ">Functions</a>
   
   
@@ -299,16 +299,16 @@
           
               
                 
-    <li >
-      <a href="../shell_task_init/">shell_task_init</a>
+    <li class="active">
+      <a href="./">shell_cmd_register</a>
     </li>
 
               
           
               
                 
-    <li class="active">
-      <a href="./">shell_cmd_register</a>
+    <li >
+      <a href="../shell_evq_set/">shell_evq_set</a>
     </li>
 
               
@@ -329,6 +329,30 @@
 
               
           
+              
+                
+    <li >
+      <a href="../shell_register/">shell_register</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../shell_register_app_cmd_handler/">shell_register_app_cmd_handler</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../shell_register_default_module/">shell_register_default_module</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -336,6 +360,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../split/split/">Split Images</a>
+  
   
     </li>
 
@@ -383,6 +418,17 @@
                 
   
   
+    <li ><a href="../../drivers/driver/">Drivers</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../testutil/testutil/">Test Utilities</a>
   
   
@@ -416,17 +462,6 @@
                 
     <li >
       <a href="../../baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -516,6 +551,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -527,7 +570,7 @@
   
   
     <li><a href="
-  ../../../../faq/how_to_edit_docs/
+  ../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -542,7 +585,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -550,7 +593,7 @@
         
       
         
-          <li>&raquo; <a href="../shell_task_init/">Functions</a></li>
+          <li>&raquo; Functions</li>
         
       
       
@@ -560,7 +603,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/shell/shell_cmd_register.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/shell/shell_cmd_register.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -575,8 +618,8 @@
 </pre></div>
 
 
-<p>Registers a handler for incoming console commands. Within the structure there is the command string and the handler for those commands. Caller must allocate the memory for this structure and keep it around as shell links this to its own internal data structures.</p>
-<p>Command handler is of type <code>int(*shell_cmd_func_t)(int argc, char **argv)</code>. Command line arguments are passed to it as an array of character pointers.</p>
+<p>Registers a handler for incoming shell commands.  The function adds the shell command to the <code>compat</code> module.  </p>
+<p>The caller must initialize the  <code>shell_cmd</code> structure with the command name and the pointer to the command handler. The caller must not free the memory for the command name string because the shell keeps a reference to the memory for internal use.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -587,14 +630,18 @@
 </thead>
 <tbody>
 <tr>
-<td>sc</td>
-<td>Structure containing info about the command.</td>
+<td><code>sc</code></td>
+<td>Pointer to the <code>shell_cmd</code> structure for the command to register.</td>
 </tr>
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
-<p>Returns 0 on success.
-Non-zero on failure.</p>
+<p>Returns 0 on success.</p>
+<p>Non-zero on failure.
+<br></p>
+<h4 id="notes">Notes</h4>
+<p>The <code>SHELL_MAX_COMPAT_COMMANDS</code> syscfg setting specifies the maximum number of shell commands that the <code>compat</code> module supports.  This function aborts if the number of handlers registered exceeds this limit.   You can increase the value for this setting.</p>
+<p><br></p>
 <h4 id="example">Example</h4>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static int fs_ls_cmd(int argc, char **argv);
 
@@ -619,16 +666,16 @@ fs_cli_init(void)
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../shell_task_init/>
+    <a href=../shell/>
         <span class="fa fa-arrow-left"></span>
-        Previous: shell_task_init
+        Previous: Shell
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../shell_nlip_input_register/>
-        Next: shell_nlip_input_register
+    <a href=../shell_evq_set/>
+        Next: shell_evq_set
         <span class="fa fa-arrow-right"></span>
     </a>
     

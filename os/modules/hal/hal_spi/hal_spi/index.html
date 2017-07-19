@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -290,6 +290,17 @@
                 
   
   
+    <li ><a href="../../../split/split/">Split Images</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
     <li ><a href="../../../bootloader/bootloader/">Bootloader</a>
   
   
@@ -326,14 +337,6 @@
           
               
                 
-    <li >
-      <a href="../../hal_architecture/">Architecture</a>
-    </li>
-
-              
-          
-              
-                
   
   
     <li><a href="
@@ -354,23 +357,7 @@
               
                 
     <li >
-      <a href="../../hal_adc/hal_adc/">ADC</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_cputime/hal_cpu_timer/">CPU timer</a>
-    </li>
-
-              
-          
-              
-                
-    <li >
-      <a href="../../hal_dac/hal_dac/">DAC</a>
+      <a href="../../hal_bsp/hal_bsp/">BSP</a>
     </li>
 
               
@@ -407,7 +394,7 @@
               
                 
     <li >
-      <a href="../../hal_pwm/hal_pwm/">PWM</a>
+      <a href="../../hal_os_tick/hal_os_tick/">OS Tick</a>
     </li>
 
               
@@ -431,7 +418,23 @@
               
                 
     <li >
+      <a href="../../hal_timer/hal_timer/">Timer</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
       <a href="../../hal_uart/hal_uart/">UART</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../hal_watchdog/hal_watchdog/">Watchdog</a>
     </li>
 
               
@@ -459,6 +462,17 @@
               
           
     </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../drivers/driver/">Drivers</a>
+  
   
     </li>
 
@@ -501,17 +515,6 @@
                 
     <li >
       <a href="../../../baselibc/">Baselibc library</a>
-    </li>
-
-              
-          
-              
-                
-  
-  
-    <li ><a href="../../../elua/elua/">Embedded Lua</a>
-  
-  
     </li>
 
               
@@ -601,6 +604,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -612,7 +623,7 @@
   
   
     <li><a href="
-  ../../../../../faq/how_to_edit_docs/
+  ../../../../../faq/go_env/
 ">Appendix</a>
   
   
@@ -627,7 +638,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -645,7 +656,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/os/modules/hal/hal_spi/hal_spi.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/hal/hal_spi/hal_spi.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -660,66 +671,37 @@
 commonly used to connect components in embedded systems.</p>
 <p>For a detailed description of SPI, see <a href="https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus">Wikipedia</a>.</p>
 <h3 id="description">Description</h3>
-<p>The Mynewt HAL interface supports the SPI master functionality only.  Future
-version will support SPI slave functionality.</p>
+<p>The Mynewt HAL interface supports the SPI master functionality with both blocking and non-blocking interface.  SPI slave functionality is supported in non-blocking mode.</p>
 <h3 id="definition">Definition</h3>
-<p><a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_spi.h">hal_spi.h</a></p>
+<p><a href="https://github.com/apache/incubator-mynewt-core/blob/master/hw/hal/include/hal/hal_spi.h">hal_spi.h</a></p>
 <h3 id="hal_spi-theory-of-operation">HAL_SPI Theory Of Operation</h3>
 <p>SPI is called a 4-wire interface because of the 4 signals, MISO, MOSI, CLK, 
 and SS.  The SS signal (slave select) is an active low signal that activates
 a SPI slave device.  This is how a master "addresses" a particular slave
 device.  Often this signal is also referred to as "chip select" as it
 selects particular slave device for communications.</p>
-<p>The Mynewt SPI HAL has blocking transfers.  This means that the API call
+<p>The Mynewt SPI HAL has blocking and non-blocking transfers.  Blocking means that the API call
 to transfer a byte will wait until the byte completes transmissions before
-the function returns.</p>
-<p>Since SPI is generally a shared communications bus, the hal_spi API allows
-SPI runtime configuration to be compatible with the data format and speed of the 
-slave device.  See the <code>hal_spi_config</code> method in the API above for a 
-description of the available settings.  These settings are critical to the
-operation of the slave device.</p>
-<p>The Mynewt SPI HAL does not include built-in SS signaling.  Its up to the 
+the function returns. Blocking interface can be used for only the master slave SPI type.
+Non-blocking means he function returns control to the execution environment immediately after the API call and a callback function is executed at the completion of the transmission. Non-blocking interface can be used for both master and slave SPI types.</p>
+<p>The <code>hal_spi_config</code> method in the API above allows the SPI to be configured with appropriate settings for master or slave. It Must be called after the spi is initialized (i.e. after hal_spi_init is called) and when the spi is disabled (i.e. user must call hal_spi_disable if the spi has been enabled through hal_spi_enable prior to calling this function). It can also be used to reconfigure an initialized SPI (assuming it is disabled as described previously).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span> <span style="color: #000000">hal_spi_config</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">spi_num</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_spi_settings</span> <span style="color: #000000">*psettings</span>);
+</pre></div>
+
+
+<p>The SPI settings consist of the following:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">hal_spi_settings</span> {
+    <span style="color: #A90D91">uint8_t</span>         <span style="color: #000000">data_mode</span>;
+    <span style="color: #A90D91">uint8_t</span>         <span style="color: #000000">data_order</span>;
+    <span style="color: #A90D91">uint8_t</span>         <span style="color: #000000">word_size</span>;
+    <span style="color: #A90D91">uint32_t</span>        <span style="color: #000000">baudrate</span>;           <span style="color: #177500">/* baudrate in kHz */</span>
+};
+</pre></div>
+
+
+<p>The Mynewt SPI HAL does not include built-in SS (Slave Select) signaling.  It's up to the 
 hal_spi user to control their own SS pins.  Typically applications will do 
 this with GPIO.</p>
-<p>An example of this would look like this (error handling excluded for brevity):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>        /* each device may have different settings */
-        extern struct hal_spi_settings dev1;    
-        extern struct hal_spi_settings dev2;
-
-        gpio_init_out(SS_DEV_1, 1);
-        gpio_init_out(SS_DEV_2, 1);
-        hal_spi *pspi = hal_spi_init(SPI0);
-
-        ...
-        /* write a single byte (0) to device 1 */
-        hal_spi_config(pspi, &amp;dev1);
-        gpio_clear(SS_DEV_1)
-        rc = hal_spi_transfer(pspi, 0)
-        gpio_set(SS_DEV_1)
-
-        /* read a single byte from device 2 */
-        hal_spi_config(pspi, &amp;dev2);
-        gpio_clear(SS_DEV_2)
-        val = hal_spi_transfer(pspi, 0)
-        gpio_set(SS_DEV_2)
-</pre></div>
-
-
-<p>Depending on the device's operation, it may be necessary or more efficient
-to write or read multiple bytes in a single transaction.  An example is
-shown below</p>
-<p>```no-highlight</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>void spi_write_buf(struct hal_spi *pspi, uint8_t *buf, int len) {
-    char *ptr = buf;
-
-    hal_spi_config(pspi, &amp;dev2);
-    gpio_clear(SS_DEV_2)
-    while(len--  &gt; 0) {
-        val = hal_spi_transfer(pspi, (uint16_t) *ptr++)
-    }
-    gpio_set(SS_DEV_2)
-}
-</pre></div>
                         
                         <div class="row">
                             
@@ -729,9 +711,9 @@ shown below</p>
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../../hal_pwm/hal_pwm/>
+    <a href=../../hal_os_tick/hal_os_tick/>
         <span class="fa fa-arrow-left"></span>
-        Previous: PWM
+        Previous: OS Tick
     </a>
     
     </li>

@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -481,17 +481,6 @@
                 
   
   
-    <li ><a href="../../fcb/fcb/">Flash Circular Buffer</a>
-  
-  
-    </li>
-
-              
-          
-              
-                
-  
-  
     <li ><a href="../../stats/stats/">Stats</a>
   
   
@@ -614,7 +603,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/mynewt-site/blob/develop/docs/os/modules/shell/shell_nlip_input_register.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/shell/shell_nlip_input_register.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -625,7 +614,7 @@
                         
                         
                             <h2 id="shell_nlip_input_register"><font color="#F2853F" style="font-size:24pt"> shell_nlip_input_register </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span> <span style="color: #000000">shell_nlip_input_register</span>(<span style="color: #000000">shell_nlip_input_func_t</span> <span style="color: #000000">nf</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>int shell_nlip_input_register(shell_nlip_input_func_t nf, void *arg)
 </pre></div>
 
 
@@ -655,21 +644,21 @@ The shell passes the incoming newtmgr message stored in a <code>os_mbuf</code> a
 <p>Returns 0 on success.</p>
 <p>Non-zero on failure.</p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">nmgr_shell_in</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*m</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static int
+nmgr_shell_in(struct os_mbuf *m, void *arg)
 {
     ....
 }
 
-<span style="color: #A90D91">int</span> 
-<span style="color: #000000">nmgr_task_init</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">prio</span>, <span style="color: #000000">os_stack_t</span> <span style="color: #000000">*stack_ptr</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">stack_len</span>)
+int 
+nmgr_task_init(uint8_t prio, os_stack_t *stack_ptr, uint16_t stack_len)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    int rc;
     ....
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">shell_nlip_input_register</span>(<span style="color: #000000">nmgr_shell_in</span>, 
-            (<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>) <span style="color: #000000">&amp;g_nmgr_shell_transport</span>);
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
-        <span style="color: #A90D91">goto</span> <span style="color: #000000">err</span>;
+    rc = shell_nlip_input_register(nmgr_shell_in, 
+            (void *) &amp;g_nmgr_shell_transport);
+    if (rc != 0) {
+        goto err;
     }
     ....
 }

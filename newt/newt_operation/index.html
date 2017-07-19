@@ -151,10 +151,10 @@
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
     
     <option
-      value="/develop/os/introduction"
+      value="/latest/os/introduction"
       selected="selected"
     >
-      Version: develop (latest)
+      Version: master (latest)
     </option>
     
     <option
@@ -302,6 +302,14 @@
 
               
           
+              
+                
+    <li >
+      <a href="../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
     </ul>
   
     </li>
@@ -313,7 +321,7 @@
   
   
     <li><a href="
-  ../../faq/how_to_edit_docs/
+  ../../faq/go_env/
 ">Appendix</a>
   
   
@@ -328,7 +336,7 @@
                         <div class="doc-header">
                             <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href="/develop/os/introduction">Docs</a></li>
+    <li><a href="/latest/os/introduction">Docs</a></li>
     
     
         
@@ -346,7 +354,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/incubator-mynewt-site/blob/develop/docs/newt/newt_operation.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/newt/newt_operation.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -359,7 +367,7 @@
                             <h2 id="newt-tool-theory-of-operations">Newt Tool - Theory of Operations</h2>
 <p>Newt has a fairly smart package manager that can read a directory tree, build a dependency tree, and emit the right build artifacts.</p>
 <h3 id="building-dependencies">Building dependencies</h3>
-<p>Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in incubator-mynewt-blinky/develop:</p>
+<p>Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in mynewt-blinky/develop:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree -L 3 
 .
 ├── DISCLAIMER
@@ -384,25 +392,26 @@
 
 
 <p><br></p>
-<p>When Newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
+<p>When newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
 <p><br></p>
 <h4 id="apps-package-directory">"apps" Package Directory</h4>
 <p><code>apps</code> is where applications are stored, and applications are where the main() function is contained.  The base project directory comes with one simple app called <code>blinky</code> in the <code>apps</code> directory. The core repository <code>@apache-mynewt-core</code> comes with many additional sample apps in its <code>apps</code> directory. At the time of this writing, there are several example BLE apps, the boot app, slinky app for using newt manager protocol, and more in that directory.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>@~/dev/myproj$ ls repos/apache-mynewt-core/apps/
-blecent     bleprph_oic bleuart     ffs2native  slinky_oic  test
-blehci      bletest     boot        ocf_sample  spitest     timtest
-bleprph     bletiny     fat2native  slinky      splitty
+blecent     blesplit    boot        sensors_test    splitty
+blehci      bletest     fat2native  slinky      test
+bleprph     bletiny     ffs2native  slinky_oic  testbench
+bleprph_oic bleuart     ocf_sample  spitest     timtest
 </pre></div>
 
 
-<p>Along with the <code>targets</code> directory, <code>apps</code> represents the top-level of the build tree for the particular project, and define the dependencies and features for the rest of the system. Mynewt users and developers can add their own apps to the project's <code>apps</code> directory.   </p>
+<p>Along with the <code>targets</code> directory, <code>apps</code> represents the top-level of the build tree for the particular project, and define the dependencies for the rest of the system. Mynewt users and developers can add their own apps to the project's <code>apps</code> directory.   </p>
 <p>The app definition is contained in a <code>pkg.yml</code> file. For example, blinky's <code>pkg.yml</code> file is:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more apps/blinky/pkg.yml
 &lt;snip&gt;
 pkg.name: apps/blinky
 pkg.type: app
 pkg.description: Basic example application which blinks an LED.
-pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;
+pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.apache.org&gt;&quot;
 pkg.homepage: &quot;http://mynewt.apache.org/&quot;
 pkg.keywords:
 
@@ -414,13 +423,12 @@ pkg.deps:
 
 
 <p><br></p>
-<p>This file says that the name of the package is apps/blinky, and it 
-depends on kernel/os, hw/hal and sys/console/full packages.</p>
+<p>This file says that the name of the package is apps/blinky, and it depends on the <code>kernel/os,</code>hw/hal<code>and</code>sys/console/full` packages.</p>
 <p><strong>NOTE:</strong> @apache-mynewt-core is a repository descriptor, and this will be 
 covered in the "repository" section. </p>
 <p><br></p>
 <h4 id="targets-package-directory">"targets" Package Directory</h4>
-<p><code>targets</code> is where targets are stored, and each target is a collection of parameters that must be passed to Newt in order to generate a reproducible build. Along with the <code>apps</code> directory, <code>targets</code> represents the top of the build tree. Any packages or parameters specified at the target level cascades down to all dependencies.</p>
+<p><code>targets</code> is where targets are stored, and each target is a collection of parameters that must be passed to newt in order to generate a reproducible build. Along with the <code>apps</code> directory, <code>targets</code> represents the top of the build tree. Any packages or parameters specified at the target level cascades down to all dependencies.</p>
 <p>Most targets consist of:</p>
 <ul>
 <li>app: The application to build</li>
@@ -441,17 +449,19 @@ pkg.yml     target.yml
 <p>There are helper functions to aid the developer specify parameters for a target. </p>
 <ul>
 <li><strong>vals</strong>: Displays all valid values for the specified parameter type (e.g. bsp for a target)</li>
-<li><strong>target show</strong>: Displays the build artifacts for specified or all targets</li>
+<li><strong>target show</strong>: Displays the variable values for either a specific target or all targets defined for the project</li>
+<li><strong>target set</strong>: Sets values for target variables</li>
 </ul>
-<p>In general, the three basic parameters of a target (<code>app</code>, <code>bsp</code>, and <code>build_profile</code>) are stored in the <code>target.yml</code> file in that target's build directory under <code>targets</code>. You will also see a <code>pkg.yml</code> file in the same directory. Since targets are packages, a <code>pkg.yml</code> is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:</p>
+<p>In general, the three basic parameters of a target (<code>app</code>, <code>bsp</code>, and <code>build_profile</code>) are stored in the target's <code>target.yml</code> file in the targets/&lt;target-name&gt; directory, where <code>target-name</code> is the name of the target. You will also see a <code>pkg.yml</code> file in the same directory. Since targets are packages, a <code>pkg.yml</code> is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:</p>
 <ul>
 <li>Cflags: Any additional compiler flags you might want to specify to the build</li>
 <li>Aflags: Any additional assembler flags you might want to specify to the build</li>
 <li>Lflags: Any additional linker flags you might want to specify to the build</li>
 </ul>
+<p>You can also override the values of the system configuration settings that are defined by the packages that your target includes. You override the values in your target's <code>syscfg.yml</code> file (stored in the targets/&lt;target-name&gt; directory). You can use the <code>newt target config show</code> command to see the configuration settings and values for your target, and use the <code>newt target set</code> command to set the <code>syscfg</code> variable and override the configuration setting values.  You can also use an editor to create your target's <code>syscfg.yml</code> file and add the setting values to the file.  See <a href="../../os/modules/sysinitconfig/sysinitconfig/">System Configuration And Initialization</a> for more information on system configuration settings.</p>
 <p><br></p>
 <h3 id="resolving-dependencies">Resolving dependencies</h3>
-<p>When newt is told to build a project, it will:</p>
+<p>When newt builds a project, it will:</p>
 <ul>
 <li>find the top-level project.yml file</li>
 <li>recurse the packages in the package tree, and build a list of all 
@@ -475,88 +485,108 @@ target.build_profile: &quot;debug&quot;
 <li>Board Support Package (target.bsp): The board support package to build 
 along with that application.</li>
 </ul>
-<p>Newt goes and builds the dependency tree specified by all the packages. While building this tree, it does a few other things:</p>
+<p>Newt builds the dependency tree specified by all the packages. While building this tree, it does a few other things:</p>
 <ul>
-<li>Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
-newt structure must always be prefixed by the package name. For example, libs/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.</li>
+<li>Sets up the include paths for each package. Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
+newt structure must always be prefixed by the package name. For example, kernel/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree
-.
-├── README.md
-├── include
-│   └── os
-│       ├── arch
-│       │   ├── cortex_m0
-│       │   │   └── os
-│       │   │       └── os_arch.h
-│       │   ├── cortex_m4
-│       │   │   └── os
-│       │   │       └── os_arch.h
-│       │   └── sim
-│       │       └── os
-│       │           └── os_arch.h
-│       ├── endian.h
-│       ├── os.h
-│       ├── os_callout.h
-│       ├── os_cfg.h
-│       ├── os_eventq.h
-│       ├── os_heap.h
-│       ├── os_malloc.h
-│       ├── os_mbuf.h
-│       ├── os_mempool.h
-│       ├── os_mutex.h
-│       ├── os_sanity.h
-│       ├── os_sched.h
-│       ├── os_sem.h
-│       ├── os_task.h
-│       ├── os_test.h
-│       ├── os_time.h
-│       └── queue.h
-├── pkg.yml
-└── src
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$tree kernel/os/include
+kernel/os/include
+└── os
     ├── arch
+    │   ├── cortex_m0
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   ├── cortex_m4
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   ├── mips
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   ├── sim
+    │   │   └── os
+    │   │       └── os_arch.h
+    │   └── sim-mips
+    │       └── os
+    │           └── os_arch.h
+    ├── endian.h
+    ├── os.h
+    ├── os_callout.h
+    ├── os_cfg.h
+    ├── os_cputime.h
+    ├── os_dev.h
+    ├── os_eventq.h
+    ├── os_fault.h
+    ├── os_heap.h
+    ├── os_malloc.h
+    ├── os_mbuf.h
+    ├── os_mempool.h
+    ├── os_mutex.h
+    ├── os_sanity.h
+    ├── os_sched.h
+    ├── os_sem.h
+    ├── os_task.h
+    ├── os_test.h
+    ├── os_time.h
+    └── queue.h
+
 &lt;snip&gt;
 </pre></div>
 
 
 <p><br></p>
 <ul>
-<li>API requirements are validated.  Packages can export APIs they 
+<li>
+<p>Validates API requirements.  Packages can export APIs they 
 implement, (i.e. pkg.api: hw-hal-impl), and other packages can require 
-those APIs (i.e. pkg.req_api: hw-hal-impl).</li>
+those APIs (i.e. pkg.req_api: hw-hal-impl).</p>
+</li>
+<li>
+<p>Reads and validates the configuration setting definitions and values from the package <code>syscfg.yml</code> files.
+It generates a <code>syscfg.h</code> header file that packages include in the source files in order to access the settings.<br />
+It also generates a system initialization function to initialize the packages.
+See <a href="../../os/modules/sysinitconfig/sysinitconfig/">System Configuration And Initialization</a> for more information.</p>
+</li>
 </ul>
-<p>In order to properly resolve all dependencies in the build system, Newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.</p>
+<p>In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies.  And it builds a big list of all the packages that need to be build.</p>
 <p>Newt then goes through this package list, and builds every package into 
 an archive file.</p>
-<p><strong>NOTE:</strong> The Newt tool generates compiler dependencies for all of these packages, and only rebuilds the packages whose dependencies have changed. Changes in package &amp; project dependencies are also taken into account. It is smart, after all!</p>
+<p><strong>NOTE:</strong> The newt tool generates compiler dependencies for all of these packages, and only rebuilds the packages whose dependencies have changed. Changes in package &amp; project dependencies are also taken into account. It is smart, after all!</p>
 <h3 id="producing-artifacts">Producing artifacts</h3>
-<p>Once Newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)</p>
-<p>NOTE: One common use of the "features" option above is to overwrite 
-which linkerscript is used, based upon whether or not the BSP is being 
-build for a raw image, bootable image or bootloader itself.</p>
-<p>The newt tool places all of it's artifacts into the bin/ directory at 
-the top-level of the project, prefixed by the target name being built, 
-for example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree -L 4 bin/
-bin/
-└── my_blinky_sim
-     ├── apps
-     │   └── blinky
-     │       ├── blinky.a
-     │       ├── blinky.a.cmd
-     │       ├── blinky.elf
-     │       ├── blinky.elf.cmd
-     │       ├── blinky.elf.dSYM
-     │       ├── blinky.elf.lst
-     │       ├── main.d
-     │       ├── main.o
-     │       └── main.o.cmd
-     ├── hw
-     │   ├── bsp
-     │   │   └── native
-     │   ├── hal
-     │   │   ├── flash_map.d
-     │   │   ├── flash_map.o
+<p>Once newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)</p>
+<p>The newt tool creates a bin directory under the base project directory, and places a target's build artifacts into the bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt; directory, where <code>target-name</code> is the name of the target and <code>app-name</code> is the name of the application. As an example, the <code>blinky.elf</code> executable for the <code>blinky</code> application defined by the <code>my_blinky_sim</code> target is stored in the bin/targets/my_blinky_sim/app/apps/blinky directory as shown in the following source tree:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$tree -L 9 bin/ bin/
+└── targets
+    ├── my_blinky_sim
+    │   ├── app
+    │   │   ├── apps
+    │   │   │   └── blinky
+    │   │   │       ├── apps
+    │   │   │       │   └── blinky
+    │   │   │       │       └── src
+    │   │   │       │           ├── main.d
+    │   │   │       │           ├── main.o
+    │   │   │       │           └── main.o.cmd
+    │   │   │       ├── apps_blinky.a
+    │   │   │       ├── apps_blinky.a.cmd
+    │   │   │       ├── blinky.elf
+    │   │   │       ├── blinky.elf.cmd
+    │   │   │       ├── blinky.elf.dSYM
+    │   │   │       │   └── Contents
+    │   │   │       │       ├── Info.plist
+    │   │   │       │       └── Resources
+    │   │   │       │           └── DWARF
+    │   │   │       ├── blinky.elf.lst
+    │   │   │       └── manifest.json
+    │   │   ├── hw
+    │   │   │   ├── bsp
+    │   │   │   │   └── native
+    │   │   │   │       ├── hw_bsp_native.a
+    │   │   │   │       ├── hw_bsp_native.a.cmd
+    │   │   │   │       └── repos
+    │   │   │   │           └── apache-mynewt-core
+    │   │   │   │               └── hw
+
 &lt;snip&gt;
 </pre></div>
 
@@ -567,8 +597,8 @@ bin/
 <li>Archive File</li>
 <li>*.cmd: The command use to generate the object or archive file</li>
 <li>*.lst: The list file where symbols are located</li>
-<li>*.o The object files that get put into the archive file</li>
 </ul>
+<p>Note: The *.o object files that get put into the archive file are stored in the bin/targets/my_blinky_sim/app/apps/blinky/apps/blinky/src directory.</p>
 <h3 id="downloaddebug-support">Download/Debug Support</h3>
 <p>Once a target has been build, there are a number of helper functions 
 that work on the target.  These are:</p>
@@ -578,6 +608,7 @@ that work on the target.  These are:</p>
 <li><strong>size</strong>         Size of target components</li>
 <li><strong>create-image</strong>  Add image header to target binary</li>
 <li><strong>run</strong>  The equivalent of build, create-image, load, and debug on specified target</li>
+<li><strong>target</strong> Create, delete, configure, and query a target</li>
 </ul>
 <p><code>load</code> and <code>debug</code> handles driving GDB and the system debugger.  These 
 commands call out to scripts that are defined by the BSP.</p>
