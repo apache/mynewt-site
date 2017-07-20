@@ -214,11 +214,10 @@ Run the `newtmgr taskstat -c nrf52serial` command to display the task statistics
 
 ```no-highlight
 $ newtmgr taskstat -c nrf52serial
-Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
-     task1   8   2        0     1751      192      110        0        0
-     task2   9   3        0     1751       64       31        0        0
-      idle 255   0   224081     2068       64       32        0        0
-      main 127   1        3       29     1024      365        0        0
+      idle 255   0    43484      539       64       32        0        0
+      main 127   1        1       90     1024      353        0        0
+     task1   8   2        0      340      192      114        0        0
+     task2   9   3        0      340       64       31        0        0
 $
 ```

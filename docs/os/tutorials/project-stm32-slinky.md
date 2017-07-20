@@ -34,7 +34,7 @@ stm32_boot`.
 
 ```no-highlight
 $ newt target create stm32_boot
-$ newt target set stm32_bootr bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
+$ newt target set stm32_boot bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
 $ newt target set stm32_boot build_profile=optimized
 $ newt target set stm32_boot target.app=@apache-mynewt-core/apps/boot
 ```
@@ -102,7 +102,7 @@ $
 Run the `newt create-image stm32_slinky 1.0.0` command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.
 
 ```no-highlight
-create-image stm32_slinky 1.0.0
+newt create-image stm32_slinky 1.0.0
 App image succesfully generated: ~/dev/slinky/bin/targets/stm32_slinky/app/apps/slinky/slinky.img
 $
 ```
@@ -234,7 +234,6 @@ Run the `newtmgr taskstat -c stm32serial` command to display the task statistics
 
 ```no-highlight
 $ newtmgr taskstat -c stm32serial
-Return Code = 0
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
      task1   8   2        0       90      192      110        0        0
      task2   9   3        0       90       64       31        0        0
