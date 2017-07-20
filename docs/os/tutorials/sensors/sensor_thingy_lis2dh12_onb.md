@@ -368,7 +368,7 @@ static struct os_callout sensor_callout;
 #define READ_CB    1
 
 static int
-read_accelerometer(struct sensor* sensor, void *arg, void *databuf)
+read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_t type)
 {
 
     char tmpstr[13];
@@ -420,8 +420,8 @@ timer_ev_cb(struct os_event *ev)
     assert(ev != NULL);
 
     /* 
-     * Read the acceleromter sensor. Pass the read_accelerometer callback 
-     * and read_cb_str for the callback arg.
+     * Read the acceleromter sensor.  Pass the READ_CB value for the callback opaque
+     * arg to indicate that it is the sensor read data callback.
      */
     sensor_read(my_sensor, SENSOR_TYPE_ACCELEROMETER, read_accelerometer,
                  (void *)READ_CB, OS_TIMEOUT_NEVER);
@@ -575,7 +575,7 @@ You can also register a sensor listener callback. When the `sensor_read()` funti
 #define READ_CB    1
 #define LISTENER_CB 2
 
-static int read_accelerometer(struct sensor* sensor, void *arg, void *databuf);
+static int read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_t type);
 
 static struct sensor_listener listener = {
    .sl_sensor_type = SENSOR_TYPE_ACCELEROMETER,
@@ -643,7 +643,7 @@ Continuing.
 ```
 
 <br>
-2. Connect to the console via RTT
+2. Connect to the console via RTT:
 
 ```no-highlight
 
