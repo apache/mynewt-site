@@ -8,17 +8,15 @@ Manage newtmgr connection profiles.
 ```
 
 #### Flags:
-```no-highlight
-    -h, --help   help for conn
-```
+
 #### Global Flags:
 
 ```no-highlight
-    -c, --conn string       connection profile to use.
-        --name string       name of target BLE device; overrides profile setting
-    -l, --loglevel string   log level to use (default "info")
-    -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
-    -r, --tries int         total number of tries in case of timeout (default 1)
+  -c, --conn string       connection profile to use
+  -l, --loglevel string   log level to use (default "info")
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 
 #### Description

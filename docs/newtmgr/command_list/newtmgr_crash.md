@@ -5,16 +5,18 @@ Send a crash command to a device.
 #### Usage:
 
 ```no-highlight
-    newtmgr crash <div0|jump0|ref0|assert|wdog> -c <conn_profile> [flags] 
+    newtmgr crash <assert|div0|jump0|ref0|wdog> -c <conn_profile> [flags] 
 ```
 
 #### Global Flags:
 
 ```no-highlight
-    -c, --conn string       connection profile to use.
-    -h, --help              Help for newtmgr commands
-    -l, --loglevel string   log level to use (default "info")
-    -t, --trace             print all bytes transmitted and received
+  -c, --conn string       connection profile to use
+  -h, --help              help for newtmgr
+  -l, --loglevel string   log level to use (default "info")
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 
 #### Description
