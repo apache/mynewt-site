@@ -194,8 +194,11 @@ Extended Advertising parameters:
 | Extended advertising with 2M PHY    | 2M                        |
 | Extended advertising with coded PHY | coded                     |
 
-
 ### Advertisement Filter Policies
 
-### Advertisement data fields
-
+| *btshell string*  | *Description*                                                          | *Notes*   |
+| ----------------- | ---------------                                                        | --------- |
+| none              | No filtering. No whitelist used.                                       | Default   |
+| scan              | Process all connection requests but only scans from white list.        |           |
+| conn              | Process all scan request but only connection requests from white list. |           |
+| both              | Ignore all scan and connection requests unless in white list.          |           |
