@@ -41,35 +41,51 @@ The statistics for the ble_att Stats:
 ```no-highlight
 
 $ newtmgr stat ble_att -c myserial
-Return Code = 0
-Stats Name: ble_att
-  read_type_req_rx: 0
-  read_rsp_rx: 0
-  read_group_type_rsp_tx: 0
-  prep_write_rsp_tx: 0
-  find_type_value_req_tx: 0
-  read_type_rsp_rx: 0
-  read_mult_req_rx: 0
-  notify_req_tx: 0
-  indicate_req_tx: 0
+stat group: ble_att
+         0 error_rsp_rx
+         0 error_rsp_tx
+         0 exec_write_req_rx
+         0 exec_write_req_tx
+         0 exec_write_rsp_rx
+         0 exec_write_rsp_tx
+         0 find_info_req_rx
+         0 find_info_req_tx
+         0 find_info_rsp_rx
+         0 find_info_rsp_tx
+         0 find_type_value_req_rx
+         0 find_type_value_req_tx
+         0 find_type_value_rsp_rx
+         0 find_type_value_rsp_tx
 
-       ...
-  write_cmd_rx: 0
-  prep_write_rsp_rx: 0
-  read_type_rsp_tx: 0
-  read_req_tx: 0
-  read_mult_req_tx: 0
-  read_group_type_req_rx: 0
-  write_rsp_tx: 0
-  exec_write_rsp_rx: 0
+               ...
 
+         0 read_rsp_rx
+         0 read_rsp_tx
+         0 read_type_req_rx
+         0 read_type_req_tx
+         0 read_type_rsp_rx
+         0 read_type_rsp_tx
+         0 write_cmd_rx
+         0 write_cmd_tx
+         0 write_req_rx
+         0 write_req_tx
+         0 write_rsp_rx
+         0 write_rsp_tx
 ```
-
+<br>
 The list of Stats names using the list subcommand:
 ```no-highlight
 
 $ newtmgr stat list -c myserial
-[stat ble_l2cap ble_att ble_gap ble_gattc ble_gatts ble_hs ble_ll_conn ble_ll ble_phy]
-Return Code = 0
-
+stat groups:
+    ble_att
+    ble_gap
+    ble_gattc
+    ble_gatts
+    ble_hs
+    ble_l2cap
+    ble_ll
+    ble_ll_conn
+    ble_phy
+    stat
 ```

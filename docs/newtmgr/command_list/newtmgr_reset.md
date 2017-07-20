@@ -4,7 +4,7 @@ Send a reset request to a device.
 #### Usage:
 
 ```no-highlight
-    newtmgr reset <conn_profile> [flags] 
+    newtmgr reset -c <conn_profile> [flags] 
 ```
 
 #### Global Flags:

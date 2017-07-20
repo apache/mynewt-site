@@ -40,10 +40,9 @@ Sub-command  | Usage                  | Explanation
 Here is an example output for the `myble` application from the [Enabling Newt Manager in any app](/os/tutorials/add_newtmgr.md) tutiorial:
 
 ```no-highlight
-newtmgr taskstat -c myserial 
-Return Code = 0
+$ newtmgr taskstat -c myserial 
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
-      idle 255   0   151917       47       64       34        0        0
-      main 127   1        2       59      512      188        0        0
-    ble_ll   0   2        0       14       80       56        0        0
+    ble_ll   0   2        0       12       80       58        0        0
+      idle 255   0    16713       95       64       31        0        0
+      main 127   1        2       81      512      275        0        0
 ```
