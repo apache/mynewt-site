@@ -2,7 +2,7 @@
 
 The shell runs above the console and provides two functionalities:
 
-* Processes console input.  See the [Enabling the Console and Shell tutorial](/os/tutorials/add_shell.md) for example of the shell. 
+* Processes console input.  See the [Enabling the Console and Shell tutorial](/os/tutorials/blinky_console.md) for example of the shell. 
 * Implements the [newtmgr](../../../newtmgr/overview.md) line protocol over serial transport.  
 
 The shell uses the OS default event queue for shell events and runs in the context of the main task. An application can, optionally, specify a dedicated event queue for the shell to use.

@@ -409,7 +409,7 @@ All looks good.
 ### Add CLI commands for testing drivers
 
 While developing the driver, you want to issue operations from console asking it to do stuff. We'll assume that you've already worked through the tutorial 
-on how to [enable the CLI](add_shell.md), so all we'll need to do is add the propper values to the project's `syscfg.yml` file:
+on how to [enable the CLI](blinky_console.md), so all we'll need to do is add the propper values to the project's `syscfg.yml` file:
 
 ```no-highlight
 [user@IsMyLaptop:~/src/air_quality]$ cat targets/air_q/syscfg.yml
