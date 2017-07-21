@@ -7,10 +7,10 @@
         
         
         <!-- This is broken by doc revisioning.
-        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_blocking_mode/"> -->
+        <link rel="canonical" href="http://mynewt.apache.org/os/modules/console/console_set_queues/"> -->
         <link rel="shortcut icon" href="../../../../img/favicon.ico">
 
-	    <title>console_blocking_mode - Apache Mynewt</title>
+	    <title>console_set_queues - Apache Mynewt</title>
 
         <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
         <link rel="stylesheet" href="../../../../css/highlight.css">
@@ -41,7 +41,7 @@
     </head>
 
 
-    <body class="console_blocking_mode">
+    <body class="console_set_queues">
 
 
         <div class="container">
@@ -280,19 +280,11 @@
   
   
     <li><a href="
-  ./
+  ../console_echo/
 ">Functions</a>
   
   
     <ul>
-          
-              
-                
-    <li class="active">
-      <a href="./">console_blocking_mode</a>
-    </li>
-
-              
           
               
                 
@@ -330,6 +322,14 @@
                 
     <li >
       <a href="../console_read/">console_read</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">console_set_queues</a>
     </li>
 
               
@@ -593,17 +593,17 @@
         
       
         
-          <li>&raquo; Functions</li>
+          <li>&raquo; <a href="../console_echo/">Functions</a></li>
         
       
       
-        <li>&raquo; console_blocking_mode</li>
+        <li>&raquo; console_set_queues</li>
       
     
     
       <li class="wy-breadcrumbs-aside">
         
-          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/console/console_blocking_mode.md"
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/modules/console/console_set_queues.md"
             class="icon icon-github"> Edit on GitHub</a>
         
       </li>
@@ -613,31 +613,64 @@
                         </div>
                         
                         
-                            <h2 id="console_blocking_mode"><font color="#F2853F" style="font-size:24pt"> console_blocking_mode </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>   void
-   console_blocking_mode(void)
+                            <h2 id="console_set_queues"><font color="#F2853F" style="font-size:24pt"> console_set_queues </font></h2>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span> <span style="color: #000000">console_set_queues</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*avail</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*lines</span>)
 </pre></div>
 
 
-<p>Calls the <code>console_blocking_tx</code> function to flush the buffered console output (transmit) queue. The function <code>OS_ENTER_CRITICAL()</code> is called to disable interrupts and <code>OS_EXIT_CRITICAL()</code> is called to enable interrupts back again once the buffer is flushed.</p>
+<p>Sets the event queues that the console uses to manage input data buffering and to send notification when a full line of data is received. </p>
+<p>The caller must initialize the <code>avail</code> queue and add at least one event to the queue. The event <code>ev_cb</code> field should point to the callback function to call when a full line of data is received, and the event <code>ev_arg</code> should point to a <code>console_input</code> structure. </p>
+<p>The lines queue can be the OS default event queue or an event queue that the caller has initialized. If the OS default event queue is specified, events from this queue are processed in the context of the OS main task. If a different event queue is specified, the call must initialize the event queue and a task to process events from the queue.</p>
 <h4 id="arguments">Arguments</h4>
-<p>None</p>
+<table>
+<thead>
+<tr>
+<th>Arguments</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>avail</code></td>
+<td>Event queue to queue available buffer events. An event indicates that the console can use the buffer from event data to buffer input data until a new line is received.</td>
+</tr>
+<tr>
+<td><code>lines</code></td>
+<td>Event queue to queue full line events. An event indicates that a full line of input is received and the event callback function can be called to process the input line.</td>
+</tr>
+</tbody>
+</table>
 <h4 id="returned-values">Returned values</h4>
-<p>N/A</p>
+<p>None</p>
 <h4 id="example">Example</h4>
-<p>Here is an example of calling <code>console_blocking_mode</code> and printing crash information from an assert to help debug.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>void
-_assert_func(const char *file, int line, const char *func, const char *e)
-{
-    int sr;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#define MAX_CONSOLE_LINES 2</span>
 
-    OS_ENTER_CRITICAL(sr);
-    (void)sr;
-    os_die_line = line;
-    os_die_module = file;
-    console_blocking_mode();
-    console_printf(&quot;Assert %s; failed in %s:%d\n&quot;, e ? e : &quot;&quot;, file, line);
-    system_reset();
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">avail_queue</span>;
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> <span style="color: #000000">myapp_console_buf</span>;
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> <span style="color: #000000">myapp_console_buf</span>[<span style="color: #000000">MAX_CONSOLE_LINES</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">myapp_console_event</span>[<span style="color: #000000">MAX_CONSOLE_LINES</span>];
+
+
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+     <span style="color: #A90D91">int</span> <span style="color: #000000">i</span>;
+
+     <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;avail_queue</span>);
+
+     <span style="color: #A90D91">for</span> (<span style="color: #000000">i</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>; <span style="color: #000000">i</span> <span style="color: #000000">&lt;</span> <span style="color: #000000">MAX_CONSOLE_LINES</span>; <span style="color: #000000">i++</span>) {
+         <span style="color: #000000">myapp_console_event</span>[<span style="color: #000000">i</span>].<span style="color: #000000">ev_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">myapp_process_input</span>;
+         <span style="color: #000000">myapp_console_event</span>[<span style="color: #000000">i</span>].<span style="color: #000000">ev_arg</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;myapp_console_buf</span>[<span style="color: #000000">i</span>]; 
+         <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;avail_queue</span>, <span style="color: #000000">&amp;myapp_console_event</span>[<span style="color: #000000">i</span>]);
+     }
+
+     <span style="color: #000000">console_set_queues</span>(<span style="color: #000000">&amp;avail_queue</span>, <span style="color: #000000">os_eventq_dflt_get</span>());
 }
 </pre></div>
                         
@@ -649,16 +682,16 @@ _assert_func(const char *file, int line, const char *func, const char *e)
 <ul class="nav nav-pills" style="margin-bottom: 10px">
     <li>
     
-    <a href=../console/>
+    <a href=../console_read/>
         <span class="fa fa-arrow-left"></span>
-        Previous: Console
+        Previous: console_read
     </a>
     
     </li>
     <li class="pull-right">
     
-    <a href=../console_echo/>
-        Next: console_echo
+    <a href=../console_write/>
+        Next: console_write
         <span class="fa fa-arrow-right"></span>
     </a>
     

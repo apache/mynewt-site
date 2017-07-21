@@ -280,19 +280,11 @@
   
   
     <li><a href="
-  ../console_blocking_mode/
+  ../console_echo/
 ">Functions</a>
   
   
     <ul>
-          
-              
-                
-    <li >
-      <a href="../console_blocking_mode/">console_blocking_mode</a>
-    </li>
-
-              
           
               
                 
@@ -330,6 +322,14 @@
                 
     <li >
       <a href="../console_read/">console_read</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../console_set_queues/">console_set_queues</a>
     </li>
 
               
@@ -593,7 +593,7 @@
         
       
         
-          <li>&raquo; <a href="../console_blocking_mode/">Functions</a></li>
+          <li>&raquo; <a href="../console_echo/">Functions</a></li>
         
       
       
@@ -619,8 +619,9 @@
 </pre></div>
 
 
-<p>Initializes console receive buffer and calls hal funtions <code>hal_uart_init_cbs</code> and <code>hal_uart_config</code> to initialize serial port connection and configure it (e.g. baud rate, flow control etc.)</p>
-<p>Caller registers a function pointer of <code>type void (*console_rx_cb)(int full_line)</code>. This function will be called when console receives either a) full line of data or b) when RX buffer in console is full. Note that this function is most likely getting called from interrupt context.</p>
+<p>This function is a Mynewt 1.0 Console API. This function only needs to be called if the Mynewt 1.0 console API is used to read input from the console input.  </p>
+<p>If a callback function pointer of <code>type void (*console_rx_cb)(void)</code> is specfied, the callback is called when the console receives a full line of data.</p>
+<p>Note that this function is most likely getting called from an interrupt context.</p>
 <h4 id="arguments">Arguments</h4>
 <table>
 <thead>
@@ -637,20 +638,15 @@
 </tbody>
 </table>
 <h4 id="returned-values">Returned values</h4>
-<p>Returns 0 on success.
-Non-zero if HAL UART function calls fail.</p>
+<p>Returns 0 on success.</p>
+<p>Non-zero on failure.</p>
 <h4 id="example">Example</h4>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>int
 main(int argc, char **argv)
 {
     ....
 
-    /* Init tasks */
-    shell_task_init(SHELL_TASK_PRIO, shell_stack, SHELL_TASK_STACK_SIZE,
-                         SHELL_MAX_INPUT_LEN);
-    console_init(shell_console_rx_cb);
-
-    ....
+    console_init(NULL);
 }
 </pre></div>
                         

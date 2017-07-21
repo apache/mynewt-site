@@ -280,7 +280,7 @@
   
   
     <li><a href="
-  ../console_blocking_mode/
+  ../console_echo/
 ">Functions</a>
   
   
@@ -551,11 +551,22 @@
                         </div>
                         
                         
-                            <h1 id="console">Console</h1>
-<p>The console is an operating system window where users interact with the OS subsystems or a console 
-application.  A user typically inputs text from a keyboard and reads the OS output text on a computer
-monitor.  The text are sent as a sequence of characters between the user and the OS. </p>
-<p>Support is currently available for console access via the serial port on the hardware board.</p>
+                            <h2 id="console">Console</h2>
+<p>The console is an operating system window where users interact with the OS subsystems or a console application.  A user typically inputs text from a keyboard and reads the OS output text on a computer monitor.  The text is  sent as a sequence of characters between the user and the OS. </p>
+<p>You can configure the console to communicate via a UART or the SEGGER Real Time Terminal (RTT) .  The <code>CONSOLE_UART</code> syscfg setting enables the communication via a UART and is enabled by default. The <code>CONSOLE_RTT</code> setting enables the communication via the RTT and is disabled by default. When the <code>CONSOLE_UART</code> setting is enabled, the following settings apply:</p>
+<ul>
+<li><code>CONSOLE_UART_DEV</code>: Specifies the UART device to use. The default is <code>uart0</code>.  </li>
+<li><code>CONSOLE_UART_BAUD</code>: Specifies the UART baud rate. The default is 115200.</li>
+<li><code>CONSOLE_UART_FLOW_CONTROL</code>: Specifies the UART flow control. The default is <code>UART_FLOW_CONTROL_NONE</code>.</li>
+<li><code>CONSOLE_UART_TX_BUF_SIZE</code>: Specifies the transmit buffer size and must be a power of 2. The default is 32.
+<br></li>
+</ul>
+<p>The <code>CONSOLE_TICKS</code> setting enables the console to print the current OS ticks in each output line. </p>
+<p><strong>Notes:</strong> </p>
+<ul>
+<li>SEGGER RTT support is not available in the Mynewt 1.0 console package.</li>
+<li>The console package is initialized during system initialization (sysinit) so you do not need to initialize the console. However, if you use the Mynewt 1.0 console API to read from the console, you will need to call the <code>console_init()</code> function to enable backward compatibility support.</li>
+</ul>
 <h3 id="description">Description</h3>
 <p>In the Mynewt OS, the console library comes in three versions:</p>
 <ul>
@@ -641,18 +652,116 @@ pkg.deps.BOOT_SERIAL.OVERWRITE:
 </pre></div>
 
 
+<p><br></p>
+<h4 id="output-to-the-console">Output to the Console</h4>
+<p>You use the <code>console_write()</code> function to write raw output and the <code>console_printf()</code> function to write a C-style formatted string to the console.</p>
+<p><br></p>
+<h4 id="input-from-the-console">Input from the Console</h4>
+<p>The following syscfg settings control input from the console:</p>
+<ul>
+<li><code>CONSOLE_INPUT</code>: Enables input from the console. The setting is enabled by default.</li>
+<li><code>CONSOLE_ECHO</code>:  Enables echoing of the received data back to the console. Echoing is enabled by default.  Terminal programs expect this, and is a way for the user to know that the console is connected and responsive.  You can also use the <code>console_echo()</code> function to set echo on or off programatically. </li>
+<li><code>CONSOLE_MAX_INPUT_LEN</code>: Specifies the maximum input line length.</li>
+</ul>
 <p><br>
-Console has 2 modes for transmit; <em>blocking mode</em> and <em>non-blocking mode</em>. Usually the <em>non-blocking mode</em> is the 
-active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added 
-based on these interrupts.</p>
-<p><em>Blocking mode</em> is used when we don't want TX completion interrupts. It is used when system crashes, and we still 
-want to output info related to that crash.</p>
-<p>Console, by default, echoes everything it receives back. Terminal programs expect this, and is a way for the user to 
-know that the console is connected and responsive. Whether echoing happens or not can be controlled programmatically.</p>
-<p>The Console also has a prompt that is configurable. It is off by default but can be turned on programmatically. The
-prompt character can also be changed by the user.</p>
+The Mynewt 1.1 console package adds a new API for reading input data from the console.  The package supports backward compatibility for the Mynewt 1.0 console API.  The steps you use to receive data from the console for each API version are provided below.</p>
+<p><br></p>
+<h5 id="mynewt-10-console-api">Mynewt 1.0 Console API</h5>
+<p>To use the Mynewt 1.0 console API for reading input from the console, you perform the follow steps:</p>
+<ol>
+<li>
+<p>Call the <code>console_init()</code> function and pass either a pointer to a callback function or NULL for the argument. The console calls this callback function, if specified, when it receives a full line of data. </p>
+</li>
+<li>
+<p>Call the <code>console_read()</code> function to read the input data. </p>
+</li>
+</ol>
+<p><strong>Note:</strong> The <code>CONSOLE_COMPAT</code> syscfg setting must be set to 1 to enable backward compatibility support. The setting is enabled by default. </p>
+<p><br></p>
+<h5 id="mynewt-11-console-api">Mynewt 1.1 Console API</h5>
+<p>Mynewt 1.1 console API adds the <code>console_set_queues(struct os_eventq *avail_queue, struct os_eventq *lines_queue)</code> function.  An application or the package, such as the shell, calls this function to specify two event queues that the console uses to manage input data buffering and to send notification when a full line of data is received. The two event queues are used as follows:</p>
+<ul>
+<li>
+<p><strong>avail_queue</strong>: Each event in this queue indicates that a buffer is available for the console to use for buffering input data.  </p>
+<p>The caller must initialize the avail_queue and initialize and add an <a href="../../../core_os/event_queue/event_queue/">os_event</a> to the avail_queue before calling the <code>console_set_queues()</code> function. The fields for the event should be set as follows: </p>
+<ul>
+<li><strong><code>ev_cb</code></strong>: Pointer to the callback function to call when a full line of data is received.</li>
+<li><strong><code>ev_arg</code></strong>: Pointer to a <code>console_input</code> structure. This structure contains a data buffer to store the current input. </li>
+</ul>
+<p>The console removes an event from this queue and uses the <code>console_input</code> buffer from this event to buffer the received characters until it receives a new line, '/n',  character.  When the console receives a full line of data, it adds this event to the <strong>lines_queue</strong>.</p>
+</li>
+<li>
+<p><strong>lines_queue</strong>: Each event in this queue indicates a full line of data is received and ready for processing. The console adds an event to this queue when it receives a full line of data. This event is the same event that the console removes from the avail_queue. </p>
+<p>The task that manages the lines_queue removes an event from the queue and calls the event callback function to process the input line.  The event callback function must add the event back to the avail_queue when it completes processing the current input data, and allows the console to use the <code>console_input</code> buffer set for this event to buffer input data.</p>
+<p>We recommend that you use the OS default queue for the lines_queue so that the callback is processed in the context of the OS main task. If you do not use the OS default event queue, you must initialize an event queue and create a task to process events from the queue.</p>
+<p><strong>Note</strong>: If the callback function needs to read another line of input from the console while processing the current line, it may use the <code>console_read()</code> function to read the next line of input from the console. The console will need another <code>console_input</code> buffer to store the next input line, so two events, initialized with the pointers to the callback and the <code>console_input</code> buffer, must be added to the avail_queue. </p>
+</li>
+</ul>
+<p><br>
+Here is a code excerpt that shows  how to use the <code>console_set_queues()</code> function. The example adds one event to the avail_queue and uses the OS default event queue for the lines_queue.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">avail_queue</span>;
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> <span style="color: #000000">myapp_console_buf</span>;
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">myapp_console_event</span> <span style="color: #000000">=</span> {
+    .<span style="color: #000000">ev_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">myapp_process_input</span>,
+    .<span style="color: #000000">ev_arg</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;myapp_console_buf</span>
+};
+
+<span style="color: #177500">/* Event callback to process a line of input from console. */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
+{
+    <span style="color: #A90D91">char</span> <span style="color: #000000">*line</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> <span style="color: #000000">*input</span>;
+
+    <span style="color: #000000">input</span> <span style="color: #000000">=</span> <span style="color: #000000">ev-&gt;ev_arg</span>;
+    <span style="color: #000000">assert</span> (<span style="color: #000000">input</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
+
+    <span style="color: #000000">line</span> <span style="color: #000000">=</span> <span style="color: #000000">input-&gt;line</span>;
+    <span style="color: #177500">/* Do some work with line */</span>
+         ....
+    <span style="color: #177500">/* Done processing line. Add the event back to the avail_queue */</span>
+    <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;avail_queue</span>, <span style="color: #000000">ev</span>);
+    <span style="color: #A90D91">return</span>;
+}
+
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> 
+<span style="color: #000000">myapp_init</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;avail_queue</span>);
+    <span style="color: #000000">os_eventq_put</span>(<span style="color: #000000">&amp;avail_queue</span>, <span style="color: #000000">&amp;myapp_console_event</span>);
+
+    <span style="color: #000000">console_set_queues</span>(<span style="color: #000000">&amp;avail_queue</span>, <span style="color: #000000">os_eventq_dflt_get</span>());
+}
+</pre></div>
+
+
+<p><br></p>
 <h3 id="data-structures">Data structures</h3>
-<p>N/A</p>
+<p>The <code>struct console_input</code> data structure represents a console input buffer. Each event added to the console avail_queue must have the <code>ev_arg</code> field point to a <code>console_input</code> structure.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> {
+    <span style="color: #A90D91">char</span> <span style="color: #000000">line</span>[<span style="color: #000000">MYNEWT_VAL</span>(<span style="color: #000000">CONSOLE_MAX_INPUT_LEN</span>)];
+};
+</pre></div>
+
+
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>line</code></td>
+<td>Data buffer that the console uses to save received characters until a new line is received.</td>
+</tr>
+</tbody>
+</table>
 <h3 id="list-of-functions">List of Functions</h3>
 <p>The functions available in console are:</p>
 <table>
@@ -664,20 +773,16 @@ prompt character can also be changed by the user.</p>
 </thead>
 <tbody>
 <tr>
-<td><a href="../console_blocking_mode/">console_blocking_mode</a></td>
-<td>Calls the <code>console_blocking_tx</code> function to flush the buffered console output (transmit) queue.</td>
-</tr>
-<tr>
 <td><a href="../console_echo/">console_echo</a></td>
 <td>Controls whether echoing is on or off for the console.</td>
 </tr>
 <tr>
-<td><a href="../console_init/">console_init</a></td>
-<td>Initialize the console.</td>
+<td><a href="../console_init/">console_init (Mynewt 1.0 API)</a></td>
+<td>Initializes the console.</td>
 </tr>
 <tr>
 <td><a href="../console_is_init/">console_is_init</a></td>
-<td>Returns whether console has been initialized or not.</td>
+<td>Returns a value indicating whether the console has been initialized or not.</td>
 </tr>
 <tr>
 <td><a href="../console_printf/">console_printf</a></td>
@@ -686,6 +791,10 @@ prompt character can also be changed by the user.</p>
 <tr>
 <td><a href="../console_read/">console_read</a></td>
 <td>Copies up the to given number of bytes to the input string.</td>
+</tr>
+<tr>
+<td><a href="../console_set_queues/">console_set_queues</a></td>
+<td>Specifies the event queues for the console to use to manage input data.</td>
 </tr>
 <tr>
 <td><a href="../console_write/">console_write</a></td>
@@ -710,8 +819,8 @@ prompt character can also be changed by the user.</p>
     </li>
     <li class="pull-right">
     
-    <a href=../console_blocking_mode/>
-        Next: console_blocking_mode
+    <a href=../console_echo/>
+        Next: console_echo
         <span class="fa fa-arrow-right"></span>
     </a>
     
