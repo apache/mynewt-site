@@ -35,7 +35,7 @@ Package successfuly installed into ~/dev/myproj/apps/my_sensor_app
 
 ```
 <br>
-The newt tool creates a skeleton `my_sensor_app` package directory in the `~/dev/myproj/apps/` directory. Go to the `my_sensor_app` directory so we can update the package `pkg.yml` and source files. 
+The newt tool creates a skeleton `my_sensor_app` package directory in the `~/dev/myproj/apps/` directory. Go to the `my_sensor_app` directory to update the package `pkg.yml` and source files. 
 
 
 ```no-highlight
@@ -365,7 +365,6 @@ static struct sensor *my_sensor;
 
 **Note**: We define LISTENER_CB and READ_CB values because we also use the `read_accelerometer()` function as the callback for the `sensor_read()` function later in the tutorial.  The LISTENER_CB or the READ_CB value is passed to the `read_accelerometer()` function to indicate whether it is invoked as a listener or a `sensor_read()` callback. 
 
-<br>
 ```c
 
 #define LISTENER_CB 1

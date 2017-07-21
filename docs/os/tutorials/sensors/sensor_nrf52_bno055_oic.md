@@ -1,19 +1,19 @@
 ## Enabling OIC Sensor Data Monitoring in the sensors_test Application
 
-This tutorial shows you how to enable sensor data monitoring via the OIC protocol over BLE transport in the sensors_test application. It extends the example application in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) tutorial and assumes that you have worked through that tutorial. 
+This tutorial shows you how to enable sensor data monitoring via the OIC protocol over BLE transport in the sensors_test application. It extends the example application in the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md) and assumes that you have worked through that tutorial. 
 
 Like the other off-board sensor tutorials, this tutorial uses an nRF52-DK board connected to an off-board BNO055 sensor device.
 
 This tutorial shows you how to:
 
 * Create and build the target to enable sensor OIC support in the sensors_test application. 
-* Use the Mynewt Smart Device Controller Android or iOS app to view the sensor data from the device. 
+* Use the Mynewt Smart Device Controller [Android](https://github.com/runtimeco/android_sensor) or iOS app to view the sensor data from the device. 
 <br>
 
 ### Prerequisite
 
 * Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensor_oic_overview.md).
-* Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) tutorial. 
+* Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md). 
 
 ### Step 1: Creating and Building the sensors_test Application Image
 
@@ -21,11 +21,11 @@ In this step of the tutorial, we set the following syscfg settings to create a t
 
 * `BNO055_OFB` and `I2C_0`: Set to 1 to enable the BNO055 off-board sensor device and the I2C interface 0 in the nRF52 BSP. 
 * `BLE_MAX_CONNECTIONS`: Set the number of BLE connections to 4.
-* `MSYS_1_BLOCK_COUNT`: Set the number of entries for the mbuf pool to 52
-* `MSYS_1_BLOCK_SIZE`: Set the size of mbuf entry to 100
+* `MSYS_1_BLOCK_COUNT`: Set the number of entries for the mbuf pool to 52.
+* `MSYS_1_BLOCK_SIZE`: Set the size of mbuf entry to 100.
 * `OC_APP_RESOURCES`: Set the number of server resources to 12.
 
-The `SENSOR_OIC`, `OC_SERVER`, `BLE_ROLE_PERIPHERAL` and `BLE_ROLE_BROADCASTER` syscfg settings must be enabled to add OIC sensor monitoring over BLE transport support to an application. You do not need to set these settings in the target because the `apps/sensors_test` package enables the `SENSORS_OIC` and `OC_SERVER` syscfg settings by default, and the `net/nimble` package enables the `BLE_ROLE_PERIPHERAL` and `BLE_ROLE_BROADCASTER` settings by default.  
+**Note:** The `SENSOR_OIC`, `OC_SERVER`, `BLE_ROLE_PERIPHERAL` and `BLE_ROLE_BROADCASTER` syscfg settings must be enabled to add OIC sensor monitoring over BLE transport support to an application. You do not need to set these settings in the target because the `apps/sensors_test` package enables the `SENSORS_OIC` and `OC_SERVER` syscfg settings by default, and the `net/nimble` package enables the `BLE_ROLE_PERIPHERAL` and `BLE_ROLE_BROADCASTER` settings by default.  
 
 <br> 
 1. Run the `newt target create` command to create the target. We name the target `nrf52_bno055_oic_test`.
@@ -70,7 +70,7 @@ $
 
 Perform the following steps to reboot the board with the new images:
 
-1. Connect the BNO055 sensor to the nRF52-DK board.  See the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_offboard_config.md) tutorial for instructions. 
+1. Connect the BNO055 sensor to the nRF52-DK board.  See the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_offboard_config.md) for instructions. 
 
     **Note**: You do not need the serial connection from your computer to the nRF52-DK board for this tutorial because we are not using the shell to view the sensor data.
 
@@ -81,7 +81,7 @@ Perform the following steps to reboot the board with the new images:
 <br>
 ### Step 3: Viewing Sensor Data from the Mynewt Smart Device Controller
 
-Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  If you have not installed the Mynewt Smart Device Controller app, follow the instructions in [Installing the Mynewt Smart Device Controller](..) to install the app, then continue with this step of the tutorial.
+Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  If you have not installed the Mynewt Smart Device Controller app, follow the instructions in [Installing the Mynewt Smart Device Controller](https://github.com/runtimeco/android_sensor) to install the app, then continue with this step of the tutorial.
 
 <br>
 The Mynewt Smart Device Controller scans for the devices when it starts up and displays the sensors it can view. The following is an example from the Android App: 

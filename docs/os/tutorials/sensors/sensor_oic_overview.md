@@ -1,17 +1,17 @@
 ##Enabling OIC Sensor Data Monitoring
 
-This tutorial shows you how to enable sensor data monitoring via the OIC protocol over BLE transport in an application.  It extends the example application in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md) tutorial and assumes that you have worked through that tutorial. 
+This tutorial shows you how to enable sensor data monitoring via the OIC protocol over BLE transport in an application.  It extends the example application in the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md) and assumes that you have worked through that tutorial. 
 
 This tutorial has two parts:
 
-* [Part 1](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) shows you how to enable OIC sensor support in the sensors_test application. The procedure only requires setting the appropriate syscfg setting values for the application target. The objective is to allow you to quickly bring up the sensors_test application and view the sensor data with the Mynewt Smart Device Controller OIC app that is available for iOS and Android devices.
+* [Part 1](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) shows you how to enable OIC sensor support in the sensors_test application. The procedure only requires setting the appropriate syscfg setting values for the application target. The objective is to show you to quickly bring up the sensors_test application and view the sensor data with the Mynewt Smart Device Controller OIC app that is available for iOS and [Android](https://github.com/runtimeco/android_sensor) devices.
 
 * [Part 2](/os/tutorials/sensors/sensor_bleprph_oic.md) shows you how to modify the bleprph_oic application code to add OIC sensor support. The objective is to show you how to use the Sensor Framework API and OIC server API to develop an OIC over BLE sensor server application.
 <br>
 ### Prerequisites 
 Ensure that you meet the following prerequisites before continuing with the tutorials:
 
-* Complete the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_nrf52_bno055.md)
+* Complete the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md).
 * Install the Mynewt Smart Device Controller on an iOS or Android Device. See the [Instalation for Android](https://github.com/runtimeco/android_sensor) and the [Installation for iOS](...).
 
 ### Overview of OIC Support in the Sensor Framework

@@ -1,5 +1,5 @@
 ## Adding OIC Sensor Support to the bleprph_oic Application 
-This tutorial shows you how to modify and add OIC sensor support to the **bleprph_oic** application. This tutorial assumes that have you completed the [Enabling OIC Sensor Data Monitoring in the sensors_test Application](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) tutorial. 
+This tutorial shows you how to modify and add OIC sensor support to the **bleprph_oic** application. This tutorial assumes that have you completed the [Enabling OIC Sensor Data Monitoring in the sensors_test Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md). 
 
 Like the other off-board sensor tutorials, this tutorial uses an nRF52-DK board connected to an off-board BNO055 sensor device.
 
@@ -7,14 +7,14 @@ This tutorial shows you how to:
 
 * Modify the bleprph_oic application to add OIC sensor support.
 * Create and build the target for the new application.
-* Use the Mynewt Smart Device Controller Android or iOS app to view the sensor data from the device.
+* Use the Mynewt Smart Device Controller [Android](https://github.com/runtimeco/android_sensor) or iOS app to view the sensor data from the device.
 
 ### Prerequisites
 
 * Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensor_oic_overview.md).
 * Complete the tasks described in the [Enabling OIC Sensor Data Monitoring in the sensors_test Application](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) tutorial. 
 <br>
-### Overview on How to Add OIC Sensor Support to an Application
+### Overview on How to Add OIC Sensor Support to a BLE Application
 
 The sensor framework makes it very easy to add OIC sensor support to an existing BLE application. The sensor framework exports the `sensor_oic_init()` function that an application calls to create the OIC resources for the sensors and to set up the handlers to process CoAP requests for the resources. 
 
@@ -25,30 +25,28 @@ To add OIC sensor support, we modify the bleprph_oic application to call the `se
 <br>
 ### Step 1: Copying the bleprph_oic source
 
-Copy the apps/bleprph_oic source to a new directory. We name the new application **bleprph_oic_sensor**.
-
 <br>
-1. From your project base directory, perform the following commands:
+1. Copy the @apache-mynewt-core/apps/bleprph_oic to a new package. We name the new package **apps/bleprph_oic_sensor**.  From your project base directory, run the `newt pkg copy` command:
 
 ```no-highlight
 
-$ cd repos/apache-mynewt-core/apps
-$ cp -R bleprph_oic bleprph_oic_sensor
-$ cd bleprph_oic_sensor
+$ newt pkg copy @apache-mynewt-core/apps/bleprph_oic @apache-mynewt-core/apps/bleprph_oic_sensor
+Copying package @apache-mynewt-core/apps/bleprph_oic to @apache-mynewt-core/apps/bleprph_oic_sensor
 
 ```
 <br>
-2. Change the package name in the `pkg.yml` file to `apps/bleprph_oic_sensor`:
+2. The newt tools creates the `bleprph_oic_sensor` package in the `~/dev/myproj/repos/apache-mynewt-core/apps/bleprph_oic_sensor` directory. Go to the directory to update the package `pkg.yml` and source files.
 
-```no-higlight
+```no-highlight
 
-pkg.name: apps/bleprph_oic_sensor
+$ cd repos/apache-mynewt-core/apps/bleprph_oic_sensor
 
 ```
 <br>
+
 ### Step 2: Adding Package Dependencies  
 
-Add the `hw/sensor/` and the `hw/sensor/creator` packages as dependencies to `pkg.yml` file to include the sensor framework and off-board sensor support.
+Add the `hw/sensor/` and the `hw/sensor/creator` packages as dependencies in the  `pkg.yml` file to include the sensor framework and off-board sensor support.
 
 **Note:**  The `hw/sensor` package automatically includes the `net/oic` package when the `SENSOR_OIC` setting is enabled, so you do not need to include the `net/oic` package as a dependency in this package.
 
@@ -148,7 +146,7 @@ omgr_app_init(void)
 
 ```
 <br>
-2. Add the following `oc_add_device()` function call:
+2. Add the following `oc_add_device()` function call to create an OIC  resource for the sensor device:
 
 ```hl_lines="8"
 
@@ -164,7 +162,7 @@ omgr_app_init(void)
 
 ```
 <br>
-3. Add the call to the `sensor_oic_init()` function:
+3. Add the call to the `sensor_oic_init()` function to initialize the sensor framework OIC server support:
 
 ```hl_lines="10"
 
@@ -192,14 +190,14 @@ Since we modify the application to no longer create an OIC light resource, the `
 
 In this step of the tutorial we create and build an application image for the bleprph_oic_sensor application to verify that the application serves sensor data over OIC correctly.   
 
-We use the same syscfg settings from the [Enabling OIC Sensor Data Monitoring in the sensors_test Application](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) tutorial.
+We use the same syscfg settings from the [Enabling OIC Sensor Data Monitoring in the sensors_test Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md).
 
 <br>
 1. From your project base directory, run the `newt create target ` command to create a new target named `nrf52_bleprph_oic_bno055`:
 
 ```no-highlight
 
-$newt target create nrf52_bleprph_oic_bno055
+$ newt target create nrf52_bleprph_oic_bno055
 Target targets/nrf52_bleprph_oic_bno055 successfully created
 ```
 
@@ -233,18 +231,18 @@ $
 
 Perform the following steps to reboot the board with the new images:
 
-1. Connect the BNO055 sensor to the nRF52-DK board.  See the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_offboard_config.md) tutorial for instructions.
+1. Connect the BNO055 sensor to the nRF52-DK board.  See the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_offboard_config.md) for instructions.
 
     **Note**: You do not need the serial connection from your computer directly to the nRF52-DK board because we are not using the shell to view the sensor data.
 
-2. Run the `newt load nrf52_boot` command to load the bootloader. You should already have this target built from the [Enabling an Off-Board Sensor in an Existing Application](os/tutorials/sensors/sensor_nrf52_bno055.md).
+2. Run the `newt load nrf52_boot` command to load the bootloader. You should already have this target built from the [Enabling an Off-Board Sensor in an Existing Application Tutorial](os/tutorials/sensors/sensor_nrf52_bno055.md).
 3. Run the `newt load nrf52_bno055_oic_test` command to load the application image.
 4. Power the device OFF and ON to reboot.
 
 <br>
 ### Step 7: Viewing Sensor Data from the Mynewt Smart Device Controller
 
-Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  You should already have the app installed from the [Enabling OIC Sensor Data Monitoring in the sensors_test Application](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md) tutorial.
+Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  You should already have the app installed from the [Enabling OIC Sensor Data Monitoring in the sensors_test Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055_oic.md).
 
 The Mynewt Smart Device Controller scans for the devices when it starts up and displays the sensors it can view.  The following is an example from the Android App:
 <br>
