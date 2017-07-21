@@ -5,14 +5,19 @@
 
 Generic Access Profile (GAP) defines the generic procedures related to discovery of Bluetooth devices (idle mode procedures) and link management aspects of connecting to Bluetooth devices (connecting mode procedures). It also defines procedures related to use of different security levels. 
 
-Several different modes and procedures may be performed simultaneously over an LE physical transport. The following modes and procedures are defined for use over an LE physical transport:1. **Broadcast mode and observation procedure**
-    - These allow two devices to communicate in a unidirectional connectionless manner using the advertising events.2. **Discovery modes and procedures**
+Several different modes and procedures may be performed simultaneously over an LE physical transport. The following modes and procedures are defined for use over an LE physical transport:
+
+1. **Broadcast mode and observation procedure**
+    - These allow two devices to communicate in a unidirectional connectionless manner using the advertising events.
+2. **Discovery modes and procedures**
     - All devices shall be in either non-discoverable mode or one of the discoverable modes.
     - A device in the discoverable mode shall be in either the general discoverable mode or the limited discoverable mode.
-    - A device in non-discoverable mode will not be discovered by any device that is performing either the general discovery procedure or the limited discovery procedure.3. **Connection modes and procedures**
+    - A device in non-discoverable mode will not be discovered by any device that is performing either the general discovery procedure or the limited discovery procedure.
+3. **Connection modes and procedures**
     - allow a device to establish a connection to another device.
     - allow updating of parameters of the connection 
-    - allow termination of the connection 4. **Bonding modes and procedures**
+    - allow termination of the connection 
+4. **Bonding modes and procedures**
     - Bonding allows two connected devices to exchange and store security and identity information to create a trusted relationship. 
     - Bonding can occur only between two devices in bondable mode.
 
