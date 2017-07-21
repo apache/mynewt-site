@@ -95,8 +95,8 @@ and double click to install
 <img src="../pics/virtualbox_usb.jpg" width="728px" />
 
 * Restart the "default" VM. You have two options:
-* Run `docker-machine start default` in the terminal window or 
-* Use the VirtualBox UI. Make sure the "default" machine is highlighted. Click the green "Start" button. Select "Headless Start".
+  * Run `docker-machine start default` in the terminal window or 
+  * Use the VirtualBox UI. Make sure the "default" machine is highlighted. Click the green "Start" button. Select "Headless Start".
     
 <br>
 
