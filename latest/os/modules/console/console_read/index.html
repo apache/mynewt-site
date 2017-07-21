@@ -280,19 +280,11 @@
   
   
     <li><a href="
-  ../console_blocking_mode/
+  ../console_echo/
 ">Functions</a>
   
   
     <ul>
-          
-              
-                
-    <li >
-      <a href="../console_blocking_mode/">console_blocking_mode</a>
-    </li>
-
-              
           
               
                 
@@ -330,6 +322,14 @@
                 
     <li class="active">
       <a href="./">console_read</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../console_set_queues/">console_set_queues</a>
     </li>
 
               
@@ -593,7 +593,7 @@
         
       
         
-          <li>&raquo; <a href="../console_blocking_mode/">Functions</a></li>
+          <li>&raquo; <a href="../console_echo/">Functions</a></li>
         
       
       
@@ -646,23 +646,41 @@
 <p>Returns the number of characters copied. 0 if there was no data
 available, or if the first received character was '\n'.</p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>void
-task1_loop(void *arg)
-{
-    struct os_event *ev;
-    char rx_msg[128];
-    int rx_len;
-    int newline;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#define MAX_INPUT 128</span>
 
-    while (1) {
-        ev = os_eventq_get(&amp;task1_evq);
-        assert(ev);
-        if (ev-&gt;ev_type == CONS_EV_TYPE) {
-            rx_len = console_read(rx_msg, sizeof(rx_msg), &amp;newline);
-            if (rx_len) {
-                    if (!strncmp(rx_msg, &quot;reset&quot;, rx_len)) {
-                            assert(0);
-                    }
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
+<span style="color: #000000">read_function</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+{
+    <span style="color: #A90D91">char</span> <span style="color: #000000">buf</span>[<span style="color: #000000">MAX_INPUT</span>];
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>; 
+    <span style="color: #A90D91">int</span> <span style="color: #000000">full_line</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">off</span>;
+
+    <span style="color: #000000">off</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">console_read</span>(<span style="color: #000000">buf</span> <span style="color: #000000">+</span> <span style="color: #000000">off</span>, <span style="color: #000000">MAX_INPUT</span> <span style="color: #000000">-</span> <span style="color: #000000">off</span>, <span style="color: #000000">&amp;full_line</span>);
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">&lt;=</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">&amp;&amp;</span> <span style="color: #000000">!full_line</span>) {
+            <span style="color: #A90D91">continue</span>;
+        }
+        <span style="color: #000000">off</span> <span style="color: #000000">+=</span> <span style="color: #000000">rc</span>;
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">!full_line</span>) {
+            <span style="color: #A90D91">if</span> (<span style="color: #000000">off</span> <span style="color: #000000">==</span> <span style="color: #000000">MAX_INPUT</span>) {
+                <span style="color: #177500">/*</span>
+<span style="color: #177500">                 * Full line, no newline yet. Reset the input buffer.</span>
+<span style="color: #177500">                 */</span>
+                <span style="color: #000000">off</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>;
+            }
+            <span style="color: #A90D91">continue</span>;
+        }
+        <span style="color: #177500">/* Got full line - break out of the loop and process the input data */</span>
+        <span style="color: #A90D91">break</span>;
+    }
+
+    <span style="color: #177500">/* Process the input line here */</span>
+     ....
+
+    <span style="color: #A90D91">return</span>;
+}    
 </pre></div>
                         
                         <div class="row">
@@ -681,8 +699,8 @@ task1_loop(void *arg)
     </li>
     <li class="pull-right">
     
-    <a href=../console_write/>
-        Next: console_write
+    <a href=../console_set_queues/>
+        Next: console_set_queues
         <span class="fa fa-arrow-right"></span>
     </a>
     
