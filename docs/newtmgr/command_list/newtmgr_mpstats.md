@@ -10,10 +10,12 @@ Read memory pool statistics from a device.
 #### Global Flags:
 
 ```no-highlight
-    -c, --conn string       connection profile to use.
-    -h, --help              Help for newtmgr commands
-    -l, --loglevel string   log level to use (default "info")
-    -t, --trace             print all bytes transmitted and received
+  -c, --conn string       connection profile to use
+  -h, --help              help for newtmgr
+  -l, --loglevel string   log level to use (default "info")
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 
 #### Description
@@ -35,22 +37,21 @@ Sub-command  | Usage                  | Explanation
 Here is an example output for the `myble` application from the [Enabling Newt Manager in any app](/os/tutorials/add_newtmgr.md) tutiorial:
 
 ```no-highlight
-newtmgr mpstat -c myserial 
-Return Code = 0
-                            name blksz  cnt free  min
-         ble_l2cap_sig_proc_pool    20    1    1    1
-     ble_att_svr_prep_entry_pool    12   64   64   64
-         ble_hci_ram_evt_hi_pool    72    2    2    1
-              ble_hs_hci_ev_pool    16   10   10    9
+$ newtmgr mpstat -c myserial 
+                         name blksz  cnt free  min
           ble_att_svr_entry_pool    20   75    0    0
-             ble_gattc_proc_pool    56    4    4    4
-                bletiny_dsc_pool    28   64   64   64
-                ble_hs_conn_pool    84    1    1    1
+     ble_att_svr_prep_entry_pool    12   64   64   64
                   ble_gap_update    24    1    1    1
-                bletiny_svc_pool    32   32   32   32
+             ble_gattc_proc_pool    56    4    4    4
           ble_gatts_clt_cfg_pool    12    2    1    1
-                          msys_1   292   12    9    6
+         ble_hci_ram_evt_hi_pool    72    2    2    1
          ble_hci_ram_evt_lo_pool    72    8    8    8
-             ble_l2cap_chan_pool    24    3    3    3
+                ble_hs_conn_pool    92    1    1    1
+              ble_hs_hci_ev_pool    16   10   10    9
+             ble_l2cap_chan_pool    28    3    3    3
+         ble_l2cap_sig_proc_pool    20    1    1    1
                 bletiny_chr_pool    36   64   64   64
+                bletiny_dsc_pool    28   64   64   64
+                bletiny_svc_pool    36   32   32   32
+                          msys_1   292   12    9    6
 ```

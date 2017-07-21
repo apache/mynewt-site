@@ -4,16 +4,18 @@ Manage datetime on a device.
 #### Usage:
 
 ```no-highlight
-    newtmgr datetime [datetime-value] -c <conn_profile> [flags] 
+    newtmgr datetime [rfc-3339-date-string] -c <conn_profile> [flags]
 ```
 
 #### Global Flags:
 
 ```no-highlight
-    -c, --conn string       connection profile to use.
-    -h, --help              Help for newtmgr commands
-    -l, --loglevel string   log level to use (default "info")
-    -t, --trace             print all bytes transmitted and received
+  -c, --conn string       connection profile to use
+  -h, --help              help for newtmgr
+  -l, --loglevel string   log level to use (default "info")
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 
 #### Description

@@ -10,10 +10,12 @@ Read task statistics from a device.
 #### Global Flags:
 
 ```no-highlight
-    -c, --conn string       connection profile to use.
-    -h, --help              Help for newtmgr commands
-    -l, --loglevel string   log level to use (default "info")
-    -t, --trace             print all bytes transmitted and received
+  -c, --conn string       connection profile to use
+  -h, --help              help for newtmgr
+  -l, --loglevel string   log level to use (default "info")
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 
 #### Description
@@ -38,10 +40,9 @@ Sub-command  | Usage                  | Explanation
 Here is an example output for the `myble` application from the [Enabling Newt Manager in any app](/os/tutorials/add_newtmgr.md) tutiorial:
 
 ```no-highlight
-newtmgr taskstat -c myserial 
-Return Code = 0
+$ newtmgr taskstat -c myserial 
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
-      idle 255   0   151917       47       64       34        0        0
-      main 127   1        2       59      512      188        0        0
-    ble_ll   0   2        0       14       80       56        0        0
+    ble_ll   0   2        0       12       80       58        0        0
+      idle 255   0    16713       95       64       31        0        0
+      main 127   1        2       81      512      275        0        0
 ```

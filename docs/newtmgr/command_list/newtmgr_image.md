@@ -8,11 +8,6 @@ Manage images on a device.
 ```
 
 #### Flags:
-
-```no-highlight
-    -h, --help   help for image
-```
-<br>
 The coredownload subcommand uses the following local flags:
 
 ```no-highlight
@@ -25,11 +20,12 @@ The coredownload subcommand uses the following local flags:
 #### Global Flags:
 
 ```no-highlight
-    -c, --conn string       connection profile to use
-    -l, --loglevel string   log level to use (default "info")
-        --name string       name of target BLE device; overrides profile setting
-    -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
-    -r, --tries int         total number of tries in case of timeout (default 1)
+  -c, --conn string       connection profile to use
+  -h, --help              help for newtmgr
+  -l, --loglevel string   log level to use (default "info")
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 ```
 <br>
 ####Description
