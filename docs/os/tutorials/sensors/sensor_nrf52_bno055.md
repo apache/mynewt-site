@@ -206,7 +206,7 @@ Run the `newt create-image` command to create and sign image. You may assign an 
 ```no-highlight
 
 $ newt create-image nrf52_bno055_test 1.0.0
-App image succesfully generated: /Users/wanda/dev/myproj/bin/targets/nrf52_bno055_test/app/apps/sensors_test/sensors_test.img
+App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_bno055_test/app/apps/sensors_test/sensors_test.img
 
 ```
 <br>

@@ -10,9 +10,8 @@ This tutorial shows you how to:
 
 ### Prerequisites
 
-* Meet the prerequisites listed in [Sensor Tutorials](/os/tutorials/sensors/sensors.md).
-* Have a Nordic Thingy.
-
+* Meet the prerequisites listed in [Sensor Tutorials](/os/tutorials/sensors/sensors.md).  
+* Have a Nordic Thingy.  
 * [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html) - any model (this tutorial has been tested with J-Link EDU and J-Link Pro).
 * [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems.
 * Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
@@ -32,7 +31,7 @@ We name the new app package `my_sensor_app`. From your project base directory, r
 $ cd ~/dev/myproj
 $ newt pkg new -t app apps/my_sensor_app
 Download package template for package type app.
-Package successfuly installed into /Users/wanda/dev/myproj/apps/my_sensor_app
+Package successfuly installed into ~/dev/myproj/apps/my_sensor_app
 
 ```
 <br>
@@ -99,9 +98,9 @@ You create a target for the my_sensor_app to run on the Nordic Thingy. The follo
 * `I2C_0=1` : Enables the I2C interface 0 for the nRF52 Thingy BSP HAL setting to communicate with the onboard sensor.
 * `LIS2DH12_ONB=1`: Enables the lis2dh12 onboard sensor support in the nRF52 Thingy BSP. 
 
-    A BSP with onboard sensors defines a syscfg setting for each onboard sensor it supports and uses the naming convention `<SENSORNAME>_ONB`. The `<SENSORNAME>_ONB` setting specifies whether the sensor named SENSORNAME is enabled. The setting is disabled by default. The BSP includes the sensor device driver package `hw/drivers/sensors/<sensorname>` and creates and configures the onboard sensor named SENSORNAME when the `SENSORNAME_ONB` setting is enabled by the application.
+    A BSP with onboard sensors defines a syscfg setting for each onboard sensor it supports and uses the naming convention `<SENSORNAME>_ONB`. The `<SENSORNAME>_ONB` setting specifies whether the sensor named SENSORNAME is enabled. The setting is disabled by default. The BSP includes the sensor device driver package `hw/drivers/sensors/<sensorname>` and creates and configures the onboard sensor named SENSORNAME when the `<SENSORNAME>_ONB` setting is enabled by the application.
 
-* `SHELL_TASK=1`: Enables the shell task for the shell commmand support.
+* `SHELL_TASK=1`: Enables the shell task for the shell command support.
     Note that the `hw/sensor` package enables the `SENSOR_CLI` setting by default. 
 * `SENSOR_OIC=0`: Disables the OIC sensor server support in the sensor framework.
 * `CONSOLE_RTT=1`: Enables console communication via the SEGGER RTT. The nRF52 Thingy does not have a UART so we use the RTT for the console.
@@ -168,7 +167,7 @@ Building target targets/thingy_boot
 
 Archiving thingy_boot-sysinit-app.a
 Archiving util_mem.a
-Linking /Users/wanda/dev/myproj/bin/targets/thingy_boot/app/apps/boot/boot.elf
+Linking ~/dev/myproj/bin/targets/thingy_boot/app/apps/boot/boot.elf
 Target successfully built: targets/thingy_boot
 
 ```
@@ -196,7 +195,7 @@ Perform the following steps to connect the Thingy to your computer:
 <br>
 #### Step 7: Loading the Image and Connecting to the Console via RTT 
 
-To run the application, you need to load the bootloader on to the device, load the application image, and start GDB debug process for RTT to attach to.
+To run the application, you need to load the bootloader on to the device, load the application image, and start a GDB debug process for RTT to attach to.
 
 <br>
 1. Run the `newt load` command to load the bootloader:
@@ -227,11 +226,11 @@ Archiving util_cbmem.a
 Archiving util_crc.a
 Archiving util_mem.a
 Archiving util_parse.a
-Linking /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
-App image succesfully generated: /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.img
+Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
+App image succesfully generated: ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.img
 Loading app image into slot 1
-[/Users/wanda/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh /Users/wanda/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app]
-Debugging /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app]
+Debugging ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
 GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
 Copyright (C) 2014 Free Software Foundation, Inc.
 License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
@@ -246,7 +245,7 @@ Find the GDB manual and other documentation resources online at:
 <http://www.gnu.org/software/gdb/documentation/>.
 For help, type "help".
 Type "apropos word" to search for commands related to "word"...
-Reading symbols from /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf...done.
+Reading symbols from ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf...done.
 os_tick_idle (ticks=24)
     at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:204
 204	    if (ticks > 0) {
@@ -321,12 +320,20 @@ sensor read lis2dh12_0 0x1 -n 5
 
 As this tutorial demonstrates so far, the Mynewt sensor framework enables you to easily and quickly develop an application with a sensor and view the sensor data from the `sensor` shell command.  We now extend the application to use the sensor API to read the sensor data. 
 
-You use the `sensor_read()` function to read data for a configured sensor type from a sensor device. You provide a callback that is called when the data is read from the sensor. You can also also register a listener for a sensor with the `sensor_register_listener()` function. A listener is a callback that is called whenever the `sensor_read()` function reads data for that sensor. 
+There are two sensor functions that you can use to read data from a sensor device:
 
-We extend the application to register an OS callout to read data from the accelerometer sensor every 5 seconds. We first only use the `sensor_read()` to read the sensor data, then we extend the application to also register a listener for the sensor.
+* `sensor_read()`:  This function reads sensor data from a sensor device and calls the specified user callback to receive the sensor data.  You specify a bit mask of the types of sensor data to read from a sensor device and a callback function pointer in the call to the `sensor_read()` function. This callback is called for each sensor type you specify to read.  
+
+* `sensor_register_listener()`: This function allows you to register a listener for a sensor device. You specify a bit mask of the types of sensor data to listen for and a callback to call when data is read from the sensor device. The listener callback is called whenever the `sensor_read()` function reads data for a sensor type from a sensor device that the listener is listening for. 
+
+    The sensor framework supports polling of sensor devices. For a sensor device that has a polling rate configured, the sensor framework poller reads sensor data for all the configured sensor types from the sensor device at each polling interval and calls the registered listener callbacks with the sensor data.
+
+We first extend the application to a register a sensor listener to demonstrate how to use the sensor framework polling support. 
+
+We then extend the application to use the `sensor_read()` function instead of a listener.  An application may not need to poll sensors. For example, an application that processes remote requests for sensor data only need to read the sensor data when it receives a request.  
 
 <br>
-#### Step 1: Modifying main.c
+#### Step 1: Modifying main.c to Add a Sensor Listener
 
 Add the following code to the `my_sensor_app/src/main.c` file:
 
@@ -343,29 +350,40 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 #include <sensor/accel.h>
 #include <console/console.h>
 
+
 ```
 
 <br>
-2. Add the following variable declarations:
-
-* `struct sensor * my_sensor`: This is the handle for the sensor that the sensor API uses to perform operations on the sensor. We set this variable when we lookup the sensor and pass it to the `sensor_read()` function to read the sensor data.
-* `struct os_callout sensor_callout`:  OS callout to read sensor data.
+2. Add the `struct sensor * my_sensor`. This is the handle for the sensor that the sensor API uses to perform operations on the sensor. We set this variable when we lookup the sensor.  
 
 ```c
 
 static struct sensor *my_sensor;
-static struct os_callout sensor_callout;
 
 ```
 <br>
-3. Add the `read_accelerometer()` function for the sensor read data callback function: 
+3. Declare and initialize a sensor listener. You specify a bit mask for the sensor types to listen for, the callback function, and an opaque argument to pass to the callback. In this tutorial,  we only listen for the accelerometer, use the `read_accelerometer()` function for the listener callback, and pass the LISTENER_CB value for the callback opaque argument.
 
-**Note**: We pass the READ_CB value as the argument for the `read_accelerometer()` callback function because we will also use the `read_accelerometer()` function for the listener callback to keep the tutorial simple. The `read_accelerometer()` function uses this value to print out whether the callback is invoked as a sensor read callback or a listener callback. 
+**Note**: We define LISTENER_CB and READ_CB values because we also use the `read_accelerometer()` function for callback for the `sensor_read()` .  The LISTENER_CB or the READ_CB value is passed to the `read_accelerometer()` function to indicate whether it is invoked as a listener or a `sensor_read()` callback. 
 
+<br>
+```c
+
+#define LISTENER_CB 1
+#define READ_CB 2
+
+static int read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_t type);
+
+static struct sensor_listener listener = {
+   .sl_sensor_type = SENSOR_TYPE_ACCELEROMETER,
+   .sl_func = read_accelerometer,
+   .sl_arg = (void *)LISTENER_CB,
+};
+
+<br>
+4. Add the code for the `read_accelerometer()` function.  The sensor data is stored in`databuf` and `type` specifies the type of sensor data.
 
 ```c 
-
-#define READ_CB    1
 
 static int
 read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_t type)
@@ -388,7 +406,7 @@ read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_
     }
    
     console_printf("%s: [ secs: %ld usecs: %d cputime: %u ]\n",
-                   ((int)arg == READ_CB) ? "READ_CB" : "LISTENER_CB",
+                   ((int)arg == LISTENER_CB) ? "LISTENER_CB" : "READ_CB",
                    (long int)sensor->s_sts.st_ostv.tv_sec,
                    (int)sensor->s_sts.st_ostv.tv_usec,
                    (unsigned int)sensor->s_sts.st_cputime);
@@ -400,74 +418,28 @@ read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_
 }
 
 ```
-<br>
-4. Add the event callback for the timer events. The timer fires every 5 seconds.  The callback reads the data from the accelerometer sensor:
-
-```c
-
-/*
- * Event callback function for timer events. The callback reads the sensor data
- */
-
-#define READ_SENSOR_INTERVAL (5 * OS_TICKS_PER_SEC)
-
-
-static void 
-timer_ev_cb(struct os_event *ev)
-{
-
-
-    assert(ev != NULL);
-
-    /* 
-     * Read the acceleromter sensor.  Pass the READ_CB value for the callback opaque
-     * arg to indicate that it is the sensor read data callback.
-     */
-    sensor_read(my_sensor, SENSOR_TYPE_ACCELEROMETER, read_accelerometer,
-                 (void *)READ_CB, OS_TIMEOUT_NEVER);
-    os_callout_reset(&sensor_callout, READ_SENSOR_INTERVAL);
-}
-
-```
 
 <br>
-5. Initialize the timer event to fire every five seconds:
+5. Set the poll rate for the sensor:
 
-```c
 
-static void 
-init_timer(void)
-{
-    /*
-     * Initialize the callout for a timer event.
-     */
-    os_callout_init(&sensor_callout, os_eventq_dflt_get(),
-                    timer_ev_cb, NULL);
+```hl_lines="2 3 8 14 15"
 
-    os_callout_reset(&sensor_callout, READ_SENSOR_INTERVAL);
-
-}
-
-```
-
-<br>
-6. Add the call to `sensor_mgr_find_next_bytype()` function to lookup the accelerometer sensor in `main()` and set the sensor to the `my_sensor` variable. We must lock the sensor manager sensor list before performing the lookup:
-
-```hl_lines="10 11 12 14"
+#define MY_SENSOR_DEVICE  "lis2dh12_0"
+#define MY_SENSOR_POLL_TIME 2000
 
 int
 main(int argc, char **argv)
 {
+    int rc
     ...
 
     /* Initialize all packages. */
     sysinit();
 
-    sensor_mgr_lock();
-    my_sensor = sensor_mgr_find_next_bytype(SENSOR_TYPE_ACCELEROMETER, NULL);
-    sensor_mgr_unlock();
+    rc = sensor_set_poll_rate_ms(MY_SENSOR_DEVICE, MY_SENSOR_POLL_TIME);
+    assert(rc == 0);
 
-    assert(my_sensor != NULL);
 
     /* As the last thing, process events from default event queue. */
     while (1) {
@@ -480,18 +452,22 @@ main(int argc, char **argv)
 ```
 
 <br>
-7. Add the `init_timer()` function to initialize the OS callout:
+6. Look up the sensor and register the listener:
 
-```hl_lines="8"
+```hl_lines="10 l1 12 13"
 
 int
 main(int argc, char **argv)
 {
     ...
 
-    assert(my_sensor != NULL);
+    rc = sensor_set_poll_rate_ms(MY_SENSOR_DEVICE, MY_SENSOR_POLL_TIME);
+    assert(rc == 0);
 
-    init_timer();
+    my_sensor = sensor_mgr_find_next_bydevname(MY_SENSOR_DEVICE, NULL);
+    assert(my_sensor != NULL);
+    rc = sensor_register_listener(my_sensor, &listener);
+    assert(rc == 0);
 
     /* As the last thing, process events from default event queue. */
     while (1) {
@@ -502,8 +478,10 @@ main(int argc, char **argv)
 }
 
 ```
+
 <br>
 #### Step 2: Rebuilding the Application and Connecting to Console
+
 <br>
 1. Run the `newt run` command to rebuild the application, create a new image, load the image, and start a GDB process:
 
@@ -512,16 +490,16 @@ main(int argc, char **argv)
 $ newt run thingy_my_sensor 2.0.0
 Compiling apps/my_sensor_app/src/main.c
 Archiving apps_my_sensor_app.a
-Linking /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
-App image succesfully generated: /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.img
+Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
+App image succesfully generated: ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.img
 Loading app image into slot 1
-[/Users/wanda/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh /Users/wanda/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app]
-Debugging /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app]
+Debugging ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
 GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
 
     ...
 
-Reading symbols from /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf...done.
+Reading symbols from ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf...done.
 os_tick_idle (ticks=12)
     at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:204
 204	    if (ticks > 0) {
@@ -537,81 +515,115 @@ Continuing.
 ```no-highlight
 
 $ telnet localhost 19021
-Trying ::1...
-telnet: connect to address ::1: Connection refused
-Trying 127.0.0.1...
+
 Connected to localhost.
 Escape character is '^]'.
 SEGGER J-Link V6.14h - Real time terminal output
-SEGGER J-Link ARM V10.0, SN=600000268
+J-Link OB-SAM3U128-V2-NordicSemi compiled Mar  2 2017 12:22:13 V1.0, SN=682562963
 Process: JLinkGDBServer
-000642 READ_CB: [ secs: 5 usecs: 3651 cputime: 5345645 ]
-000642 x = -29.41995049 y = 0.000000000 z = -9796.843750
+000003 LISTENER_CB: [ secs: 0 usecs: 23407 cputime: 331783 ]
+000003 x = 117.67980192 y = -19.61330035 z = -9885.103515
 
-001282 READ_CB: [ secs: 9 usecs: 986395 cputime: 10328389 ]
-001282 x = 68.646553024 y = 49.033248902 z = -9855.683593
+000259 LISTENER_CB: [ secs: 2 usecs: 21190 cputime: 2327645 ]
+000259 x = 117.67980192 y = -9.806650176 z = -9914.523437
 
-001922 READ_CB: [ secs: 14 usecs: 970723 cputime: 15312717 ]
-001922 x = 98.066497804 y = 39.226600640 z = -9885.103515
+000515 LISTENER_CB: [ secs: 4 usecs: 17032 cputime: 4323487 ]
+000515 x = 78.453201280 y = 0.000000000 z = -9924.330078
 
-002562 READ_CB: [ secs: 19 usecs: 955844 cputime: 20297838 ]
-002562 x = 49.033248902 y = 68.646553024 z = -9914.523437
+000771 LISTENER_CB: [ secs: 6 usecs: 13131 cputime: 6319586 ]
+000771 x = 117.67980192 y = -19.61330035 z = -9914.523437
 
+001027 LISTENER_CB: [ secs: 8 usecs: 8810 cputime: 8315265 ]
+001027 x = 127.48645020 y = 0.000000000 z = -9924.330078
 
-```
-
-You should see the accelerometer sensor that the application outputs from the READ_CB to the console.
-
-<br>
-#### Step 3:  Registering a Sensor Listener 
-
-You can also register a sensor listener callback. When the `sensor_read()` funtion is called to read a sensor, all listeners registered for that sensor are also called.  We extend the my_sensor_app to register a listener for the sensor.
-
-<br>
-1. Declare and initialize a listener for the sensor. We use the same callback `read_accelerometer()` function, and set the LISTENER_CB value for the callback argument to the listener callback to indicate that the callback is invoked from the listener.
-
-```hl_lines="3 5 7 8 9 10 11"
-
-#define READ_CB    1
-#define LISTENER_CB 2
-
-static int read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_t type);
-
-static struct sensor_listener listener = {
-   .sl_sensor_type = SENSOR_TYPE_ACCELEROMETER,
-   .sl_func = read_accelerometer,
-   .sl_arg = (void *)LISTENER_CB,
-};
+001283 LISTENER_CB: [ secs: 10 usecs: 4964 cputime: 10311419 ]
+001283 x = 58.839900992 y = -9.806650176 z = -9885.103515
 
 ```
+
+You should see the accelerometer sensor data output from the LISTENER_CB.
+
 <br>
-2. Register a listener for the sensor in main():
+#### Step 3: Modifying main.c to Use  sensor_read() Instead of a Listener 
 
-```hl_lines="5 17 18"
+Lets extend the application to use the `sensor_read()` function instead of a listener. We setup an OS callout to call the `sensor_read()` function for illustration purposes.  A real application will most likely read the sensor data when it gets a request or some other event.
 
-int
-main(int argc, char **argv)
+<br>
+1. Add an OS callout and initialize an OS timer to fire every 5 seconds. The timer callback calls the `sensor_read()` function to read the sensor data. The `read_accelerometer()` callback is called when the sensor data is read. The READ_CB value is passed to the `read_accelerometer()` function and indicates that the callback is from the `sensor_read()` function and not from the listener.
+
+```c
+/*
+ * Event callback function for timer events. The callback reads the sensor data
+ */
+
+#define READ_SENSOR_INTERVAL (5 * OS_TICKS_PER_SEC)
+
+static struct os_callout sensor_callout;
+
+static void
+timer_ev_cb(struct os_event *ev)
 {
-    int rc;
 
-  /* Perform some extra setup if we're running in the simulator. */
-#ifdef ARCH_sim
-    mcu_sim_parse_args(argc, argv);
-#endif
-    ...
 
-    sensor_mgr_unlock();
+    assert(ev != NULL);
 
-    assert(my_sensor != NULL);   
-    
-    rc = sensor_register_listener(my_sensor, &listener);
-    assert (rc == 0);
+    /*
+     * Read the accelerometer sensor.  Pass the READ_CB value for the callback opaque
+     * arg to indicate that it is the sensor_read() callback.
+     */
+    sensor_read(my_sensor, SENSOR_TYPE_ACCELEROMETER, read_accelerometer,
+                 (void *)READ_CB, OS_TIMEOUT_NEVER);
+    os_callout_reset(&sensor_callout, READ_SENSOR_INTERVAL);
+    return;
+}
 
-    init_timer();
+
+static void
+init_timer(void)
+{
+    /*
+     * Initialize the callout for a timer event.
+     */
+    os_callout_init(&sensor_callout, os_eventq_dflt_get(),
+                    timer_ev_cb, NULL);
+
+    os_callout_reset(&sensor_callout, READ_SENSOR_INTERVAL);
+    return;
 
 }
 
 ```
+
+<br>
+2. Remove the listener registration and call the `init_timer()` function in `main()`. You can delete the `sensor_register_listener()` function call, but we call the `sensor_unregister_listener()` function for illustration purposes.
+
+
+```hl_lines="11 12 14"
+
+int
+main(int argc, char **argv)
+{   
+    ...
+    
+    assert(my_sensor != NULL);
+    rc = sensor_register_listener(my_sensor, &listener);
+    assert(rc == 0);
+    
+    rc = sensor_unregister_listener(my_sensor, &listener);
+    assert(rc == 0);
+    
+    init_timer();
+
+    /* As the last thing, process events from default event queue. */
+    while (1) {
+        os_eventq_run(os_eventq_dflt_get());
+    }
+    
+    return 0;
+}
+
+``` 
+
 <br>
 #### Step 4: Rebuilding the Application and Connecting to Console
 <br>
@@ -622,16 +634,16 @@ main(int argc, char **argv)
 $ newt run thingy_my_sensor 3.0.0
 Compiling apps/my_sensor_app/src/main.c
 Archiving apps_my_sensor_app.a
-Linking /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
-App image succesfully generated: /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.img
+Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
+App image succesfully generated: ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.img
 Loading app image into slot 1
-[/Users/wanda/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh /Users/wanda/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app]
-Debugging /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52-thingy ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app]
+Debugging ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
 GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
 
      ...
 
-Reading symbols from /Users/wanda/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf...done.
+Reading symbols from ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf...done.
 os_tick_idle (ticks=12)
     at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:204
 204	    if (ticks > 0) {
@@ -643,7 +655,7 @@ Continuing.
 ```
 
 <br>
-2. Connect to the console via RTT:
+3. Connect to the console via RTT:
 
 ```no-highlight
 
@@ -654,27 +666,24 @@ Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.
 SEGGER J-Link V6.14h - Real time terminal output
-SEGGER J-Link ARM V10.0, SN=600000268
+J-Link OB-SAM3U128-V2-NordicSemi compiled Mar  2 2017 12:22:13 V1.0, SN=682562963
 Process: JLinkGDBServer
 
-009602 LISTENER_CB: [ secs: 74 usecs: 828580 cputime: 75180590 ]
-009602 x = 29.419950496 y = 0.000000000 z = -9865.490234
 
-009602 READ_CB: [ secs: 74 usecs: 828580 cputime: 75180590 ]
-009602 x = 29.419950496 y = 0.000000000 z = -9865.490234
+000629 compat> READ_CB: [ secs: 5 usecs: 4088 cputime: 5295643 ]
+000642 x = 98.066497804 y = 0.000000000 z = -9806.650390
 
-010242 LISTENER_CB: [ secs: 79 usecs: 812642 cputime: 80164652 ]
-010242 x = 39.226600640 y = 29.419950496 z = -9875.296875
+001282 READ_CB: [ secs: 9 usecs: 992459 cputime: 10284014 ]
+001282 x = 117.67980192 y = -39.22660064 z = -9894.910156
 
-010242 READ_CB: [ secs: 79 usecs: 812642 cputime: 80164652 ]
-010242 x = 39.226600640 y = 29.419950496 z = -9875.296875
+001922 READ_CB: [ secs: 14 usecs: 981159 cputime: 15272714 ]
+001922 x = 78.453201280 y = -29.41995049 z = -9885.103515
 
-021122 LISTENER_CB: [ secs: 164 usecs: 568113 cputime: 164920123 ]
-021122 x = 39.226600640 y = 9.806650176 z = -9875.296875
+002562 READ_CB: [ secs: 19 usecs: 970088 cputime: 20261643 ]
+002562 x = 107.87315366 y = -29.41995049 z = -9885.103515
 
-021122 READ_CB: [ secs: 164 usecs: 568113 cputime: 164920123 ]
-021122 x = 39.226600640 y = 9.806650176 z = -9875.296875
 
 ```
 
-You should see the accelerometer sensor data output from both the READ_CB and the LISTENER_CB callbacks.
+You should see the accelerometer sensor data output from the READ_CB.
+
