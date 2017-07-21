@@ -482,15 +482,17 @@
                             <h2 id="newtmgr-log"><font color="#F2853F" style="font-size:24pt">newtmgr log </font></h2>
 <p>Manage logs on a device.</p>
 <h4 id="usage">Usage:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    newtmgr log [command] [flags] 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    newtmgr log [command] -c &lt;conn_profile&gt; [flags] 
 </pre></div>
 
 
 <h4 id="global-flags">Global Flags:</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    -c, --conn string       connection profile to use.
-    -h, --help              Help for newtmgr commands
-    -l, --loglevel string   log level to use (default &quot;info&quot;)
-    -t, --trace             print all bytes transmitted and received
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>  -c, --conn string       connection profile to use
+  -h, --help              help for newtmgr
+  -l, --loglevel string   log level to use (default &quot;info&quot;)
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 </pre></div>
 
 
@@ -522,7 +524,7 @@
 </tr>
 <tr>
 <td>show</td>
-<td>The newtmgr log show command shows the logs on a device.</td>
+<td>The newtmgr log show command displays logs on a device. The command format is: <br>newtmgr log show [log_name [min-index [min-timestamp]]] -c &lt;conn_profile&gt;<br><br>The following optional parameters can be used to filter the logs to display: <ul><li><strong>log_name</strong>: Name of log to display. If log_name is not specified, all logs are displayed.</li><li><strong>min-index</strong>: Minimum index of the log entries to display. This value is only valid when a log_name is specified. The value can be <code>last</code> or a number. If the value is <code>last</code>, only the last log entry is displayed. If the value is a number, log entries with an index equal to or higher than min-index are displayed.</li><li><strong>min-timestamp</strong>: Minimum timestamp of log entries to display. The value is only valid if min-index is specified and is not the value <code>last</code>. Only log entries with a timestamp equal to or later than min-timestamp are displayed. Log entries with a timestamp equal to min-timestamp are only displayed if the log entry index is equal to or higher than min-index.</li></ul></td>
 </tr>
 </tbody>
 </table>
@@ -558,8 +560,28 @@
 </tr>
 <tr>
 <td>show</td>
-<td>newtmgr log show<br>-c profile01</td>
-<td>Shows the logs on a device. Newtmgr connects to the device over a connection specified in the <code>profile01</code> connection profile.</td>
+<td>newtmgr log show -c profile01</td>
+<td>Displays all logs on a device.  Newtmgr connects to the device over a connection specified in the <code>profile01</code> connection profile.</td>
+</tr>
+<tr>
+<td>show</td>
+<td>newtmgr log show reboot_log -c profile01</td>
+<td>Displays all log entries for the reboot_log on a device.  Newtmgr connects to the device over a connection specified in the <code>profile01</code> connection profile.</td>
+</tr>
+<tr>
+<td>show</td>
+<td>newtmgr log show reboot_log last -c profile01</td>
+<td>Displays the last entry from the reboot_log on a device.  Newtmgr connects to the device over a connection specified in the <code>profile01</code> connection profile.</td>
+</tr>
+<tr>
+<td>show</td>
+<td>newtmgr log show reboot_log 2 -c profile01</td>
+<td>Displays the reboot_log log entries with an index 2 and higher on a device.  Newtmgr connects to the device over a connection specified in the <code>profile01</code> connection profile.</td>
+</tr>
+<tr>
+<td>show</td>
+<td>newtmgr log show reboot_log 5 123456 -c profile01</td>
+<td>Displays the reboot_log log entries with a timestamp higher than 123456 and log entries with a timestamp equal to 123456 and an index equal to or higher than 5.  Newtmgr connects to the device over a connection specified in the <code>profile01</code> connection profile.</td>
 </tr>
 </tbody>
 </table>
