@@ -423,6 +423,7 @@ read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_
 <br>
 5. Set the poll rate for the sensor to two seconds. The `sensor_set_poll_rate()` function sets the poll rate for a named sensor. 
 
+**Note:** You set the poll rate for a sensor programmatically and must set the poll rate to a non zero value in order for the sensor manager to poll the sensor. You may set a different poll rate for each sensor.  The sensor framework also defines a `SENSOR_MGR_WAKEUP_RATE` syscfg setting that specifies the default rate that the sensor manager polls. The sensor manager uses the poll rate for a sesnor if a sensor is configured to poll more frequently than the `SENSOR_MGR_WAKEUP_RATE` setting value.
 
 ```hl_lines="2 3 8 14 15"
 
