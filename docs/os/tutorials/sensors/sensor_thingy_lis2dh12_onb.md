@@ -1,18 +1,18 @@
 ## Developing an Application for an Onboard Sensor
 
-This tutorial shows you how to develop a simple application for an onboard sensor.  The Mynewt sensor framework enables you to easily and quickly develop Mynewt sensor applications.  We assume you have completed the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md) and are familiar with the sensor framework and sensor shell command. 
+This tutorial shows you how to develop a simple application for an onboard sensor.  The Mynewt sensor framework enables you to easily and quickly develop Mynewt sensor applications.  We assume that you have completed the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md) and are familiar with the sensor framework and sensor shell command. 
 
 <br>
 This tutorial shows you how to:
 
-* Develop an application with the LIS2DH12 accelerometer onboard sensor enabled on the Nordic Thingy and use the sensor framework `sensor` shell command to view the sensor data.
+* Develop an application for the Nordic Thingy LIS2DH12 accelerometer onboard sensor with the sensor framework `sensor` shell command enabled to view sensor data. 
 * Extend the application to use the sensor framework API to read the sensor data and output the data to the Mynewt console.
 
 ### Prerequisites
 
-* Meet the prerequisites listed in [Sensor Tutorials](/os/tutorials/sensors/sensors.md).  
+* Meet the prerequisites listed in the [Sensor Tutorials Overview](/os/tutorials/sensors/sensors.md).  
 * Have a Nordic Thingy.  
-* [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html) - any model (this tutorial has been tested with J-Link EDU and J-Link Pro).
+* [Segger J-Link Debug Probe](https://www.segger.com/jlink-debug-probes.html).
 * [J-Link 9 pin Cortex-M Adapter](https://www.segger.com/jlink-adapters.html#CM_9pin) that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems.
 * Install the [Segger JLINK Software and documentation pack](https://www.segger.com/jlink-software.html).
 * Complete the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md).
@@ -47,7 +47,7 @@ $ cd apps/my_sensor_app
 <br>
 #### Step 2: Adding the Package Dependencies
 
-The my_sensor_app requires the sensor framework, `hw/sensor`, package as a package dependency.  Note that the BSP creates the sensor devices for the onboard sensors, so the `hw/sensor/creator` package that creates off-board sensor is not needed. 
+The my_sensor_app package requires the sensor framework, `hw/sensor`, package as a package dependency.  Note that the BSP creates the sensor devices for the onboard sensors, so the `hw/sensor/creator` package that creates off-board sensor is not needed. 
 
 Add the highlighted line to the `pkg.yml` file to add the `hw/sensor` package as package dependency:
 
@@ -256,7 +256,7 @@ Resetting target
 ```
 
 <br>
-3. Enter `c` in the `(gdb)` prompt to continue.
+3. Enter `c <return>` in the (gdb) prompt to continue.
 
 <br>
 4.  Run the following telnet command to connect to the Mynewt console via RTT and enter &lt;return&gt; to get the shell prompt after you are connected.
@@ -281,7 +281,7 @@ Process: JLinkGDBServer
 #### Step 8: Viewing the list of Sensors and Sensor Data
 
 <br>
-1. Enter `sensor list` on the console to see the sensors that are registered with the sensor manager. You should see the `lis2dh12_0` sensor.  This sensor is only configured for the accelerometer (0x1).
+1. Enter `sensor list` to see the sensors that are registered with the sensor manager. You should see the `lis2dh12_0` sensor.  This sensor is only configured for the accelerometer (0x1).
 
 
 ```no-highlight
@@ -294,7 +294,7 @@ sensor list
 ```
 
 <br>
-2. Enter the `sensor read` command on the console to read some data samples for the accelerometer:
+2. Enter the `sensor read` command to read some data samples from the accelerometer:
 
 ```no-highlight
 
@@ -322,15 +322,14 @@ As this tutorial demonstrates so far, the Mynewt sensor framework enables you to
 
 There are two sensor functions that you can use to read data from a sensor device:
 
-* `sensor_read()`:  This function reads sensor data from a sensor device and calls the specified user callback to receive the sensor data.  You specify a bit mask of the types of sensor data to read from a sensor device and a callback function pointer in the call to the `sensor_read()` function. This callback is called for each sensor type you specify to read.  
-
 * `sensor_register_listener()`: This function allows you to register a listener for a sensor device. You specify a bit mask of the types of sensor data to listen for and a callback to call when data is read from the sensor device. The listener callback is called whenever the `sensor_read()` function reads data for a sensor type from a sensor device that the listener is listening for. 
 
     The sensor framework supports polling of sensor devices. For a sensor device that has a polling rate configured, the sensor framework poller reads sensor data for all the configured sensor types from the sensor device at each polling interval and calls the registered listener callbacks with the sensor data.
 
-We first extend the application to a register a sensor listener to demonstrate how to use the sensor framework polling support. 
+* `sensor_read()`:  This function reads sensor data from a sensor device and calls the specified user callback to receive the sensor data.  You specify a bit mask of the types of sensor data to read from a sensor device and a callback. This callback is called for each sensor type you specify to read.  
 
-We then extend the application to use the `sensor_read()` function instead of a listener.  An application may not need to poll sensors. For example, an application that processes remote requests for sensor data only need to read the sensor data when it receives a request.  
+
+We first extend the application to a register a sensor listener to demonstrate how to use the sensor framework polling support.  We then extend the application to use the `sensor_read()` function instead of a listener.  An application may not need to poll sensors. For example, an application that processes remote requests for sensor data might only read the sensor data when it receives a request.  
 
 <br>
 #### Step 1: Modifying main.c to Add a Sensor Listener
@@ -362,9 +361,9 @@ static struct sensor *my_sensor;
 
 ```
 <br>
-3. Declare and initialize a sensor listener. You specify a bit mask for the sensor types to listen for, the callback function, and an opaque argument to pass to the callback. In this tutorial,  we only listen for the accelerometer, use the `read_accelerometer()` function for the listener callback, and pass the LISTENER_CB value for the callback opaque argument.
+3. Declare and initialize a sensor listener. You specify a bit mask for the sensor types to listen for, the callback function, and an opaque argument to pass to the callback. You initialize the type to SENSOR_TYPE_ACCELEROMETER,  the listener callback to the `read_accelerometer()` function, and the callback opaque argument to the LISTENER_CB value.
 
-**Note**: We define LISTENER_CB and READ_CB values because we also use the `read_accelerometer()` function for callback for the `sensor_read()` .  The LISTENER_CB or the READ_CB value is passed to the `read_accelerometer()` function to indicate whether it is invoked as a listener or a `sensor_read()` callback. 
+**Note**: We define LISTENER_CB and READ_CB values because we also use the `read_accelerometer()` function as the callback for the `sensor_read()` function later in the tutorial.  The LISTENER_CB or the READ_CB value is passed to the `read_accelerometer()` function to indicate whether it is invoked as a listener or a `sensor_read()` callback. 
 
 <br>
 ```c
@@ -380,8 +379,10 @@ static struct sensor_listener listener = {
    .sl_arg = (void *)LISTENER_CB,
 };
 
+```
+
 <br>
-4. Add the code for the `read_accelerometer()` function.  The sensor data is stored in`databuf` and `type` specifies the type of sensor data.
+4. Add the code for the `read_accelerometer()` function.  The sensor data is stored in the `databuf` and `type` specifies the type of sensor data.
 
 ```c 
 
@@ -420,7 +421,7 @@ read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_
 ```
 
 <br>
-5. Set the poll rate for the sensor:
+5. Set the poll rate for the sensor to two seconds. The `sensor_set_poll_rate()` function sets the poll rate for a named sensor. 
 
 
 ```hl_lines="2 3 8 14 15"
@@ -452,7 +453,7 @@ main(int argc, char **argv)
 ```
 
 <br>
-6. Look up the sensor and register the listener:
+6. Look up the sensor by name to get the handle for the sensor and register a listener for the sensor.
 
 ```hl_lines="10 l1 12 13"
 
@@ -541,7 +542,7 @@ Process: JLinkGDBServer
 
 ```
 
-You should see the accelerometer sensor data output from the LISTENER_CB.
+You should see the accelerometer sensor data output from the listener callback.
 
 <br>
 #### Step 3: Modifying main.c to Use  sensor_read() Instead of a Listener 
@@ -595,7 +596,7 @@ init_timer(void)
 ```
 
 <br>
-2. Remove the listener registration and call the `init_timer()` function in `main()`. You can delete the `sensor_register_listener()` function call, but we call the `sensor_unregister_listener()` function for illustration purposes.
+2. Remove the listener registration and call the `init_timer()` function in `main()`. You can delete the `sensor_register_listener()` function call, but we call the `sensor_unregister_listener()` function to illustrate how to use this function.  
 
 
 ```hl_lines="11 12 14"
@@ -627,7 +628,7 @@ main(int argc, char **argv)
 <br>
 #### Step 4: Rebuilding the Application and Connecting to Console
 <br>
-1. Run the `newt run` command to rebuild the application, create an new image and start a GDB process:
+1. Run the `newt run` command to rebuild the application, create an new image, and start a GDB process:
 
 ```no-highlight
 
@@ -685,5 +686,5 @@ Process: JLinkGDBServer
 
 ```
 
-You should see the accelerometer sensor data output from the READ_CB.
+You should see the accelerometer sensor data output from the sensor read data callback.
 

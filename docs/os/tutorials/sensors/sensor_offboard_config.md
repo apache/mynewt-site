@@ -1,10 +1,13 @@
 ## Changing the Default Configuration for a Sensor
 
-This tutorial shows you how to change default configuration values for an off-board sensor. It continues with the example in the  [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_offboard_config.md) tutorial.
+This tutorial shows you how to change default configuration values for an off-board sensor. It continues with the example in the  [Enabling an Off-Board Sensor in an Existing Application tutorial](/os/tutorials/sensors/sensor_offboard_config.md).
+
+
+** Note:** You can also follow most of the instructions in this tutorial to change the default configuration for an onboard sensor. The difference is that the BSP, instead of the sensor creator package, creates and configures the onboard sensor devices in the `hal_bsp.c` file.  You should check the BSP to determine whether the default configuration for a sensor meets your application requirements.
 
 ### Prerequisite 
 
-Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application](/os/tutorials/sensors/sensor_offboard_config.md) tutorial. 
+Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application tutorial](/os/tutorials/sensors/sensor_offboard_config.md). 
 
 ### Overview on How to Initialize the Configuration Values for a Sensor
 

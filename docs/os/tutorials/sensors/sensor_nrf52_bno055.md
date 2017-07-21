@@ -2,7 +2,7 @@
 
 This tutorial shows you how to enable an existing application to run on a device with an off-board sensor device connected to it. It allows you to quickly bring up and run a Mynewt application on a device to view sensor data from a sensor device.   
 
-We use the **sensors_test** application running on an nRF52-DK board to communicate, via the I2C interface,  with the [Adafruit BNO055](https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview) sensor. The sensors_test application is a sample application that demonstrates all the features of the Mynewt OS sensor framework. The application includes the sensor framework `sensor` shell command that allows you to view the sensors and sensor data managed by the sensor framework, and the `bno055` shell command that allows you to control and query the BNO055 device and to view the sensor data.
+We use the **sensors_test** application running on an nRF52-DK board to communicate, via the I2C interface,  with the [Adafruit BNO055](https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview) sensor. The sensors_test application is a sample application that demonstrates all the features of the Mynewt sensor framework. The application includes the sensor framework `sensor` shell command that allows you to view the sensors and sensor data managed by the sensor framework, and the `bno055` shell command that allows you to control and query the BNO055 device and to view the sensor data.
 
 <br>
 
@@ -30,7 +30,7 @@ For your reference, we describe the packages and the setting values that enable 
 * **hw/sensor**: The sensor framework package. This package defines the `SENSOR_CLI` setting that specifies whether the `sensor` shell command is enabled. This setting is enabled by default.
 
 * **hw/sensor/creator**: The sensor creator package. This package supports off-board sensor devices.  This package creates the os devices in the kernel for the sensors and configures the sensor devices with default values. It defines a syscfg setting for each sensor device and uses the naming convention `<SENSORNAME>_OFB`.  For example, the syscfg setting for the BNO055 sensor is  `BNO055_OFB`.  The `<SENSORNAME>_OFB` setting specifies whether the sensor named SENSORNAME is enabled. The setting is disabled by default. This package includes the sensor device driver package `hw/drivers/sensors/<sensorname>` and creates and configures a sensor named SENSORNAME when the `SENSORNAME_OFB` setting is enabled by the application. 
-* **hw/drivers/sensors/bno055**: The driver package for the BNO055 sensor. The creator package adds this package as a package dependency when the `BNO055_OFB` setting is enabled. The driver package defines the `BNO055_CLI` setting that specfies whether the `bno055` shell command is enabled. This setting is disabled by default and is enabled by the application.  The package also exports the `bno055_shell_init()` function that an application calls to initialize the driver shell support. The sensor_test application enables this setting by default and calls the `bno055_shell_init()` function.
+* **hw/drivers/sensors/bno055**: The driver package for the BNO055 sensor. The creator package adds this package as a package dependency when the `BNO055_OFB` setting is enabled. The driver package defines the `BNO055_CLI` setting that specfies whether the `bno055` shell command is enabled. This setting is disabled by default and is enabled by the application.  The package also exports the `bno055_shell_init()` function that an application calls to initialize the driver shell support. 
 
 	**Note:** All sensor driver packages that support a sensor shell command define a syscfg setting to specify whether the shell command is enabled. They also export a shell initialization function that an application must call. The naming convention is `<SENSORNAME>_CLI` for the syscfg setting  and `<sensorname>_shell_init()` for the initialization function. 
 
@@ -51,13 +51,11 @@ When this setting is enabled, the creator package performs the following:
 	* Includes the BNO055 driver package (`hw/drivers/sensors/bno055`) as a package dependency.
 	* Creates an os device for the sensor in the Mynewt kernel.
 	* Configures the sensor device with default values.
+* `BNO055_CLI`: Enables the `bno055` shell command in the bno055 device driver package. The sensors_test application also uses this setting to conditionally include the call to the `bno055_shell_init()` function to initialize the shell support in the driver.
 
 
-**Note:** The following two settings enable sensor framework and sensor device shell support: 
+**Note:** The `SENSOR_CLI` setting that specifies whether the `sensor` shell command is enabled is is enabled by default.
 
-* `SENSOR_CLI`: Specifies whether the `sensor` shell command is enabled in the sensor framework package.  
-
-* `BNO055_CLI`: Specifies whether the `bno055` shell command is enabled in the bno055 device driver package.  The sensor_test application also uses this setting to conditionally include the call to the `bno055_shell_init()` function to initialize the shell support in the driver.
 
 
 This tutorial uses both shell commands. They are enabled by default so you do not need to explicitly enable the setting for this target.
@@ -87,34 +85,20 @@ $
 ```
 
 <br>
-3. Run the `newt target set` command to enable the `I2C_0` and `BNO055_OFB` syscfg settings:
+3. Run the `newt target set` command to enable the `I2C_0`, `BNO055_OFB`, and `BBNO055_CLI` syscfg settings:
 
 ```no-highlight
 
-$ newt target set nrf52_bno055_test syscfg=BNO055_OFB=1:I2C_0=1
-Target targets/nrf52_bno055_test successfully set target.syscfg to BNO055_OFB=1:I2C_0=1
+$ newt target set nrf52_bno055_test syscfg=BNO055_OFB=1:I2C_0=1:BNO055_CLI=1
+Target targets/nrf52_bno055_test successfully set target.syscfg to BNO055_OFB=1:I2C_0=1:BNO055_CLI=1
 $
 
 ```
 
-<br>
-4. You can run the `newt target show` command to verify the target settings:
-
-```no-highlight
-
-$ newt target show nrf52_bno055_test
-targets/nrf52_bno055_test
-    app=@apache-mynewt-core/apps/sensors_test
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    build_profile=debug
-    syscfg=BNO055_OFB=1:I2C_0=1
-$
-
-```
 <br>
 ### Step 2: <a name="create_targets"></a>Creating the Bootloader Target
 <br>
-1. Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `nrf52_boot`:
+Run the following `newt target` commands, from your project directory, to create a bootloader target. We name the target `nrf52_boot`:
 <br>
 ```no-highlight
 
@@ -127,17 +111,7 @@ Target targets/nrf52_boot successfully set target.build_profile to optimized
 $
 
 ```
-<br>
-2. You can run the `newt target show` command to verify the target settings:
-<br>
-```no-highlight
 
-$ newt target show nrf52_boot
-targets/nrf52_boot app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    build_profile=optimized
-$
-```
 <br>
 ### Step 3: Building the Bootloader and Application Image
 <br>
@@ -199,9 +173,9 @@ Target successfully built: targets/nrf52_bno055_test
 ```
 <br>
 
-### Step 4: Creating and Signing the Application Image 
+### Step 4: Creating an Application Image 
 
-Run the `newt create-image` command to create and sign image. You may assign an arbitrary version (e.g. 1.0.0) to the image.
+Run the `newt create-image` command to create an image file. You may assign an arbitrary version (e.g. 1.0.0) to the image.
 <br>
 ```no-highlight
 
@@ -232,9 +206,9 @@ Connect the pins from the BNO055 sensor to the nRF52-DK board as specified in th
 <br>
 1. Set up two connections between your computer and the nRF52-DK board:  
 
-* A serial connection to communicate with the sensor_tests application and view the sensor data and hardware information via the Mynewt Shell.
+* A serial connection to communicate with the sensors_test application and view the sensor data and hardware information via the Mynewt shell.
 
-	You can reference the [Serial Port Setup](../get_started/serial_access.md) Tutorial for more information on setting up the serial communication.
+	You can reference the [Serial Port Setup](../get_started/serial_access.md) tutorial for more information on setting up a serial communication.
 
 * A connection from your computer to the micro-USB port on the nRF52-DK board to power the board and to load the bootloader and application image.
 
@@ -267,7 +241,7 @@ $
 <br>
 ### Step 8: Using a Terminal Emulator to Connect to the Application Console
 
-Start up a terminal emulator to connect the sensors_tests application console. You can use one of the terminal emulators listed below or one of your choice:
+Start up a terminal emulator to connect the sensors_test application console. You can use one of the terminal emulators listed below or one of your choice:
 
 * On Mac OS and Linux platforms, you can run ```minicom -D /dev/tty.usbserial-<port> -b 115200``` to connect to the console of your app. Note that on Linux, the format of the port name is `/dev/ttyUSB<N>`, where N is a number.
 
@@ -374,7 +348,7 @@ You use the `sensor read` command to read data samples for a configured type. Yo
 
 ```
 
-Each sample contains two lines of output. The first line is the time when the sample is read. The second line is the sample data.  For previous example output: 
+Each sample contains two lines of output. The first line is the time when the sample is read. The second line is the sample data.  For the example output: 
 
 These two lines are for the first sample:
 <br>
@@ -395,7 +369,7 @@ These two lines are for the last sample:
 ```
 <br>
 
-**Example 2:** Read vector data at 20 ms poll interval. You can enter `ctrl-c`, `q <return>`, or `Q <return>` to stop the polling.
+**Example 2:** Read the vector data at 20 ms poll interval. You can enter `ctrl-c`, `q <return>`, or `Q <return>` to stop the polling.
 <br>
 
 ```no-highlight
@@ -428,7 +402,7 @@ These two lines are for the last sample:
 ### Step 10: Controlling and Viewing Sensor Device Hardware and Sensor Data
 The BNO055 device driver implements the `bno055` shell command that allows you to:
 
-* Read sensor data samples for all the sensor type that the device supports. 
+* Read sensor data samples for all the sensor types that the device supports. 
   
     **Note:** The `sensor` shell command discussed previously only reads sensor data for configured sensor types.
 
@@ -491,9 +465,9 @@ bl_rev:0x15
 Now that you have successfully enabled an application to communicate with a sensor,  We recommend that you:
 
 * Experiment with other `sensor` and `bno055` shell commands in this tutorial to view other types of sensor data.
-* Change the default configuration values for the sensor. See the [Changing the Default Configuration for a Sensor](/os/tutorials/sensors/sensor_offboard_config.md) tutorial.
+* Change the default configuration values for the sensor. See the [Changing the Default Configuration for a Sensor tutorial](/os/tutorials/sensors/sensor_offboard_config.md).
 * Try a different off-board sensor. You can follow most of the procedures in this tutorial to enable other sensors in the sensors_test application. The `syscfg.yml` file for the `hw/sensor/creator/` package specifies the off-board sensors that Mynewt currently supports.  You will need to:
-    * Enable the `<SENSOR_NAME>_OFB` setting to include the sensor driver package and to create and initialize the sensor device.
+    * Enable the `<SENSORNAME>_OFB` setting to include the sensor driver package and to create and initialize the sensor device.
     * Enable the correct interface in the nRF52 BSP to communicate with the sensor device.
-    * Enable the sensor device driver shell command if the driver supports the shell. You can check the `syscfg.yml` file for the sensor driver package in the `hw/drivers/sensor/<sensor_name>` directory.
-* Try one of the other sensor tutorials listed in the [Sensor Tutorial Overview](/os/tutorials/sensors/sensors.md).
+    * Enable the sensor device driver shell command if the driver supports the shell. You can check the `syscfg.yml` file for the sensor device driver package in the `hw/drivers/sensor/<sensorname>` directory.
+* Try one of the other sensor tutorials listed in the [Sensor Tutorials Overview](/os/tutorials/sensors/sensors.md).
