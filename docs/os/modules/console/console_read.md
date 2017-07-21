@@ -23,22 +23,40 @@ available, or if the first received character was '\n'.
 
 #### Example
 
-```no-highlight
-void
-task1_loop(void *arg)
-{
-    struct os_event *ev;
-    char rx_msg[128];
-    int rx_len;
-    int newline;
+```c
+#define MAX_INPUT 128
 
+static void
+read_function(void *arg)
+{
+    char buf[MAX_INPUT];
+    int rc; 
+    int full_line;
+    int off;
+
+    off = 0;
     while (1) {
-        ev = os_eventq_get(&task1_evq);
-        assert(ev);
-        if (ev->ev_type == CONS_EV_TYPE) {
-            rx_len = console_read(rx_msg, sizeof(rx_msg), &newline);
-            if (rx_len) {
-                    if (!strncmp(rx_msg, "reset", rx_len)) {
-                            assert(0);
-                    }
+        rc = console_read(buf + off, MAX_INPUT - off, &full_line);
+        if (rc <= 0 && !full_line) {
+            continue;
+        }
+        off += rc;
+        if (!full_line) {
+            if (off == MAX_INPUT) {
+                /*
+                 * Full line, no newline yet. Reset the input buffer.
+                 */
+                off = 0;
+            }
+            continue;
+        }
+        /* Got full line - break out of the loop and process the input data */
+        break;
+    }
+  
+    /* Process the input line here */
+     ....
+
+    return;
+}    
 ```
