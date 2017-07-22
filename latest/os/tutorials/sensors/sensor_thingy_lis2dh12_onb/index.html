@@ -580,8 +580,8 @@ The newt tool creates a skeleton <code>my_sensor_app</code> package directory in
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/log/full&quot;
     - &quot;@apache-mynewt-core/sys/stats/full&quot;
-    - &quot;@apache-mynewt-core/hw/sensor&quot;
-</pre></div>
+<span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/hw/sensor&quot;
+</span></pre></div>
 
 
 <p><br></p>
@@ -816,8 +816,8 @@ sensor read lis2dh12_0 0x1 -n 5
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>#include &quot;sysinit/sysinit.h&quot;
 #include &quot;os/os.h&quot;
 
-#include &lt;defs/error.h&gt;
-<span style="background-color: #ffffcc">#include &lt;sensor/sensor.h&gt;
+<span style="background-color: #ffffcc">#include &lt;defs/error.h&gt;
+</span><span style="background-color: #ffffcc">#include &lt;sensor/sensor.h&gt;
 </span><span style="background-color: #ffffcc">#include &lt;sensor/accel.h&gt;
 </span><span style="background-color: #ffffcc">#include &lt;console/console.h&gt;
 </span></pre></div>
@@ -884,22 +884,22 @@ sensor read lis2dh12_0 0x1 -n 5
 <p><br>
 5. Set the poll rate for the sensor to two seconds. The <code>sensor_set_poll_rate()</code> function sets the poll rate for a named sensor. </p>
 <p><strong>Note:</strong> You set the poll rate for a sensor programmatically and must set the poll rate to a non zero value in order for the sensor manager to poll the sensor. You may set a different poll rate for each sensor.  The sensor framework also defines a <code>SENSOR_MGR_WAKEUP_RATE</code> syscfg setting that specifies the default rate that the sensor manager polls. The sensor manager uses the poll rate for a sesnor if a sensor is configured to poll more frequently than the <code>SENSOR_MGR_WAKEUP_RATE</code> setting value.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>#define MY_SENSOR_DEVICE  &quot;lis2dh12_0&quot;
-<span style="background-color: #ffffcc">#define MY_SENSOR_POLL_TIME 2000
-</span><span style="background-color: #ffffcc">
-</span>int
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">#define MY_SENSOR_DEVICE  &quot;lis2dh12_0&quot;
+</span><span style="background-color: #ffffcc">#define MY_SENSOR_POLL_TIME 2000
+</span>
+int
 main(int argc, char **argv)
 {
-    int rc
-<span style="background-color: #ffffcc">    ...
-</span>
+<span style="background-color: #ffffcc">    int rc
+</span>    ...
+
     /* Initialize all packages. */
     sysinit();
 
-    rc = sensor_set_poll_rate_ms(MY_SENSOR_DEVICE, MY_SENSOR_POLL_TIME);
-<span style="background-color: #ffffcc">    assert(rc == 0);
-</span><span style="background-color: #ffffcc">
+<span style="background-color: #ffffcc">    rc = sensor_set_poll_rate_ms(MY_SENSOR_DEVICE, MY_SENSOR_POLL_TIME);
+</span><span style="background-color: #ffffcc">    assert(rc == 0);
 </span>
+
     /* As the last thing, process events from default event queue. */
     while (1) {
         os_eventq_run(os_eventq_dflt_get());
@@ -920,11 +920,11 @@ main(int argc, char **argv)
     rc = sensor_set_poll_rate_ms(MY_SENSOR_DEVICE, MY_SENSOR_POLL_TIME);
     assert(rc == 0);
 
-    my_sensor = sensor_mgr_find_next_bydevname(MY_SENSOR_DEVICE, NULL);
-    assert(my_sensor != NULL);
-    rc = sensor_register_listener(my_sensor, &amp;listener);
-    assert(rc == 0);
-
+<span style="background-color: #ffffcc">    my_sensor = sensor_mgr_find_next_bydevname(MY_SENSOR_DEVICE, NULL);
+</span><span style="background-color: #ffffcc">    assert(my_sensor != NULL);
+</span><span style="background-color: #ffffcc">    rc = sensor_register_listener(my_sensor, &amp;listener);
+</span><span style="background-color: #ffffcc">    assert(rc == 0);
+</span>
     /* As the last thing, process events from default event queue. */
     while (1) {
         os_eventq_run(os_eventq_dflt_get());
@@ -1050,12 +1050,12 @@ main(int argc, char **argv)
     rc = sensor_register_listener(my_sensor, &amp;listener);
     assert(rc == 0);
 
-    rc = sensor_unregister_listener(my_sensor, &amp;listener);
-<span style="background-color: #ffffcc">    assert(rc == 0);
-</span><span style="background-color: #ffffcc">
-</span>    init_timer();
-<span style="background-color: #ffffcc">
-</span>    /* As the last thing, process events from default event queue. */
+<span style="background-color: #ffffcc">    rc = sensor_unregister_listener(my_sensor, &amp;listener);
+</span><span style="background-color: #ffffcc">    assert(rc == 0);
+</span>
+<span style="background-color: #ffffcc">    init_timer();
+</span>
+    /* As the last thing, process events from default event queue. */
     while (1) {
         os_eventq_run(os_eventq_dflt_get());
     }
