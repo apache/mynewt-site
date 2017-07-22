@@ -115,7 +115,7 @@ sensors_test_config_bno055(void)
 
 Delete the `SENSOR_TYPE_ACCELEROMETER` type from the `bcfg.bc_mask` initialization setting values:
 
-```hl_lines="9"
+```hl_lines="8"
 
 static int
 sensors_test_config_bno055(void)
@@ -186,7 +186,7 @@ Run the `newt load nrf52_bno055_test` command and power the device OFF and On.
 
 Start a terminal emulator, and run the `sensor list` command to verify the accelerometer (0x1) is not configured. The `configured type` listed for the sensor should not have the value `0x1`.
 
-```hl_lines="3"
+```hl_lines="2"
 
 045930 compat> sensor list
 046482 sensor dev = bno055_0, configured type = 0x2 0x4 0x200 0x1000 0x2000 0x4000 

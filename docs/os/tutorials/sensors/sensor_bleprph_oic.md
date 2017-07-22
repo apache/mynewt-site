@@ -50,7 +50,7 @@ Add the `hw/sensor/` and the `hw/sensor/creator` packages as dependencies in the
 
 **Note:**  The `hw/sensor` package automatically includes the `net/oic` package when the `SENSOR_OIC` setting is enabled, so you do not need to include the `net/oic` package as a dependency in this package.
 
-```hl_lines="12 13"
+```hl_lines="11 12"
 
 pkg.deps:
     - kernel/os
@@ -76,15 +76,18 @@ Add the following setting values to `syscfg.vals` in the `syscfg.yml` file:
 * `OC_SERVER: 1` : This setting enables OIC server support in the `net/oic` package. 
 * `FLOAT_USER: 1`: This setting enables floating pointing support in the encoding/tinycbor package. 
 * `ADVERTISE_128BIT_UUID: 1` and `ADVERTISE_16BIT_UUID: 0`: These settings enable BLE 128 bit UUID and disables 16 bit UUID advertisement. The IoTivity library that is used to build the OIC Apps on the iOS and Android devices only sees 128 bit UUID advertisements.   
-```hl_lines="4 5"
+
+```hl_lines="4 5 6 7 8"
 
 syscfg.vals:
        ...
+
     SENSOR_OIC: 1
     OC_SERVER: 1
     FLOAT_USER: 1
     ADVERTISE_128BIT_UUID: 1
     ADVERTISE_16BIT_UUID: 0
+
 ```
 <br>
 ### Step 4: Modifying main.c
@@ -103,7 +106,7 @@ We make the following modifications to main.c:
 Add the sensor package header file `sensor/sensor.h` below `#include "bleprph.h" ` file:
 
 
-```hl_lines="4"
+```hl_lines="3"
 
 #include "bleprph.h"
 
@@ -120,7 +123,7 @@ Make the following modifications to the `omgr_app_init()` function:
 <br>
 1. Delete the code segment that creates the OIC device and resource. The lines to delete are highlighted below:
 
-```hl_lines="5 8 9 10 11 12 13 14 15 16 17 18 19 20 "
+```hl_lines="4 7 8 9 10 11 12 13 14 15 16 17 18 19"
 
 static void
 omgr_app_init(void)
@@ -148,7 +151,7 @@ omgr_app_init(void)
 <br>
 2. Add the following `oc_add_device()` function call to create an OIC  resource for the sensor device:
 
-```hl_lines="8"
+```hl_lines="7"
 
 static void
 omgr_app_init(void)
@@ -164,7 +167,7 @@ omgr_app_init(void)
 <br>
 3. Add the call to the `sensor_oic_init()` function to initialize the sensor framework OIC server support:
 
-```hl_lines="10"
+```hl_lines="9"
 
 static void
 omgr_app_init(void)
