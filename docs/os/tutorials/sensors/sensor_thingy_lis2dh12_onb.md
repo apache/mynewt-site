@@ -51,7 +51,7 @@ The my_sensor_app package requires the sensor framework, `hw/sensor`, package as
 
 Add the highlighted line to the `pkg.yml` file to add the `hw/sensor` package as package dependency:
 
-```hl_lines="7"
+```hl_lines="6"
 
 pkg.deps:
     - "@apache-mynewt-core/kernel/os"
@@ -339,7 +339,7 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 <br>
 1. Add the highlighted include files:
 
-```hl_lines="5 6 7 8"
+```hl_lines="4 5 6 7"
 
 #include "sysinit/sysinit.h"
 #include "os/os.h"
@@ -348,7 +348,6 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 #include <sensor/sensor.h>
 #include <sensor/accel.h>
 #include <console/console.h>
-
 
 ```
 
@@ -424,7 +423,7 @@ read_accelerometer(struct sensor* sensor, void *arg, void *databuf, sensor_type_
 
 **Note:** You set the poll rate for a sensor programmatically and must set the poll rate to a non zero value in order for the sensor manager to poll the sensor. You may set a different poll rate for each sensor.  The sensor framework also defines a `SENSOR_MGR_WAKEUP_RATE` syscfg setting that specifies the default rate that the sensor manager polls. The sensor manager uses the poll rate for a sesnor if a sensor is configured to poll more frequently than the `SENSOR_MGR_WAKEUP_RATE` setting value.
 
-```hl_lines="2 3 8 14 15"
+```hl_lines="1 2 7 13 14"
 
 #define MY_SENSOR_DEVICE  "lis2dh12_0"
 #define MY_SENSOR_POLL_TIME 2000
@@ -455,7 +454,7 @@ main(int argc, char **argv)
 <br>
 6. Look up the sensor by name to get the handle for the sensor and register a listener for the sensor.
 
-```hl_lines="10 l1 12 13"
+```hl_lines="9 10 11 12"
 
 int
 main(int argc, char **argv)
@@ -599,7 +598,7 @@ init_timer(void)
 2. Remove the listener registration and call the `init_timer()` function in `main()`. You can delete the `sensor_register_listener()` function call, but we call the `sensor_unregister_listener()` function to illustrate how to use this function.  
 
 
-```hl_lines="11 12 14"
+```hl_lines="10 11 13"
 
 int
 main(int argc, char **argv)
