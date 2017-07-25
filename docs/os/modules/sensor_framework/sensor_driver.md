@@ -2,7 +2,7 @@
 
 A Mynewt sensor device driver uses the sensor framework abstraction and API to enable applications to access sensor data from any Mynewt sensor device using a common interface. The sensor device driver must also use the Mynewt HAL interface to communicate with and control a sensor device.
 
-This guide describes what a sensor device driver must implement to enable a sensor device within the sensor framework. For information on using the HAL API to communicate with a sensor device, see the [Hardware Layer Abtraction Guide](/os/modules/hal/hal.md).
+This guide describes what a sensor device driver must implement to enable a sensor device within the sensor framework. For information on using the HAL API to communicate with a sensor device, see the [Hardware Layer Abstraction Guide](/os/modules/hal/hal.md).
 
 The `hw/drivers/sensors/<sensorname>` package implements the device driver for the sensor named `SENSORNAME`.
 
@@ -107,7 +107,7 @@ The device driver `<sensorname>_init()` function initializes and registers a sen
 
 * Calls the `sensor_set_driver()` function to specify the sensor types that the sensor device supports, and the pointer to the `struct sensor_driver` variable that specifies the driver functions to read the sensor data and to get the value type for a sensor.
 
-* Calls the `sensor_set_interface()` function to set the interface the that board use to communicate with the sensor device. The BSP, or sensor creator package for an off-board sensors, sets up the `sensor_itf` and passes it to the `<sensorname>_init()` function.  The `sensor_set_interface()` functions saves this informatin in the sensor object. The device driver uses the `SENSOR_GET_ITF()` macro to retrieve the sensor_itf  when it needs to communicate with the sensor device.
+* Calls the `sensor_set_interface()` function to set the interface the that board use to communicate with the sensor device. The BSP, or sensor creator package for an off-board sensors, sets up the `sensor_itf` and passes it to the `<sensorname>_init()` function.  The `sensor_set_interface()` functions saves this information in the sensor object. The device driver uses the `SENSOR_GET_ITF()` macro to retrieve the sensor_itf  when it needs to communicate with the sensor device.
 
 * Calls the `sensor_mgr_register()` function to register the sensor with the sensor manager.
 
@@ -179,7 +179,7 @@ After the BSP, or the sensor creator package for an off-board sensor, creates th
 
 **Notes:** 
 
-* The device driver uses the `SENSOR_GET_ITF()` macro to retreive the sensor interface to communicate with the sensor.
+* The device driver uses the `SENSOR_GET_ITF()` macro to retrieve the sensor interface to communicate with the sensor.
 
 * If a sensor device has a chip ID that can be queried, we recommend that the device driver read and verify the chip ID with the data sheet.
 
@@ -222,7 +222,7 @@ bno055_config(struct bno055 *bno055, struct bno055_cfg *cfg)
 
            ....
 
-    /* Other code to set the configuration on th sensor device. */
+    /* Other code to set the configuration on the sensor device. */
 
            .... 
 
@@ -244,7 +244,7 @@ err:
 <br>
 ### Implementing a Sensor Device Shell Command
 
-A sensor device driver package may optionally implement a shell command that retreives and sets sensor device information to aid in testing and debugging.  The package should: 
+A sensor device driver package may optionally implement a shell command that retrieves and sets sensor device information to aid in testing and debugging.  The package should: 
 
 * Define a `<SENSORNAME>_CLI` syscfg setting to specify whether the shell command is enabled and disable the setting by default.
 

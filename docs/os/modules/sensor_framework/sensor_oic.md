@@ -10,5 +10,6 @@ The sensor package (`hw/sensor`) defines the following syscfg settings for OIC s
 * `SENSOR_OIC`: This setting specifies whether to enable sensor OIC server support. The setting is enabled by default. The sensor package includes the `net/oic` package for the OIC support when this setting is enabled. The `OC_SERVER` syscfg setting that specifies whether to enable OIC server support in the `net/oic` package must also be enabled. 
 * `SENSOR_OIC_OBS_RATE`: Sets the OIC server observation rate.
 
-An application defines an OIC application initialization handler that sets up the OIC resources it supports and calls the `oc_main_init()` function to initialize the OC server. The application must call the `sensor_oic_init()` function from the the OIC application initialization handler. The `sensor_oic_init()` function creates all the OIC resources for the sensors and registers request callbacks to process CoAP Get requests for the sensor OIC resources.
+An application defines an OIC application initialization handler that sets up the OIC resources it supports and calls the `oc_main_init()` function to initialize the OC server. The application must call the `sensor_oic_init()` function from the the OIC application initialization handler. The `sensor_oic_init()` function creates all the OIC resources for the sensors and registers request callbacks to process CoAP GET requests for the sensor OIC resources.
 
+See the [Enabling OIC Sensor Data Monitoring Tutorials](/os/tutorials/sensors/sensor_oic_overview.md) to run and develop sample OIC sensor server applications.

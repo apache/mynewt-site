@@ -25,9 +25,9 @@ to check whether a sensor is configured for one of the specified sensor types. T
 
 ### Polling Sensors 
 
-The sensor manager implements a poller that reads sensor data from sensors at sspecified poll rate. If an application configures a sensor to be polled, using the `sensor_set_poll_rate_ms()` function defined in the [sensor API](/os/modules/sensor_framework/sensor_api.md), the sensor manager poller will poll and read the configured sensor data from the sensor at the specified interval.
+The sensor manager implements a poller that reads sensor data from sensors at specified poll rates.  If an application configures a sensor to be polled, using the `sensor_set_poll_rate_ms()` function defined in the [sensor API](/os/modules/sensor_framework/sensor_api.md), the sensor manager poller will poll and read the configured sensor data from the sensor at the specified interval.
 
-The sensor manager poller uses an OS callout to setup a timer event to poll the sensors. By default, the poller uses the default OS event queue and the OS main task to process timer events. 
+The sensor manager poller uses an OS callout to set up a timer event to poll the sensors, and uses the default OS event queue and the OS main task to process timer events.  The `SENSOR_MGR_WAKEUP_RATE` syscfg setting specifies the default wakeup rate the sensor manager poller wakes up to poll sensors.  The sensor manager poller uses the poll rate for a sensor if the sensor is configured for a higher poll rate than the `SENSOR_MGR_WAKEUP_RATE` setting value.  
 
 **Note:**  An application needs to register a [sensor listener](/os/modules/sensor_framework/sensor_listener_api.md) to receive the sensor data that the sensor manager poller reads from a sensor.
 
@@ -43,8 +43,9 @@ These are the functions defined by the sensor manager API. Please see the [senso
 
 | Function | Description |
 |---------|-------------|
-|sensor_mgr_register| Registers a sensor object. This function is call by a sensor device driver.|
-|sensor_mgr_find_next_bytype| Returns the next sensor from the sensor manager list that matches one of the specified sensor types.|
-|sensor_mgr_find_next_byname| Returns the next sensor from the sensor manager list that matches the specified device name.|
-|sensor_mgr_lock| Locks the sensor manager list. The sensor manager list must be locked if you are iterating through the sensor manager list.|
-|sensor_unlock| Unlocks the sensor manager list.|
+|sensor_mgr_find_next_byname| Returns the next sensor from the sensor manager list that matches the specified device name. An application uses this function. <br><br> You must call the sensor_mgr_lock() function to lock the sensor manager list if you are iterating through the sensor manager list.|
+|sensor_mgr_find_next_bytype| Returns the next sensor from the sensor manager list that matches one of the specified sensor types. An application uses this function.<br><br>You must call the sensor_mgr_lock() function to lock the sensor manager list if you are iterating through the sensor manager list.|
+|sensor_mgr_lock| Locks the sensor manager list. An application uses this function. |
+|sensor_mgr_match_bytype| Indicates whether a given sensor is configured for one of the specified sensor types. An application uses this function. Note: The function takes a pointer to a variable with the bit mask of the types to match. |
+|sensor_mgr_register| Registers a sensor object. A sensor device driver uses this function.|
+|sensor_mgr_unlock| Unlocks the sensor manager list. An application uses this function.|

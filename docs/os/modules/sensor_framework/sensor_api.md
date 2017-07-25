@@ -46,7 +46,7 @@ An application calls the `sensor_read()` function to read sensor data from a sen
 
 #### Setting a Poll Rate for A Sensor 
 
-The sensor manager implements a poller that reads sensor data from a sensor at specified poll intervals. An application must call the `sensor_set_poll_rate_ms()` functon to set the poll rate for a sensor in order for poller to poll the sensor. 
+The sensor manager implements a poller that reads sensor data from a sensor at specified poll intervals. An application must call the `sensor_set_poll_rate_ms()` function to set the poll rate for a sensor in order for poller to poll the sensor. 
 
 **Note:** An application needs to register a [sensor listener](/os/modules/sensor_framework/sensor_listener_api.md) to receive the sensor data that the sensor manager poller reads from a sensor.
 
@@ -58,7 +58,7 @@ We list the main data structures that the sensor API uses and mention things to 
 
 #### Sensor Object
 
-The `struct sensor` data structure represents the sensor device. The sensor API,the [sensor manager API](/os/modules/sensor_framework/sensor_mgr_api.md), and the [sensor listener API](/os/modules/sensor_framework/sensor_listener_api.md) all operate on the `sensor` object abastraction. A sensor is maintained in the sensor manager global sensors list.
+The `struct sensor` data structure represents the sensor device. The sensor API, the [sensor manager API](/os/modules/sensor_framework/sensor_mgr_api.md), and the [sensor listener API](/os/modules/sensor_framework/sensor_listener_api.md) all operate on the `sensor` object abstraction. A sensor is maintained in the sensor manager global sensors list.
 
 
 ```c
@@ -111,7 +111,7 @@ struct sensor {
 
 <br>
 
-**Note:** There are two fields of type `sensor_type_t`: `s_types` and `s_mask`. The `s_types` field is a bit mask that specifies the sensor types that the sensor device supports. The `s_mask` field is a bit mask that specfies the sensor types the sensor device is configured for.  Only sensor data for a configured sensor type can be read.
+**Note:** There are two fields, `s_types` and `s_mask`, of type `sensor_type_t`. The `s_types` field is a bit mask that specifies the sensor types that the sensor device supports. The `s_mask` field is a bit mask that specifies the sensor types that the sensor device is configured for.  Only sensor data for a configured sensor type can be read.
 
 <br>
 #### Sensor Types
@@ -148,7 +148,7 @@ typedef enum {
 
 #### Sensor Interface
 
-The  `struct sensor_itf` data structure represents interface the sensor device driver uses to communicate with the sensor device. 
+The  `struct sensor_itf` data structure represents the interface the sensor device driver uses to communicate with the sensor device. 
 
 
 ```c
@@ -169,8 +169,7 @@ struct sensor_itf {
 
 ```
 
-<br>The `si_cs_pin ` specifies the chip select pin and is optional.  
-<br>The `si_type` field must be of the following types:
+The `si_cs_pin ` specifies the chip select pin and is optional.  The `si_type` field must be of the following types:
 
 ```c
 
@@ -203,7 +202,7 @@ struct sensor_cfg {
 ```
 
 <br>
-Only the `sc_valtype` field is currently used and specifies the value type of the sensor data. The valid value types are:
+Only the `sc_valtype` field is currently used and specifies the data value type of the sensor data. The valid value types are:
 
 
 ```c
@@ -253,12 +252,12 @@ These are the functions defined by the sensor API. Please see the [sensor.h](htt
 
 | Function | Description |
 |---------|-------------|
-| sensor_init | Initializes a sensor. |
-| sensor_set_driver | Sets the sensor types that the sensor device supports, and the driver functions to read data and to get value type for a sensor type.|
-| sensor_set_interface|  Sets the sensor interface to use to communicate with the sensor device.|
-| sensor_set_type_mask | Specifies the sensor types that a sensor device is configured for. |
-| sensor_read | Reads sensor data for the specified sensor types.|
-|sensor_set_poll_rate_ms| Sets poll rate for the sensor manager to poll the sensor device.|
+| sensor_init | Initializes a sensor.  A sensor device driver uses this function. |
+| sensor_set_driver | Sets the sensor types that the sensor device supports, and the driver functions to read data and to get value type for a sensor type.  A sensor device driver uses this function.|
+| sensor_set_interface|  Sets the sensor interface to use to communicate with the sensor device. A sensor device driver uses this function.|
+| sensor_set_type_mask | Specifies the sensor types that a sensor device is configured for. A sensor device driver uses this function.|
+| sensor_read | Reads sensor data for the specified sensor types. An application uses this function.|
+|sensor_set_poll_rate_ms| Sets poll rate for the sensor manager to poll the sensor device. An application uses this function.|
 |sensor_lock| Locks the sensor object for exclusive access.|
 |sensor_unlock| Unlocks the sensor object. |
 |SENSOR_GET_DEV| Macro that the sensor device driver uses to retrieve the os_dev from the sensor object. |

@@ -1,6 +1,6 @@
 ## Sensor Listener API
 
-The sensor listener API allows an application to register listeners for sensors and get notified whenever sensor data are read from the sensor devices. An application calls the `sensor_register_listener()` function to register a listener and specifies callback function and  the types of sensor data to listen for from a sensor device.
+The sensor listener API allows an application to register listeners for sensors and get notified whenever sensor data are read from the sensor devices. An application calls the `sensor_register_listener()` function to register a listener that specifies the callback function and the types of sensor data to listen for from a sensor device.
 
 When the `sensor_read()` function defined in the [sensor API](/os/modules/sensor_framework/sensor_api.md) is called to read the sensor data for the specified sensor types from a sensor, the `sensor_read()` function calls the listener callback, passing it the sensor data that is read from the sensor. 
 
