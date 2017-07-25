@@ -15,8 +15,7 @@ However, this is not a long-term option since support is not likely for all feat
 <br>
 
 
-You can then proceed with the instructions on how to 
-* [Create Your First Project](project_create.md) - on simulated hardware.
+You can then proceed with the instructions on how to [Create Your First Project](project_create.md) - on simulated hardware.
 
 Upon successful start, several tutorials await your eager attention!
 
