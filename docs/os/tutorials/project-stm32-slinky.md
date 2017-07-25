@@ -235,10 +235,10 @@ Run the `newtmgr taskstat -c stm32serial` command to display the task statistics
 ```no-highlight
 $ newtmgr taskstat -c stm32serial
       task pri tid  runtime      csw    stksz   stkuse last_checkin next_checkin
-     task1   8   2        0       90      192      110        0        0
-     task2   9   3        0       90       64       31        0        0
-      idle 255   0    89460    89463       64       26        0        0
-      main 127   1        4       26     1024      368        0        0
+      idle 255   0   157179   157183       64       25        0        0
+      main 127   1        4       72     1024      356        0        0
+     task1   8   2        0      158      192      114        0        0
+     task2   9   3        0      158       64       30        0        0
 $
 ```
 
