@@ -30,3 +30,21 @@ The sensor manager implements a poller that reads sensor data from sensors at ss
 The sensor manager poller uses an OS callout to setup a timer event to poll the sensors. By default, the poller uses the default OS event queue and the OS main task to process timer events. 
 
 **Note:**  An application needs to register a [sensor listener](/os/modules/sensor_framework/sensor_listener_api.md) to receive the sensor data that the sensor manager poller reads from a sensor.
+
+
+### Data Structures
+
+The sensor manager API uses the `struct sensor` and `sensor_type_t` types.
+
+
+### List of Functions:
+
+These are the functions defined by the sensor manager API. Please see the [sensor.h](https://github.com/apache/mynewt-core/blob/master/hw/sensor/include/sensor/sensor.h) include file for details.
+
+| Function | Description |
+|---------|-------------|
+|sensor_mgr_register| Registers a sensor object. This function is call by a sensor device driver.|
+|sensor_mgr_find_next_bytype| Returns the next sensor from the sensor manager list that matches one of the specified sensor types.|
+|sensor_mgr_find_next_byname| Returns the next sensor from the sensor manager list that matches the specified device name.|
+|sensor_mgr_lock| Locks the sensor manager list. The sensor manager list must be locked if you are iterating through the sensor manager list.|
+|sensor_unlock| Unlocks the sensor manager list.|

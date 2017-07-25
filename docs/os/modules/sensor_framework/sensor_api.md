@@ -50,3 +50,216 @@ The sensor manager implements a poller that reads sensor data from a sensor at s
 
 **Note:** An application needs to register a [sensor listener](/os/modules/sensor_framework/sensor_listener_api.md) to receive the sensor data that the sensor manager poller reads from a sensor.
 
+
+### Data Structures
+
+We list the main data structures that the sensor API uses and mention things to note. For more details, see the [sensor.h](https://github.com/apache/mynewt-core/blob/master/hw/sensor/include/sensor/sensor.h) include file.
+<br>
+
+#### Sensor Object
+
+The `struct sensor` data structure represents the sensor device. The sensor API,the [sensor manager API](/os/modules/sensor_framework/sensor_mgr_api.md), and the [sensor listener API](/os/modules/sensor_framework/sensor_listener_api.md) all operate on the `sensor` object abastraction. A sensor is maintained in the sensor manager global sensors list.
+
+
+```c
+struct sensor {
+    /* The OS device this sensor inherits from, this is typically a sensor
+     * specific driver.
+     */
+    struct os_dev *s_dev;
+
+    /* The lock for this sensor object */
+    struct os_mutex s_lock;
+
+
+    /* A bit mask describing the types of sensor objects available from this
+     * sensor. If the bit corresponding to the sensor_type_t is set, then this
+     * sensor supports that variable.
+     */
+    sensor_type_t s_types;
+
+    /* Sensor mask of the configured sensor type s*/
+    sensor_type_t s_mask;
+    /**
+     * Poll rate in MS for this sensor.
+     */
+    uint32_t s_poll_rate;
+
+    /* The next time at which we want to poll data from this sensor */
+    os_time_t s_next_run;
+
+    /* Sensor driver specific functions, created by the device registering the
+     * sensor.
+     */
+    struct sensor_driver *s_funcs;
+
+    /* Sensor last reading timestamp */
+    struct sensor_timestamp s_sts;
+
+    /* Sensor interface structure */
+    struct sensor_itf s_itf;
+
+    /* A list of listeners that are registered to receive data off of this
+     * sensor
+     */
+    SLIST_HEAD(, sensor_listener) s_listener_list;
+    /* The next sensor in the global sensor list. */
+    SLIST_ENTRY(sensor) s_next;
+};
+
+```
+
+<br>
+
+**Note:** There are two fields of type `sensor_type_t`: `s_types` and `s_mask`. The `s_types` field is a bit mask that specifies the sensor types that the sensor device supports. The `s_mask` field is a bit mask that specfies the sensor types the sensor device is configured for.  Only sensor data for a configured sensor type can be read.
+
+<br>
+#### Sensor Types
+
+The `sensor_type_t` type is an enumeration of a bit mask of sensor types, with each bit representing one sensor type. Here is an excerpt of the enumeration values. See the [sensor.h](https://github.com/apache/mynewt-core/blob/master/hw/sensor/include/sensor/sensor.h) for details:
+
+```c 
+
+typedef enum {
+ /* No sensor type, used for queries */
+    SENSOR_TYPE_NONE                 = 0,
+    /* Accelerometer functionality supported */
+    SENSOR_TYPE_ACCELEROMETER        = (1 << 0),
+    /* Magnetic field supported */
+    SENSOR_TYPE_MAGNETIC_FIELD       = (1 << 1),
+    /* Gyroscope supported */
+    SENSOR_TYPE_GYROSCOPE            = (1 << 2),
+    /* Light supported */
+    SENSOR_TYPE_LIGHT                = (1 << 3),
+    /* Temperature supported */
+    SENSOR_TYPE_TEMPERATURE          = (1 << 4),
+
+                ....
+
+     SENSOR_TYPE_USER_DEFINED_6       = (1 << 31),
+    /* A selector, describes all sensors */
+    SENSOR_TYPE_ALL                  = 0xFFFFFFFF
+
+} sensor_type_t;
+
+```
+
+<br>
+
+#### Sensor Interface
+
+The  `struct sensor_itf` data structure represents interface the sensor device driver uses to communicate with the sensor device. 
+
+
+```c
+struct sensor_itf {
+
+    /* Sensor interface type */
+    uint8_t si_type;
+
+    /* Sensor interface number */
+    uint8_t si_num;
+
+    /* Sensor CS pin */
+    uint8_t si_cs_pin;
+
+    /* Sensor address */
+    uint16_t si_addr;
+};
+
+```
+
+<br>The `si_cs_pin ` specifies the chip select pin and is optional.  
+<br>The `si_type` field must be of the following types:
+
+```c
+
+#define SENSOR_ITF_SPI    (0)
+#define SENSOR_ITF_I2C    (1)
+#define SENSOR_ITF_UART   (2) 
+
+```
+
+<br>
+#### Sensor Value Type
+
+The `struct sensor_cfg` data structure represents the configuration sensor type:
+
+```c
+/**
+ * Configuration structure, describing a specific sensor type off of
+ * an existing sensor.
+ */
+struct sensor_cfg {
+    /* The value type for this sensor (e.g. SENSOR_VALUE_TYPE_INT32).
+     * Used to describe the result format for the value corresponding
+     * to a specific sensor type.
+     */
+    uint8_t sc_valtype;
+    /* Reserved for future usage */
+    uint8_t _reserved[3];
+};
+
+```
+
+<br>
+Only the `sc_valtype` field is currently used and specifies the value type of the sensor data. The valid value types are:
+
+
+```c
+
+/**
+ * Opaque 32-bit value, must understand underlying sensor type
+ * format in order to interpret.
+ */
+#define SENSOR_VALUE_TYPE_OPAQUE (0)
+/**
+ * 32-bit signed integer
+ */
+#define SENSOR_VALUE_TYPE_INT32  (1)
+/**
+ * 32-bit floating point
+ */
+#define SENSOR_VALUE_TYPE_FLOAT  (2)
+/**
+ * 32-bit integer triplet.
+ */
+#define SENSOR_VALUE_TYPE_INT32_TRIPLET (3)
+/**
+ * 32-bit floating point number triplet.
+ */
+#define SENSOR_VALUE_TYPE_FLOAT_TRIPLET (4)
+
+```
+<br>
+#### Sensor Driver Functions
+
+The `struct sensor_device` data structure represents the device driver functions.  The sensor device driver must implement the functions and set up the function pointers.
+
+```
+struct sensor_driver {
+    sensor_read_func_t sd_read;
+    sensor_get_config_func_t sd_get_config;
+};
+```
+
+<br>
+
+
+<br>
+### List of Functions:
+
+These are the functions defined by the sensor API. Please see the [sensor.h](https://github.com/apache/mynewt-core/blob/master/hw/sensor/include/sensor/sensor.h) include file for details.
+
+| Function | Description |
+|---------|-------------|
+| sensor_init | Initializes a sensor. |
+| sensor_set_driver | Sets the sensor types that the sensor device supports, and the driver functions to read data and to get value type for a sensor type.|
+| sensor_set_interface|  Sets the sensor interface to use to communicate with the sensor device.|
+| sensor_set_type_mask | Specifies the sensor types that a sensor device is configured for. |
+| sensor_read | Reads sensor data for the specified sensor types.|
+|sensor_set_poll_rate_ms| Sets poll rate for the sensor manager to poll the sensor device.|
+|sensor_lock| Locks the sensor object for exclusive access.|
+|sensor_unlock| Unlocks the sensor object. |
+|SENSOR_GET_DEV| Macro that the sensor device driver uses to retrieve the os_dev from the sensor object. |
+|SENSOR_GET_ITF| Macro that the sensor device driver uses to retrieve the sensor_itf from the sensor object.|

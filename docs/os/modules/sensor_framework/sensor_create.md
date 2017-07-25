@@ -208,7 +208,7 @@ pkg.deps.BNO055_OFB:
 
 ### Reconfiguring A Sensor Device by an Application
 
-The BSP and sensor creator package use a default configuration and enable all supported sensors on a sensor device by default.  If the default configuration does not meet your application requirements, you may change the default configuration for a sensor device. As in the `config_<sensorname>_sensor` function, and application must open the OS device for the sensor, set up the values for the `<sensorname>_cfg` structure, call the `<sensorname>_config()` device driver function to change the configuration in the device, and close the OS device.  
+The BSP and sensor creator package use a default configuration and enable all supported sensors on a sensor device by default.  If the default configuration does not meet your application requirements, you may change the default configuration for a sensor device. As in the `config_<sensorname>_sensor` function, an application must open the OS device for the sensor, set up the values for the `<sensorname>_cfg` structure, call the `<sensorname>_config()` device driver function to change the configuration in the device, and close the OS device.  
 
 We recommend that you copy the `config_<sensorname>_sensor()` function from the BSP or the sensor creator package in to your application code and change the desired settings. Note that you must keep all the fields in the `<sensorname>_cfg` structure initialized with the default values for the settings that you do not want to change.
 
