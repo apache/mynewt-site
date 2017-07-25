@@ -26,15 +26,9 @@ This document is about the operation of the Mynewt Sanity Watchdog.
 
 ## Description
 
-### Initializing the Sanity Task
+### Sanity Task
 
-The Sanity Watchdog is a task in the Mynewt OS, which when enabled, runs 
-every `sanity_seconds`.  In order to enable the Sanity Watchdog task, 
-call the `os_sanity_task_init()` function.
-
-```c
-int os_sanity_task_init(int sanity_seconds);
-```
+Mynewt OS uses the OS Idle task to check sanity. The `SANITY_INTERVAL` syscfg setting specifies the interval in seconds to perform the sanity checks.
 
 By default, every operating system task provides the frequency it will 
 check in with the sanity task, with the `sanity_itvl` parameter in the 
@@ -193,4 +187,3 @@ The functions available in sanity are:
 | [os_sanity_check_register](os_sanity_check_register.md) | Register the given sanity check with the sanity task. |
 | [os_sanity_check_reset](os_sanity_check_reset.md) | Reset the given sanity check. |
 | [os_sanity_task_checkin](os_sanity_task_checkin.md) | Informs the sanity task that the given task is still alive and working normally. |
-| [os_sanity_task_init](os_sanity_task_init.md) | Initialize the os sanity task. |
