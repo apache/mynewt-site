@@ -99,6 +99,12 @@ http://openocd.org/doc/doxygen/bugs.html
 
 You should see version: **0.10.0**. 
 
+If you see one of these errors:
+
+* Library not loaded: /usr/local/lib/libusb-0.1.4.dylib -  Run `brew install libusb-compat`.
+* Library not loaded: /usr/local/opt/libftdi/lib/libftdi1.2.dylib - Run `brew install libftdi`.
+* Library not loaded: /usr/local/lib/libhidapi.0.dylib - Run `brew install hidapi`.
+
 <br>
 #### Installing OpenOCD on Linux 
 Step 1: Download the [binary tarball for Linux](https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-Linux.tgz)
