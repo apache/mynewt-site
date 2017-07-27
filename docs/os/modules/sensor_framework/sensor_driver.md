@@ -107,7 +107,7 @@ The device driver `<sensorname>_init()` function initializes and registers a sen
 
 * Calls the `sensor_set_driver()` function to specify the sensor types that the sensor device supports, and the pointer to the `struct sensor_driver` variable that specifies the driver functions to read the sensor data and to get the value type for a sensor.
 
-* Calls the `sensor_set_interface()` function to set the interface the that board use to communicate with the sensor device. The BSP, or sensor creator package for an off-board sensors, sets up the `sensor_itf` and passes it to the `<sensorname>_init()` function.  The `sensor_set_interface()` functions saves this information in the sensor object. The device driver uses the `SENSOR_GET_ITF()` macro to retrieve the sensor_itf  when it needs to communicate with the sensor device.
+* Calls the `sensor_set_interface()` function to set the interface that the device driver uses to communicate with the sensor device. The BSP, or sensor creator package for an off-board sensors, sets up the `sensor_itf` and passes it to the `<sensorname>_init()` function.  The `sensor_set_interface()` functions saves this information in the sensor object. The device driver uses the `SENSOR_GET_ITF()` macro to retrieve the sensor_itf  when it needs to communicate with the sensor device.
 
 * Calls the `sensor_mgr_register()` function to register the sensor with the sensor manager.
 
@@ -244,14 +244,18 @@ err:
 <br>
 ### Implementing a Sensor Device Shell Command
 
-A sensor device driver package may optionally implement a shell command that retrieves and sets sensor device information to aid in testing and debugging.  The package should: 
+A sensor device driver package may optionally implement a sensor device shell command that retrieves and sets sensor device information to aid in testing and debugging.  While the sensor framework [sensor shell command](/os/modules/sensor_framework/sensor_shell.md) reads sensor data for configured sensor types and is useful for testing an application, it does not access low level device information, such as reading register values and setting hardware configurations, that might be needed to test a sensor device or to debug the sensor device driver code. A sensor device shell command implementation is device specific but should minimally support reading sensor data for all the sensor types that the device supports because the sensor framework `sensor` shell command only reads sensor data for configured sensor types.
+
+The package should: 
+
+* Name the sensor device shell command `<sensorname>`.  For example, the sensor device shell command for the BNO055 sensor device is `bno055`.
 
 * Define a `<SENSORNAME>_CLI` syscfg setting to specify whether the shell command is enabled and disable the setting by default.
 
 * Export a `<sensorname>_shell_init()` function that an application calls to initialize the sensor shell command when the `SENSORNAME_CLI` setting is enabled.
 
 
-For an example on how to implement a sensor device shell command, see the [bno055 shell command](https://github.com/apache/mynewt-core/blob/master/hw/sensor/src/sensor_shell.c) implementation. See the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md) for examples of the bno055 shell command.
+For an example on how to implement a sensor device shell command, see the [bno055 shell command](https://github.com/apache/mynewt-core/blob/master/hw/drivers/sensors/bno055/src/bno055_shell.c) source code. See the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md) for examples of the bno055 shell command.
 
 <br>
 
