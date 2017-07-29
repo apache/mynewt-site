@@ -4,7 +4,7 @@ Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.
 
 This page shows you how to install the following versions of newt:
 
-* Upgrade to or install the latest stable version (1.1.0).
+* Upgrade to or install the latest release version (1.1.0).
 * Install earlier release versions.
 * Install the latest from the master branch (unstable).
 
@@ -48,10 +48,11 @@ $ brew upgrade mynewt-newt
 <br>
 #### Installing the Latest Release Version of Newt
 
-Run the following command to install the latest stable release version (1.1.0) of newt:
+Run the following command to install the latest release version (1.1.0) of newt:
 
 ```no-highlight
 
+$ brew update
 $ brew install mynewt-newt
 ==> Installing mynewt-newt from runtimeco/mynewt
 ==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/mynewt-newt-1.1.0.sierra.bottle.tar.gz
@@ -65,7 +66,7 @@ $ brew install mynewt-newt
 **Notes:** Homebrew bottles for newt 1.1.0 are available for Mac OS Sierra, El Captian, and Yosemite.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newt locally.
 
 <br>
-#### Checking the Installed Version
+### Checking the Installed Version
 
 Check that you are using the installed version of newt:
 
@@ -179,7 +180,7 @@ You can also manually symlink into /usr/local/bin as follows:
 
 ### Installing Newt from the Master Branch 
 
-We recommend that you use the latest stable release version (1.1.0) of newt. If you would like to use the master branch with the latest updates, you can install newt from the HEAD of the master branch. 
+We recommend that you use the latest release version (1.1.0) of newt. If you would like to use the master branch with the latest updates, you can install newt from the HEAD of the master branch. 
 
 ** Notes: **
 
@@ -195,6 +196,7 @@ $brew unlink mynewt-newt
 <br>
 Install the latest unstable version of newt from the master branch:
 ```no-highlight
+$ brew install mynewt-newt --HEAD
 ==> Installing mynewt-newt from runtimeco/mynewt
 ==> Cloning https://github.com/apache/mynewt-newt.git
 Cloning into '/Users/wanda/Library/Caches/Homebrew/mynewt-newt--git'...
@@ -210,7 +212,7 @@ $newt version
 Apache Newt version: 1.1.0-dev
 ```
 <br>
-To switch back to the stable release version (1.1.0) of newt, you can run:
+To switch back to the latest stable release version (1.1.0) of newt, you can run:
 ```no-highlight
 $brew switch mynewt-newt 1.1.0
 Cleaning /usr/local/Cellar/mynewt-newt/1.1.0

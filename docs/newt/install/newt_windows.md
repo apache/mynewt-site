@@ -1,6 +1,6 @@
 ## Installing Newt on Windows
 
-You can develop and build Mynewt OS applications for your target boards on the Windows platform.  This page shows you how to build the newt tool from the lastest source on the master branch of the [Mynewt newt git repository](https://github.com/apache/mynewt-newt).  The tool is written in Go (golang).
+You can develop and build Mynewt OS applications for your target boards on the Windows platform.  This guide shows you how to install the latest release version of newt from binary or from source.  The tool is written in Go (golang).
   
 In Windows, we use MinGW as the development environment to build and run Mynewt OS applications for target boards. MinGW runs the bash shell and provides a Unix-like environment. This provides a uniform way to build Mynewt OS applications. The Mynewt documentation and tutorials use Unix commands and you can use the same Unix commands on MinGW to follow the tutorials. The documentation will note any commands or behaviors that are specific to Windows.
 
@@ -8,12 +8,13 @@ This guide shows you how to perform the following:
 
 1. Install MSYS2/MinGW. 
 2. Install Git.
-3. Install Go. 
-4. Setup the Go environment.
-5. Download the source, build, and install the newt tool.
+3. Install latest release of newt (1.1.0) from binary.
+4. Install latest release of newt (1.1.0) from source.
+
+**Note:** If you would like to contribute to the newt tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env.md).
 
 <br>
-### Step 1: Installing MSYS2/MinGW
+### Installing MSYS2/MinGW
 MSYS2/MinGW provides a bash shell and tools to build applications that run on Windows. It includes three subsystems:
 
 * MSYS2 toolchain to build POSIX applications that run on Windows. 
@@ -46,83 +47,110 @@ To install and setup MSYS2 and MinGW:
 	**Note:**You can also use a Windows editor. You can access your files from the **C:\&lt;msys-install-folder&gt;\home\&lt;username&gt;** folder, where **msys-install-folder** is the folder you installed MSYS2 in. For example, if you installed MSYS2 in the **msys64** folder, your files are stored in **C:\msys64\home\&lt;username&gt;**
 
 You will need to start a MinGW terminal to run the commands specified in the Mynewt documentation and  tutorials.  To start a MinGW terminal, select the "MSYS2 Mingw" application from the start Menu (you can use either MinGW32 or MinGW64). 
-In Windows, we use the MingGW subsystem to build  Mynewt tools and applications.  
+In Windows, we use the MinGW subsystem to build  Mynewt tools and applications.  
 
-### Step 2: Installing Git for Windows
+### Installing Git for Windows
+
 Download and install [Git for Windows](https://git-for-windows.github.io) if it is not already installed.
 
 
-### Step 3: Installing Go 
-Download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7.6 or higher.
+### Installing the Latest Release of the Newt Tool from Binary
 
-### Step 4: Setting Up Your Go Environment 
+You can install the latest release of newt (1.1.0) from binary. It has been tested on Windows 10 64 bit platform. 
 
-This section describes the Go environment and how to setup a Go workspace.  Go provides an environment to compile Go code,  construct Go packages,  and import Go code.  You will use Go commands to import the newt package repository into your local Go environment.  The Go language environment dictates a specific directory structure, or workspace in Go parlance. It must contain three sibling directories with the names **src**, **pkg** and **bin**: 
+<br>
+1. Start a MinGW terminal.
 
-* src contains Go source files organized into packages (one package per directory)
-* pkg contains package objects
-* bin contains the Go application executables that Go builds and installs.
-
-The **GOPATH** environment variable specifies the location of your workspace.  To setup this workspace environment, create a **dev** directory and then a **go** directory under it. Set the GOPATH environment variable to this directory where you will clone the newt repository.
-    
-Start up a MinGW terminal and run the following commands to set up your Go workspace:
+<br>
+2. Download the newt binary tar file:
 
 ```no-highlight
-$ cd $HOME
-$ mkdir -p dev/go  
-$ cd dev/go
-$ export GOPATH=`pwd`
+
+$ wget -P /tmp https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/newt_1_1_0_windows_amd64.tar.gz
+
 ```
 <br>
-Add the following export statements to your ~/.bash_profile file and source the file:
+3. Extract the file:
+
+* If you previously built newt from the master branch, you can extract the file into your $GOPATH/bin directory. Note: This overwrites the current newt.exe in the directory and assumes that you are using $GOPATH/bin for your Go applications.
+
+         tar -xzf /tmp/newt_1_1_0_windows_amd64.tar.gz -C $GOPATH/bin
+
+* If you are installing newt for the first time and do not have a Go workspace setup, you can extract into /usr/bin directory:
+
+         tar -xzf /tmp/newt_1_1_0_windows_amd64.tar.gz -C /usr/bin
+
+
+<br>
+4. Verify the installed version of newt. See [Checking the Installed Version](#check_newt).
+
+<br>
+### Installing the Latest Release of Newt From Source 
+
+If you have an older version of Windows or a 32 bit platform, you can build and install the latest release version of newt from source.
+
+<br>
+1.  If you do not have Go installed, download and install the latest version of [Go](https://golang.org/dl/). Newt requires Go version 1.7.6 or higher.
+
+<br>
+2. Start a MinGw terminal.
+
+<br>
+3. Download and unpack the newt source:
+
 ```no-highlight
-export GOPATH=$HOME/dev/go
-export PATH=$GOPATH/bin:$PATH
+
+$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_1_0_tag.tar.gz
+$ tar -xzf /tmp/mynewt_1_1_0_tag.tar.gz
 ```
-<br>
-
-### Step 5: Downloading the Source and Installing the Newt Tool 
-
-The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/mynewt-newt).  We use the `go get` command to download the source, build, and install the newt tool binary in the **$GOPATH/bin** directory. 
 
 <br>
-Download the newt package source and install the tool:
+4. Run the build.sh to build the newt tool.
 
 ```no-highlight
-$cd $GOPATH
-$go get mynewt.apache.org/newt/newt
-$cd $GOPATH/src/mynewt.apache.org/newt
-$ls 
-DISCLAIMER		RELEASE_NOTES.md	util
-INSTALLING.md		build.sh		viper
-LICENSE			newt			yaml
-NOTICE			newtmgr
-README.md		newtvm
+
+$ cd mynewt-newt-mynewt_1_1_0_tag	
+$ ./build.sh
+$ rm /tmp/mynewt_1_1_0_tag.tar.gz
 ```
-<br>
-Check that the newt tool is installed and it is in your path:
 
-```no-highlight
-$ls $GOPATH/bin/newt
-~/dev/go/bin/newt
-$which newt
-~/dev/go/bin/newt
+<br>
+5. You should see the `newt/newt.exe` executable. Move the executable to a bin directory in your PATH:
+
+* If you previously built newt from the master branch, you can move the executable to the $GOPATH/bin directory.
+   
+        $ mv newt/newt.exe $GOPATH/bin
+
+* If you are installing newt for the first time and do not have a Go workspace set up, you can move the executable to /usr/bin or a directory in your PATH:
+
+        $ mv newt/newt.exe /usr/bin
+
+<br>
+### <a name="check_newt"></a>Checking the Installed Version
+
+<br>
+1. Check the version of newt:
+
+```no-highlight 
+
 $ newt version
-Apache Newt (incubating) version: 1.0.0-dev
+Apache Newt version: 1.1.0
+
 ```
+
 <br>
-Get information about the newt tool:
+2. Get information about newt:
 
 ```no-highlight
-$newt
-Newt allows you to create your own embedded application based on the Mynewt
-operating system. Newt provides both build and package management in a single
-tool, which allows you to compose an embedded application, and set of
-projects, and then build the necessary artifacts from those projects. For more
-information on the Mynewt operating system, please visit
-https://mynewt.apache.org/.
 
-Please use the newt help command, and specify the name of the command you want
+Newt allows you to create your own embedded application based on the Mynewt 
+operating system. Newt provides both build and package management in a single 
+tool, which allows you to compose an embedded application, and set of 
+projects, and then build the necessary artifacts from those projects. For more 
+information on the Mynewt operating system, please visit 
+https://mynewt.apache.org/. 
+
+Please use the newt help command, and specify the name of the command you want 
 help for, for help on how to use a specific command
 
 Usage:
@@ -145,6 +173,7 @@ Available Commands:
   mfg          Manufacturing flash image commands
   new          Create a new project
   pkg          Create and manage packages in the current workspace
+  resign-image Re-sign an image.
   run          build/create-image/download/debug <target>
   size         Size of target components
   sync         Synchronize project dependencies
@@ -156,7 +185,7 @@ Available Commands:
 
 Flags:
   -h, --help              Help for newt commands
-  -j, --jobs int          Number of concurrent build jobs (default 4)
+  -j, --jobs int          Number of concurrent build jobs (default 8)
   -l, --loglevel string   Log level (default "WARN")
   -o, --outfile string    Filename to tee output to
   -q, --quiet             Be quiet; only display error output
@@ -164,4 +193,5 @@ Flags:
   -v, --verbose           Enable verbose output when executing commands
 
 Use "newt [command] --help" for more information about a command.
+
 ```

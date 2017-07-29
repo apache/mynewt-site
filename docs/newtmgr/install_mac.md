@@ -4,7 +4,7 @@ Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 
 
 This page shows you how to install the following versions of newtmgr:
 
-* Upgrade to or install the latest stable version (1.1.0).
+* Upgrade to or install the latest release version (1.1.0).
 * Install earlier release versions.
 * Install the latest from the master branch (unstable).
 
@@ -39,10 +39,11 @@ $ brew upgrade mynewt-newtmgr
 <br>
 #### Installing the Latest Release Version of Newtmgr
 
-Run the following command to install the latest stable release version (1.1.0) of newtmgr:
+Run the following command to install the latest release version (1.1.0) of newtmgr:
 
 ```no-highlight
 
+$ brew update
 $ brew install mynewt-newtmgr
 ==> Installing mynewt-newtmgr from runtimeco/mynewt
 ==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/mynewt-newtmgr-1.1.0.sierra.bottle.tar.gz
@@ -56,7 +57,7 @@ $ brew install mynewt-newtmgr
 **Notes:** Homebrew bottles for newtmgr 1.1.0 are available for Mac OS Sierra, El Captian and Yosemite.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
 
 <br>
-#### Checking the Installed Version
+### Checking the Installed Version
 
 Check that you are using the installed version of newtmgr:
 ```no-highlight
@@ -142,7 +143,7 @@ You can also manually symlink into /usr/local/bin as follows:
 <br>
 ### Installing Newtmgr from the Master Branch 
 
-We recommend that you use the latest stable release version (1.1.0) of newtmgr. If you would like to use the master branch with the latest updates, you can install newtmgr from the HEAD of the master branch. 
+We recommend that you use the latest release version (1.1.0) of newtmgr. If you would like to use the master branch with the latest updates, you can install newtmgr from the HEAD of the master branch. 
 
 ** Notes: **
 
@@ -157,6 +158,7 @@ $brew unlink mynewt-newtmgr
 <br>
 Install the latest unstable version of newtmgr from the master branch:
 ```no-highlight
+$brew install mynewt-newtmgr --HEAD
 ==> Installing mynewt-newtmgr from runtimeco/mynewt
 ==> Cloning https://github.com/apache/mynewt-newtmgr.git
 Cloning into '/Users/wanda/Library/Caches/Homebrew/mynewt-newtmgr--git'...
@@ -173,7 +175,7 @@ Resolving deltas: 100% (192/192), done.
 🍺  /usr/local/Cellar/mynewt-newtmgr/HEAD-7bdd773: 3 files, 17MB, built in 22 seconds
 ```
 <br>
-To switch back to the stable release version (1.1.0) of newtmgr, you can run:
+To switch back to the latest stable release version (1.1.0) of newtmgr, you can run:
 ```no-highlight
 $brew switch mynewt-newtmgr 1.1.0
 Cleaning /usr/local/Cellar/mynewt-newtmgr/1.1.0
