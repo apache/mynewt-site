@@ -7,7 +7,7 @@ This tutorial shows you how to:
 
 * Modify the bleprph_oic application to add OIC sensor support.
 * Create and build the target for the new application.
-* Use the Mynewt Smart Device Controller [Android](https://github.com/runtimeco/android_sensor) or iOS app to view the sensor data from the device.
+* Use the Mynewt Smart Device Controller iOS or Android app to view the sensor data from the device.
 
 ### Prerequisites
 

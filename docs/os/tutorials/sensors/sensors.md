@@ -20,6 +20,11 @@ The tutorials are:
 
 * [Enabling OIC Sensor Data Monitoring in an Existing Application](/os/tutorials/sensors/sensor_oic_overview.md) - This tutorial shows you how to enable support for sensor data monitoring via OIC in an existing application.
 
+### Mynewt Smart Device Controller OIC App
+
+We use the Mynewt Smart Device Controller App on iOS or Android to retrieve and display sensor data from the Mynewt OS OIC sensor applications described in the OIC Sensor Data Monitoring tutorials. You can download the app from either the Apple Store or Google Play Store. 
+
+If you would like to contribute or modify the Mynewt Smart Device Controller App, see the [Android Sensor source](https://github.com/runtimeco/android_sensor) and [iOS Sensor source](https://github.com/runtimeco/iOS_oic) on github.
 
 <br>
 ### Prerequisites
