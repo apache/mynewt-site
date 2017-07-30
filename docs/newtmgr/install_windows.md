@@ -24,7 +24,7 @@ en tested on Windows 10 64 bit platform.
 
 ```no-highlight
 
-$ wget -P /tmp https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/newtmgr_1_1_0_windows_amd64.tar.gz
+$ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newtmgr_1_1_0_windows_amd64.tar.gz
 
 ```
 <br>

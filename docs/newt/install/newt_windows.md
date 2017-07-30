@@ -66,7 +66,7 @@ You can install the latest release of newt (1.1.0) from binary. It has been test
 
 ```no-highlight
 
-$ wget -P /tmp https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/newt_1_1_0_windows_amd64.tar.gz
+$ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newt_1_1_0_windows_amd64.tar.gz
 
 ```
 <br>
