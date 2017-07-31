@@ -18,7 +18,21 @@ Ensure that you meet the following prerequisites:
 * Read the [Bootloader](/os/modules/bootloader/bootloader) section and understand the Mynewt bootloader concepts.
 * Build and load the **bleprph** application on to an nRF52-DK board via a serial connection. See [BLE Peripheral App](/os/tutorials/bleprph/bleprph-app/). 
 
+<br>
+### Reducing the Log Level
 
+You need to build your application with log level set to INFO or lower. The default log level for the **bleprph** app is set to DEBUG. The extra logging causes the communication to timeout. Perform the following to reduce the log level to INFO, build, and load the application. 
+
+```no-highlight
+
+$ newt target amend myperiph syscfg="LOG_LEVEL=1"
+$ newt build myperiph
+$ newt create-image myperiph 1.0.0
+$ newt load myperiph
+
+```
+
+<br>
 ### Upgrading an Image on a Device 
 Once you have an application with newtmgr image management with BLE transport support running on a device, you can use the newtmgr tool to upgrade an image over-the-air. 
 
