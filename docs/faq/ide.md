@@ -147,7 +147,7 @@ The following is an example of running the `build_arduino_boot` task:
 
 <br>
 
-**Note**:To run the `build_arduino_linky` task, you can use the keyboard shortcut `Ctrl-Shift-B` because the task has the property `isBuildCommand` set to true.  
+**Note**:To run the `build_arduino_blinky` task, you can use the keyboard shortcut `Ctrl-Shift-B` because the task has the property `isBuildCommand` set to true.  
 
 <br>
 ####Defining Tasks for Other Newt Commands
