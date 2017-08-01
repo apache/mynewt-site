@@ -23,6 +23,8 @@ The Generic Access Profile (GAP) is responsible for all connecting, advertising,
 | [ble_gap_adv_rsp_set_fields](functions/ble_gap_adv_rsp_set_fields.md) | Configures the fields to include in subsequent scan responses. |
 | [ble_gap_adv_set_data](functions/ble_gap_adv_set_data.md) | Configures the data to include in subsequent advertisements. |
 | [ble_gap_adv_set_fields](functions/ble_gap_adv_set_fields.md) | Configures the fields to include in subsequent advertisements. |
+| [ble_gap_adv_set_phys](functions/ble_gap_adv_set_phys.md) | <font color="red"> [experimental]</font> Configures primary and secondary PHYs to use in subsequent extended advertisements from Bluetooth 5. |
+| [ble_gap_adv_set_tx_power](functions/ble_gap_adv_set_tx_power.md) | <font color="red"> [experimental]</font> Configures Tx Power level to use in subsequent extended advertisements from Bluetooth 5. |
 | [ble_gap_adv_start](functions/ble_gap_adv_start.md) | Initiates advertising. |
 | [ble_gap_adv_stop](functions/ble_gap_adv_stop.md) | Stops the currently-active advertising procedure. |
 | [ble_gap_conn_active](functions/ble_gap_conn_active.md) | Indicates whether a connect procedure is currently in progress. |

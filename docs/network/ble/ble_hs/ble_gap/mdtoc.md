@@ -8,6 +8,7 @@
                     - 'ble_gap_adv_rsp_set_fields': 'network/ble/ble_hs/ble_gap/functions/ble_gap_adv_rsp_set_fields.md'
                     - 'ble_gap_adv_set_data': 'network/ble/ble_hs/ble_gap/functions/ble_gap_adv_set_data.md'
                     - 'ble_gap_adv_set_fields': 'network/ble/ble_hs/ble_gap/functions/ble_gap_adv_set_fields.md'
+                    - 'ble_gap_adv_set_phys': 'network/ble/ble_hs/ble_gap/functions/ble_gap_adv_set_phys.md'
                     - 'ble_gap_adv_start': 'network/ble/ble_hs/ble_gap/functions/ble_gap_adv_start.md'
                     - 'ble_gap_adv_stop': 'network/ble/ble_hs/ble_gap/functions/ble_gap_adv_stop.md'
                     - 'ble_gap_conn_active': 'network/ble/ble_hs/ble_gap/functions/ble_gap_conn_active.md'
