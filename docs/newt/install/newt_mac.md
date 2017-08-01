@@ -1,13 +1,15 @@
 ## Installing Newt on Mac OS
 
-Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.9 and higher.
+Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.10 and higher.
 
 This page shows you how to install the following versions of newt:
 
-* The latest stable release version (1.0.0) 
-* The latest from the master branch (unstable)
+* Upgrade to or install the latest release version (1.1.0).
+* Install earlier release versions.
+* Install the latest from the master branch (unstable).
 
 **Note:** If you would like to contribute to the newt tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env).
+
 ### Installing Homebrew 
 
 If you do not have Homebrew installed, run the following command. You will be prompted for your sudo password.
@@ -17,45 +19,75 @@ $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/maste
 ```
 You can also extract (or `git clone`) Homebrew and install it to /usr/local.
 
-<br>
+### Adding the Mynewt Homebrew Tap
 
-### Installing Newt
-Add the ** runtimeco/homebrew-mynewt ** tap:
+If this is your first time installing newt, add the  **runtimeco/homebrew-mynewt** tap:
+
 ```no-highlight
-$brew tap runtimeco/homebrew-mynewt
-$brew update
+
+$ brew tap runtimeco/homebrew-mynewt
+$ brew update
+
 ```
+
+### Upgrading to or Installing the Latest Release Version
+
+Perform the following to upgrade or install the latest release version of newt (1.1.0).
+
+#### Upgrading to the Latest Release Version of Newt
+
+If you previously installed newt 1.0.0 using brew, run the following commands to upgrade to newt 1.1.0:
+
+```no-highlight
+
+$ brew update
+$ brew upgrade mynewt-newt
+
+```
+
 <br>
 #### Installing the Latest Release Version of Newt
-Install the latest stable release version (1.0.0) of newt:
+
+Run the following command to install the latest release version (1.1.0) of newt:
+
 ```no-highlight
-$brew install mynewt-newt
+
+$ brew update
+$ brew install mynewt-newt
 ==> Installing mynewt-newt from runtimeco/mynewt
-==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.0.0/mynewt-newt-1.0.0.mavericks.bottle.tar.gz
-==> Downloading from https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.0.0/mynewt-newt-1.0.0.mavericks.
+==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/mynewt-newt-1.1.0.sierra.bottle.tar.gz
+==> Downloading from https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/mynewt-newt-1.1.0.sierra.bottle.tar.gz
 ######################################################################## 100.0%
-==> Pouring mynewt-newt-1.0.0.mavericks.bottle.tar.gz
-🍺  /usr/local/Cellar/mynewt-newt/1.0.0: 3 files, 10.4MB
+==> Pouring mynewt-newt-1.1.0.sierra.bottle.tar.gz
+🍺  /usr/local/Cellar/mynewt-newt/1.1.0: 3 files, 10.5MB
+
 ```
 <br>
-**Note:** This installs the newt 1.0.0 binary that has been tested on Mac OS 10.9 and higher. If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newt locally.
+**Notes:** Homebrew bottles for newt 1.1.0 are available for Mac OS Sierra, El Captian, and Yosemite.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newt locally.
 
 <br>
+### Checking the Installed Version
+
 Check that you are using the installed version of newt:
+
 ```no-highlight
+
 $which newt
 /usr/local/bin/newt
 $ls -l /usr/local/bin/newt
-lrwxr-xr-x  1 user  staff  36 Apr 15 08:18 /usr/local/bin/newt -> ../Cellar/mynewt-newt/1.0.0/bin/newt
+lrwxr-xr-x  1 user  staff  36 Jul 25 19:04 /usr/local/bin/newt -> ../Cellar/mynewt-newt/1.1.0/bin/newt
 $newt version
-Apache Newt (incubating) version: 1.0.0
+Apache Newt version: 1.1.0
+
 ```
-**Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin"  after "/usr/local/bin" in your $PATH.
+**Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin"  after "/usr/local/bin" for your PATH in  ~/.bash_profile, and source ~/.bash_profile.  
 
 <br>
 Get information about newt: 
+
 ```no-highlight
-$newt help
+
+$ newt help
 Newt allows you to create your own embedded application based on the Mynewt 
 operating system. Newt provides both build and package management in a single 
 tool, which allows you to compose an embedded application, and set of 
@@ -86,6 +118,7 @@ Available Commands:
   mfg          Manufacturing flash image commands
   new          Create a new project
   pkg          Create and manage packages in the current workspace
+  resign-image Re-sign an image.
   run          build/create-image/download/debug <target>
   size         Size of target components
   sync         Synchronize project dependencies
@@ -105,10 +138,49 @@ Flags:
   -v, --verbose           Enable verbose output when executing commands
 
 Use "newt [command] --help" for more information about a command.
+
 ```
+
 <br>
-####Installing Newt from the Master Branch 
-We recommend that you use the latest stable release version (1.0.0) of newt. If you would like to use the master branch with the latest updates, you can install newt from the HEAD of the master branch. 
+### Installing Earlier Release Versions of Newt
+
+If you want to install newt 1.0, run the following commands:
+
+```no-highlight
+
+$ brew update
+$ brew install mynewt-newt@1.0
+
+```
+
+**Note:** This is a keg-only installation.  newt 1.0 is installed in /usr/local/Cellar/mynewt-newt@1.0/1.0.0/bin but not symlinked into /usr/local/bin. 
+ 
+If you need this version of newt first in your PATH, run the following commands:
+
+```no-highlight
+
+$ echo 'export PATH=/usr/local/Cellar/mynewt-newt@1.0/1.0.0/bin:$PATH' >> ~/.bash_profile
+$ source ~/.bash_profile
+
+```
+
+<br>
+You can also manually symlink into /usr/local/bin as follows:
+
+1. Unlink newt if you have the latest version of newt installed:
+
+        $ brew unlink mynewt-newt 
+
+2. Link mynewt-newt@1.0 into /usr/local/bin:
+
+        $ brew link -f mynewt-newt@1.0
+
+
+<br>
+
+### Installing Newt from the Master Branch 
+
+We recommend that you use the latest release version (1.1.0) of newt. If you would like to use the master branch with the latest updates, you can install newt from the HEAD of the master branch. 
 
 ** Notes: **
 
@@ -124,29 +196,29 @@ $brew unlink mynewt-newt
 <br>
 Install the latest unstable version of newt from the master branch:
 ```no-highlight
-$brew install --HEAD mynewt-newt
+$ brew install mynewt-newt --HEAD
 ==> Installing mynewt-newt from runtimeco/mynewt
-==> Cloning https://github.com/apache/incubator-mynewt-newt.git
-Cloning into 'Users/<username>/Library/Caches/Homebrew/mynewt-newt--git'...
-remote: Counting objects: 623, done.
-remote: Compressing objects: 100% (501/501), done.
-remote: Total 623 (delta 154), reused 323 (delta 84), pack-reused 0
-Receiving objects: 100% (623/623), 1.10 MiB | 0 bytes/s, done.
-Resolving deltas: 100% (154/154), done.
+==> Cloning https://github.com/apache/mynewt-newt.git
+Cloning into '/Users/wanda/Library/Caches/Homebrew/mynewt-newt--git'...
+remote: Counting objects: 624, done.
+remote: Compressing objects: 100% (502/502), done.
+remote: Total 624 (delta 156), reused 322 (delta 85), pack-reused 0
+Receiving objects: 100% (624/624), 1.11 MiB | 0 bytes/s, done.
+Resolving deltas: 100% (156/156), done.
 ==> Checking out branch master
 ==> go install
-🍺  /usr/local/Cellar/mynewt-newt/HEAD-409f7d3: 3 files, 10.4MB, built in 10 seconds
+🍺  /usr/local/Cellar/mynewt-newt/HEAD-5a6266e: 3 files, 10.5MB, built in 5 seconds
 $newt version
-Apache Newt (incubating) version: 1.0.0-dev
+Apache Newt version: 1.1.0-dev
 ```
 <br>
-To switch back to the stable release version (1.0.0) of newt, you can run:
+To switch back to the latest stable release version (1.1.0) of newt, you can run:
 ```no-highlight
-$brew switch mynewt-newt 1.0.0
-Cleaning /usr/local/Cellar/mynewt-newt/1.0.0
-Cleaning /usr/local/Cellar/mynewt-newt/HEAD-409f7d3
-1 links created for /usr/local/Cellar/mynewt-newt/1.0.0
+$brew switch mynewt-newt 1.1.0
+Cleaning /usr/local/Cellar/mynewt-newt/1.1.0
+Cleaning /usr/local/Cellar/mynewt-newt/HEAD-5a6266e
+1 links created for /usr/local/Cellar/mynewt-newt/1.1.0
 $newt version
-Apache Newt (incubating) version: 1.0.0
+Apache Newt version: 1.1.0
 ```
 <br>

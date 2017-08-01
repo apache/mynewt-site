@@ -1,12 +1,16 @@
 ## Contributing to Newt or Newtmgr Tools
+
 Newt and Newtmgr are written in Go (golang). This guide shows you how to install Go and setup your environment to update and build the tools if you want to: 
 
+* Build the tools with latest updates from the master branch on Linux or Windows platforms. 
+
+    **Note:** For Mac OS,  you can use the `brew install mynewt-newt -HEAD` and the `brew install mynewt-newtmgr --HEAD` commands.
+
 * Contribute to newt or newtmgr features or fix bugs.
-* Build the tools with latest updates from the master branch on a Linux platform.
 
 This guide shows you how to perform the following:
 
-1. Install Go on either Mac OS X or Linux. (Tasks that are specific to each platform are called out.)
+1. Install Mac OS X, Linux, Windows. (Tasks that are specific to each platform are called out.)
 2. Setup the Go environment.
 3. Download the source, build, and install the newt or newtmgr tools.
 4. Update and rebuild the tools. 
@@ -35,13 +39,13 @@ $ brew install go
 ==> 
 ...
 ... 
-==> *Summary*
-🍺  //usr/local/Cellar/go/1.8.1: 7,030 files, 281.8MB, built in 1 minute 12 seconds
+==> Summary
+🍺  /usr/local/Cellar/go/1.8.3: 7,035 files, 282.0MB
 ```
-You can also download the Go package directly from (https://golang.org/dl/) instead of brewing it. Install it in /usr/local directory.
+You can also download the Go package directly from (https://golang.org/dl/) and install it in /usr/local/bin instead of brewing it. 
 
 <br>
-#### Installing Go on Linux
+#### Installing Go on Linux and Windows
 You can download Go from [https://golang.org/dl/](https://golang.org/dl/).
 
 <br>
@@ -77,9 +81,9 @@ Newt and newtmgr are individual Go packages and have their own git repositories.
 We use the `go get` command to download the source, build, and install the binary in the **$GOPATH/bin** directory. 
 
 <br>
-####Downloading and Installing the Newt Tool
+#### Downloading and Installing the Newt Tool
 
-The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/incubator-mynewt-newt). 
+The newt Go package is **mynewt.apache.org/newt/newt** and is stored in the [Apache Mynewt newt tool repository mirrored on github](https://github.com/apache/mynewt-newt). 
 
 
 Download the newt package source and install the tool:
@@ -97,7 +101,6 @@ README.md		newtvm
 $git status
 On branch master
 Your branch is up-to-date with 'origin/master'.
-
 nothing to commit, working directory clean
 ```
 <br>
@@ -112,27 +115,24 @@ $ls $GOPATH/bin/newt
 $which newt
 ~/dev/go/bin/newt
 $newt version
-Apache Newt (incubating) version: 1.0.0-dev
+Apache Newt version: 1.1.0-dev
 ```
 <br>
-####Downloading and Installing the Newtmgr Tool
-The newtmgr Go package is **mynewt.apache.org/newtmgr/newtmgr**. It is stored in the [Apache Mynewt newtmgr tool repository mirrored on github](https://github.com/apache/incubator-mynewt-newtmgr).
+#### Downloading and Installing the Newtmgr Tool
+
+The newtmgr Go package is **mynewt.apache.org/newtmgr/newtmgr**. It is stored in the [Apache Mynewt newtmgr tool repository mirrored on github](https://github.com/apache/mynewt-newtmgr).
 
 Download the newtmgr package and install the tool:
 
-**Note:** `-ldflags -s` must be passed to the `go get` command.
-
 ```no-highlight
 $cd $GOPATH
-$go get -ldflags -s mynewt.apache.org/newtmgr/newtmgr
+$go get mynewt.apache.org/newtmgr/newtmgr
 $cd $GOPATH/src/mynewt.apache.org/newtmgr
 $ls
-DISCLAIMER	NOTICE		newtmgr
-LICENSE		README.md	nmxact
+LICENSE		NOTICE		README.md	newtmgr		nmxact
 $git status
 On branch master
 Your branch is up-to-date with 'origin/master'.
-
 nothing to commit, working directory clean
 ```
 <br>
@@ -175,8 +175,6 @@ $git pull
 
 <br>
 Build and install the tool. The updated binary will be installed in the **$GOPATH/bin** directory: 
-
-(**Note:** `-ldflags -s` must be passed to the `go install` command if you are rebuilding newtmgr)
 
 ```no-highlight
 $go install

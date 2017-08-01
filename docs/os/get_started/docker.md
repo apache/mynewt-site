@@ -55,7 +55,7 @@ user@~/dockertest$ ls
 myproj	newt
 user@~/dockertest$ cd myproj
 user@~/dockertest/myproj$ ../newt version
-Apache Newt (incubating) version: 0.8.0-b2
+Apache Newt version: 1.1.0
 ```
 
 <br>
