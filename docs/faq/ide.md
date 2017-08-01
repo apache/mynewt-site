@@ -154,7 +154,7 @@ The following is an example of running the `build_arduino_boot` task:
 
 Other newt commands, such as the `newt load` command, do not need to run from within Visual Studio Code. You can define a task for each command as a convenience and run the command as a task, or you can run the newt command on the command line from the Visual Studio Code integrated terminal or an external terminal.
 
-To create the tasks for the `newt load arduino_boot` and `newt laod arduino_blinky` commands, add the following definitions to the `tasks.json` file:
+To create the tasks for the `newt load arduino_boot` and `newt load arduino_blinky` commands, add the following definitions to the `tasks.json` file:
 
 ```no-highlight
         {
