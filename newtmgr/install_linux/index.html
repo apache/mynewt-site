@@ -400,53 +400,58 @@
                         
                         
                             <h2 id="installing-newtmgr-on-linux">Installing Newtmgr on Linux</h2>
-<p>You can install the latest stable release (1.0.0) of the newtmgr tool from a Debian binary package (amd64) or from a Debian source package.  This page shows you how to:</p>
+<p>You can install the latest release (1.1.0) of the newtmgr tool from a Debian binary package (amd64). You can also download and build the latest release version of newtmgr from source.   </p>
+<p>This page shows you how to: </p>
 <ol>
 <li>
-<p>Set up your computer to retrieve Debian packages from the runtimeco debian package repository. </p>
-<p><strong>Note:</strong> You can skip this step if you already set up your computer to access the runtimeco debian repository when you installed the newt tool. </p>
+<p>Set up your computer to download Debian binary packages from the runtimeco APT repository.</p>
+<p><strong>Note:</strong> The key for signing the repository has changed. If you set up your computer before release 1.1.0, you will need to download and import the public key again. </p>
 </li>
 <li>
-<p>Install the latest stable release version of newtmgr from a Debian binary package. </p>
+<p>Install the latest release version of newtmgr from a Debian binary package. You can use apt-get to install the package or manually download and install the Debian binary package.</p>
 </li>
-<li>Install the latest stable release version of newtmgr from a Debian source package.</li>
+<li>
+<p>Download, build, and install the latest release version of newtmgr from source. </p>
+</li>
+<li>
+<p>Install an earlier version of newtmgr. </p>
+</li>
 </ol>
 <p>If you are installing on an amd64 platform, we recommend that you install from the binary package.</p>
-<p><strong>Note:</strong>  We have tested the newtmgr tool binary and apt-get install from the runtimeco Debian package repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. We recommend that you upgrade Ubuntu on your computer.</p>
-<p><strong>Note:</strong> See <a href="../../faq/go_env">Setting Up an Go Environment to Contribute to Newt and Newtmgr Tools</a> if you want to:  </p>
+<p><strong>Note:</strong>  We have tested the newtmgr tool binary and apt-get install from the runtimeco APT repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. You can manually download and install the Debian binary package.</p>
+<p><strong>Note:</strong> See <a href="../../faq/go_env">Setting Up a Go Environment to Contribute to Newt and Newtmgr Tools</a> if you want to:  </p>
 <ul>
 <li>Use the newtmgr tool with the latest updates from the master branch. The master branch may be unstable and we recommend that you use the latest stable release version.</li>
 <li>Contribute to the newtmgr tool. </li>
 </ul>
 <p><br></p>
-<h3 id="setting-up-your-computer-to-get-packages-from-runtimeco">Setting Up Your Computer to Get Packages from runtimeco</h3>
-<p>The newtmgr Debian packages are stored in a private repository on <strong>https://github/runtimeco/debian-mynewt</strong>.   You must set up the following on your computer to retreive packages from the repository:</p>
-<p><strong>Note</strong>: You only need to perform this setup once on your computer and you may have already done so when you installed the newt tool. </p>
+<h3 id="setting-up-your-computer-to-use-apt-get-to-install-the-package">Setting Up Your Computer to use apt-get to Install the Package</h3>
+<p>The newtmgr Debian packages are stored in a private APT repository on <strong>https://github/runtimeco/debian-mynewt</strong>.   To use apt-get, you must set up the following on your computer to retrieve packages from the repository:</p>
+<p><strong>Note</strong>: You only need to perform this setup once on your computer. However, if you previously downloaded and imported the public key for the runtimeco APT repository, you will need to perform step 2 again as the key has changed.</p>
 <ol>
 <li>Install the <code>apt-transport-https</code> package to use HTTPS to retrieve packages. </li>
-<li>Download the public key for the runtimeco debian repository and import the key into the apt keychain.</li>
+<li>Download the public key for the runtimeco APT repository and import the key into the apt keychain.</li>
 <li>Add the repository for the binary and source packages to the apt source list.</li>
 </ol>
 <p><br>
-Install the apt-transport-https package:</p>
+1. Install the apt-transport-https package:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$sudo apt-get update
 $sudo apt-get install apt-transport-https
 </pre></div>
 
 
-<p><br></p>
-<p>Download the public key for the runtimeco apt repo  (<strong>Note:</strong> There is  a <code>-</code> after  <code>apt-key add</code>):</p>
+<p><br>
+2. Download the public key for the runtimeco apt repo  (<strong>Note:</strong> There is  a <code>-</code> after  <code>apt-key add</code>):</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>wget -qO - https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/mynewt.gpg.key | sudo apt-key add -
 </pre></div>
 
 
-<p><br></p>
-<p>Add the repository for the binary and source packages to the <code>mynewt.list</code> apt source list file.</p>
+<p><br>
+3. Add the repository for the binary packages to the <code>mynewt.list</code> apt source list file.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$sudo -s
 [sudo] password for &lt;user&gt;:
 root$ cat &gt; /etc/apt/sources.list.d/mynewt.list &lt;&lt;EOF
 deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
-deb-src https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 EOF
 root$exit
 </pre></div>
@@ -454,124 +459,92 @@ root$exit
 
 <p><strong>Note:</strong> Do not forget to exit the root shell.</p>
 <p><br>
-Verify the content of the source list file:</p>
+4. Verify the content of the source list file:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$more /etc/apt/sources.list.d/mynewt.list
 deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
-deb-src https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 </pre></div>
 
 
 <p><br>
-Update the available packages:</p>
+5. Update the available packages:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$sudo apt-get update
 </pre></div>
 
 
 <p><br>
-<strong>Note:</strong> If you are not using Ubuntu version 16, you may see the following errors.  We recommend that you upgrade Ubuntu.  We have provided instructions on how to manually download and install the binary package if you choose not to upgrade, but you will want to upgrade Ubuntu if you are installing from source.  </p>
+<strong>Note:</strong> If you are not using Ubuntu version 16, you may see the following errors.  We have provided instructions on how to manually download and install the binary package.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/source/Sources  Ht
 tpError404
-
-W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/binary-amd64/Packa
-ges  Bad header line
-
-W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/binary-i386/Packag
-es  HttpError404
-
-E: Some index files failed to download. They have been ignored, or old ones used instead.
 </pre></div>
 
 
 <p><br> </p>
 <h3 id="installing-the-latest-release-of-newtmgr-from-a-binary-package">Installing the Latest Release of Newtmgr from a Binary Package</h3>
-<p>For Linux amd64 platforms, you can install the latest stable version (1.0.0) of newtmgr from the newtmgr Debian binary package:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$sudo apt-get install newtmgr
-Reading package lists... Done
-Building dependency tree       
-Reading state information... Done
-The following NEW packages will be installed:
-  newtmgr
-0 upgraded, 1 newly installed, 0 to remove and 204 not upgraded.
-Need to get 0 B/2,312 kB of archives.
-After this operation, 11.5 MB of additional disk space will be used.
-Selecting previously unselected package newtmgr.
-(Reading database ... 211647 files and directories currently installed.)
-Preparing to unpack .../newtmgr_1.0.0-1_amd64.deb ...
-Unpacking newtmgr (1.0.0-1) ...
-Setting up newtmgr (1.0.0-1) 
+<p>You can use either apt-get to install the package, or manually download and install the Debian binary package. </p>
+<p><br></p>
+<h4 id="method-1-using-apt-get-to-upgrade-or-to-install">Method 1: Using apt-get to Upgrade or to Install</h4>
+<p>Run the following commands to upgrade or install the latest version of newtmgr:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ sudo apt-get update 
+$ sudo apt-get install newtmgr
+</pre></div>
+
+
+<h4 id="method-2-downloading-and-installing-the-debian-package-manually">Method 2: Downloading and Installing the Debian Package Manually</h4>
+<p>Download and install the package manually.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/raw/master/pool/main/n/newtmgr/newtmgr_1.1.0-1_amd64.deb
+$sudo dpkg -i newtmgr_1.1.0-1_amd64.deb
+</pre></div>
+
+
+<p>See <a href="#check">Checking the Installed Version of Newtmgr</a> to verify that you are using the installed version of newtmgr.</p>
+<p><br></p>
+<h3 id="installing-the-latest-release-version-of-newtmgr-from-source">Installing the Latest Release Version of Newtmgr from Source</h3>
+<p>If you are running Linux on a different architecture, you can build and install the latest release version of newtmgr from source.</p>
+<p><br>
+1. Download and install the latest version of <a href="https://golang.org/dl/">Go</a>. Newtmgr requires Go version 1.7.6 or higher.</p>
+<p><br>
+2. Create a Go workspace in the /tmp directory: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd /tmp
+$ mkdir go
+$ cd go
+$ export GOPATH=/tmp/go
 </pre></div>
 
 
 <p><br>
-<strong>Note:</strong> If you are not using Ubuntu version 16 and are not able to update the runtimeco Debian package repo on your computer successfully, you can manually download and install the newtmgr_1.0.0-1_amd64.deb binary package as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newtmgr/newtmgr_1.0.0-1_amd64.deb
-$sudo dpkg -i newtmgr_1.0.0-1_amd64.deb
+3. Run <code>go get</code> to download the newtmgr source.  Note that <code>go get</code> pulls down the HEAD from the master branch in git, builds, and installs newtmgr.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ go get mynewt.apache.org/newtmgr/newtmgr
+$ ls -l /tmp/go/bin/newtmgr
+-rwxr-xr-x  1 user staff  17884488 Jul 29 16:25 /tmp/go/bin/newtmgr
 </pre></div>
 
 
 <p><br>
-See <a href="#check">Checking the Installed Version of Newtmgr</a> to verify that you are using the installed version of newtmgr.</p>
-<p><br></p>
-<h3 id="installing-the-latest-stable-release-of-newtmgr-from-a-source-package">Installing the Latest Stable Release of Newtmgr from a Source Package</h3>
-<p>If you are running Linux on a different architecture, you can install the Debian source package for the latest stable release (1.0.0) of newtmgr. The installation of the source package builds the newtmgr binary and creates a Debian binary package that you then install.</p>
-<p><strong>Note</strong>: Newtmgr version 1.0.0 has been tested on Linux amd64 platforms. </p>
-<p><br></p>
-<h4 id="installing-go">Installing Go</h4>
-<p>You need Go version 1.7.6 or higher to build Newtmgr version 1.0.0.  Currently, the latest Go version that Ubuntu installs is 1.6.  Run <code>go version</code> to check if you have Go 1.7.6 installed. You can download Go from <a href="https://golang.org/dl/">https://golang.org/dl/</a>.</p>
-<p><br></p>
-<h4 id="installing-from-the-source-package">Installing from the Source Package</h4>
-<p>Create a directory and change into the directory, download the source package, and build a binary package from the source package:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>mkdir newtmgr_source
-$cd newtmgr_source
-$sudo apt-get --build source newtmgr
-[sudo] password for &lt;user&gt;: 
-
-sudo apt-get --build source newtmgr
-Reading package lists... Done
-Need to get 1,867 kB of source archives.
-Get:1 https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest/main newtmgr 1.0.0-1 (dsc) [822 B]
-Get:2 https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest/main newtmgr 1.0.0-1 (tar) [1,864 kB]
-Get:3 https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest/main newtmgr 1.0.0-1 (diff) [2,372 B]
-Fetched 1,867 kB in 1s (1,767 kB/s) 
-
-           ...
-
-dpkg-deb: building package &#39;newtmgr&#39; in &#39;../newtmgr_1.0.0-1_amd64.deb&#39;.
- dpkg-genchanges --build=any,all &gt;../newtmgr_1.0.0-1_amd64.changes
-dpkg-genchanges: info: binary-only upload (no source code included)
- dpkg-source --after-build newtmgr-1.0.0
-dpkg-buildpackage: info: binary-only upload (no source included)
-W: Can&#39;t drop privileges for downloading as file &#39;newtmgr_1.0.0-1.dsc&#39; couldn&#39;t be accessed by user &#39;_apt&#39;. - pkgAcquire::Run (13: Permission denied)
+4. Check out the source from the latest release version:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd src/mynewt.apache.org/newtmgr
+$ git checkout mynewt_1_1_0_tag
+Note: checking out &#39;mynewt_1_1_0_tag&#39;.
 </pre></div>
 
 
-<p><strong>Note:</strong> You can ignore the "Permission denied" warning message at the end of the command.</p>
+<p><br> 5. Build newtmgr from the latest release version: </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd newtmgr
+$ go install
+$ ls /tmp/go/bin/newtmgr
+-rwxr-xr-x  1 user  staff  17888680 Jul 29 16:28 /tmp/go/bin/newtmgr
+</pre></div>
+
+
 <p><br>
-Install the newtmgr binary package that is created from the source package:</p>
-<p><strong>Note:</strong> The file name for the binary package has the format: newtmgr_1.0.0-1_<strong>arch</strong>.deb,  where <strong>arch</strong> is a value that identifies your host architecture.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$sudo dpkg -i newtmgr_1.0.0-1_amd64.deb 
-Selecting previously unselected package newtmgr.
-(Reading database ... 215099 files and directories currently installed.)
-Preparing to unpack newtmgr_1.0.0-1_amd64.deb ...
-Unpacking newtmgr (1.0.0-1) ...
-Setting up newtmgr (1.0.0-1) ...
-</pre></div>
-
-
-<p><br></p>
-<h3 id="checking-the-installed-version-of-newtmgr"><a name="check"></a> Checking the Installed Version of Newtmgr</h3>
-<p>After you have installed newtmgr from either a Debian binary or source package, check that you are using the installed version of newtmgr from <strong>/usr/bin</strong>. </p>
-<p>Check the modification time of the binary and the newtmgr tool that you are using:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ls -l /usr/bin/newtmgr
--rwxr-xr-x 1 root root 11473328 Apr 25 10:10 /usr/bin/newtmgr
-$which newtmgr
-/usr/bin/newtmgr
-</pre></div>
-
-
-<p><strong>Note:</strong> If you previously built newtmgr from source and the output of <code>which newtmgr</code> shows "$GOPATH/bin/newtmgr", you will need to move "$GOPATH/bin" after "/usr/bin" for your PATH environment variable and export it.</p>
+6. If you have a Go workspace, remember to reset your GOPATH to your Go workspace.</p>
 <p><br>
-Get information about newtmgr:</p>
+7. Copy the newtmgr executable to a bin directory in your path. You can put it in the /usr/bin or the $GOPATH/bin directory.</p>
+<p><br></p>
+<h3 id="checking-the-latest-version-of-newtmgr-is-installed"><a name="check"></a> Checking the Latest Version of Newtmgr is Installed</h3>
+<p><br>
+1. Run <code>which newtmgr</code> to verify that you are using the installed version of newtmgr.</p>
+<p><br>
+2. Get information about the newtmgr tool:</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$newtmgr
 Newtmgr helps you manage remote devices running the Mynewt OS
 
@@ -586,26 +559,40 @@ Available Commands:
   datetime    Manage datetime on a device
   echo        Send data to a device and display the echoed back data
   fs          Access files on a device
+  help        Help about any command
   image       Manage images on a device
   log         Manage logs on a device
-  mpstat      Read memory pool statistics from a device
-  reset       Send reset request to a device
+  mpstat      Read mempool statistics from a device
+  reset       Perform a soft reset of a device
   run         Run test procedures on a device
   stat        Read statistics from a device
   taskstat    Read task statistics from a device
 
 Flags:
   -c, --conn string       connection profile to use
-  -h, --help              Help for newtmgr commands
+  -h, --help              help for newtmgr
   -l, --loglevel string   log level to use (default &quot;info&quot;)
-  -t, --trace             print all bytes transmitted and received
+      --name string       name of target BLE device; overrides profile setting
+  -t, --timeout float     timeout in seconds (partial seconds allowed) (default 10)
+  -r, --tries int         total number of tries in case of timeout (default 1)
 
 Use &quot;newtmgr [command] --help&quot; for more information about a command.
 </pre></div>
 
 
-<p>```
-<br></p>
+<p><br></p>
+<h3 id="installing-earlier-release-versions-of-newtmgr">Installing Earlier Release Versions of Newtmgr</h3>
+<p>You can download and install an earlier version of newtmgr.</p>
+<p><br>
+1. Run <code>sudo apt-get remove newtmgr</code> command the current installation.</p>
+<p><br>
+2. Download and install the package. For example, run the following commands to install the 1.0.0 version of newtmgr :</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.0.0/newtmgr_1.0.0-1_amd64.deb
+$ sudo dpkg -i newtmgr_1.0.0-1_amd64.deb
+</pre></div>
+
+
+<p><br></p>
                         
                         <div class="row">
                             
