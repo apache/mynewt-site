@@ -111,7 +111,7 @@ $ sudo apt-get install newtmgr
 Download and install the package manually.
 
 ```no-highlight
-$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/raw/master/pool/main/n/newtmgr/newtmgr_1.1.0-1_amd64.deb
+$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newtmgr/newtmgr_1.1.0-1_amd64.deb
 $sudo dpkg -i newtmgr_1.1.0-1_amd64.deb
 ```
 
