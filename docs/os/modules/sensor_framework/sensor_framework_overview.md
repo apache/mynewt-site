@@ -18,7 +18,7 @@ The Mynewt sensor framework is an abstraction layer between an application and s
 ## Overview of Sensor Support Packages
 
 
-In this guide and and the package source code, we use `SENSORNAME` (all uppercase) to refer to a sensor product name. For each sensor named `SENSORNAME`: 
+In this guide and the package source code, we use `SENSORNAME` (all uppercase) to refer to a sensor product name. For each sensor named `SENSORNAME`: 
 
 * The package name for the sensor device driver is `<sensorname>`. All functions and data structures that the sensor device driver exports are prefixed with `<sensorname>`. 
 

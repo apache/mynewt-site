@@ -212,4 +212,4 @@ The BSP and sensor creator package use a default configuration and enable all su
 
 We recommend that you copy the `config_<sensorname>_sensor()` function from the BSP or the sensor creator package in to your application code and change the desired settings. Note that you must keep all the fields in the `<sensorname>_cfg` structure initialized with the default values for the settings that you do not want to change.
 
-See the [Changing the Default Configuration for a Sensor Tutorial] (os/tutorials/sensors/sensor_offboard_config/) for more details on how to change the default sensor configuration from an application.
+See the [Changing the Default Configuration for a Sensor Tutorial](/os/tutorials/sensors/sensor_offboard_config/) for more details on how to change the default sensor configuration from an application.
