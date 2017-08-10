@@ -54,11 +54,7 @@ When this setting is enabled, the creator package performs the following:
 * `BNO055_CLI`: Enables the `bno055` shell command in the bno055 device driver package. The sensors_test application also uses this setting to conditionally include the call to the `bno055_shell_init()` function to initialize the shell support in the driver.
 
 
-**Note:** The `SENSOR_CLI` setting that specifies whether the `sensor` shell command is enabled is is enabled by default.
-
-
-
-This tutorial uses both shell commands. They are enabled by default so you do not need to explicitly enable the setting for this target.
+**Note:** This tutorial uses the `sensor` and the `bno055` shell commands.  The `SENSOR_CLI` setting, that specifies whether the `sensor` shell command is enabled, is enabled by default.
 
 <br> 
 1. Run the `newt target create` command, from your project base directory,  to create the target. We name the target `nrf52_bno055_test`:
