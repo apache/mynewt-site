@@ -24,6 +24,8 @@ The tutorials are:
 
 We use the Mynewt Smart Device Controller App on iOS or Android to retrieve and display sensor data from the Mynewt OS OIC sensor applications described in the OIC Sensor Data Monitoring tutorials. You can download the app from either the Apple Store or Google Play Store. 
 
+**Note:** At the time of writing this tutorial, the iOS app was still in the queue waiting to be placed in the App Store. You can build the iOS app from source as indicated below.
+
 If you would like to contribute or modify the Mynewt Smart Device Controller App, see the [Android Sensor source](https://github.com/runtimeco/android_sensor) and [iOS Sensor source](https://github.com/runtimeco/iOS_oic) on github.
 
 <br>
