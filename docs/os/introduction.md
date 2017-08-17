@@ -59,7 +59,7 @@ You can install *newt* for [Mac OS](../newt/install/newt_mac/), [Linux](../newt/
 
 In order to enable a user to communicate with remote instances of Mynewt OS and query, configure, and operate them, Mynewt provides an application tool called Newt Manager or *newtmgr*.
 
-You can install *newtmgr* for [Mac OS](../newtmgr/install_mac/), [Linux](../newtmgr/install_linux/), or [Windows](../newtmgr/install_newtmgr/).
+You can install *newtmgr* for [Mac OS](../newtmgr/install_mac/), [Linux](../newtmgr/install_linux/), or [Windows](../newtmgr/install_windows/).
 
 <br>
 
