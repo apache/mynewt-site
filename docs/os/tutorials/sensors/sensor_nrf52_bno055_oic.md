@@ -7,13 +7,12 @@ Like the other off-board sensor tutorials, this tutorial uses an nRF52-DK board 
 This tutorial shows you how to:
 
 * Create and build the target to enable sensor OIC support in the sensors_test application. 
-* Use the Mynewt Smart Device Controller [Android](https://github.com/runtimeco/android_sensor) or iOS app to view the sensor data from the device. 
+* Use the Mynewt Smart Device Controller Android or iOS app to view the sensor data from the device. 
 <br>
 
 ### Prerequisite
 
-* Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensor_oic_overview.md).
-* Complete the tasks described in the [Enabling an Off-Board Sensor in an Existing Application Tutorial](/os/tutorials/sensors/sensor_nrf52_bno055.md). 
+Read the [Overview of OIC Support in the Sensor Framework](/os/tutorials/sensors/sensor_oic_overview.md).
 
 ### Step 1: Creating and Building the sensors_test Application Image
 
@@ -81,7 +80,7 @@ Perform the following steps to reboot the board with the new images:
 <br>
 ### Step 3: Viewing Sensor Data from the Mynewt Smart Device Controller
 
-Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  If you have not installed the Mynewt Smart Device Controller app, follow the instructions in [Installing the Mynewt Smart Device Controller](https://github.com/runtimeco/android_sensor) to install the app, then continue with this step of the tutorial.
+Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  If you have not installed the Mynewt Smart Device Controller follow the instructions in the [Sensor Tutorials Overview](/os/tutorials/sensors/sensors.md) to install the app, then continue with this step of the tutorial.
 
 <br>
 The Mynewt Smart Device Controller scans for the devices when it starts up and displays the sensors it can view. The following is an example from the Android App: 
