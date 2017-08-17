@@ -66,6 +66,6 @@ You can install *newtmgr* for [Mac OS](../newtmgr/install_mac/), [Linux](../newt
 ### Build your first Mynewt App with Newt
 
 With the introductions out of the way, now is a good time to [get set up and 
-started](../get_started/get_started/) with your first Mynewt application.
+started](/os/get_started/get_started/) with your first Mynewt application.
 
 Happy Hacking!
