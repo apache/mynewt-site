@@ -6,7 +6,7 @@ This page shows you how to create a Mynewt project using the `newt` command-line
 
 This guide shows you how to:
 
-1. Create a new project and fetch the source repository and dependecies.
+1. Create a new project and fetch the source repository and dependencies.
 2. Test the project packages. (Not supported on Windows.)
 3. Build and run the simulated blinky application. (Not supported on Windows.) 
 
