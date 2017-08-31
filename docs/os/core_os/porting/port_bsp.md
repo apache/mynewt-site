@@ -1,236 +1,417 @@
-
-# Create a BSP for your Target
+# BSP Porting
 
 ### Introduction
 
-If you are using a board or system not currently supported by Mynewt, you will need to create a BSP for the new target.   If another similar BSP exists it is recommended to copy that BSP as a starting point.  For example, if another BSP exists using the same MCU, start with a copy of that BSP.
+The Apache Mynewt core repo contains support for several different boards.  For
+each supported board, there is a Board Support Package (BSP) package in the
+`hw/bsp` directory.  If there isn't a BSP package for your hardware, then you
+will need to make one yourself.  This document describes the process of
+creating a BSP package from scratch.
 
-Either way, this document describes the steps necessary to create a new BSP from scratch.  
+While creating your BSP package, the following documents will probably come in handy:
 
-### Keep your Reference Documents handy
+* The datasheet for the MCU you have chosen.
+* The schematic of your board.
+* The information on the CPU core within your MCU if it is not included in your MCU documentation.
 
-To build a proper BSP, you will typically need the following:
+This document is applicable to any hardware, but it will often make reference
+to a specific board as an example.  Our example BSP has the following
+properties:
 
-* The datasheet for the MCU you have chosen
-* The schematic of your board
-* The information on the CPU core within your MCU if it is not included in your MCU documentation
-* This Mynewt documentation
+* **Name:** `hw/bsp/myboard`
+* **MCU:** Nordic nRF52
 
-### Name your BSP
+### Download the BSP package template
 
-Select a name for your BSP.  For the remainder of this document, we'll assume the bsp is named `myboard`. In general its best to select a name that describes the board/system you are creating.
+We start by downloading a BSP package template.  This template will serve as a good starting point for our new BSP.
 
-### Create a BSP directory
+Execute the `newt pkg new` command, as below:
 
-Create a directory `hw/bsp/myboard` using the name chosen above. Within this BSP directory, create the following subdirectories:
-
-Select a name for your BSP.  For the remainder of this document, 
-well assume the bsp is named `myboard`. In general its best to select a 
-name that describes the board/system you are creating.
-
-* `include`
-* `include/bsp`
-* `src`
-
-### Create a Target using Mynewt
-
-Create a newt target for your test project for the BSP. To learn how to create a target, see this **howto** [Tutorial](../../get_started/project1). Once you are familiar with creating targets, move on below to create a target to use to test your BSP.
-
-It is recommended that you use a simple `project` like `blinky` to minimize time to get a working Mynewt system.  For this document, we will assume the `target` is called `myboard_blinky` and uses project `blinky`.  
-
-Set the `bsp` of the project to `/hw/bsp/myboard`. While creating your target, you will need to specify your `arch`and `compiler`. If your platform requires an architecture or compiler that are not defined in Mynewt, you will need to add them first.  To add a CPU architecture see [CPU Porting](port_cpu.md).
-
-When you are complete, your `target` may look similar to this.
-
-```c
-    $newt target show 
-        myboard_blinky
-            arch=cortex_m0
-            bsp=hw/bsp/myboard
-            compiler=arm-none-eabi-m0
-            compiler_def=debug
-            name=myboard_blinky
-            project=blinky
+```
+$ newt pkg new -t bsp hw/bsp/myboard
+Download package template for package type bsp.
+Package successfuly installed into /home/me/myproj/hw/bsp/myboard.
 ```
 
-### Create Required Files For Compilation
+Our new package has the following file structure:
 
-Create the following files within the BSP directory tree. For now, they can be empty files. We will fill them out one at a time.
+```
+$ tree hw/bsp/myboard
+hw/bsp/myboard
+├── README.md
+├── boot-myboard.ld
+├── bsp.yml
+├── include
+│   └── myboard
+│       └── bsp.h
+├── myboard.ld
+├── myboard_debug.sh
+├── myboard_download.sh
+├── pkg.yml
+├── src
+│   ├── hal_bsp.c
+│   └── sbrk.c
+└── syscfg.yml
+
+3 directories, 11 files
+```
+
+We will be adding to this package throughout the remainder of this document.
+See [Appendix A](#appendix-a-bsp-files) for a full list of files typically
+found in a BSP package.
+
+### Create a set of Mynewt targets
+
+We'll need two [targets](../../../../os/get_started/vocabulary/#target) to test
+our BSP as we go:
+
+1. Boot loader
+2. Application
+
+A minimal application is best, since we are just interested in getting the BSP
+up and running.  A good app for our purposes is
+[blinky](../../tutorials/blinky).
+
+We create our targets with the following set of newt commands:
+
+```
+newt target create boot-myboard &&
+newt target set boot-myboard app=@apache-mynewt-core/apps/boot  \
+                             bsp=hw/bsp/myboard                 \
+                             build_profile=optimized
+
+newt target create blinky-myboard &&
+newt target set blinky-myboard app=apps/blinky      \
+                               bsp=hw/bsp/myboard   \
+                               build_profile=debug
+```
+
+Which generates the following output:
+```
+Target targets/boot-myboard successfully created
+Target targets/boot-myboard successfully set target.app to @apache-mynewt-core/apps/boot
+Target targets/boot-myboard successfully set target.bsp to hw/bsp/myboard
+Target targets/boot-myboard successfully set target.build_profile to debug
+Target targets/blinky-myboard successfully created
+Target targets/blinky-myboard successfully set target.app to apps/blinky
+Target targets/blinky-myboard successfully set target.bsp to hw/bsp/myboard
+Target targets/blinky-myboard successfully set target.build_profile to debug
+```
+
+### Fill in the `bsp.yml` file
+
+The template `hw/bsp/myboard/bsp.yml` file is missing some values that need to
+be added.  It also assumes certain information that may not be appropriate for
+your BSP.  We need to get this file into a usable state.
+
+Missing fields are indicated by the presence of `XXX` markers.  Here are the
+first several lines of our `bsp.yml` file where all the incomplete fields are
+located:
+
+```
+bsp.arch: # XXX <MCU-architecture>
+bsp.compiler: # XXX <compiler-package>
+bsp.linkerscript:
+    - 'hw/bsp/myboard/myboard.ld'
+    # - XXX mcu-linker-script
+bsp.linkerscript.BOOT_LOADER.OVERWRITE:
+    - 'hw/bsp/myboard/myboard/boot-myboard.ld'
+    # - XXX mcu-linker-script
+```
+
+So we need to specify the following:
+
+* MCU architecture
+* Compiler package
+* MCU linker script
+
+Our example BSP uses an nRF52 MCU, which implements the `cortex_m4`
+architecture.  We use this information to fill in the incomplete fields:
+
+``` hl_lines="1 2 5 8"
+bsp.arch: cortex_m4
+bsp.compiler: '@apache-mynewt-core/compiler/arm-none-eabi-m4'
+bsp.linkerscript:
+    - 'hw/bsp/myboard/myboard.ld'
+    - '@apache-mynewt-core/hw/mcu/nordic/nrf52xxx/nrf52.ld'
+bsp.linkerscript.BOOT_LOADER.OVERWRITE:
+    - 'hw/bsp/myboard/boot-myboard.ld'
+    - '@apache-mynewt-core/hw/mcu/nordic/nrf52xxx/nrf52.ld'
+```
+
+Naturally, these values must be adjusted accordingly for other MCU types.
+
+### Flash map
+
+At the bottom of the `bsp.yml` file is the flash map.  The flash map partitions
+the BSP's flash memory into sections called areas.  Flash areas are further
+categorized into two types: 1) system areas, and 2) user areas.  These two area
+types are defined below.
+
+**System areas**
+
+* Used by Mynewt core components.
+* BSP support is mandatory in most cases.
+* Use reserved names.
+
+**User areas**
+
+* Used by application code and supplementary libraries.
+* Identified by user-assigned names.
+* Have unique user-assigned numeric identifiers for access by C code.
+
+The flash map in the template `bsp.yml` file is suitable for an MCU with 512kB
+of internal flash.  You may need to adjust the area offsets and sizes if your
+BSP does not have 512kB of internal flash.
+
+The system flash areas are briefly described below:
+
+| Flash area                 | Description |
+|----------------------------|-------------|
+| `FLASH_AREA_BOOTLOADER`    | Contains the Mynewt boot loader. |
+| `FLASH_AREA_IMAGE_0`       | Contains the active Mynewt application image. |
+| `FLASH_AREA_IMAGE_1`       | Contains the secondary image; used for image upgrade. |
+| `FLASH_AREA_IMAGE_SCRATCH` | Used by the boot loader during image swap. |
+
+### Add the MCU dependency to `pkg.yml`
+
+A package's dependencies are listed in its `pkg.yml` file.  A BSP package
+always depends on its corresponding MCU package, so let's add that dependency
+to our BSP now.  The `pkg.deps` section of our `hw/bsp/myboard/pkg.yml` file
+currently looks like this:
+
+```
+pkg.deps:
+    # - XXX <MCU-package>
+    - '@apache-mynewt-core/kernel/os'
+    - '@apache-mynewt-core/libc/baselibc'
+```
+
+Continuing with our example nRF52 BSP, we replace the marked line as follows:
+
+``` hl_lines="2"
+pkg.deps:
+    - '@apache-mynewt-core/hw/mcu/nordic/nrf52xxx'
+    - '@apache-mynewt-core/kernel/os'
+    - '@apache-mynewt-core/libc/baselibc'
+```
+
+Again, the particulars depend on the MCU that your BSP uses.
+
+### Check the BSP linker scripts
+
+Linker scripts are a key component of the BSP package.  They specify how code
+and data are arranged in the MCU's memory.  Our BSP package contains two linker
+scripts:
+
+| **Filename**      | **Description** |
+|-------------------|-----------------|
+| `myboard.ld`      | Linker script for Mynewt application images. |
+| `boot-myboard.ld` | Linker script for the Mynewt boot loader. |
+
+First, we will deal with the application linker script.  You may have noticed
+that the `bsp.linkerscript` item in `bsp.yml` actually specifies two linker
+scripts:
+
+* BSP linker script (`hw/bsp/myboard.ld`)
+* MCU linker script (`@apache-mynewt-core/hw/mcu/nordic/nrf52xxx/nrf52.ld`)
+
+Both linker scripts get used in combination when you build a Mynewt image.
+Typically, all the complexity is isolated to the MCU linker script, while the
+BSP linker script just contains minimal size and offset information.  This
+makes the job of creating a BSP package much simpler.
+
+Our `myboard.ld` file has the following contents:
+
+```
+MEMORY
+{
+  FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 0x3a000
+  RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x10000
+}
+
+/* This linker script is used for images and thus contains an image header */
+_imghdr_size = 0x20;
+```
+
+Our task is to ensure the offset (`ORIGIN`) and size (`LENGTH`) values are
+correct for the `FLASH` and `RAM` regions.  Note that the `FLASH` region does
+not specify the board's entire internal flash; it only describes the area of
+the flash dedicated to containing the running Mynewt image.  The bounds of the
+`FLASH` region should match those of the `FLASH_AREA_IMAGE_0` area in the BSP's
+flash map.
+
+The `_imghdr_size` is always `0x20`, so it can remain unchanged.
+
+The second linker script, `boot-myboard.ld`, is quite similar to the first.
+The important difference is the `FLASH` region: it describes the area of flash
+which contains the boot loader rather than an image.  The bounds of this region
+should match those of the `FLASH_AREA_BOOTLOADER` area in the BSP's flash map.
+For more information about the Mynewt boot loader, see
+[this page](../../modules/bootloader/bootloader/).
+
+### Copy the download and debug scripts
+
+The newt command line tool uses a set of scripts to load and run Mynewt images.  It is the BSP package that provides these scripts.
+
+As with the linker scripts, most of the work done by the download and debug
+scripts is isolated to the MCU package.  The BSP scripts are quite simple, and
+you can likely get away with just copying them from another BSP.  The template
+`myboard_debug.sh` script indicates which BSP to copy from:
+
+```
+#!/bin/sh
+
+# This script attaches a gdb session to a Mynewt image running on your BSP.
+
+# If your BSP uses JLink, a good example script to copy is:
+#     repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh
+#
+# If your BSP uses OpenOCD, a good example script to copy is:
+#     repos/apache-mynewt-core/hw/bsp/rb-nano2/rb-nano2_debug.sh
+```
+
+Our example nRF52 BSP uses JLink, so we will copy the nRF52dk BSP's scripts:
+```
+cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh hw/bsp/myboard/myboard_debug.sh
+cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_download.sh hw/bsp/myboard/myboard_download.sh
+```
+
+### Fill in BSP functions and defines
+
+There are a few particulars missing from the BSP's C code.  These areas are marked with `XXX` comments to make them easier to spot.  The missing pieces are summarized in the table below:
+
+| File | Description | Notes |
+|------|-------------|-------|
+| `src/hal_bsp.c` | `hal_bsp_flash_dev()` needs to return a pointer to the MCU's flash object when `id == 0`. | The flash object is defined in MCU's `hal_flash.c` file. |
+| `include/bsp/bsp.h` | Define `LED_BLINK_PIN` to the pin number of the BSP's primary LED. | Required by the blinky application. |
+
+For our nRF52 BSP, we modify these files as follows:
+
+**src/hal_bsp.c:**
+``` hl_lines="1"
+#include "mcu/nrf52_hal.h"
+```
+``` hl_lines="7"
+const struct hal_flash *
+hal_bsp_flash_dev(uint8_t id)
+{
+    switch (id) {
+    case 0:
+        /* MCU internal flash. */
+        return &nrf52k_flash_dev;
+
+    default:
+        /* External flash.  Assume not present in this BSP. */
+        return NULL;
+    }
+}
+```
+
+**include/bsp/bsp.h:**
+``` hl_lines="5"
+#define RAM_SIZE        0x10000
+
+/* Put additional BSP definitions here. */
+
+#define LED_BLINK_PIN   17
+```
+
+### Add startup code
+
+Now we need to add the BSP's assembly startup code.  Among other things, this
+is the code that gets executed immediately on power up, before the Mynewt OS is
+running.  This code must perform a few basic tasks:
+
+* Assign labels to memory region boundaries.
+* Define some interrupt request handlers.
+* Define the `Reset_Handler` function, which:
+    * Zeroes the `.bss` section.
+    * Copies static data from the image to the `.data` section.
+    * Starts the Mynewt OS.
+
+This file is named according to the following pattern:
+`hw/bsp/myboard/src/arch/<ARCH>/gcc_startup_<MCU>.s`
+
+The best approach for creating this file is to copy from other BSPs.  If there
+is another BSP that uses the same MCU, you might be able to use most or all of
+its startup file.
+
+For our example BSP, we'll just copy the nRF52dk BSP's startup code:
+```
+$ mkdir -p hw/bsp/myboard/src/arch/cortex_m4
+$ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52.s hw/bsp/myboard/src/arch/cortex_m4/
+```
+
+### Satisfy MCU requirements
+
+The MCU package probably requires some build-time configuration.  Typically, it
+is the BSP which provides this configuration.  For example, many MCU packages
+depend on the `cmsis-core` package, which expects the BSP to provide a header
+file called `bsp/cmsis_nvic.h`.  Completing this step will likely involve some
+trial and error as each unmet requirement gets reported as a build error.
+
+Our example nRF52 BSP requires the following changes:
+
+*1)* The nRF52 MCU package uses `cmsis-core`, so for our example we will copy
+the nRF52dk BSP's `cmsis_nvic.h` file to our BSP:
+
+```
+$ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/include/bsp/cmsis_nvic.h hw/bsp/myboard/include/bsp/
+```
+
+*2)* Macro indicating MCU type.  We add this to our BSP's `pkg.yml` file:
+
+``` hl_lines="2"
+pkg.cflags:
+    - '-DNRF52'
+```
+
+*3)* Enable exactly one low-frequency timer setting in our BSP's `syscfg.yml`
+file.  This is required by the nRF51 and nRF52 MCU packages:
+
+``` hl_lines="3"
+# Settings this BSP overrides.
+syscfg.vals:
+    XTAL_32768: 1
+```
+
+### Test it
+
+Now it's finally time to test the BSP package.  Build and load your boot and blinky targets as follows:
+
+```
+$ newt build boot-myboard
+$ newt load boot-myboard
+$ newt run blinky-myboard 0
+```
+
+If everything is correct, the blinky app should successfully build, and you should be presented with a gdb prompt.  Type `c <enter>` (continue) to see your board's LED blink.
+
+### Appendix A: BSP files
+
+The table below lists the files required by all BSP packages.  The naming scheme assumes a BSP called "myboard".
 
 | **File Path Name** | **Description** |
 |-----------|-------------|
-| LICENSE   | A File to present the source license for your BSP |
-| README.md | A markdown file to write documentation for your BSP |
-| pkg.yml   | A package file to describe your BSP contents |
-| include/bsp/bsp.h | A header file to include definitions required by system from the BSP |
-| include/bsp/bsp_sysid.h | A header file to enumerate the devices in your BSP |
-| src/os_bsp.c | A C source file to provide functions required by the OS from your BSP |
-| src/sbrk.c | A C source file to memory from your heap to the OS |
-| src/libc_stubs.c | A C source file to provide stubs/methods required by libc |
-| myboard.ld | A linker script to provide the memory map for your linked code |
+| `pkg.yml`   | Defines a Mynewt package for the BSP. |
+| `bsp.yml`   | Defines BSP-specific settings. |
+| `include/bsp/bsp.h` | Contains additional BSP-specific settings. |
+| `src/hal_bsp.c` | Contains code to initialize the BSP's peripherals. |
+| `src/sbrk.c` | Low level heap management required by `malloc()`. |
+| `src/arch/<ARCH>/gcc_startup_myboard.s` | Startup assembly code to bring up Mynewt |
+| `myboard.ld` | A linker script providing the memory map for a Mynewt application. |
+| `boot-myboard.ld` | A linker script providing the memory map for the Mynewt bootloader. |
+| `myboard_download.sh` | A bash script to download code onto your platform. |
+| `myboard_debug.sh` | A bash script to initiate a gdb session with your platform. |
 
-Optionally, create these files as necessary to provide all functionality from Mynewt.
+A BSP can also contain the following optional files:
 
 | **File Path Name** | **Description** |
 |-----------|-------------|
-| myboard_boot.ld | A linker script to provide the memory map for your bootloader |
-| myboard_download.sh | A bash script to download code into your platform |
-| myboard_debug.sh | A bash script to intiate a gdb session with your platform |
-| src/hal_bsp.c | A C source file to provide functions required by the HAL from your BSP |
+| `split-myboard.ld` | A linker script providing the memory map for the "application" half of a [split image](../../modules/split/split/). |
+| `no-boot-myboard.ld` | A linker script providing the memory map for your bootloader |
+| `src/arch/<ARCH>/gcc_startup_myboard_split.s` | Startup assembly code to bring up the "application" half of a [split image](../../modules/split/split/). |
+| `myboard_download.cmd` | An MSDOS batch file to download code onto your platform; required for Windows support. |
+| `myboard_debug.cmd` | An MSDOS batch file to intiate a gdb session with your platform; required for Windows support. |
 
-### Fill Out your Package File
-
-Edit the package file to describe your BSP. 
-
-The package file must contain:
-
-```c
-    pkg.name: "hw/bsp/myboard"
-    pkg.linkerscript: "myboard.ld"
-```
-
-| **Attribute** | **Description** |
-|-----------|-------------|
-| pkg.name |  The name of your bsp package  |
-| pkg.linkerscript |  The linker script that controls the memory placement of the compiled code sections from the Mynewt OS and your applications.   |
-
-The linker script is a key component of the BSP and specifies where each section of code and data are stored within your CPU which can vary with the BSP depending on your chosen memory layout.  For a tutorial on writing linker scripts, see [Create or Copy Linker Script(s)](#create-or-copy-linker-script).
-
-The package file typically contains:
-
-```c
-    pkg.linkerscript.bootloader.OVERWRITE: "myboard_boot.ld"
-    pkg.downloadscript: "myboard_download.sh"
-    pkg.debugscript: "myboard_debug.sh"
-    pkg.deps: 
-    - hw/mcu/mymcu/variant
-```
-where `mymcu/variant` should be replaced with the specific MCU and variant used in your design.
-
-The following table describes additional attributes relevant to the BSP `pkg.yml` file.
-
-| **Attribute** | **Description** |
-|-----------|-------------|
-| pkg.linkerscript.bootloader.OVERWRITE |  A special linker for creating a bootloader for Mynewt |
-| pkg.downloadscript |  A script that can download a flash image into your target platform |
-| pkg.debugscript |  A script that can run the GDB debugger on your board |
-| pkg.deps |  Any dependencies on your BSP |
-
-The BSP will invariably depend upon an MCU ( in this sample it's `hw/mcu/mymcu/variant`) since the Mynewt OS runs on an MCU within your target.  If your MCU is not supported by Mynewt, see [MCU Porting](port_mcu.md) for details on how to create an MCU in Mynewt.
-
-The package file may also contain:
-
-```c
-    pkg.cflags: -D__MY_SPECIAL_BSP_OPTIONS_
-    pkg.deps:
-    - libs/cmsis-core
-
-```
-| **Attribute** | **Description** |
-|-----------|-------------|
-| pkg.cflags | Any specific compiler flags for your bsp |
-| pkg.deps | Any other libraries that may be required.  Some architectures (like ARM) have special libraries to make BSP creation easier. |
-
-### Create or Copy Linker Script
-
-It's probably best to start with a linker script from another BSP using the same MCU.  If this is not available, consult your MCU documentation and library samples to find a linker script to start with.
-
-Typically, a linker script has to specify the following sections for code:
-
-* .text -- the location and alignment of the memory section to store your code
-* .data -- the location and alignment of the memory section to store initialized data
-* .bss -- the location and alignment of the memory section to store uninitialized data
-* .heap -- the location and alignment of the memory section to provide system memory
-
-The linker script should specify the location and size of the different memory regions in your BSP and map the code sections described above into these regions.  
-
-The linker script should also include an ENTRY point. This is used by the debugger to know where to start the program counter when the target is debugged.
-
-There may be additional requirements from the MCU or OS that you may find easiest to place in the linker script. Some specific variables that the OS and MCU depends on are :
-
-| **Variable** | **Description** |
-|-----------|-------------|
-|\__bss_start__ | a variable located at the start of the BSS section |
-|\__bss_end__ | a variable located at the end of the BSS section |
-|\__isr_vector | Some CPUs map their interrupt vectors. They may need to be specified in the linker |
-|\_user_heap_start | the start of the heap for unallocated memory |
-|\_user_heap_end | the end of the heap for unallocated memory |
-
-Create an alternate linker script for the bootloader since it is typically linked to use different addresses to boot the main image.  
-
-### Add Functions and Defines
-
-At this point, it will be possible to run the `newt` tool to build your target. 
-
-You may run into complaints from the linker script that a few Mynewt specific functions are missing.  We will describe these below.
-
-| **Function** | **Description** |
-|-----------|-------------|
-| os_bsp_init() | code to initialize the bsp |
-| os_bsp_systick_init() | code to setup the system tick for the OS |
-
-There are also several libc definitions that can be stubbed in your first BSP. Examples are `_write`, `_read`, etc. that can be found in `libc_stubs.c`. But you _must_ implement the following function to provide memory to the OS and system.
-
-| **Function** | **Description** |
-|-----------|-------------|
-| _sbrk | Returns memory from heap (used by malloc) | 
-
-* Implement `_sbrk()`
-
-`sbrk()` is required by libc to get memory from the heap for things like malloc. Although not strongly BSP dependent, this is currently in the BSP to allow  flexibility in providing system memory.  See other BSPs for providing `sbrk` functionality.
-
-* Implement `os_bsp_init()`
-
-`os_bsp_init` should initialize anything required by the OS by the BSP. Typically this is a very small set.  
-
-NOTE: Currently we are making calls to `_sbrk()` and `close(0)` from `os_bsp_init` to get around a linker issue where some of libc is not getting included.  Please include this in your `os_bsp_init`.
-
-```c
-    /*
-     * XXX these references are here to keep the functions in for libc to find.
-     */
-    _sbrk(0);
-    _close(0);
-
-```
-
-* Other Unresolved Defines or Functions
-
-There may be other unresolved defines or functions that are required by the specific MCU within your BSP. Below lists some sample defines.
-
-| **Undefined Variable** | **Description** |
-|-----------|-------------|
-| CONSOLE_UART_PORT | Which communications port on your target runs the console |
-| LED_BLINK_PIN |   which pin on your target runs the blinky LED |
-
-The set of missing functionality depends upon the libraries and dependencies you have included in the project.  That's why its best to keep your first project pretty simple then add incrementally.  For example, if you include Newtron file system, you will need to define a file system map for your BSP.
-
-Missing functionality may take the form of `#define` items required to compile, or they may take the form of missing functions.  
-
-* `cmsis_nvic.h`
-
-If you are using an ARM cortex architecture, you need to define the number of interrupts supported by your system.  If you are not using ARM Cortex architecture this may not be required (but something else might be).
-
-### Add Debug Script
-
-The debug script in the bsp directory allows the newt tool to automatically connect to the debugger, and create a debug session with the target.  This requires knowledge of your target debug interface. Most of the Mynewt BSP targets use [openocd](http://openocd.org) to perform debugging.  This script typically creates an openocd connection to the target and then connects a gdb instance to this openocd connection.  There are several examples in existing BSPs to follow.
-
-The script must take a single argument which is the name of the image file minus the '.elf' suffix.
-
-The BSP is complete without this file, but newt will be unable to establish a debug session without it.
-
-### Add Download Script
-
-Similar to the debug script, the download script is a hook for newt to download the image to the target system.  The download script also typically uses openocd interface to erase flash, and progam the code into the device.
-
-NOTE: The download script needs to command openocd to program the image into the appropriate location, which is typically called `FLASH_OFFSET` in  these scripts. This location has to match the linker script location of the image link address.  For example, if your linker links the code to be run at `0xC000` your download script should download the image to the same
-address in the correct flash.  
-
-### Add License and Documentation
-
-The `LICENSE` file is an ASCII text file that describes the source license for this
-package.
-
-The `README.md` is a [markdown](https://en.wikipedia.org/wiki/Markdown)
- file that contains any documentation you 
-want to provide for the BSP.
