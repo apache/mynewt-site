@@ -21,9 +21,16 @@ the shell and console connectivity. You can use blinky on a different board.
 
 ### Modify the Dependencies and Configuration
 
-Add the following dependencies to your application target's `pkg.yml` file:
+Modify the package dependencies in your application target's `pkg.yml` file as follows:
 
-```
+* Add the shell package: `@apache-mynewt-core/sys/shell`.
+* Replace the `@apache-mynewt-core/sys/console/stub` package with the `@apache-mynewt-core/sys/console/full` package. 
+
+	**Note**: If you are using version 1.1 or lower of blinky, the `@apache-mynewt-core/sys/console/full` package may be already listed as a dependency.
+
+The updated `pkg.yml` file should have the following two lines:
+
+```no-highlight
 pkg.deps:
     - "@apache-mynewt-core/sys/console/full"
     - "@apache-mynewt-core/sys/shell"
