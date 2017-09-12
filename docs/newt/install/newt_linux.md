@@ -1,6 +1,6 @@
 ## Installing Newt on Linux
 
-You can install the latest release (1.1.0) of the newt tool from a Debian binary package (amd64). You can also download and build the latest release version of newt from source.
+You can install the latest release (1.2.0) of the newt tool from a Debian binary package (amd64). You can also download and build the latest release version of newt from source.
 
 This page shows you how to:
 
@@ -12,12 +12,11 @@ This page shows you how to:
 
 3. Download, build, and install the latest release version of newt from source.
 
-4. Install an earlier version of newt.
-
 If you are installing on an amd64 platform, we recommend that you install from the binary package.
 
-**Note:**  We have tested the newt tool binary and apt-get install from the runtimeco APT repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. You can manually download and install the Debian binary package.
+See [Installing Previous Releases of Newt](/newt/install/prev_releases.md) to install an earlier version of newt.
 
+**Note:**  We have tested the newt tool binary and apt-get install from the runtimeco APT repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. You can manually download and install the Debian binary package.
 
 **Note:** See [Setting Up a Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env) if you want to:
 
@@ -109,8 +108,8 @@ $ sudo apt-get install newt
 Download and install the package manually.
 
 ```no-highlight
-$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newt/newt_1.1.0-1_amd64.deb
-$sudo dpkg -i newt_1.1.0-1_amd64.deb
+$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newt/newt_1.2.0-1_amd64.deb
+$sudo dpkg -i newt_1.2.0-1_amd64.deb
 ```
 <br>
 See [Checking the Installed Version of Newt](#check) to verify that you are using the installed version of newt.
@@ -121,15 +120,15 @@ See [Checking the Installed Version of Newt](#check) to verify that you are usin
 If you are running Linux on a different architecture, you can build and install the latest release version of newt from source.
 
 <br>
-1.  You need Go version 1.7.6 or higher to build Newt version 1.0.0.  Currently, the latest Go version that Ubuntu installs is 1.6.  Run `go version` to check if you have Go 1.7.6 installed. You can download Go from [https://golang.org/dl/](https://golang.org/dl/).
+1.  You need Go version 1.7.6 or higher to build Newt.  Currently, the latest Go version that Ubuntu installs is 1.6.  Run `go version` to check if you have Go 1.7.6 installed. You can download Go from [https://golang.org/dl/](https://golang.org/dl/).
 
 <br>
 2. Download and unpack the newt source:
 
 ```no-highlight
 
-$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_1_0_tag.tar.gz
-$ tar -xzf /tmp/mynewt_1_1_0_tag.tar.gz
+$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_2_0_tag.tar.gz
+$ tar -xzf /tmp/mynewt_1_2_0_tag.tar.gz
 ```
 
 <br>
@@ -137,9 +136,9 @@ $ tar -xzf /tmp/mynewt_1_1_0_tag.tar.gz
 
 ```no-highlight
 
-$ cd mynewt-newt-mynewt_1_1_0_tag
+$ cd mynewt-newt-mynewt_1_2_0_tag
 $ ./build.sh
-$ rm /tmp/mynewt_1_1_0_tag.tar.gz
+$ rm /tmp/mynewt_1_2_0_tag.tar.gz
 ```
 
 <br>
@@ -164,7 +163,7 @@ $ rm /tmp/mynewt_1_1_0_tag.tar.gz
 $which newt
 /usr/bin/newt
 $newt version
-Apache Newt version: 1.1.0
+Apache Newt version: 1.2.0
 ```
 
 <br>
@@ -224,20 +223,3 @@ Use "newt [command] --help" for more information about a command.
 
 ```
 <br>
-<br>
-### Installing Earlier Release Versions of Newt
-
-You can download and install an earlier version of newt.
-
-<br>
-1. Run `sudo apt-get remove newt` command the current installation.
-
-<br>
-2. Download and install the package. For example, run the following commands to install the 1.0.0 version of newt:
-
-```no-highlight
-
-$ wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.0.0/newt_1.0.0-1_amd64.deb
-$ sudo dpkg -i newt_1.0.0-1_amd64.deb
-
-```

@@ -55,7 +55,7 @@ user@~/dockertest$ ls
 myproj	newt
 user@~/dockertest$ cd myproj
 user@~/dockertest/myproj$ ../newt version
-Apache Newt version: 1.1.0
+Apache Newt version: 1.2.0
 ```
 
 <br>

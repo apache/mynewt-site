@@ -1,12 +1,13 @@
 ## Installing Newtmgr on Mac OS
 
-Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.10 and higher.
+Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.11 and higher.
 
 This page shows you how to install the following versions of newtmgr:
 
-* Upgrade to or install the latest release version (1.1.0).
-* Install earlier release versions.
+* Upgrade to or install the latest release version (1.2.0).
 * Install the latest from the master branch (unstable).
+
+See [Installing Previous Releases of Newtmgr](/newtmgr/prev_releases) to install an earlier version of newtmgr.
 
 **Note:** If you would like to contribute to the newtmgr tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env).
 
@@ -23,11 +24,11 @@ $ brew update
 
 ### Upgrading to or Installing the Latest Release Version
 
-Perform the following to upgrade or install the latest release version of newtmgr (1.1.0).
+Perform the following to upgrade or install the latest release version of newtmgr.
 
 #### Upgrading to the Latest Release Version of Newtmgr
 
-If you previously installed newtmgr 1.0.0 using brew, run the following commands to upgrade to newtmgr 1.1.0:
+If you have installed an earlier version of newtmgr using brew, run the following commands to upgrade to the latest version of newtmgr:
 
 ```no-highlight
 
@@ -39,22 +40,22 @@ $ brew upgrade mynewt-newtmgr
 <br>
 #### Installing the Latest Release Version of Newtmgr
 
-Run the following command to install the latest release version (1.1.0) of newtmgr:
+Run the following command to install the latest release version of newtmgr:
 
 ```no-highlight
 
 $ brew update
 $ brew install mynewt-newtmgr
 ==> Installing mynewt-newtmgr from runtimeco/mynewt
-==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.1.0/mynewt-newtmgr-1.1.0.sierra.bottle.tar.gz
-==> Downloading from https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/mynewt-newtmgr-1.1.0.sierra.bottle.tar.gz
+==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.2.0/mynewt-newtmgr-1.2.0.sierra.bottle.tar.gz
+==> Downloading from https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/mynewt-newtmgr-1.2.0.sierra.bottle.tar.gz
 ######################################################################## 100.0%
-==> Pouring mynewt-newtmgr-1.1.0.sierra.bottle.tar.gz
-🍺  /usr/local/Cellar/mynewt-newtmgr/1.1.0: 3 files, 17MB
+==> Pouring mynewt-newtmgr-1.2.0.sierra.bottle.tar.gz
+🍺  /usr/local/Cellar/mynewt-newtmgr/1.2.0: 3 files, 17.3MB
 
 ```
 <br>
-**Notes:** Homebrew bottles for newtmgr 1.1.0 are available for Mac OS Sierra, El Captian and Yosemite.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
+**Notes:** Homebrew bottles for newtmgr 1.2.0 are available for Mac OS Sierra, El Captian.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
 
 <br>
 ### Checking the Installed Version
@@ -64,7 +65,7 @@ Check that you are using the installed version of newtmgr:
 $which newtmgr
 /usr/local/bin/newtmgr
 ls -l /usr/local/bin/newtmgr
-lrwxr-xr-x  1 user  staff  42 Jul 25 21:15 /usr/local/bin/newtmgr -> ../Cellar/mynewt-newtmgr/1.1.0/bin/newtmgr
+lrwxr-xr-x  1 user  staff  42 Sep 11 21:15 /usr/local/bin/newtmgr -> ../Cellar/mynewt-newtmgr/1.2.0/bin/newtmgr
 ```
 **Note:** If you previously built newtmgr from source and the output of `which newtmgr` shows "$GOPATH/bin/newtmgr", you will need to move "$GOPATH/bin"  after "/usr/local/bin" for your PATH in  ~/.bash_profile, and source ~/.bash_profile.
 
@@ -107,43 +108,9 @@ Use "newtmgr [command] --help" for more information about a command.
 ```
 <br>
 
-### Installing Earlier Release Versions of Newtmgr
-
-If you want to install newtmgr 1.0, run the following commands:
-
-```no-highlight
-
-$ brew update
-$ brew install mynewt-newtmgr@1.0
-
-```
-
-**Note:** This is a keg-only installation.  newt 1.0 is installed in /usr/local/Cellar/mynewt-newtmgr@1.0/1.0.0/bin but not symlinked into /usr/local/bin.  
-
-If you need this version of newt first in your PATH, run the following commands:
-
-```no-highlight
-
-$ echo 'export PATH=/usr/local/Cellar/mynewt-newtmgr@1.0/1.0.0/bin:$PATH' >> ~/.bash_profile
-$ source ~/.bash_profile
-
-```
-
-<br>
-You can also manually symlink into /usr/local/bin as follows:
-
-1. Unlink newtmgr if you have the latest version of newt installed:
-    
-        $ brew unlink mynewt-newtmgr
-
-2. Link mynewt-newt@1.0 into /usr/local/bin:
-
-        $ brew link -f mynewt-newt@1.0
-
-<br>
 ### Installing Newtmgr from the Master Branch 
 
-We recommend that you use the latest release version (1.1.0) of newtmgr. If you would like to use the master branch with the latest updates, you can install newtmgr from the HEAD of the master branch. 
+We recommend that you use the latest release version of newtmgr. If you would like to use the master branch with the latest updates, you can install newtmgr from the HEAD of the master branch. 
 
 ** Notes: **
 
@@ -162,24 +129,24 @@ $brew install mynewt-newtmgr --HEAD
 ==> Installing mynewt-newtmgr from runtimeco/mynewt
 ==> Cloning https://github.com/apache/mynewt-newtmgr.git
 Cloning into '/Users/wanda/Library/Caches/Homebrew/mynewt-newtmgr--git'...
-remote: Counting objects: 650, done.
-remote: Compressing objects: 100% (511/511), done.
-remote: Total 650 (delta 192), reused 345 (delta 114), pack-reused 0
-Receiving objects: 100% (650/650), 4.67 MiB | 4.58 MiB/s, done.
-Resolving deltas: 100% (192/192), done.
+remote: Counting objects: 2169, done.
+remote: Compressing objects: 100% (1752/1752), done.
+remote: Total 2169 (delta 379), reused 2042 (delta 342), pack-reused 0
+Receiving objects: 100% (2169/2169), 8.13 MiB | 5.47 MiB/s, done.
+Resolving deltas: 100% (379/379), done.
 ==> Checking out branch master
 ==> go get github.com/currantlabs/ble
 ==> go get github.com/raff/goble
 ==> go get github.com/mgutz/logxi/v1
 ==> go install
-🍺  /usr/local/Cellar/mynewt-newtmgr/HEAD-7bdd773: 3 files, 17MB, built in 22 seconds
+🍺  /usr/local/Cellar/mynewt-newtmgr/HEAD-2d5217f: 3 files, 17.3MB, built in 1 minute 10 seconds
 ```
 <br>
-To switch back to the latest stable release version (1.1.0) of newtmgr, you can run:
+To switch back to the latest stable release version of newtmgr, you can run:
 ```no-highlight
-$brew switch mynewt-newtmgr 1.1.0
-Cleaning /usr/local/Cellar/mynewt-newtmgr/1.1.0
-Cleaning /usr/local/Cellar/mynewt-newtmgr/HEAD-7bdd773
-1 links created for /usr/local/Cellar/mynewt-newtmgr/1.1.0
+$brew switch mynewt-newtmgr 1.2.0
+Cleaning /usr/local/Cellar/mynewt-newtmgr/1.2.0
+Cleaning /usr/local/Cellar/mynewt-newtmgr/HEAD-2d5217f
+1 links created for /usr/local/Cellar/mynewt-newtmgr/1.2.0
 ```
 <br>

@@ -1,6 +1,6 @@
 ## Installing Newtmgr on Linux
 
-You can install the latest release (1.1.0) of the newtmgr tool from a Debian binary package (amd64). You can also download and build the latest release version of newtmgr from source.   
+You can install the latest release (1.2.0) of the newtmgr tool from a Debian binary package (amd64). You can also download and build the latest release version of newtmgr from source.   
 
 This page shows you how to: 
 
@@ -12,7 +12,7 @@ This page shows you how to:
 
 3. Download, build, and install the latest release version of newtmgr from source. 
 
-4. Install an earlier version of newtmgr. 
+See [Installing Previous Releases of Newtgmr](/newtmgr/prev_releases) to install an earlier version of newtmgr.
 
 If you are installing on an amd64 platform, we recommend that you install from the binary package.
 
@@ -111,8 +111,8 @@ $ sudo apt-get install newtmgr
 Download and install the package manually.
 
 ```no-highlight
-$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newtmgr/newtmgr_1.1.0-1_amd64.deb
-$sudo dpkg -i newtmgr_1.1.0-1_amd64.deb
+$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newtmgr/newtmgr_1.2.0-1_amd64.deb
+$sudo dpkg -i newtmgr_1.2.0-1_amd64.deb
 ```
 
 See [Checking the Installed Version of Newtmgr](#check) to verify that you are using the installed version of newtmgr.
@@ -154,8 +154,8 @@ $ ls -l /tmp/go/bin/newtmgr
 ```no-highlight
 
 $ cd src/mynewt.apache.org/newtmgr
-$ git checkout mynewt_1_1_0_tag
-Note: checking out 'mynewt_1_1_0_tag'.
+$ git checkout mynewt_1_2_0_tag
+Note: checking out 'mynewt_1_2_0_tag'.
 
 ```
 
@@ -219,24 +219,6 @@ Flags:
   -r, --tries int         total number of tries in case of timeout (default 1)
 
 Use "newtmgr [command] --help" for more information about a command.
-
-```
-
-<br>
-### Installing Earlier Release Versions of Newtmgr
-
-You can download and install an earlier version of newtmgr.
-
-<br>
-1. Run `sudo apt-get remove newtmgr` command the current installation.
-
-<br>
-2. Download and install the package. For example, run the following commands to install the 1.0.0 version of newtmgr :
-
-```no-highlight
-
-$ wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.0.0/newtmgr_1.0.0-1_amd64.deb
-$ sudo dpkg -i newtmgr_1.0.0-1_amd64.deb
 
 ```
 
