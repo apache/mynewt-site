@@ -1,6 +1,8 @@
 ## Installing Newtmgr on Windows
 
-This guide shows you how to install the latest release (1.2.0) of newtmgr from binary or from source. The tool is written in Go (golang).
+**Note**: Newtmgr 1.2 on Windows will be released in 1.2.1 patch release. If you want to use newtmgr on Windows, please use Apache Mynewt 1.1.0 release.
+
+This guide shows you how to install the latest release of newtmgr from binary or from source. The tool is written in Go (golang).
 
 It assumes that you have already installed the [newt tool on Windows](/newt/install/newt_windows/) and have the Windows development environment set up.  
 
