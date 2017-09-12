@@ -74,10 +74,9 @@ If you plan on loading your application on an actual device, do the steps below.
 
 #### Install VirtualBox extension pack
 Docker uses a VirtualBox Linux VM to run containers.  A free VirtualBox
-extension pack is required to enable USB2 support.  Download the [VirtualBox
-5.0.16 Oracle VM VirtualBox Extension
-Pack](http://download.virtualbox.org/virtualbox/5.0.16/Oracle_VM_VirtualBox_Extension_Pack-5.0.16-105871.vbox-extpack)
-and double click to install
+extension pack is required to enable USB2 support.  Download the [VirtualBox Extension
+Pack](https://www.virtualbox.org/wiki/Downloads)
+version that matches your VirtualBox installation and double click to install
 
 <br>
 
