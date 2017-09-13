@@ -1,20 +1,23 @@
 ## Installing Newtmgr on Windows
 
+**Note**: Newtmgr 1.2 on Windows will be released in 1.2.1 patch release. If you want to use newtmgr on Windows, please use Apache Mynewt 1.1.0 release.
+
 This guide shows you how to install the latest release of newtmgr from binary or from source. The tool is written in Go (golang).
 
 It assumes that you have already installed the [newt tool on Windows](/newt/install/newt_windows/) and have the Windows development environment set up.  
 
 This guide shows you how to perform the following:
 
-1. Install latest release of newtmgr (1.1.0) from binary.
-2. Install latest release of newtmgr (1.1.0) from source.
+1. Install latest release of newtmgr from binary.
+2. Install latest release of newtmgr from source.
+
+See [Installing Previous Releases of Newtmgr](/newtmgr/prev_releases) to install an earlier version of newtgmr.
 
 **Note:** If you would like to contribute to the newtmgr tool, see [Setting Up Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env.md).
 
 ### Installing the Latest Release of Newtmgr Tool from Binary
 
-You can install the latest release of newtmgr (1.1.0) from binary. It has be
-en tested on Windows 10 64 bit platform.
+You can install the latest release of newtmgr from binary. It has been tested on Windows 10 64 bit platform.
 
 <br>
 1. Start a MinGW terminal.  
@@ -24,7 +27,7 @@ en tested on Windows 10 64 bit platform.
 
 ```no-highlight
 
-$ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newtmgr_1_1_0_windows_amd64.tar.gz
+$ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/newtmgr_1_2_0_windows_amd64.tar.gz
 
 ```
 <br>
@@ -32,11 +35,11 @@ $ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/maste
 
 * If you previously built newtmgr from the master branch, you can extract the file into your $GOPATH/bin directory. Note: This overwrites the current newtmgr.exe in the directory and assumes that you are using $GOPATH/bin for your Go applications.
 
-         tar -xzf /tmp/newtmgr_1_1_0_windows_amd64.tar.gz -C $GOPATH/bin
+         tar -xzf /tmp/newtmgr_1_2_0_windows_amd64.tar.gz -C $GOPATH/bin
 
 * If you are installing newtmgr for the first time and do not have Go setup, you can extract into /usr/bin directory:
 
-         tar -xzf /tmp/newtmgr_1_1_0_windows_amd64.tar.gz -C /usr/bin
+         tar -xzf /tmp/newtmgr_1_2_0_windows_amd64.tar.gz -C /usr/bin
 
 
 <br>
@@ -89,8 +92,8 @@ $ go get mynewt.apache.org/newtmgr/newtmgr
 ```no-highlight
 
 $ cd src/mynewt.apache.org/newtmgr
-$ git checkout mynewt_1_1_0_tag
-Note: checking out 'mynewt_1_1_0_tag'.
+$ git checkout mynewt_1_2_0_tag
+Note: checking out 'mynewt_1_2_0_tag'.
 
 ```
 
@@ -102,7 +105,7 @@ Note: checking out 'mynewt_1_1_0_tag'.
 $ cd newtmgr
 $ go install
 $ ls /tmp/go/bin/newtmgr.exe
--rwxr-xr-x 1 user None 15362048 Jul 29 16:57 /tmp/go/bin/newtmgr.exe
+-rwxr-xr-x 1 user None 15457280 Sep 12 00:30 /tmp/go/bin/newtmgr.exe
 
 ```
 
