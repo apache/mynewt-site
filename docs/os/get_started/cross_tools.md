@@ -82,7 +82,7 @@ $cd /
 <br>
 Step 3: Untar the tarball and install into ** /usr/local/bin**.  You will need to replace ** ~/Downloads ** with the directory that the tarball is downloaded to.  
 ```no-highlight
-sudo tar -xf ~/Downloads/openocd-bin-0.10.0-MacOS.tgz ` 
+sudo tar -xf ~/Downloads/openocd-bin-0.10.0-MacOS.tgz
 ```
 <br>
 Step 4: Check the OpenOCD version you are using.  
