@@ -8891,6 +8891,336 @@
             "title": "Example"
         }, 
         {
+            "location": "/os/modules/fcb/fcb/", 
+            "text": "Flash Circular Buffer (FCB)\n\n\nFlash circular buffer provides an abstration through which you can treat flash like a FIFO. You append entries to the end, and read data from the beginning.\n\n\nDescription\n\n\nElements in the flash contain the length of the element, the data within the element, and checksum over the element contents.\n\n\nStorage of elements in flash is done in a FIFO fashion. When user requests space for the next element, space is located at the end of the used area. When user starts reading, the first element served is the oldest element in flash.\n\n\nElements can be appended to the end of the area until storage space is exhausted. User has control over what happens next; either erase oldest block of data, thereby freeing up some space, or stop writing new data until existing data has been collected. FCB treats underlying storage as an array of flash sectors; when it erases old data, it does this a sector at a time.\n\n\nElements in the flash are checksummed. That is how FCB detects whether writing element to flash completed ok. It will skip over entries which don't have a valid checksum.\n\n\nUsage\n\n\nTo add an element to circular buffer:\n\n\n\n\nCall fcb_append() to get the location where data can be written. If this fails due to lack of space, you can call fcb_rotate() to make some. And then call fcb_append() again.\n\n\nUse flash_area_write() to write element contents.\n\n\nCall fcb_append_finish() when done. This completes the entry by calculating the checksum.\n\n\n\n\nTo read contents of the circular buffer:\n\n Call fcb_walk() with a pointer to your callback function.\n\n Within callback function copy in data from the element using flash_area_read(). You can tell when all data from within a sector has been read by monitoring returned element's area pointer. Then you can call fcb_rotate(), if you're done with that data.\n\n\nAlternatively:\n\n Call fcb_getnext() with 0 in element offset to get the pointer to oldest element.\n\n Use flash_area_read() to read element contents.\n* Call fcb_getnext() with pointer to current element to get the next one. And so on.\n\n\nData structures\n\n\nThis data structure describes the element location in the flash. You would use it figure out what parameters to pass to flash_area_read() to read element contents. Or to flash_area_write() when adding a new element.\n\n\nstruct\n \nfcb_entry\n {\n    \nstruct\n \nflash_area\n \n*fe_area\n;\n    \nuint32_t\n \nfe_elem_off\n;\n    \nuint32_t\n \nfe_data_off\n;\n    \nuint16_t\n \nfe_data_len\n;\n};\n\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfe_area\n\n\nPointer to info about the flash sector. Pass this to flash_area_xx() routines.\n\n\n\n\n\n\nfe_elem_off\n\n\nByte offset from the start of the sector to beginning of element.\n\n\n\n\n\n\nfe_data_off\n\n\nByte offset from start of the sector to beginning of element data. Pass this to to flash_area_xx() routines.\n\n\n\n\n\n\nfe_data_len\n\n\nNumber of bytes in the element.\n\n\n\n\n\n\n\n\nThe following data structure describes the FCB itself. First part should be filled in by the user before calling fcb_init(). The second part is used by FCB for its internal bookkeeping.\n\n\nstruct\n \nfcb\n {\n    \n/* Caller of fcb_init fills this in */\n\n    \nuint32_t\n \nf_magic\n;           \n/* As placed on the disk */\n\n    \nuint8_t\n \nf_version\n;          \n/* Current version number of the data */\n\n    \nuint8_t\n \nf_sector_cnt\n;       \n/* Number of elements in sector array */\n\n    \nuint8_t\n \nf_scratch_cnt\n;      \n/* How many sectors should be kept empty */\n\n    \nstruct\n \nflash_area\n \n*f_sectors\n; \n/* Array of sectors, must be contiguous */\n\n\n    \n/* Flash circular buffer internal state */\n\n    \nstruct\n \nos_mutex\n \nf_mtx\n;      \n/* Locking for accessing the FCB data */\n\n    \nstruct\n \nflash_area\n \n*f_oldest\n;\n    \nstruct\n \nfcb_entry\n \nf_active\n;\n    \nuint16_t\n \nf_active_id\n;\n    \nuint8_t\n \nf_align\n;            \n/* writes to flash have to aligned to this */\n\n};\n\n\n\n\n\n\n\n\n\n\n\nElement\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nf_magic\n\n\nMagic number in the beginning of FCB flash sector. FCB uses this when determining whether sector contains valid data or not.\n\n\n\n\n\n\nf_version\n\n\nCurrent version number of the data. Also stored in flash sector header.\n\n\n\n\n\n\nf_sector_cnt\n\n\nNumber of elements in the f_sectors array.\n\n\n\n\n\n\nf_scratch_cnt\n\n\nNumber of sectors to keep empty. This can be used if you need to have scratch space for garbage collecting when FCB fills up.\n\n\n\n\n\n\nf_sectors\n\n\nArray of entries describing flash sectors to use.\n\n\n\n\n\n\nf_mtx\n\n\nLock protecting access to FCBs internal data.\n\n\n\n\n\n\nf_oldest\n\n\nPointer to flash sector containing the oldest data. This is where data is served when read is started.\n\n\n\n\n\n\nf_active\n\n\nFlash location where the newest data is. This is used by fcb_append() to figure out where the data should go to.\n\n\n\n\n\n\nf_active_id\n\n\nFlash sectors are assigned ever-increasing serial numbers. This is how FCB figures out where oldest data is on system restart.\n\n\n\n\n\n\nf_align\n\n\nSome flashes have restrictions on alignment for writes. FCB keeps a copy of this number for the flash here.\n\n\n\n\n\n\n\n\nList of Functions\n\n\nThe functions available in this OS feature are:\n\n\n\n\n\n\n\n\nFunction\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb_init\n\n\nInitializes the FCB. After calling this, you can start reading/writing data from FCB.\n\n\n\n\n\n\nfcb_append\n\n\nStart writing a new element to flash.\n\n\n\n\n\n\nfcb_append_finish\n\n\nFinalizes the write of new element. FCB computes the checksum over the element and updates it in flash.\n\n\n\n\n\n\nfcb_walk\n\n\nWalks over all log entries in FCB.\n\n\n\n\n\n\nfcb_getnext\n\n\nFills given FCB location with information about next element.\n\n\n\n\n\n\nfcb_rotate\n\n\nErase the oldest sector in FCB.\n\n\n\n\n\n\nfcb_append_to_scratch\n\n\nIf FCB uses scratch blocks, use reserve blocks when FCB is filled.\n\n\n\n\n\n\nfcb_is_empty\n\n\nReturns 1 if there are no elements stored in FCB, otherwise returns 0.\n\n\n\n\n\n\nfcb_offset_last_n\n\n\nReturns the offset of n-th last element.\n\n\n\n\n\n\nfcb_clear\n\n\nWipes out all data in FCB.", 
+            "title": "toc"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb/#flash-circular-buffer-fcb", 
+            "text": "Flash circular buffer provides an abstration through which you can treat flash like a FIFO. You append entries to the end, and read data from the beginning.", 
+            "title": "Flash Circular Buffer (FCB)"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb/#description", 
+            "text": "Elements in the flash contain the length of the element, the data within the element, and checksum over the element contents.  Storage of elements in flash is done in a FIFO fashion. When user requests space for the next element, space is located at the end of the used area. When user starts reading, the first element served is the oldest element in flash.  Elements can be appended to the end of the area until storage space is exhausted. User has control over what happens next; either erase oldest block of data, thereby freeing up some space, or stop writing new data until existing data has been collected. FCB treats underlying storage as an array of flash sectors; when it erases old data, it does this a sector at a time.  Elements in the flash are checksummed. That is how FCB detects whether writing element to flash completed ok. It will skip over entries which don't have a valid checksum.", 
+            "title": "Description"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb/#usage", 
+            "text": "To add an element to circular buffer:   Call fcb_append() to get the location where data can be written. If this fails due to lack of space, you can call fcb_rotate() to make some. And then call fcb_append() again.  Use flash_area_write() to write element contents.  Call fcb_append_finish() when done. This completes the entry by calculating the checksum.   To read contents of the circular buffer:  Call fcb_walk() with a pointer to your callback function.  Within callback function copy in data from the element using flash_area_read(). You can tell when all data from within a sector has been read by monitoring returned element's area pointer. Then you can call fcb_rotate(), if you're done with that data.  Alternatively:  Call fcb_getnext() with 0 in element offset to get the pointer to oldest element.  Use flash_area_read() to read element contents.\n* Call fcb_getnext() with pointer to current element to get the next one. And so on.", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb/#data-structures", 
+            "text": "This data structure describes the element location in the flash. You would use it figure out what parameters to pass to flash_area_read() to read element contents. Or to flash_area_write() when adding a new element.  struct   fcb_entry  {\n     struct   flash_area   *fe_area ;\n     uint32_t   fe_elem_off ;\n     uint32_t   fe_data_off ;\n     uint16_t   fe_data_len ;\n};     Element  Description      fe_area  Pointer to info about the flash sector. Pass this to flash_area_xx() routines.    fe_elem_off  Byte offset from the start of the sector to beginning of element.    fe_data_off  Byte offset from start of the sector to beginning of element data. Pass this to to flash_area_xx() routines.    fe_data_len  Number of bytes in the element.     The following data structure describes the FCB itself. First part should be filled in by the user before calling fcb_init(). The second part is used by FCB for its internal bookkeeping.  struct   fcb  {\n     /* Caller of fcb_init fills this in */ \n     uint32_t   f_magic ;            /* As placed on the disk */ \n     uint8_t   f_version ;           /* Current version number of the data */ \n     uint8_t   f_sector_cnt ;        /* Number of elements in sector array */ \n     uint8_t   f_scratch_cnt ;       /* How many sectors should be kept empty */ \n     struct   flash_area   *f_sectors ;  /* Array of sectors, must be contiguous */ \n\n     /* Flash circular buffer internal state */ \n     struct   os_mutex   f_mtx ;       /* Locking for accessing the FCB data */ \n     struct   flash_area   *f_oldest ;\n     struct   fcb_entry   f_active ;\n     uint16_t   f_active_id ;\n     uint8_t   f_align ;             /* writes to flash have to aligned to this */ \n};     Element  Description      f_magic  Magic number in the beginning of FCB flash sector. FCB uses this when determining whether sector contains valid data or not.    f_version  Current version number of the data. Also stored in flash sector header.    f_sector_cnt  Number of elements in the f_sectors array.    f_scratch_cnt  Number of sectors to keep empty. This can be used if you need to have scratch space for garbage collecting when FCB fills up.    f_sectors  Array of entries describing flash sectors to use.    f_mtx  Lock protecting access to FCBs internal data.    f_oldest  Pointer to flash sector containing the oldest data. This is where data is served when read is started.    f_active  Flash location where the newest data is. This is used by fcb_append() to figure out where the data should go to.    f_active_id  Flash sectors are assigned ever-increasing serial numbers. This is how FCB figures out where oldest data is on system restart.    f_align  Some flashes have restrictions on alignment for writes. FCB keeps a copy of this number for the flash here.", 
+            "title": "Data structures"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb/#list-of-functions", 
+            "text": "The functions available in this OS feature are:     Function  Description      fcb_init  Initializes the FCB. After calling this, you can start reading/writing data from FCB.    fcb_append  Start writing a new element to flash.    fcb_append_finish  Finalizes the write of new element. FCB computes the checksum over the element and updates it in flash.    fcb_walk  Walks over all log entries in FCB.    fcb_getnext  Fills given FCB location with information about next element.    fcb_rotate  Erase the oldest sector in FCB.    fcb_append_to_scratch  If FCB uses scratch blocks, use reserve blocks when FCB is filled.    fcb_is_empty  Returns 1 if there are no elements stored in FCB, otherwise returns 0.    fcb_offset_last_n  Returns the offset of n-th last element.    fcb_clear  Wipes out all data in FCB.", 
+            "title": "List of Functions"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_init/", 
+            "text": "fcb_init\n\n\nint fcb_init(struct fcb *);\n\n\n\n\n\nInitializes FCB. This function walks through the given sectors, finding out how much data already exists in the flash.\nAfter calling this, you can start reading/writing data from FCB.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nStructure describing the FCB.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nNotes\n\n\nUser should fill in their portion of fcb before calling this function.\n\n\nExample", 
+            "title": "fcb_init"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_init/#fcb_init", 
+            "text": "int fcb_init(struct fcb *);  Initializes FCB. This function walks through the given sectors, finding out how much data already exists in the flash.\nAfter calling this, you can start reading/writing data from FCB.", 
+            "title": "fcb_init"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_init/#arguments", 
+            "text": "Arguments  Description      fcb  Structure describing the FCB.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_init/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_init/#notes", 
+            "text": "User should fill in their portion of fcb before calling this function.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_init/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append/", 
+            "text": "fcb_append\n\n\nint fcb_append(struct fcb *fcb, uint16_t len, struct fcb_entry *append_loc);\n\n\n\n\n\nStart writing a new element to flash. This routine reserves the space in the flash by writing out the element header.\n\n\nWhen writing the contents for the entry, use append_loc-\nfl_area and append_loc-\nfl_data_off as arguments to flash_area_write(). When finished, call fcb_append_finish() with append_loc as argument.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB where data is written to.\n\n\n\n\n\n\nlen\n\n\nNumber of bytes to reserve for the element.\n\n\n\n\n\n\nloc\n\n\nPointer to fcb_entry. fcb_append() will fill this with info about where the element can be written to.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\nFCB_ERR_NOSPACE is returned if FCB is full.\n\n\nNotes\n\n\nIf FCB is full, you need to make more space. This can be done by calling fcb_rotate(). Or if you've reserved scratch sectors, you can take those into use by calling fcb_append_to_scratch().\n\n\nExample", 
+            "title": "fcb_append"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append/#fcb_append", 
+            "text": "int fcb_append(struct fcb *fcb, uint16_t len, struct fcb_entry *append_loc);  Start writing a new element to flash. This routine reserves the space in the flash by writing out the element header.  When writing the contents for the entry, use append_loc- fl_area and append_loc- fl_data_off as arguments to flash_area_write(). When finished, call fcb_append_finish() with append_loc as argument.", 
+            "title": "fcb_append"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB where data is written to.    len  Number of bytes to reserve for the element.    loc  Pointer to fcb_entry. fcb_append() will fill this with info about where the element can be written to.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.\nFCB_ERR_NOSPACE is returned if FCB is full.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append/#notes", 
+            "text": "If FCB is full, you need to make more space. This can be done by calling fcb_rotate(). Or if you've reserved scratch sectors, you can take those into use by calling fcb_append_to_scratch().", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_finish/", 
+            "text": "fcb_append_finish\n\n\nint fcb_append_finish(struct fcb *fcb, struct fcb_entry *append_loc);\n\n\n\n\n\nFinalizes the write of new element. FCB computes the checksum over the element and updates it in flash.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB where data is written to.\n\n\n\n\n\n\nappend_loc\n\n\nPointer to fcb_entry. Use the fcb_entry returned by fcb_append().\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nNotes\n\n\nYou need to call fcb_append_finish() after writing the element contents. Otherwise FCB will consider this entry to be invalid, and skips over it when reading.\n\n\nExample", 
+            "title": "fcb_append_finish"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_finish/#fcb_append_finish", 
+            "text": "int fcb_append_finish(struct fcb *fcb, struct fcb_entry *append_loc);  Finalizes the write of new element. FCB computes the checksum over the element and updates it in flash.", 
+            "title": "fcb_append_finish"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_finish/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB where data is written to.    append_loc  Pointer to fcb_entry. Use the fcb_entry returned by fcb_append().", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_finish/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_finish/#notes", 
+            "text": "You need to call fcb_append_finish() after writing the element contents. Otherwise FCB will consider this entry to be invalid, and skips over it when reading.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_finish/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_walk/", 
+            "text": "fcb_walk\n\n\ntypedef int (*fcb_walk_cb)(struct fcb_entry *loc, void *arg);\n\nint fcb_walk(struct fcb *fcb, struct flash_area *area, fcb_walk_cb cb,\n    void *cb_arg);\n\n\n\n\n\nWalks over all log entries in FCB. Callback function cb gets called for every entry. If cb wants to stop the walk, it should return a non-zero value.\n\n\nIf specific flash_area is specified, only entries within that sector are walked over.\n\n\nEntry data can be read within the callback using flash_area_read(), using loc-\nfe_area, loc-\nfe_data_off, and loc-\nfe_data_len as arguments.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB where data is written to.\n\n\n\n\n\n\narea\n\n\nOptional. Pointer to specific entry in fcb's array of sectors.\n\n\n\n\n\n\ncb\n\n\nCallback function which gets called for every valid entry fcb_walk encounters.\n\n\n\n\n\n\ncb_arg\n\n\nOptional. Parameter which gets passed to callback function.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nNotes\n\n\nExample", 
+            "title": "fcb_walk"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_walk/#fcb_walk", 
+            "text": "typedef int (*fcb_walk_cb)(struct fcb_entry *loc, void *arg);\n\nint fcb_walk(struct fcb *fcb, struct flash_area *area, fcb_walk_cb cb,\n    void *cb_arg);  Walks over all log entries in FCB. Callback function cb gets called for every entry. If cb wants to stop the walk, it should return a non-zero value.  If specific flash_area is specified, only entries within that sector are walked over.  Entry data can be read within the callback using flash_area_read(), using loc- fe_area, loc- fe_data_off, and loc- fe_data_len as arguments.", 
+            "title": "fcb_walk"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_walk/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB where data is written to.    area  Optional. Pointer to specific entry in fcb's array of sectors.    cb  Callback function which gets called for every valid entry fcb_walk encounters.    cb_arg  Optional. Parameter which gets passed to callback function.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_walk/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_walk/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_walk/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_getnext/", 
+            "text": "fcb_getnext\n\n\nint fcb_getnext(struct fcb *, struct fcb_entry *loc);\n\n\n\n\n\nGiven element in location in loc, return with loc filled in with information about next element.\n\n\nIf loc-\nle_elem_off is set to 0, fcb_getnext() will return info about the oldest element in FCB.\n\n\nEntry data can be read within the callback using flash_area_read(), using loc-\nfe_area, loc-\nfe_data_off, and loc-\nfe_data_len as arguments.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB where data is written to.\n\n\n\n\n\n\nloc\n\n\nInfo about element. On successful call\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\nReturns FCB_ERR_NOVAR when there are no more elements left.\n\n\nNotes\n\n\nExample", 
+            "title": "fcb_getnext"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_getnext/#fcb_getnext", 
+            "text": "int fcb_getnext(struct fcb *, struct fcb_entry *loc);  Given element in location in loc, return with loc filled in with information about next element.  If loc- le_elem_off is set to 0, fcb_getnext() will return info about the oldest element in FCB.  Entry data can be read within the callback using flash_area_read(), using loc- fe_area, loc- fe_data_off, and loc- fe_data_len as arguments.", 
+            "title": "fcb_getnext"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_getnext/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB where data is written to.    loc  Info about element. On successful call", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_getnext/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.\nReturns FCB_ERR_NOVAR when there are no more elements left.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_getnext/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_getnext/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_rotate/", 
+            "text": "fcb_rotate\n\n\nint fcb_rotate(struct fcb *fcb);\n\n\n\n\n\nErase the oldest sector in FCB.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nNotes\n\n\nExample", 
+            "title": "fcb_rotate"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_rotate/#fcb_rotate", 
+            "text": "int fcb_rotate(struct fcb *fcb);  Erase the oldest sector in FCB.", 
+            "title": "fcb_rotate"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_rotate/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_rotate/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_rotate/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_rotate/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_to_scratch/", 
+            "text": "fcb_append_to_scratch\n\n\nint fcb_append_to_scratch(struct fcb *fcb);\n\n\n\n\n\nThis can be used if FCB created to have scratch block(s). Once FCB fills up with data, fcb_append() will fail. This routine can be called to start using the reserve block.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; nonzero on failure.\n\n\nNotes\n\n\nExample", 
+            "title": "fcb_append_to_scratch"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_to_scratch/#fcb_append_to_scratch", 
+            "text": "int fcb_append_to_scratch(struct fcb *fcb);  This can be used if FCB created to have scratch block(s). Once FCB fills up with data, fcb_append() will fail. This routine can be called to start using the reserve block.", 
+            "title": "fcb_append_to_scratch"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_to_scratch/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_to_scratch/#returned-values", 
+            "text": "Returns 0 on success; nonzero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_to_scratch/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_append_to_scratch/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_is_empty/", 
+            "text": "fcb_is_empty\n\n\nint fcb_is_empty(struct fcb *fcb);\n\n\n\n\n\nReturns 1 if there are no elements stored in FCB, otherwise returns 0.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB.\n\n\n\n\n\n\n\n\nReturned values\n\n\nSee description.\n\n\nNotes\n\n\nExample", 
+            "title": "fcb_is_empty"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_is_empty/#fcb_is_empty", 
+            "text": "int fcb_is_empty(struct fcb *fcb);  Returns 1 if there are no elements stored in FCB, otherwise returns 0.", 
+            "title": "fcb_is_empty"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_is_empty/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_is_empty/#returned-values", 
+            "text": "See description.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_is_empty/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_is_empty/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_offset_last_n/", 
+            "text": "fcb_offset_last_n\n\n\nint fcb_offset_last_n(struct fcb *fcb, uint8_t entries, uint32_t *last_n_off);\n\n\n\n\n\nReturns the offset of n-th last element.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB.\n\n\n\n\n\n\nentries\n\n\nHow many entries to leave.\n\n\n\n\n\n\nlast_n_off\n\n\nReturned offset.\n\n\n\n\n\n\n\n\nReturned values\n\n\n0 on success; non-zero on failure.\n\n\nNotes\n\n\nReturned offset is relative to beginning of the sector where the element is.\nTherefore, n-th last element must be found within the last sector of FCB.\n\n\nExample", 
+            "title": "fcb_offset_last_n"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_offset_last_n/#fcb_offset_last_n", 
+            "text": "int fcb_offset_last_n(struct fcb *fcb, uint8_t entries, uint32_t *last_n_off);  Returns the offset of n-th last element.", 
+            "title": "fcb_offset_last_n"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_offset_last_n/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB.    entries  How many entries to leave.    last_n_off  Returned offset.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_offset_last_n/#returned-values", 
+            "text": "0 on success; non-zero on failure.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_offset_last_n/#notes", 
+            "text": "Returned offset is relative to beginning of the sector where the element is.\nTherefore, n-th last element must be found within the last sector of FCB.", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_offset_last_n/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_clear/", 
+            "text": "fcb_clear\n\n\nint fcb_clear(struct fcb *fcb);\n\n\n\n\n\nWipes out all data in FCB.\n\n\nArguments\n\n\n\n\n\n\n\n\nArguments\n\n\nDescription\n\n\n\n\n\n\n\n\n\n\nfcb\n\n\nPoints to FCB.\n\n\n\n\n\n\n\n\nReturned values\n\n\nReturns 0 on success; non-zero otherwise.\n\n\nNotes\n\n\nExample", 
+            "title": "fcb_clear"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_clear/#fcb_clear", 
+            "text": "int fcb_clear(struct fcb *fcb);  Wipes out all data in FCB.", 
+            "title": "fcb_clear"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_clear/#arguments", 
+            "text": "Arguments  Description      fcb  Points to FCB.", 
+            "title": "Arguments"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_clear/#returned-values", 
+            "text": "Returns 0 on success; non-zero otherwise.", 
+            "title": "Returned values"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_clear/#notes", 
+            "text": "", 
+            "title": "Notes"
+        }, 
+        {
+            "location": "/os/modules/fcb/fcb_clear/#example", 
+            "text": "", 
+            "title": "Example"
+        }, 
+        {
             "location": "/os/modules/stats/stats/", 
             "text": "Statistics Module\n\n\nThe statistics module allows application, libraries, or drivers to\nrecord statistics that can be shown via the Newtmgr tool and console.\n\n\nThis allows easy integration of statistics for troubleshooting,\nmaintenance, and usage monitoring.\n\n\nBy creating and registering your statistics, they are automatically\nincluded in the Newtmgr shell and console APIs.\n\n\nImplementation Details\n\n\nA statistic is an unsigned integer that can be set by the \ncode. When building stats, the implementer chooses the size of the \nstatistic depending on the frequency of the statistic and the \nresolution required before the counter wraps.    \n\n\nTypically the stats are incremented upon code events; however, they are \nnot limted to that purpose.  \n\n\nStats are organized into sections. Each section of stats has its own\nname and can be queried separately through the API.  Each section of stats\nalso has its own statistic size, allowing the user to separate large (64-bit)\nstatistics from small (16 bit statistics).  NOTE:  It is not currently possible\nto group different size stats into the same section.  Please ensure all stats\nin a section have the same size.\n\n\nStats sections are currently stored in a single global stats group.  \n\n\nStatistics are stored in a simple structure which contains a small\nstats header followed by a list of stats.  The stats header contains:\n\n\nstruct stats_hdr {\n     char *s_name;\n     uint8_t s_size;\n     uint8_t s_cnt;\n     uint16_t s_pad1;\n#if MYNEWT_VAL(STATS_NAMES)\n     const struct stats_name_map *s_map;\n     int s_map_cnt;\n#endif\n     STAILQ_ENTRY(stats_hdr) s_next;\n };\n\n\n\n\n\nThe fields define with in the \n#if MYNEWT_VAL(STATS_NAME)\n directive are only inincluded when the \nSTATS_NAMES\n syscfg setting is set to 1 and enables use statistic names.\n\n\n\nEnabling Statistic Names\n\n\nBy default, statistics are queried by number. You can use the \nSTATS_NAMES\n syscfg setting to enable statistic names and view the results by name.  Enabling statistic names provides better descriptions in the reported statistics, but takes code space to store the strings within the image.\n\n\nTo enable statistic names, set the \nSTATS_NAMES\n value to 1 in the application \nsyscfg.yml\n file or use the \nnewt target set\n command to set the syscfg setting value.  Here are examples for each method:\n\n\nMethod 1  - Set the value in the application \nsyscfg.yml\n files:\n\n\n\n# Package: apps/myapp\n\nsyscfg.vals:\n    STATS_NAMES: 1\n\n\n\n\n\n\n\nMethod 2 - Set the target \nsyscfg\n variable: \n\n\nnewt target set myapp syscfg=STATS_NAMES=1\n\n\n\n\n\nNote:\n  This \nnewt target set\n command only sets the syscfg variable for the \nSTATS_NAMES\n setting as an example. For your target, you should set the syscfg variable with the other settings that you want to override. \n\n\n\n\nAdding Stats to your code.\n\n\nCreating new stats table requires the following steps.\n\n\n\n\nInclude the stats header file \n\n\nDefine a stats section\n\n\nDeclare an instance of the section \n\n\nDefine the stat sections names table\n\n\nImplement stat in your code\n\n\nInitialize the stats\n\n\nRegister the stats\n\n\n\n\n\n\nInclude the stats header file\n\n\nAdd the stats library to your pkg.yml file for your package or app by adding\nthis line to your package dependencies.\n\n\npkg.deps:\n    - \n@apache-mynewt-core/sys/stats\n\n\n\n\n\n\n\n\nAdd this include directive to code files using the stats library.\n\n\n#include \nstats/stats.h\n\n\n\n\n\n\n\n\nDefine a stats section\n\n\nYou must use the \nstats.h\n macros to define your stats table.  A \nstats section definition looks like this.  \n\n\nSTATS_SECT_START(my_stat_section)\n    STATS_SECT_ENTRY(attempt_stat)\n    STATS_SECT_ENTRY(error_stat)\nSTATS_SECT_END\n\n\n\n\n\n\n\nIn this case we chose to make the stats 32-bits each.  \nstats.h\n supports three\ndifferent stats sizes through the following macros:\n\n\n\n\nSTATS_SIZE_16\n -- stats are 16 bits (wraps at 65536)\n\n\nSTATS_SIZE_32\n -- stats are 32 bits (wraps at 4294967296)\n\n\nSTATS_SIZE_64\n -- stats are 64-bits\n\n\n\n\nWhen this compiles/pre-processes, it produces a structure definition like this\n\n\nstruct stats_my_stat_section { \n    struct stats_hdr s_hdr;\n    uint32_t sattempt_stat;\n    uint32_t serror_stat;\n};\n\n\n\n\n\n\n\nYou can see that the defined structure has a small stats structure\nheader and the two stats we have defined.\n\n\nDepending on whether these stats are used in multiple modules, you may need\nto include this definition in a header file.\n\n\n\n\nDeclaring a variable to hold the stats\n\n\nDeclare the global variable to hold your statistics. Since it is possible to\nhave multiple copies of the same section (for example a stat section for\neach of 5 identical peripherals), the variable name of the stats section \nmust be unique.\n\n\nSTATS_SECT_DECL(my_stat_section) g_mystat;\n\n\n\n\n\n\n\nAgain, if your stats section is used in multiple C files you will need to \ninclude the above definition in one of the C files and 'extern' this declaration \nin your header file.\n\n\nextern STATS_SECT_DECL(my_stat_section) g_mystat;\n\n\n\n\n\n\n\nDefine the stats section name table\n\n\nWhether or not you have \nSTATS_NAMES\n enabled, you must define \na stats name table.  If \nSTATS_NAMES\n is not enabled, this will \nnot take any code space or image size.  \n\n\n/* define a few stats for querying */\nSTATS_NAME_START(my_stat_section)\n    STATS_NAME(my_stat_section, attempt_stat)\n    STATS_NAME(my_stat_section, error_stat)\nSTATS_NAME_END(my_stat_section)\n\n\n\n\n\n\n\nWhen compiled by the preprocessor, it creates a structure that looks like this.\n\n\nstruct stats_name_map g_stats_map_my_stat_section[] = {\n    { __builtin_offsetof (struct stats_my_stat_section, sattempt_stat), \nattempt_stat\n },\n    { __builtin_offsetof (struct stats_my_stat_section, serror_stat), \nerror_stat\n },\n};\n\n\n\n\n\n\n\nThis table will allow the UI components to find a nice string name for the \nstat.\n\n\n\n\nImplement stats in your code.\n\n\nYou can use the \nSTATS_INC\n or \nSTATS_INCN\n macros to increment your statistics\nwithin your C-code.  For example, your code may do this:\n\n\n    STATS_INC(g_mystat, attempt_stat);\n    rc = do_task();\n    if(rc == ERR) { \n        STATS_INC(g_mystat, error_stat);        \n    }\n\n\n\n\n\n\n\nInitialize the statistics\n\n\nYou must initialize the stats so they can be operated on by the stats\nlibrary.  As per our example above, it would look like the following.\n\n\nThis tells the system how large each statistic is and the number of \nstatistics in the section.  It also initialize the name information for\nthe statistics if enabled as shown above.\n\n\n    rc = stats_init(\n        STATS_HDR(g_mystat), \n        STATS_SIZE_INIT_PARMS(g_mystat, STATS_SIZE_32), \n        STATS_NAME_INIT_PARMS(my_stat_section));\n    assert(rc == 0);\n\n\n\n\n\n\n\nRegister the statistic section\n\n\nIf you want the system to know about your stats,  you must register them.\n\n\n    rc = stats_register(\nmy_stats\n, STATS_HDR(g_mystat));\n    assert(rc == 0);\n\n\n\n\n\n\n\nThere is also a method that does initialization and registration at the \nsame time,  called \nstats_init_and_reg\n.\n\n\n\n\nRetrieving stats through console or Newtmgr\n\n\nIf you enable console in your project you can see stats through the \nserial port defined.\n\n\nThis is the stats as shown from the example above with names enabled.\n\n\nstat my_stats\n12274:attempt_stat: 3\n12275:error_stat: 0\n\n\n\n\n\n\n\nThis is the stats as shown from the example without names enabled.\n\n\nstat my_stats\n29149:s0: 3\n29150:s1: 0\n\n\n\n\n\n\n\nA note on multiple stats sections\n\n\nIf you are implementing a device with multiple instances, you may\nwant multiple stats sections with the exact same format.\n\n\nFor example, suppose I write a driver for an external distance sensor.  My\ndriver supports up to 5 sensors and I want to record the stats of \neach device separately.\n\n\nThis works identically to the example above, except you would need to \nregister each one separately with a unique name.  The stats system will\nnot let two sections be entered with the same name.", 
             "title": "toc"
