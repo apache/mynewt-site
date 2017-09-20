@@ -4,18 +4,22 @@
 
 ### Objective
 
-The purpose of this tutorial is to demonstrate how to build the lora app shell application for either a class A or class C lora device.
+The purpose of this tutorial is to demonstrate how to build the lora app shell application for either a class A or class C lora device and to perform basic functions such as joining and sending data packets to a lora gateway/server.
+
+NOTE: This tutorial presumes that you have a running lora gateway and lora network server. No description of the gateway/server is provided. It is expected that the user understands how to configure and operate the gateway/server so that it can communicate with a class A or class C device.
 
 <br>
 
 ### Hardware needed
 
-* Telennor EE02 module
+* Telenor EE02 module
 * Segger J-Link or similar debugger
 * LORA gateway
 * Laptop running Mac OS
 * It is assumed you have already installed newt tool. 
 * It is assumed you understand the basics of the mynewt OS
+* 3-wire serial cable to connect telenor module to your laptop
+* Some form of terminal emulation application running on your laptop.
 
 <br>
 
@@ -56,83 +60,52 @@ that you can get started.
 
 ### Create the targets
 
-Create two targets - one for the bootloader and one for the ee02 module.  
-
-<font color="#F2853F">
-Note: The correct bsp must be chosen for the board you are using. </font>
-
-* For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)
-* For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)
-
-For the app itself we're going to extend the [bleprph](belpprph/bleprph-app.md) app so that we
-get the Bluetooth communications built in, so the first thing we'll need to do is copy that app
-into our own app directory:
+Create two targets - one for the bootloader and one for the lora app shell application.  
 
 ```no-highlight
-$ mkdir -p apps/nrf52_adc
-$ cp -Rp repos/apache-mynewt-core/apps/bleprph/* apps/nrf52_adc
+$ newt target create telee02_boot
+$ newt target set telee02_boot bsp=@apache-mynewt-core/hw/bsp/telee02
+$ newt target set telee02_boot app=@apache-mynewt-core/apps/boot
+$ newt target set telee02_boot build_profile=optimized
+
+$ newt target create lora_app_shell_telee02
+$ newt target set lora_app_shell_telee02 bsp=@apache-mynewt-core/hw/bsp/telee02
+$ newt target set lora_app_shell_telee02 app=@apache-mynewt-core/apps/lora_app_shell
+$ newt target set lora_app_shell_telee02 build_profile=optimized
+```
+The lora app shell application requires a few additional system configuration variables. 
+Create and edit a file called syscfg.yml in dev/mylora/targets/lora_app_shell. The file
+contents should be the following:
+
+```
+### Package: targets/lora_app_shell_telee02
+
+syscfg.vals:
+    SHELL_CMD_ARGC_MAX: "20"
+    LORA_MAC_TIMER_NUM: "4"
+    TIMER_4: "1"
 ```
 
-Next, you'll modify the `pkg.yml` file for your app. Note the change in `pkg.name` and `pkg.description`. Also make sure that you specify the full path of all the packages with the prefix `@apache-mynewt-core/` as shown in the third highlighted line.
+You can now "display" the targets you created to make sure they are correct:
 
-```hl_lines="3 5 11"
-$ cat apps/nrf52_adc/pkg.yml
-...
-pkg.name: apps/nrf52_adc
-pkg.type: app
-pkg.description: Simple BLE peripheral application for ADC Sensors.
-pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
-pkg.homepage: "http://mynewt.apache.org/"
-pkg.keywords:
-
-pkg.deps: 
-    - "@apache-mynewt-core/boot/split"
-    - "@apache-mynewt-core/kernel/os"
-    - "@apache-mynewt-core/mgmt/imgmgr"
-    - "@apache-mynewt-core/mgmt/newtmgr"
-    - "@apache-mynewt-core/mgmt/newtmgr/transport/ble"
-    - "@apache-mynewt-core/net/nimble/controller"
-    - "@apache-mynewt-core/net/nimble/host"
-    - "@apache-mynewt-core/net/nimble/host/services/ans"
-    - "@apache-mynewt-core/net/nimble/host/services/gap"
-    - "@apache-mynewt-core/net/nimble/host/services/gatt"
-    - "@apache-mynewt-core/net/nimble/host/store/ram"
-    - "@apache-mynewt-core/net/nimble/transport/ram"
-    - "@apache-mynewt-core/sys/console/full"
-    - "@apache-mynewt-core/sys/log/full"
-    - "@apache-mynewt-core/sys/stats/full"
-    - "@apache-mynewt-core/sys/sysinit"
-    - "@apache-mynewt-core/sys/id"
 ```
-
-Great! We have our very own app so let's make sure we have all of our targets set
-correctly:
-
-```hl_lines="3 8"
-$ newt target create nrf52_adc
-$ newt target set nrf52_adc app=apps/nrf52_adc
-Target targets/nrf52_adc successfully set target.app to apps/nrf52_adc
-$ newt target set nrf52_adc bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-$ newt target set nrf52_adc build_profile=debug
-
-$ newt target create nrf52_boot
-$ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-$ newt target set nrf52_boot build_profile=optimized
-
-$ newt target show 
-targets/nrf52_adc
-    app=apps/nrf52_adc
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    build_profile=debug
-targets/nrf52_boot
+$ newt target show telee02_boot
+targets/telee02_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/telee02
     build_profile=optimized
+    
+$ newt target show lora_app_shell_telee02
+targets/lora_app_shell_telee02
+    app=@apache-mynewt-core/apps/lora_app_shell
+    bsp=@apache-mynewt-core/hw/bsp/telee02
+    build_profile=optimized
+    syscfg=LORA_MAC_TIMER_NUM=4:SHELL_CMD_ARGC_MAX=20:TIMER_4=1
+
 ```
 
 <font color="#F2853F">
-Note: If you've already built and installed a bootloader for your NRF52dk then you do
+Note: If you've already built and installed a bootloader for your ee02 module then you do
 not need to create a target for it here, or build and load it as below. </font>
 <br>
 
