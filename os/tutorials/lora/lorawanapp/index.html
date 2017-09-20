@@ -488,22 +488,19 @@
                             <h2 id="lorawan-app">LoRaWAN App</h2>
 <p><br></p>
 <h3 id="objective">Objective</h3>
-<p>We will be adding an analog sensor to the NRF52DK development board and using the Analog to Digital Converter
-(ADC) to read the values from the sensor. It's also using Bluetooth to allow you to connect to the app and
-read the value of the sensor. Please see the following section for the required hardware
-in order to complete this tutorial.</p>
+<p>The purpose of this tutorial is to demonstrate how to build the lora app shell application for either a class A or class C lora device and to perform basic functions such as joining and sending data packets to a lora gateway/server.</p>
+<p>NOTE: This tutorial presumes that you have a running lora gateway and lora network server. No description of the gateway/server is provided. It is expected that the user understands how to configure and operate the gateway/server so that it can communicate with a class A or class C device.</p>
 <p><br></p>
 <h3 id="hardware-needed">Hardware needed</h3>
 <ul>
-<li>nRF52 Development Kit (one of the following)<ul>
-<li>Dev Kit from Nordic - PCA 10040</li>
-<li>Eval Kit from Rigado - BMD-300-EVAL-ES</li>
-</ul>
-</li>
-<li>eTape Liquid Sensor -- buy from <a href="https://www.adafruit.com/products/1786">Adafruit</a></li>
+<li>Telenor EE02 module</li>
+<li>Segger J-Link or similar debugger</li>
+<li>LORA gateway</li>
 <li>Laptop running Mac OS</li>
 <li>It is assumed you have already installed newt tool. </li>
-<li>It is assumed you already installed native tools as described <a href="../get_started/native_tools.md">here</a></li>
+<li>It is assumed you understand the basics of the mynewt OS</li>
+<li>3-wire serial cable to connect telenor module to your laptop</li>
+<li>Some form of terminal emulation application running on your laptop.</li>
 </ul>
 <p><br></p>
 <h3 id="create-a-project">Create a project.</h3>
@@ -512,43 +509,12 @@ in order to complete this tutorial.</p>
 or just follow the commands below.</p>
 <div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    $ mkdir ~/dev
     $ cd ~/dev
-    $ newt new myadc
+    $ newt new mylora
     Downloading project skeleton from apache/mynewt-blinky...
-    Installing skeleton in myadc...
-    Project myadc successfully created.
-    $ cd myadc
+    Installing skeleton in mylora...
+    Project mylora successfully created.
+    $ cd mylora
 </pre></div>
-
-
-<p><br></p>
-<h3 id="add-additional-repositories">Add Additional Repositories</h3>
-<p>The board-specific libraries for the NRF52dk board are in an external repository at present, so
-you'll need to include that remote repository and install it as well. If you're not familiar
-with using repositories, see the section on <a href="repo/add_repos.md">repositories</a> before
-continuing. Or just copy and paste the following.</p>
-<p>In your <code>project.yml</code> file, add <code>mynewt_nordic</code> to the <code>project.repositories</code> section, and 
-then add the proper repository definition. When you're done, your <code>project.yml</code> file
-should look like this:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>project.name: &quot;my_project&quot;
-
-project.repositories:
-    - apache-mynewt-core
-<span style="background-color: #ffffcc">    - mynewt_nordic
-</span>
-# Use github&#39;s distribution mechanism for core ASF libraries.
-# This provides mirroring automatically for us.
-#
-repository.apache-mynewt-core:
-    type: github
-    vers: 1-latest
-    user: apache
-    repo: incubator-mynewt-core
-<span style="background-color: #ffffcc">repository.mynewt_nordic:
-</span><span style="background-color: #ffffcc">    type: github
-</span><span style="background-color: #ffffcc">    vers: 1-latest
-</span><span style="background-color: #ffffcc">    user: runtimeco
-</span><span style="background-color: #ffffcc">    repo: mynewt_nordic
-</span></pre></div>
 
 
 <p><br></p>
@@ -559,90 +525,56 @@ that you can get started.</p>
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
-    apache-mynewt-core successfully installed version 0.9.0-none
+    apache-mynewt-core successfully installed version 1.2.0-none
     ...
-    mynewt_nordic
-    Downloading repository description for mynewt_nordic... success!
-    ...
-    mynewt_nordic successfully installed version 0.9.9-none
 </pre></div>
 
 
 <p><br></p>
 <h3 id="create-the-targets">Create the targets</h3>
-<p>Create two targets - one for the bootloader and one for the nrf52 board.  </p>
-<p><font color="#F2853F">
-Note: The correct bsp must be chosen for the board you are using. </font></p>
-<ul>
-<li>For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)</li>
-<li>For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)</li>
-</ul>
-<p>For the app itself we're going to extend the <a href="belpprph/bleprph-app.md">bleprph</a> app so that we
-get the Bluetooth communications built in, so the first thing we'll need to do is copy that app
-into our own app directory:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ mkdir -p apps/nrf52_adc
-$ cp -Rp repos/apache-mynewt-core/apps/bleprph/* apps/nrf52_adc
+<p>Create two targets - one for the bootloader and one for the lora app shell application.  </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create telee02_boot
+$ newt target set telee02_boot bsp=@apache-mynewt-core/hw/bsp/telee02
+$ newt target set telee02_boot app=@apache-mynewt-core/apps/boot
+$ newt target set telee02_boot build_profile=optimized
+
+$ newt target create lora_app_shell_telee02
+$ newt target set lora_app_shell_telee02 bsp=@apache-mynewt-core/hw/bsp/telee02
+$ newt target set lora_app_shell_telee02 app=@apache-mynewt-core/apps/lora_app_shell
+$ newt target set lora_app_shell_telee02 build_profile=optimized
 </pre></div>
 
 
-<p>Next, you'll modify the <code>pkg.yml</code> file for your app. Note the change in <code>pkg.name</code> and <code>pkg.description</code>. Also make sure that you specify the full path of all the packages with the prefix <code>@apache-mynewt-core/</code> as shown in the third highlighted line.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cat apps/nrf52_adc/pkg.yml
-...
-<span style="background-color: #ffffcc">pkg.name: apps/nrf52_adc
-</span>pkg.type: app
-<span style="background-color: #ffffcc">pkg.description: Simple BLE peripheral application for ADC Sensors.
-</span>pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.incubator.apache.org&gt;&quot;
-pkg.homepage: &quot;http://mynewt.apache.org/&quot;
-pkg.keywords:
+<p>The lora app shell application requires a few additional system configuration variables. 
+Create and edit a file called syscfg.yml in dev/mylora/targets/lora_app_shell. The file
+contents should be the following:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>### Package: targets/lora_app_shell_telee02
 
-pkg.deps: 
-<span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/boot/split&quot;
-</span>    - &quot;@apache-mynewt-core/kernel/os&quot;
-    - &quot;@apache-mynewt-core/mgmt/imgmgr&quot;
-    - &quot;@apache-mynewt-core/mgmt/newtmgr&quot;
-    - &quot;@apache-mynewt-core/mgmt/newtmgr/transport/ble&quot;
-    - &quot;@apache-mynewt-core/net/nimble/controller&quot;
-    - &quot;@apache-mynewt-core/net/nimble/host&quot;
-    - &quot;@apache-mynewt-core/net/nimble/host/services/ans&quot;
-    - &quot;@apache-mynewt-core/net/nimble/host/services/gap&quot;
-    - &quot;@apache-mynewt-core/net/nimble/host/services/gatt&quot;
-    - &quot;@apache-mynewt-core/net/nimble/host/store/ram&quot;
-    - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;
-    - &quot;@apache-mynewt-core/sys/console/full&quot;
-    - &quot;@apache-mynewt-core/sys/log/full&quot;
-    - &quot;@apache-mynewt-core/sys/stats/full&quot;
-    - &quot;@apache-mynewt-core/sys/sysinit&quot;
-    - &quot;@apache-mynewt-core/sys/id&quot;
+syscfg.vals:
+    SHELL_CMD_ARGC_MAX: &quot;20&quot;
+    LORA_MAC_TIMER_NUM: &quot;4&quot;
+    TIMER_4: &quot;1&quot;
 </pre></div>
 
 
-<p>Great! We have our very own app so let's make sure we have all of our targets set
-correctly:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create nrf52_adc
-$ newt target set nrf52_adc app=apps/nrf52_adc
-<span style="background-color: #ffffcc">Target targets/nrf52_adc successfully set target.app to apps/nrf52_adc
-</span>$ newt target set nrf52_adc bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-$ newt target set nrf52_adc build_profile=debug
-
-$ newt target create nrf52_boot
-<span style="background-color: #ffffcc">$ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-</span>$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-$ newt target set nrf52_boot build_profile=optimized
-
-$ newt target show 
-targets/nrf52_adc
-    app=apps/nrf52_adc
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    build_profile=debug
-targets/nrf52_boot
+<p>You can now "display" the targets you created to make sure they are correct:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target show telee02_boot
+targets/telee02_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    bsp=@apache-mynewt-core/hw/bsp/telee02
     build_profile=optimized
+
+$ newt target show lora_app_shell_telee02
+targets/lora_app_shell_telee02
+    app=@apache-mynewt-core/apps/lora_app_shell
+    bsp=@apache-mynewt-core/hw/bsp/telee02
+    build_profile=optimized
+    syscfg=LORA_MAC_TIMER_NUM=4:SHELL_CMD_ARGC_MAX=20:TIMER_4=1
 </pre></div>
 
 
 <p><font color="#F2853F">
-Note: If you've already built and installed a bootloader for your NRF52dk then you do
+Note: If you've already built and installed a bootloader for your ee02 module then you do
 not need to create a target for it here, or build and load it as below. </font>
 <br></p>
 <h3 id="build-the-target-executables">Build the target executables</h3>
