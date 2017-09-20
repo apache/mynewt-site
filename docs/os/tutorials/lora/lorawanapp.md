@@ -4,22 +4,18 @@
 
 ### Objective
 
-We will be adding an analog sensor to the NRF52DK development board and using the Analog to Digital Converter
-(ADC) to read the values from the sensor. It's also using Bluetooth to allow you to connect to the app and
-read the value of the sensor. Please see the following section for the required hardware
-in order to complete this tutorial.
+The purpose of this tutorial is to demonstrate how to build the lora app shell application for either a class A or class C lora device.
 
 <br>
 
 ### Hardware needed
 
-* nRF52 Development Kit (one of the following)
-    * Dev Kit from Nordic - PCA 10040
-    * Eval Kit from Rigado - BMD-300-EVAL-ES
-* eTape Liquid Sensor -- buy from [Adafruit](https://www.adafruit.com/products/1786)
+* Telennor EE02 module
+* Segger J-Link or similar debugger
+* LORA gateway
 * Laptop running Mac OS
 * It is assumed you have already installed newt tool. 
-* It is assumed you already installed native tools as described [here](../get_started/native_tools.md)
+* It is assumed you understand the basics of the mynewt OS
 
 <br>
 
@@ -32,48 +28,13 @@ or just follow the commands below.
 ```
     $ mkdir ~/dev
     $ cd ~/dev
-    $ newt new myadc
+    $ newt new mylora
     Downloading project skeleton from apache/mynewt-blinky...
-    Installing skeleton in myadc...
-    Project myadc successfully created.
-    $ cd myadc
+    Installing skeleton in mylora...
+    Project mylora successfully created.
+    $ cd mylora
     
 ``` 
-
-<br>
-
-### Add Additional Repositories
-
-The board-specific libraries for the NRF52dk board are in an external repository at present, so
-you'll need to include that remote repository and install it as well. If you're not familiar
-with using repositories, see the section on [repositories](repo/add_repos.md) before
-continuing. Or just copy and paste the following.
-
-In your `project.yml` file, add `mynewt_nordic` to the `project.repositories` section, and 
-then add the proper repository definition. When you're done, your `project.yml` file
-should look like this:
-
-```hl_lines="5 15 16 17 18 19"
-project.name: "my_project"
-
-project.repositories:
-    - apache-mynewt-core
-    - mynewt_nordic
-
-# Use github's distribution mechanism for core ASF libraries.
-# This provides mirroring automatically for us.
-#
-repository.apache-mynewt-core:
-    type: github
-    vers: 1-latest
-    user: apache
-    repo: incubator-mynewt-core
-repository.mynewt_nordic:
-    type: github
-    vers: 1-latest
-    user: runtimeco
-    repo: mynewt_nordic
-```
 
 <br>
 
@@ -87,19 +48,15 @@ that you can get started.
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
-    apache-mynewt-core successfully installed version 0.9.0-none
+    apache-mynewt-core successfully installed version 1.2.0-none
     ...
-    mynewt_nordic
-    Downloading repository description for mynewt_nordic... success!
-    ...
-    mynewt_nordic successfully installed version 0.9.9-none
 ```
 
 <br>
 
 ### Create the targets
 
-Create two targets - one for the bootloader and one for the nrf52 board.  
+Create two targets - one for the bootloader and one for the ee02 module.  
 
 <font color="#F2853F">
 Note: The correct bsp must be chosen for the board you are using. </font>
