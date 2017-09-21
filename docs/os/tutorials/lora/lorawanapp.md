@@ -111,6 +111,38 @@ not need to create a target for it here, or build and load it as below. </font>
 
 ### Build the target executables 
 
+```
+$ newt clean telee02_boot
+$ newt clean telee02_boot
+Building target targets/telee02_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c    
+
+        . . .
+
+Archiving telee02_boot-sysinit-app.a
+Archiving util_mem.a
+Linking /Users/wes/dev/wes/bin/targets/telee02_boot/app/apps/boot/boot.elf
+Target successfully built: targets/telee02_boot
+
+$ newt clean lora_app_shell_telee02
+$ newt build lora_app_shell_telee02
+Building target targets/lora_app_shell_telee02
+Assembling repos/apache-mynewt-core/hw/bsp/telee02/src/arch/cortex_m4/gcc_startup_nrf52_split.s
+Compiling repos/apache-mynewt-core/encoding/base64/src/hex.c
+Compiling repos/apache-mynewt-core/encoding/base64/src/base64.c
+        . . .
+
+
+Archiving util_mem.a
+Archiving util_parse.a
+Linking /Users/wes/dev/wes/bin/targets/lora_app_shell_telee02/app/apps/lora_app_shell/lora_app_shell.elf
+Target successfully built: targets/lora_app_shell_telee0
+```
+<font color="#F2853F">
+Note: The newt clean step is not necessary but shown here for good measure. </font>
+<br>
 
 ### Sign and create the application image 
 
@@ -119,17 +151,22 @@ Use the newt create-image command to perform this action. You may assign an arbi
 version (e.g. 1.0.0) to the image.
 
 ```
+$ newt create-image lora_app_shell_telee02 0.0.0
+App image succesfully generated: /Users/wes/dev/wes/bin/targets/lora_app_shell_telee02/app/apps/lora_app_shell/lora_app_shell.img
 ```
 
+<font color="#F2853F">
+Note: Only the application image requires this step; the bootloader does not </font>
 <br>
 
 ### Connect the board
 
-Connect the evaluation board via micro-USB to your PC via USB cable.
+Connect the evaluation board via micro-USB to your PC via USB cable. Connect the Segger J-link debugger to the 9-pin
+SWD connector. Connect the UART pins (RX, TX and GND) to the board.
         
 <br>
 
-### Download to the target
+### Download bootloader and application
 
 
 <br>
