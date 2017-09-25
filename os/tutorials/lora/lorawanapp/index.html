@@ -625,7 +625,7 @@ Note: Only the application image requires this step; the bootloader does not </f
 <br></p>
 <h3 id="connect-the-board">Connect the board</h3>
 <p>Connect the evaluation board via micro-USB to your PC via USB cable. Connect the Segger J-link debugger to the 9-pin
-SWD connector. Connect the UART pins (RX, TX and GND) to the board.</p>
+SWD connector. Connect the UART pins (RX, TX and GND) to the board. Terminal settings 115200, N, 8, 1.</p>
 <p><br></p>
 <h3 id="download-bootloader-and-application">Download bootloader and application</h3>
 <p><br></p>
@@ -655,6 +655,187 @@ $
 </pre></div>
 
 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load telee02_boot
+Loading bootloader
+$ newt load lora_app_shell_telee02
+Loading app image into slot 1
+</pre></div>
+
+
+<p>Assuming you attached the serial port and have a terminal up you should set the following output on the terminal:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>000002 lora_app_shell
+</pre></div>
+
+
+<p><br></p>
+<h3 id="shell-commands">Shell Commands</h3>
+<p>There are a number of shell commands that will allow you to join and send both unconfirmed and confirmed data. If you type 'help' in your terminal you will see the various commands displayed. Here is a screen shot of the output of help</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>000002 lora_app_shell
+help
+
+032766 help
+032766 stat                          
+032767 tasks                         
+032768 mpool                         
+032769 date                          
+032770 las_wr_mib                    
+032771 las_rd_mib                    
+032772 las_rd_dev_eui                
+032773 las_wr_dev_eui                
+032774 las_rd_app_eui                
+032775 las_wr_app_eui                
+032776 las_rd_app_key                
+032777 las_wr_app_key                
+032778 las_app_port                  
+032779 las_app_tx                    
+032780 las_join                      
+032781 las_link_chk                  
+032782 compat&gt; 
+</pre></div>
+
+
+<p>The following table lists the commands and gives a brief description of the commands. The lora commands are described in more detail later in the tutorial as well as their syntax (syntax not shown in the table).</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>help</td>
+<td>Display list of available shell commands</td>
+</tr>
+<tr>
+<td>stat</td>
+<td>Display statistics. Syntax: stat \&lt;statistics group>. 'stat' with no group displays avaialable groups</td>
+</tr>
+<tr>
+<td>tasks</td>
+<td>Display OS tasks</td>
+</tr>
+<tr>
+<td>mpool</td>
+<td>Displays OS memory pools and memory pool statistics</td>
+</tr>
+<tr>
+<td>date</td>
+<td>Displays current date/time</td>
+</tr>
+<tr>
+<td>las_wr_mib</td>
+<td>Write lora MIB</td>
+</tr>
+<tr>
+<td>las_rd_mib</td>
+<td>Read lora MIB</td>
+</tr>
+<tr>
+<td>las_rd_dev_eui</td>
+<td>Read lora device EUI</td>
+</tr>
+<tr>
+<td>las_wr_dev_eui</td>
+<td>Write lora device EUI</td>
+</tr>
+<tr>
+<td>las_rd_app_eui</td>
+<td>Read lora application EUI</td>
+</tr>
+<tr>
+<td>las_wr_app_eui</td>
+<td>Write lora application EUI</td>
+</tr>
+<tr>
+<td>las_rd_app_key</td>
+<td>Read lora application key</td>
+</tr>
+<tr>
+<td>las_wr_app_key</td>
+<td>Write lora application key</td>
+</tr>
+<tr>
+<td>las_app_port</td>
+<td>Open/close lora application port</td>
+</tr>
+<tr>
+<td>las_app_tx</td>
+<td>Transmit on lora application port</td>
+</tr>
+<tr>
+<td>las_join</td>
+<td>Perform a lora OTA join</td>
+</tr>
+<tr>
+<td>las_link_chk</td>
+<td>Perform a lora link check</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ota-join">OTA Join</h3>
+<p>Before sending any application data a lora end device must be joined to its lora network. To perform a lora OTA (over-the-air) join there are some commands that must be issued prior to attempting to join. The reason for these commands is that a lora end device must be configured with a device EUI, application EUI and application key prior to performing an OTA join.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>598763 compat&gt; las_wr_app_eui 0x00:0x11:0x22:0x01:0x01:0x00:0x10:10
+
+623106 compat&gt; las_wr_app_key 03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03
+
+623758 compat&gt; las_wr_dev_eui 0x00:0x11:0x22:0x02:0x02:0x00:0x00:0x00
+
+630333 compat&gt; las_join 1
+
+630634 Attempting to join...
+019802 compat&gt; Join cb. status=0 attempts=1
+</pre></div>
+
+
+<p>If the join is successful the status returned should be 0. If it fails the status will be a non-zero lora status code (lora status error codes are described later in this tutorial).</p>
+<p>A note about "endianness" in the device EUI commands. The first three bytes of the EUI are the OUI and the last 5 bytes are unique (for that OUI). The above example assumes an OUI of 001122. This is not the same order as the address over the air as device addresses are sent "least significant byte" first (little endian). The same convention also applies to keys: they are in big-endian order in the command but sent little endian over the air.
+<br></p>
+<h3 id="openingclosing-an-application-port">Opening/closing an application port</h3>
+<p>Another step that must be performed prior to sending application data is to open an application port. All data frames containing application data are sent to a specific port. Port numbers are in the range 1 - 223 as port 0 is reserved for MLME-related activities. Ports 224-255 are reserved for future standardized application extensions.</p>
+<p>The lora app shell does not open any application ports by default.</p>
+<p>To open and/or close an application port the following commands are used. Note that the application port which you are using to send data must be open if you want to send data (or receive it).</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>115647 compat&gt; las_app_port open 1
+
+150958 Opened app port 1
+150958 compat&gt; las_app_port close 1
+
+151882 Closed app port 1
+</pre></div>
+
+
+<p><br></p>
+<h3 id="sending-data">Sending data</h3>
+<p>The lora app shell allows the user to send both unconfirmed and confirmed data. The command to send data is <em>las_app_tx \&lt;port> \&lt;len> \&lt;type></em></p>
+<p>NOTE: the current usage for this command shows an optional data rate and retries for this command. That feature has not been implemented and the command will not be accepted if they are separated.</p>
+<p>Where:
+    port = port number on which to send
+    len = size n bytes of app data
+    type = 0 for unconfirmed, 1 for confirmed</p>
+<p>To send a confirmed data transmission of size 5 bytes on port 10 the command would be: las_app_tx 10 20 1</p>
+<p>Once the end device has sent the frame requested there should be a message which contains some additional information. Here is a screen shot using the above example. Note that there will be some delay between seeing the "Packet sent on port 10" message and the additional information as the additional information is the "confirmation" that the lora stack provides and the confirmation will not be returned until the lora stack is finished transmitting the frame and has received an acknowledgement or has finished waiting for all the receive windows.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>449751 compat&gt; las_app_tx 10 5 1
+
+452144 Packet sent on port 10
+452144 compat&gt; Txd on port 10 type=conf status=0 len=5
+452325  dr:0
+452325  txpower:5
+452325  tries:1
+452326  ack_rxd:1
+452326  tx_time_on_air:330
+452327  uplink_cntr:0
+452327  uplink_freq:903500000
+</pre></div>
+
+
+<p>The information contained in the confirmation is the following:</p>
+<p>dr: The data rate on which the frame was sent.<br />
+txpower: Transmit power level of the device.<br />
+tries: # of attempts made to transmit the frame successfully.<br />
+ack_rxd: Was an acknowledgement received (0 no 1 yes).<br />
+tx_time_on_air: The on-air length of the frame (in milliseconds).<br />
+uplink_cntr: The frame uplink counter that this frame used.<br />
+uplink_freq: The frequency (logical) on which the frame was sent (in Hz).  </p>
 <p><br></p>
 <p><br></p>
                         
