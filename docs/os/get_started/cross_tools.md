@@ -46,11 +46,12 @@ $ sudo apt-get install gdb-arm-none-eabi
 ### Installing the ARM Toolchain for Windows
 Step 1: Download and run the [installer](https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q2-update/+download/gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe) to install arm-none-eabi-gcc and arm-none-eabi-gdb. Select the default destination folder: **C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q2**. 
 
-**Note:** You may select a different folder but the installation instructions use the default values.
+**Notes:** 
 
-Step 2: Add the path:** C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q2\bin** to your Windows **Path** environment variable.  Note: You must add **bin** to the path.
+* Check the `Add path to environment variable` option before you click the `Finish` button for the installation. 
+* You may select a different folder but the installation instructions use the default values.
 
-Step 3: Check that you are using the installed versions arm-none-eabi-gcc and arm-none-eabi-gdb.  Open a MinGW terminal and run the `which` commands. 
+Step 2: Check that you are using the installed versions arm-none-eabi-gcc and arm-none-eabi-gdb.  Open a MinGW terminal and run the `which` commands. 
 
 **Note:** You must start a new MinGW terminal to inherit the new **Path** values.
 
@@ -172,7 +173,8 @@ You should see version: **0.10.0**.
 ###Installing SEGGER J-Link 
 You can download and install Segger J-LINK Software and documentation pack from [SEGGER](https://www.segger.com/jlink-software.html). 
 
-**Note:** On Windows, perform the following after the installation:
+**Note:** On Windows, perform the following additonal steps:
 
+* Make note of the destination folder of your installation.
 * Add the installation destination folder path to your Windows user **Path** environment variable.  You do not need to add **bin** to the path.
 * Open a new MinGW terminal to inherit the new **Path** values.

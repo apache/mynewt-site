@@ -48,6 +48,8 @@ To install and setup MSYS2 and MinGW:
 	
 	**Note:**You can also use a Windows editor. You can access your files from the **C:\&lt;msys-install-folder&gt;\home\&lt;username&gt;** folder, where **msys-install-folder** is the folder you installed MSYS2 in. For example, if you installed MSYS2 in the **msys64** folder, your files are stored in **C:\msys64\home\&lt;username&gt;**
 
+6. Run the  `pacman -Su tar` command to install the tar tool. 
+
 You will need to start a MinGW terminal to run the commands specified in the Mynewt documentation and  tutorials.  To start a MinGW terminal, select the "MSYS2 Mingw" application from the start Menu (you can use either MinGW32 or MinGW64). 
 In Windows, we use the MinGW subsystem to build  Mynewt tools and applications.  
 

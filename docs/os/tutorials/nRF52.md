@@ -45,14 +45,13 @@ Run the following `newt target` commands, from your project directory, to create
 <font color="#F2853F">
 Note: This tutorial uses the Nordic nRF52-DK board.  You must specify the correct bsp for the board you are using. </font> 
 
-* For the Nordic Preview Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52pdk (as shown below)
 * For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk instead (in the highlighted lines)
 * For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval instead (in the highlighted lines)
 
 ```hl_lines="3"
 $ newt target create nrf52_boot
 $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+$ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
 $ newt target set nrf52_boot build_profile=optimized
 ```
 
@@ -72,11 +71,11 @@ You can run the `newt target show` command to verify the target settings:
 $ newt target show 
 targets/nrf52_blinky
     app=apps/blinky
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=debug
 targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
-    bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     build_profile=optimized
 ```
 <br>
