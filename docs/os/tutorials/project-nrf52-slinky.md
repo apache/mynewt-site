@@ -53,7 +53,7 @@ $ newt target set nrf52_slinky app=@apache-mynewt-core/apps/slinky
 Run the `newt build nrf52_boot` command to build the bootloader:
 
 ```no-highlight
-$ newt build nrf52-boot
+$ newt build nrf52_boot
 Building target targets/nrf52_boot
 Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
 Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
