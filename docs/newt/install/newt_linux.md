@@ -52,25 +52,14 @@ wget -qO - https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/myne
 ```
 <br>
 
-Add the repository for the binary and source packages to the `mynewt.list` apt source list file.
+Add the repository for the binary and source packages to the `mynewt.list` apt source list file:
 
 ```no-highlight
-$sudo -s
-[sudo] password for <user>:
-root$ cat > /etc/apt/sources.list.d/mynewt.list <<EOF
+sudo tee /etc/apt/sources.list.d/mynewt.list <<EOF
 deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 EOF
-root$exit
 ```
-**Note:** Do not forget to exit the root shell.
 
-<br>
-Verify the content of the source list file:
-
-```no-highlight
-$more /etc/apt/sources.list.d/mynewt.list
-deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
-```
 <br>
 Update the available packages: 
 ```no-highlight
