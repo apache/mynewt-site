@@ -91,6 +91,14 @@ $ sudo apt-get install newt
 
 ```
 
+**Note:** If you encounter build errors (such as missing `sys/mman.h`), please make sure you have a 32-bit glibc:
+
+```no-highlight
+
+$ sudo apt-get install gcc-multilib
+
+```
+
 <br>
 #### Method 2: Downloading and Installing the Debian Package Manually
 
