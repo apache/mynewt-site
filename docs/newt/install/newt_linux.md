@@ -39,8 +39,8 @@ The newt Debian packages are stored in a private APT repository on **https://git
 <br>
 Install the apt-transport-https package:
 ```no-highlight
-$sudo apt-get update
-$sudo apt-get install apt-transport-https
+$ sudo apt-get update
+$ sudo apt-get install apt-transport-https
 ```
 <br>
 
@@ -48,14 +48,14 @@ $sudo apt-get install apt-transport-https
 Download the public key for the runtimeco apt repo (**Note:** There is  a `-` after  `apt-key add`):
 
 ```no-highlight
-wget -qO - https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/mynewt.gpg.key | sudo apt-key add -
+$ wget -qO - https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/mynewt.gpg.key | sudo apt-key add -
 ```
 <br>
 
 Add the repository for the binary and source packages to the `mynewt.list` apt source list file:
 
 ```no-highlight
-sudo tee /etc/apt/sources.list.d/mynewt.list <<EOF
+$ sudo tee /etc/apt/sources.list.d/mynewt.list <<EOF
 deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 EOF
 ```
@@ -63,7 +63,7 @@ EOF
 <br>
 Update the available packages: 
 ```no-highlight
-$sudo apt-get update
+$ sudo apt-get update
 ```
 <br>
 **Note:** If you are not using Ubuntu version 16, you may see the following errors.  We have provided instructions on how to manually download and install the binary package.
@@ -85,18 +85,14 @@ You can use either apt-get to install the package, or manually download and inst
 Run the following commands to upgrade or install the latest version of newt:
 
 ```no-highlight
-
 $ sudo apt-get update 
 $ sudo apt-get install newt
-
 ```
 
 **Note:** If you encounter build errors (such as missing `sys/mman.h`), please make sure you have a 32-bit glibc:
 
 ```no-highlight
-
 $ sudo apt-get install gcc-multilib
-
 ```
 
 <br>
@@ -105,8 +101,8 @@ $ sudo apt-get install gcc-multilib
 Download and install the package manually.
 
 ```no-highlight
-$wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newt/newt_1.2.0-1_amd64.deb
-$sudo dpkg -i newt_1.2.0-1_amd64.deb
+$ wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newt/newt_1.2.0-1_amd64.deb
+$ sudo dpkg -i newt_1.2.0-1_amd64.deb
 ```
 <br>
 See [Checking the Installed Version of Newt](#check) to verify that you are using the installed version of newt.
@@ -123,7 +119,6 @@ If you are running Linux on a different architecture, you can build and install 
 2. Download and unpack the newt source:
 
 ```no-highlight
-
 $ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_2_0_tag.tar.gz
 $ tar -xzf /tmp/mynewt_1_2_0_tag.tar.gz
 ```
@@ -157,16 +152,16 @@ $ rm /tmp/mynewt_1_2_0_tag.tar.gz
 1. Check which newt you are using and that the version is the latest release version.
 
 ```no-highlight
-$which newt
+$ which newt
 /usr/bin/newt
-$newt version
+$ newt version
 Apache Newt version: 1.2.0
 ```
 
 <br>
 2. Get information about newt:
 ```no-highlight
-$newt
+$ newt
 Newt allows you to create your own embedded application based on the Mynewt 
 operating system. Newt provides both build and package management in a single 
 tool, which allows you to compose an embedded application, and set of 
