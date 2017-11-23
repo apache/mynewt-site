@@ -1,6 +1,6 @@
 ## Installing Newt on Mac OS
 
-Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.11 and higher.
+Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS Sierra.
 
 This page shows you how to install the following versions of newt:
 
@@ -55,16 +55,9 @@ Run the following command to install the latest release version of newt:
 
 $ brew update
 $ brew install mynewt-newt
-==> Installing mynewt-newt from runtimeco/mynewt
-==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.2.0/mynewt-newt-1.2.0.sierra.bottle.tar.gz
-==> Downloading from https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/mynewt-newt-1.2.0.sierra.bottle.tar.gz
-######################################################################## 100.0%
-==> Pouring mynewt-newt-1.2.0.sierra.bottle.tar.gz
-🍺  /usr/local/Cellar/mynewt-newt/1.2.0: 3 files, 10.7MB
-
 ```
 <br>
-**Notes:** Homebrew bottles for newt are available for Mac OS Sierra, and El Captian.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newt locally.
+**Notes:** Homebrew bottles for newt are available for Mac OS Sierra.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newt locally.
 
 <br>
 ### Checking the Installed Version
@@ -75,8 +68,6 @@ Check that you are using the installed version of newt:
 
 $which newt
 /usr/local/bin/newt
-$ls -l /usr/local/bin/newt
-lrwxr-xr-x  1 user  staff  36 Sep 11 19:04 /usr/local/bin/newt -> ../Cellar/mynewt-newt/1.2.0/bin/newt
 $newt version
 Apache Newt version: 1.2.0
 
@@ -162,28 +153,10 @@ $brew unlink mynewt-newt
 Install the latest unstable version of newt from the master branch:
 ```no-highlight
 $ brew install mynewt-newt --HEAD
-==> Installing mynewt-newt from runtimeco/mynewt
-==> Cloning https://github.com/apache/mynewt-newt.git
-Cloning into '/Users/wanda/Library/Caches/Homebrew/mynewt-newt--git'...
-remote: Counting objects: 626, done.
-remote: Compressing objects: 100% (504/504), done.
-remote: Total 626 (delta 155), reused 323 (delta 85), pack-reused 0
-Receiving objects: 100% (626/626), 1.11 MiB | 0 bytes/s, done.
-Resolving deltas: 100% (155/155), done.
-==> Checking out branch master
-==> go install
-🍺  /usr/local/Cellar/mynewt-newt/HEAD-59b3a5d: 3 files, 10.7MB, built in 7 seconds
-$newt version
-Apache Newt version 1.1.0-dev
 ```
 <br>
 To switch back to the latest stable release version of newt, you can run:
 ```no-highlight
 $brew switch mynewt-newt 1.2.0
-Cleaning /usr/local/Cellar/mynewt-newt/1.2.0
-Cleaning /usr/local/Cellar/mynewt-newt/HEAD-59b3a5d
-1 links created for /usr/local/Cellar/mynewt-newt/1.2.0
-$newt version
-Apache Newt version: 1.2.0
 ```
 <br>

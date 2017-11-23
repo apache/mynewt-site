@@ -65,7 +65,7 @@ Version|Download
 
 Version|Download
 -------|--------
-1.1.0  |[newtmgr_1_1_0_windows_amd64.tar.gz](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newtmgr_1.1.0-1_amd64.deb)
+1.1.0  |[newtmgr_1_1_0_windows_amd64.tar.gz](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newtmgr_1_1_0_windows_amd64.tar.gz)
 
 <br>
 2. Extract the file:
