@@ -113,7 +113,7 @@ not need to create a target for it here, or build and load it as below. </font>
 
 ```
 $ newt clean telee02_boot
-$ newt clean telee02_boot
+$ newt build telee02_boot
 Building target targets/telee02_boot
 Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
 Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
