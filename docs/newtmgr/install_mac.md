@@ -1,6 +1,6 @@
 ## Installing Newtmgr on Mac OS
 
-Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 10.11 and higher.
+Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS Sierra.
 
 This page shows you how to install the following versions of newtmgr:
 
@@ -46,16 +46,9 @@ Run the following command to install the latest release version of newtmgr:
 
 $ brew update
 $ brew install mynewt-newtmgr
-==> Installing mynewt-newtmgr from runtimeco/mynewt
-==> Downloading https://github.com/runtimeco/binary-releases/raw/master/mynewt-newt-tools_1.2.0/mynewt-newtmgr-1.2.0.sierra.bottle.tar.gz
-==> Downloading from https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/mynewt-newtmgr-1.2.0.sierra.bottle.tar.gz
-######################################################################## 100.0%
-==> Pouring mynewt-newtmgr-1.2.0.sierra.bottle.tar.gz
-🍺  /usr/local/Cellar/mynewt-newtmgr/1.2.0: 3 files, 17.3MB
-
 ```
 <br>
-**Notes:** Homebrew bottles for newtmgr 1.2.0 are available for Mac OS Sierra, El Captian.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
+**Notes:** Homebrew bottles for newtmgr 1.2.0 are available for Mac OS Sierra.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
 
 <br>
 ### Checking the Installed Version
@@ -64,8 +57,6 @@ Check that you are using the installed version of newtmgr:
 ```no-highlight
 $which newtmgr
 /usr/local/bin/newtmgr
-ls -l /usr/local/bin/newtmgr
-lrwxr-xr-x  1 user  staff  42 Sep 11 21:15 /usr/local/bin/newtmgr -> ../Cellar/mynewt-newtmgr/1.2.0/bin/newtmgr
 ```
 **Note:** If you previously built newtmgr from source and the output of `which newtmgr` shows "$GOPATH/bin/newtmgr", you will need to move "$GOPATH/bin"  after "/usr/local/bin" for your PATH in  ~/.bash_profile, and source ~/.bash_profile.
 
@@ -126,27 +117,10 @@ $brew unlink mynewt-newtmgr
 Install the latest unstable version of newtmgr from the master branch:
 ```no-highlight
 $brew install mynewt-newtmgr --HEAD
-==> Installing mynewt-newtmgr from runtimeco/mynewt
-==> Cloning https://github.com/apache/mynewt-newtmgr.git
-Cloning into '/Users/wanda/Library/Caches/Homebrew/mynewt-newtmgr--git'...
-remote: Counting objects: 2169, done.
-remote: Compressing objects: 100% (1752/1752), done.
-remote: Total 2169 (delta 379), reused 2042 (delta 342), pack-reused 0
-Receiving objects: 100% (2169/2169), 8.13 MiB | 5.47 MiB/s, done.
-Resolving deltas: 100% (379/379), done.
-==> Checking out branch master
-==> go get github.com/currantlabs/ble
-==> go get github.com/raff/goble
-==> go get github.com/mgutz/logxi/v1
-==> go install
-🍺  /usr/local/Cellar/mynewt-newtmgr/HEAD-2d5217f: 3 files, 17.3MB, built in 1 minute 10 seconds
 ```
 <br>
 To switch back to the latest stable release version of newtmgr, you can run:
 ```no-highlight
 $brew switch mynewt-newtmgr 1.2.0
-Cleaning /usr/local/Cellar/mynewt-newtmgr/1.2.0
-Cleaning /usr/local/Cellar/mynewt-newtmgr/HEAD-2d5217f
-1 links created for /usr/local/Cellar/mynewt-newtmgr/1.2.0
 ```
 <br>

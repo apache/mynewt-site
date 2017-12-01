@@ -70,8 +70,7 @@ $ sudo apt-get update
 
 ```no-highlight
 
-W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/source/Sources  Ht
-tpError404
+W: Failed to fetch https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/dists/latest/main/source/Sources  HttpError404
 
 ```
 <br>
@@ -101,8 +100,8 @@ $ sudo apt-get install gcc-multilib
 Download and install the package manually.
 
 ```no-highlight
-$ wget https://raw.githubusercontent.com/runtimeco/debian-mynewt/master/pool/main/n/newt/newt_1.2.0-1_amd64.deb
-$ sudo dpkg -i newt_1.2.0-1_amd64.deb
+$wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/newt_1.2.0-1_amd64.deb
+$sudo dpkg -i newt_1.2.0-1_amd64.deb
 ```
 <br>
 See [Checking the Installed Version of Newt](#check) to verify that you are using the installed version of newt.

@@ -8,7 +8,7 @@ This guide shows you how to perform the following:
 
 1. Install MSYS2/MinGW. 
 2. Install Git.
-3. Install latest release of newt (1.2.0) from binary.
+3. Install latest release (1.2.0) of newt from binary.
 4. Install latest release of newt from source.
 
 See [Installing Previous Releases of Newt](/newt/install/prev_releases) to install an earlier version of newt. You still need to set up your MinGW development environment.
