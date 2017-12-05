@@ -129,7 +129,7 @@ The following tasks are defined in this example:
 	**Note:** This task sets the `isBuildCommand` property to `true`. This is an optional property that, when set to true,  allows you to run the **Tasks: Run Build Task**(`Ctrl-Shift-B`) command to start the task.
 
 3. **create_arduino_blinky**: Runs the `newt create-image arduino_blinky` command to create the image file.
-4. **debug_arduino_blinky**: Runs the `newt build arduino_blinky -n` command to debug the arduino_blinky target. The `-n` flag is specified to start only the GDB server and not the GDB client.  We will launch the GDB client from Visual Studio Code.
+4. **debug_arduino_blinky**: Runs the `newt debug arduino_blinky -n` command to debug the arduino_blinky target. The `-n` flag is specified to start only the GDB server and not the GDB client.  We will launch the GDB client from Visual Studio Code.
 
 For more information on tasks and all supported properties, see the [Visual Studio Code Task documentation](https://code.visualstudio.com/docs/editor/tasks).
 
