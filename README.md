@@ -38,6 +38,7 @@ When a release of MyNewt OS and its associated tools occurs, a new version direc
     * and update the `latest` flag, only one release should be marked latest.
     * **and update version to match the new directory name.**
 1. Commit this change. (SKIP THIS STEP IF NOT A NEW RELEASE)
+1. Add a new _stanza_ in "custom-theme/choose_doc_version.html" for the new version.
 1. Create a new directory in the versions directory to reflect this new version. (SKIP THIS STEP IF NOT A NEW RELEASE)
     * Copy the latest docs directory and mkdocs.yml file into the new version directory
     * Set extra.version to the new version in the copied mkdocs.yml file
