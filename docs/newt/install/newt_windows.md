@@ -70,7 +70,7 @@ You can install the latest release of newt from binary. It has been tested on Wi
 
 ```no-highlight
 
-$ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/newt_1_2_0_windows_amd64.tar.gz
+$ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.3.0/newt_1_3_0_windows_amd64.tar.gz
 
 ```
 <br>
@@ -78,11 +78,11 @@ $ wget -P /tmp https://raw.githubusercontent.com/runtimeco/binary-releases/maste
 
 * If you previously built newt from the master branch, you can extract the file into your $GOPATH/bin directory. Note: This overwrites the current newt.exe in the directory and assumes that you are using $GOPATH/bin for your Go applications.
 
-         tar -xzf /tmp/newt_1_2_0_windows_amd64.tar.gz -C $GOPATH/bin
+         tar -xzf /tmp/newt_1_3_0_windows_amd64.tar.gz -C $GOPATH/bin
 
 * If you are installing newt for the first time and do not have a Go workspace setup, you can extract into /usr/bin directory:
 
-         tar -xzf /tmp/newt_1_2_0_windows_amd64.tar.gz -C /usr/bin
+         tar -xzf /tmp/newt_1_3_0_windows_amd64.tar.gz -C /usr/bin
 
 
 <br>
@@ -104,8 +104,8 @@ If you have an older version of Windows or a 32 bit platform, you can build and 
 
 ```no-highlight
 
-$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_2_0_tag.tar.gz
-$ tar -xzf /tmp/mynewt_1_2_0_tag.tar.gz
+$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_3_0_tag.tar.gz
+$ tar -xzf /tmp/mynewt_1_3_0_tag.tar.gz
 ```
 
 <br>
@@ -113,9 +113,9 @@ $ tar -xzf /tmp/mynewt_1_2_0_tag.tar.gz
 
 ```no-highlight
 
-$ cd mynewt-newt-mynewt_1_2_0_tag	
+$ cd mynewt-newt-mynewt_1_3_0_tag	
 $ ./build.sh
-$ rm /tmp/mynewt_1_2_0_tag.tar.gz
+$ rm /tmp/mynewt_1_3_0_tag.tar.gz
 ```
 
 <br>
@@ -138,7 +138,7 @@ $ rm /tmp/mynewt_1_2_0_tag.tar.gz
 ```no-highlight 
 
 $ newt version
-Apache Newt version: 1.2.0
+Apache Newt version: 1.3.0
 
 ```
 
