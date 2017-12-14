@@ -4,7 +4,7 @@ Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS Sie
 
 This page shows you how to install the following versions of newt:
 
-* Upgrade to or install the latest release version (1.2.0).
+* Upgrade to or install the latest release version (1.3.0).
 * Install the latest from the master branch (unstable).
 
 See [Installing Previous Releases of Newt](/newt/install/prev_releases) to install an earlier version of newt.
@@ -25,10 +25,8 @@ You can also extract (or `git clone`) Homebrew and install it to /usr/local.
 If this is your first time installing newt, add the  **runtimeco/homebrew-mynewt** tap:
 
 ```no-highlight
-
 $ brew tap runtimeco/homebrew-mynewt
 $ brew update
-
 ```
 
 ### Upgrading to or Installing the Latest Release Version
@@ -40,10 +38,8 @@ Perform the following to upgrade or install the latest release version of newt.
 If you have installed an earlier version of newt using brew, run the following commands to upgrade to latest version of newt:
 
 ```no-highlight
-
 $ brew update
 $ brew upgrade mynewt-newt
-
 ```
 
 <br>
@@ -52,7 +48,6 @@ $ brew upgrade mynewt-newt
 Run the following command to install the latest release version of newt:
 
 ```no-highlight
-
 $ brew update
 $ brew install mynewt-newt
 ```
@@ -65,12 +60,10 @@ $ brew install mynewt-newt
 Check that you are using the installed version of newt:
 
 ```no-highlight
-
-$which newt
+$ which newt
 /usr/local/bin/newt
-$newt version
-Apache Newt version: 1.2.0
-
+$ newt version
+Apache Newt version: 1.3.0
 ```
 **Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin"  after "/usr/local/bin" for your PATH in  ~/.bash_profile, and source ~/.bash_profile.  
 
@@ -78,7 +71,6 @@ Apache Newt version: 1.2.0
 Get information about newt: 
 
 ```no-highlight
-
 $ newt help
 Newt allows you to create your own embedded application based on the Mynewt 
 operating system. Newt provides both build and package management in a single 
@@ -130,7 +122,6 @@ Flags:
   -v, --verbose           Enable verbose output when executing commands
 
 Use "newt [command] --help" for more information about a command.
-
 ```
 
 <br>
@@ -141,13 +132,12 @@ We recommend that you use the latest release version of newt. If you would like 
 ** Notes: **
 
 * The master branch may be unstable.
-* This installation will install the latest version of Go on your computer, if it is not installed, and compile newt locally. 
-
+* This installation will install the latest version of Go on your computer, if it is not installed, and compile newt locally.
 
 <br>
 If you previously installed newt using brew, unlink the current version:
 ```no-highlight
-$brew unlink mynewt-newt
+$ brew unlink mynewt-newt
 ```
 <br>
 Install the latest unstable version of newt from the master branch:
@@ -157,6 +147,6 @@ $ brew install mynewt-newt --HEAD
 <br>
 To switch back to the latest stable release version of newt, you can run:
 ```no-highlight
-$brew switch mynewt-newt 1.2.0
+$ brew switch mynewt-newt 1.3.0
 ```
 <br>
