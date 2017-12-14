@@ -1,6 +1,6 @@
 ## Installing Newt on Linux
 
-You can install the latest release (1.2.0) of the newt tool from a Debian binary package (amd64). You can also download and build the latest release version of newt from source.
+You can install the latest release (1.3.0) of the newt tool from a Debian binary package (amd64). You can also download and build the latest release version of newt from source.
 
 This page shows you how to:
 
@@ -16,7 +16,7 @@ If you are installing on an amd64 platform, we recommend that you install from t
 
 See [Installing Previous Releases of Newt](/newt/install/prev_releases.md) to install an earlier version of newt.
 
-**Note:**  We have tested the newt tool binary and apt-get install from the runtimeco APT repository for Ubuntu version 16.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. You can manually download and install the Debian binary package.
+**Note:**  We have tested the newt tool binary and apt-get install from the runtimeco APT repository for Ubuntu version 1704.  Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. You can manually download and install the Debian binary package.
 
 **Note:** See [Setting Up a Go Environment to Contribute to Newt and Newtmgr Tools](/faq/go_env) if you want to:
 
@@ -30,20 +30,10 @@ The newt Debian packages are stored in a private APT repository on **https://git
 
 **Note**: You only need to perform this setup once on your computer. However, if you previously downloaded and imported the public key for the runtimeco APT repository, you will need to perform step 2 again as the key has changed.
 
-
-1. Install the `apt-transport-https` package to use HTTPS to retrieve packages. 
-2. Download the public key for the runtimeco APT repository and import the key into the apt keychain.
-3. Add the repository for the binary and source packages to the apt source list.
-
+1. Download the public key for the runtimeco APT repository and import the key into the apt keychain.
+2. Add the repository for the binary and source packages to the apt source list.
 
 <br>
-Install the apt-transport-https package:
-```no-highlight
-$ sudo apt-get update
-$ sudo apt-get install apt-transport-https
-```
-<br>
-
 
 Download the public key for the runtimeco apt repo (**Note:** There is  a `-` after  `apt-key add`):
 
@@ -66,7 +56,7 @@ Update the available packages:
 $ sudo apt-get update
 ```
 <br>
-**Note:** If you are not using Ubuntu version 16, you may see the following errors.  We have provided instructions on how to manually download and install the binary package.
+**Note:** If you are not using Ubuntu version 1704, you may see the following errors.  We have provided instructions on how to manually download and install the binary package.
 
 ```no-highlight
 
@@ -84,7 +74,7 @@ You can use either apt-get to install the package, or manually download and inst
 Run the following commands to upgrade or install the latest version of newt:
 
 ```no-highlight
-$ sudo apt-get update 
+$ sudo apt-get update
 $ sudo apt-get install newt
 ```
 
@@ -100,8 +90,8 @@ $ sudo apt-get install gcc-multilib
 Download and install the package manually.
 
 ```no-highlight
-$wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/newt_1.2.0-1_amd64.deb
-$sudo dpkg -i newt_1.2.0-1_amd64.deb
+$ wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.3.0/newt_1.3.0-1_amd64.deb
+$ sudo dpkg -i newt_1.3.0-1_amd64.deb
 ```
 <br>
 See [Checking the Installed Version of Newt](#check) to verify that you are using the installed version of newt.
@@ -110,16 +100,13 @@ See [Checking the Installed Version of Newt](#check) to verify that you are usin
 ### Installing the Latest Release of Newt from a Source Package 
 
 If you are running Linux on a different architecture, you can build and install the latest release version of newt from source.
-
 <br>
-1.  You need Go version 1.7.6 or higher to build Newt.  Currently, the latest Go version that Ubuntu installs is 1.6.  Run `go version` to check if you have Go 1.7.6 installed. You can download Go from [https://golang.org/dl/](https://golang.org/dl/).
 
-<br>
 2. Download and unpack the newt source:
 
 ```no-highlight
-$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_2_0_tag.tar.gz
-$ tar -xzf /tmp/mynewt_1_2_0_tag.tar.gz
+$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_3_0_tag.tar.gz
+$ tar -xzf /tmp/mynewt_1_3_0_tag.tar.gz
 ```
 
 <br>
@@ -127,9 +114,9 @@ $ tar -xzf /tmp/mynewt_1_2_0_tag.tar.gz
 
 ```no-highlight
 
-$ cd mynewt-newt-mynewt_1_2_0_tag
+$ cd mynewt-newt-mynewt_1_3_0_tag
 $ ./build.sh
-$ rm /tmp/mynewt_1_2_0_tag.tar.gz
+$ rm /tmp/mynewt_1_3_0_tag.tar.gz
 ```
 
 <br>
@@ -154,7 +141,7 @@ $ rm /tmp/mynewt_1_2_0_tag.tar.gz
 $ which newt
 /usr/bin/newt
 $ newt version
-Apache Newt version: 1.2.0
+Apache Newt version: 1.3.0
 ```
 
 <br>
