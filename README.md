@@ -26,23 +26,34 @@ Install the requirements:
 1. Submit a pull request.
 
 ## Releasing a versioned set of MyNewt documentation
+
 When a release of MyNewt OS and its associated tools occurs, a new version directory should be created to hold all docs pertaining to that release. The documentation in the git `master` branch of this repository always shows the latest docs under development. The following steps will create a documentation directory for a new release and make it available from the mynewt-site.
 
-### Build
+### Merge all changes and update
 
 1. Merge pull requests to `master` on github.
 1. Switch to the master branch.
     * `git checkout master`
 1. While in master, do `git pull --rebase origin master` to pull the latest merged changes.
-1. Create a new _stanza_ in `mkdocs.yml` to reflect the new version. (SKIP THIS STEP IF NOT A NEW RELEASE)
-    * and update the `latest` flag, only one release should be marked latest.
-    * **and update version to match the new directory name.**
-1. Commit this change. (SKIP THIS STEP IF NOT A NEW RELEASE)
+
+### Cut the new release documentation set
+
+NOTE: Skip these steps if you are just refreshing the current documentation or site.
+
+1. Create a new _stanza_ in `mkdocs.yml` to reflect the new version.
+    * And update the `latest` flag. Only one release can be marked latest.
 1. Add a new _stanza_ in "custom-theme/choose_doc_version.html" for the new version.
-1. Create a new directory in the versions directory to reflect this new version. (SKIP THIS STEP IF NOT A NEW RELEASE)
+    * Move the `(latest)` label to this stanza.
+1. Create a new directory in the versions directory for this new version.
     * Copy the latest docs directory and mkdocs.yml file into the new version directory
     * Set extra.version to the new version in the copied mkdocs.yml file
     * Create a symbolic link to the customer-theme
+1. Change the old latest released versions mkdocs.yml to that latest is False.
+    * You should not have to change any other mkdocs.yml (3 is enough!)
+1. Commit these changes.
+
+### Build
+
 1. Run: `./build.py`
 
 ### Test
