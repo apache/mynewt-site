@@ -24,187 +24,276 @@ Several different modes and procedures may be performed simultaneously over an L
 
 <br>
 
+### Available commands
 
-### Usage API
+Parameters default values are marked red.
 
+## Configuration
 
-|**Item No.** | **Modes and Procedures** | **nimBLE command** |
-|----|---------|---------------|
-|  1 | Broadcast Mode | `advertise conn=non discov=x` |
-|    | Observation Procedure | `scan duration=x passive=x filter=x` |
-|  2 | Non-Discoverable mode   | `advertise conn=x discov=non`  |
-|    | Limited Discoverable mode   | `advertise conn=x discov=ltd` |
-|    | General Discoverable mode   | `advertise conn=x discov=gen`  |
-|    | Limited Discovery procedure | `scan duration=x discov=ltd passive=0 filter=no_wl` |
-|    | General Discovery procedure | `scan duration=x discov=gen passive=0 filter=no_wl` |
-|    | Name Discovery procedure  | `scan duration=x` <br> `scan cancel` <br> `connect peer_addr_type=x peer_addr=x` <br> `gatt-read conn=x uuid=0x2a00` |
-|  3 | Non-connectable mode   | `advertise conn=non discov=x`  |
-|    | Directed connectable mode  | `advertise conn=dir [own_addr_type=x] [discov=x] [duration=x]`  |
-|    | Undirected connectable mode  | `advertise conn=und [own_addr_type=x] [discov=x] [duration=x]`  |
-|    | Auto connection establishment procedure   | `white-list addr_type=x addr=x [addr_type=y addr=y] [...]` <br> `connect addr_type=wl`  |
-|    | General connection establishment procedure  | `scan duration=x` <br> `scan cancel` <br> `connect peer_addr_type=x peer_addr=x` |
-|    | Selective connection establishment procedure | `white-list addr_type=x addr=x [addr_type=y addr=y] [...]` <br> `scan filter=use_wl duration=x` <br> `scan cancel` <br> `connect peer_addr_type=x peer_addr=x [own_addr_type=x]` |
-|    | Direct connection establishment procedure  | `connect addr_type=x addr=x [params]`  |
-|    | Connection parameter update procedure   | `conn-update-params conn=x <params>` |
-|    | Terminate connection procedure  | `disconnect conn=x` |
-|  4 | Non-Bondable mode    | `security-set-data bonding=0` [\*] |
-|    | Bondable mode        | `security-set-data bonding=1` [\*] |
-|    | Bonding procedure    | `security-start conn=x` [\*] |
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**set**      |                  |                           | Set configuration options                                  |
+|             |addr              | XX:XX:XX:XX:XX:XX         | Local device address                                       |
+|             |addr_type         | `public`                  | Local device address type                                  |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |mtu               | [23-UINT16_MAX]           | GATT Maximum Transmission Unit (MTU)                       |
+|             |irk               | XX:XX:XX...               | Local Identity Resolving Key (16 byte                      |
+|**set-priv-mode**   |           |                           | Set privacy mode for device                                |
+|             | addr             | XX:XX:XX:XX:XX:XX         | Remove device address                                      |
+|             | addr_type        | `public`                  | Remote device public address type                          |
+|             |                  | random                    | Remote device random address type                          |
+|             | mode             | [`0`-1]                   | 0 - use network privacy, 1 - use device privacy            |
+|**white-list**|                 |                           | Add devices to white list <br> (this command accepts multiple instances of addr and addr_type parameters) |
+|             | addr             | XX:XX:XX:XX:XX:XX         | Remove device address                                      |
+|             | addr_type        | `public`                  | Remote device public address type                          |
+|             |                  | random                    | Remote device random address type                          |
 
-**[\*]** Security is disabled by default in btshell.  To use the bonding modes and procedures, add `BLE_SM_LEGACY: 1` or `BLE_SM_SC: 1` to your syscfg.yml file depending on your needs.
+## Device discovery and connection
 
-<br>
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**scan**     |                  |                           | Discover remote devices                                    |
+|             |cancel            |                           | cancel ongoing scan procedure                              |
+|             |extended          | `none`                    | Start legacy scan                                          |
+|             |                  | 1M                        | Start extended scan on 1M PHY                              |
+|             |                  | coded                     | Start extended scan on Coded PHY                           |
+|             |                  | both                      | Start extended scan on both PHYs                           |
+|             |duration          | [1-`INT32_MAX`],          | Duration of scan in milliseconds                           |
+|             |limited           | [`0`-1]                   | Use limited discovery procedure                            |
+|             |passive           | [`0`-1]                   | Use passive scan                                           |
+|             |interval          | [`0`-UINT16_MAX]          | Scan interval, if 0 use stack's default                    |
+|             |window            | [`0`-UINT16_MAX]          | Scan window,  if 0 use stack's default                     |
+|             |filter            | `no_wl`                   | Scan filter policy - Accept all advertising packets        |
+|             |                  | use_wl                    | Accept only advertising packets from devices on White List |
+|             |                  | no_wl_inita               | Accept all advertising packets (including directed RPA)    |
+|             |                  | use_wl_inita              | Accept only advertising packets from devices on White List <br>(including directed RPA)|
+|             |nodups            | [`0`-1]                   | Disable duplicates filtering                               |
+|             |own_addr_type     | `public`                  | Use public address for scan requests                       |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
+|             |                  | rpa_rnd                   | Use RPA address for scan requests <br> (fallback to random if no IRK) |
+|             |extended_duration | [`0`-UINT16_MAX]          | Duration of extended scan in 10 milliseconds               |
+|             |extended_period   | [`0`-UINT16_MAX]          | Periodic scan interval in 1.28 seconds (0 disabled)        |
+|             |longrange_interval| [`0`-UINT16_MAX]          | Scan interval for Coded Scan , if 0 use stack's default    |
+|             |longrange_window  | [`0`-UINT16_MAX]          | Scan window for Coded Scan , if 0 use stack's default      |
+|             |longrange_passive | [`0`-1]                   | Use passive scan for Coded Scan                            |
+|**connect**  |                  |                           | Initiate connection to remote device                       |
+|             |cancel            |                           | Cancel ongoing connection procedure                        |
+|             |extended          |`none`                     | Use legacy connection procedure                            |
+|             |                  |1M                         | Extended connect using 1M PHY scan parameters              |
+|             |                  |coded                      | Extended connect using Coded PHY scan parameters           |
+|             |                  |both                       | Extended connect using 1M and Coded PHYs scan parameters   |
+|             |                  |all                        | Extended connect using 1M and Coded PHYs scan parameters <br> (Provide also connection parameters for 2M PHY) |
+|             |peer_addr_type    | `public`                  | Remote device public address type                          |
+|             |                  | random                    | Remote device random address type                          |
+|             |                  | public_id                 | Remote device public address type (Identity)               |
+|             |                  | random_id                 | Remote device random address type (Identity)               |
+|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remove device address                                      |
+|             |own_addr_type     | `public`                  | Use public address for scan requests                       |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
+|             |                  | rpa_rnd                   | Use RPA address for scan requests <br> (fallback to random if no IRK) |
+|             |duration          | [`0`-INT32_MAX]           | Connection attempt duration, if 0 use stack's default      |
+|             |scan_interval     | [0-UINT16_MAX]            | Scan interval, default: 0x0010                             |
+|             |scan_window       | [0-UINT16_MAX]            | Scan window, default: 0x0010                               |
+|             |interval_min      | [0-UINT16_MAX]            | Minimum connection interval, default: 30                   |
+|             |interval_max      | [0-UINT16_MAX]            | Maximum connection interval, default: 50                   |
+|             |latency           | [UINT16]                  | Connection latency, default: 0                             |
+|             |timeout           | [UINT16]                  | Connection timeout, default: 0x0100                        |
+|             |min_conn_event_len| [UINT16]                  | Minimum length of connection event, default: 0x0010        |
+|             |max_conn_event_len| [UINT16]                  | Maximum length of connection event, default: 0x0300        |
+|             |coded_scan_interval     | [0-UINT16_MAX]      | Coded PHY Scan interval, default: 0x0010                   |
+|             |coded_scan_window       | [0-UINT16_MAX]      | Coded PHY Scan window, default: 0x0010                     |
+|             |coded_interval_min      | [0-UINT16_MAX]      | Coded PHY Minimum connection interval, default: 30         |
+|             |coded_interval_max      | [0-UINT16_MAX]      | Coded PHY Maximum connection interval, default: 50         |
+|             |coded_latency           | [UINT16]            | Coded PHY  Connection latency, default: 0                  |
+|             |coded_timeout           | [UINT16]            | Coded PHY  Connection timeout, default: 0x0100             |
+|             |coded_min_conn_event_len| [UINT16]            | Coded PHY Minimum length of connection event, default: 0x0010  |
+|             |coded_max_conn_event_len| [UINT16]            | Coded PHY  Maximum length of connection event, default: 0x0300 |
+|             |2M_scan_interval     | [0-UINT16_MAX]         | 2M PHY Scan interval, default: 0x0010                      |
+|             |2M_scan_window       | [0-UINT16_MAX]         | 2M PHY Scan window, default: 0x0010                        |
+|             |2M_interval_min      | [0-UINT16_MAX]         | 2M PHY Minimum connection interval, default: 30            |
+|             |2M_interval_max      | [0-UINT16_MAX]         | 2M PHY Maximum connection interval, default: 50            |
+|             |2M_latency           | [UINT16]               | 2M PHY Connection latency, default: 0                      |
+|             |2M_timeout           | [UINT16]               | 2M PHY Connection timeout, default: 0x0100                 |
+|             |2M_min_conn_event_len| [UINT16]               | 2M PHY Minimum length of connection event, default: 0x0010 |
+|             |2M_max_conn_event_len| [UINT16]               | 2M PHY Maximum length of connection event, default: 0x0300 |
+|**disconnect**  |              |                            | Disconnect exisiting connection                            |
+|             |conn             | [UINT16]                   | Connection handle                                          |
+|             |reason           | [UINT8]                    | Disconnect reason                                          | 
+|**show-addr**      |           |                            | Show local public and random identity addresses            |
+|**show-conn**      |           |                            | Show current connections                                   |
+|**conn-rssi**|                 |                            | Obtain RSSI of specified connection                        |
+|             |conn             | [UINT16]                   | Connection handle                                          |
+|**conn-update-params**|        |                            | Update parameters of specified connection                  |
+|             |conn             | [UINT16]                   | Connection handle                                          |
+|             |interval_min      | [0-UINT16_MAX]            | Minimum connection interval, default: 30                   |
+|             |interval_max      | [0-UINT16_MAX]            | Maximum connection interval, default: 50                   |
+|             |latency           | [UINT16]                  | Connection latency, default: 0                             |
+|             |timeout           | [UINT16]                  | Connection timeout, default: 0x0100                        |
+|             |min_conn_event_len| [UINT16]                  | Minimum length of connection event, default: 0x0010        |
+|             |max_conn_event_len| [UINT16]                  | Maximum length of connection event, default: 0x0300        |
+|**conn-datalen**|              |                            | Set DLE parmaeters for connection                          |
+|             |conn             | [UINT16]                   | Connection handle                                          |
+|             |octets           | [UINT16]                   | Maximum transmission packet size                           |
+|             |time             | [UINT16]                   | Maximum transmission packet time                           |
+|**phy-set**  |                 |                            | Set prefered PHYs used for connection                      |
+|             |conn             | [UINT16]                   | Connection handle                                          |
+|             |tx_phys_mask     | [UINT8]                    | Prefered PHYs on TX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded                                          
+|             |rx_phys_mask     | [UINT8]                    | Prefered PHYs on RX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded                                          
+|             |phy_opts         | [UINT16]                   | Options for Coded PHY<br> 0 - any coding, 1 - prefer S2, 2 - prefer S8 |
+|**phy-set-default**  |         |                            | Set default prefered PHYs used for new connection          |
+|             |tx_phys_mask     | [UINT8]                    | Prefered PHYs on TX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded                                          
+|             |rx_phys_mask     | [UINT8]                    | Prefered PHYs on RX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded    
+|**phy-read**  |                |                            | Read connection current PHY                                |
+|             |conn             | [UINT16]                   | Connection handle                                          |
+|**l2cap-update**  |             |                           | Update connection parameters                               |
+|             |interval_min      | [0-UINT16_MAX]            | Minimum connection interval, default: 30                   |
+|             |interval_max      | [0-UINT16_MAX]            | Maximum connection interval, default: 50                   |
+|             |latency           | [UINT16]                  | Connection latency, default: 0                             |
+|             |timeout           | [UINT16]                  | Connection timeout, default: 0x0100                        |
 
-### Address Types
+## Security
 
-| *btshell string* | *Description*                                       | *Notes*                              |
-|------------------|-----------------------------------------------------|--------------------------------------|
-| public           | Public address.                                     |                                      |
-| random           | Random static address.                              |                                      |
-| rpa_pub          | Resolvable private address, public identity.        | Not available for all commands.      |
-| rpa_rnd          | Resolvable private address, random static identity. | Not available for all commands.      |
-| wl               | Use white list; ignore peer_addr parameter.         | Only availble for "connect" command. |
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**security-set-data**     |     |                           | Set security configuration                                 |
+|             |oob-flag          | [`0`-1]                   | Set Out-Of-Band (OOB) flag in Security Manager             |
+|             |mitm-flag         | [`0`-1]                   | Set Man-In-The-Middle (MITM) flag in Security Manager      |
+|             |io_capabilities   | 0                         | Set Input-Output Capabilities to "DisplayOnly"             |
+|             |                  | 1                         | Set Input-Output Capabilities to "DisplayYesNo"            |
+|             |                  | 2                         | Set Input-Output Capabilities to "KeyboardOnly"            |
+|             |                  | 3                         | Set Input-Output Capabilities to "NoInputNoOutput"         |
+|             |                  | 4                         | Set Input-Output Capabilities to "KeyboardDisplay"         |
+|             |our_key_dist      | [UINT8]                   | Set Local Keys Distribution, this is a bit field of possible values: <br> LTK (0x01), IRK (0x02), CSRK (0x04), LTK_SC(0x08) |
+|             |their_key_dist    | [UINT8]                   | Set Remote Keys Distribution, this is a bit field of possible values: <br> LTK (0x01), IRK (0x02), CSRK (0x04), LTK_SC(0x08) |
+|             |bonding-flag      | [`0`-1]                   | Set Bonding flag in Security Manager                       |
+|             |sc-flag           | [`0`-1]                   | Set Secure Connections flag in Security Manager            |
+|**security-pair**|              |                           | Start pairing procedure                                    |
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|**security-encryption**|        |                           | Start encryption procedure                                 |
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|             |ediv              | [UINT16]                  | EDIV for LTK to use (use storage if not provided)          |
+|             |rand              | [UINT64]                  | Rand for LTK                                               |
+|             |ltk               | XX:XX:XX...               | LTK (16 bytes)                                             |
+|**security-start**|             |                           | Start security procedure <br>(This starts either pairing or encryption depending if keys are stored)|
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|**auth-passkey**|               |                           | Reply to Passkey request                                   |
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|             |action            | [UINT16]                  | Action to reply (as received in event)                     |
+|             |key               | [0-999999]                | Passkey to reply (Input or Display action)                 |
+|             |oob               | XX:XX:XX:...              | Out-Of-Band secret (16 bytes) (OOB action)                 |
+|             |yesno             | Yy-Ny                     | Confirm passkey (for Passkey Confirm action)               |
 
-### Connection Types
+## Advertising
 
-Bluetooth Specification Version 5.0 allows for different types of connections:
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**advertise-configure**     |   |                           | Configure new advertising instance                         |
+|             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
+|             |connectable       | [`0`-1]                   | Use connectable advertising                                |
+|             |scannable         | [`0`-1]                   | Use scannable advertising                                  |
+|             |peer_addr_type    | `public`                  | Remote device public address type                          |
+|             |                  | random                    | Remote device random address type                          |
+|             |                  | public_id                 | Remote device public address type (Identity)               |
+|             |                  | random_id                 | Remote device random address type (Identity)               |
+|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remove device address - if provided perform directed advertising |
+|             |own_addr_type     | `public`                  | Use public address for scan requests                       |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
+|             |                  | rpa_rnd                   | Use RPA address for scan requests <br> (fallback to random if no IRK) |
+|             |channel_map       | [`0`-UINT8_MAX}           | Primary advertising channels map. If 0 use all channels.   |
+|             |filter            | `none`                    | Advertising filter policy - no filtering, no whitelist used|
+|             |                  | scan                      | process all connection requests but only scans from white list|
+|             |                  | conn                      | process all scan request but only connection requests from white list|
+|             |                  | both                      | ignore all scan and connection requests unless in white list|
+|             |interval_min      | [`0`-UINT32_MAX]          | Minimum advertising interval in 0.625 miliseconds <br> If 0 use stack default. |
+|             |interval_max      | [`0`-UINT32_MAX]          | Maximum advertising interval in 0.625 miliseconds <br> If 0 use stack default. |
+|             |rx_power          | [-127 - `127`]            | Advertising TX power in dBm                                |
+|             |primary_phy       | `1M`                      | Use 1M PHY on primary advertising channels                 |
+|             |                  | `coded`                   | Use Coded PHY on primary advertising channels              |
+|             |secondary_phy     | `1M`                      | Use 1M PHY on secondary advertising channels               |
+|             |                  | `coded`                   | Use coded PHY on primary advertising channels              |
+|             |                  | `2M`                      | Use 2M PHY on primary advertising channels                 |
+|             |sid               | [`0`-16]                  | Adsertising instance SID                                   |
+|             |high_duty         | [`0`-1]                   | Use high_duty advertising                                  |
+|             |anonymous         | [`0`-1]                   | Use anonymous advertising                                  |
+|             |legacy            | [`0`-1]                   | Use legacy PDUs for advertising                            |
+|             |include_tx_power  | [`0`-1]                   | Include TX power information in advertising PDUs           |
+|             |scan_req_notif    | [`0`-1]                   | Enable SCAN_REQ notifications                              |
+|**advertise-set-addr**|         |                           | Configure *random* adress for instance                     |
+|             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
+|             |addr              | XX:XX:XX:XX:XX:XX         | Random address                                             |
+|**advertise-set-adv-data**|     |                           | Configure advertising instance ADV_DATA. This allow to configure following TLVs:|
+|**advertise-set-scan-rsp**|     |                           | Configure advertising instance SCAN_RSP. This allow to configure following TLVs:|
+|             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
+|             |flags             | [`0`-UINT8_MAX]           | Flags value                                                |
+|             |uuid16            | [UINT16]                  | 16-bit UUID value (can be passed multiple times)           |
+|             |uuid16_is_complete| [`0`-1]                   | I 16-bit UUID list is complete                             |
+|             |uuid32            | [UINT32]                  | 32-bit UUID value (can be passed multiple times)           |
+|             |uuid32_is_complete| [`0`-1]                   | I 32-bit UUID list is complete                             |
+|             |uuid128           | XX:XX:XX:...              | 128-bit UUID value (16 bytes) (can be passed multiple times)|
+|             |uuid128_is_complete| [`0`-1]                  | I 128-bit UUID list is complete                            |
+|             |tx_power_level    | [-127 - 127]              | TX Power level to include                                  |
+|             |appearance        | [UINT16]                  | Appearance                                                 |
+|             |name              | string                    | Name                                                       |
+|             |advertising_interval| [UINT16]                | Advertising interval                                       |
+|             |service_data_uuid32| XX:XX:XX:...             | 32-bit UUID service data                                   |
+|             |service_data_uuid128| XX:XX:XX:...            | 128-bit UUID service data                                  |
+|             |uri               | XX:XX:XX:...              | URI                                                        |
+|             |msg_data          | XX:XX:XX:...              | Manufacturer data                                          |
+|             |eddystone_url     | string                    | Eddystone with specified URL                               |
+|**advertise-start**|            |                           | Start advertising with configured instance                 |
+|             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
+|             |duration          | [`0`-UINT16_MAX]          | Advertising duration in 10ms units. 0 - forver             |
+|             |max_events        | [`0`-UINT8_MAX]           | Maximum number of advertising events. 0 - no limit         |
+|**advertise-stop**|             |                           | Stop advertising                                           |
+|             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
+|**advertise-remove**|           |                           | Remove configured advertising instance                     |
+|             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
 
-| *Description*                                  | *btshell ext parameter value* |
-|------------------------------------------------|-------------------------------|
-| Legacy connection                              | none                          |
-| Extended connection with 1M PHY                | 1M                            |
-| Extended connection with coded PHY             | coded                         |
-| Extended connection with both 1M and coded PHY | both                          |
-| Extended connection with 1M, 2M and coded PHYs | all                           |
+## L2CAP Connection Oriented Channels
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**l2cap-create-server**     |   |                           | Create L2CAP server                                        |
+|             |psm               | [UINT16]                  | PSM                                                        |
+|**l2cap-connect**  |            |                           | Connect to remote L2CAP server                             |
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|             |psm               | [UINT16]                  | PSM                                                        |
+|**l2cap-disconnect**  |         |                           | Disconnec from L2CAP server                                |
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|             |idx               | [UINT16]                  | L2CAP connection oriented channel identifier               |
+|**l2cap-send**  |               |                           | Send data over connected L2CAP channel                     |
+|             |conn              | [UINT16]                  | Connection handle                                          |
+|             |idx               | [UINT16]                  | L2CAP connection oriented channel identifier               |
+|             |bytes             | [UINT16]                  | Number of bytes to send (hardcoded data pattern)           |
+|**l2cap-show-coc**  |           |                           | Show connected L2CAP channels                              |
 
-### Connection Parameters
-
-Connection parameter definitions can be found in Section 7.8.12 of the BLUETOOTH SPECIFICATION Version 5.0 [Vol 2, Part E].
-
-Connection parameters for all types of connections:
-
-| *Name*            | *Description*                                                                       | *btshell string* |
-|-------------------|-------------------------------------------------------------------------------------|------------------|
-| Connection Type   | Parameter indicating the type of connection                                         | extended         |
-| Peer_Address_Type | Whether the peer is using a public or random address (see Address types table).     | peer_addr_type   |
-| Peer_Address      | The 6-byte device address of the peer; ignored if white list is used                | peer_addr        |
-| Own_Address_Type  | The type of address to use when initiating the connection (see Address types table) | own_addr_type    |
-| Duration          | Number of milliseconds before aborting the connect attempt                          | duration         |
-
-Connection parameters for legacy and 1M PHY extended connection:
-
-| *Name*              | *Description*                                                                                           | *btshell string*   |
-|---------------------|---------------------------------------------------------------------------------------------------------|--------------------|
-| LE_Scan_Interval    | Recommendation from the Host on how long the Controller should scan                                     | scan_interval      |
-| LE_Scan_Window      | Recommendation from the Host on how frequently the Controller should scan                               | scan_window        |
-| Conn_Interval_Min   | Defines minimum allowed connection interval                                                             | interval_min       |
-| Conn_Interval_Max   | Defines maximum allowed connection interval                                                             | interval_max       |
-| Conn_Latency        | Defines the maximum allowed connection latency                                                          | latency            |
-| Supervision_Timeout | Link supervision timeout for the connection.                                                            | timeout            |
-| Minimum_CE_Length   | Informative parameter providing the Controller with the expected minimum length of the connection event | min_conn_event_len |
-| Maximum_CE_Length   | Informative parameter providing the Controller with the expected maximum length of the connection event | max_conn_event_len |
-
-Extended Connection parameters for coded PHY connection:
-
-| *Name*              | *Description*                                                                                           | *btshell string*         |
-|---------------------|---------------------------------------------------------------------------------------------------------|--------------------------|
-| LE_Scan_Interval    | Recommendation from the Host on how long the Controller should scan                                     | coded_scan_interval      |
-| LE_Scan_Window      | Recommendation from the Host on how frequently the Controller should scan                               | coded_scan_window        |
-| Conn_Interval_Min   | Defines minimum allowed connection interval                                                             | coded_interval_min       |
-| Conn_Interval_Max   | Defines maximum allowed connection interval                                                             | coded_interval_max       |
-| Conn_Latency        | Defines the maximum allowed connection latency                                                          | coded_latency            |
-| Supervision_Timeout | Link supervision timeout for the connection.                                                            | coded_timeout            |
-| Minimum_CE_Length   | Informative parameter providing the Controller with the expected minimum length of the connection event | coded_min_conn_event_len |
-| Maximum_CE_Length   | Informative parameter providing the Controller with the expected maximum length of the connection event | coded_max_conn_event_len |
-
-Extended Connection parameters for 2M PHY connection:
-
-| *Name*              | *Description*                                                                                           | *btshell string*      |
-|---------------------|---------------------------------------------------------------------------------------------------------|-----------------------|
-| Conn_Interval_Min   | Defines minimum allowed connection interval                                                             | 2M_interval_min       |
-| Conn_Interval_Max   | Defines maximum allowed connection interval                                                             | 2M_interval_max       |
-| Conn_Latency        | Defines the maximum allowed connection latency                                                          | 2M_latency            |
-| Supervision_Timeout | Link supervision timeout for the connection.                                                            | 2M_timeout            |
-| Minimum_CE_Length   | Informative parameter providing the Controller with the expected minimum length of the connection event | 2M_min_conn_event_len |
-| Maximum_CE_Length   | Informative parameter providing the Controller with the expected maximum length of the connection event | 2M_max_conn_event_len |
-
-### Scan Types
-
-Bluetooth Specification Version 5.0 allows for different types of scan:
-
-| *Description*                            | *btshell ext parameter value* |
-|------------------------------------------|-------------------------------|
-| Legacy scan                              | none                          |
-| Extended scan with 1M PHY                | 1M                            |
-| Extended scan with coded PHY             | coded                         |
-| Extended scan with both 1M and coded PHY | both                          |
-
-### Scan Parameters
-
-Scan parameter definitions can be found in Section 7.8.10 of the BLUETOOTH SPECIFICATION Version 5.0 [Vol 2, Part E].
-
-| *Name*                 | *Description*                                                             | *btshell string* |
-|------------------------|---------------------------------------------------------------------------|------------------|
-| Scan Type              | Parameter indicating the type of scan                                     | extended         |
-| LE_Scan_Type           | Controls the type of scan to perform (passive or active)                  | passive          |
-| LE_Scan_Interval       | Recommendation from the Host on how long the Controller should scan       | interval         |
-| LE_Scan_Window         | Recommendation from the Host on how frequently the Controller should scan | window           |
-| Scanning_Filter_Policy | Policy about which advertising packets to accept                          | filter           |
-| Duration               | Number of milliseconds before canceling scan procedure                    | duration         |
-| Limited                | Limited scan procedure                                                    | limited          |
-| No duplicates          | Filter out duplicates in shell output                                     | nodups           |
-| Own_Address_Type       | The type of address to use when scanning (see Address types table)        | own_addr_type    |
-
-Extended Scan parameters:
-
-| *Name*           | *Description*                                                             | *btshell string*   |
-|------------------|---------------------------------------------------------------------------|--------------------|
-| Duration         | Number of milliseconds before canceling scan procedure                    | extended_duration  |
-| Period           | Period in which scan should be enabled for specified duration             | extended_period    |
-| LE_Scan_Type     | Controls the type of scan to perform (passive or active)                  | longrange_passive  |
-| LE_Scan_Interval | Recommendation from the Host on how long the Controller should scan       | longrange_interval |
-| LE_Scan_Window   | Recommendation from the Host on how frequently the Controller should scan | longrange_window   |
-
-### Advertisment Parameters
-
-| *btshell string* | *Description*                         | *Notes*                                                      | *Default*                 |
-|------------------|---------------------------------------|--------------------------------------------------------------|---------------------------|
-| conn             | Connectable mode                      | See Connectable Modes table.                                 | und                       |
-| discov           | Discoverable mode                     | See Discoverable Modes table.                                | gen                       |
-| own_addr_type    | The type of address to advertise with | See Address Types table.                                     | public                    |
-| peer_addr_type   | The peer's address type               | Only used for directed advertising; see Address Types table. | public                    |
-| peer_addr        | The peer's address                    | Only used for directed advertising                           | N/A                       |
-| channel_map      |                                       |                                                              | 0                         |
-| filter           | The filter policy                     | See Advertisement Filter Policies table.                     | none                      |
-| interval_min     |                                       | units=0.625ms                                                | non: 100ms; und/dir: 30ms |
-| interval_max     |                                       | units=0.625ms                                                | non: 150ms; und/dir: 60ms |
-| high_duty        | Whether to use high-duty-cycle        | 0/1                                                          | 0                         |
-| duration         |                                       | Milliseconds                                                 | Forever                   |
-
-Extended Advertising parameters:
-
-| *btshell string* | *Description*                                                                             | *Notes*        | *Default*                    |
-|------------------|-------------------------------------------------------------------------------------------|----------------|------------------------------|
-| tx_power         | Maximum power level at which the advertising packets are to be transmitted                | -127 - 127 dBm | 127 (Host has no preference) |
-| primary_phy      | PHY on which the advertising packets are transmitted on the primary advertising channel   |                | none                         |
-| secondary_phy    | PHY on which the advertising packets are transmitted on the secondary advertising channel |                | primary_phy                  |
-
-
-### Advertising PHY Types
-
-| *Description*                       | *btshell parameter value* |
-|-------------------------------------|---------------------------|
-| Legacy advertising                  | none                      |
-| Extended advertising with 1M PHY    | 1M                        |
-| Extended advertising with 2M PHY    | 2M                        |
-| Extended advertising with coded PHY | coded                     |
-
-### Advertisement Filter Policies
-
-| *btshell string*  | *Description*                                                          | *Notes*   |
-| ----------------- | ---------------                                                        | --------- |
-| none              | No filtering. No whitelist used.                                       | Default   |
-| scan              | Process all connection requests but only scans from white list.        |           |
-| conn              | Process all scan request but only connection requests from white list. |           |
-| both              | Ignore all scan and connection requests unless in white list.          |           |
-
+## Keys storage
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**keystore-add**    |           |                           | Add keys to storage                                        |
+|             |type              | msec                      | Master Key                                                 |
+|             |                  | ssec                      | Slave Key                                                  |
+|             |                  | cccd                      | Client Characteristic Configuration Descriptor             |
+|             |addr              | XX:XX:XX:XX:XX:XX         | Device address                                             |
+|             |addr_type         | `public`                  | Device address type                                        |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |ediv              | [UINT16]                  | EDIV for LTK to add                                        |
+|             |rand              | [UINT64]                  | Rand for LTK                                               |
+|             |ltk               | XX:XX:XX...               | LTK (16 bytes)                                             |
+|             |irk               | XX:XX:XX...               | Identity Resolving Key (16 bytes)                          |
+|             |csrk              | XX:XX:XX...               | Connection Signature Resolving Key (16 bytes)              |
+|**keystore-del**    |           |                           | Delete keys from storage                                   |
+|             |type              | msec                      | Master Key                                                 |
+|             |                  | ssec                      | Slave Key                                                  |
+|             |                  | cccd                      | Client Characteristic Configuration Descriptor             |
+|             |addr              | XX:XX:XX:XX:XX:XX         | Device address                                             |
+|             |addr_type         | `public`                  | Device address type                                        |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |ediv              | [UINT16]                  | EDIV for LTK to remove                                     |
+|             |rand              | [UINT64]                  | Rand for LTK                                               |
+|**keystore-show**   |           |                           | Show stored keys                                           |
+|             |type              | msec                      | Master Keys                                                |
+|             |                  | ssec                      | Slave Keys                                                 |
+|             |                  | cccd                      | Client Characteristic Configuration Descriptor s           |
