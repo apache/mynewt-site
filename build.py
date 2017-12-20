@@ -42,10 +42,11 @@ def build(site_dir):
     for version in cfg['extra']['versions']:
         print "Building doc pages for: %s" % (version['dir'])
         sh.mkdocs('build', '--site-dir', os.path.join(site_dir, version['dir']), _cwd = os.path.join("versions", version['dir']))
+        if 'latest' in version and version['latest']:
+            sh.ln('-s', version['dir'], 'latest', _cwd = site_dir)
 
     # Make sure old links still work
-    sh.ln('-s', 'latest', 'develop', _cwd = site_dir)
-    sh.ln('-s', 'latest', 'master', _cwd = site_dir)
+    sh.ln('-s', 'master', 'develop', _cwd = site_dir)
 
 if __name__ == '__main__':
     build(os.path.join(os.path.dirname(os.path.abspath(__file__)), "site"))
