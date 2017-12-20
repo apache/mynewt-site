@@ -1,5 +1,7 @@
 ## API for bletiny app
 
+`NOTE bletiny is deprecated and will be removed in next version of Apache Mynewt. Please use btshell application instead.`
+
 "bletiny" is one of the sample applications that come with Mynewt. It is a shell application which provides a basic interface to the host-side of the BLE stack. "bletiny" includes all the possible roles (Central/Peripheral) and they may be run simultaneously. You can run bletiny on a board and issue commands that make it behave as a central or a peripheral with different peers. 
 
 "bletiny" is a BLE application which uses the 1.0 shell. If you want to use the 1.1 shell in BLE application please go to [btshell app](../btshell/btshell_api.md).

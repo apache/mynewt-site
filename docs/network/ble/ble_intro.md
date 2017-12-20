@@ -5,7 +5,7 @@ Apache Mynewt offers the world's first fully open-source Bluetooth Low Energy (B
 BLE technology operates in the unlicensed industrial, scientific and medical (ISM) band at 2.4 to 2.485 GHz which is available in most countries. It uses a spread spectrum, frequency hopping, full-duplex signal. BLE FHSS employs 40 2-MHz-wide channels to ensure greater reliability over longer distances. It also features 0-dBm (1 mW) power output and a typical maximum range of 50 meters.
 With Bluetooth 5 specification range can be increased 4 times and speed 2 time.
 
-Note that BLE is not compatible with standard Bluetooth.
+Note that BLE is not compatible with standard (BR/EDR aka classic) Bluetooth.
 <br>
 
 ### Features
@@ -15,6 +15,7 @@ NimBLE complies with Bluetooth Core Specification 5.0 which makes it an ideal wi
 * LE Advertising Extensions
 * 2Msym/s PHY for higher throughput
 * Coded PHY for LE Long Range
+* Advertising Extensions
 * High Duty Cycle Non-Connectable Advertising
 * Channel Selection Algorithm #2 to utilize channels in more efficient way.
 * LE Privacy 1.2 for frequent changes to the device address to make it difficult to track for outsiders
@@ -58,7 +59,7 @@ Subsequent chapters in this manual will go into the details of the implementatio
 
 Mynewt comes with two built-in projects that allow users to play with NimBLE, try the tutorials out with, and see how to use available services.
 
-1. **bletiny** : A simple shell application which provides a basic interface to the host-side of the BLE stack. 
+1. **btshell** : A simple shell application which provides a basic interface to the host-side of the BLE stack (replaces **bletiny**).
 2. **bleprph**: A basic peripheral device with no user interface. It advertises automatically on startup, and resumes advertising whenever a connection is terminated. It supports a maximum of one connection.
 3. **blemesh**: A sample application for Bluetooth Mesh Node using on/off model.
 

@@ -2,7 +2,7 @@
 
 "btshell" is one of the sample applications that come with Mynewt. It is a shell application which provides a basic interface to the host-side of the BLE stack. "btshell" includes all the possible roles (Central/Peripheral) and they may be run simultaneously. You can run btshell on a board and issue commands that make it behave as a central or a peripheral with different peers. 
 
-"btshell" is a new application that uses Mynewt 1.1 shell features and has updated command and parameter names.
+**btshell** is a new application that uses shell subsystem introduced in Mynewt 1.1 and has updated commands and parameters names. Thanks to support for tab completion commands names are more descriptive and self-explanatory without requiring extensive typing.
 
 Highlighted below are some of the ways you can use the API to establish connections and discover services and characteristics from peer devices. For descriptions of the full API, go to the next sections on [GAP in btshell](btshell_GAP.md) and [GATT in btshell](btshell_GATT.md).
 
