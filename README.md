@@ -41,15 +41,13 @@ When a release of MyNewt OS and its associated tools occurs, a new version direc
 NOTE: Skip these steps if you are just refreshing the current documentation or site.
 
 1. Create a new _stanza_ in `mkdocs.yml` to reflect the new version.
-    * And update the `latest` flag. Only one release can be marked latest.
+    * At present `master` is the `latest` version.
+    * And that should probably not change.
 1. Add a new _stanza_ in "custom-theme/choose_doc_version.html" for the new version.
-    * Move the `(latest)` label to this stanza.
 1. Create a new directory in the versions directory for this new version.
     * Copy the latest docs directory and mkdocs.yml file into the new version directory
     * Set extra.version to the new version in the copied mkdocs.yml file
     * Create a symbolic link to the customer-theme
-1. Change the old latest released versions mkdocs.yml to that latest is False.
-    * You should not have to change any other mkdocs.yml (3 is enough!)
 1. Commit these changes.
 
 ### Build
