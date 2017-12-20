@@ -78,11 +78,11 @@ targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
+[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_primo bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
 Target targets/boot_nrf successfully set target.bsp to @apache-mynewt-core/hw/bsp/arduino_primo_nrf52
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf app=@apache-mynewt-core/apps/boot
+[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_primo app=@apache-mynewt-core/apps/boot
 Target targets/boot_nrf successfully set target.app to @apache-mynewt-core/apps/boot
-[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf build_profile=optimized
+[user@IsMyLaptop:~/src/air_quality]$ newt target set boot_primo build_profile=optimized
 Target targets/boot_nrf successfully set target.build_profile to optimized
 ```
 
