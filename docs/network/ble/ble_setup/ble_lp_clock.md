@@ -41,6 +41,30 @@ On platforms without 32768 Hz crystal available it usually can be synthesized by
 setting `XTAL_32768_SYNTH` to `1` - this is also already configured in existing
 BSPs.
 
+### Clock accuracy
+
+Controller needs to know clock source accuracy since this affects sleep time and has
+to be taken into account when scheduling Bluetooth events. The configuration variable
+`BLE_LL_OUR_SCA` defines clock drift (in ppm) while `BLE_LL_MASTER_SCA` is an
+enumerated value derived from clock drift value and shall be set as follows:
+
+- SCA between 251 and 500 ppm = 0
+- SCA between 151 and 250 ppm = 1
+- SCA between 101 and 150 ppm = 2
+- SCA between 76 and 100 ppm = 3
+- SCA between 51 and 75 ppm = 4
+- SCA between 31 and 50 ppm = 5
+- SCA between 21 and 30 ppm = 6
+- SCA between 0 and 20 ppm = 7
+
+The default value of 60 ppm is large enough to work with most platforms with LFXO.
+For platforms without LFXO (e.g. using internal RC oscillator or synthesized clock
+instead) it shall be changed if necessary.
+
+Note that using clock drift value larger than necessary will impact battery life since
+controller will use wider margin for scheduling Bluetooth events thus reducing sleep
+time. For this reason it is recommended to adjust clock drift value to match clock
+source used on platform.
 
 ### Crystal settle time configuration
 
