@@ -205,7 +205,7 @@ It also generates a system initialization function to initialize the packages.
 See [System Configuration And Initialization](/os/modules/sysinitconfig/sysinitconfig.md) for more information.
 
 
-In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies.  And it builds a big list of all the packages that need to be build.
+In order to properly resolve all dependencies in the build system, newt recursively processes the package dependencies until there are no new dependencies.  And it builds a big list of all the packages that need to be built.
 
 
 Newt then goes through this package list, and builds every package into 
