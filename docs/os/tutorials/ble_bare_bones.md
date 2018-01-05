@@ -123,8 +123,7 @@ Target targets/ble_tgt successfully set target.build_profile to optimized
 Since our application will support BLE functionality, we need to give it access
 to a BLE stack.  We do this by adding the necessary NimBLE packages to the
 app's dependency list.  To enable a combined host-controller in the app, add
-dependencies for the NimBLE controller, host, and in-RAM transport to
-`apps/ble_app/pkg.yml`:
+dependencies for the NimBLE controller, host, in-RAM transport, and persistence store to `apps/ble_app/pkg.yml`:
 
 ```hl_lines="6 7 8"
 pkg.deps:
@@ -134,6 +133,7 @@ pkg.deps:
     - "@apache-mynewt-core/sys/stats/full"
     - "@apache-mynewt-core/net/nimble/controller"
     - "@apache-mynewt-core/net/nimble/host"
+    - "@apache-mynewt-core/net/nimble/host/store/config"
     - "@apache-mynewt-core/net/nimble/transport/ram"
 ```
 
