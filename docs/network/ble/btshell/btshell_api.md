@@ -51,10 +51,16 @@ The `handle=1` in the output indicates that it is connection-1.
 
 <br>
 
-### Configure advertisements to include device name 
+### Configure advertisements to include device name
 
 In this case, your board is acting as a peripheral. 
 
+With Extended Advertising enabled (should be executed after advertise-configure):
+```
+advertise-set-adv-data name=<your-device-name>
+```
+
+With Extended Advertising disabled:
 ```
 set-adv-data name=<your-device-name>
 ```
@@ -65,6 +71,13 @@ set-adv-data name=<your-device-name>
 
 In this case, your board is acting as a peripheral. 
 
+With Extended Advertising enabled:
+```
+advertise-configure connectable=1 legacy=1 scannable=1
+advertise-start
+```
+
+With Extended Advertising disabled:
 ```
 advertise conn=und discov=gen
 ```
