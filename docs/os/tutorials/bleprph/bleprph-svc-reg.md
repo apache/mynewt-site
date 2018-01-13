@@ -53,7 +53,7 @@ A service definition consists of the following fields:
 | *Field* | *Meaning* | *Notes* |
 | ------- | --------- | ------- |
 | type        | Specifies whether this is a primary or secondary service. | Secondary services are not very common.  When in doubt, specify *BLE_GATT_SVC_TYPE_PRIMARY* for new services. |
-| uuid128         | The 128-bit UUID of this service. | If the service has a 16-bit UUID, you can convert it to its corresponding 128-bit UUID with the `BLE_UUID16()` macro. |
+| uuid     | The UUID of this characteristic. | This field accepts a pointer to a variable of type `ble_uuid_t`. You could directly use the `BLE_UUID16_DECLARE()` macro or to pass a pointer to a `ble_uuid16_t` variable you could type `&uuid_variable.u` |
 | characteristics | The array of characteristics that belong to this service.   | |
 
 <br>
@@ -64,7 +64,7 @@ definition consists of the following fields:
 
 | *Field* | *Meaning* | *Notes* |
 | ------- | --------- | ------- |
-| uuid128     | The 128-bit UUID of this characteristic. | If the characteristic has a 16-bit UUID, you can convert it to its corresponding 128-bit UUID with the `BLE_UUID16()` macro. |
+| uuid     | The UUID of this characteristic. | This field accepts a pointer to a variable of type `ble_uuid_t`. You could directly use the `BLE_UUID16_DECLARE()` macro or to pass a pointer to a `ble_uuid16_t` variable you could type `&uuid_variable.u` |
 | access\_cb  | A callback function that gets executed whenever a peer device accesses this characteristic. | *For reads:* this function generates the value that gets sent back to the peer.<br>*For writes:* this function receives the written value as an argument. |
 | flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).|
 
@@ -122,30 +122,40 @@ After you have created your service table, your app needs to register it with th
 
 ```c
 int
-ble_gatts_register_svcs(const struct ble_gatt_svc_def *svcs,
-                        ble_gatt_register_fn *cb, void *cb_arg)
+ble_gatts_add_svcs(const struct ble_gatt_svc_def *svcs)
 ```
 
 The function parameters are documented below.
 
 | *Parameter* | *Meaning* | *Notes* |
 | ----------- | --------- | ------- |
-| svcs        | The table of services to register. | |
-| cb          | A callback that gets executed each time a service, characteristic, or descriptor is registered. | Optional; pass NULL if you don't want to be notified. |
-| cb\_arg     | An argument that gets passed to the callback function on each invocation. | Optional; pass NULL if there is no callback or if you don't need a special argument. |
+| svcs        | An array of service definitions to queue for registration. This array must be terminated with an entry whose 'type' equals 0. | |
 
 The `ble_gatts_register_svcs()` function returns 0 on success, or a
 *BLE_HS_E[...]* error code on failure.
 
-More detailed information about the registration callback function can be found
-in the [BLE User Guide](../../../network/ble/ble_intro/) (TBD).
-
 The *bleprph* app registers its services as follows:
 
 ```c
-    rc = ble_gatts_register_svcs(gatt_svr_svcs, gatt_svr_register_cb, NULL);
-    assert(rc == 0);
+    rc = ble_gatts_add_svcs(gatt_svr_svcs);
+    if (rc != 0) {
+        return rc;
+    }
 ```
+
+<br>
+
+#### Registration callback function
+
+It is possible to set a callback function that gets executed each time a service, characteristic, or descriptor is registered. This is done by setting the following attribute:
+
+```c
+ble_hs_cfg.gatts_register_cb = gatt_svr_register_cb;
+```
+In the above example `gatt_svr_register_cb` is the function that will be called. 
+
+More detailed information about the registration callback function can be found
+in the [BLE User Guide](../../../network/ble/ble_intro/) (TBD).
 
 <br>
 
