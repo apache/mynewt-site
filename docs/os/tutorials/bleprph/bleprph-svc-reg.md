@@ -22,20 +22,19 @@ so let's take a look at that now.  The attribute table is called
 ```c
 static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
-        /*** Service: GAP. */
-        .type               = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid128            = BLE_UUID16(BLE_GAP_SVC_UUID16),
-        .characteristics    = (struct ble_gatt_chr_def[]) { {
-            /*** Characteristic: Device Name. */
-            .uuid128            = BLE_UUID16(BLE_GAP_CHR_UUID16_DEVICE_NAME),
-            .access_cb          = gatt_svr_chr_access_gap,
-            .flags              = BLE_GATT_CHR_F_READ,
+        /*** Service: Security test. */
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = &gatt_svr_svc_sec_test_uuid.u,
+        .characteristics = (struct ble_gatt_chr_def[]) { {
+            /*** Characteristic: Random number generator. */
+            .uuid = &gatt_svr_chr_sec_test_rand_uuid.u,
+            .access_cb = gatt_svr_chr_access_sec_test,
+            .flags = BLE_GATT_CHR_F_READ,
         }, {
-            /*** Characteristic: Appearance. */
-            .uuid128            = BLE_UUID16(BLE_GAP_CHR_UUID16_APPEARANCE),
-            .access_cb          = gatt_svr_chr_access_gap,
-            .flags              = BLE_GATT_CHR_F_READ,
-        }, {
+            /*** Characteristic: Static value. */
+            .uuid = &gatt_svr_chr_sec_test_static_uuid.u,
+            .access_cb = gatt_svr_chr_access_sec_test,
+            .flags = BLE_GATT_CHR_F_READ,
     // [...]
 ```
 
@@ -79,31 +78,21 @@ characteristic array and service array.
 
 <br>
 
-```c hl_lines="26 31"
+```c hl_lines="16 21"
     {
-        /*** Alert Notification Service. */
+        /*** Service: Security test. */
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid128 = BLE_UUID16(GATT_SVR_SVC_ALERT_UUID),
+        .uuid = &gatt_svr_svc_sec_test_uuid.u,
         .characteristics = (struct ble_gatt_chr_def[]) { {
-            .uuid128 = BLE_UUID16(GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID),
-            .access_cb = gatt_svr_chr_access_alert,
+            /*** Characteristic: Random number generator. */
+            .uuid = &gatt_svr_chr_sec_test_rand_uuid.u,
+            .access_cb = gatt_svr_chr_access_sec_test,
             .flags = BLE_GATT_CHR_F_READ,
         }, {
-            .uuid128 = BLE_UUID16(GATT_SVR_CHR_NEW_ALERT),
-            .access_cb = gatt_svr_chr_access_alert,
-            .flags = BLE_GATT_CHR_F_NOTIFY,
-        }, {
-            .uuid128 = BLE_UUID16(GATT_SVR_CHR_SUP_UNR_ALERT_CAT_UUID),
-            .access_cb = gatt_svr_chr_access_alert,
+            /*** Characteristic: Static value. */
+            .uuid = &gatt_svr_chr_sec_test_static_uuid.u,
+            .access_cb = gatt_svr_chr_access_sec_test,
             .flags = BLE_GATT_CHR_F_READ,
-        }, {
-            .uuid128 = BLE_UUID16(GATT_SVR_CHR_UNR_ALERT_STAT_UUID),
-            .access_cb = gatt_svr_chr_access_alert,
-            .flags = BLE_GATT_CHR_F_NOTIFY,
-        }, {
-            .uuid128 = BLE_UUID16(GATT_SVR_CHR_ALERT_NOT_CTRL_PT),
-            .access_cb = gatt_svr_chr_access_alert,
-            .flags = BLE_GATT_CHR_F_WRITE,
         }, {
             0, /* No more characteristics in this service. */
         } },
@@ -152,7 +141,7 @@ It is possible to set a callback function that gets executed each time a service
 ```c
 ble_hs_cfg.gatts_register_cb = gatt_svr_register_cb;
 ```
-In the above example `gatt_svr_register_cb` is the function that will be called. 
+In the above example `gatt_svr_register_cb` is the function that will be called. This line can be found in *bleprph*'s `main.c` file
 
 More detailed information about the registration callback function can be found
 in the [BLE User Guide](../../../network/ble/ble_intro/) (TBD).
