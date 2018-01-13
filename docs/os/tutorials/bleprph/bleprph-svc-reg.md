@@ -41,10 +41,7 @@ static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
 <br>
 
 As you can see, the table is an array of service definitions (
-`struct ble_gatt_svc_def`).  This code excerpt contains a small part of the
-*GAP service*.  The GAP service exposes generic information about a device,
-such as its name and appearance.  Support for the GAP service is mandatory for
-all BLE peripherals.  Let's now consider the contents of this table in more
+`struct ble_gatt_svc_def`). Let's now consider the contents of this table in more
 detail.
 
 A service definition consists of the following fields:
@@ -58,7 +55,7 @@ A service definition consists of the following fields:
 <br>
 
 A service is little more than a container of characteristics; the
-characteristics themselves are where the real action happens.  A characteristic
+characteristics themselves are where the real action happens. A characteristic
 definition consists of the following fields:
 
 | *Field* | *Meaning* | *Notes* |
@@ -67,12 +64,12 @@ definition consists of the following fields:
 | access\_cb  | A callback function that gets executed whenever a peer device accesses this characteristic. | *For reads:* this function generates the value that gets sent back to the peer.<br>*For writes:* this function receives the written value as an argument. |
 | flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).|
 
-The access callback is what implements the characteristic's behavior.  Access
+The access callback is what implements the characteristic's behavior. Access
 callbacks are described in detail in the next section:
 [BLE Peripheral - Characteristic Access](bleprph-chr-access/).
 
 The service definition array and each characteristic definition array is
-terminated with an empty entry, represented with a 0.  The below code listing
+terminated with an empty entry, represented with a 0. The below code listing
 shows the last service in the array, including terminating zeros for the
 characteristic array and service array.
 
@@ -131,6 +128,9 @@ The *bleprph* app registers its services as follows:
         return rc;
     }
 ```
+
+More detailed information about the registration function can be found
+in the BLE User Guide: [ble_gatts_add_svcs](../../../network/ble/ble_hs/ble_gatts/functions/ble_gatts_add_svcs/).
 
 <br>
 
