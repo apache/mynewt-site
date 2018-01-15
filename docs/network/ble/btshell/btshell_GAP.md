@@ -185,7 +185,7 @@ Parameters default values are marked red.
 |             |oob               | XX:XX:XX:...              | Out-Of-Band secret (16 bytes) (OOB action)                 |
 |             |yesno             | Yy-Ny                     | Confirm passkey (for Passkey Confirm action)               |
 
-## Advertising
+## Advertising with Extended Advertising enabled
 
 |**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
 |-------------|------------------|---------------------------|------------------------------------------------------------|
@@ -251,6 +251,56 @@ Parameters default values are marked red.
 |             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
 |**advertise-remove**|           |                           | Remove configured advertising instance                     |
 |             |instance          | [`0`-UINT8_MAX]           | Advertising instance                                       |
+
+## Legacy Advertising with Extended Advertising disabled
+
+|**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
+|-------------|------------------|---------------------------|------------------------------------------------------------|
+|**advertise**|                  |                           | Enable advertising                                         |
+|             |stop              |                           | Stop enabled advertising                                   |
+|             |conn              | `und`                     | Connectable mode: undirected                               |
+|             |                  | non                       | non-connectable                                            |
+|             |                  | dir                       | directed                                                   |
+|             |discov            | `gen`                     | Discoverable mode: general discoverable                    |
+|             |                  | ltd                       | limited discoverable                                       |
+|             |                  | non                       | non-discoverable                                           |
+|             |scannable         | [`0`-1]                   | Use scannable advertising                                  |
+|             |peer_addr_type    | `public`                  | Remote device public address type                          |
+|             |                  | random                    | Remote device random address type                          |
+|             |                  | public_id                 | Remote device public address type (Identity)               |
+|             |                  | random_id                 | Remote device random address type (Identity)               |
+|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remove device address - if provided perform directed advertising |
+|             |own_addr_type     | `public`                  | Use public address for scan requests                       |
+|             |                  | random                    | Use random address for scan requests                       |
+|             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
+|             |                  | rpa_rnd                   | Use RPA address for scan requests <br> (fallback to random if no IRK) |
+|             |channel_map       | [`0`-UINT8_MAX}           | Primary advertising channels map. If 0 use all channels.   |
+|             |filter            | `none`                    | Advertising filter policy - no filtering, no whitelist used|
+|             |                  | scan                      | process all connection requests but only scans from white list|
+|             |                  | conn                      | process all scan request but only connection requests from white list|
+|             |                  | both                      | ignore all scan and connection requests unless in white list|
+|             |interval_min      | [`0`-UINT32_MAX]          | Minimum advertising interval in 0.625 miliseconds <br> If 0 use stack default. |
+|             |interval_max      | [`0`-UINT32_MAX]          | Maximum advertising interval in 0.625 miliseconds <br> If 0 use stack default. |
+|             |high_duty         | [`0`-1]                   | Use high_duty advertising                                  |
+|             |duration          | [`1`-INT32_MAX]           | Advertising duration in ms                                 |
+|**set-adv-data**|     |                                     | Configure advertising instance ADV_DATA. This allow to configure following TLVs:|
+|**set-scan-rsp**|     |                                     | Configure advertising instance SCAN_RSP. This allow to configure following TLVs:|
+|             |flags             | [`0`-UINT8_MAX]           | Flags value                                                |
+|             |uuid16            | [UINT16]                  | 16-bit UUID value (can be passed multiple times)           |
+|             |uuid16_is_complete| [`0`-1]                   | I 16-bit UUID list is complete                             |
+|             |uuid32            | [UINT32]                  | 32-bit UUID value (can be passed multiple times)           |
+|             |uuid32_is_complete| [`0`-1]                   | I 32-bit UUID list is complete                             |
+|             |uuid128           | XX:XX:XX:...              | 128-bit UUID value (16 bytes) (can be passed multiple times)|
+|             |uuid128_is_complete| [`0`-1]                  | I 128-bit UUID list is complete                            |
+|             |tx_power_level    | [-127 - 127]              | TX Power level to include                                  |
+|             |appearance        | [UINT16]                  | Appearance                                                 |
+|             |name              | string                    | Name                                                       |
+|             |advertising_interval| [UINT16]                | Advertising interval                                       |
+|             |service_data_uuid32| XX:XX:XX:...             | 32-bit UUID service data                                   |
+|             |service_data_uuid128| XX:XX:XX:...            | 128-bit UUID service data                                  |
+|             |uri               | XX:XX:XX:...              | URI                                                        |
+|             |msg_data          | XX:XX:XX:...              | Manufacturer data                                          |
+|             |eddystone_url     | string                    | Eddystone with specified URL                               |
 
 ## L2CAP Connection Oriented Channels
 |**Command**  | **Parmeters**    | ** Possible values**      | **Description**                                            |
