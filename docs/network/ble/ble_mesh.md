@@ -2,16 +2,16 @@
 
 ### Introduction to Mesh
 
-Bluetooth Mesh is new standard from Bluetooth SIG that was released in 2017. It
-enables many-to-many device communication (os opose to point-to-point approach
+Bluetooth Mesh is a new standard from Bluetooth SIG that was released in 2017. It
+enables many-to-many device communication (as opposed to point-to-point approach
 in BLE) and is optimised for large-scale networks like building automation or
-sensors network. It utilize managed flood based approach where only
-main-powered nodes relay messages making it very power efficient (battery
+sensors network. It utilizes managed flood based approach where only
+mains-powered nodes relay messages making it very power efficient (battery
 powered low-power nodes that don't relay messages can operate in mesh network
 for years).
 
 Bluetooth Mesh is complementary to Bluetooth specification and requires
-features from 4.0 release only. This allows to deploy network using hardware
+features from 4.0 release only. This allows deployment of networks using hardware
 already available on the market. 
 
 ### Topology
@@ -74,8 +74,8 @@ standard across device types. Those consists of:
   saved states on devices 
 * Lighting - defines a set functionalities related to lighting control
 
-Complex models eg Lighting may contain other models eg Generic On/Off. Following
-image shows example of Light Lightness Server Model.
+Complex models e.g. Lighting may contain other models eg Generic On/Off. The following
+image shows an example of Light Lightness Server Model.
 
 ![picture alt](mesh_lightning_model.jpg "Light Lightness Server model (source: Mesh Model Specification 1.0)")
 
