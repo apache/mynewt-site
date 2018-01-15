@@ -46,7 +46,7 @@ Add the repository for the binary and source packages to the `mynewt.list` apt s
 
 ```no-highlight
 $ sudo tee /etc/apt/sources.list.d/mynewt.list <<EOF
-deb https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
+deb [arch=amd64] https://raw.githubusercontent.com/runtimeco/debian-mynewt/master latest main
 EOF
 ```
 
