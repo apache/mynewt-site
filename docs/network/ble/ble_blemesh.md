@@ -14,7 +14,7 @@ newt target set blemesh syscfg=BLE_MESH_PB_GATT=1:BLE_MESH_DEV_UUID='(uint8_t[16
 ```
 
 Every device should have unique Device UUID so config amend and rebuild is needed for each of
-device that will be added to a network.
+the devices that will be added to a network.
 
 ```
 newt target set blemesh syscfg=BLE_MESH_PB_GATT=1:BLE_MESH_DEV_UUID='(uint8_t[16]){0x22, 0x21, 0}'
