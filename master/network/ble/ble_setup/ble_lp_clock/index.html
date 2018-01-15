@@ -485,6 +485,28 @@ clock and is no longer used. The configuration will look as below:</p>
 <p>On platforms without 32768 Hz crystal available it usually can be synthesized by
 setting <code>XTAL_32768_SYNTH</code> to <code>1</code> - this is also already configured in existing
 BSPs.</p>
+<h3 id="clock-accuracy">Clock accuracy</h3>
+<p>Controller needs to know clock source accuracy since this affects sleep time and has
+to be taken into account when scheduling Bluetooth events. The configuration variable
+<code>BLE_LL_OUR_SCA</code> defines clock drift (in ppm) while <code>BLE_LL_MASTER_SCA</code> is an
+enumerated value derived from clock drift value and shall be set as follows:</p>
+<ul>
+<li>SCA between 251 and 500 ppm = 0</li>
+<li>SCA between 151 and 250 ppm = 1</li>
+<li>SCA between 101 and 150 ppm = 2</li>
+<li>SCA between 76 and 100 ppm = 3</li>
+<li>SCA between 51 and 75 ppm = 4</li>
+<li>SCA between 31 and 50 ppm = 5</li>
+<li>SCA between 21 and 30 ppm = 6</li>
+<li>SCA between 0 and 20 ppm = 7</li>
+</ul>
+<p>The default value of 60 ppm is large enough to work with most platforms with LFXO.
+For platforms without LFXO (e.g. using internal RC oscillator or synthesized clock
+instead) it shall be changed if necessary.</p>
+<p>Note that using clock drift value larger than necessary will impact battery life since
+controller will use wider margin for scheduling Bluetooth events thus reducing sleep
+time. For this reason it is recommended to adjust clock drift value to match clock
+source used on platform.</p>
 <h3 id="crystal-settle-time-configuration">Crystal settle time configuration</h3>
 <p>The configuration variable <code>BLE_XTAL_SETTLE_TIME</code> is used by the controller to turn
 on the necessary clock source(s) for the radio and associated peripherals prior to
