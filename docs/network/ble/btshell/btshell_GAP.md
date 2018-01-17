@@ -39,12 +39,12 @@ Parameters default values are marked red.
 |             |mtu               | [23-UINT16_MAX]           | GATT Maximum Transmission Unit (MTU)                       |
 |             |irk               | XX:XX:XX...               | Local Identity Resolving Key (16 byte                      |
 |**set-priv-mode**   |           |                           | Set privacy mode for device                                |
-|             | addr             | XX:XX:XX:XX:XX:XX         | Remove device address                                      |
+|             | addr             | XX:XX:XX:XX:XX:XX         | Remote device address                                      |
 |             | addr_type        | `public`                  | Remote device public address type                          |
 |             |                  | random                    | Remote device random address type                          |
 |             | mode             | [`0`-1]                   | 0 - use network privacy, 1 - use device privacy            |
 |**white-list**|                 |                           | Add devices to white list <br> (this command accepts multiple instances of addr and addr_type parameters) |
-|             | addr             | XX:XX:XX:XX:XX:XX         | Remove device address                                      |
+|             | addr             | XX:XX:XX:XX:XX:XX         | Remote device address                                      |
 |             | addr_type        | `public`                  | Remote device public address type                          |
 |             |                  | random                    | Remote device random address type                          |
 
@@ -88,7 +88,7 @@ Parameters default values are marked red.
 |             |                  | random                    | Remote device random address type                          |
 |             |                  | public_id                 | Remote device public address type (Identity)               |
 |             |                  | random_id                 | Remote device random address type (Identity)               |
-|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remove device address                                      |
+|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remote device address                                      |
 |             |own_addr_type     | `public`                  | Use public address for scan requests                       |
 |             |                  | random                    | Use random address for scan requests                       |
 |             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
@@ -197,7 +197,7 @@ Parameters default values are marked red.
 |             |                  | random                    | Remote device random address type                          |
 |             |                  | public_id                 | Remote device public address type (Identity)               |
 |             |                  | random_id                 | Remote device random address type (Identity)               |
-|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remove device address - if provided perform directed advertising |
+|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remote device address - if provided perform directed advertising |
 |             |own_addr_type     | `public`                  | Use public address for scan requests                       |
 |             |                  | random                    | Use random address for scan requests                       |
 |             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
@@ -269,7 +269,7 @@ Parameters default values are marked red.
 |             |                  | random                    | Remote device random address type                          |
 |             |                  | public_id                 | Remote device public address type (Identity)               |
 |             |                  | random_id                 | Remote device random address type (Identity)               |
-|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remove device address - if provided perform directed advertising |
+|             |peer_addr         | XX:XX:XX:XX:XX:XX         | Remote device address - if provided perform directed advertising |
 |             |own_addr_type     | `public`                  | Use public address for scan requests                       |
 |             |                  | random                    | Use random address for scan requests                       |
 |             |                  | rpa_pub                   | Use RPA address for scan requests <br> (fallback to public if no IRK) |
