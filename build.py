@@ -2,23 +2,27 @@
 
 import os
 import sh
-from git import Repo
 from mkdocs import config
 
-def build(site_dir):
-    # make sure there are no local mods outstanding
-    repo = Repo(os.getcwd())
-    if repo.is_dirty() or repo.untracked_files:
-        print "ERROR: Your working directory has outstanding changes."
-        print "Commit or stash them."
-        return
+dependent_repos = ['mynewt-documentation', 'mynewt-core', 'mynewt-newt', 'mynewt-newtmgr']
+
+def build(cwd, site_dir):
 
     cfg = config.load_config()
 
-    # sanity check that the version dirs exist as named
+    # sanity check - the version dirs exist as named
     for version in cfg['extra']['versions']:
-        d = os.path.join('versions', version['dir'])
-        print 'Verifying dir %s' % (d)
+        if not 'separate' in version or not version['separate']:
+            d = os.path.join('versions', version['dir'])
+            print 'Verifying dir %s' % (d)
+            if not os.path.isdir(d):
+                print "The directory %s does not exist" % (d)
+                return
+
+    # sanity check - dependent_repos exist in '..'
+    for repo in dependent_repos:
+        d = os.path.join(cwd, '..', repo)
+        print 'Verifying repo dependency in %s' % (d)
         if not os.path.isdir(d):
             print "The directory %s does not exist" % (d)
             return
@@ -41,12 +45,16 @@ def build(site_dir):
 
     for version in cfg['extra']['versions']:
         print "Building doc pages for: %s" % (version['dir'])
-        sh.mkdocs('build', '--site-dir', os.path.join(site_dir, version['dir']), _cwd = os.path.join("versions", version['dir']))
+        if not 'separate' in version or not version['separate']:
+            sh.mkdocs('build', '--site-dir', os.path.join(site_dir, version['dir']), _cwd = os.path.join("versions", version['dir']))
+        else:
+            repo_dir = os.path.join(cwd, '..', 'mynewt-documentation')
+            sh.make('clean', _cwd = repo_dir)
+            sh.make('docs', _cwd = repo_dir)
+            sh.mv(os.path.join(repo_dir, '_build', 'html'), os.path.join(site_dir, version['dir']))
         if 'latest' in version and version['latest']:
             sh.ln('-s', version['dir'], 'latest', _cwd = site_dir)
 
-    # Make sure old links still work
-    sh.ln('-s', 'master', 'develop', _cwd = site_dir)
-
 if __name__ == '__main__':
-    build(os.path.join(os.path.dirname(os.path.abspath(__file__)), "site"))
+    cwd = os.path.dirname(os.path.abspath(__file__))
+    build(cwd, os.path.join(cwd, "site"))
