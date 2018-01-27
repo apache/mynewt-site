@@ -10,7 +10,7 @@
     
 
     
-    <title>Scheduler &mdash; Apache Mynewt 1.3.0 documentation</title>
+    <title>Porting Mynewt OS &mdash; Apache Mynewt 1.3.0 documentation</title>
     
 
     
@@ -41,9 +41,9 @@
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
-          <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
-          <link rel="next" title="CPU Time" href="../cputime/os_cputime.html"/>
-          <link rel="prev" title="Mynewt Core OS" href="../mynewt_os.html"/> 
+          <link rel="up" title="OS User Guide" href="../../os_user_guide.html"/>
+          <link rel="next" title="BSP Porting" href="port_bsp.html"/>
+          <link rel="prev" title="Core OS API" href="../API.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -156,12 +156,10 @@ ga("send", "pageview");
     
       <a href="../../os_user_guide.html">OS User Guide</a> /
     
-      <a href="../mynewt_os.html">Mynewt Core OS</a> /
-    
-    Scheduler
+    Porting Mynewt OS
     
   <div class="sourcelink">
-    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/context_switch/context_switch.rst" class="icon icon-github"
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/porting/port_os.rst" class="icon icon-github"
            rel="nofollow"> Edit on GitHub</a>
 </div>
   </div>
@@ -224,13 +222,13 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Scheduler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../cputime/os_cputime.html">CPU Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mynewt_os.html">OS Core</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Porting Mynewt OS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="port_bsp.html">BSP Porting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="port_mcu.html">Porting Mynewt to a new MCU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="port_cpu.html">Porting Mynewt to a new CPU Architecture</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Mynewt OS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
@@ -266,46 +264,115 @@ ga("send", "pageview");
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="scheduler">
-<h1>Scheduler<a class="headerlink" href="#scheduler" title="Permalink to this headline">¶</a></h1>
-<p>Scheduler’s job is to maintain the list of tasks and decide which one
-should be running next.</p>
-<div class="section" id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>Task states can be <em>running</em>, <em>ready to run</em> or <em>sleeping</em>.</p>
-<p>When task is <em>running</em>, CPU is executing in that task’s context. The
-program counter (PC) is pointing to instructions task wants to execute
-and stack pointer (SP) is pointing to task’s stack.</p>
-<p>Task which is <em>ready to run</em> wants to get on the CPU to do its work.</p>
-<p>Task which is <em>sleeping</em> has no more work to do. It’s waiting for
-someone else to wake it up.</p>
-<p>Scheduler algorithm is simple: from among the tasks which are ready to
-run, pick the the one with highest priority (lowest numeric value in
-task’s t_prio field), and make its state <em>running</em>.</p>
-<p>Tasks which are either <em>running</em> or <em>ready to run</em> are kept in linked
-list <code class="docutils literal notranslate"><span class="pre">g_os_run_list</span></code>. This list is ordered by priority.</p>
-<p>Tasks which are <em>sleeping</em> are kept in linked list <code class="docutils literal notranslate"><span class="pre">g_os_sleep_list</span></code>.</p>
-<p>Scheduler has a CPU architecture specific component; this code is
-responsible for swapping in the task which should be <em>running</em>. This
-process is called context switch. During context switching the state of
-the CPU (e.g. registers) for the currently <em>running</em> task is stored and
-the new task is swapped in.</p>
+  <div class="section" id="porting-mynewt-os">
+<h1>Porting Mynewt OS<a class="headerlink" href="#porting-mynewt-os" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
 </div>
-<div class="section" id="api">
-<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>This chapter describes how to adapt the Mynewt OS to different
+platforms.</p>
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="../API.html#c.os_sched" title="os_sched"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched()</span></code></a></li>
-<li><code class="xref c c-func docutils literal notranslate"><span class="pre">os_arch_ctx_sw()</span></code></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_ctx_sw_hook" title="os_sched_ctx_sw_hook"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_ctx_sw_hook()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_get_current_task" title="os_sched_get_current_task"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_get_current_task()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_insert" title="os_sched_insert"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_insert()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_next_task" title="os_sched_next_task"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_next_task()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_os_timer_exp" title="os_sched_os_timer_exp"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_os_timer_exp()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_remove" title="os_sched_remove"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_remove()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_resort" title="os_sched_resort"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_resort()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_set_current_task" title="os_sched_set_current_task"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_set_current_task()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_sleep" title="os_sched_sleep"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_sleep()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_wakeup" title="os_sched_wakeup"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_wakeup()</span></code></a></li>
+<li><a class="reference internal" href="#description" id="id1">Description</a></li>
+<li><a class="reference internal" href="#board-support-package-bsp-dependency" id="id2">Board Support Package (BSP) Dependency</a></li>
+<li><a class="reference internal" href="#mcu-dependency" id="id3">MCU Dependency</a></li>
+<li><a class="reference internal" href="#mcu-hal" id="id4">MCU HAL</a></li>
+<li><a class="reference internal" href="#cpu-core-dependency" id="id5">CPU Core Dependency</a></li>
+</ul>
+</div>
+<div class="section" id="description">
+<h2><a class="toc-backref" href="#id1">Description</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The Mynewt OS is a complete multi-tasking environment with scheduler,
+time control, buffer management, and synchronization objects. it also
+includes libraries and services like console, command shell, image
+manager, bootloader, and file systems etc.</p>
+<p>Thee majority of this software is platform independent and requires no
+intervention to run on your platform, but some of the components require
+support from the underlying platform.</p>
+<p>The platform dependency of these components can fall into several
+categories:</p>
+<ul class="simple">
+<li><strong>CPU Core Dependencies</strong> – Specific code or configuration to
+operate the CPU core within your target platform</li>
+<li><strong>MCU Dependencies</strong> – Specific code or configuration to operate the
+MCU or SoC within your target platform</li>
+<li><strong>BSP Dependencies</strong> – Specific code or configuration to accommodate
+the specific layout and functionality of your target platform</li>
+</ul>
+</div>
+<div class="section" id="board-support-package-bsp-dependency">
+<h2><a class="toc-backref" href="#id2">Board Support Package (BSP) Dependency</a><a class="headerlink" href="#board-support-package-bsp-dependency" title="Permalink to this headline">¶</a></h2>
+<p>With all of the functionality provided by the core, MCU, and MCU HAL
+(Hardware Abstraction Layer), there are still some things that must be
+specified for your particular system. This is provided in Mynewt to
+allow you the flexibility to design for the exact functionality,
+peripherals and features that you require in your product.</p>
+<p>In Mynewt, these settings/components are included in a Board Support
+Package (BSP). The BSP contains the information specific to running
+Mynewt on a target platform or hardware board. Mynewt supports some
+common open source hardware as well as the development boards for some
+common MCUs. These development systems might be enough for you to get
+your prototype up and running, but when building a product you are
+likely going to have your own board which is slightly different from
+those already supported by Mynewt.</p>
+<p>For example, you might decide on your system that 16 Kilobytes of flash
+space in one flash device is reserved for a flash file system. Or on
+your system you may decide that GPIO pin 5 of the MCU is connected to
+the system LED. Or you may decide that the OS Tick (the underlying time
+source for the OS) should run slower than the defaults to conserve
+battery power. These types of behaviors are specified in the BSP.</p>
+<p>The information provided in the BSP (what you need to specify to get a
+complete executable) can vary depending on the MCU and its underlying
+core architecture. For example, some MCUs have dedicated pins for UART,
+SPI etc, so there is no configuration required in the BSP when using
+these peripherals. However some MCUs have a pin multiplexor that allows
+the UART to be mapped to several different pins. For these MCUs, the BSP
+must specify if and where the UART pins should appear to match the
+hardware layout of your system.</p>
+<ul class="simple">
+<li>If your BSP is already supported my Mynewt, there is no additional
+BSP work involved in porting to your platform. You need only to set
+the <code class="docutils literal notranslate"><span class="pre">bsp</span></code> attribute in your Mynewt target using the <a class="reference internal" href="../../../newt/index.html"><span class="doc">newt command
+tool</span></a>.</li>
+<li>If your BSP is not yet supported by Mynewt, you can add support
+following the instructions on <a class="reference internal" href="port_bsp.html"><span class="doc">BSP Porting</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="mcu-dependency">
+<h2><a class="toc-backref" href="#id3">MCU Dependency</a><a class="headerlink" href="#mcu-dependency" title="Permalink to this headline">¶</a></h2>
+<p>Some OS code depends on the MCU or SoC that the system contains. For
+example, the MCU may specify the potential memory map of the system -
+where code and data can reside.</p>
+<ul class="simple">
+<li>If your MCU is already supported my Mynewt, there is no additional
+MCU work involved in porting to your platform. You need only to set
+the <code class="docutils literal notranslate"><span class="pre">arch</span></code> attribute in your Mynewt target using the <a class="reference internal" href="../../../newt/index.html"><span class="doc">newt command
+tool</span></a>.</li>
+<li>If your MCU is not yet supported by Mynewt, you can add support
+following the instructions in <a class="reference internal" href="port_mcu.html"><span class="doc">Porting Mynewt to a new MCU</span></a>.</li>
+</ul>
+</div>
+<div class="section" id="mcu-hal">
+<h2><a class="toc-backref" href="#id4">MCU HAL</a><a class="headerlink" href="#mcu-hal" title="Permalink to this headline">¶</a></h2>
+<p>Mynewt’s architecture supports a hardware abstraction layer (HAL) for
+common on or off-chip MCU peripherals such as GPIO, UARTs, flash memory
+etc. Even if your MCU is supported for the core OS, you may find that
+you need to implement the HAL functionality for a new peripheral. For a
+description of the HAL abstraction and implementation information, see
+the <span class="xref std std-doc">HAL API</span></p>
+</div>
+<div class="section" id="cpu-core-dependency">
+<h2><a class="toc-backref" href="#id5">CPU Core Dependency</a><a class="headerlink" href="#cpu-core-dependency" title="Permalink to this headline">¶</a></h2>
+<p>Some OS code depends on the CPU core that your system is using. For
+example, a given CPU core has a specific assembly language instruction
+set, and may require special cross compiler or compiler settings to use
+the appropriate instruction set.</p>
+<ul class="simple">
+<li>If your CPU architecture is already supported my Mynewt, there is no
+CPU core work involved in porting to your platform. You need only to
+set the <code class="docutils literal notranslate"><span class="pre">arch</span></code> and <code class="docutils literal notranslate"><span class="pre">compiler</span></code> attributes in your Mynewt target
+using the <a class="reference internal" href="../../../newt/index.html"><span class="doc">newt command tool</span></a>.</li>
+<li>If your CPU architecture is not supported by Mynewt, you can add
+support following the instructions on <a class="reference internal" href="port_cpu.html"><span class="doc">Porting Mynewt to a new CPU Architecture</span></a>.</li>
 </ul>
 </div>
 </div>
@@ -316,10 +383,10 @@ the new task is swapped in.</p>
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../cputime/os_cputime.html" class="btn btn-neutral float-right" title="CPU Time" accesskey="n">Next: CPU Time <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="port_bsp.html" class="btn btn-neutral float-right" title="BSP Porting" accesskey="n">Next: BSP Porting <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../mynewt_os.html" class="btn btn-neutral" title="Mynewt Core OS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Mynewt Core OS</a>
+        <a href="../API.html" class="btn btn-neutral" title="Core OS API" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Core OS API</a>
       
     </div>
 

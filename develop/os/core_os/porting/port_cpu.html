@@ -10,7 +10,7 @@
     
 
     
-    <title>Scheduler &mdash; Apache Mynewt 1.3.0 documentation</title>
+    <title>Porting Mynewt to a new CPU Architecture &mdash; Apache Mynewt 1.3.0 documentation</title>
     
 
     
@@ -41,9 +41,9 @@
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
-          <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
-          <link rel="next" title="CPU Time" href="../cputime/os_cputime.html"/>
-          <link rel="prev" title="Mynewt Core OS" href="../mynewt_os.html"/> 
+          <link rel="up" title="Porting Mynewt OS" href="port_os.html"/>
+          <link rel="next" title="Console" href="../../modules/console/console.html"/>
+          <link rel="prev" title="Porting Mynewt to a new MCU" href="port_mcu.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -156,12 +156,12 @@ ga("send", "pageview");
     
       <a href="../../os_user_guide.html">OS User Guide</a> /
     
-      <a href="../mynewt_os.html">Mynewt Core OS</a> /
+      <a href="port_os.html">Porting Mynewt OS</a> /
     
-    Scheduler
+    Porting Mynewt to a new CPU Architecture
     
   <div class="sourcelink">
-    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/context_switch/context_switch.rst" class="icon icon-github"
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/porting/port_cpu.rst" class="icon icon-github"
            rel="nofollow"> Edit on GitHub</a>
 </div>
   </div>
@@ -224,13 +224,13 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Scheduler</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../cputime/os_cputime.html">CPU Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mynewt_os.html">OS Core</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="port_os.html">Porting Mynewt OS</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="port_bsp.html">BSP Porting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="port_mcu.html">Porting Mynewt to a new MCU</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Porting Mynewt to a new CPU Architecture</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Mynewt OS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
@@ -266,47 +266,54 @@ ga("send", "pageview");
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="scheduler">
-<h1>Scheduler<a class="headerlink" href="#scheduler" title="Permalink to this headline">¶</a></h1>
-<p>Scheduler’s job is to maintain the list of tasks and decide which one
-should be running next.</p>
-<div class="section" id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>Task states can be <em>running</em>, <em>ready to run</em> or <em>sleeping</em>.</p>
-<p>When task is <em>running</em>, CPU is executing in that task’s context. The
-program counter (PC) is pointing to instructions task wants to execute
-and stack pointer (SP) is pointing to task’s stack.</p>
-<p>Task which is <em>ready to run</em> wants to get on the CPU to do its work.</p>
-<p>Task which is <em>sleeping</em> has no more work to do. It’s waiting for
-someone else to wake it up.</p>
-<p>Scheduler algorithm is simple: from among the tasks which are ready to
-run, pick the the one with highest priority (lowest numeric value in
-task’s t_prio field), and make its state <em>running</em>.</p>
-<p>Tasks which are either <em>running</em> or <em>ready to run</em> are kept in linked
-list <code class="docutils literal notranslate"><span class="pre">g_os_run_list</span></code>. This list is ordered by priority.</p>
-<p>Tasks which are <em>sleeping</em> are kept in linked list <code class="docutils literal notranslate"><span class="pre">g_os_sleep_list</span></code>.</p>
-<p>Scheduler has a CPU architecture specific component; this code is
-responsible for swapping in the task which should be <em>running</em>. This
-process is called context switch. During context switching the state of
-the CPU (e.g. registers) for the currently <em>running</em> task is stored and
-the new task is swapped in.</p>
-</div>
-<div class="section" id="api">
-<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="porting-mynewt-to-a-new-cpu-architecture">
+<h1>Porting Mynewt to a new CPU Architecture<a class="headerlink" href="#porting-mynewt-to-a-new-cpu-architecture" title="Permalink to this headline">¶</a></h1>
+<p>A new CPU architecture typically requires the following:</p>
 <ul class="simple">
-<li><a class="reference internal" href="../API.html#c.os_sched" title="os_sched"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched()</span></code></a></li>
-<li><code class="xref c c-func docutils literal notranslate"><span class="pre">os_arch_ctx_sw()</span></code></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_ctx_sw_hook" title="os_sched_ctx_sw_hook"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_ctx_sw_hook()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_get_current_task" title="os_sched_get_current_task"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_get_current_task()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_insert" title="os_sched_insert"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_insert()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_next_task" title="os_sched_next_task"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_next_task()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_os_timer_exp" title="os_sched_os_timer_exp"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_os_timer_exp()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_remove" title="os_sched_remove"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_remove()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_resort" title="os_sched_resort"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_resort()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_set_current_task" title="os_sched_set_current_task"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_set_current_task()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_sleep" title="os_sched_sleep"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_sleep()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_sched_wakeup" title="os_sched_wakeup"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sched_wakeup()</span></code></a></li>
+<li>A new compiler</li>
+<li>New architecture-specific code for the OS</li>
+<li>Helper libraries to help others porting to the same architecture</li>
 </ul>
+<p>These are discussed below:</p>
+<div class="section" id="create-a-new-compiler">
+<h2>Create A New Compiler<a class="headerlink" href="#create-a-new-compiler" title="Permalink to this headline">¶</a></h2>
+<p>NOTE: Newt does not automatically install the compilers require to build all platforms. Its up to the user using their
+local machines package manager to install the compilers. The step described here just registers the compiler with newt.</p>
+<p>Create a new directory (named after the compiler you are adding). Copy the <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file from another compiler.</p>
+<p>Edit the <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file and change the configuration attributes to match your compiler. Most are self-explanatory
+paths to different compiler and linker tools. There are a few configuration attributes worth noting.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Configuration Attributes</strong></th>
+<th class="head"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>pkg.keywords</td>
+<td>Specific keywords to help others search for this using newt</td>
+</tr>
+<tr class="row-odd"><td>compiler.flags.default</td>
+<td>default compiler flags for this architecture</td>
+</tr>
+<tr class="row-even"><td>compiler.flags.optimized</td>
+<td>additional flags when the newt tool builds an optimized image</td>
+</tr>
+<tr class="row-odd"><td>compiler.flags.debug</td>
+<td>additional flags when the newt tool builds a debug image</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="implement-architecture-specific-os-code">
+<h2>Implement Architecture-specific OS code<a class="headerlink" href="#implement-architecture-specific-os-code" title="Permalink to this headline">¶</a></h2>
+<p>There are several architecture-specific code functions that are required when implementing a new architecture. You can
+find examples in the <code class="docutils literal notranslate"><span class="pre">sim</span></code> architecture within Mynewt.</p>
+<p>When porting to a new CPU architecture, use the existing architectures as samples when writing your implementation.</p>
+<p>Please contact the Mynewt development list for help and advice portingto new MCU.</p>
 </div>
 </div>
 
@@ -316,10 +323,10 @@ the new task is swapped in.</p>
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../cputime/os_cputime.html" class="btn btn-neutral float-right" title="CPU Time" accesskey="n">Next: CPU Time <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../../modules/console/console.html" class="btn btn-neutral float-right" title="Console" accesskey="n">Next: Console <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../mynewt_os.html" class="btn btn-neutral" title="Mynewt Core OS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Mynewt Core OS</a>
+        <a href="port_mcu.html" class="btn btn-neutral" title="Porting Mynewt to a new MCU" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Porting Mynewt to a new MCU</a>
       
     </div>
 
