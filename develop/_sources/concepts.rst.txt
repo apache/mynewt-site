@@ -120,6 +120,8 @@ package. This makes it very clean and easy to write re-usable
 components, which can describe their Dependencies and APIs to the rest
 of the system.
 
+.. _mynewt-target:
+
 Target
 ~~~~~~
 
