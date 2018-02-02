@@ -31,7 +31,7 @@ Any caveats to be careful about (e.g. high memory requirements).>
 The following example shows how to initialize a semaphore used for exclusive access.
 
 ```c
-struct os_mutex g_os_sem;
+struct os_sem g_os_sem;
 os_error_t err;
 
 err = os_sem_init(&g_os_sem, 1);
