@@ -29,7 +29,7 @@ This is a convenience function. It is useful when the amount of data to be read 
 #### Header file
 
 ```c
-#include "fs/fs.h"
+#include "fs/fsutil.h"
 ```
 
 #### Example
