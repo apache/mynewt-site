@@ -22,7 +22,7 @@ Calls fs\_open(), fs\_write(), and fs\_close() to open a file at the specified p
 #### Header file
 
 ```c
-#include "fs/fs.h"
+#include "fs/fsutil.h"
 ```
 
 #### Example
