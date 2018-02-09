@@ -10,7 +10,7 @@
     
 
     
-    <title>CPU Time &mdash; Apache Mynewt 1.3.0 documentation</title>
+    <title>Task &mdash; Apache Mynewt 1.3.0 documentation</title>
     
 
     
@@ -42,8 +42,8 @@
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
           <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
-          <link rel="next" title="OS Time" href="../time/os_time.html"/>
-          <link rel="prev" title="Scheduler" href="../context_switch/context_switch.html"/> 
+          <link rel="next" title="Core OS API" href="../API.html"/>
+          <link rel="prev" title="OS Time" href="../time/os_time.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -158,10 +158,10 @@ ga("send", "pageview");
     
       <a href="../mynewt_os.html">Mynewt Core OS</a> /
     
-    CPU Time
+    Task
     
   <div class="sourcelink">
-    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/cputime/os_cputime.rst" class="icon icon-github"
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/task/task.rst" class="icon icon-github"
            rel="nofollow"> Edit on GitHub</a>
 </div>
   </div>
@@ -226,9 +226,9 @@ ga("send", "pageview");
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../context_switch/context_switch.html">Scheduler</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">CPU Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../cputime/os_cputime.html">CPU Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../time/os_time.html">OS Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
 </ul>
 </li>
@@ -268,49 +268,104 @@ ga("send", "pageview");
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="cpu-time">
-<h1>CPU Time<a class="headerlink" href="#cpu-time" title="Permalink to this headline">¶</a></h1>
-<p>The MyNewt <code class="docutils literal notranslate"><span class="pre">cputime</span></code> module provides high resolution time and timer
-support.</p>
+  <div class="section" id="task">
+<h1>Task<a class="headerlink" href="#task" title="Permalink to this headline">¶</a></h1>
+<p>A task, along with the scheduler, forms the basis of the Mynewt OS. A
+task consists of two basic elements: a task stack and a task function.
+The task function is basically a forever loop, waiting for some “event”
+to wake it up. There are two methods used to signal a task that it has
+work to do: event queues and semaphores (see the appropriate manual
+sections for descriptions of these features).</p>
+<p>The Mynewt OS is a multi-tasking, preemptive OS. Every task is assigned
+a task priority (from 0 to 255), with 0 being the highest priority task.
+If a higher priority task than the current task wants to run, the
+scheduler preempts the currently running task and switches context to
+the higher priority task. This is just a fancy way of saying that the
+processor stack pointer now points to the stack of the higher priority
+task and the task resumes execution where it left off.</p>
+<p>Tasks run to completion unless they are preempted by a higher priority
+task. The developer must insure that tasks eventually “sleep”; otherwise
+lower priority tasks will never get a chance to run (actually, any task
+lower in priority than the task that never sleeps). A task will be put
+to sleep in the following cases: it puts itself to sleep using
+<a class="reference internal" href="../API.html#c.os_time_delay" title="os_time_delay"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_time_delay()</span></code></a>, it waits on an event queue which is empty or
+attempts to obtain a mutex or a semaphore that is currently owned by
+another task.</p>
+<p>Note that other sections of the manual describe these OS features in
+more detail.</p>
 <div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">cputime</span></code> API provides high resolution time and timer support. The
-module must be initialized, using the <code class="docutils literal notranslate"><span class="pre">os_cputime_init()</span></code> function,
-with the clock frequency to use. The module uses the <code class="docutils literal notranslate"><span class="pre">hal_timer</span></code> API,
-defined in hal/hal_timer.h, to access the hardware timers. It uses the
-hardware timer number specified by the <code class="docutils literal notranslate"><span class="pre">OS_CPUTIME_TIMER_NUM</span></code> system
-configuration setting.</p>
+<p>In order to create a task two data structures need to be defined: the
+task object (struct os_task) and its associated stack. Determining the
+stack size can be a bit tricky; generally developers should not declare
+large local variables on the stack so that task stacks can be of limited
+size. However, all applications are different and the developer must
+choose the stack size accordingly. NOTE: be careful when declaring your
+stack! The stack is in units of <code class="docutils literal notranslate"><span class="pre">os_stack_t</span></code> sized elements (generally
+32-bits). Looking at the example given below and assuming <code class="docutils literal notranslate"><span class="pre">os_stack_t</span></code>
+is defined to be a 32-bit unsigned value, “my_task_stack” will use 256
+bytes.</p>
+<p>A task must also have an associated “task function”. This is the
+function that will be called when the task is first run. This task
+function should never return!</p>
+<p>In order to inform the Mynewt OS of the new task and to have it added to
+the scheduler, the <a class="reference internal" href="../API.html#c.os_task_init" title="os_task_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_init()</span></code></a> function is called. Once
+<a class="reference internal" href="../API.html#c.os_task_init" title="os_task_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_init()</span></code></a> is called, the task is made ready to run and is added
+to the active task list. Note that a task can be initialized (started)
+before or after the os has started (i.e. before <a class="reference internal" href="../API.html#c.os_start" title="os_start"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_start()</span></code></a> is
+called) but must be initialized after the os has been initialized (i.e.
+<a class="reference internal" href="../API.html#c.os_init" title="os_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_init()</span></code></a> has been called). In most of the examples and current Mynewt
+projects, the os is initialized, tasks are initialized, and the the os
+is started. Once the os has started, the highest priority task will be
+the first task set to run.</p>
+<p>Information about a task can be obtained using the
+<a class="reference internal" href="../API.html#c.os_task_info_get_next" title="os_task_info_get_next"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_info_get_next()</span></code></a> API. Developers can walk the list of tasks
+to obtain information on all created tasks. This information is of type
+<a class="reference internal" href="../API.html#c.os_task_info" title="os_task_info"><code class="xref c c-data docutils literal notranslate"><span class="pre">os_task_info</span></code></a>.</p>
+<p>The following is a very simple example showing a single application
+task. This task simply toggles an LED at a one second interval.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Create a simple &quot;project&quot; with a task that blinks a LED every second */</span>
+
+<span class="cm">/* Define task stack and task object */</span>
+<span class="cp">#define MY_TASK_PRI         (OS_TASK_PRI_HIGHEST)</span>
+<span class="cp">#define MY_STACK_SIZE       (64)</span>
+<span class="k">struct</span> <span class="n">os_task</span> <span class="n">my_task</span><span class="p">;</span>
+<span class="n">os_stack_t</span> <span class="n">my_task_stack</span><span class="p">[</span><span class="n">MY_STACK_SIZE</span><span class="p">];</span>
+
+<span class="cm">/* This is the task function */</span>
+<span class="kt">void</span> <span class="nf">my_task_func</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* Set the led pin as an output */</span>
+    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">LED_BLINK_PIN</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="cm">/* The task is a forever loop that does not return */</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* Wait one second */</span>
+        <span class="n">os_time_delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+
+        <span class="cm">/* Toggle the LED */</span>
+        <span class="n">hal_gpio_toggle</span><span class="p">(</span><span class="n">LED_BLINK_PIN</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cm">/* This is the main function for the project */</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+
+    <span class="cm">/* Perform system and package initialization */</span>
+    <span class="n">sysinit</span><span class="p">();</span>
+
+    <span class="cm">/* Initialize the task */</span>
+    <span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_task</span><span class="p">,</span> <span class="s">&quot;my_task&quot;</span><span class="p">,</span> <span class="n">my_task_func</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">MY_TASK_PRIO</span><span class="p">,</span>
+                 <span class="n">OS_WAIT_FOREVER</span><span class="p">,</span> <span class="n">my_task_stack</span><span class="p">,</span> <span class="n">MY_STACK_SIZE</span><span class="p">);</span>
+
+    <span class="cm">/*  Process events from the default event queue.  */</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+       <span class="n">os_eventq_run</span><span class="p">(</span><span class="n">os_eventq_dflt_get</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="cm">/* main never returns */</span>
+<span class="p">}</span>
+</pre></div>
 </div>
-<div class="section" id="data-structures">
-<h2>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>The module uses the following data structures:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">uint32_t</span></code> to represent <code class="docutils literal notranslate"><span class="pre">cputime</span></code>. Only the lower 32 bits of a 64
-timer are used.</li>
-<li><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hal_timer</span></code> to represent a cputime timer.</li>
-</ul>
-</div>
-<div class="section" id="api">
-<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference internal" href="../API.html#c.os_cputime_delay_nsecs" title="os_cputime_delay_nsecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_delay_nsecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_delay_ticks" title="os_cputime_delay_ticks"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_delay_ticks()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_delay_usecs" title="os_cputime_delay_usecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_delay_usecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_get32" title="os_cputime_get32"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_get32()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_init" title="os_cputime_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_init()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_nsecs_to_ticks" title="os_cputime_nsecs_to_ticks"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_nsecs_to_ticks()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_ticks_to_nsecs" title="os_cputime_ticks_to_nsecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_ticks_to_nsecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_ticks_to_usecs" title="os_cputime_ticks_to_usecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_ticks_to_usecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_init" title="os_cputime_timer_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_init()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_relative" title="os_cputime_timer_relative"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_relative()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_start" title="os_cputime_timer_start"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_start()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_stop" title="os_cputime_timer_stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_stop()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_usecs_to_ticks" title="os_cputime_usecs_to_ticks"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_usecs_to_ticks()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_LT" title="CPUTIME_LT"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_LT</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_GT" title="CPUTIME_GT"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_GT</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_LEQ" title="CPUTIME_LEQ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_LEQ</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_GEQ" title="CPUTIME_GEQ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_GEQ</span></code></a></li>
-</ul>
 </div>
 </div>
 
@@ -320,10 +375,10 @@ timer are used.</li>
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../time/os_time.html" class="btn btn-neutral float-right" title="OS Time" accesskey="n">Next: OS Time <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../API.html" class="btn btn-neutral float-right" title="Core OS API" accesskey="n">Next: Core OS API <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../context_switch/context_switch.html" class="btn btn-neutral" title="Scheduler" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Scheduler</a>
+        <a href="../time/os_time.html" class="btn btn-neutral" title="OS Time" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: OS Time</a>
       
     </div>
 
