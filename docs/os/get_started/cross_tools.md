@@ -39,8 +39,7 @@ apt-get as documented below. The steps are explained in depth at
 $ sudo apt-get remove binutils-arm-none-eabi gcc-arm-none-eabi 
 $ sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa
 $ sudo apt-get update 
-$ sudo apt-get install gcc-arm-none-eabi
-$ sudo apt-get install gdb-arm-none-eabi
+$ sudo apt-get install gcc-arm-embedded
 ```
 <br>
 ### Installing the ARM Toolchain for Windows
