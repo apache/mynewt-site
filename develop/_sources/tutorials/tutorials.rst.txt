@@ -12,6 +12,7 @@ Tutorials
    Bluetooth Low Energy <ble/ble>
    LoRa <lora/lorawanapp>
    Sensors <sensors/sensors>
+   Tooling <tooling/tooling>
 
 If the introduction to Mynewt has piqued your interest and you want to
 familiarize yourself with some of its functionality, this series of
@@ -95,8 +96,8 @@ category are listed below.
 
 -  Tooling
 
-   -  :doc:`SEGGER RTT <segger_rtt>`
-   -  :doc:`SEGGER SystemView <segger_sysview>`
+   -  :doc:`SEGGER RTT <tooling/segger_rtt>`
+   -  :doc:`SEGGER SystemView <tooling/segger_sysview>`
 
 **Send us an email on the dev@ mailing list if you have comments or
 suggestions!** If you haven't joined the mailing list, you will find the
