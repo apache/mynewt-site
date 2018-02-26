@@ -10,7 +10,7 @@
     
 
     
-    <title>Sensors &mdash; Apache Mynewt 1.3.0 documentation</title>
+    <title>SEGGER RTT Console &mdash; Apache Mynewt 1.3.0 documentation</title>
     
 
     
@@ -41,9 +41,9 @@
                 href="../../genindex.html"/>
           <link rel="search" title="Search" href="../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../index.html"/>
-          <link rel="up" title="Tutorials" href="../tutorials.html"/>
-          <link rel="next" title="Sensor Tutorials Overview" href="sensors_framework.html"/>
-          <link rel="prev" title="LoRaWAN App" href="../lora/lorawanapp.html"/> 
+          <link rel="up" title="Tooling" href="tooling.html"/>
+          <link rel="next" title="SEGGER SystemView" href="segger_sysview.html"/>
+          <link rel="prev" title="Tooling" href="tooling.html"/> 
 
     
     <script src="../../_static/js/modernizr.min.js"></script>
@@ -156,10 +156,12 @@ ga("send", "pageview");
     
       <a href="../tutorials.html">Tutorials</a> /
     
-    Sensors
+      <a href="tooling.html">Tooling</a> /
+    
+    SEGGER RTT Console
     
   <div class="sourcelink">
-    <a href="https://github.com/apache/mynewt-documentation/edit/master/docs/tutorials/sensors/sensors.rst" class="icon icon-github"
+    <a href="https://github.com/apache/mynewt-documentation/edit/master/docs/tutorials/tooling/segger_rtt.rst" class="icon icon-github"
            rel="nofollow"> Edit on GitHub</a>
 </div>
   </div>
@@ -226,13 +228,12 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../slinky/project-slinky.html">Project Slinky for Remote Comms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ble/ble.html">Bluetooth Low Energy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lora/lorawanapp.html">LoRa</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Sensors</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="sensors_framework.html">Sensor Framework</a></li>
-<li class="toctree-l3"><a class="reference internal" href="air_quality.html">Air Quality Sensor Project</a></li>
-<li class="toctree-l3"><a class="reference internal" href="nrf52_adc.html">Add an Analog Sensor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensors/sensors.html">Sensors</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tooling.html">Tooling</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Segger RTT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="segger_sysview.html">Segger Sysview</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../tooling/tooling.html">Tooling</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../os/os_user_guide.html">OS User Guide</a></li>
@@ -267,14 +268,110 @@ ga("send", "pageview");
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="sensors">
-<h1>Sensors<a class="headerlink" href="#sensors" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="sensors_framework.html">Sensor Framework</a></li>
-<li class="toctree-l1"><a class="reference internal" href="air_quality.html">Air Quality Sensor Project</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nrf52_adc.html">Add an Analog Sensor</a></li>
+  <div class="section" id="segger-rtt-console">
+<h1>SEGGER RTT Console<a class="headerlink" href="#segger-rtt-console" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you dont have UART on your board, or you want to use it for
+something else while still having newt logs/shell capability. With
+<a class="reference external" href="https://www.segger.com/jlink-rtt.html">SEGGER’s RTT</a> capability you
+can swap UART for RTT, which is a very high-speed memory-mapped I/O.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#hardware-needed" id="id1">Hardware needed</a></li>
+<li><a class="reference internal" href="#setup-the-target" id="id2">Setup the target</a></li>
+<li><a class="reference internal" href="#run-the-target-executables" id="id3">Run the target executables</a></li>
+<li><a class="reference internal" href="#connect-to-console" id="id4">Connect to console</a></li>
 </ul>
+</div>
+<div class="section" id="hardware-needed">
+<h3><a class="toc-backref" href="#id1">Hardware needed</a><a class="headerlink" href="#hardware-needed" title="Permalink to this headline">¶</a></h3>
+<p>You’ll need a SEGGER J-Link programmer in order to use this advanced
+functionality. You might have an external J-Link programmer you’re
+already using, or maybe your board has a dedicated J-Link onboard as
+some development kits do. Another possibilty is J-Link OB firmware
+available for some devices like the micro:bit.</p>
+</div>
+<div class="section" id="setup-the-target">
+<h3><a class="toc-backref" href="#id2">Setup the target</a><a class="headerlink" href="#setup-the-target" title="Permalink to this headline">¶</a></h3>
+<p>We’ll assume you have an existing project with some kind of
+console/shell like <a class="reference internal" href="../blinky/blinky_console.html"><span class="doc">Blinky with console and shell</span></a>
+that we’re switching over to RTT from UART.</p>
+<p><strong>Note:</strong> We have tested RTT with J-Link version V6.14h. We recommend
+that you upgrade your J-Link if you have an earlier version of J-Link
+installed. Earlier versions of J-Link use the BUFFER_SIZE_DOWN value
+defined in hw/drivers/rtt/include/rtt/SEGGER_RTT_Conf.h for the
+maximum number of input characters. If an input line exceeds the
+BUFFER_SIZE_DOWN number of characters, RTT ignores the extra
+characters. The default value is 16 characters. For example, this limit
+causes shell commands with more than 16 characters of input to fail. You
+may set the Mynewt <code class="docutils literal notranslate"><span class="pre">RTT_BUFFER_SIZE_DOWN</span></code> syscfg setting in your
+target to increase this value if you do not upgrade your J-Link version.</p>
+<p>We can disable uart and enable rtt with the newt target command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">newt target amend nrf52_blinky syscfg=CONSOLE_UART=0</span>
+<span class="go">newt target amend nrf52_blinky syscfg=CONSOLE_RTT=1</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-the-target-executables">
+<h3><a class="toc-backref" href="#id3">Run the target executables</a><a class="headerlink" href="#run-the-target-executables" title="Permalink to this headline">¶</a></h3>
+<p>Now ‘run’ the newt target as you’ll need an active debugger process to
+attach to:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt run nrf52_blinky <span class="m">0</span>
+<span class="go">App image succesfully generated: ~/Downloads/myapp1/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img</span>
+<span class="go">Loading app image into slot 1</span>
+<span class="go">[~Downloads/myapp1/repos/apache-mynewt-core/hw/bsp/nrf52-thingy/nrf52-thingy_debug.sh ~/Downloads/myapp1/repos/apache-mynewt-core/hw/bsp/nrf52-thingy ~/Downloads/myapp1/bin/targets/nrf52_blinky/app/apps/blinky/blinky]</span>
+<span class="go">Debugging ~/Downloads/myapp1/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf</span>
+<span class="go">GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs</span>
+<span class="go">Copyright (C) 2014 Free Software Foundation, Inc.</span>
+<span class="go">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span>
+<span class="go">This is free software: you are free to change and redistribute it.</span>
+<span class="go">There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;</span>
+<span class="go">and &quot;show warranty&quot; for details.</span>
+<span class="go">This GDB was configured as &quot;--host=x86_64-apple-darwin10 --target=arm-none-eabi&quot;.</span>
+<span class="go">Type &quot;show configuration&quot; for configuration details.</span>
+<span class="go">For bug reporting instructions, please see:</span>
+<span class="go">&lt;http://www.gnu.org/software/gdb/bugs/&gt;.</span>
+<span class="go">Find the GDB manual and other documentation resources online at:</span>
+<span class="go">&lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span>
+<span class="go">For help, type &quot;help&quot;.</span>
+<span class="go">Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...</span>
+<span class="go">Reading symbols from ~/Downloads/myapp1/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf...done.</span>
+<span class="go">0x000000d8 in ?? ()</span>
+<span class="go">Resetting target</span>
+<span class="go">0x000000dc in ?? ()</span>
+<span class="go">(gdb)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="connect-to-console">
+<h3><a class="toc-backref" href="#id4">Connect to console</a><a class="headerlink" href="#connect-to-console" title="Permalink to this headline">¶</a></h3>
+<p>In a seperate terminal window <code class="docutils literal notranslate"><span class="pre">telnet</span> <span class="pre">localhost</span> <span class="pre">19021</span></code> and when you
+continue your gdb session you should see your output. If you’re not
+familiar with telnet, when you’re ready to exit you may by using the
+hotkey ctrl+] then typing quit</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> telnet localhost <span class="m">19021</span>
+<span class="go">Trying ::1...</span>
+<span class="go">telnet: connect to address ::1: Connection refused</span>
+<span class="go">Trying fe80::1...</span>
+<span class="go">telnet: connect to address fe80::1: Connection refused</span>
+<span class="go">Trying 127.0.0.1...</span>
+<span class="go">Connected to localhost.</span>
+<span class="go">Escape character is &#39;^]&#39;.</span>
+<span class="go">SEGGER J-Link V6.14e - Real time terminal output</span>
+<span class="go">SEGGER J-Link EDU V8.0, SN=268006294</span>
+<span class="go">Process: JLinkGDBServer</span>
+</pre></div>
+</div>
+<p>Then you can interact with the device:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">stat</span>
+<span class="go">stat</span>
+<span class="go">000262 Must specify a statistic name to dump, possible names are:</span>
+<span class="go">000262  stat</span>
+<span class="go">000262 compat&gt;</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -284,10 +381,10 @@ ga("send", "pageview");
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="sensors_framework.html" class="btn btn-neutral float-right" title="Sensor Tutorials Overview" accesskey="n">Next: Sensor Tutorials Overview <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="segger_sysview.html" class="btn btn-neutral float-right" title="SEGGER SystemView" accesskey="n">Next: SEGGER SystemView <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../lora/lorawanapp.html" class="btn btn-neutral" title="LoRaWAN App" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: LoRaWAN App</a>
+        <a href="tooling.html" class="btn btn-neutral" title="Tooling" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Tooling</a>
       
     </div>
 
