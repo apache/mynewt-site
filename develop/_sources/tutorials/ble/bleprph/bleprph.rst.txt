@@ -47,7 +47,7 @@ A BLE peripheral interfaces with other BLE devices by exposing
 *services*, *characteristics*, and *descriptors*. All three of these
 entities are implemented at a lower layer via *attributes*. If you are
 not familiar with these concepts, you will probably want to check out
-`overview <https://developer.bluetooth.org/TechnologyOverview/Pages/GATT.aspx>`__
+`overview <https://www.bluetooth.com/specifications/gatt/generic-attributes-overview>`__
 from the Bluetooth Developer's site before proceeding.
 
 Now let's dig in to some C code.
