@@ -340,7 +340,7 @@ according to the following procedure:
     2. Iterate the list of sector indices in descending order (i.e., starting
        with the greatest index); current element = "index".
         b. Erase scratch area.
-        c. Copy slot0[index] to scratch area.
+        c. Copy slot1[index] to scratch area.
         d. Write updated swap status (i).
 
         e. Erase slot1[index]
@@ -351,7 +351,7 @@ according to the following procedure:
         g. Write updated swap status (ii).
 
         h. Erase slot0[index].
-        i. Copy scratch area slot0[index].
+        i. Copy scratch area to slot0[index].
         j. Write updated swap status (iii).
 
     3. Persist completion of swap procedure to slot 0 image trailer.
