@@ -13,6 +13,7 @@ Tutorials
    LoRa <lora/lorawanapp>
    Sensors <sensors/sensors>
    Tooling <tooling/tooling>
+   Other <other/other>
 
 If the introduction to Mynewt has piqued your interest and you want to
 familiarize yourself with some of its functionality, this series of
@@ -63,7 +64,7 @@ category are listed below.
 -  Navigating the Code and Adding Functionality
 
    -  :doc:`Adding More Repositories to Your Project <repo/add_repos>`
-   -  :doc:`Adding a Unit Test For a Package <unit_test>`
+   -  :doc:`Adding a Unit Test For a Package <other/unit_test>`
 
 -  Using Newtmgr
 
@@ -82,7 +83,7 @@ category are listed below.
 
 -  Remote Device Management
 
-   -  :doc:`Enabling Newt Manager in Any App <add_newtmgr>`
+   -  :doc:`Enabling Newt Manager in Any App <../add_newtmgr>`
    -  :doc:`Upgrading an Image Over-The-Air <ota_upgrade_nrf52>`
 
 -  Sensors
