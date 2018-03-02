@@ -1,0 +1,795 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>Internals of nffs &mdash; Apache Mynewt 1.3.0 documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../../../genindex.html"/>
+          <link rel="search" title="Search" href="../../../../search.html"/>
+      <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../../index.html"/> 
+
+    
+    <script src="../../../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+              <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.3.0</a> released (December 13, 2017)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/get_started/quick_start.html">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+    Internals of nffs
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/modules/fs/nffs/nffs_internals.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    
+<!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+    <option
+      value="/develop"
+      selected
+      >
+      Version: develop (latest - mynewt-documentation)
+    </option>
+    <option
+      value="/latest/os/introduction"
+      >
+      Version: master (latest - mynewt-site)
+    </option>
+    <option
+      value="/v1_2_0/os/introduction"
+      >
+      Version: 1.2.0
+    </option>
+    <option
+      value="/v1_1_0/os/introduction">
+      Version: 1.1.0
+    </option>
+    <option
+      value="/v1_0_0/os/introduction">
+      Version: 1.0.0
+    </option>
+    <option
+      value="/v0_9_0/os/introduction">
+      Version: 0_9_0
+    </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../network/ble/ble_intro.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              <div class="alert alert-info" role="alert">
+  <p>
+    This is the development version of Apache Mynewt documentation. As such it may not be as complete as the latest
+    stable version of the documentation found <a href="/latest/os/introduction/">here</a>.
+  </p>
+  <p>
+    To improve this documentation please visit <a href="https://github.com/apache/mynewt-documentation">https://github.com/apache/mynewt-documentation</a>.
+  </p>
+</div>
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="internals-of-nffs">
+<h1>Internals of nffs<a class="headerlink" href="#internals-of-nffs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="disk-structure">
+<h2>Disk structure<a class="headerlink" href="#disk-structure" title="Permalink to this headline">¶</a></h2>
+<p>On disk, each area is prefixed with the following header:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** On-disk representation of an area header. */
+struct nffs_disk_area {
+    uint32_t nda_magic[4];  /* NFFS_AREA_MAGIC{0,1,2,3} */
+    uint32_t nda_length;    /* Total size of area, in bytes. */
+    uint8_t nda_ver;        /* Current nffs version: 0 */
+    uint8_t nda_gc_seq;     /* Garbage collection count. */
+    uint8_t reserved8;
+    uint8_t nda_id;         /* 0xff if scratch area. */
+};
+</pre></div>
+</div>
+<p>Beyond its header, an area contains a sequence of disk objects,
+representing the contents of the file system. There are two types of
+objects: <em>inodes</em> and <em>data blocks</em>. An inode represents a file or
+directory; a data block represents part of a file’s contents.</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** On-disk representation of an inode (file or directory). */
+struct nffs_disk_inode {
+    uint32_t ndi_magic;         /* NFFS_INODE_MAGIC */
+    uint32_t ndi_id;            /* Unique object ID. */
+    uint32_t ndi_seq;           /* Sequence number; greater supersedes
+                                   lesser. */
+    uint32_t ndi_parent_id;     /* Object ID of parent directory inode. */
+    uint8_t reserved8;
+    uint8_t ndi_filename_len;   /* Length of filename, in bytes. */
+    uint16_t ndi_crc16;         /* Covers rest of header and filename. */
+    /* Followed by filename. */
+};
+</pre></div>
+</div>
+<p>An inode filename’s length cannot exceed 256 bytes. The filename is not
+null-terminated. The following ASCII characters are not allowed in a
+filename:</p>
+<ul class="simple">
+<li>/ (slash character)</li>
+<li><a href="#id1"><span class="problematic" id="id2">:raw-latex:`\0`</span></a> (NUL character)</li>
+</ul>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** On-disk representation of a data block. */
+struct nffs_disk_block {
+    uint32_t ndb_magic;     /* NFFS_BLOCK_MAGIC */
+    uint32_t ndb_id;        /* Unique object ID. */
+    uint32_t ndb_seq;       /* Sequence number; greater supersedes lesser. */
+    uint32_t ndb_inode_id;  /* Object ID of owning inode. */
+    uint32_t ndb_prev_id;   /* Object ID of previous block in file;
+                               NFFS_ID_NONE if this is the first block. */
+    uint16_t ndb_data_len;  /* Length of data contents, in bytes. */
+    uint16_t ndb_crc16;     /* Covers rest of header and data. */
+    /* Followed by &#39;ndb_data_len&#39; bytes of data. */
+};
+</pre></div>
+</div>
+<p>Each data block contains the ID of the previous data block in the file.
+Together, the set of blocks in a file form a reverse singly-linked list.</p>
+<p>The maximum number of data bytes that a block can contain is determined
+at initialization-time. The result is the greatest number which
+satisfies all of the following restrictions:</p>
+<ul class="simple">
+<li>No more than 2048.</li>
+<li>At least two maximum-sized blocks can fit in the smallest area.</li>
+</ul>
+<p>The 2048 number was chosen somewhat arbitrarily, and may change in the
+future.</p>
+</div>
+<div class="section" id="id-space">
+<h2>ID space<a class="headerlink" href="#id-space" title="Permalink to this headline">¶</a></h2>
+<p>All disk objects have a unique 32-bit ID. The ID space is partitioned as
+follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ID range</th>
+<th class="head">Node type</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>0x00000000 - 0x0fffffff</td>
+<td>Directory inodes</td>
+</tr>
+<tr class="row-odd"><td>0x10000000 - 0x7fffffff</td>
+<td>File inodes</td>
+</tr>
+<tr class="row-even"><td>0x80000000 - 0xfffffffe</td>
+<td>Data blocks</td>
+</tr>
+<tr class="row-odd"><td>0xffffffff</td>
+<td>Reserved (NFFS_ID_NONE)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="scratch-area">
+<h2>Scratch area<a class="headerlink" href="#scratch-area" title="Permalink to this headline">¶</a></h2>
+<p>A valid nffs file system must contain a single “scratch area.” The
+scratch area does not contain any objects of its own, and is only used
+during garbage collection. The scratch area must have a size greater
+than or equal to each of the other areas in flash.</p>
+</div>
+<div class="section" id="ram-representation">
+<h2>RAM representation<a class="headerlink" href="#ram-representation" title="Permalink to this headline">¶</a></h2>
+<p>Every object in the file system is stored in a 256-entry hash table. An
+object’s hash key is derived from its 32-bit ID. Each list in the hash
+table is sorted by time of use; most-recently-used is at the front of
+the list. All objects are represented by the following structure:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/**
+ * What gets stored in the hash table.  Each entry represents a data block or
+ * an inode.
+ */
+struct nffs_hash_entry {
+    SLIST_ENTRY(nffs_hash_entry) nhe_next;
+    uint32_t nhe_id;        /* 0 - 0x7fffffff if inode; else if block. */
+    uint32_t nhe_flash_loc; /* Upper-byte = area idx; rest = area offset. */
+};
+</pre></div>
+</div>
+<p>For each data block, the above structure is all that is stored in RAM.
+To acquire more information about a data block, the block header must be
+read from flash.</p>
+<p>Inodes require a fuller RAM representation to capture the structure of
+the file system. There are two types of inodes: <em>files</em> and
+<em>directories</em>. Each inode hash entry is actually an instance of the
+following structure:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Each inode hash entry is actually one of these. */
+struct nffs_inode_entry {
+    struct nffs_hash_entry nie_hash_entry;
+    SLIST_ENTRY(nffs_inode_entry) nie_sibling_next;
+    union {
+        struct nffs_inode_list nie_child_list;           /* If directory */
+        struct nffs_hash_entry *nie_last_block_entry;    /* If file */
+    };
+    uint8_t nie_refcnt;
+};
+</pre></div>
+</div>
+<p>A directory inode contains a list of its child files and directories
+(<em>fie_child_list</em>). These entries are sorted alphabetically using the
+ASCII character set.</p>
+<p>A file inode contains a pointer to the last data block in the file
+(<em>nie_last_block_entry</em>). For most file operations, the reversed
+block list must be walked backwards. This introduces a number of speed
+inefficiencies:</p>
+<ul class="simple">
+<li>All data blocks must be read to determine the length of the file.</li>
+<li>Data blocks often need to be processed sequentially. The reversed
+nature of the block list transforms this from linear time to an
+O(n^2) operation.</li>
+</ul>
+<p>Furthermore, obtaining information about any constituent data block
+requires a separate flash read.</p>
+</div>
+<div class="section" id="inode-cache-and-data-block-cache">
+<h2>Inode cache and Data Block cache<a class="headerlink" href="#inode-cache-and-data-block-cache" title="Permalink to this headline">¶</a></h2>
+<p>The speed issues are addressed by a pair of caches. Cached inodes
+entries contain the file length and a much more convenient doubly-linked
+list of cached data blocks. The benefit of using caches is that the size
+of the caches need not be proportional to the size of the file system.
+In other words, caches can address speed efficiency concerns without
+negatively impacting the file system’s scalability.</p>
+<p>nffs requires both caches during normal operation, so it is not possible
+to disable them. However, the cache sizes are configurable, and both
+caches can be configured with a size of one if RAM usage must be
+minimized.</p>
+<p>The following data structures are used in the inode and data block
+caches.</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Full data block representation; not stored permanently in RAM. */
+struct nffs_block {
+    struct nffs_hash_entry *nb_hash_entry;   /* Points to real block entry. */
+    uint32_t nb_seq;                         /* Sequence number; greater
+                                                supersedes lesser. */
+    struct nffs_inode_entry *nb_inode_entry; /* Owning inode. */
+    struct nffs_hash_entry *nb_prev;         /* Previous block in file. */
+    uint16_t nb_data_len;                    /* # of data bytes in block. */
+    uint16_t reserved16;
+};
+</pre></div>
+</div>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Represents a single cached data block. */
+struct nffs_cache_block {
+    TAILQ_ENTRY(nffs_cache_block) ncb_link; /* Next / prev cached block. */
+    struct nffs_block ncb_block;            /* Full data block. */
+    uint32_t ncb_file_offset;               /* File offset of this block. */
+};
+</pre></div>
+</div>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Full inode representation; not stored permanently in RAM. */
+struct nffs_inode {
+    struct nffs_inode_entry *ni_inode_entry; /* Points to real inode entry. */
+    uint32_t ni_seq;                         /* Sequence number; greater
+                                                supersedes lesser. */
+    struct nffs_inode_entry *ni_parent;      /* Points to parent directory. */
+    uint8_t ni_filename_len;                 /* # chars in filename. */
+    uint8_t ni_filename[NFFS_SHORT_FILENAME_LEN]; /* First 3 bytes. */
+};
+</pre></div>
+</div>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */
+TAILQ_HEAD(nffs_block_cache_list, nffs_block_cache_entry);
+
+/** Represents a single cached file inode. */
+struct nffs_cache_inode {
+    TAILQ_ENTRY(nffs_cache_inode) nci_link;        /* Sorted; LRU at tail. */
+    struct nffs_inode nci_inode;                   /* Full inode. */
+    struct nffs_cache_block_list nci_block_list;   /* List of cached blocks. */
+    uint32_t nci_file_size;                        /* Total file size. */
+};
+</pre></div>
+</div>
+<p>Only file inodes are cached; directory inodes are never cached.</p>
+<p>Within a cached inode, all cached data blocks are contiguous. E.g., if
+the start and end of a file are cached, then the middle must also be
+cached. A data block is only cached if its owning file is also cached.</p>
+<p>Internally, cached inodes are stored in a singly-linked list, ordered by
+time of use. The most-recently-used entry is the first element in the
+list. If a new inode needs to be cached, but the inode cache is full,
+the least-recently-used entry is freed to make room for the new one. The
+following operations cause an inode to be cached:</p>
+<ul class="simple">
+<li>Querying a file’s length.</li>
+<li>Seeking within a file.</li>
+<li>Reading from a file.</li>
+<li>Writing to a file.</li>
+</ul>
+<p>The following operations cause a data block to be cached:</p>
+<ul class="simple">
+<li>Reading from the block.</li>
+<li>Writing to the block.</li>
+</ul>
+<p>If one of the above operations is applied to a data block that is not
+currently cached, nffs uses the following procedure to cache the
+necessary block:</p>
+<ol class="arabic simple">
+<li>If none of the owning inode’s blocks are currently cached, allocate a
+cached block entry corresponding to the requested block and insert it
+into the inode’s list.</li>
+<li>Else if the requested file offset is less than that of the first
+cached block, bridge the gap between the inode’s sequence of cached
+blocks and the block that now needs to be cached. This is
+accomplished by caching each block in the gap, finishing with the
+requested block.</li>
+<li>Else (the requested offset is beyond the end of the cache),<ol class="arabic">
+<li>If the requested offset belongs to the block that immediately
+follows the end of the cache, cache the block and append it to the
+list.</li>
+<li>Else, clear the cache, and populate it with the single entry
+corresponding to the requested block.</li>
+</ol>
+</li>
+</ol>
+<p>If the system is unable to allocate a cached block entry at any point
+during the above procedure, the system frees up other blocks currently
+in the cache. This is accomplished as follows:</p>
+<ul class="simple">
+<li>Iterate the inode cache in reverse (i.e., start with the
+least-recently-used entry). For each entry:<ol class="arabic">
+<li>If the entry’s cached block list is empty, advance to the next
+entry.</li>
+<li>Else, free all the cached blocks in the entry’s list.</li>
+</ol>
+</li>
+</ul>
+<p>Because the system imposes a minimum block cache size of one, the above
+procedure will always reclaim at least one cache block entry. The above
+procedure may result in the freeing of the block list that belongs to
+the very inode being operated on. This is OK, as the final block to get
+cached is always the block being requested.</p>
+</div>
+<div class="section" id="detection">
+<h2>Detection<a class="headerlink" href="#detection" title="Permalink to this headline">¶</a></h2>
+<p>The file system detection process consists of scanning a specified set
+of flash regions for valid nffs areas, and then populating the RAM
+representation of the file system with the detected objects. Detection
+is initiated with the <a class="reference external" href="nffs_detect.html">nffs_detect()</a> function.</p>
+<p>Not every area descriptor passed to <code class="docutils literal notranslate"><span class="pre">nffs_detect()</span></code> needs to reference
+a valid nffs area. Detection is successful as long as a complete file
+system is detected somewhere in the specified regions of flash. If an
+application is unsure where a file system might be located, it can
+initiate detection across the entire flash region.</p>
+<p>A detected file system is valid if:</p>
+<ol class="arabic simple">
+<li>At least one non-scratch area is present.</li>
+<li>At least one scratch area is present (only the first gets used if
+there is more than one).</li>
+<li>The root directory inode is present.</li>
+</ol>
+<p>During detection, each indicated region of flash is checked for a valid
+area header. The contents of each valid non-scratch area are then
+restored into the nffs RAM representation. The following procedure is
+applied to each object in the area:</p>
+<ol class="arabic simple">
+<li>Verify the object’s integrity via a crc16 check. If invalid, the
+object is discarded and the procedure restarts on the next object in
+the area.</li>
+<li>Convert the disk object into its corresponding RAM representation and
+insert it into the hash table. If the object is an inode, its
+reference count is initialized to 1, indicating ownership by its
+parent directory.</li>
+<li>If an object with the same ID is already present, then one supersedes
+the other. Accept the object with the greater sequence number and
+discard the other.</li>
+<li>If the object references a nonexistent inode (parent directory in the
+case of an inode; owning file in the case of a data block), insert a
+temporary “dummy” inode into the hash table so that inter-object
+links can be maintained until the absent inode is eventually
+restored. Dummy inodes are identified by a reference count of 0.</li>
+<li>If a delete record for an inode is encountered, the inode’s parent
+pointer is set to null to indicate that it should be removed from
+RAM.</li>
+</ol>
+<p>If nffs encounters an object that cannot be identified (i.e., its magic
+number is not valid), it scans the remainder of the flash area for the
+next valid magic number. Upon encountering a valid object, nffs resumes
+the procedure described above.</p>
+<p>After all areas have been restored, a sweep is performed across the
+entire RAM representation so that invalid inodes can be deleted from
+memory.</p>
+<p>For each directory inode:</p>
+<ul class="simple">
+<li>If its reference count is 0 (i.e., it is a dummy), migrate its
+children to the <em>/lost+found</em> directory, and delete it from the RAM
+representation. This should only happen in the case of file system
+corruption.</li>
+<li>If its parent reference is null (i.e., it was deleted), delete it and
+all its children from the RAM representation.</li>
+</ul>
+<p>For each file inode:</p>
+<ul class="simple">
+<li>If its reference count is 0 (i.e., it is a dummy), delete it from the
+RAM representation. This should only happen in the case of file
+system corruption. (We should try to migrate the file to the
+lost+found directory in this case, as mentioned in the todo section).</li>
+</ul>
+<p>When an object is deleted during this sweep, it is only deleted from the
+RAM representation; nothing is written to disk.</p>
+<p>When objects are migrated to the lost+found directory, their parent
+inode reference is permanently updated on the disk.</p>
+<p>In addition, a single scratch area is identified during the detection
+process. The first area whose <em>fda_id</em> value is set to 0xff is
+designated as the file system scratch area. If no valid scratch area is
+found, the cause could be that the system was restarted while a garbage
+collection cycle was in progress. Such a condition is identified by the
+presence of two areas with the same ID. In such a case, the shorter of
+the two areas is erased and designated as the scratch area.</p>
+</div>
+<div class="section" id="formatting">
+<h2>Formatting<a class="headerlink" href="#formatting" title="Permalink to this headline">¶</a></h2>
+<p>A new nffs file system is created via formatting. Formatting is achieved
+via the <a class="reference external" href="nffs_format.html">nffs_format()</a> function.</p>
+<p>During a successful format, an area header is written to each of the
+specified locations. One of the areas in the set is designated as the
+initial scratch area.</p>
+</div>
+<div class="section" id="flash-writes">
+<h2>Flash writes<a class="headerlink" href="#flash-writes" title="Permalink to this headline">¶</a></h2>
+<p>The nffs implementation always writes in a strictly sequential fashion
+within an area. For each area, the system keeps track of the current
+offset. Whenever an object gets written to an area, it gets written to
+that area’s current offset, and the offset is increased by the object’s
+disk size.</p>
+<p>When a write needs to be performed, the nffs implementation selects the
+appropriate destination area by iterating though each area until one
+with sufficient free space is encountered.</p>
+<p>There is no write buffering. Each call to a write function results in a
+write operation being sent to the flash hardware.</p>
+</div>
+<div class="section" id="new-objects">
+<h2>New objects<a class="headerlink" href="#new-objects" title="Permalink to this headline">¶</a></h2>
+<p>Whenever a new object is written to disk, it is assigned the following
+properties:</p>
+<ul class="simple">
+<li><em>ID:</em> A unique value is selected from the 32-bit ID space, as
+appropriate for the object’s type.</li>
+<li><em>Sequence number:</em> 0</li>
+</ul>
+<p>When a new file or directory is created, a corresponding inode is
+written to flash. Likewise, a new data block also results in the writing
+of a corresponding disk object.</p>
+</div>
+<div class="section" id="moving-renaming-files-and-directories">
+<h2>Moving/Renaming files and directories<a class="headerlink" href="#moving-renaming-files-and-directories" title="Permalink to this headline">¶</a></h2>
+<p>When a file or directory is moved or renamed, its corresponding inode is
+rewritten to flash with the following properties:</p>
+<ul class="simple">
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+<li><em>Parent inode:</em> As specified by the move / rename operation.</li>
+<li><em>Filename:</em> As specified by the move / rename operation.</li>
+</ul>
+<p>Because the inode’s ID is unchanged, all dependent objects remain valid.</p>
+</div>
+<div class="section" id="unlinking-files-and-directories">
+<h2>Unlinking files and directories<a class="headerlink" href="#unlinking-files-and-directories" title="Permalink to this headline">¶</a></h2>
+<p>When a file or directory is unlinked from its parent directory, a
+deletion record for the unlinked inode gets written to flash. The
+deletion record is an inode with the following properties:</p>
+<ul class="simple">
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+<li><em>Parent inode ID:</em> NFFS_ID_NONE</li>
+</ul>
+<p>When an inode is unlinked, no deletion records need to be written for
+the inode’s dependent objects (constituent data blocks or child inodes).
+During the next file system detection, it is recognized that the objects
+belong to a deleted inode, so they are not restored into the RAM
+representation.</p>
+<p>If a file has an open handle at the time it gets unlinked, application
+code can continued to use the file handle to read and write data. All
+files retain a reference count, and a file isn’t deleted from the RAM
+representation until its reference code drops to 0. Any attempt to open
+an unlinked file fails, even if the file is referenced by other file
+handles.</p>
+</div>
+<div class="section" id="writing-to-a-file">
+<h2>Writing to a file<a class="headerlink" href="#writing-to-a-file" title="Permalink to this headline">¶</a></h2>
+<p>The following procedure is used whenever the application code writes to
+a file. First, if the write operation specifies too much data to fit
+into a single block, the operation is split into several separate write
+operations. Then, for each write operation:</p>
+<ol class="arabic simple">
+<li>Determine which existing blocks the write operation overlaps (n =
+number of overwritten blocks).</li>
+<li>If <em>n = 0</em>, this is an append operation. Write a data block with the
+following properties:<ul>
+<li><em>ID:</em> New unique value.</li>
+<li><em>Sequence number:</em> 0.</li>
+</ul>
+</li>
+<li>Else <em>(n &gt; 1)</em>, this write overlaps existing data.<ol class="arabic">
+<li>For each block in <em>[1, 2, … n-1]</em>, write a new block containing
+the updated contents. Each new block supersedes the block it
+overwrites. That is, each block has the following properties:<ul>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+</ul>
+</li>
+<li>Write the nth block. The nth block includes all appended data, if
+any. As with the other blocks, its ID is unchanged and its
+sequence number is incremented.</li>
+</ol>
+</li>
+</ol>
+<p>Appended data can only be written to the end of the file. That is,
+“holes” are not supported.</p>
+</div>
+<div class="section" id="garbage-collection">
+<h2>Garbage collection<a class="headerlink" href="#garbage-collection" title="Permalink to this headline">¶</a></h2>
+<p>When the file system is too full to accommodate a write operation, the
+system must perform garbage collection to make room. The garbage
+collection procedure is described below:</p>
+<ul class="simple">
+<li>The non-scratch area with the lowest garbage collection sequence
+number is selected as the “source area.” If there are other areas
+with the same sequence number, the one with the smallest flash offset
+is selected.</li>
+<li>The source area’s ID is written to the scratch area’s header,
+transforming it into a non-scratch ID. This former scratch area is
+now known as the “destination area.”</li>
+<li>The RAM representation is exhaustively searched for collectible
+objects. The following procedure is applied to each inode in the
+system:<ul>
+<li>If the inode is resident in the source area, copy the inode record
+to the destination area.</li>
+<li>If the inode is a file inode, walk the inode’s list of data
+blocks, starting with the last block in the file. Each block that
+is resident in the source area is copied to the destination area.
+If there is a run of two or more blocks that are resident in the
+source area, they are consolidated and copied to the destination
+area as a single new block (subject to the maximum block size
+restriction).</li>
+</ul>
+</li>
+<li>The source area is reformatted as a scratch sector (i.e., is is fully
+erased, and its header is rewritten with an ID of 0xff). The area’s
+garbage collection sequence number is incremented prior to rewriting
+the header. This area is now the new scratch sector.</li>
+</ul>
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="../../../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../../',
+            VERSION:'1.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>

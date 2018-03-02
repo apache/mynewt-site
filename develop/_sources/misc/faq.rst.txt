@@ -6,9 +6,33 @@ questions.
 
 Mynewt software questions:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. contents::
+  :local:
+  :depth: 1
 
-- :doc:`How do I reduce the code size for my Mynewt image? <../tutorials/codesize>`
+How do I reduce the code size for my Mynewt image?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Please refer to the tutorial documentation on `reducing application code size <https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/codesize.md>`_.
+
+I'm having issues using Newt Manager with the Adafruit nRF52DK. What do I do?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There are two things you will need to do to fix any issues you encounter when working with the Adafruit nRF52DK and Newt Manager:
+
+1) Specify a reduced MTU:
+
+   You can specify the reduced MTU by adding ``mtu=128`` to your connection string. The reason for this change is that MTU is the serial boot loader used to have a smaller receive buffer (128 bytes). The newtmgr tool sends larger image chunks by default, so specifying the MTU will reduce the image size. 
+\
+
+2) Indicate that the existing image should not be erased:
+
+   This is accomplished with the ``-e`` command line option. Your command line should look similar to the following:
+   
+   ``$ newtmgr --conntype serial --connextra 'dev=/dev/ttyUSB0,mtu=128' image upload -e <image-path>``
+   
+   This change is needed because the serial boot loader doesn't support the standalone "erase image" command - as a result, it drops the request. The newtmgr image upload command starts by sending an erase command, then times out when it doesn't receive a response. The older version of newtmgr would use smaller chunk size for images, and it did not send the standalone erase command. When newtmgr was changed in versions 1.2 and 1.3, the serial boot loader changed along with it. The latest newtmgr is not compatible with an older version of the boot loader (which your board will probably ship with) without the above workarounds.
+   
 Administrative questions:
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

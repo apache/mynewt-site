@@ -16,7 +16,7 @@ device running the Mynewt OS. The protocol for remote communications is
 called newt manager (newtmgr).
 
 If you have an existing project using a target that does not use the Slinky application and you wish to add newtmgr functionality to 
-it, check out the tutorial titled :doc:`Enable newtmgr in any app <../add_newtmgr>`
+it, check out the tutorial titled :doc:`Enable newtmgr in any app <add_newtmgr>`
 
 .. contents::
   :local:
