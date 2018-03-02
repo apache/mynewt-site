@@ -263,24 +263,48 @@ ga("send", "pageview");
 questions.</p>
 <div class="section" id="mynewt-software-questions">
 <h2>Mynewt software questions:<a class="headerlink" href="#mynewt-software-questions" title="Permalink to this headline">¶</a></h2>
+<div class="contents local topic" id="contents">
 <ul class="simple">
-<li><span class="xref std std-doc">How do I reduce the code size for my Mynewt image?</span></li>
+<li><a class="reference internal" href="#how-do-i-reduce-the-code-size-for-my-mynewt-image" id="id2">How do I reduce the code size for my Mynewt image?</a></li>
+<li><a class="reference internal" href="#i-m-having-issues-using-newt-manager-with-the-adafruit-nrf52dk-what-do-i-do" id="id3">I’m having issues using Newt Manager with the Adafruit nRF52DK. What do I do?</a></li>
 </ul>
+</div>
+<div class="section" id="how-do-i-reduce-the-code-size-for-my-mynewt-image">
+<h3><a class="toc-backref" href="#id2">How do I reduce the code size for my Mynewt image?</a><a class="headerlink" href="#how-do-i-reduce-the-code-size-for-my-mynewt-image" title="Permalink to this headline">¶</a></h3>
+<p>Please refer to the tutorial documentation on <a class="reference external" href="https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/codesize.md">reducing application code size</a>.</p>
+</div>
+<div class="section" id="i-m-having-issues-using-newt-manager-with-the-adafruit-nrf52dk-what-do-i-do">
+<h3><a class="toc-backref" href="#id3">I’m having issues using Newt Manager with the Adafruit nRF52DK. What do I do?</a><a class="headerlink" href="#i-m-having-issues-using-newt-manager-with-the-adafruit-nrf52dk-what-do-i-do" title="Permalink to this headline">¶</a></h3>
+<p>There are two things you will need to do to fix any issues you encounter when working with the Adafruit nRF52DK and Newt Manager:</p>
+<ol class="arabic">
+<li><p class="first">Specify a reduced MTU:</p>
+<p>You can specify the reduced MTU by adding <code class="docutils literal notranslate"><span class="pre">mtu=128</span></code> to your connection string. The reason for this change is that MTU is the serial boot loader used to have a smaller receive buffer (128 bytes). The newtmgr tool sends larger image chunks by default, so specifying the MTU will reduce the image size.</p>
+</li>
+</ol>
+<p></p>
+<ol class="arabic" start="2">
+<li><p class="first">Indicate that the existing image should not be erased:</p>
+<p>This is accomplished with the <code class="docutils literal notranslate"><span class="pre">-e</span></code> command line option. Your command line should look similar to the following:</p>
+<p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">newtmgr</span> <span class="pre">--conntype</span> <span class="pre">serial</span> <span class="pre">--connextra</span> <span class="pre">'dev=/dev/ttyUSB0,mtu=128'</span> <span class="pre">image</span> <span class="pre">upload</span> <span class="pre">-e</span> <span class="pre">&lt;image-path&gt;</span></code></p>
+<p>This change is needed because the serial boot loader doesn’t support the standalone “erase image” command - as a result, it drops the request. The newtmgr image upload command starts by sending an erase command, then times out when it doesn’t receive a response. The older version of newtmgr would use smaller chunk size for images, and it did not send the standalone erase command. When newtmgr was changed in versions 1.2 and 1.3, the serial boot loader changed along with it. The latest newtmgr is not compatible with an older version of the boot loader (which your board will probably ship with) without the above workarounds.</p>
+</li>
+</ol>
+</div>
 </div>
 <div class="section" id="administrative-questions">
 <h2>Administrative questions:<a class="headerlink" href="#administrative-questions" title="Permalink to this headline">¶</a></h2>
-<div class="contents local topic" id="contents">
+<div class="contents local topic" id="id1">
 <ul class="simple">
-<li><a class="reference internal" href="#how-do-i-submit-a-bug" id="id1">How do I submit a bug?</a></li>
-<li><a class="reference internal" href="#how-do-i-request-a-feature" id="id2">How do I request a feature?</a></li>
-<li><a class="reference internal" href="#i-am-not-on-the-committer-list-how-do-i-submit-a-patch" id="id3">I am not on the committer list. How do I submit a patch?</a></li>
-<li><a class="reference internal" href="#i-am-a-committer-in-the-project-can-i-merge-my-own-pull-request-into-the-git-repository" id="id4">I am a committer in the project. Can I merge my own Pull Request into the git repository?</a></li>
-<li><a class="reference internal" href="#i-would-like-to-make-some-edits-to-the-documentation-what-do-i-do" id="id5">I would like to make some edits to the documentation. What do I do?</a></li>
-<li><a class="reference internal" href="#i-would-like-to-make-some-edits-to-the-documentation-but-want-to-use-an-editor-on-my-own-laptop-what-do-i-do" id="id6">I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?</a></li>
+<li><a class="reference internal" href="#how-do-i-submit-a-bug" id="id4">How do I submit a bug?</a></li>
+<li><a class="reference internal" href="#how-do-i-request-a-feature" id="id5">How do I request a feature?</a></li>
+<li><a class="reference internal" href="#i-am-not-on-the-committer-list-how-do-i-submit-a-patch" id="id6">I am not on the committer list. How do I submit a patch?</a></li>
+<li><a class="reference internal" href="#i-am-a-committer-in-the-project-can-i-merge-my-own-pull-request-into-the-git-repository" id="id7">I am a committer in the project. Can I merge my own Pull Request into the git repository?</a></li>
+<li><a class="reference internal" href="#i-would-like-to-make-some-edits-to-the-documentation-what-do-i-do" id="id8">I would like to make some edits to the documentation. What do I do?</a></li>
+<li><a class="reference internal" href="#i-would-like-to-make-some-edits-to-the-documentation-but-want-to-use-an-editor-on-my-own-laptop-what-do-i-do" id="id9">I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?</a></li>
 </ul>
 </div>
 <div class="section" id="how-do-i-submit-a-bug">
-<h3><a class="toc-backref" href="#id1">How do I submit a bug?</a><a class="headerlink" href="#how-do-i-submit-a-bug" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">How do I submit a bug?</a><a class="headerlink" href="#how-do-i-submit-a-bug" title="Permalink to this headline">¶</a></h3>
 <p>If you do not have a JIRA account sign up
 for an account on
 <a class="reference external" href="https://issues.apache.org/jira/secure/Signup!default.jspa">JIRA</a>.</p>
@@ -293,7 +317,7 @@ create a ticket. Choose “Bug” as the Issue Type. Fill in the bug
 description, how it is triggered, and other details.</p>
 </div>
 <div class="section" id="how-do-i-request-a-feature">
-<h3><a class="toc-backref" href="#id2">How do I request a feature?</a><a class="headerlink" href="#how-do-i-request-a-feature" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">How do I request a feature?</a><a class="headerlink" href="#how-do-i-request-a-feature" title="Permalink to this headline">¶</a></h3>
 <p>If you do not have a JIRA account sign up for an account on
 <a class="reference external" href="https://issues.apache.org/jira/secure/Signup!default.jspa">JIRA</a>.</p>
 <p>Submit a request to the &#64;dev mailing list for your JIRA username to be
@@ -309,7 +333,7 @@ the committer list will have to review your request and assign it to
 you. You will have to refer to this JIRA ticket in your pull request.</p>
 </div>
 <div class="section" id="i-am-not-on-the-committer-list-how-do-i-submit-a-patch">
-<h3><a class="toc-backref" href="#id3">I am not on the committer list. How do I submit a patch?</a><a class="headerlink" href="#i-am-not-on-the-committer-list-how-do-i-submit-a-patch" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">I am not on the committer list. How do I submit a patch?</a><a class="headerlink" href="#i-am-not-on-the-committer-list-how-do-i-submit-a-patch" title="Permalink to this headline">¶</a></h3>
 <p><strong>You submit your proposed changes for your peers with committer status
 to review and merge.</strong></p>
 <p>The process to submit a Pull Request on github.com is described on the
@@ -317,14 +341,14 @@ to review and merge.</strong></p>
 project</a>.</p>
 </div>
 <div class="section" id="i-am-a-committer-in-the-project-can-i-merge-my-own-pull-request-into-the-git-repository">
-<h3><a class="toc-backref" href="#id4">I am a committer in the project. Can I merge my own Pull Request into the git repository?</a><a class="headerlink" href="#i-am-a-committer-in-the-project-can-i-merge-my-own-pull-request-into-the-git-repository" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">I am a committer in the project. Can I merge my own Pull Request into the git repository?</a><a class="headerlink" href="#i-am-a-committer-in-the-project-can-i-merge-my-own-pull-request-into-the-git-repository" title="Permalink to this headline">¶</a></h3>
 <p>Yes, but only if your Pull Request has been reviewed and approved by
 another committer in Apache Mynewt. The process to merge a Pull Request
 is described on the <a class="reference external" href="https://cwiki.apache.org/confluence/display/MYNEWT/Merging+Pull+Requests">Confluence page for the
 project</a>.</p>
 </div>
 <div class="section" id="i-would-like-to-make-some-edits-to-the-documentation-what-do-i-do">
-<h3><a class="toc-backref" href="#id5">I would like to make some edits to the documentation. What do I do?</a><a class="headerlink" href="#i-would-like-to-make-some-edits-to-the-documentation-what-do-i-do" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">I would like to make some edits to the documentation. What do I do?</a><a class="headerlink" href="#i-would-like-to-make-some-edits-to-the-documentation-what-do-i-do" title="Permalink to this headline">¶</a></h3>
 <p>You submit your proposed changes for your peers with committer status
 to review and merge.</p>
 <p>Each Mynewt repository has its own set of related documentation in the docs/ folder. The
@@ -353,7 +377,7 @@ changes are ready.</p>
 the delete icon.</p>
 </div>
 <div class="section" id="i-would-like-to-make-some-edits-to-the-documentation-but-want-to-use-an-editor-on-my-own-laptop-what-do-i-do">
-<h3><a class="toc-backref" href="#id6">I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?</a><a class="headerlink" href="#i-would-like-to-make-some-edits-to-the-documentation-but-want-to-use-an-editor-on-my-own-laptop-what-do-i-do" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">I would like to make some edits to the documentation but want to use an editor on my own laptop. What do I do?</a><a class="headerlink" href="#i-would-like-to-make-some-edits-to-the-documentation-but-want-to-use-an-editor-on-my-own-laptop-what-do-i-do" title="Permalink to this headline">¶</a></h3>
 <p>You submit your proposed changes for your peers with committer status
 to review and merge.</p>
 <p>Go to the <a class="reference external" href="https://github.com/apache/mynewt-documentation">documentation
