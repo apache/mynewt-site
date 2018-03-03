@@ -41,9 +41,9 @@
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
-          <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
-          <link rel="next" title="Heap" href="../heap/heap.html"/>
-          <link rel="prev" title="Mutex" href="../mutex/mutex.html"/> 
+          <link rel="up" title="Apache Mynewt Operating System Kernel" href="../mynewt_os.html"/>
+          <link rel="next" title="Mbufs" href="../mbuf/mbuf.html"/>
+          <link rel="prev" title="Heap" href="../heap/heap.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -156,7 +156,7 @@ ga("send", "pageview");
     
       <a href="../../os_user_guide.html">OS User Guide</a> /
     
-      <a href="../mynewt_os.html">Mynewt Core OS</a> /
+      <a href="../mynewt_os.html">Apache Mynewt Operating System Kernel</a> /
     
     Memory Pools
     
@@ -224,27 +224,25 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">Kernel</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../context_switch/context_switch.html">Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Memory Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../cputime/os_cputime.html">CPU Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../time/os_time.html">OS Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Memory Pools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../msys/msys.html">Msys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mqueue/mqueue.html">Mqueue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../sanity/sanity.html">Sanity</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Mynewt OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/ble/ble_intro.html">BLE User Guide</a></li>
@@ -301,22 +299,22 @@ variable) or dynamically allocated (i.e. from the heap). When
 determining the amount of memory required for the memory pool, simply
 multiplying the number of blocks by the size of each block is not
 sufficient as the OS may have alignment requirements. The alignment size
-definition is named <code class="docutils literal notranslate"><span class="pre">OS_ALIGNMENT</span></code> and can be found in os_arch.h as
+definition is named <code class="xref c c-macro docutils literal notranslate"><span class="pre">OS_ALIGNMENT</span></code> and can be found in os_arch.h as
 it is architecture specific. The memory block alignment is usually for
 efficiency but may be due to other reasons. Generally, blocks are
 aligned on 32-bit boundaries. Note that memory blocks must also be of
 sufficient size to hold a list pointer as this is needed to chain memory
 blocks on the free list.</p>
 <p>In order to simplify this for the user two macros have been provided:
-<code class="docutils literal notranslate"><span class="pre">OS_MEMPOOL_BYTES(n,</span> <span class="pre">blksize)</span></code> and <code class="docutils literal notranslate"><span class="pre">OS_MEMPOOL_SIZE(n,</span> <span class="pre">blksize)</span></code>.
+c:macro:<cite>OS_MEMPOOL_BYTES(n, blksize)</cite> and <code class="xref c c-macro docutils literal notranslate"><span class="pre">OS_MEMPOOL_SIZE(n,</span> <span class="pre">blksize)</span></code>.
 The first macro returns the number of bytes needed for the memory pool
-while the second returns the number of <code class="docutils literal notranslate"><span class="pre">os_membuf_t</span></code> elements required
-by the memory pool. The <code class="docutils literal notranslate"><span class="pre">os_membuf_t</span></code> type is used to guarantee that
+while the second returns the number of <code class="xref c c-type docutils literal notranslate"><span class="pre">os_membuf_t`</span></code> elements required
+by the memory pool. The <a class="reference internal" href="#c.os_membuf_t" title="os_membuf_t"><code class="xref c c-type docutils literal notranslate"><span class="pre">os_membuf_t</span></code></a> type is used to guarantee that
 the memory buffer used by the memory pool is aligned on the correct
 boundary.</p>
 <p>Here are some examples. Note that if a custom malloc implementation is
 used it must guarantee that the memory buffer used by the pool is
-allocated on the correct boundary (i.e. OS_ALIGNMENT).</p>
+allocated on the correct boundary (i.e. <code class="xref c c-macro docutils literal notranslate"><span class="pre">OS_ALIGNMENT</span></code>).</p>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void *my_memory_buffer;
 my_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));
 </pre></div>
@@ -326,125 +324,305 @@ my_memory_buffer = malloc(OS_MEMPOOL_BYTES(NUM_BLOCKS, BLOCK_SIZE));
 </div>
 <p>Now that the memory pool has been defined as well as the memory
 required for the memory blocks which make up the pool the user needs to
-initialize the memory pool by calling <code class="docutils literal notranslate"><span class="pre">os_mempool_init</span></code>.</p>
+initialize the memory pool by calling <code class="xref c c-func docutils literal notranslate"><span class="pre">os_mempool_init`()</span></code>.</p>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>os_mempool_init(&amp;my_pool, NUM_BLOCKS, BLOCK_SIZE, my_memory_buffer,
                          &quot;MyPool&quot;);
 </pre></div>
 </div>
 <p>Once the memory pool has been initialized the developer can allocate
-memory blocks from the pool by calling <code class="docutils literal notranslate"><span class="pre">os_memblock_get</span></code>. When the
+memory blocks from the pool by calling <a class="reference internal" href="#c.os_memblock_get" title="os_memblock_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_memblock_get()</span></code></a>. When the
 memory block is no longer needed the memory can be freed by calling
-<code class="docutils literal notranslate"><span class="pre">os_memblock_put</span></code>.</p>
-</div>
-<div class="section" id="data-structures">
-<h2>Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct os_mempool {
-    int mp_block_size;
-    int mp_num_blocks;
-    int mp_num_free;
-    int mp_min_free;
-    uint32_t mp_membuf_addr;
-    STAILQ_ENTRY(os_mempool) mp_list;
-    SLIST_HEAD(,os_memblock);
-    char *name;
-};
-
-struct os_mempool_info {
-    int omi_block_size;
-    int omi_num_blocks;
-    int omi_num_free;
-    int omi_min_free;
-    char omi_name[OS_MEMPOOL_INFO_NAME_LEN];
-};
-</pre></div>
-</div>
-<table border="1" class="docutils">
-<colgroup>
-<col width="47%" />
-<col width="53%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head"><strong>Element</strong></th>
-<th class="head"><a href="#id1"><span class="problematic" id="id2">**</span></a>Description*
-*</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>mp_block_s
-ize</td>
-<td>Size of the
-memory blocks,
-in bytes. This
-is not the
-actual number
-of bytes used
-by each block;
-it is the
-requested size
-of each block.
-The actual
-memory block
-size will be
-aligned to
-OS_ALIGNMENT
-bytes</td>
-</tr>
-<tr class="row-odd"><td>mp_num_blo
-cks</td>
-<td>Number of
-memory blocks
-in the pool</td>
-</tr>
-<tr class="row-even"><td>mp_num_fre
-e</td>
-<td>Number of free
-blocks left</td>
-</tr>
-<tr class="row-odd"><td>mp_min_fre
-e</td>
-<td>Lowest number
-of free blocks
-seen</td>
-</tr>
-<tr class="row-even"><td>mp_membuf_
-addr</td>
-<td>The address of
-the memory
-block. This is
-used to check
-that a valid
-memory block
-is being
-freed.</td>
-</tr>
-<tr class="row-odd"><td>mp_list</td>
-<td>List pointer
-to chain
-memory pools
-so they can be
-displayed by
-newt tools</td>
-</tr>
-<tr class="row-even"><td>SLIST_HEAD(
-,os_membloc
-k)</td>
-<td>List pointer
-to chain free
-memory blocks</td>
-</tr>
-<tr class="row-odd"><td>name</td>
-<td>Name for the
-memory block</td>
-</tr>
-</tbody>
-</table>
+<a class="reference internal" href="#c.os_memblock_put" title="os_memblock_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_memblock_put()</span></code></a>.</p>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">doxygengroup: Cannot find namespace “OSMempool” in doxygen xml output for project “mynewt-core” from directory: mynewt-core-xml</p>
+<dl class="typedef">
+<dt id="c.os_mempool_put_fn">
+<span class="target" id="group___o_s_mempool_1gac78e7cbbf707f8e5399843aae28b2d9d"></span><em class="property">typedef </em>os_error_t <code class="descname">os_mempool_put_fn</code><span class="sig-paren">(</span>struct os_mempool_ext<em>&nbsp;*ome</em>, void<em>&nbsp;*data</em>, void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mempool_put_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block put callback function. </p>
+<p>If configured, this callback gets executed whenever a block is freed to the corresponding extended mempool. Note: The <a class="reference internal" href="#group___o_s_mempool_1gaf6178bdc593729880d9d2bb7e23e11b0"><span class="std std-ref">os_memblock_put()</span></a> function calls this callback instead of freeing the block itself. Therefore, it is the callback’s responsibility to free the block via a call to <a class="reference internal" href="#group___o_s_mempool_1gacbcaf7e356d49c4f84612e5a0d882596"><span class="std std-ref">os_memblock_put_from_cb()</span></a>.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Indicates whether the block was successfully freed. A non-zero value should only be returned if the block was not successfully released back to its pool. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ome</span></code>: The extended mempool that a block is being freed back to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: The block being freed. </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: Optional argument configured along with the callback.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.os_membuf_t">
+<span class="target" id="group___o_s_mempool_1ga0615acb24ae94e5a5a337b424c70fd6a"></span><em class="property">typedef </em>uint32_t <code class="descname">os_membuf_t</code><a class="headerlink" href="#c.os_membuf_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.os_mempool_info_get_next">
+<span class="target" id="group___o_s_mempool_1gae80195d443ae18bf7298eabcfe550b22"></span>struct os_mempool* <code class="descname">os_mempool_info_get_next</code><span class="sig-paren">(</span>struct  os_mempool <em>&nbsp;*</em>, struct  os_mempool_info <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mempool_info_get_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information about the next system memory pool. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The next memory pool in the list to get information about, or NULL when at the last memory pool. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mempool</span></code>: The current memory pool, or NULL if starting iteration. </li>
+<li><code class="docutils literal notranslate"><span class="pre">info</span></code>: A pointer to the structure to return memory pool information into.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_mempool_init">
+<span class="target" id="group___o_s_mempool_1gadcf2c1941c73b2ad97e05a1d36e8234d"></span>os_error_t <code class="descname">os_mempool_init</code><span class="sig-paren">(</span>struct  os_mempool  *<em>&nbsp;mp</em>, uint16_t<em>&nbsp;blocks</em>, uint32_t<em>&nbsp;block_size</em>, void *<em>&nbsp;membuf</em>, char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mempool_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a memory pool. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>os_error_t </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mp</span></code>: Pointer to a pointer to a mempool </li>
+<li><code class="docutils literal notranslate"><span class="pre">blocks</span></code>: The number of blocks in the pool </li>
+<li><code class="docutils literal notranslate"><span class="pre">blocks_size</span></code>: The size of the block, in bytes. </li>
+<li><code class="docutils literal notranslate"><span class="pre">membuf</span></code>: Pointer to memory to contain blocks. </li>
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the pool.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_mempool_ext_init">
+<span class="target" id="group___o_s_mempool_1gacb506516fd3695bf9649aef5ac384d53"></span>os_error_t <code class="descname">os_mempool_ext_init</code><span class="sig-paren">(</span>struct  os_mempool_ext  *<em>&nbsp;mpe</em>, uint16_t<em>&nbsp;blocks</em>, uint32_t<em>&nbsp;block_size</em>, void *<em>&nbsp;membuf</em>, char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mempool_ext_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes an extended memory pool. </p>
+<p>Extended attributes (e.g., callbacks) are not specified when this function is called; they are assigned manually after initialization.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>os_error_t </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mpe</span></code>: The extended memory pool to initialize. </li>
+<li><code class="docutils literal notranslate"><span class="pre">blocks</span></code>: The number of blocks in the pool. </li>
+<li><code class="docutils literal notranslate"><span class="pre">block_size</span></code>: The size of each block, in bytes. </li>
+<li><code class="docutils literal notranslate"><span class="pre">membuf</span></code>: Pointer to memory to contain blocks. </li>
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the pool.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_mempool_is_sane">
+<span class="target" id="group___o_s_mempool_1ga94f119d4163b6ad4b5c41f11c0628e5d"></span>bool <code class="descname">os_mempool_is_sane</code><span class="sig-paren">(</span>const struct  os_mempool  *<em>&nbsp;mp</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mempool_is_sane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs an integrity check of the specified mempool. </p>
+<p>This function attempts to detect memory corruption in the specified memory pool.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>true if the memory pool passes the integrity check; false if the memory pool is corrupt. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mp</span></code>: The mempool to check.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_memblock_from">
+<span class="target" id="group___o_s_mempool_1gaeda86bc0aa05a01cffe5934bede45041"></span>int <code class="descname">os_memblock_from</code><span class="sig-paren">(</span>const struct  os_mempool  *<em>&nbsp;mp</em>, const void *<em>&nbsp;block_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_memblock_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a memory block was allocated from the specified mempool. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 if the block does not belong to the mempool; 1 if the block does belong to the mempool. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mp</span></code>: The mempool to check as parent. </li>
+<li><code class="docutils literal notranslate"><span class="pre">block_addr</span></code>: The memory block to check as child.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_memblock_get">
+<span class="target" id="group___o_s_mempool_1ga5b08e22ecfe88e4563c9577354410676"></span>void* <code class="descname">os_memblock_get</code><span class="sig-paren">(</span>struct  os_mempool  *<em>&nbsp;mp</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_memblock_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a memory block from a memory pool. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>void* Pointer to block if available; NULL otherwise </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mp</span></code>: Pointer to the memory pool</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_memblock_put_from_cb">
+<span class="target" id="group___o_s_mempool_1gacbcaf7e356d49c4f84612e5a0d882596"></span>os_error_t <code class="descname">os_memblock_put_from_cb</code><span class="sig-paren">(</span>struct  os_mempool  *<em>&nbsp;mp</em>, void *<em>&nbsp;block_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_memblock_put_from_cb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts the memory block back into the pool, ignoring the put callback, if any. </p>
+<p>This function should only be called from a put callback to free a block without causing infinite recursion.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>os_error_t </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mp</span></code>: Pointer to memory pool </li>
+<li><code class="docutils literal notranslate"><span class="pre">block_addr</span></code>: Pointer to memory block</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_memblock_put">
+<span class="target" id="group___o_s_mempool_1gaf6178bdc593729880d9d2bb7e23e11b0"></span>os_error_t <code class="descname">os_memblock_put</code><span class="sig-paren">(</span>struct  os_mempool  *<em>&nbsp;mp</em>, void *<em>&nbsp;block_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_memblock_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Puts the memory block back into the pool. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>os_error_t </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">mp</span></code>: Pointer to memory pool </li>
+<li><code class="docutils literal notranslate"><span class="pre">block_addr</span></code>: Pointer to memory block</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_MEMPOOL_F_EXT">
+<span class="target" id="group___o_s_mempool_1gabc6a0dba610f01a2fcbedb9902f98260"></span><code class="descname">OS_MEMPOOL_F_EXT</code><a class="headerlink" href="#c.OS_MEMPOOL_F_EXT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates an extended mempool. </p>
+<p>Address can be safely cast to (struct os_mempool_ext *). </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_MEMPOOL_INFO_NAME_LEN">
+<span class="target" id="group___o_s_mempool_1gae23cbfc2e7590d009c651bce00a58d95"></span><code class="descname">OS_MEMPOOL_INFO_NAME_LEN</code><a class="headerlink" href="#c.OS_MEMPOOL_INFO_NAME_LEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.OS_MEMPOOL_SIZE">
+<span class="target" id="group___o_s_mempool_1gac5014e0e9c9e52c42d228158e5fc92c6"></span><code class="descname">OS_MEMPOOL_SIZE</code><span class="sig-paren">(</span>n, blksize<span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MEMPOOL_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.OS_MEMPOOL_BYTES">
+<span class="target" id="group___o_s_mempool_1ga7fa594c641e3c1143fc641e80c6029ee"></span><code class="descname">OS_MEMPOOL_BYTES</code><span class="sig-paren">(</span>n, blksize<span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MEMPOOL_BYTES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the number of bytes required to initialize a memory pool. </p>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv311os_memblock">
+<span id="_CPPv211os_memblock"></span><span id="os_memblock"></span><span class="target" id="structos__memblock"></span><em class="property">struct </em><code class="descname">os_memblock</code><a class="headerlink" href="#_CPPv311os_memblock" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_mempool.h&gt;</em><p>A memory block structure. </p>
+<p>This simply contains a pointer to the free list chain and is only used when the block is on the free list. When the block has been removed from the free list the entire memory block is usable by the caller. </p>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv310os_mempool">
+<span id="_CPPv210os_mempool"></span><span id="os_mempool"></span><span class="target" id="structos__mempool"></span><em class="property">struct </em><code class="descname">os_mempool</code><a class="headerlink" href="#_CPPv310os_mempool" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_mempool.h&gt;</em><p>Memory pool. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_mempool::mp_block_size">
+<span class="target" id="structos__mempool_1aa8b69c7241eef307bfdab6558f7a76fc"></span>uint32_t <code class="descname">mp_block_size</code><a class="headerlink" href="#c.os_mempool::mp_block_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the memory blocks, in bytes. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool::mp_num_blocks">
+<span class="target" id="structos__mempool_1a1070d64ec9462682b859afa551dc4f7d"></span>uint16_t <code class="descname">mp_num_blocks</code><a class="headerlink" href="#c.os_mempool::mp_num_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of memory blocks. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool::mp_num_free">
+<span class="target" id="structos__mempool_1a330c95fc173c50c2c724d044e3260eaa"></span>uint16_t <code class="descname">mp_num_free</code><a class="headerlink" href="#c.os_mempool::mp_num_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of free blocks left. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool::mp_min_free">
+<span class="target" id="structos__mempool_1adcae8c4d47359ce32b49e112f925a53f"></span>uint16_t <code class="descname">mp_min_free</code><a class="headerlink" href="#c.os_mempool::mp_min_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lowest number of free blocks seen. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool::mp_flags">
+<span class="target" id="structos__mempool_1a08fe88157701d4a1ec6162a8292e1b50"></span>uint8_t <code class="descname">mp_flags</code><a class="headerlink" href="#c.os_mempool::mp_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bitmap of OS_MEMPOOL_F_[…] values. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool::mp_membuf_addr">
+<span class="target" id="structos__mempool_1ac61a68914819ed8a178fbc9dda26b8d0"></span>uint32_t <code class="descname">mp_membuf_addr</code><a class="headerlink" href="#c.os_mempool::mp_membuf_addr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Address of memory buffer used by pool. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool::name">
+<span class="target" id="structos__mempool_1ac10eae51516dfaa843213b7c154cb92d"></span>char* <code class="descname">name</code><a class="headerlink" href="#c.os_mempool::name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name for memory block. </p>
+</dd></dl>
+
 </div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv315os_mempool_info">
+<span id="_CPPv215os_mempool_info"></span><span id="os_mempool_info"></span><span class="target" id="structos__mempool__info"></span><em class="property">struct </em><code class="descname">os_mempool_info</code><a class="headerlink" href="#_CPPv315os_mempool_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_mempool.h&gt;</em><p>Information describing a memory pool, used to return OS information to the management layer. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_mempool_info::omi_block_size">
+<span class="target" id="structos__mempool__info_1afe44d778f68b1ac45af5bfa4a21e7a03"></span>int <code class="descname">omi_block_size</code><a class="headerlink" href="#c.os_mempool_info::omi_block_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the memory blocks in the pool. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool_info::omi_num_blocks">
+<span class="target" id="structos__mempool__info_1a396fcdd3a698a8df11dc848a3ea44006"></span>int <code class="descname">omi_num_blocks</code><a class="headerlink" href="#c.os_mempool_info::omi_num_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of memory blocks in the pool. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool_info::omi_num_free">
+<span class="target" id="structos__mempool__info_1adeec12d679ad4825c39aa615aecdf2b7"></span>int <code class="descname">omi_num_free</code><a class="headerlink" href="#c.os_mempool_info::omi_num_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of free memory blocks. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_mempool_info::omi_min_free">
+<span class="target" id="structos__mempool__info_1a2dea3179c694145c6d7d478529968548"></span>int <code class="descname">omi_min_free</code><a class="headerlink" href="#c.os_mempool_info::omi_min_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimum number of free memory blocks ever. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structos__mempool__info_1a616071f643a7cc73b1564cf7b76fc052"></span><code class="descname">char os_mempool_info::omi_name[OS_MEMPOOL_INFO_NAME_LEN]</code></dt>
+<dd><p>Name of the memory pool. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -454,10 +632,10 @@ memory block</td>
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../heap/heap.html" class="btn btn-neutral float-right" title="Heap" accesskey="n">Next: Heap <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../mbuf/mbuf.html" class="btn btn-neutral float-right" title="Mbufs" accesskey="n">Next: Mbufs <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../mutex/mutex.html" class="btn btn-neutral" title="Mutex" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Mutex</a>
+        <a href="../heap/heap.html" class="btn btn-neutral" title="Heap" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Heap</a>
       
     </div>
 
