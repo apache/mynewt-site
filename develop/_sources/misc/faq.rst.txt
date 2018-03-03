@@ -13,7 +13,7 @@ Mynewt software questions:
 How do I reduce the code size for my Mynewt image?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Please refer to the tutorial documentation on `reducing application code size <https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/codesize.md>`_.
+Please refer to the tutorial documentation on :doc:`reducing application code size <../tutorials/other/codesize>`.
 
 I'm having issues using Newt Manager with the Adafruit nRF52DK. What do I do?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

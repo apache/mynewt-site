@@ -41,9 +41,9 @@
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
-          <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
-          <link rel="next" title="Event Queues" href="../event_queue/event_queue.html"/>
-          <link rel="prev" title="OS Time" href="../time/os_time.html"/> 
+          <link rel="up" title="Apache Mynewt Operating System Kernel" href="../mynewt_os.html"/>
+          <link rel="next" title="Mutex" href="../mutex/mutex.html"/>
+          <link rel="prev" title="Scheduler" href="../context_switch/context_switch.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -156,7 +156,7 @@ ga("send", "pageview");
     
       <a href="../../os_user_guide.html">OS User Guide</a> /
     
-      <a href="../mynewt_os.html">Mynewt Core OS</a> /
+      <a href="../mynewt_os.html">Apache Mynewt Operating System Kernel</a> /
     
     Task
     
@@ -224,27 +224,25 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">Kernel</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../context_switch/context_switch.html">Scheduler</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../cputime/os_cputime.html">CPU Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../time/os_time.html">OS Time</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../msys/msys.html">Msys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mqueue/mqueue.html">Mqueue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../sanity/sanity.html">Sanity</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Mynewt OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/ble/ble_intro.html">BLE User Guide</a></li>
@@ -298,7 +296,7 @@ task. The developer must insure that tasks eventually “sleep”; otherwise
 lower priority tasks will never get a chance to run (actually, any task
 lower in priority than the task that never sleeps). A task will be put
 to sleep in the following cases: it puts itself to sleep using
-<a class="reference internal" href="../API.html#c.os_time_delay" title="os_time_delay"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_time_delay()</span></code></a>, it waits on an event queue which is empty or
+<a class="reference internal" href="../time/os_time.html#c.os_time_delay" title="os_time_delay"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_time_delay()</span></code></a>, it waits on an event queue which is empty or
 attempts to obtain a mutex or a semaphore that is currently owned by
 another task.</p>
 <p>Note that other sections of the manual describe these OS features in
@@ -311,7 +309,7 @@ stack size can be a bit tricky; generally developers should not declare
 large local variables on the stack so that task stacks can be of limited
 size. However, all applications are different and the developer must
 choose the stack size accordingly. NOTE: be careful when declaring your
-stack! The stack is in units of <code class="docutils literal notranslate"><span class="pre">os_stack_t</span></code> sized elements (generally
+stack! The stack is in units of <code class="xref c c-type docutils literal notranslate"><span class="pre">os_stack_t</span></code> sized elements (generally
 32-bits). Looking at the example given below and assuming <code class="docutils literal notranslate"><span class="pre">os_stack_t</span></code>
 is defined to be a 32-bit unsigned value, “my_task_stack” will use 256
 bytes.</p>
@@ -319,19 +317,19 @@ bytes.</p>
 function that will be called when the task is first run. This task
 function should never return!</p>
 <p>In order to inform the Mynewt OS of the new task and to have it added to
-the scheduler, the <a class="reference internal" href="../API.html#c.os_task_init" title="os_task_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_init()</span></code></a> function is called. Once
-<a class="reference internal" href="../API.html#c.os_task_init" title="os_task_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_init()</span></code></a> is called, the task is made ready to run and is added
+the scheduler, the <a class="reference internal" href="#c.os_task_init" title="os_task_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_init()</span></code></a> function is called. Once
+<a class="reference internal" href="#c.os_task_init" title="os_task_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_init()</span></code></a> is called, the task is made ready to run and is added
 to the active task list. Note that a task can be initialized (started)
-before or after the os has started (i.e. before <a class="reference internal" href="../API.html#c.os_start" title="os_start"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_start()</span></code></a> is
+before or after the os has started (i.e. before <code class="xref c c-func docutils literal notranslate"><span class="pre">os_start()</span></code> is
 called) but must be initialized after the os has been initialized (i.e.
-<a class="reference internal" href="../API.html#c.os_init" title="os_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_init()</span></code></a> has been called). In most of the examples and current Mynewt
+<code class="xref c c-func docutils literal notranslate"><span class="pre">os_init()</span></code> has been called). In most of the examples and current Mynewt
 projects, the os is initialized, tasks are initialized, and the the os
 is started. Once the os has started, the highest priority task will be
 the first task set to run.</p>
 <p>Information about a task can be obtained using the
-<a class="reference internal" href="../API.html#c.os_task_info_get_next" title="os_task_info_get_next"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_info_get_next()</span></code></a> API. Developers can walk the list of tasks
+<a class="reference internal" href="#c.os_task_info_get_next" title="os_task_info_get_next"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_task_info_get_next()</span></code></a> API. Developers can walk the list of tasks
 to obtain information on all created tasks. This information is of type
-<a class="reference internal" href="../API.html#c.os_task_info" title="os_task_info"><code class="xref c c-data docutils literal notranslate"><span class="pre">os_task_info</span></code></a>.</p>
+<code class="xref c c-data docutils literal notranslate"><span class="pre">os_task_info</span></code>.</p>
 <p>The following is a very simple example showing a single application
 task. This task simply toggles an LED at a one second interval.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Create a simple &quot;project&quot; with a task that blinks a LED every second */</span>
@@ -377,6 +375,313 @@ task. This task simply toggles an LED at a one second interval.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="enum">
+<dt id="c.OSTask::os_task_state">
+<span class="target" id="group___o_s_task_1ga897c47c6381207ebaea3963c43362f88"></span><em class="property">enum </em><code class="descclassname">OSTask::</code><code class="descname">os_task_state</code><a class="headerlink" href="#c.OSTask::os_task_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task states. </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.OSTask::OS_TASK_READY">
+<span class="target" id="group___o_s_task_1gga897c47c6381207ebaea3963c43362f88a529cd0e1f131f501efe7cc3d1122d002"></span><code class="descname">OS_TASK_READY</code> = 1<a class="headerlink" href="#c.OSTask::OS_TASK_READY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task is ready to run. </p>
+</dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.OSTask::OS_TASK_SLEEP">
+<span class="target" id="group___o_s_task_1gga897c47c6381207ebaea3963c43362f88af7cdfa32e836ac0ef16f761a00dd6104"></span><code class="descname">OS_TASK_SLEEP</code> = 2<a class="headerlink" href="#c.OSTask::OS_TASK_SLEEP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task is sleeping. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.os_task_state_t">
+<span class="target" id="group___o_s_task_1ga106cd7d63dabd9800363a0c9b5ff40d1"></span><em class="property">typedef </em>enum os_task_state  <code class="descname">os_task_state_t</code><a class="headerlink" href="#c.os_task_state_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task states. </p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.os_task_func_t">
+<span class="target" id="group___o_s_task_1ga831f9a3ebc7c5e7b4aac94d581eba82c"></span><em class="property">typedef </em>void<code class="descname">(* os_task_func_t)</code><span class="sig-paren">(</span>void<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_task_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.os_task_init">
+<span class="target" id="group___o_s_task_1gac0604d800ed8dbfd18835cd5076a6393"></span>int <code class="descname">os_task_init</code><span class="sig-paren">(</span>struct  os_task <em>&nbsp;*</em>, const char<em>&nbsp;*</em>, <a class="reference internal" href="#c.os_task_func_t" title="os_task_func_t">os_task_func_t</a>, void<em>&nbsp;*</em>, uint8_t, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a>, os_stack_t <em>&nbsp;*</em>, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_task_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a task. </p>
+<p>This function initializes the task structure pointed to by t, clearing and setting it’s stack pointer, provides sane defaults and sets the task as ready to run, and inserts it into the operating system scheduler.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">t</span></code>: The task to initialize </li>
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name of the task to initialize </li>
+<li><code class="docutils literal notranslate"><span class="pre">func</span></code>: The task function to call </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: The argument to pass to this task function </li>
+<li><code class="docutils literal notranslate"><span class="pre">prio</span></code>: The priority at which to run this task </li>
+<li><code class="docutils literal notranslate"><span class="pre">sanity_itvl</span></code>: The time at which this task should check in with the sanity task. OS_WAIT_FOREVER means never check in here. </li>
+<li><code class="docutils literal notranslate"><span class="pre">stack_bottom</span></code>: A pointer to the bottom of a task’s stack </li>
+<li><code class="docutils literal notranslate"><span class="pre">stack_size</span></code>: The overall size of the task’s stack.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_task_remove">
+<span class="target" id="group___o_s_task_1gacf6cfe441ddecead6a2e010165384cb4"></span>int <code class="descname">os_task_remove</code><span class="sig-paren">(</span>struct  os_task  *<em>&nbsp;t</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_task_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes specified task XXX NOTE: This interface is currently experimental and not ready for common use. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_task_count">
+<span class="target" id="group___o_s_task_1ga6b14a4fbff91ab3e9fd4b9933423a590"></span>uint8_t <code class="descname">os_task_count</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_task_count" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of tasks initialized. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>number of tasks initialized </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_task_info_get_next">
+<span class="target" id="group___o_s_task_1gac459b82ad909a99ff1ef0ec3cedc31d2"></span>struct os_task* <code class="descname">os_task_info_get_next</code><span class="sig-paren">(</span>const struct  os_task <em>&nbsp;*</em>, struct  os_task_info <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_task_info_get_next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate through tasks, and return the following information about them: </p>
+<p><ul class="simple">
+<li>Priority</li>
+<li>Task ID</li>
+<li>State (READY, SLEEP)</li>
+<li>Total Stack Usage</li>
+<li>Stack Size</li>
+<li>Context Switch Count</li>
+<li>Runtime</li>
+<li>Last &amp; Next Sanity checkin</li>
+<li>Task Name</li>
+</ul>
+</p>
+<p>To get the first task in the list, call <a class="reference internal" href="#group___o_s_task_1gac459b82ad909a99ff1ef0ec3cedc31d2"><span class="std std-ref">os_task_info_get_next()</span></a> with a NULL pointer in the prev argument, and <a class="reference internal" href="#group___o_s_task_1gac459b82ad909a99ff1ef0ec3cedc31d2"><span class="std std-ref">os_task_info_get_next()</span></a> will return a pointer to the task structure, and fill out the <a class="reference internal" href="#structos__task__info"><span class="std std-ref">os_task_info</span></a> structure pointed to by oti.</p>
+<p>To get the next task in the list, provide the task structure returned by the previous call to <a class="reference internal" href="#group___o_s_task_1gac459b82ad909a99ff1ef0ec3cedc31d2"><span class="std std-ref">os_task_info_get_next()</span></a>, and <a class="reference internal" href="#group___o_s_task_1gac459b82ad909a99ff1ef0ec3cedc31d2"><span class="std std-ref">os_task_info_get_next()</span></a> will fill out the task structure pointed to by oti again, and return the next task in the list.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A pointer to the OS task that has been read, or NULL when finished iterating through all tasks. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">prev</span></code>: The previous task returned by <a class="reference internal" href="#group___o_s_task_1gac459b82ad909a99ff1ef0ec3cedc31d2"><span class="std std-ref">os_task_info_get_next()</span></a>, or NULL to begin iteration. </li>
+<li><code class="docutils literal notranslate"><span class="pre">oti</span></code>: The OS task info structure to fill out.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_PRI_HIGHEST">
+<span class="target" id="group___o_s_task_1ga93bc03e4d136b0262c3be351546d90a3"></span><code class="descname">OS_TASK_PRI_HIGHEST</code><a class="headerlink" href="#c.OS_TASK_PRI_HIGHEST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Highest priority task. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_PRI_LOWEST">
+<span class="target" id="group___o_s_task_1ga3b2c641ef3afd2033ab312b900634cca"></span><code class="descname">OS_TASK_PRI_LOWEST</code><a class="headerlink" href="#c.OS_TASK_PRI_LOWEST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lowest priority task. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_FLAG_NO_TIMEOUT">
+<span class="target" id="group___o_s_task_1ga0728b4db08cbfa190ffe8748fe3430bc"></span><code class="descname">OS_TASK_FLAG_NO_TIMEOUT</code><a class="headerlink" href="#c.OS_TASK_FLAG_NO_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_FLAG_SEM_WAIT">
+<span class="target" id="group___o_s_task_1ga86f7848c389417413b98191082717d08"></span><code class="descname">OS_TASK_FLAG_SEM_WAIT</code><a class="headerlink" href="#c.OS_TASK_FLAG_SEM_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task waiting on a semaphore. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_FLAG_MUTEX_WAIT">
+<span class="target" id="group___o_s_task_1gaab125531a2394b65d7327c5f09cff689"></span><code class="descname">OS_TASK_FLAG_MUTEX_WAIT</code><a class="headerlink" href="#c.OS_TASK_FLAG_MUTEX_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task waiting on a mutex. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_FLAG_EVQ_WAIT">
+<span class="target" id="group___o_s_task_1ga7886a157f2de8c02484404050fc1c7ac"></span><code class="descname">OS_TASK_FLAG_EVQ_WAIT</code><a class="headerlink" href="#c.OS_TASK_FLAG_EVQ_WAIT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task waiting on a event queue. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_TASK_MAX_NAME_LEN">
+<span class="target" id="group___o_s_task_1gab9a4544def04dd6cfbaf93cd51785452"></span><code class="descname">OS_TASK_MAX_NAME_LEN</code><a class="headerlink" href="#c.OS_TASK_MAX_NAME_LEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="_CPPv37os_task">
+<span id="_CPPv27os_task"></span><span id="os_task"></span><span class="target" id="structos__task"></span><em class="property">struct </em><code class="descname">os_task</code><a class="headerlink" href="#_CPPv37os_task" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_task.h&gt;</em><p>Structure containing information about a running task. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_task::t_stackptr">
+<span class="target" id="structos__task_1afe949cfd7c42a5cb31bf8755b26ce01e"></span>os_stack_t* <code class="descname">t_stackptr</code><a class="headerlink" href="#c.os_task::t_stackptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current stack pointer for this task. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_stacktop">
+<span class="target" id="structos__task_1a40c3ba56a847758812bc417949724588"></span>os_stack_t* <code class="descname">t_stacktop</code><a class="headerlink" href="#c.os_task::t_stacktop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pointer to top of this task’s stack. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_stacksize">
+<span class="target" id="structos__task_1a732f272fc82004d997f87a9a906729d0"></span>uint16_t <code class="descname">t_stacksize</code><a class="headerlink" href="#c.os_task::t_stacksize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of this task’s stack. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_taskid">
+<span class="target" id="structos__task_1a9fbae9501044635c01be92ac56d01b4c"></span>uint8_t <code class="descname">t_taskid</code><a class="headerlink" href="#c.os_task::t_taskid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task ID. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_prio">
+<span class="target" id="structos__task_1a412fe15c516151b1864e3e77b4d79199"></span>uint8_t <code class="descname">t_prio</code><a class="headerlink" href="#c.os_task::t_prio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task Priority. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_flags">
+<span class="target" id="structos__task_1af58aa554823b3ae3655b6672d2bf93ca"></span>uint8_t <code class="descname">t_flags</code><a class="headerlink" href="#c.os_task::t_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task flags, bitmask. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_name">
+<span class="target" id="structos__task_1a617c03d12fe7051db4c6b032f4c764a8"></span>const char* <code class="descname">t_name</code><a class="headerlink" href="#c.os_task::t_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task name. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_func">
+<span class="target" id="structos__task_1a2a2d6ea1f625cd6a90c6e6f6a5aba160"></span><a class="reference internal" href="#c.os_task_func_t" title="os_task_func_t">os_task_func_t</a> <code class="descname">t_func</code><a class="headerlink" href="#c.os_task::t_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task function that executes. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_arg">
+<span class="target" id="structos__task_1a39b3109b30ba2c821cad2cca3dd77fec"></span>void* <code class="descname">t_arg</code><a class="headerlink" href="#c.os_task::t_arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argument to pass to task function when called. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_obj">
+<span class="target" id="structos__task_1aa23d60f19ae3e48f859b40cafd83f1ae"></span>void* <code class="descname">t_obj</code><a class="headerlink" href="#c.os_task::t_obj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current object task is waiting on, either a semaphore or mutex. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_sanity_check">
+<span class="target" id="structos__task_1a24958d799042b17927b0f94405f193cf"></span>struct os_sanity_check <code class="descname">t_sanity_check</code><a class="headerlink" href="#c.os_task::t_sanity_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default sanity check for this task. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_next_wakeup">
+<span class="target" id="structos__task_1adc9eebeea4dd7cb212de3ee04b113a71"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">t_next_wakeup</code><a class="headerlink" href="#c.os_task::t_next_wakeup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Next scheduled wakeup if this task is sleeping. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_run_time">
+<span class="target" id="structos__task_1a980815aadda46b23373395854907ef0b"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">t_run_time</code><a class="headerlink" href="#c.os_task::t_run_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total task run time. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task::t_ctx_sw_cnt">
+<span class="target" id="structos__task_1a0c51f9ebf2d06ec8e3f5bddd860606e1"></span>uint32_t <code class="descname">t_ctx_sw_cnt</code><a class="headerlink" href="#c.os_task::t_ctx_sw_cnt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of times this task has been context switched during execution. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv312os_task_info">
+<span id="_CPPv212os_task_info"></span><span id="os_task_info"></span><span class="target" id="structos__task__info"></span><em class="property">struct </em><code class="descname">os_task_info</code><a class="headerlink" href="#_CPPv312os_task_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_task.h&gt;</em><p>Information about an individual task, returned for management APIs. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_task_info::oti_prio">
+<span class="target" id="structos__task__info_1a3b9e108c245f706c1f238639e1fcc411"></span>uint8_t <code class="descname">oti_prio</code><a class="headerlink" href="#c.os_task_info::oti_prio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task priority. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_taskid">
+<span class="target" id="structos__task__info_1acfc3100a590d117396ba39bdc14c9fe1"></span>uint8_t <code class="descname">oti_taskid</code><a class="headerlink" href="#c.os_task_info::oti_taskid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task identifier. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_state">
+<span class="target" id="structos__task__info_1a887a2fae644c0d174423ce1724f91a0e"></span>uint8_t <code class="descname">oti_state</code><a class="headerlink" href="#c.os_task_info::oti_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task state, either READY or SLEEP. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_stkusage">
+<span class="target" id="structos__task__info_1af660e42807b73fac357753873f89baf0"></span>uint16_t <code class="descname">oti_stkusage</code><a class="headerlink" href="#c.os_task_info::oti_stkusage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task stack usage. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_stksize">
+<span class="target" id="structos__task__info_1ac306d37cb458c796e7bd876ce3724acc"></span>uint16_t <code class="descname">oti_stksize</code><a class="headerlink" href="#c.os_task_info::oti_stksize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task stack size. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_cswcnt">
+<span class="target" id="structos__task__info_1a9acbf3e6b3a274ab40951ef54c75ab38"></span>uint32_t <code class="descname">oti_cswcnt</code><a class="headerlink" href="#c.os_task_info::oti_cswcnt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task context switch count. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_runtime">
+<span class="target" id="structos__task__info_1aeefcf9aeb3aaad24f401d56089842dd8"></span>uint32_t <code class="descname">oti_runtime</code><a class="headerlink" href="#c.os_task_info::oti_runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Task runtime. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_last_checkin">
+<span class="target" id="structos__task__info_1a7b5a7274c1237db848cdc04e97f6a715"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">oti_last_checkin</code><a class="headerlink" href="#c.os_task_info::oti_last_checkin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Last time this task checked in with sanity. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_task_info::oti_next_checkin">
+<span class="target" id="structos__task__info_1a5f851a446f55aa79f258cab528d10dfe"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">oti_next_checkin</code><a class="headerlink" href="#c.os_task_info::oti_next_checkin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Next time this task is scheduled to check-in with sanity. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="structos__task__info_1a100f609783651bcbd369982613570f72"></span><code class="descname">char os_task_info::oti_name[OS_TASK_MAX_NAME_LEN]</code></dt>
+<dd><p>Name of this task. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -385,10 +690,10 @@ task. This task simply toggles an LED at a one second interval.</p>
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../event_queue/event_queue.html" class="btn btn-neutral float-right" title="Event Queues" accesskey="n">Next: Event Queues <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../mutex/mutex.html" class="btn btn-neutral float-right" title="Mutex" accesskey="n">Next: Mutex <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../time/os_time.html" class="btn btn-neutral" title="OS Time" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: OS Time</a>
+        <a href="../context_switch/context_switch.html" class="btn btn-neutral" title="Scheduler" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Scheduler</a>
       
     </div>
 

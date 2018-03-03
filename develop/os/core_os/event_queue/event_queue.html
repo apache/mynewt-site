@@ -41,9 +41,9 @@
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
-          <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
-          <link rel="next" title="Semaphore" href="../semaphore/semaphore.html"/>
-          <link rel="prev" title="Task" href="../task/task.html"/> 
+          <link rel="up" title="Apache Mynewt Operating System Kernel" href="../mynewt_os.html"/>
+          <link rel="next" title="Callout" href="../callout/callout.html"/>
+          <link rel="prev" title="Semaphore" href="../semaphore/semaphore.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -156,7 +156,7 @@ ga("send", "pageview");
     
       <a href="../../os_user_guide.html">OS User Guide</a> /
     
-      <a href="../mynewt_os.html">Mynewt Core OS</a> /
+      <a href="../mynewt_os.html">Apache Mynewt Operating System Kernel</a> /
     
     Event Queues
     
@@ -224,27 +224,25 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">Kernel</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../context_switch/context_switch.html">Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Event Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../cputime/os_cputime.html">CPU Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../time/os_time.html">OS Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Event Queues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../msys/msys.html">Msys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mqueue/mqueue.html">Mqueue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../sanity/sanity.html">Sanity</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Mynewt OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/ble/ble_intro.html">BLE User Guide</a></li>
@@ -283,9 +281,8 @@ ga("send", "pageview");
 <p>An event queue allows a task to serialize incoming events and simplify
 event processing. Events are stored in a queue and a task removes and
 processes an event from the queue. An event is processed in the context
-of this task. Events may be generated by <a class="reference external" href="../callout/callout.html">OS
-callouts</a>, interrupt handlers, and other
-tasks.</p>
+of this task. Events may be generated by OS callouts, interrupt handlers,
+and other tasks.</p>
 <div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>Mynewt’s event queue model uses callback functions to process events.
@@ -306,88 +303,34 @@ real-time timing requirements should use Mynewt’s default event queue
 for its events. The callback function for an event from the Mynewt
 default event queue is executed in the context of the application main
 task. A package can, optionally, export a function that allows an
-application to specify the event queue for the package to use. (See the
-example in the <code class="docutils literal notranslate"><span class="pre">os_eventq_designate()</span></code> function description on how to
-write such a function.) The application task handler that manages the
-event queue simply pulls events from the event queue and executes the
-event’s callback function in its context.</p>
+application to specify the event queue for the package to use. The
+application task handler that manages the event queue simply pulls events
+from the event queue and executes the event’s callback function in its context.</p>
 <p>A common way that Mynewt applications or packages process events from an
 event queue is to have a task that executes in an infinite loop and
-calls the <code class="docutils literal notranslate"><span class="pre">os_eventq_get()</span></code> function to dequeue and return the event
+calls the <a class="reference internal" href="#c.os_eventq_get" title="os_eventq_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_eventq_get()</span></code></a> function to dequeue and return the event
 from the head of the event queue. The task then calls the event callback
-function to process the event. The <code class="docutils literal notranslate"><span class="pre">os_eventq_get()</span></code> function puts the
+function to process the event. The <a class="reference internal" href="#c.os_eventq_get" title="os_eventq_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_eventq_get()</span></code></a> function puts the
 task in to the <code class="docutils literal notranslate"><span class="pre">sleeping</span></code> state when there are no events on the queue.
-(See <a class="reference external" href="../context_switch/context_switch.html">Scheduler</a> for more
+(See <a class="reference internal" href="../context_switch/context_switch.html"><span class="doc">Scheduler</span></a> for more
 information on task execution states.) Other tasks (or interrupts) call
-the <code class="docutils literal notranslate"><span class="pre">os_eventq_put()</span></code> function to add an event to the queue. The
-<code class="docutils literal notranslate"><span class="pre">os_eventq_put()</span></code> function determines whether a task is blocked
+the <a class="reference internal" href="#c.os_eventq_put" title="os_eventq_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_eventq_put()</span></code></a> function to add an event to the queue. The
+<a class="reference internal" href="#c.os_eventq_put" title="os_eventq_put"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_eventq_put()</span></code></a> function determines whether a task is blocked
 waiting for an event on the queue and puts the task into the
 <code class="docutils literal notranslate"><span class="pre">ready-to-run</span></code> state.</p>
-<p>A task can use the <code class="docutils literal notranslate"><span class="pre">os_eventq_run()</span></code> wrapper function that calls the
-<code class="docutils literal notranslate"><span class="pre">os_eventq_get()</span></code> function to dequeue an event from the queue and then
-calls the event callback function to process the event.</p>
-<p>Note:</p>
+<p>A task can use the <a class="reference internal" href="#c.os_eventq_run" title="os_eventq_run"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_eventq_run()</span></code></a> wrapper function that calls the
+<a class="reference internal" href="#c.os_eventq_get" title="os_eventq_get"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_eventq_get()</span></code></a> function to dequeue an event from the queue and then
+calls the event callback function to process the event.
+Note:</p>
 <ul class="simple">
 <li>Only one task should consume or block waiting for events from an
 event queue.</li>
-<li>The <a class="reference external" href="../callout/callout.html">os_callout</a> subsystem uses events for
-timer expiration notification.</li>
+<li>The OS callout subsystem uses events for timer expiration notification.</li>
 </ul>
 </div>
-<div class="section" id="data-structures">
-<h2>Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">os_event</span></code> structure defines an event and has the following
-fields:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct os_event {
-    uint8_t ev_queued;
-    os_event_fn *ev_cb;
-    void *ev_arg;
-    STAILQ_ENTRY(os_event) ev_next;
-};
-</pre></div>
-</div>
-<table border="1" class="docutils">
-<colgroup>
-<col width="16%" />
-<col width="84%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Element</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">ev_queued</span></code></td>
-<td>Internal field that indicates whether this event is currently linked to an event queue</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">ev_cb</span></code></td>
-<td>Pointer to the callback function to call to process this event</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">ev_arg</span></code></td>
-<td>Pointer to an optional opaque data that the callback function uses to process this event</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">ev_next</span></code></td>
-<td>Linkage attaching this event to an event queue</td>
-</tr>
-</tbody>
-</table>
-<p>An event callback function has the following function prototype:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>typedef void os_event_fn(struct os_event *ev);
-</pre></div>
-</div>
-<p>A pointer to the <code class="docutils literal notranslate"><span class="pre">os_event</span></code> structure for the event is passed as an
-argument to the callback function.</p>
-<p>Notes: If the memory for the <code class="docutils literal notranslate"><span class="pre">os_event</span></code> structure is dynamically
-allocated:</p>
-<ul class="simple">
-<li>You must not free the memory for an event that is currently on an
-event queue.</li>
-<li>You must free the memory in the callback function after it completes
-processing the event.</li>
-</ul>
-<p>You must set the callback function for an event when you initialize the
-event. For example, here is an example of a statically-initialized event
-in the NimBLE host:</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>Here is an example of using an event from the BLE host:</p>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static void ble_hs_event_tx_notify(struct os_event *ev);
 
 /** OS event - triggers tx of pending notifications and indications. */
@@ -396,41 +339,200 @@ static struct os_event ble_hs_ev_tx_notifications = {
 };
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">os_eventq</span></code> structure defines an event queue and has the following fields:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct os_eventq {
-    struct os_task *evq_task;
-    STAILQ_HEAD(, os_event) evq_list;
-};
-</pre></div>
-</div>
-<table border="1" class="docutils">
-<colgroup>
-<col width="11%" />
-<col width="89%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Element</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">evq_task</span></code></td>
-<td>Pointer to the task, if any, that is waiting (in the <code class="docutils literal notranslate"><span class="pre">sleeping</span></code> state) for the <code class="docutils literal notranslate"><span class="pre">os_eventq_get()</span></code> function to return an event</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">evq_list</span></code></td>
-<td>Head of the list of events in this queue</td>
-</tr>
-</tbody>
-</table>
-<p>You must call the <code class="docutils literal notranslate"><span class="pre">os_eventq_init()</span></code> function to initialize an event
-queue before you can add events to the queue.</p>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">doxygengroup: Cannot find namespace “OSEvent” in doxygen xml output for project “mynewt-core” from directory: mynewt-core-xml</p>
+<dl class="typedef">
+<dt id="c.os_event_fn">
+<span class="target" id="group___o_s_event_1ga6e572d40b307b9f40bec72281548b63e"></span><em class="property">typedef </em>void <code class="descname">os_event_fn</code><span class="sig-paren">(</span>struct os_event<em>&nbsp;*ev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_event_fn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_init">
+<span class="target" id="group___o_s_event_1ga12330bd028b5efdb00b96f8d85ad576b"></span>void <code class="descname">os_eventq_init</code><span class="sig-paren">(</span>struct  os_eventq <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the event queue. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to initialize </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_inited">
+<span class="target" id="group___o_s_event_1ga21fb29b6ce469a93d87eacc2c64f7bca"></span>int <code class="descname">os_eventq_inited</code><span class="sig-paren">(</span>const struct  os_eventq  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_inited" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the event queue is initialized. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to check </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_put">
+<span class="target" id="group___o_s_event_1ga00853fd6e0f5bbf39e3930ee70665755"></span>void <code class="descname">os_eventq_put</code><span class="sig-paren">(</span>struct  os_eventq <em>&nbsp;*</em>, struct  os_event <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Put an event on the event queue. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to put an event on </li>
+<li><code class="docutils literal notranslate"><span class="pre">ev</span></code>: The event to put on the queue </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_get_no_wait">
+<span class="target" id="group___o_s_event_1ga5142a879bb51db18fa7ff725a81e13d0"></span>struct os_event* <code class="descname">os_eventq_get_no_wait</code><span class="sig-paren">(</span>struct  os_eventq  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_get_no_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll an event from the event queue and return it immediately. </p>
+<p>If no event is available, don’t block, just return NULL.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Event from the queue, or NULL if none available. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_get">
+<span class="target" id="group___o_s_event_1ga5d4a42f82a5fd7c2911ad4cb61a78045"></span>struct os_event* <code class="descname">os_eventq_get</code><span class="sig-paren">(</span>struct  os_eventq <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull a single item from an event queue. </p>
+<p>This function blocks until there is an item on the event queue to read.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The event from the queue </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to pull an event from</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_run">
+<span class="target" id="group___o_s_event_1ga5ccd457fe11fddc18f30e9155167948f"></span>void <code class="descname">os_eventq_run</code><span class="sig-paren">(</span>struct  os_eventq  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull a single item off the event queue and call it’s event callback. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to pull the item off. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_poll">
+<span class="target" id="group___o_s_event_1ga75902d07b868e820357767c4aae2e175"></span>struct os_event* <code class="descname">os_eventq_poll</code><span class="sig-paren">(</span>struct  os_eventq <em>&nbsp;**</em>, int, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_poll" title="Permalink to this definition">¶</a></dt>
+<dd><p>Poll the list of event queues specified by the evq parameter (size nevqs), and return the “first” event available on any of the queues. </p>
+<p>Event queues are searched in the order that they are passed in the array.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>An event, or NULL if no events available </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: Array of event queues </li>
+<li><code class="docutils literal notranslate"><span class="pre">nevqs</span></code>: Number of event queues in evq </li>
+<li><code class="docutils literal notranslate"><span class="pre">timo</span></code>: Timeout, forever if OS_WAIT_FOREVER is passed to poll.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_remove">
+<span class="target" id="group___o_s_event_1ga74c23f0cc51953fa974cfb09e9bb646a"></span>void <code class="descname">os_eventq_remove</code><span class="sig-paren">(</span>struct  os_eventq <em>&nbsp;*</em>, struct  os_event <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove an event from the queue. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to remove the event from </li>
+<li><code class="docutils literal notranslate"><span class="pre">ev</span></code>: The event to remove from the queue </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_eventq_dflt_get">
+<span class="target" id="group___o_s_event_1gacb92d16784e50c39fc62c92748d3a72d"></span>struct os_eventq* <code class="descname">os_eventq_dflt_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_dflt_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the default event queue processed by OS main task. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The default event queue. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.OS_EVENT_QUEUED">
+<span class="target" id="group___o_s_event_1gaf8776b7d4a3a3374e89562eefb3f3df2"></span><code class="descname">OS_EVENT_QUEUED</code><span class="sig-paren">(</span>__ev<span class="sig-paren">)</span><a class="headerlink" href="#c.OS_EVENT_QUEUED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not the given event is queued. </p>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv38os_event">
+<span id="_CPPv28os_event"></span><span id="os_event"></span><span class="target" id="structos__event"></span><em class="property">struct </em><code class="descname">os_event</code><a class="headerlink" href="#_CPPv38os_event" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_eventq.h&gt;</em><p>Structure representing an OS event. </p>
+<p>OS events get placed onto the event queues and are consumed by tasks. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_event::ev_queued">
+<span class="target" id="structos__event_1a22704177c6946c3bbb9f30dd8dca1b68"></span>uint8_t <code class="descname">ev_queued</code><a class="headerlink" href="#c.os_event::ev_queued" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether this OS event is queued on an event queue. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_event::ev_cb">
+<span class="target" id="structos__event_1adce337a55ab01bf317fcd9048b4fb97d"></span><a class="reference internal" href="#c.os_event_fn" title="os_event_fn">os_event_fn</a>* <code class="descname">ev_cb</code><a class="headerlink" href="#c.os_event::ev_cb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback to call when the event is taken off of an event queue. </p>
+<p>APIs, except for <a class="reference internal" href="#group___o_s_event_1ga5ccd457fe11fddc18f30e9155167948f"><span class="std std-ref">os_eventq_run()</span></a>, assume this callback will be called by the user. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_event::ev_arg">
+<span class="target" id="structos__event_1affb49e14dcf2b9e1b6f10bac3da788f1"></span>void* <code class="descname">ev_arg</code><a class="headerlink" href="#c.os_event::ev_arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argument to pass to the event queue callback. </p>
+</dd></dl>
+
 </div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv39os_eventq">
+<span id="_CPPv29os_eventq"></span><span id="os_eventq"></span><span class="target" id="structos__eventq"></span><em class="property">struct </em><code class="descname">os_eventq</code><a class="headerlink" href="#_CPPv39os_eventq" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_eventq.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_eventq::evq_owner">
+<span class="target" id="structos__eventq_1a4f44bc0985277390484d7b5cb6b0e35c"></span>struct os_task* <code class="descname">evq_owner</code><a class="headerlink" href="#c.os_eventq::evq_owner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pointer to task that “owns” this event queue. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_eventq::evq_task">
+<span class="target" id="structos__eventq_1afba1a5b1c24f170c4fe65c186a9257f8"></span>struct os_task* <code class="descname">evq_task</code><a class="headerlink" href="#c.os_eventq::evq_task" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pointer to the task that is sleeping on this event queue, either NULL, or the owner task. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -440,10 +542,10 @@ queue before you can add events to the queue.</p>
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../semaphore/semaphore.html" class="btn btn-neutral float-right" title="Semaphore" accesskey="n">Next: Semaphore <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../callout/callout.html" class="btn btn-neutral float-right" title="Callout" accesskey="n">Next: Callout <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../task/task.html" class="btn btn-neutral" title="Task" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Task</a>
+        <a href="../semaphore/semaphore.html" class="btn btn-neutral" title="Semaphore" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Semaphore</a>
       
     </div>
 

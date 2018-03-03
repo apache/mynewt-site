@@ -41,9 +41,9 @@
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
-          <link rel="up" title="Mynewt Core OS" href="../mynewt_os.html"/>
+          <link rel="up" title="Apache Mynewt Operating System Kernel" href="../mynewt_os.html"/>
           <link rel="next" title="OS Time" href="../time/os_time.html"/>
-          <link rel="prev" title="Scheduler" href="../context_switch/context_switch.html"/> 
+          <link rel="prev" title="Mbufs" href="../mbuf/mbuf.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -156,7 +156,7 @@ ga("send", "pageview");
     
       <a href="../../os_user_guide.html">OS User Guide</a> /
     
-      <a href="../mynewt_os.html">Mynewt Core OS</a> /
+      <a href="../mynewt_os.html">Apache Mynewt Operating System Kernel</a> /
     
     CPU Time
     
@@ -224,27 +224,25 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">OS Core</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">Kernel</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../context_switch/context_switch.html">Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">CPU Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../time/os_time.html">OS Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../msys/msys.html">Msys</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../mqueue/mqueue.html">Mqueue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../sanity/sanity.html">Sanity</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../API.html">API</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Mynewt OS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/ble/ble_intro.html">BLE User Guide</a></li>
@@ -285,42 +283,245 @@ support.</p>
 <div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">cputime</span></code> API provides high resolution time and timer support. The
-module must be initialized, using the <code class="docutils literal notranslate"><span class="pre">os_cputime_init()</span></code> function,
+module must be initialized, using the <a class="reference internal" href="#c.os_cputime_init" title="os_cputime_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_init()</span></code></a> function,
 with the clock frequency to use. The module uses the <code class="docutils literal notranslate"><span class="pre">hal_timer</span></code> API,
 defined in hal/hal_timer.h, to access the hardware timers. It uses the
 hardware timer number specified by the <code class="docutils literal notranslate"><span class="pre">OS_CPUTIME_TIMER_NUM</span></code> system
 configuration setting.</p>
 </div>
-<div class="section" id="data-structures">
-<h2>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>The module uses the following data structures:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">uint32_t</span></code> to represent <code class="docutils literal notranslate"><span class="pre">cputime</span></code>. Only the lower 32 bits of a 64
-timer are used.</li>
-<li><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hal_timer</span></code> to represent a cputime timer.</li>
-</ul>
-</div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><a class="reference internal" href="../API.html#c.os_cputime_delay_nsecs" title="os_cputime_delay_nsecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_delay_nsecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_delay_ticks" title="os_cputime_delay_ticks"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_delay_ticks()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_delay_usecs" title="os_cputime_delay_usecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_delay_usecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_get32" title="os_cputime_get32"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_get32()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_init" title="os_cputime_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_init()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_nsecs_to_ticks" title="os_cputime_nsecs_to_ticks"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_nsecs_to_ticks()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_ticks_to_nsecs" title="os_cputime_ticks_to_nsecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_ticks_to_nsecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_ticks_to_usecs" title="os_cputime_ticks_to_usecs"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_ticks_to_usecs()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_init" title="os_cputime_timer_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_init()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_relative" title="os_cputime_timer_relative"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_relative()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_start" title="os_cputime_timer_start"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_start()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_timer_stop" title="os_cputime_timer_stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_timer_stop()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.os_cputime_usecs_to_ticks" title="os_cputime_usecs_to_ticks"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_usecs_to_ticks()</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_LT" title="CPUTIME_LT"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_LT</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_GT" title="CPUTIME_GT"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_GT</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_LEQ" title="CPUTIME_LEQ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_LEQ</span></code></a></li>
-<li><a class="reference internal" href="../API.html#c.CPUTIME_GEQ" title="CPUTIME_GEQ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">CPUTIME_GEQ</span></code></a></li>
+<dl class="function">
+<dt id="c.os_cputime_init">
+<span class="target" id="group___o_s_c_p_u_time_1ga7aa50ce2ac6e1dae6bed02647822f358"></span>int <code class="descname">os_cputime_init</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;clock_freq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the cputime module. </p>
+<p>This must be called after os_init is called and before any other timer API are used. This should be called only once and should be called before the hardware timer is used.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>int 0 on success; -1 on error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">clock_freq</span></code>: The desired cputime frequency, in hertz (Hz).</li>
 </ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_get32">
+<span class="target" id="group___o_s_c_p_u_time_1gafb6a952579e92ce3356df29991aaa9f5"></span>uint32_t <code class="descname">os_cputime_get32</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_get32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the low 32 bits of cputime. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The lower 32 bits of cputime </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_nsecs_to_ticks">
+<span class="target" id="group___o_s_c_p_u_time_1gafb439dfff3071b7c294fcf33929470fa"></span>uint32_t <code class="descname">os_cputime_nsecs_to_ticks</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;nsecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_nsecs_to_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given number of nanoseconds into cputime ticks. </p>
+<p>Not defined if OS_CPUTIME_FREQ_PWR2 is defined.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of ticks corresponding to ‘nsecs’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of nanoseconds to convert to ticks</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_ticks_to_nsecs">
+<span class="target" id="group___o_s_c_p_u_time_1ga8643177f7b726a6e16eb9304849b89df"></span>uint32_t <code class="descname">os_cputime_ticks_to_nsecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_ticks_to_nsecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given number of ticks into nanoseconds. </p>
+<p>Not defined if OS_CPUTIME_FREQ_PWR2 is defined.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of nanoseconds corresponding to ‘ticks’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to convert to nanoseconds.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_delay_nsecs">
+<span class="target" id="group___o_s_c_p_u_time_1gab604f54b3bef695127d93738adc09632"></span>void <code class="descname">os_cputime_delay_nsecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;nsecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_delay_nsecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until ‘nsecs’ nanoseconds has elapsed. </p>
+<p>This is a blocking delay. Not defined if OS_CPUTIME_FREQ_PWR2 is defined.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">nsecs</span></code>: The number of nanoseconds to wait. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_usecs_to_ticks">
+<span class="target" id="group___o_s_c_p_u_time_1gaa54a2647142c5104ab507da518b7c51a"></span>uint32_t <code class="descname">os_cputime_usecs_to_ticks</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;usecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_usecs_to_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given number of microseconds into cputime ticks. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of ticks corresponding to ‘usecs’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of microseconds to convert to ticks</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_ticks_to_usecs">
+<span class="target" id="group___o_s_c_p_u_time_1ga359fa2d0037720cf7c485c9c2c811a4b"></span>uint32_t <code class="descname">os_cputime_ticks_to_usecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_ticks_to_usecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given number of ticks into microseconds. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of microseconds corresponding to ‘ticks’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to convert to microseconds.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_delay_ticks">
+<span class="target" id="group___o_s_c_p_u_time_1gacb8a96b8a28174810a1d1030abbccc62"></span>void <code class="descname">os_cputime_delay_ticks</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_delay_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the number of ticks has elapsed. </p>
+<p>This is a blocking delay.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to wait. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_delay_usecs">
+<span class="target" id="group___o_s_c_p_u_time_1ga5d02f111807229adcbe1a63f6bcd6dfd"></span>void <code class="descname">os_cputime_delay_usecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;usecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_delay_usecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until ‘usecs’ microseconds has elapsed. </p>
+<p>This is a blocking delay.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of usecs to wait. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_init">
+<span class="target" id="group___o_s_c_p_u_time_1gaaa77925d4b99f92de3fdb3a33763f3ee"></span>void <code class="descname">os_cputime_timer_init</code><span class="sig-paren">(</span>struct  hal_timer  *<em>&nbsp;timer</em>, <a class="reference internal" href="../../modules/hal/hal_timer/hal_timer.html#c.hal_timer_cb" title="hal_timer_cb">hal_timer_cb</a><em>&nbsp;fp</em>, void *<em>&nbsp;arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a CPU timer, using the given HAL timer. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: The timer to initialize. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">fp</span></code>: The timer callback function. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: Pointer to data object to pass to timer. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_start">
+<span class="target" id="group___o_s_c_p_u_time_1ga7ee4efebfb9ace6abc53aab7befbb36b"></span>int <code class="descname">os_cputime_timer_start</code><span class="sig-paren">(</span>struct  hal_timer  *<em>&nbsp;timer</em>, uint32_t<em>&nbsp;cputime</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a cputimer that will expire at ‘cputime’. </p>
+<p>If cputime has already passed, the timer callback will still be called (at interrupt context).</p>
+<p>NOTE: This must be called when the timer is stopped.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>int 0 on success; EINVAL if timer already started or timer struct invalid </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: Pointer to timer to start. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">cputime</span></code>: The cputime at which the timer should expire.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_relative">
+<span class="target" id="group___o_s_c_p_u_time_1ga178a0ad1206ee2f3921ec812cc4dbd93"></span>int <code class="descname">os_cputime_timer_relative</code><span class="sig-paren">(</span>struct  hal_timer  *<em>&nbsp;timer</em>, uint32_t<em>&nbsp;usecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_relative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a cpu timer that will expire ‘usecs’ microseconds from the current cputime. </p>
+<p>NOTE: This must be called when the timer is stopped.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>int 0 on success; EINVAL if timer already started or timer struct invalid </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: Pointer to timer. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of usecs from now at which the timer will expire.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_stop">
+<span class="target" id="group___o_s_c_p_u_time_1ga941919d476b402d1afd0d23f1b1e06fe"></span>void <code class="descname">os_cputime_timer_stop</code><span class="sig-paren">(</span>struct  hal_timer  *<em>&nbsp;timer</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops a cputimer from running. </p>
+<p>The timer is removed from the timer queue and interrupts are disabled if no timers are left on the queue. Can be called even if timer is not running.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: Pointer to cputimer to stop. Cannot be NULL. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_LT">
+<span class="target" id="group___o_s_c_p_u_time_1ga4309205f199bb636919dbfc5d73ef12e"></span><code class="descname">CPUTIME_LT</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_LT" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is before t2 in time </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_GT">
+<span class="target" id="group___o_s_c_p_u_time_1gadad5099542aece9275da4d725eb480ac"></span><code class="descname">CPUTIME_GT</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_GT" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is after t2 in time </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_GEQ">
+<span class="target" id="group___o_s_c_p_u_time_1gab2d4411ac9afee90785a47fcb9b0667f"></span><code class="descname">CPUTIME_GEQ</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_GEQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is after t2 in time </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_LEQ">
+<span class="target" id="group___o_s_c_p_u_time_1gad1fc43d68f68ce9a60261f94864cdfdd"></span><code class="descname">CPUTIME_LEQ</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_LEQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is on or after t2 in time </p>
+</dd></dl>
+
 </div>
 </div>
 
@@ -333,7 +534,7 @@ timer are used.</li>
         <a href="../time/os_time.html" class="btn btn-neutral float-right" title="OS Time" accesskey="n">Next: OS Time <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../context_switch/context_switch.html" class="btn btn-neutral" title="Scheduler" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Scheduler</a>
+        <a href="../mbuf/mbuf.html" class="btn btn-neutral" title="Mbufs" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Mbufs</a>
       
     </div>
 
