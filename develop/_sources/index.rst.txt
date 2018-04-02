@@ -15,6 +15,7 @@ Introduction
    network/ble/ble_intro
    newt/index
    newtmgr/index
+   mynewt_faq
    misc/index
 
 Welcome to Apache Mynewt
