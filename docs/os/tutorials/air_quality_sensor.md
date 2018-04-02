@@ -426,6 +426,7 @@ syscfg.vals:
 Then register your senseair command with the shell by adding the following to `libs/my_drivers/senseair/src/senseair.c`
 
 ```c
+#include <syscfg/syscfg.h>
 #include <shell/shell.h>
 #include <console/console.h>
 #include <assert.h>
