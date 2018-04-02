@@ -60,10 +60,6 @@ to create a bootloader target. We name the target ``nrf52_boot``:
 Note: This tutorial uses the Nordic nRF52-DK board. You must specify
 the correct bsp for the board you are using.
 
--  For the Nordic Preview Dev Kit choose
-   @apache-mynewt-core/hw/bsp/nrf52pdk (as shown below)
--  For the Nordic Dev Kit choose @apache-mynewt-core/hw/bsp/nrf52dk
-   instead (in the highlighted lines)
 -  For the Rigado Eval Kit choose @apache-mynewt-core/hw/bsp/bmd300eval
    instead (in the highlighted lines)
 
@@ -72,7 +68,7 @@ the correct bsp for the board you are using.
 
     $ newt target create nrf52_boot
     $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
-    $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+    $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     $ newt target set nrf52_boot build_profile=optimized
 
 Run the following ``newt target`` commands to create a target for the
@@ -94,11 +90,11 @@ settings:
     $ newt target show
     targets/nrf52_blinky
         app=apps/blinky
-        bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=debug
     targets/nrf52_boot
         app=@apache-mynewt-core/apps/boot
-        bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=optimized
 
 Build the Target Executables
