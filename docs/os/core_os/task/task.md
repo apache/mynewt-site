@@ -33,7 +33,9 @@ object (struct os_task) and its associated stack. Determining the stack size can
 be a bit tricky; generally developers should not declare large local variables 
 on the stack so that task stacks can be of limited size. However, all 
 applications are different and the developer must choose the stack size 
-accordingly. NOTE: be careful when declaring your stack! The stack is in units 
+accordingly. It is recommended to use `OS_TASK_STACK_DEFINE` macro to create a stack
+as this macro assures correct alignment.
+NOTE: be careful when declaring your stack! The stack is in units
 of `os_stack_t` sized elements (generally 32-bits). Looking at the example given 
 below and assuming `os_stack_t` is defined to be a 32-bit unsigned value, 
 "my_task_stack" will use 256 bytes. 
@@ -66,7 +68,7 @@ task simply toggles an LED at a one second interval.
 #define MY_TASK_PRI         (OS_TASK_PRI_HIGHEST) 
 #define MY_STACK_SIZE       (64) 
 struct os_task my_task; 
-os_stack_t my_task_stack[MY_STACK_SIZE]; 
+OS_TASK_STACK_DEFINE(my_task_stack, MY_STACK_SIZE);
 
 /* This is the task function */
 void my_task_func(void *arg) {
