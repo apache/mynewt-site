@@ -62,8 +62,8 @@ my_task_handler(void *arg)
     /* Initialize eventq */
     os_eventq_init(&my_task_evq);
 
-	/* Initialize mqueue */
-    os_mqueue_init(&rxpkt_q, NULL);
+    /* Initialize mqueue */
+    os_mqueue_init(&rxpkt_q, process_rx_data_queue, NULL);
 
     /* Process each event posted to our eventq.  When there are no events to
      * process, sleep until one arrives.
