@@ -62,7 +62,7 @@ definition consists of the following fields:
 | ------- | --------- | ------- |
 | uuid     | The UUID of this characteristic. | This field accepts a pointer to a variable of type `ble_uuid_t`. You could directly use the `BLE_UUID16_DECLARE()` macro or to pass a pointer to a `ble_uuid16_t` variable you could type `&uuid_variable.u` |
 | access\_cb  | A callback function that gets executed whenever a peer device accesses this characteristic. | *For reads:* this function generates the value that gets sent back to the peer.<br>*For writes:* this function receives the written value as an argument. |
-| flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [net/nimble/host/include/host/ble_gatt.h](https://github.com/apache/mynewt-core/blob/master/net/nimble/host/include/host/ble_gatt.h).|
+| flags       | Indicates which operations are permitted for this characteristic.  The NimBLE stack responds negatively when a peer attempts an unsupported operation. | The full list of flags can be found under `ble_gatt_chr_flags` in [nimble/host/include/host/ble_gatt.h](https://github.com/apache/mynewt-nimble/blob/master/nimble/host/include/host/ble_gatt.h).|
 
 The access callback is what implements the characteristic's behavior. Access
 callbacks are described in detail in the next section:
