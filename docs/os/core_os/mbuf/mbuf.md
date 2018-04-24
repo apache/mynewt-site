@@ -94,7 +94,7 @@ mbuf_usage_example1(uint8_t *mydata, int mydata_length)
 		 * mbuf payload size (64 bytes using above example), mbufs are allocated
 		 * and chained together to accommodate the total packet length.
 		 */
-		rc = os_mbuf_copyinto(om, 0, mydata, len);
+		rc = os_mbuf_copyinto(om, 0, mydata, mydata_length);
 		if (rc) {
 			/* Error! Could not allocate enough mbufs for total packet length */
 			return -1;
