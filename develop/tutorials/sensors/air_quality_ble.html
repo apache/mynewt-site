@@ -43,7 +43,7 @@
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../index.html"/>
           <link rel="up" title="Air Quality Sensor Project" href="air_quality.html"/>
           <link rel="next" title="Adding an Analog Sensor on nRF52" href="nrf52_adc.html"/>
-          <link rel="prev" title="Air quality sensor project" href="air_quality_sensor.html"/> 
+          <link rel="prev" title="Air Quality Sensor Project" href="air_quality_sensor.html"/> 
 
     
     <script src="../../_static/js/modernizr.min.js"></script>
@@ -282,33 +282,13 @@ ga("send", "pageview");
 <p>This is a follow-on project to the <a class="reference internal" href="air_quality_sensor.html"><span class="doc">Basic Air Quality
 Sensor</span></a> project; so it is assumed that you
 have worked through that project and have your CO2 sensor working
-properly with your Arduino Primo board.</p>
+properly with your nRF52DK board.</p>
 <p>So let’s get started making this thing Bluetooth enabled!</p>
 <div class="section" id="add-bluetooth-gatt-services">
 <h2>Add Bluetooth GATT Services<a class="headerlink" href="#add-bluetooth-gatt-services" title="Permalink to this headline">¶</a></h2>
-<p>Since we already built the previous demo on the <span class="xref std std-doc">bluetooth
-peripheral</span> basic app most of the bluetooth
-plumbing has already been taken care of for us. What’s left is for us to
-add the required GATT services for advertising the Carbon Dioxide sensor
-so that other devices can get those values.</p>
-<p>First, we’ll define the GATT Services in
-<code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/bleprph.h</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Sensor Data */</span>
-<span class="cm">/* e761d2af-1c15-4fa7-af80-b5729002b340 */</span>
-<span class="k">static</span> <span class="k">const</span> <span class="n">ble_uuid128_t</span> <span class="n">gatt_svr_svc_co2_uuid</span> <span class="o">=</span>
-    <span class="n">BLE_UUID128_INIT</span><span class="p">(</span><span class="mh">0x40</span><span class="p">,</span> <span class="mh">0xb3</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x90</span><span class="p">,</span> <span class="mh">0x72</span><span class="p">,</span> <span class="mh">0xb5</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0xaf</span><span class="p">,</span>
-                     <span class="mh">0xa7</span><span class="p">,</span> <span class="mh">0x4f</span><span class="p">,</span> <span class="mh">0x15</span><span class="p">,</span> <span class="mh">0x1c</span><span class="p">,</span> <span class="mh">0xaf</span><span class="p">,</span> <span class="mh">0xd2</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0xe7</span><span class="p">);</span>
-<span class="cp">#define CO2_SNS_TYPE          0xDEAD</span>
-<span class="cp">#define CO2_SNS_STRING &quot;SenseAir K30 CO2 Sensor&quot;</span>
-<span class="cp">#define CO2_SNS_VAL           0xBEAD</span>
-
-<span class="kt">uint16_t</span> <span class="n">gatt_co2_val</span><span class="p">;</span>
-</pre></div>
-</div>
-<p>You can use any hex values you choose for the sensor type and sensor
-values, and you can even forget the sensor type and sensor string
-definitions altogether but they make the results look nice in our
-Bluetooth App for Mac OS X and iOS.</p>
+<p>Since we already built the previous demo on the <span class="xref std std-doc">bluetooth peripheral</span> basic app most of the bluetooth plumbing has already been taken care of for us. What’s left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.</p>
+<p>First, we’ll define the GATT Services in <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/bleprph.h</span></code>. Be sure to include the header files as well.</p>
+<p>You can use any hex values you choose for the sensor type and sensor values, and you can even forget the sensor type and sensor string definitions altogether but they make the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we’ll add those services to <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/gatt_svr.c</span></code>.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
@@ -362,8 +342,7 @@ Bluetooth App for Mac OS X and iOS.</p>
     <span class="p">};</span>
 </pre></div>
 </div>
-<p>Next we need to tell the GATT Server how to handle requests for CO2
-readings :</p>
+<p>Next we need to tell the GATT Server how to handle requests for CO2 readings :</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">sstatic</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
                           <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
@@ -401,22 +380,17 @@ readings :</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Now it’s time to go into our <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/main.c</span></code> and change
-how we read CO2 readings and respond to requests.</p>
-<p>We’ll need a task handler with an event queue for the CO2 readings –
-they were handled by the shell task in the previous tutorial but now it
-needs to be replaced by a different handler as shown below.</p>
+<p>Now it’s time to go into our <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/main.c</span></code> and change how we read CO2 readings and respond to requests.</p>
+<p>We’ll need a task handler with an event queue for the CO2 readings.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* CO2 Task settings */</span>
-<span class="cp">#define CO2_TASK_PRIO           5</span>
+<span class="cp">#define CO2_TASK_PRIO           128</span>
 <span class="cp">#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
 <span class="k">struct</span> <span class="n">os_eventq</span> <span class="n">co2_evq</span><span class="p">;</span>
 <span class="k">struct</span> <span class="n">os_task</span> <span class="n">co2_task</span><span class="p">;</span>
 <span class="n">bssnz_t</span> <span class="n">os_stack_t</span> <span class="n">co2_stack</span><span class="p">[</span><span class="n">CO2_STACK_SIZE</span><span class="p">];</span>
 </pre></div>
 </div>
-<p>And of course we’ll need to go to our <code class="docutils literal notranslate"><span class="pre">main()</span></code> and do all the standard
-task and event setup we normally do by adding the following. Again,
-remember to delete all the shell event queues and tasks.</p>
+<p>And of course we’ll need to go to our <code class="docutils literal notranslate"><span class="pre">main()</span></code> and do all the standard task and event setup we normally do by adding the following:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Initialize sensor eventq */</span>
 <span class="n">os_eventq_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">co2_evq</span><span class="p">);</span>
 
@@ -470,18 +444,11 @@ remember to delete all the shell event queues and tasks.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>You’ll notice that it looks eeirily similar to a portion of the shell
-event we created earlier. This one simply reads and updates the CO2
-value and sends that over BLE to any connected clients instead.</p>
-<p>We can now build, create-image and load the app onto our Arduino Primo
-board, and then connect and see the updated values! The image below
-shows the results using MyNewt Sensor Reader, a Mac OS X app developed
-for connecting to MyNewt devices over Bluetooth but you can also use
-LightBlue or any other application that can connect to, and read,
-Bluetooth data.</p>
+<p>This one simply reads and updates the CO2 value and sends that over BLE to any connected clients instead.</p>
+<p>We can now build, create-image and load the app onto our nRF52DK board, and then connect and see the updated values! To view the results over Bluetooth, you can use LightBlue or any other application that can connect to, and read, Bluetooth data. By default, the device will show up as nimble-bleprph, since we used the <code class="docutils literal notranslate"><span class="pre">bleprph</span></code> app as our template. I’ve changed mine to something a bit more applicable: BLE CO2 Sensor.</p>
 <div class="figure" id="id1">
-<img alt="MyNewt Sensor Reader" src="../../_images/MyNewtSensorReader.jpg" />
-<p class="caption"><span class="caption-text">MyNewt Sensor Reader</span></p>
+<img alt="../../_images/airquality_lightblue.png" src="../../_images/airquality_lightblue.png" />
+<p class="caption"><span class="caption-text">LightBlue app connected to BLE CO2 Sensor</span></p>
 </div>
 <p>Congratulations!!</p>
 </div>
@@ -496,7 +463,7 @@ Bluetooth data.</p>
         <a href="nrf52_adc.html" class="btn btn-neutral float-right" title="Adding an Analog Sensor on nRF52" accesskey="n">Next: Adding an Analog Sensor on nRF52 <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="air_quality_sensor.html" class="btn btn-neutral" title="Air quality sensor project" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Air quality sensor project</a>
+        <a href="air_quality_sensor.html" class="btn btn-neutral" title="Air Quality Sensor Project" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Air Quality Sensor Project</a>
       
     </div>
 

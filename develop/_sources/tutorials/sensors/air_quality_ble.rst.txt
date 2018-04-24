@@ -4,24 +4,22 @@ Air quality sensor project via Bluetooth
 This is a follow-on project to the :doc:`Basic Air Quality
 Sensor <air_quality_sensor>` project; so it is assumed that you
 have worked through that project and have your CO2 sensor working
-properly with your Arduino Primo board.
+properly with your nRF52DK board.
 
 So let's get started making this thing Bluetooth enabled!
 
 Add Bluetooth GATT Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since we already built the previous demo on the :doc:`bluetooth
-peripheral <../ble/bleprph/bleprph-app>` basic app most of the bluetooth
-plumbing has already been taken care of for us. What's left is for us to
-add the required GATT services for advertising the Carbon Dioxide sensor
-so that other devices can get those values.
+Since we already built the previous demo on the :doc:`bluetooth peripheral <../ble/bleprph/bleprph-app>` basic app most of the bluetooth plumbing has already been taken care of for us. What's left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.
 
-First, we'll define the GATT Services in
-``apps/air_quality/src/bleprph.h``.
+First, we'll define the GATT Services in ``apps/air_quality/src/bleprph.h``. Be sure to include the header files as well. 
 
 .. code-block:: c
-
+    ....
+    #include "host/ble_hs.h"
+    #include "host/ble_uuid.h"
+    ....
     /* Sensor Data */
     /* e761d2af-1c15-4fa7-af80-b5729002b340 */
     static const ble_uuid128_t gatt_svr_svc_co2_uuid =
@@ -33,10 +31,7 @@ First, we'll define the GATT Services in
 
     uint16_t gatt_co2_val; 
 
-You can use any hex values you choose for the sensor type and sensor
-values, and you can even forget the sensor type and sensor string
-definitions altogether but they make the results look nice in our
-Bluetooth App for Mac OS X and iOS.
+You can use any hex values you choose for the sensor type and sensor values, and you can even forget the sensor type and sensor string definitions altogether but they make the results look nice in our Bluetooth App for Mac OS X and iOS.
 
 Next we'll add those services to ``apps/air_quality/src/gatt_svr.c``.
 
@@ -96,8 +91,7 @@ Make sure it is added as *primary* service.
         };
                 
 
-Next we need to tell the GATT Server how to handle requests for CO2
-readings :
+Next we need to tell the GATT Server how to handle requests for CO2 readings :
 
 .. code-block:: c
 
@@ -137,25 +131,20 @@ readings :
         }
     }
 
-Now it's time to go into our ``apps/air_quality/src/main.c`` and change
-how we read CO2 readings and respond to requests.
+Now it's time to go into our ``apps/air_quality/src/main.c`` and change how we read CO2 readings and respond to requests.
 
-We'll need a task handler with an event queue for the CO2 readings --
-they were handled by the shell task in the previous tutorial but now it
-needs to be replaced by a different handler as shown below.
+We'll need a task handler with an event queue for the CO2 readings.
 
 .. code-block:: c
 
     /* CO2 Task settings */
-    #define CO2_TASK_PRIO           5
+    #define CO2_TASK_PRIO           128
     #define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))
     struct os_eventq co2_evq;
     struct os_task co2_task;
     bssnz_t os_stack_t co2_stack[CO2_STACK_SIZE];
 
-And of course we'll need to go to our ``main()`` and do all the standard
-task and event setup we normally do by adding the following. Again,
-remember to delete all the shell event queues and tasks.
+And of course we'll need to go to our ``main()`` and do all the standard task and event setup we normally do by adding the following:
 
 .. code-block:: c
 
@@ -215,21 +204,12 @@ And finally, we'll take care of that ``co2_read_event()`` function:
     err:
         return (rc);
     }
+This one simply reads and updates the CO2 value and sends that over BLE to any connected clients instead.
 
-You'll notice that it looks eeirily similar to a portion of the shell
-event we created earlier. This one simply reads and updates the CO2
-value and sends that over BLE to any connected clients instead.
+We can now build, create-image and load the app onto our nRF52DK board, and then connect and see the updated values! To view the results over Bluetooth, you can use LightBlue or any other application that can connect to, and read, Bluetooth data. By default, the device will show up as nimble-bleprph, since we used the ``bleprph`` app as our template. I've changed mine to something a bit more applicable: BLE CO2 Sensor.
 
-We can now build, create-image and load the app onto our Arduino Primo
-board, and then connect and see the updated values! The image below
-shows the results using MyNewt Sensor Reader, a Mac OS X app developed
-for connecting to MyNewt devices over Bluetooth but you can also use
-LightBlue or any other application that can connect to, and read,
-Bluetooth data.
+.. figure:: ../pics/airquality_lightblue.png
 
-.. figure:: ../pics/MyNewtSensorReader.jpg
-   :alt: MyNewt Sensor Reader
-
-   MyNewt Sensor Reader
+   LightBlue app connected to BLE CO2 Sensor
 
 Congratulations!!
