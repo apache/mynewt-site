@@ -6,30 +6,57 @@ port to interact with your Mynewt project. While most modern PCs and
 laptops no longer have a true serial port, almost all can use their USB
 ports as serial ports.
 
-This will show you how to connect to some of the development boards we
+This page will show you how to connect to some of the development boards we
 use via a serial port.
 
 .. contents::
   :local:
-  :depth: 2
+  :depth: 3
 
-The development boards covered here are:
+Using the USB port on the nRF52DK
+---------------------------------
+The nRF52DK can communicate via a serial port directly through its USB port. By default, it uses the UART onboard, so if you need to use the UART for other purposes, consider using a USB<-->Serial converter or the Segger RTT Console instead, instructions provided below.
 
--  Nordic Semiconductor NRF52dk
+To see that your device, check the USB devices that are connected to your computer (macOS):
+
+.. code-block:: console
+
+    $ ls -l /dev/*USB*
+    crw-rw-rw- 1 <user> None 117, 5 May  9 04:24 /dev/cu.usbmodem1411
+    crw-rw-rw- 1 <user> None 117, 5 May  9 04:24 /dev/tty.usbmodem1411
+    $
+    
+The ``/dev/cu.usbmodem####`` and ``/dev/tty.usbmodem####`` represent your device. To get console access, you can either use the screen command or minicom:
+
+.. code-block:: console
+
+  $ minicom -D /dev/tty.usbmodem1411
+  
+  Welcome to minicom 2.7
+  
+  OPTIONS:
+  Compiled on Apr 26 2018, 13:21:44
+  Port /dev/tty.usbmodem1411, 11:12:13
+  
+  Press Meta-Z for help on special keys
+  
+Using a USB to Serial Breakout Board
+------------------------------------
+
+If you need to use an external USB to Serial converter, this guide will show you how to set it up. The development boards covered here are:
+
+-  Nordic Semiconductor nRF52dk
 -  Arduino M0 Pro
 
-In order to communicate with these boards you will also need a
-USB<-->Serial converted. We'll be using the `AdaFruit FT232H Breakout
-Board <https://www.adafruit.com/products/2264>`__ for this, but almost
+For this tutorial, we'll be using the `AdaFruit FT232H Breakout
+Board <https://www.adafruit.com/products/2264>`__, but almost
 any similar board should work just as well. You will also need Minicom
 or a similar Serial communications application. We'll show you how to
 use the ``screen`` command built in to Mac OS X, but later tutorials
 will also show Minicom setup.
 
-So let's get started!
-
 Setup FT232H
-------------
+~~~~~~~~~~~~
 
 This is a great board because it's so easy to set up, and it can do
 Serial UART, SPI, I2C and GPIO as well. There's full documentation on
@@ -53,7 +80,7 @@ It should look like this:
    FT232H Wiring
 
 Setup Nordic Semiconductor NRF52DK
-----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On the NRF52DK developer kit board, the Rx pin is P0.08, so you'll
 attach your jumper wire from the Tx pin (D0) of the FT232H board here.
@@ -70,7 +97,7 @@ you're done, your wiring should look like this:
    NRF52DK Wiring
 
 Setup Arduino M0 Pro
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 On the Arduino M0 Pro, the Tx and Rx pins are clearly labeled as such,
 as is the GND pin. Just make sure you wire Rx from the FT232H to TX on
@@ -84,13 +111,13 @@ Your Arduino M0 Pro should look like this:
    Arduino M0 Pro Wiring
 
 Setup Serial Communications
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You will need to know the serial port to connect to and use a terminal
 program to connect to the board.
 
 Example for Mac OS and Linux Platforms
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++
 
 First check what USB devices are already connected before connecting the
 FT232H board to your computer. The ports are listed in the **/dev**
@@ -152,7 +179,7 @@ Shell and Console enabled, you won't see anything there, but you can
 always refer back to this page from later tutorials if you need to.
 
 Example for Windows Platforms
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++
 
 First check what USB devices are already connected before connecting the
 FT232H board to your computer. You can locate the ports from a MinGW
