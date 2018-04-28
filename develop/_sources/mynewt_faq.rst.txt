@@ -72,8 +72,23 @@ Bitbang, BLE Mesh, BLE Advertising
 
   You can certainly continue advertisements during connections, if you are using the GATT bearer for mesh. Mesh is also tied into the ext-adv bearer in Mynewt, which also allows for interleaving, even if you’re transmitting mesh data on advertising channels.
 
+Extended Advertising with ``btshell``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  **Q**: I am using ``btshell`` for advertising with nRF52. When I use 31 bytes, ``mfg_data`` accepts the data with extended advertising. But when I use more bytes than that, ``mfg_data`` doesn’t accept it. Is 251 byte payload supported in extended advertising? How can I send more than a 251 byte payload on extended advertising? 
+
+  **A**: You need to set the ``BLE_EXT_ADV_MAX_SIZE`` syscfg to your required value. For example: 
+
+  ``newt target amend <your_target> syscfg=BLE_EXT_ADV=1:BLE_EXT_ADV_MAX_SIZE=1650``
+
+  The default is 31 bytes, and the max is 1650. 
+
+  Keep in mind that with extended advertising, you cannot set advertising data for an instance configured as scannable (e.g. ``advertise-configure scannable=1``). Either set scan response data using ``advertise-set-scan-rsp`` command (parameters are the same as for ``advertise-set-adv-data``) or configure the instance as non-scannable. For example, ``advertise-configure`` alone will configure the instance as non-connectable and non-scannable which means you can set advertising data. Also note that if you continue to use a scannable instance you will need to perform active scanning in order to get scan response data. 
+
+  FYI, legacy advertising instances can accept both advertising and scan response data but since they use legacy PDUs the limit is still 31 bytes. 
+
 Bootloader and Firmware Upgrade
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
   **Q**: I wanted to check if the stack provides firmware upgrade capability and if so, is there an example you can provide on how it is being done?
   
@@ -146,6 +161,33 @@ Connection Profile using newtmgr
 
   That ``peer_name string`` is correct if your device is running the ``bleprph`` app.  You'll need to adjust it if your device has a different BLE name. The ``--conntype ble --connstring peer_name=nimble-bleprph`` part is what would go in a connection profile. If you create one, then you can just specify the profile's name rather than typing that long string each time you send a command.
 
+NMP
+~~~
+
+  **Q**: What does NMP stand for?
+
+  **A**: Newtmgr Management Protocol
+
+Newtmgr with the Adafruit nRF52DK
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  **Q**: I'm having issues using Newt Manager with the Adafruit nRF52DK. What do I do?
+
+  **A**: There are two things you will need to do to fix any issues you encounter when working with the Adafruit nRF52DK and Newt Manager:
+
+  1. Specify a reduced MTU:
+
+  You can specify the reduced MTU by adding ``mtu=128`` to your connection string. The reason for this change is that MTU is the serial boot loader used to have a smaller receive buffer (128 bytes). The newtmgr tool sends larger image chunks by default, so specifying the MTU will reduce the image size. 
+\
+
+  2. Indicate that the existing image should not be erased:
+
+  This is accomplished with the ``-e`` command line option. Your command line should look similar to the following:
+   
+  ``$ newtmgr --conntype serial --connextra 'dev=/dev/ttyUSB0,mtu=128' image upload -e <image-path>``
+   
+  This change is needed because the serial boot loader doesn't support the standalone "erase image" command - as a result, it drops the request. The newtmgr image upload command starts by sending an erase command, then times out when it doesn't receive a response. The older version of newtmgr would use smaller chunk size for images, and it did not send the standalone erase command. When newtmgr was changed in versions 1.2 and 1.3, the serial boot loader changed along with it. The latest newtmgr is not compatible with an older version of the boot loader (which your board will probably ship with) without the above workarounds.
+
 Porting Mynewt
 --------------
 
@@ -180,6 +222,15 @@ Setting ``serial`` and ``mfghash``
 
   **A**: ``mfghash`` is computed if you’re using ``newt mfg`` to construct your flash image, and it identifies the build of your bootloader. ``newt mfg`` bundles togetherthe bootloader, target image, and other data you’d want to bundle when creating an image to burn to flash. See <mynewt.apache.org/newt/newt/mfg> for the construction side of things and ``apache-mynewt-core/sys/mfg/src/mfg.c`` for the firmware side. ``serial`` was intended to be used if you want to have your own naming scheme per device when building products; i.e. you want something other than the mcu serial number, or if you don’t have serial number available.
 
+Leading Zeros Format in ``printf``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  **Q**: Is there a way to make printf and console_printf honor the leading zeroes format? As in:
+
+  ``console_printf("%.2d", 5);`` outputting "05" instead of as for me now: "2d" ?
+
+  **A**: ``console_printf("%02d", 5);``
+
 Modules in Mynewt
 -----------------
 
@@ -195,24 +246,20 @@ Modules in Mynewt
 
   **A**: I think the thought is that would be the debug log, and during development you could pipe that to console. In production, that might go in the spare image slot. I’m not sure if we support it yet, but we should make sure the log can write to multiple handlers at the same time.
 
-NMP
----
+Troubleshooting
+---------------
+Error: Unsatisfied APIs detected 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  **Q**: I ran into the following error message: 
 
-  **Q**: What does NMP stand for?
+.. code-block:: console 
 
-  **A**: Newtmgr Management Protocol
+    Error: Unsatisfied APIs detected:
+    * stats, required by: hw/drivers/sensors/bmp280, hw/drivers/sensors/ms5837, net/oic
 
-Leading Zeros Format in ``printf``
-----------------------------------
+How do I resolve this?
 
-  **Q**: Is there a way to make printf and console_printf honor the leading zeroes format? As in:
-
-  ``console_printf("%.2d", 5);`` outputting "05" instead of as for me now: "2d" ?
-
-  **A**: ``console_printf("%02d", 5);``
-
-Miscellaneous
--------------
+  **A**: You may be missing some package dependencies in your pkg.yml file. In this case, you need to include ``sys/stats`` (either ``sys/stats/full`` or ``sys/stats/stub``) to your pkg.yml file. You can add it to either your app’s or target’s pkg.yml file, but if you have a custom app it is recommended that you add it to your app’s pkg.yml. That way you can have multiple targets for the same app, without having to add it to every target. Moreover, if you share your app package, others won’t run into the same error when building it. 
 
 Greyed out files on iOS 11
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -220,6 +267,47 @@ Greyed out files on iOS 11
   **Q**: I'm trying to use the Adafruit Mynewt Manager to upload a custom image over BLE. Uploading one of the provided bleuartx000.img works fine and I can boot into them, confirm etc. However, when I try to upload a custom image I can't even seem to add it to the app. Images stored in the iCloud drive just appear as disabled icons. Anyone with a clue as to how to get that working?
 
   **A**: The new iOS version no longer allows files with unrecognized extensions to be selected. Try renaming the file to something more compatible (e.g. .txt). 
+
+``arm-none-eabi-gcc`` Build Error for Project
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  **Q**: I am having this error when I try to build my project:
+
+  ``Building target targets/stm32l072czy6tr_boot
+  Error: exec: "arm-none-eabi-gcc": executable file not found in $PATH``
+
+  How do I add it?
+
+  **A**: First, install the GNU Arm Embedded Toolchain if you haven’t already. Then, depending on your OS, add the link to your ``arm-none-eabi-gcc`` executable path to your PATH environment variable.
+
+Issues Running Image on Boot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  **Q**: I was able to successfully create a BSP for my custom board (using nRF52 MCU), then build and run that image in the debugger. However, it does not run on boot. Any ideas to fix the issue?
+
+  **A**: A good process in general is to do a full flash erase, then flash the bootloader and the running image. Make sure to dump the contents of flash and see that it actually gets written there as well. If you experience the issue again after a reboot, you will also want to set ``MCU_DCDC_ENABLED:0`` then redo the process of erase, rebuild, and reload. 
+
+Miscellaneous
+-------------
+Enable Trace in Mynewt
+~~~~~~~~~~~~~~~~~~~~~~
+
+  **Q**: I’m trying to use gdb with Trace, but do not know how to enable it. How do I do this in Mynewt?
+
+  **A**: To enable Trace, you can add cflags to pkg.yml in your target directory: 
+
+.. code-block:: console
+
+    ~/dev/mynewt $ cat targets/mytarget/pkg.yml
+    ### Package: targets/mytarget
+    pkg.name: “targets/mytarget”
+    pkg.type: "target"
+    pkg.description: 
+    pkg.author: 
+    pkg.homepage: 
+    ​
+    pkg.cflags:
+      - -DENABLE_TRACE
 
 Alternatives to ``cmsis_nvic.c``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -248,18 +336,6 @@ Documentation on Correct Values for ble_gap_disc_params
   ``passive`` - If set, don't send scan requests to advertisers (i.e., don't request additional advertising data).
   ``filter_duplicates`` - If set, the controller ignores all but the first advertisement from each device.
 
-``arm-none-eabi-gcc`` Build Error for Project
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  **Q**: I am having this error when I try to build my project:
-
-  ``Building target targets/stm32l072czy6tr_boot
-  Error: exec: "arm-none-eabi-gcc": executable file not found in $PATH``
-
-  How do I add it?
-
-  **A**: First, install the GNU Arm Embedded Toolchain if you haven’t already. Then, depending on your OS, add the link to your ``arm-none-eabi-gcc`` executable path to your PATH environment variable.
-
 Time Precision on nRF52
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -268,13 +344,6 @@ Time Precision on nRF52
   **A**: No, it isn't possible to change the ticks per second for a single app.  That constant is defined to be most efficient for the particular MCU. 
 
   If you need precision, the OS tick timer is probably not the right thing to use.  Take a look at the OS cputime timer: http://mynewt.apache.org/latest/os/core_os/cputime/os_cputime/. ``os_cputime`` has 1MHz frequency by default, and enabled by default. It is recommended to use this for higher precision applications. 
-
-Issues Running Image on Boot
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  **Q**: I was able to successfully create a BSP for my custom board (using nRF52 MCU), then build and run that image in the debugger. However, it does not run on boot. Any ideas to fix the issue?
-
-  **A**: A good process in general is to do a full flash erase, then flash the bootloader and the running image. Make sure to dump the contents of flash and see that it actually gets written there as well. If you experience the issue again after a reboot, you will also want to set ``MCU_DCDC_ENABLED:0`` then redo the process of erase, rebuild, and reload. 
 
 Multicast Messaging and Group Messaging
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -301,23 +370,4 @@ Reduce Code Size for Mynewt Image
   **Q**: How do I reduce the code size for my Mynewt image?
 
   **A**: Please refer to the tutorial documentation on :doc:`reducing application code size <../tutorials/other/codesize>`.
-
-Issues with the Adafruit nRF52DK
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-  **Q**: I'm having issues using Newt Manager with the Adafruit nRF52DK. What do I do?
-
-  **A**: There are two things you will need to do to fix any issues you encounter when working with the Adafruit nRF52DK and Newt Manager:
-
-  1. Specify a reduced MTU:
-
-  You can specify the reduced MTU by adding ``mtu=128`` to your connection string. The reason for this change is that MTU is the serial boot loader used to have a smaller receive buffer (128 bytes). The newtmgr tool sends larger image chunks by default, so specifying the MTU will reduce the image size. 
-\
-
-  2. Indicate that the existing image should not be erased:
-
-  This is accomplished with the ``-e`` command line option. Your command line should look similar to the following:
-   
-  ``$ newtmgr --conntype serial --connextra 'dev=/dev/ttyUSB0,mtu=128' image upload -e <image-path>``
-   
-  This change is needed because the serial boot loader doesn't support the standalone "erase image" command - as a result, it drops the request. The newtmgr image upload command starts by sending an erase command, then times out when it doesn't receive a response. The older version of newtmgr would use smaller chunk size for images, and it did not send the standalone erase command. When newtmgr was changed in versions 1.2 and 1.3, the serial boot loader changed along with it. The latest newtmgr is not compatible with an older version of the boot loader (which your board will probably ship with) without the above workarounds.
+  
