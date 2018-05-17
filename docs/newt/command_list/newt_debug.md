@@ -32,5 +32,5 @@ Opens a debugger session to the image built for the &lt;target-name&gt; target.
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-             | newt debug myble2  | Opens a J-Link connection and starts a GNU gdb session to debug bin/targets/myble2/app/apps/bletiny/bletiny.elf when the target is as follows: <br> <br> targets/myble2 <br> app=@apache-mynewt-core/apps/bletiny <br> bsp=@apache-mynewt-core/hw/bsp/nrf52dk <br> build_profile=optimized <br> syscfg=STATS_NAMES=1
-             | newt debug myble2 -n  | Opens a J-Link connection bin/targets/myble2/app/apps/bletiny/bletiny.elf but do not start GDB on the command line. 
+             | newt debug myble2  | Opens a J-Link connection and starts a GNU gdb session to debug bin/targets/myble2/app/apps/btshell/btshell.elf when the target is as follows: <br> <br> targets/myble2 <br> app=@apache-mynewt-core/apps/btshell <br> bsp=@apache-mynewt-core/hw/bsp/nrf52dk <br> build_profile=optimized <br> syscfg=STATS_NAMES=1
+             | newt debug myble2 -n  | Opens a J-Link connection bin/targets/myble2/app/apps/btshell/btshell.elf but do not start GDB on the command line. 

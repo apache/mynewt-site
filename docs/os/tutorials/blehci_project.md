@@ -104,7 +104,7 @@ Generate a signed application image for the `myble2` target. The version number 
 
 ```no-highlight
 $ newt create-image myble2 1.0.0
-App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/bletiny/bletiny.img
+App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/blehci/blehci.img
 ```
 
 <br>

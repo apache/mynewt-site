@@ -30,5 +30,5 @@ Warning: The image hash will change if you change the key-id or the type of key 
 
  Sub-command  | Usage                  | Explanation 
 -------------| -----------------------|-----------------
-             | newt resign-image bin/targets/myble/app/apps/bletiny/bletiny.img private.pem | Signs the `bin/targets/myble/app/apps/bletiny/bletiny.img` file with   the private.pem key. 
-             | newt resign-image bin/targets/myble/app/apps/bletiny/bletiny.img | Strips the current signature from `bin/targets/myble/app/apps/bletiny/bletiny.img` file.|
+             | newt resign-image bin/targets/myble/app/apps/btshell/btshell.img private.pem | Signs the `bin/targets/myble/app/apps/btshell/btshell.img` file with   the private.pem key. 
+             | newt resign-image bin/targets/myble/app/apps/btshell/btshell.img | Strips the current signature from `bin/targets/myble/app/apps/btshell/btshell.img` file.|

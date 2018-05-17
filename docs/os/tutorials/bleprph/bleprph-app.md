@@ -20,7 +20,7 @@ which is a free app to browse and connect to BLE Peripheral devices.
 
 ### Create a New Target
 
-You can create a new project instead, but this tutorial will simply use the previously created bletiny project and add a new target for the BLE Peripheral
+You can create a new project instead, but this tutorial will simply use the previously created btshell project and add a new target for the BLE Peripheral
 
 ```no-highlight
 $ newt target create myperiph

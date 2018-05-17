@@ -54,12 +54,12 @@ amend         | newt target amend myble syscfg=CONFIG_NEWTMGR=0 cflags="-DTEST"|
 amend         | newt target amend myble -d syscfg=LOG_LEVEL:CONFIG_NEWTMGR cflags="-DTEST"|Deletes the `LOG_LEVEL` and `CONFIG_NEWTMGR` settings from the `syscfg.yml` file  and the -DTEST flag from `pkg.cflags` for the `myble` target. Other syscfg setting values and cflags values are not changed.         
 config show   | newt target config show rb_blinky | Shows the system configuration settings for all the packages that the `rb_blinky` target includes.
 config init   | newt target config init my_blinky | Creates and populates the `my_blinky` target's `syscfg.yml` file with the system configuration setting values from all the packages that the `my_blinky` target includes.
-copy          | newt target copy <br>rb_blinky rb_bletiny | Creates the `rb_bletiny` target by cloning the `rb_blinky` target. 
+copy          | newt target copy <br>rb_blinky rb_btshell | Creates the `rb_btshell` target by cloning the `rb_blinky` target. 
 create        | newt target create <br>my_new_target | Creates the `my_newt_target` target. It creates the `targets/my_new_target` directory and creates the skeleton `pkg.yml` and `target.yml` files in the directory.
-delete        | newt target delete rb_bletiny | Deletes the `rb_bletiny` target. It deletes the `targets/rb_bletiny` directory.
+delete        | newt target delete rb_btshell | Deletes the `rb_btshell` target. It deletes the `targets/rb_btshell` directory.
 dep           | newt target dep myble     | Displays the dependency tree of all the package dependencies for the `myble` target. It lists each package followed by a list of packages it depends on. 
 revdep        | newt target revdep myble    | Displays the reverse dependency tree of all the package dependencies for the `myble` target. It lists each package followed by a list of packages that depend on it. 
-set           | newt target set myble <br>app=@apache-mynewt-core/apps/bletiny | Use `bletiny` as the application to build for the `myble` target.
+set           | newt target set myble <br>app=@apache-mynewt-core/apps/btshell | Use `btshell` as the application to build for the `myble` target.
 set           | newt target set myble <br>cflags="-DNDEBUG -Werror" | Set `pkg.cflags` variable with `-DNDEBUG -Werror` in the `myble` target's `pkg.yml` file..
 set           | newt target set myble syscfg=LOG_NEWTMGR=0:CONFIG_NEWTMGR | Sets the `syscfg.vals` variable in the `myble` target's `syscfg.yml` file with the setting values: LOG_NEWTMGR: 0 and CONFIG_NEWTMGR: 1. CONFIG_NEWTMGR is set to 1 because a value is not specified.
 set           | newt target set myble cflags= | Unsets the `pkg.cflags` variable in the `myble` target's `pkg.yml` file.

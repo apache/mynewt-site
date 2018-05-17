@@ -41,10 +41,13 @@ When newt sees a directory tree that contains a "project.yml" file it knows that
 
 ```
 @~/dev/myproj$ ls repos/apache-mynewt-core/apps/
-blecent		blesplit	boot		sensors_test	splitty
-blehci		bletest		fat2native	slinky		test
-bleprph		bletiny		ffs2native	slinky_oic	testbench
-bleprph_oic	bleuart		ocf_sample	spitest		timtest
+blecent        bleprph      bsnprph         ocf_sample    testbench
+blecsc         bleprph_oic  btshell         pwm_test      timtest
+blehci         blesplit     ffs2native      sensors_test  trng_test
+blehr          bletest      iptest          slinky
+blemesh        bleuart      lora_app_shell  slinky_oic
+blemesh_light  boot         loraping        spitest
+blemesh_shell  bsncent      lorashell       splitty
 ```
 
 Along with the `targets` directory, `apps` represents the top-level of the build tree for the particular project, and define the dependencies for the rest of the system. Mynewt users and developers can add their own apps to the project's `apps` directory.   
