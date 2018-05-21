@@ -17,7 +17,7 @@ Using the USB port on the nRF52DK
 ---------------------------------
 The nRF52DK can communicate via a serial port directly through its USB port. By default, it uses the UART onboard, so if you need to use the UART for other purposes, consider using a USB<-->Serial converter or the Segger RTT Console instead, instructions provided below.
 
-To see that your device, check the USB devices that are connected to your computer (macOS):
+To see your device, check the USB devices that are connected to your computer (macOS):
 
 .. code-block:: console
 
@@ -26,7 +26,7 @@ To see that your device, check the USB devices that are connected to your comput
     crw-rw-rw- 1 <user> None 117, 5 May  9 04:24 /dev/tty.usbmodem1411
     $
     
-The ``/dev/cu.usbmodem####`` and ``/dev/tty.usbmodem####`` represent your device. To get console access, you can either use the screen command or minicom:
+The ``/dev/cu.usbmodem####`` and ``/dev/tty.usbmodem####`` represent your device. To get console access, you can either use the screen command or Minicom:
 
 .. code-block:: console
 
@@ -226,7 +226,7 @@ If there's no Mynewt app running, or the Mynewt app doesn't have the
 Shell and Console enabled, you won't see anything there, but you can
 always refer back to this page from later tutorials if you need to.
 
-Now that you know how to communicate with your mynewt application, let's
+Now that you know how to communicate with your Mynewt application, let's
 move on to creating one!
 
 .. |Device Manager - USB Devices| image:: ../tutorials/pics/device_manager_no_ft232H.png

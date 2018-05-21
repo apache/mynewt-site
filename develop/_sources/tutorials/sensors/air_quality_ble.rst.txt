@@ -1,22 +1,19 @@
-Air quality sensor project via Bluetooth
+Air Quality Sensor Project via Bluetooth
 ----------------------------------------
 
-This is a follow-on project to the :doc:`Basic Air Quality
-Sensor <air_quality_sensor>` project; so it is assumed that you
-have worked through that project and have your CO2 sensor working
-properly with your nRF52DK board.
+This is a follow-on project to the :doc:`Basic Air Quality Sensor <air_quality_sensor>` project; so it is assumed that you have worked through that project and have your CO2 sensor working properly with your nRF52DK board.
 
 So let's get started making this thing Bluetooth enabled!
 
 Add Bluetooth GATT Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since we already built the previous demo on the :doc:`bluetooth peripheral <../ble/bleprph/bleprph-app>` basic app most of the bluetooth plumbing has already been taken care of for us. What's left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.
+Since we already built the previous demo on the :doc:`bluetooth peripheral <../ble/bleprph/bleprph-app>` basic app most of the Bluetooth plumbing has already been taken care of for us. What's left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.
 
 First, we'll define the GATT Services in ``apps/air_quality/src/bleprph.h``. Be sure to include the header files as well. 
 
 .. code-block:: c
-    ....
+
     #include "host/ble_hs.h"
     #include "host/ble_uuid.h"
     ....
@@ -95,7 +92,7 @@ Next we need to tell the GATT Server how to handle requests for CO2 readings :
 
 .. code-block:: c
 
-    sstatic int
+    static int
     gatt_svr_sns_access(uint16_t conn_handle, uint16_t attr_handle,
                               struct ble_gatt_access_ctxt *ctxt,
                               void *arg)

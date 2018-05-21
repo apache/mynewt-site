@@ -10,7 +10,7 @@
     
 
     
-    <title>Air quality sensor project via Bluetooth &mdash; Apache Mynewt 1.3.0 documentation</title>
+    <title>Air Quality Sensor Project via Bluetooth &mdash; Apache Mynewt 1.3.0 documentation</title>
     
 
     
@@ -160,7 +160,7 @@ ga("send", "pageview");
     
       <a href="air_quality.html">Air Quality Sensor Project</a> /
     
-    Air quality sensor project via Bluetooth
+    Air Quality Sensor Project via Bluetooth
     
   <div class="sourcelink">
     <a href="https://github.com/apache/mynewt-documentation/edit/master/docs/tutorials/sensors/air_quality_ble.rst" class="icon icon-github"
@@ -278,16 +278,28 @@ ga("send", "pageview");
                    <div itemprop="articleBody">
                     
   <div class="section" id="air-quality-sensor-project-via-bluetooth">
-<h1>Air quality sensor project via Bluetooth<a class="headerlink" href="#air-quality-sensor-project-via-bluetooth" title="Permalink to this headline">¶</a></h1>
-<p>This is a follow-on project to the <a class="reference internal" href="air_quality_sensor.html"><span class="doc">Basic Air Quality
-Sensor</span></a> project; so it is assumed that you
-have worked through that project and have your CO2 sensor working
-properly with your nRF52DK board.</p>
+<h1>Air Quality Sensor Project via Bluetooth<a class="headerlink" href="#air-quality-sensor-project-via-bluetooth" title="Permalink to this headline">¶</a></h1>
+<p>This is a follow-on project to the <a class="reference internal" href="air_quality_sensor.html"><span class="doc">Basic Air Quality Sensor</span></a> project; so it is assumed that you have worked through that project and have your CO2 sensor working properly with your nRF52DK board.</p>
 <p>So let’s get started making this thing Bluetooth enabled!</p>
 <div class="section" id="add-bluetooth-gatt-services">
 <h2>Add Bluetooth GATT Services<a class="headerlink" href="#add-bluetooth-gatt-services" title="Permalink to this headline">¶</a></h2>
-<p>Since we already built the previous demo on the <span class="xref std std-doc">bluetooth peripheral</span> basic app most of the bluetooth plumbing has already been taken care of for us. What’s left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.</p>
+<p>Since we already built the previous demo on the <span class="xref std std-doc">bluetooth peripheral</span> basic app most of the Bluetooth plumbing has already been taken care of for us. What’s left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.</p>
 <p>First, we’ll define the GATT Services in <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/bleprph.h</span></code>. Be sure to include the header files as well.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;host/ble_hs.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;host/ble_uuid.h&quot;</span><span class="cp"></span>
+<span class="p">....</span>
+<span class="cm">/* Sensor Data */</span>
+<span class="cm">/* e761d2af-1c15-4fa7-af80-b5729002b340 */</span>
+<span class="k">static</span> <span class="k">const</span> <span class="n">ble_uuid128_t</span> <span class="n">gatt_svr_svc_co2_uuid</span> <span class="o">=</span>
+    <span class="n">BLE_UUID128_INIT</span><span class="p">(</span><span class="mh">0x40</span><span class="p">,</span> <span class="mh">0xb3</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="mh">0x90</span><span class="p">,</span> <span class="mh">0x72</span><span class="p">,</span> <span class="mh">0xb5</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0xaf</span><span class="p">,</span>
+                     <span class="mh">0xa7</span><span class="p">,</span> <span class="mh">0x4f</span><span class="p">,</span> <span class="mh">0x15</span><span class="p">,</span> <span class="mh">0x1c</span><span class="p">,</span> <span class="mh">0xaf</span><span class="p">,</span> <span class="mh">0xd2</span><span class="p">,</span> <span class="mh">0x61</span><span class="p">,</span> <span class="mh">0xe7</span><span class="p">);</span>
+<span class="cp">#define CO2_SNS_TYPE          0xDEAD</span>
+<span class="cp">#define CO2_SNS_STRING &quot;SenseAir K30 CO2 Sensor&quot;</span>
+<span class="cp">#define CO2_SNS_VAL           0xBEAD</span>
+
+<span class="kt">uint16_t</span> <span class="n">gatt_co2_val</span><span class="p">;</span>
+</pre></div>
+</div>
 <p>You can use any hex values you choose for the sensor type and sensor values, and you can even forget the sensor type and sensor string definitions altogether but they make the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we’ll add those services to <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/gatt_svr.c</span></code>.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
@@ -343,7 +355,7 @@ properly with your nRF52DK board.</p>
 </pre></div>
 </div>
 <p>Next we need to tell the GATT Server how to handle requests for CO2 readings :</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">sstatic</span> <span class="kt">int</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
                           <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
                           <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
