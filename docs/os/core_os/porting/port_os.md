@@ -9,7 +9,7 @@ control, buffer management, and synchronization objects. it also includes
 libraries and services like console, command shell, image manager, 
 bootloader, and file systems etc.
 
-Thee majority of this software is platform independent and requires no
+The majority of this software is platform independent and requires no
 intervention to run on your platform, but some of the components require 
 support from the underlying platform. 
 
