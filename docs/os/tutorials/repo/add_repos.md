@@ -120,7 +120,7 @@ To add a new repo to your project, you have to complete two steps.
 *  Edit the `project.yml` file and add a new repo descriptor.  The previous
 section includes information on the field required in your repo descriptor.
 
-* Edit the `project/yml` file and add a new line to the `project.repositories`
+* Edit the `project.yml` file and add a new line to the `project.repositories`
 variable with the name of the repo you are adding.  
 
 An example of a `project.yml` file with two repositories is shown below:
