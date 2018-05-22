@@ -123,7 +123,7 @@ version number is arbitrary.
 .. code-block:: console
 
     $ newt create-image myble2 1.0.0
-    App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/bletiny/bletiny.img
+    App image succesfully generated: ~/dev/blehciproj/bin/targets/myble2/app/apps/blehci/blehci.img
 
 Load the bootloader and the application image
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
