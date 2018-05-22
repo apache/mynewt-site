@@ -200,9 +200,9 @@ directory.
     │   ├── bleprph_oic
     │   ├── blesplit
     │   ├── bletest
-    │   ├── bletiny
     │   ├── bleuart
     │   ├── boot
+    │   ├── btshell
     │   ├── fat2native
     │   ├── ffs2native
     │   ├── ocf_sample
