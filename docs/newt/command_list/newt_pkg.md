@@ -36,7 +36,7 @@ remove  | The remove &lt;my-pkg&gt;  command deletes the `my-pkg` package.
 
 Sub-command  | Usage                  | Explanation
 -------------| -----------------------|-----------------
-copy         | newt pkg copy <br>apps/bletiny apps/new_bletiny | Copies the `apps/bletiny` package to the `apps/new_bletiny`.
+copy         | newt pkg copy <br>apps/btshell apps/new_btshell | Copies the `apps/btshell` package to the `apps/new_btshell`.
 move         | newt pkg move <br>apps/slinky apps/new_slinky | Moves the `apps/slinky` package to the `apps/new_slinky` package.
 new          | newt pkg new apps/new_slinky | Creates a package named `apps/new_slinky` of type `pkg` in the current directory.
 new          | newt pkg new hw/bsp/myboard -t bsp| Creates a package named `hw/bsp/myboard` of type `bsp` in the current directory.

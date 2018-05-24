@@ -59,7 +59,7 @@ Subsequent chapters in this manual will go into the details of the implementatio
 
 Mynewt comes with two built-in projects that allow users to play with NimBLE, try the tutorials out with, and see how to use available services.
 
-1. **btshell** : A simple shell application which provides a basic interface to the host-side of the BLE stack (replaces **bletiny**).
+1. **btshell** : A simple shell application which provides a basic interface to the host-side of the BLE stack (replaces deprecated **bletiny**).
 2. **bleprph**: A basic peripheral device with no user interface. It advertises automatically on startup, and resumes advertising whenever a connection is terminated. It supports a maximum of one connection.
 3. **blemesh**: A sample application for Bluetooth Mesh Node using on/off model.
 

@@ -26,7 +26,7 @@ The boot loader currently only supports images with the following
 characteristics:
 
 * Built to run from flash.
-* Build to run from a fixed location (i.e., position-independent).
+* Built to run from a fixed location (i.e., NOT position-independent).
 
 
 ### Image Format
