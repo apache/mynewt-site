@@ -22,7 +22,7 @@ Required Hardware
 -  Laptop running Mac OS
 -  It is assumed you have already installed newt tool.
 -  It is assumed you already installed native tools as described
-   :doc:`here <../../get_started/native_tools>`
+   :doc:`here <../../get_started/native_install/native_tools>`
 
 Create a Project
 ----------------
@@ -817,7 +817,7 @@ device. That's no small feat!
 
 If you see anything missing or want to send us feedback, please do so by
 signing up for appropriate mailing lists on our :doc:`Community
-Page <community>`
+Page <community>`.
 
 Keep on hacking and sensing!
 
