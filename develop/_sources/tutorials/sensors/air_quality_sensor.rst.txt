@@ -8,7 +8,7 @@ This tutorial will show you how to set up and use the Senseair K30 air quality s
 
 Prerequisites
 ~~~~~~~~~~~~~
-- Complete one of the other tutorials (e.g. :doc:`Project Blinky <blinky>`) to famliarize yourself with Mynewt
+- Complete one of the other tutorials (e.g. :doc:`Project Blinky <../blinky/blinky>`) to famliarize yourself with Mynewt
 - Nordic nRF52 Development - PCA 10040
 - Senseair K30 CO2 Sensor
 
@@ -295,7 +295,7 @@ Add a call to your ``main()`` to initialize this driver:
 Add CLI Commands For Testing Drivers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-While developing the driver, it would be helpful to issue operations from the console to verify the driver is responding correctly. Since the nRF52DK only has one UART, which will be used to connect to the CO2 sensor, the console we'll use instead is the :doc:`Segger RTT Console <segger_rtt>`. To configure this, make the following changes in your project's ``syscfg.yml`` file:
+While developing the driver, it would be helpful to issue operations from the console to verify the driver is responding correctly. Since the nRF52DK only has one UART, which will be used to connect to the CO2 sensor, the console we'll use instead is the :doc:`Segger RTT Console <../tooling/segger_rtt>`. To configure this, make the following changes in your project's ``syscfg.yml`` file:
 
 .. code-block:: console
 

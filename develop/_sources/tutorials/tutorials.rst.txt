@@ -12,6 +12,7 @@ Tutorials
    Bluetooth Low Energy <ble/ble>
    LoRa <lora/lorawanapp>
    OS Fundamentals <os_fundamentals/os_fundamentals>
+   Remote Device Management <devmgmt/devmgmt>
    Sensors <sensors/sensors>
    Tooling <tooling/tooling>
    Other <other/other>
@@ -84,8 +85,8 @@ category are listed below.
 
 -  Remote Device Management
 
-   -  :doc:`Enabling Newt Manager in Any App <../add_newtmgr>`
-   -  :doc:`Upgrading an Image Over-The-Air <ota_upgrade_nrf52>`
+   -  :doc:`Enabling Newt Manager in Any App <devmgmt/add_newtmgr>`
+   -  :doc:`Upgrading an Image Over-The-Air <devmgmt/ota_upgrade_nrf52>`
 
 -  Sensors
 

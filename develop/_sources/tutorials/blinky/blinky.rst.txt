@@ -79,7 +79,7 @@ After you try the Blinky application on your boards, checkout out other
 tutorials to enable additional functionality such as :doc:`remote
 comms <../slinky/project-slinky>` on the current board. If you have BLE
 (Bluetooth Low Energy) chip (e.g. nRF52) on your board, you can try
-turning it into an :doc`iBeacon <../ble/ibeacon>` or :doc:`Eddystone
+turning it into an :doc:`iBeacon <../ble/ibeacon>` or :doc:`Eddystone
 Beacon <../ble/eddystone>`!
 
 If you see anything missing or want to send us feedback, please sign up
