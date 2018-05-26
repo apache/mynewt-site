@@ -235,7 +235,6 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../stats/stats.html">Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../logs/logs.html">Logs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">System Configuration and Initialization</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/ble/ble_intro.html">BLE User Guide</a></li>
@@ -283,6 +282,17 @@ protocol over serial transport.</li>
 <p>The shell uses the OS default event queue for shell events and runs in
 the context of the main task. An application can, optionally, specify a
 dedicated event queue for the shell to use.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#description" id="id5">Description</a><ul>
+<li><a class="reference internal" href="#processing-console-input-commands" id="id6">Processing Console Input Commands</a></li>
+<li><a class="reference internal" href="#processing-newtmgr-line-protocol-over-serial-transport" id="id7">Processing Newtmgr Line Protocol Over Serial Transport</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-structures" id="id8">Data Structures</a></li>
+<li><a class="reference internal" href="#api" id="id9">API</a></li>
+</ul>
+</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">sys/shell</span></code> package implements the shell. To use the shell you
 must:</p>
 <ul class="simple">
@@ -316,9 +326,9 @@ setting to enable the log command in the shell:</p>
 </pre></div>
 </div>
 <div class="section" id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Description</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="processing-console-input-commands">
-<h3>Processing Console Input Commands<a class="headerlink" href="#processing-console-input-commands" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Processing Console Input Commands</a><a class="headerlink" href="#processing-console-input-commands" title="Permalink to this headline">¶</a></h3>
 <p>The shell’s first job is to direct incoming commands to other
 subsystems. It parses the incoming character string into tokens and uses
 the first token to determine the subsystem command handler to call to
@@ -399,7 +409,7 @@ by default.</p>
 </div>
 </div>
 <div class="section" id="processing-newtmgr-line-protocol-over-serial-transport">
-<h3>Processing Newtmgr Line Protocol Over Serial Transport<a class="headerlink" href="#processing-newtmgr-line-protocol-over-serial-transport" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Processing Newtmgr Line Protocol Over Serial Transport</a><a class="headerlink" href="#processing-newtmgr-line-protocol-over-serial-transport" title="Permalink to this headline">¶</a></h3>
 <p>The shell’s second job is to handle packet framing, encoding, and
 decoding of newtmgr protocol messages that are sent over the console.
 The Newtmgr serial transport package
@@ -411,7 +421,7 @@ enabled over shell. The setting is enabled by default.</p>
 </div>
 </div>
 <div class="section" id="data-structures">
-<h2>Data Structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Data Structures</a><a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">shell_cmd</span></code> data structure represents a shell command and
 is used to register a command.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">struct shell_cmd {</span>
@@ -605,6 +615,216 @@ the array.</td>
 <blockquote>
 <div>##List of Functions</div></blockquote>
 <p>The functions available in this OS feature are:</p>
+</div>
+<div class="section" id="api">
+<h2><a class="toc-backref" href="#id9">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Typedefs</p>
+<dl class="typedef">
+<dt id="c.shell_cmd_func_t">
+<span class="target" id="shell_8h_1a4f24340986f054070fb1a7ae8970a76c"></span><em class="property">typedef </em>int<code class="descname">(* shell_cmd_func_t)</code><span class="sig-paren">(</span>int<em>&nbsp;argc</em>, char<em>&nbsp;*argv[]</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_cmd_func_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback called when command is entered. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 in case of success or negative value in case of error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">argc</span></code>: Number of parameters passed. </li>
+<li><code class="docutils literal notranslate"><span class="pre">argv</span></code>: Array of option strings. First option is always command name.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.shell_prompt_function_t">
+<span class="target" id="shell_8h_1a9342cdd515fa0460931714cbe4122db5"></span><em class="property">typedef </em>const char*<code class="descname">(* shell_prompt_function_t)</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.shell_prompt_function_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback to get the current prompt. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Current prompt string. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.shell_nlip_input_func_t">
+<span class="target" id="shell_8h_1a94929e90137ec9e4c869f82bd939ee7b"></span><em class="property">typedef </em>int<code class="descname">(* shell_nlip_input_func_t)</code><span class="sig-paren">(</span>struct os_mbuf<em>&nbsp;*</em>, void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_nlip_input_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.shell_register">
+<span class="target" id="shell_8h_1a791de4f5dc04279716fa8fc78d6735d1"></span>int <code class="descname">shell_register</code><span class="sig-paren">(</span>const char *<em>&nbsp;shell_name</em>, const struct  <a class="reference internal" href="#c.shell_cmd" title="shell_cmd">shell_cmd</a>  *<em>&nbsp;shell_commands</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register a <a class="reference internal" href="#structshell__module"><span class="std std-ref">shell_module</span></a> object. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">shell_name</span></code>: Module name to be entered in shell console.</li>
+<li><code class="docutils literal notranslate"><span class="pre">shell_commands</span></code>: Array of commands to register. The array should be terminated with an empty element. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.shell_register_app_cmd_handler">
+<span class="target" id="shell_8h_1ac2268816b7823f576e087a1153b19ba0"></span>void <code class="descname">shell_register_app_cmd_handler</code><span class="sig-paren">(</span><a class="reference internal" href="#c.shell_cmd_func_t" title="shell_cmd_func_t">shell_cmd_func_t</a><em>&nbsp;handler</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_register_app_cmd_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optionally register an app default cmd handler. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handler</span></code>: To be called if no cmd found in cmds registered with shell_init. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.shell_register_prompt_handler">
+<span class="target" id="shell_8h_1a53fddbdf65b925caf1583634432e2ba4"></span>void <code class="descname">shell_register_prompt_handler</code><span class="sig-paren">(</span><a class="reference internal" href="#c.shell_prompt_function_t" title="shell_prompt_function_t">shell_prompt_function_t</a><em>&nbsp;handler</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_register_prompt_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optionally register a custom prompt callback. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">handler</span></code>: To be called to get the current prompt. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.shell_register_default_module">
+<span class="target" id="shell_8h_1a81af9956dbab0b20bb1ff20049129f92"></span>void <code class="descname">shell_register_default_module</code><span class="sig-paren">(</span>const char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_register_default_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optionally register a default module, to avoid typing it in shell console. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Module name. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.shell_evq_set">
+<span class="target" id="shell_8h_1ab1ea094e0aa9434d0be223d9454ac160"></span>void <code class="descname">shell_evq_set</code><span class="sig-paren">(</span>struct  os_eventq  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_evq_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optionally set event queue to process shell command events. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: Event queue to be used in shell </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.shell_nlip_input_register">
+<span class="target" id="shell_8h_1a78c58df45f8d895fc64f6bf05c7a7e50"></span>int <code class="descname">shell_nlip_input_register</code><span class="sig-paren">(</span><a class="reference internal" href="#c.shell_nlip_input_func_t" title="shell_nlip_input_func_t">shell_nlip_input_func_t</a><em>&nbsp;nf</em>, void *<em>&nbsp;arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_nlip_input_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.shell_nlip_output">
+<span class="target" id="shell_8h_1a158b3c11a9447e9ad5e801a522ff5de8"></span>int <code class="descname">shell_nlip_output</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;m</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_nlip_output" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.shell_cmd_register">
+<span class="target" id="shell_8h_1ac2c9f78575f01af4af301ba0d641dfd4"></span>int <code class="descname">shell_cmd_register</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.shell_cmd" title="shell_cmd">shell_cmd</a>  *<em>&nbsp;sc</em><span class="sig-paren">)</span><a class="headerlink" href="#c.shell_cmd_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="struct">
+<dt id="c.shell_param">
+<span class="target" id="structshell__param"></span><em class="property">struct </em><code class="descname">shell_param</code><a class="headerlink" href="#c.shell_param" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;shell.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.shell_param::param_name">
+<span class="target" id="structshell__param_1aa06386de03ecebd3c007f0361ce41f40"></span>const char* <code class="descname">param_name</code><a class="headerlink" href="#c.shell_param::param_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.shell_param::help">
+<span class="target" id="structshell__param_1a1f135a7d80d2301df2ca34968781f3ed"></span>const char* <code class="descname">help</code><a class="headerlink" href="#c.shell_param::help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.shell_cmd_help">
+<span class="target" id="structshell__cmd__help"></span><em class="property">struct </em><code class="descname">shell_cmd_help</code><a class="headerlink" href="#c.shell_cmd_help" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;shell.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.shell_cmd_help::summary">
+<span class="target" id="structshell__cmd__help_1ab3202a140cfeedc0e02d4b981cb47293"></span>const char* <code class="descname">summary</code><a class="headerlink" href="#c.shell_cmd_help::summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.shell_cmd_help::usage">
+<span class="target" id="structshell__cmd__help_1a3735f4afeeea3d968d9e8fc74e0aa68f"></span>const char* <code class="descname">usage</code><a class="headerlink" href="#c.shell_cmd_help::usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.shell_cmd_help::params">
+<span class="target" id="structshell__cmd__help_1a0d80619b39be6e34016c00fffc3d67a0"></span>const struct <a class="reference internal" href="#c.shell_param" title="shell_param">shell_param</a>* <code class="descname">params</code><a class="headerlink" href="#c.shell_cmd_help::params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.shell_cmd">
+<span class="target" id="structshell__cmd"></span><em class="property">struct </em><code class="descname">shell_cmd</code><a class="headerlink" href="#c.shell_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;shell.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.shell_cmd::sc_cmd">
+<span class="target" id="structshell__cmd_1a51aba60c653e8927f30d5ecf75ab5283"></span>const char* <code class="descname">sc_cmd</code><a class="headerlink" href="#c.shell_cmd::sc_cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.shell_cmd::sc_cmd_func">
+<span class="target" id="structshell__cmd_1a7d208ca94288febfbbb8205e19190e7e"></span><a class="reference internal" href="#c.shell_cmd_func_t" title="shell_cmd_func_t">shell_cmd_func_t</a> <code class="descname">sc_cmd_func</code><a class="headerlink" href="#c.shell_cmd::sc_cmd_func" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.shell_cmd::help">
+<span class="target" id="structshell__cmd_1a62585f470359ce8a405ed3e6c83a5c99"></span>const struct <a class="reference internal" href="#c.shell_cmd_help" title="shell_cmd_help">shell_cmd_help</a>* <code class="descname">help</code><a class="headerlink" href="#c.shell_cmd::help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.shell_module">
+<span class="target" id="structshell__module"></span><em class="property">struct </em><code class="descname">shell_module</code><a class="headerlink" href="#c.shell_module" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;shell.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.shell_module::name">
+<span class="target" id="structshell__module_1ac0af6f8292d965a87df0b99458308e76"></span>const char* <code class="descname">name</code><a class="headerlink" href="#c.shell_module::name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.shell_module::commands">
+<span class="target" id="structshell__module_1a7fa73d8f9389aca416b04170de171695"></span>const struct <a class="reference internal" href="#c.shell_cmd" title="shell_cmd">shell_cmd</a>* <code class="descname">commands</code><a class="headerlink" href="#c.shell_module::commands" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
 </div>
 </div>
 
