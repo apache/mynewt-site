@@ -15,16 +15,14 @@ ARM maintains a pre-built GNU toolchain with gcc and gdb targeted at Embedded AR
 Add the **PX4/homebrew-px4** homebrew tap and install version 4.9 of the toolchain. After installing, check that the symbolic link that homebrew created points to the correct version of the debugger.
 
 ```no-highlight
-$ brew tap PX4/homebrew-px4
+$ brew tap caskroom/homebrew-cask
 $ brew update
-$ brew install gcc-arm-none-eabi-49
+$ brew cask install gcc-arm-embedded
 $ arm-none-eabi-gcc --version  
-arm-none-eabi-gcc (GNU Tools for ARM Embedded Processors) 4.9.3 20150529 (release) [ARM/embedded-4_9-branch revision 224288]
-Copyright (C) 2014 Free Software Foundation, Inc.
+arm-none-eabi-gcc (GNU Tools for Arm Embedded Processors 7-2017-q4-major) 7.2.1 20170904 (release) [ARM/embedded-7-branch revision 255204]
+Copyright (C) 2017 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-$ ls -al /usr/local/bin/arm-none-eabi-gdb
-lrwxr-xr-x  1 aditihilbert  admin  69 Sep 22 17:16 /usr/local/bin/arm-none-eabi-gdb -> /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/arm-none-eabi-gdb
 ```
 **Note:** If no version is specified, brew will install the latest version available. 
 
