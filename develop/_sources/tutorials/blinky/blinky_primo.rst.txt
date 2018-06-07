@@ -246,7 +246,7 @@ Run the ``newt load primoblinky`` command to load the Blinky application image o
 You should see the orange LED (L13), below the ON LED, on the board
 blink!
 
-Note: If the LED does not blink, try resetting the board.
+**Note**: If the LED does not blink, try resetting the board. If that doesn't work, you may have an older version of the Arduino Primo, and will need to change the defined LED blink pin. To change the LED blink pin, go to the Arduino Primo BSP header file in the repos directory (``~/dev/myproj/repos/apache-mynewt-core/hw/bsp/arduino_primoo_nrf52/include/bsp/bsp.h``) and change the ``LED_BLINK_PIN`` from 20 to 25. 
 
 Erase Flash
 ~~~~~~~~~~~
