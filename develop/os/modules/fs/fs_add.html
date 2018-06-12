@@ -42,7 +42,7 @@
           <link rel="search" title="Search" href="../../../search.html"/>
       <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../../index.html"/>
           <link rel="up" title="File System Abstraction" href="fs.html"/>
-          <link rel="next" title="testutil" href="../testutil/testutil.html"/>
+          <link rel="next" title="Flash Circular Buffer (FCB)" href="../fcb/fcb.html"/>
           <link rel="prev" title="Other File Systems" href="otherfs.html"/> 
 
     
@@ -231,8 +231,6 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../console/console.html">Console</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../shell/shell.html">Shell</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="fs.html">File System</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nffs.html">Newtron Flash Filesystem (nffs)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fatfs.html">The FAT File System</a></li>
@@ -240,10 +238,10 @@ ga("send", "pageview");
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Adding a new file system</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../stats/stats.html">Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../logs/logs.html">Logs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
@@ -282,10 +280,166 @@ ga("send", "pageview");
 <p>This section describes the common interface provided by any filesystem.</p>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">doxygenfile: Cannot find file “fs/include/fs/fs_if.h </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.fs_register">
+<span class="target" id="fs__if_8h_1aeabbac220aca0e072d63dec8aa3287bf"></span>int <code class="descname">fs_register</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.fs_ops" title="fs_ops">fs_ops</a>  *<em>&nbsp;fops</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a new filesystem interface. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">fops</span></code>: filesystem operations table</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.fs_ops_try_unique">
+<span class="target" id="fs__if_8h_1a5cf252f6d22c08fb473732488bc59f9d"></span>struct <a class="reference internal" href="#c.fs_ops" title="fs_ops">fs_ops</a>* <code class="descname">fs_ops_try_unique</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops_try_unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will look for the number of registered filesystems and will return the fops if there is only one. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>fops if there’s only one registered filesystem, NULL otherwise. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.fs_ops_for">
+<span class="target" id="fs__if_8h_1ab43d92d45d5c2bcedd84adda6f2c8e1a"></span>struct <a class="reference internal" href="#c.fs_ops" title="fs_ops">fs_ops</a>* <code class="descname">fs_ops_for</code><span class="sig-paren">(</span>const char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops_for" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve a filesystem’s operations table. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>valid pointer on success, NULL on failure </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the filesystem to retrieve <a class="reference internal" href="#structfs__ops"><span class="std std-ref">fs_ops</span></a> for</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.fs_ops_from_container">
+<span class="target" id="fs__if_8h_1a6882b9ec4154006cf9cb08df9b1fcad2"></span>struct <a class="reference internal" href="#c.fs_ops" title="fs_ops">fs_ops</a>* <code class="descname">fs_ops_from_container</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.fops_container" title="fops_container">fops_container</a>  *<em>&nbsp;container</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops_from_container" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
+<dl class="struct">
+<dt id="c.fs_ops">
+<span class="target" id="structfs__ops"></span><em class="property">struct </em><code class="descname">fs_ops</code><a class="headerlink" href="#c.fs_ops" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;fs_if.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="c.fs_ops::SLIST_ENTRY">
+<span class="target" id="structfs__ops_1af0e30357f0242c0982f0b0a4c7d15f7c"></span><code class="descname">SLIST_ENTRY</code><span class="sig-paren">(</span><a class="reference internal" href="#c.fs_ops" title="fs_ops">fs_ops</a><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::SLIST_ENTRY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.fs_ops::f_open">
+<span class="target" id="structfs__ops_1aa366d9d30351a5c5f519aacf0de5a4bd"></span>int<code class="descname">f_open)</code><span class="sig-paren">(</span>const char<em>&nbsp;*filename</em>, uint8_t<em>&nbsp;access_flags</em>, struct fs_file<em>&nbsp;**out_file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_open" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_close">
+<span class="target" id="structfs__ops_1a7e3b79c4ff6b1fba9ecd952373de7b2a"></span>int<code class="descname">f_close)</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_read">
+<span class="target" id="structfs__ops_1a6efe88a4b1520fc0d11f848fdba67198"></span>int<code class="descname">f_read)</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*file</em>, uint32_t<em>&nbsp;len</em>, void<em>&nbsp;*out_data</em>, uint32_t<em>&nbsp;*out_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_write">
+<span class="target" id="structfs__ops_1ab6dfe7d89c3e8deaff22a960723f2d5c"></span>int<code class="descname">f_write)</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*file</em>, const void<em>&nbsp;*data</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_seek">
+<span class="target" id="structfs__ops_1ab3bd7f89c4e96d1a1b37cf555ba096ba"></span>int<code class="descname">f_seek)</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*file</em>, uint32_t<em>&nbsp;offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_seek" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_getpos">
+<span class="target" id="structfs__ops_1a4e6f07e4df138b41f7a434a399655fea"></span>uint32_t<code class="descname">f_getpos)</code><span class="sig-paren">(</span>const struct fs_file<em>&nbsp;*file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_getpos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_filelen">
+<span class="target" id="structfs__ops_1a82821c7bd8a15920493a1708babc58a7"></span>int<code class="descname">f_filelen)</code><span class="sig-paren">(</span>const struct fs_file<em>&nbsp;*file</em>, uint32_t<em>&nbsp;*out_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_filelen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_unlink">
+<span class="target" id="structfs__ops_1a63e1bc64e548e2251ee0f9ed9a736f1e"></span>int<code class="descname">f_unlink)</code><span class="sig-paren">(</span>const char<em>&nbsp;*filename</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_unlink" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_rename">
+<span class="target" id="structfs__ops_1aed986aa8cf085e09a916e4a727b9edc6"></span>int<code class="descname">f_rename)</code><span class="sig-paren">(</span>const char<em>&nbsp;*from</em>, const char<em>&nbsp;*to</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_rename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_mkdir">
+<span class="target" id="structfs__ops_1a9307875a0b4d3c9265b2c7e4a5c0a09e"></span>int<code class="descname">f_mkdir)</code><span class="sig-paren">(</span>const char<em>&nbsp;*path</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_mkdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_opendir">
+<span class="target" id="structfs__ops_1ae99b6897e3900c08d5074f24760512ac"></span>int<code class="descname">f_opendir)</code><span class="sig-paren">(</span>const char<em>&nbsp;*path</em>, struct fs_dir<em>&nbsp;**out_dir</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_opendir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_readdir">
+<span class="target" id="structfs__ops_1a588e877f0abe8e55bedead659955cabd"></span>int<code class="descname">f_readdir)</code><span class="sig-paren">(</span>struct fs_dir<em>&nbsp;*dir</em>, struct fs_dirent<em>&nbsp;**out_dirent</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_readdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_closedir">
+<span class="target" id="structfs__ops_1a7e98863b48ac2e01b33cc946b84503b1"></span>int<code class="descname">f_closedir)</code><span class="sig-paren">(</span>struct fs_dir<em>&nbsp;*dir</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_closedir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_dirent_name">
+<span class="target" id="structfs__ops_1a61e0d4066e47399e124aa130455f2e16"></span>int<code class="descname">f_dirent_name)</code><span class="sig-paren">(</span>const struct fs_dirent<em>&nbsp;*dirent</em>, size_t<em>&nbsp;max_len</em>, char<em>&nbsp;*out_name</em>, uint8_t<em>&nbsp;*out_name_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_dirent_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_dirent_is_dir">
+<span class="target" id="structfs__ops_1a6183a009d1a9858ac116f3d58e3dc3eb"></span>int<code class="descname">f_dirent_is_dir)</code><span class="sig-paren">(</span>const struct fs_dirent<em>&nbsp;*dirent</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_ops::f_dirent_is_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.fs_ops::f_name">
+<span class="target" id="structfs__ops_1ad0eb9ae7641563687bf0e72641901d09"></span>const char* <code class="descname">f_name</code><a class="headerlink" href="#c.fs_ops::f_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.fops_container">
+<span class="target" id="structfops__container"></span><em class="property">struct </em><code class="descname">fops_container</code><a class="headerlink" href="#c.fops_container" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;fs_if.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.fops_container::fops">
+<span class="target" id="structfops__container_1adc129bff804f4a54aa160737af49ecb5"></span>struct <a class="reference internal" href="#c.fs_ops" title="fs_ops">fs_ops</a>* <code class="descname">fops</code><a class="headerlink" href="#c.fops_container::fops" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
 </div>
 </div>
 
@@ -295,7 +449,7 @@ ga("send", "pageview");
                   
     <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
       
-        <a href="../testutil/testutil.html" class="btn btn-neutral float-right" title="testutil" accesskey="n">Next: testutil <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../fcb/fcb.html" class="btn btn-neutral float-right" title="Flash Circular Buffer (FCB)" accesskey="n">Next: Flash Circular Buffer (FCB) <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="otherfs.html" class="btn btn-neutral" title="Other File Systems" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Other File Systems</a>

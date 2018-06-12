@@ -140,7 +140,7 @@ that allows you to:
 -  Load waveforms to actuate.
 -  Actuate the device.
 
- **Example 2:** Query the device chip id:
+**Example 1:** Query the device chip id:
 
 .. code-block:: console
 
@@ -183,7 +183,7 @@ Step 4: Actually Actuate
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Now you're ready to (sigh) rumble. One way to use the DRV2605 device is to enable
-the ROM mode to use it's stored patterns. Technically you dont need to do this after
+the ROM mode to use its stored patterns. Technically you dont need to do this after
 first configure as ROM mode is the default mode:
 .. code-block:: console
 
@@ -192,7 +192,7 @@ first configure as ROM mode is the default mode:
     drv2605 op_mode rom
     037245 op_mode succeeded
 
-Now you can load up to 8 internal roms or delays. In this case well use four hard
+Now you can load up to 8 internal roms or delays. In this case we'll use four hard
 clicks (1) with max delays (255) in between. You may only have to do this once per
 boot if you wanted to use this same sequence every time you trigger the DRV2605 device.
 .. code-block:: console
