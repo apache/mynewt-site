@@ -1,9 +1,19 @@
-### Latest Apache Mynewt OS Release
+## Latest Apache Mynewt OS Release
+
+### Latest Apache Mynewt Core OS Release
 
 * Release Version: Apache Mynewt 1.3.0
-* Release Date: December 13, 2017
-* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.3.0)
-* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.3.0)
+* Release Date: June 13, 2018
+* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
+* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
+
+### Latest Apache Mynewt NimBLE (Bluetooth Stack) Release
+
+We are please to announce the first release of Mynewt's Bluetooth stack. It now has a Porting Layer that allows the stack to be easily ported to another OS!
+* Release Version: Apache NimBLE 1.0.0 (First separate release!) 
+* Release Date: June 13, 2018
+* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
+* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.0.0)
 
 #### Fresh install
 
@@ -43,6 +53,8 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 
 ### Prior Releases
 
+#### Apache Mynewt Core
+
 * Apache Mynewt 0.8.0-b2-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-b2-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.8.0-b2-incubating/)
 * Apache Mynewt 0.8.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.8.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.8.0-incubating/)
 * Apache Mynewt 0.9.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-0.9.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-0.9.0-incubating/)
@@ -51,5 +63,12 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 * Apache Mynewt 1.0.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-1.0.0-incubating/)
 * Apache Mynewt 1.1.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.1.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.1.0/)
 * Apache Mynewt 1.2.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.2.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.2.0/)
+* Apache Mynewt 1.3.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.3.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.3.0)
+
+#### Apache Mynewt NimBLE (Bluetooth Stack)
+
+No archives yet
+
+
 <br>
 <br>
