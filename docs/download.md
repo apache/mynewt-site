@@ -2,14 +2,14 @@
 
 ### Latest Apache Mynewt Core OS Release
 
-* Release Version: Apache Mynewt 1.3.0
+* Release Version: Apache Mynewt 1.4.0
 * Release Date: June 13, 2018
 * [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
 * [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
 
 ### Latest Apache Mynewt NimBLE (Bluetooth Stack) Release
 
-We are please to announce the first release of Mynewt's Bluetooth stack. It now has a Porting Layer that allows the stack to be easily ported to another OS!
+We are pleased to announce the first release of Mynewt's Bluetooth stack. It now has a Porting Layer that allows the stack to be easily ported to another OS!
 * Release Version: Apache NimBLE 1.0.0 (First separate release!) 
 * Release Date: June 13, 2018
 * [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
