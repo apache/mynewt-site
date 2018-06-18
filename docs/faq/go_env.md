@@ -19,7 +19,7 @@ This guide shows you how to perform the following:
 
 
 ### Step 1: Installing Go 
-The latest master branch of newt and newtmgr requires GO version 1.7.6 or higher. You can skip this step and proceed to Step 2 if you already have Go version 1.7.6 or higher installed.
+The latest master branch of newt and newtmgr requires GO version 1.10.3 or higher. You can skip this step and proceed to Step 2 if you already have Go version 1.10.3 or higher installed.
 
 <br>
 #### Installing Go on Mac OS X
@@ -40,7 +40,7 @@ $ brew install go
 ...
 ... 
 ==> Summary
-🍺  /usr/local/Cellar/go/1.8.3: 7,035 files, 282.0MB
+🍺  /usr/local/Cellar/go/1.10.3: 8,170 files, 336.8MB
 ```
 You can also download the Go package directly from (https://golang.org/dl/) and install it in /usr/local/bin instead of brewing it. 
 
