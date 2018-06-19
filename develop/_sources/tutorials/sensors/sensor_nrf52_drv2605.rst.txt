@@ -165,8 +165,8 @@ motor manufacturer or TI for more help.
 Theres a lot more setup numbers you could enter here for the DRV2605 to figure out
 how to actuate your motor, but some of them it can figure out itself through auto calibration.
 Lets run autocalibration and then dump the fresh calibration numbers:
-.. code-block:: console
 
+.. code-block:: console
 
     001407 compat> drv2605 op_mode cal
     drv2605 op_mode cal
@@ -185,8 +185,8 @@ Step 4: Actually Actuate
 Now you're ready to (sigh) rumble. One way to use the DRV2605 device is to enable
 the ROM mode to use its stored patterns. Technically you dont need to do this after
 first configure as ROM mode is the default mode:
-.. code-block:: console
 
+.. code-block:: console
 
     021773 compat> drv2605 op_mode rom
     drv2605 op_mode rom
@@ -195,29 +195,28 @@ first configure as ROM mode is the default mode:
 Now you can load up to 8 internal roms or delays. In this case we'll use four hard
 clicks (1) with max delays (255) in between. You may only have to do this once per
 boot if you wanted to use this same sequence every time you trigger the DRV2605 device.
-.. code-block:: console
 
+.. code-block:: console
 
     120858 compat> drv2605 load 1 255 1 255 1 255 1 255
     drv2605 load 1 255 1 255 1 255 1 255
     122555 Load succeeded
 
 The motor is in standby by default after a mode change, so enable it:
-.. code-block:: console
 
+.. code-block:: console
 
     002111 compat> drv2605 power_mode active
     drv2605 power_mode active
     003263 power_mode succeeded
 
 Now you can trigger those forms as many times as you want or load new forms and trigger again:
-.. code-block:: console
 
+.. code-block:: console
 
     122555 compat> drv2605 trigger
     drv2605 trigger
     128806 Trigger succeeded
-
 
 Conclusion
 ~~~~~~~~~~
