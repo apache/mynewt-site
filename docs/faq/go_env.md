@@ -19,7 +19,7 @@ This guide shows you how to perform the following:
 
 
 ### Step 1: Installing Go 
-The latest master branch of newt and newtmgr requires GO version 1.10.3 or higher. You can skip this step and proceed to Step 2 if you already have Go version 1.10.3 or higher installed.
+The latest master branch of newt and newtmgr requires GO version 1.10.  You can skip this step and proceed to Step 2 if you already have Go version 1.10 installed.
 
 <br>
 #### Installing Go on Mac OS X

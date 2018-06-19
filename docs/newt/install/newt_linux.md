@@ -101,7 +101,7 @@ See [Checking the Installed Version of Newt](#check) to verify that you are usin
 
 If you are running Linux on a different architecture, you can build and install the latest release version of newt from source.
 
-**Note**: newt 1.4.0 requires go version 1.10.3.
+**Note**: newt 1.4.0 requires go version 1.10.
 <br>
 
 1. Download and unpack the newt source:
