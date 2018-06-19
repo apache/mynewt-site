@@ -12,7 +12,7 @@ Introduction
    concepts
    tutorials/tutorials
    os/os_user_guide
-   network/ble/ble_intro
+   network/docs/index
    newt/index
    newtmgr/index
    mynewt_faq
