@@ -1,6 +1,6 @@
 ## Installing Newt on Linux
 
-You can install the latest release (1.3.0) of the newt tool from a Debian binary package (amd64). You can also download and build the latest release version of newt from source.
+You can install the latest release (1.4.0) of the newt tool from a Debian binary package (amd64). You can also download and build the latest release version of newt from source.
 
 This page shows you how to:
 
@@ -90,8 +90,8 @@ $ sudo apt-get install gcc-multilib
 Download and install the package manually.
 
 ```no-highlight
-$ wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.3.0/newt_1.3.0-1_amd64.deb
-$ sudo dpkg -i newt_1.3.0-1_amd64.deb
+$ wget https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.4.0/newt_1.4.0-1_amd64.deb
+$ sudo dpkg -i newt_1.4.0-1_amd64.deb
 ```
 <br>
 See [Checking the Installed Version of Newt](#check) to verify that you are using the installed version of newt.
@@ -100,23 +100,25 @@ See [Checking the Installed Version of Newt](#check) to verify that you are usin
 ### Installing the Latest Release of Newt from a Source Package 
 
 If you are running Linux on a different architecture, you can build and install the latest release version of newt from source.
+
+**Note**: newt 1.4.0 requires go version 1.10.
 <br>
 
-2. Download and unpack the newt source:
+1. Download and unpack the newt source:
 
 ```no-highlight
-$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_3_0_tag.tar.gz
-$ tar -xzf /tmp/mynewt_1_3_0_tag.tar.gz
+$ wget -P /tmp https://github.com/apache/mynewt-newt/archive/mynewt_1_4_0_tag.tar.gz
+$ tar -xzf /tmp/mynewt_1_4_0_tag.tar.gz
 ```
 
 <br>
-3. Run the build.sh to build the newt tool.
+2. Run the build.sh to build the newt tool.
 
 ```no-highlight
 
-$ cd mynewt-newt-mynewt_1_3_0_tag
+$ cd mynewt-newt-mynewt_1_4_0_tag
 $ ./build.sh
-$ rm /tmp/mynewt_1_3_0_tag.tar.gz
+$ rm /tmp/mynewt_1_4_0_tag.tar.gz
 ```
 
 <br>
@@ -141,7 +143,7 @@ $ rm /tmp/mynewt_1_3_0_tag.tar.gz
 $ which newt
 /usr/bin/newt
 $ newt version
-Apache Newt version: 1.3.0
+Apache Newt version: 1.4.0
 ```
 
 <br>

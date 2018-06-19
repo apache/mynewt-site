@@ -4,7 +4,7 @@ Newtmgr is supported on Mac OS X 64 bit platforms and has been tested on Mac OS 
 
 This page shows you how to install the following versions of newtmgr:
 
-* Upgrade to or install the latest release version (1.3.0).
+* Upgrade to or install the latest release version (1.4.0).
 * Install the latest from the master branch (unstable).
 
 See [Installing Previous Releases of Newtmgr](/newtmgr/prev_releases) to install an earlier version of newtmgr.
@@ -48,7 +48,7 @@ $ brew update
 $ brew install mynewt-newtmgr
 ```
 <br>
-**Notes:** Homebrew bottles for newtmgr 1.3.0 are available for Mac OS Sierra.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
+**Notes:** Homebrew bottles for newtmgr 1.4.0 are available for Mac OS Sierra.  If you are running an earlier version of Mac OS, the installation will install the latest version of Go and compile newtmgr locally.
 
 <br>
 ### Checking the Installed Version
@@ -121,6 +121,6 @@ $ brew install mynewt-newtmgr --HEAD
 <br>
 To switch back to the latest stable release version of newtmgr, you can run:
 ```no-highlight
-$ brew switch mynewt-newtmgr 1.3.0
+$ brew switch mynewt-newtmgr 1.4.0
 ```
 <br>

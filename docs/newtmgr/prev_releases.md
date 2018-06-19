@@ -51,6 +51,8 @@ Version|Download
 -------|--------
 1.0.0  |[newtmgr_1.0.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.0.0/newtmgr_1.0.0-1_amd64.deb)
 1.1.0  |[newtmgr_1.1.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newtmgr_1.1.0-1_amd64.deb)
+1.2.0  |[newtmgr_1.2.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/newtmgr_1.2.0-1_amd64.deb)
+1.3.0  |[newtmgr_1.3.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.3.0/newtmgr_1.3.0-1_amd64.deb)
 
 <br>
 2. Run the `sudo apt-get remove newtmgr` command to remove the the current installation.

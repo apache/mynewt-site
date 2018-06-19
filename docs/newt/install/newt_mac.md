@@ -4,7 +4,7 @@ Newt is supported on Mac OS X 64 bit platforms and has been tested on Mac OS Sie
 
 This page shows you how to install the following versions of newt:
 
-* Upgrade to or install the latest release version (1.3.0).
+* Upgrade to or install the latest release version (1.4.0).
 * Install the latest from the master branch (unstable).
 
 See [Installing Previous Releases of Newt](/newt/install/prev_releases) to install an earlier version of newt.
@@ -63,7 +63,7 @@ Check that you are using the installed version of newt:
 $ which newt
 /usr/local/bin/newt
 $ newt version
-Apache Newt version: 1.3.0
+Apache Newt version: 1.4.0
 ```
 **Note:** If you previously built newt from source and the output of `which newt` shows "$GOPATH/bin/newt", you will need to move "$GOPATH/bin"  after "/usr/local/bin" for your PATH in  ~/.bash_profile, and source ~/.bash_profile.  
 
@@ -147,6 +147,6 @@ $ brew install mynewt-newt --HEAD
 <br>
 To switch back to the latest stable release version of newt, you can run:
 ```no-highlight
-$ brew switch mynewt-newt 1.3.0
+$ brew switch mynewt-newt 1.4.0
 ```
 <br>
