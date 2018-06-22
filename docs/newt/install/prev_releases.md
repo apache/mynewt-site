@@ -51,6 +51,8 @@ Version|Download
 -------|--------
 1.0.0  |[newt_1.0.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.0.0/newt_1.0.0-1_amd64.deb)
 1.1.0  |[newt_1.1.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.1.0/newt_1.1.0-1_amd64.deb)
+1.2.0  |[newt_1.2.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.2.0/newt_1.2.0-1_amd64.deb)
+1.3.0  |[newt_1.3.0-1_amd64.deb](https://raw.githubusercontent.com/runtimeco/binary-releases/master/mynewt-newt-tools_1.3.0/newt_1.3.0-1_amd64.deb)
 
 <br>
 2. Run the `sudo apt-get remove newt` command to remove the the current installation.
