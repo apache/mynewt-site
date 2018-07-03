@@ -1,7 +1,7 @@
 # Apache Mynewt Documentation
 
 * Stable version:
-    * [1.3.0](/latest/os/introduction/)
+    * [1.4.0](/latest/os/introduction/)
 * Development version:
     * [develop](/develop/)
 * Earlier versions:

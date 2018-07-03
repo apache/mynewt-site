@@ -9,7 +9,8 @@
 
 ### Latest Apache Mynewt NimBLE (Bluetooth Stack) Release
 
-Mynewt's Bluetooth stack is now a separate release with a porting Layer that allows it to be easily ported to another OS!
+Mynewt's Bluetooth stack is now a separate release with a porting layer that allows it to be easily ported to another OS!
+
 * Release Version: Apache NimBLE 1.0.0
 * Release Date: June 13, 2018
 * [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
