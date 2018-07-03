@@ -2,15 +2,15 @@
 
 ### Latest Apache Mynewt Core OS Release
 
-* Release Version: Apache Mynewt 1.3.0
-* Release Date: June 13, 2018
-* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
-* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
+* Release Version: Apache Mynewt 1.4.1
+* Release Date: July 1, 2018
+* [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.1)
+* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.1)
 
 ### Latest Apache Mynewt NimBLE (Bluetooth Stack) Release
 
-We are please to announce the first release of Mynewt's Bluetooth stack. It now has a Porting Layer that allows the stack to be easily ported to another OS!
-* Release Version: Apache NimBLE 1.0.0 (First separate release!) 
+Mynewt's Bluetooth stack is now a separate release with a porting Layer that allows it to be easily ported to another OS!
+* Release Version: Apache NimBLE 1.0.0
 * Release Date: June 13, 2018
 * [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
 * [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.0.0)
@@ -64,6 +64,7 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 * Apache Mynewt 1.1.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.1.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.1.0/)
 * Apache Mynewt 1.2.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.2.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.2.0/)
 * Apache Mynewt 1.3.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.3.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.3.0)
+* Apache Mynewt 1.4.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
 
 #### Apache Mynewt NimBLE (Bluetooth Stack)
 
