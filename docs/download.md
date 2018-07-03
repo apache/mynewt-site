@@ -14,7 +14,7 @@ Mynewt's Bluetooth stack is now a separate release with a porting layer that all
 * Release Version: Apache NimBLE 1.0.0
 * Release Date: June 13, 2018
 * [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0)
-* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.0.0)
+* [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
 
 #### Fresh install
 
