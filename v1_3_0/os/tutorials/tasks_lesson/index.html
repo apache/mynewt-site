@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/tasks_lesson/"> -->
+        <link rel="shortcut icon" href="/img/mynewt-logo-only-newt32x32.png">
+        
+
+	    <title>Tasks and Priority Management - Apache Mynewt</title>
+
+        <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../css/highlight.css">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link href="../../../css/custom.css" rel="stylesheet">
+        <link href="../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+            (function(i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+        i[r] ||
+        function() {
+            (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+        
+    </head>
+
+
+    <body class="Tasks and Priority Management">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.4.1, Apache NimBLE 1.0.0 </a> released (July 1, 2018)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/documentation/">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version">
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+    <option
+      value="/latest"
+      >
+      Version: master
+    </option>
+    <option
+      value="/v1_3_0/os/introduction"
+      selected="selected"
+      >
+      Version: 1.3.0
+    </option>
+    <option
+      value="/v1_2_0/os/introduction"
+      
+      >
+      Version: 1.2.0
+    </option>
+    <option
+      value="/v1_1_0/os/introduction"
+      
+      >
+      Version: 1.1.0
+    </option>
+    <option
+      value="/v1_0_0/os/introduction"
+      
+      >
+      Version: 1.0.0
+    </option>
+    <option
+      value="/v0_9_0/os/introduction"
+      
+      >
+      Version: 0.9.0
+    </option>
+</select></li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../get_started/vocabulary/">Concepts</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../tutorials/">Tutorials</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../blinky/">Project Blinky</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../project-slinky/">Project Slinky for Remote Comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../ble_bare_bones/
+">Bluetooth Low Energy</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../lora/lorawanapp/
+">LoRa</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../event_queue/
+">OS Fundamentals</a>
+  
+  
+    <ul>
+          
+              
+                
+    <li >
+      <a href="../event_queue/">Events and Event Queues</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Tasks and Priority Management</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../add_newtmgr/
+">Remote Device Management</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  
+  
+  ../sensors/sensors/
+
+">Sensors</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../segger_rtt/
+">Tooling</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../codesize/
+">Other</a>
+  
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../newt/install/prev_releases/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="/documentation/">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
+        
+      
+        
+          <li>&raquo; <a href="../event_queue/">OS Fundamentals</a></li>
+        
+      
+      
+        <li>&raquo; Tasks and Priority Management</li>
+      
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/tasks_lesson.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
+      </li>
+    
+  </ul>
+</div>
+                        </div>
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                            <div class="alert alert-warning">
+                                <p>
+                                    Version 1.3.0 is not the most recent version of the Apache Mynewt
+                                    documentation. Click <a href="/latest">here</a> to read the latest
+                                    version.
+                                </p>
+                            </div>
+                          
+                        
+                        
+                            <h1 id="tasks-and-priority-management">Tasks and Priority Management</h1>
+<p><strong>Target Platform: Arduino M0 Pro</strong> (or legacy Arduino Zero or Zero Pro, but not Arduino M0)</p>
+<p>This lesson is designed to teach core OS concepts and strategies encountered when 
+building applications using Mynewt. Specifically, this lesson will cover tasks, 
+simple multitasking, and priority management running on an Arduino M0 Pro.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Before starting, you should read about Mynewt in the <a href="http://mynewt.apache.org/os/introduction/"><em>Introduction</em></a> 
+section and complete the <a href="http://mynewt.apache.org/os/get_started/get_started/"><em>QuickStart</em></a> 
+guide and the <a href="http://mynewt.apache.org/os/tutorials/arduino_zero/"><em>Blinky</em></a> tutorial. 
+Furthermore, it may be helpful to take a peek at the <a href="http://mynewt.apache.org/os/core_os/task/task/"><em>task documentation</em></a> 
+for additional insights.</p>
+<h2 id="equipment">Equipment</h2>
+<p>You will need the following equipment:</p>
+<ul>
+<li>Arduino M0 Pro (or legacy Arduino Zero or Zero Pro, but not Arduino M0)</li>
+<li>Computer with Mynewt installed</li>
+<li>USB to Micro USB Cable</li>
+</ul>
+<h2 id="build-your-application">Build Your Application</h2>
+<p>To save time, we will simply modify the Blinky application. We'll add the Task Management code to
+the Blinky application. Follow the <a href="http://mynewt.apache.org/os/tutorials/arduino_zero/"><em>Arduino Zero Blinky tutorial</em></a> 
+to create a new project and build your bootloader and application. Finally, build and 
+load the application to your Arduino to verify that everything is in order. Now let’s get started!</p>
+<h2 id="default-main-task">Default Main Task</h2>
+<p>During Mynewt system startup, Mynewt creates a default main task and executes the application <code>main()</code> function in the context of this task.  The main task priority defaults to 127 and can be configured with the <code>OS_MAIN_TASK_PRIO</code> system configuration setting.</p>
+<p>The blinky application only has the <code>main</code> task.  The <code>main()</code> function executes an infinite loop that toggles the led and sleeps for one second. 
+<br></p>
+<h2 id="create-a-new-task">Create a New Task</h2>
+<p>The purpose of this section is to give an introduction to the important aspects of tasks 
+and how to properly initialize them. First, let’s define a second task called <code>work_task</code> 
+in main.c (located in apps/blinky/src):</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">work_task</span>;
+</pre></div>
+
+
+<p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a> 
+struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two 
+main elements, a task function (also known as a task handler) and a task stack.</p>
+<p>Next, let’s take a look at what is required to initialize our new task.</p>
+<h3 id="task-stack">Task Stack</h3>
+<p>The task stack is an array of type <code>os_stack_t</code> which holds the program stack frames. Mynewt gives 
+us the ability to set the stack size for a task giving the application developer room to optimize 
+memory usage. Since we’re not short on memory, our <code>work_stack</code> is plenty large 
+for the purpose of this lesson. Notice that the elements in our task stack are of type <code>os_stack_t</code> 
+which are generally 32 bits, making our entire stack 1024 Bytes.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>  <span style="color: #633820">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
+</pre></div>
+
+
+<p>Note: The <code>OS_STACK_ALIGN</code> macro is used to align the stack based on the hardware architecture.</p>
+<h3 id="task-function">Task Function</h3>
+<p>A task function is essentially an infinite loop that waits for some “event” to wake it up.  In general, the task function is where the majority of work is done by a task.  Let’s write a task function for <code>work_task</code> called <code>work_task_handler()</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
+<span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+{
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
+
+    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">t</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sched_get_current_task</span>();
+        <span style="color: #000000">assert</span>(<span style="color: #000000">t-&gt;t_func</span> <span style="color: #000000">==</span> <span style="color: #000000">work_task_handler</span>);
+        <span style="color: #177500">/* Do work... */</span>
+    }
+}
+</pre></div>
+
+
+<p>The task function is called when the task is initially put into the <em>running</em> state by the scheduler. 
+We use an infinite loop to ensure that the task function never returns. Our assertion that the current 
+task's handler is the same as our task handler is for illustration purposes only and does not need to 
+be in most task functions.</p>
+<h3 id="task-priority">Task Priority</h3>
+<p>As a preemptive, multitasking RTOS, Mynewt decides which tasks to run based on which has a higher 
+priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we 
+must choose a priority defined as a macro variable.</p>
+<p>Let’s set the priority of <code>work_task</code> to 0, because everyone knows that work is more important than blinking.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>  <span style="color: #633820">#define WORK_TASK_PRIO (0)</span>
+</pre></div>
+
+
+<h3 id="initialization">Initialization</h3>
+<p>To initialize a new task we use <a href="http://mynewt.apache.org/os/core_os/task/os_task_init/"><em>os_task_init()</em></a> 
+which takes a number of arguments including our new task function, stack, and priority. </p>
+<p>Add the <code>init_tasks()</code> function to initialize <code>work_task</code> to keep our main function clean. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
+<span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
+{
+    <span style="color: #177500">/* … */</span>
+    <span style="color: #000000">os_stack_t</span> <span style="color: #000000">*work_stack</span>;
+    <span style="color: #000000">work_stack</span> <span style="color: #000000">=</span> <span style="color: #000000">malloc</span>(<span style="color: #A90D91">sizeof</span>(<span style="color: #000000">os_stack_t</span>)<span style="color: #000000">*WORK_STACK_SIZE</span>);
+
+    <span style="color: #000000">assert</span>(<span style="color: #000000">work_stack</span>);
+    <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;work_task</span>, <span style="color: #C41A16">&quot;work&quot;</span>, <span style="color: #000000">work_task_handler</span>, <span style="color: #A90D91">NULL</span>,
+            <span style="color: #000000">WORK_TASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">work_stack</span>,
+            <span style="color: #000000">WORK_STACK_SIZE</span>);
+
+    <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+}
+</pre></div>
+
+
+<p><br></p>
+<p>Add the call to <code>init_tasks()</code> in <code>main()</code> before the <code>while</code> loop:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+
+        ...
+
+    <span style="color: #177500">/* Initialize the work task */</span>
+    <span style="color: #000000">init_tasks</span>();
+
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+         ...
+    }
+}
+</pre></div>
+
+
+<p><br>
+And that’s it! Now run your application using the newt run command.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt run arduino_blinky 0.0.0
+</pre></div>
+
+
+<p><br>
+When GDB appears press C then Enter to continue and … <em>wait, why doesn't our LED blink anymore?</em></p>
+<p><br></p>
+<h4 id="review">Review</h4>
+<p>Before we run our new app, let’s review what we need in order to create a task. This is a general case for a new task called mytask:</p>
+<p><strong>1)</strong>   Define a new task, task stack, and priority:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/* My Task */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">mytask</span>
+<span style="color: #177500">/* My Task Stack */</span>
+<span style="color: #633820">#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)</span>
+<span style="color: #000000">os_stack_t</span> <span style="color: #000000">mytask_stack</span>[<span style="color: #000000">MYTASK_STACK_SIZE</span>];
+<span style="color: #177500">/* My Task Priority */</span>
+<span style="color: #633820">#define MYTASK_PRIO (0)</span>
+</pre></div>
+
+
+<p><strong>2)</strong> Define task function:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span> 
+<span style="color: #000000">mytask_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+{
+  <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+      <span style="color: #177500">/* ... */</span>
+  }
+}
+</pre></div>
+
+
+<p><strong>3)</strong> Initialize the task:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;mytask</span>, <span style="color: #C41A16">&quot;mytask&quot;</span>, <span style="color: #000000">mytask_handler</span>, <span style="color: #A90D91">NULL</span>, 
+            <span style="color: #000000">MYTASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">mytask_stack</span>,
+            <span style="color: #000000">MYTASK_STACK_SIZE</span>);
+</pre></div>
+
+
+<h2 id="task-priority-preempting-and-context-switching">Task Priority, Preempting, and Context Switching</h2>
+<p>A preemptive RTOS is one in which a higher priority task that is <em>ready to run</em> will preempt (i.e. take the 
+place of) the lower priority task which is <em>running</em>. When a lower priority task is preempted by a higher 
+priority task, the lower priority task’s context data (stack pointer, registers, etc.) is saved and the new 
+task is switched in.</p>
+<p>In our example, <code>work_task</code> (priority 0) has a higher priority than the <code>main</code> task (priority 127).  Since <code>work_task</code> is never put into a <em>sleep</em> state, it holds the processor focus on its context. </p>
+<p>Let’s give <code>work_task</code> a delay and some simulated work to keep it busy. The delay is measured in os ticks and the actual number of ticks per second is dependent on the board. We multiply <code>OS_TICKS_PER_SEC</code>, which is defined in the MCU, by the number of seconds we wish to delay.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
+<span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+{
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
+
+    <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
+    <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+
+    <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
+        <span style="color: #000000">t</span> <span style="color: #000000">=</span> <span style="color: #000000">os_sched_get_current_t</span>:<span style="color: #000000">ask</span>();
+        <span style="color: #000000">assert</span>(<span style="color: #000000">t-&gt;t_func</span> <span style="color: #000000">==</span> <span style="color: #000000">work_task_handler</span>);
+        <span style="color: #177500">/* Do work... */</span>
+        <span style="color: #A90D91">int</span> <span style="color: #000000">i</span>;
+        <span style="color: #A90D91">for</span>(<span style="color: #000000">i</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>; <span style="color: #000000">i</span> <span style="color: #000000">&lt;</span> <span style="color: #1C01CE">1000000</span>; <span style="color: #000000">++i</span>) {
+            <span style="color: #177500">/* Simulate doing a noticeable amount of work */</span>
+            <span style="color: #000000">hal_gpio_write</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
+        }
+        <span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">3</span> <span style="color: #000000">*</span> <span style="color: #000000">OS_TICKS_PER_SEC</span>);
+    }
+}
+</pre></div>
+
+
+<p><br>
+In order to notice the LED changing, modify the time delay in <code>main()</code> to blink at a higher frequency.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC/</span><span style="color: #1C01CE">10</span>);
+</pre></div>
+
+
+<p><br>
+Before we run the app, let’s predict the behavior. With the newest additions to <code>work_task_handler()</code>, 
+our first action will be to sleep for three seconds. This allows the <code>main</code> task, running <code>main()</code>, to take over the CPU and blink to its heart’s content. After three seconds, <code>work_task</code> will wake up and be made <em>ready to run</em>. 
+This causes it to preempt the <code>main</code> task. The LED will then remain lit for a short period while <code>work_task</code> 
+loops, then blink again for another three seconds while <code>work_task</code> sleeps. </p>
+<p>You should see that our prediction was correct! </p>
+<h3 id="priority-management-considerations">Priority Management Considerations</h3>
+<p>When projects grow in scope, from blinking LEDs into more sophisticated applications, the number of 
+tasks needed increases alongside complexity. It remains important, then, that each of our tasks is 
+capable of doing its work within a reasonable amount of time.</p>
+<p>Some tasks, such as the Shell task, execute quickly and require almost instantaneous response. Therefore, 
+the Shell task should be given a high priority. On the other hand, tasks which may be communicating over 
+a network, or processing data, should be given a low priority in order to not hog the CPU.</p>
+<p>The diagram below shows the different scheduling patterns we would expect when we set the <code>work_task</code> priority higher and lower than the <code>main</code> task priority.  </p>
+<p><img alt="Task Scheduling" src="../pics/task_lesson.png" /></p>
+<p>In the second case where the <code>main</code> task has a higher priority, <code>work_task</code> runs and executes “work” when
+the <code>main</code> task sleeps, saving us idle time compared to the first case.</p>
+<p><strong>Note:</strong> Defining the same priority for two tasks fires an assert in os_task_init() and must be avoided. Priority 127 is reserved for main task, 255 for idle task.</p>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    <a href=../event_queue/>
+        <span class="fa fa-arrow-left"></span>
+        Previous: Events and Event Queues
+    </a>
+    
+    </li>
+    <li class="pull-right">
+    
+    <a href=../add_newtmgr/>
+        Next: Enable Newt Manager in any app
+        <span class="fa fa-arrow-right"></span>
+    </a>
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+            </small>
+             <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+             </a>
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../js/highlight.pack.js"></script>
+        <script src="../../../js/base.js"></script>
+        <script src="../../../js/custom.js"></script>
+
+    </body>
+</html>

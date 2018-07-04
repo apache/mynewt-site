@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/network/ble/btshell/btshell_GAP/"> -->
+        <link rel="shortcut icon" href="/img/mynewt-logo-only-newt32x32.png">
+        
+
+	    <title>GAP in btshell - Apache Mynewt</title>
+
+        <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../../css/highlight.css">
+        <link href="../../../../css/base.css" rel="stylesheet">
+        <link href="../../../../css/custom.css" rel="stylesheet">
+        <link href="../../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+            (function(i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+        i[r] ||
+        function() {
+            (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+        
+    </head>
+
+
+    <body class="GAP in btshell">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.4.1, Apache NimBLE 1.0.0 </a> released (July 1, 2018)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/documentation/">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version">
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+    <option
+      value="/latest"
+      >
+      Version: master
+    </option>
+    <option
+      value="/v1_3_0/os/introduction"
+      selected="selected"
+      >
+      Version: 1.3.0
+    </option>
+    <option
+      value="/v1_2_0/os/introduction"
+      
+      >
+      Version: 1.2.0
+    </option>
+    <option
+      value="/v1_1_0/os/introduction"
+      
+      >
+      Version: 1.1.0
+    </option>
+    <option
+      value="/v1_0_0/os/introduction"
+      
+      >
+      Version: 1.0.0
+    </option>
+    <option
+      value="/v0_9_0/os/introduction"
+      
+      >
+      Version: 0.9.0
+    </option>
+</select></li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../../../os/introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../os/get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../../os/get_started/vocabulary/">Concepts</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../os/tutorials/tutorials/">Tutorials</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../os/os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../ble_intro/
+">BLE User Guide</a>
+  
+  
+    <ul>
+          
+              
+                
+    <li >
+      <a href="../../ble_intro/">NimBLE Introduction</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../ble_sec/">NimBLE Security</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../ble_setup/ble_setup_intro/">NimBLE Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../ble_hs/ble_hs/">NimBLE Host API</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../btshell_api/">btshell Usage API</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">GAP in btshell</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../btshell_GATT/">GATT in btshell</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../btshell_advdata/">Advertisement Data Fields</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../ble_mesh/">Bluetooth Mesh</a>
+  
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../../newt/install/prev_releases/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="/documentation/">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="../../ble_intro/">BLE User Guide</a></li>
+        
+      
+        
+          <li>&raquo; <a href="../btshell_api/">btshell Usage API</a></li>
+        
+      
+      
+        <li>&raquo; GAP in btshell</li>
+      
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/network/ble/btshell/btshell_GAP.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
+      </li>
+    
+  </ul>
+</div>
+                        </div>
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                            <div class="alert alert-warning">
+                                <p>
+                                    Version 1.3.0 is not the most recent version of the Apache Mynewt
+                                    documentation. Click <a href="/latest">here</a> to read the latest
+                                    version.
+                                </p>
+                            </div>
+                          
+                        
+                        
+                            <h2 id="gap-api-for-btshell">GAP API for btshell</h2>
+<p><br></p>
+<p>Generic Access Profile (GAP) defines the generic procedures related to discovery of Bluetooth devices (idle mode procedures) and link management aspects of connecting to Bluetooth devices (connecting mode procedures). It also defines procedures related to use of different security levels. </p>
+<p>Several different modes and procedures may be performed simultaneously over an LE physical transport. The following modes and procedures are defined for use over an LE physical transport:</p>
+<ol>
+<li><strong>Broadcast mode and observation procedure</strong><ul>
+<li>These allow two devices to communicate in a unidirectional connectionless manner using the advertising events.</li>
+</ul>
+</li>
+<li><strong>Discovery modes and procedures</strong><ul>
+<li>All devices shall be in either non-discoverable mode or one of the discoverable modes.</li>
+<li>A device in the discoverable mode shall be in either the general discoverable mode or the limited discoverable mode.</li>
+<li>A device in non-discoverable mode will not be discovered by any device that is performing either the general discovery procedure or the limited discovery procedure.</li>
+</ul>
+</li>
+<li><strong>Connection modes and procedures</strong><ul>
+<li>allow a device to establish a connection to another device.</li>
+<li>allow updating of parameters of the connection </li>
+<li>allow termination of the connection </li>
+</ul>
+</li>
+<li><strong>Bonding modes and procedures</strong><ul>
+<li>Bonding allows two connected devices to exchange and store security and identity information to create a trusted relationship. </li>
+<li>Bonding can occur only between two devices in bondable mode.</li>
+</ul>
+</li>
+</ol>
+<p><br></p>
+<h3 id="available-commands">Available commands</h3>
+<p>Parameters default values are marked red.</p>
+<h2 id="configuration">Configuration</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>set</strong></td>
+<td></td>
+<td></td>
+<td>Set configuration options</td>
+</tr>
+<tr>
+<td></td>
+<td>addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Local device address</td>
+</tr>
+<tr>
+<td></td>
+<td>addr_type</td>
+<td><code>public</code></td>
+<td>Local device address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td>mtu</td>
+<td>[23-UINT16_MAX]</td>
+<td>GATT Maximum Transmission Unit (MTU)</td>
+</tr>
+<tr>
+<td></td>
+<td>irk</td>
+<td>XX:XX:XX...</td>
+<td>Local Identity Resolving Key (16 byte</td>
+</tr>
+<tr>
+<td><strong>set-priv-mode</strong></td>
+<td></td>
+<td></td>
+<td>Set privacy mode for device</td>
+</tr>
+<tr>
+<td></td>
+<td>addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Remote device address</td>
+</tr>
+<tr>
+<td></td>
+<td>addr_type</td>
+<td><code>public</code></td>
+<td>Remote device public address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Remote device random address type</td>
+</tr>
+<tr>
+<td></td>
+<td>mode</td>
+<td>[<code>0</code>-1]</td>
+<td>0 - use network privacy, 1 - use device privacy</td>
+</tr>
+<tr>
+<td><strong>white-list</strong></td>
+<td></td>
+<td></td>
+<td>Add devices to white list <br> (this command accepts multiple instances of addr and addr_type parameters)</td>
+</tr>
+<tr>
+<td></td>
+<td>addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Remote device address</td>
+</tr>
+<tr>
+<td></td>
+<td>addr_type</td>
+<td><code>public</code></td>
+<td>Remote device public address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Remote device random address type</td>
+</tr>
+</tbody>
+</table>
+<h2 id="device-discovery-and-connection">Device discovery and connection</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>scan</strong></td>
+<td></td>
+<td></td>
+<td>Discover remote devices</td>
+</tr>
+<tr>
+<td></td>
+<td>cancel</td>
+<td></td>
+<td>cancel ongoing scan procedure</td>
+</tr>
+<tr>
+<td></td>
+<td>extended</td>
+<td><code>none</code></td>
+<td>Start legacy scan</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1M</td>
+<td>Start extended scan on 1M PHY</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>coded</td>
+<td>Start extended scan on Coded PHY</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>both</td>
+<td>Start extended scan on both PHYs</td>
+</tr>
+<tr>
+<td></td>
+<td>duration</td>
+<td>[1-<code>INT32_MAX</code>],</td>
+<td>Duration of scan in milliseconds</td>
+</tr>
+<tr>
+<td></td>
+<td>limited</td>
+<td>[<code>0</code>-1]</td>
+<td>Use limited discovery procedure</td>
+</tr>
+<tr>
+<td></td>
+<td>passive</td>
+<td>[<code>0</code>-1]</td>
+<td>Use passive scan</td>
+</tr>
+<tr>
+<td></td>
+<td>interval</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Scan interval, if 0 use stack's default</td>
+</tr>
+<tr>
+<td></td>
+<td>window</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Scan window,  if 0 use stack's default</td>
+</tr>
+<tr>
+<td></td>
+<td>filter</td>
+<td><code>no_wl</code></td>
+<td>Scan filter policy - Accept all advertising packets</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>use_wl</td>
+<td>Accept only advertising packets from devices on White List</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>no_wl_inita</td>
+<td>Accept all advertising packets (including directed RPA)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>use_wl_inita</td>
+<td>Accept only advertising packets from devices on White List <br>(including directed RPA)</td>
+</tr>
+<tr>
+<td></td>
+<td>nodups</td>
+<td>[<code>0</code>-1]</td>
+<td>Disable duplicates filtering</td>
+</tr>
+<tr>
+<td></td>
+<td>own_addr_type</td>
+<td><code>public</code></td>
+<td>Use public address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_pub</td>
+<td>Use RPA address for scan requests <br> (fallback to public if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_rnd</td>
+<td>Use RPA address for scan requests <br> (fallback to random if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td>extended_duration</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Duration of extended scan in 10 milliseconds</td>
+</tr>
+<tr>
+<td></td>
+<td>extended_period</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Periodic scan interval in 1.28 seconds (0 disabled)</td>
+</tr>
+<tr>
+<td></td>
+<td>longrange_interval</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Scan interval for Coded Scan , if 0 use stack's default</td>
+</tr>
+<tr>
+<td></td>
+<td>longrange_window</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Scan window for Coded Scan , if 0 use stack's default</td>
+</tr>
+<tr>
+<td></td>
+<td>longrange_passive</td>
+<td>[<code>0</code>-1]</td>
+<td>Use passive scan for Coded Scan</td>
+</tr>
+<tr>
+<td><strong>connect</strong></td>
+<td></td>
+<td></td>
+<td>Initiate connection to remote device</td>
+</tr>
+<tr>
+<td></td>
+<td>cancel</td>
+<td></td>
+<td>Cancel ongoing connection procedure</td>
+</tr>
+<tr>
+<td></td>
+<td>extended</td>
+<td><code>none</code></td>
+<td>Use legacy connection procedure</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1M</td>
+<td>Extended connect using 1M PHY scan parameters</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>coded</td>
+<td>Extended connect using Coded PHY scan parameters</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>both</td>
+<td>Extended connect using 1M and Coded PHYs scan parameters</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>all</td>
+<td>Extended connect using 1M and Coded PHYs scan parameters <br> (Provide also connection parameters for 2M PHY)</td>
+</tr>
+<tr>
+<td></td>
+<td>peer_addr_type</td>
+<td><code>public</code></td>
+<td>Remote device public address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Remote device random address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>public_id</td>
+<td>Remote device public address type (Identity)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random_id</td>
+<td>Remote device random address type (Identity)</td>
+</tr>
+<tr>
+<td></td>
+<td>peer_addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Remote device address</td>
+</tr>
+<tr>
+<td></td>
+<td>own_addr_type</td>
+<td><code>public</code></td>
+<td>Use public address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_pub</td>
+<td>Use RPA address for scan requests <br> (fallback to public if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_rnd</td>
+<td>Use RPA address for scan requests <br> (fallback to random if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td>duration</td>
+<td>[<code>0</code>-INT32_MAX]</td>
+<td>Connection attempt duration, if 0 use stack's default</td>
+</tr>
+<tr>
+<td></td>
+<td>scan_interval</td>
+<td>[0-UINT16_MAX]</td>
+<td>Scan interval, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>scan_window</td>
+<td>[0-UINT16_MAX]</td>
+<td>Scan window, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_min</td>
+<td>[0-UINT16_MAX]</td>
+<td>Minimum connection interval, default: 30</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_max</td>
+<td>[0-UINT16_MAX]</td>
+<td>Maximum connection interval, default: 50</td>
+</tr>
+<tr>
+<td></td>
+<td>latency</td>
+<td>[UINT16]</td>
+<td>Connection latency, default: 0</td>
+</tr>
+<tr>
+<td></td>
+<td>timeout</td>
+<td>[UINT16]</td>
+<td>Connection timeout, default: 0x0100</td>
+</tr>
+<tr>
+<td></td>
+<td>min_conn_event_len</td>
+<td>[UINT16]</td>
+<td>Minimum length of connection event, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>max_conn_event_len</td>
+<td>[UINT16]</td>
+<td>Maximum length of connection event, default: 0x0300</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_scan_interval</td>
+<td>[0-UINT16_MAX]</td>
+<td>Coded PHY Scan interval, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_scan_window</td>
+<td>[0-UINT16_MAX]</td>
+<td>Coded PHY Scan window, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_interval_min</td>
+<td>[0-UINT16_MAX]</td>
+<td>Coded PHY Minimum connection interval, default: 30</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_interval_max</td>
+<td>[0-UINT16_MAX]</td>
+<td>Coded PHY Maximum connection interval, default: 50</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_latency</td>
+<td>[UINT16]</td>
+<td>Coded PHY  Connection latency, default: 0</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_timeout</td>
+<td>[UINT16]</td>
+<td>Coded PHY  Connection timeout, default: 0x0100</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_min_conn_event_len</td>
+<td>[UINT16]</td>
+<td>Coded PHY Minimum length of connection event, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>coded_max_conn_event_len</td>
+<td>[UINT16]</td>
+<td>Coded PHY  Maximum length of connection event, default: 0x0300</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_scan_interval</td>
+<td>[0-UINT16_MAX]</td>
+<td>2M PHY Scan interval, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_scan_window</td>
+<td>[0-UINT16_MAX]</td>
+<td>2M PHY Scan window, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_interval_min</td>
+<td>[0-UINT16_MAX]</td>
+<td>2M PHY Minimum connection interval, default: 30</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_interval_max</td>
+<td>[0-UINT16_MAX]</td>
+<td>2M PHY Maximum connection interval, default: 50</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_latency</td>
+<td>[UINT16]</td>
+<td>2M PHY Connection latency, default: 0</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_timeout</td>
+<td>[UINT16]</td>
+<td>2M PHY Connection timeout, default: 0x0100</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_min_conn_event_len</td>
+<td>[UINT16]</td>
+<td>2M PHY Minimum length of connection event, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>2M_max_conn_event_len</td>
+<td>[UINT16]</td>
+<td>2M PHY Maximum length of connection event, default: 0x0300</td>
+</tr>
+<tr>
+<td><strong>disconnect</strong></td>
+<td></td>
+<td></td>
+<td>Disconnect exisiting connection</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>reason</td>
+<td>[UINT8]</td>
+<td>Disconnect reason</td>
+</tr>
+<tr>
+<td><strong>show-addr</strong></td>
+<td></td>
+<td></td>
+<td>Show local public and random identity addresses</td>
+</tr>
+<tr>
+<td><strong>show-conn</strong></td>
+<td></td>
+<td></td>
+<td>Show current connections</td>
+</tr>
+<tr>
+<td><strong>conn-rssi</strong></td>
+<td></td>
+<td></td>
+<td>Obtain RSSI of specified connection</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td><strong>conn-update-params</strong></td>
+<td></td>
+<td></td>
+<td>Update parameters of specified connection</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_min</td>
+<td>[0-UINT16_MAX]</td>
+<td>Minimum connection interval, default: 30</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_max</td>
+<td>[0-UINT16_MAX]</td>
+<td>Maximum connection interval, default: 50</td>
+</tr>
+<tr>
+<td></td>
+<td>latency</td>
+<td>[UINT16]</td>
+<td>Connection latency, default: 0</td>
+</tr>
+<tr>
+<td></td>
+<td>timeout</td>
+<td>[UINT16]</td>
+<td>Connection timeout, default: 0x0100</td>
+</tr>
+<tr>
+<td></td>
+<td>min_conn_event_len</td>
+<td>[UINT16]</td>
+<td>Minimum length of connection event, default: 0x0010</td>
+</tr>
+<tr>
+<td></td>
+<td>max_conn_event_len</td>
+<td>[UINT16]</td>
+<td>Maximum length of connection event, default: 0x0300</td>
+</tr>
+<tr>
+<td><strong>conn-datalen</strong></td>
+<td></td>
+<td></td>
+<td>Set DLE parmaeters for connection</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>octets</td>
+<td>[UINT16]</td>
+<td>Maximum transmission packet size</td>
+</tr>
+<tr>
+<td></td>
+<td>time</td>
+<td>[UINT16]</td>
+<td>Maximum transmission packet time</td>
+</tr>
+<tr>
+<td><strong>phy-set</strong></td>
+<td></td>
+<td></td>
+<td>Set prefered PHYs used for connection</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>tx_phys_mask</td>
+<td>[UINT8]</td>
+<td>Prefered PHYs on TX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded</td>
+</tr>
+<tr>
+<td></td>
+<td>rx_phys_mask</td>
+<td>[UINT8]</td>
+<td>Prefered PHYs on RX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded</td>
+</tr>
+<tr>
+<td></td>
+<td>phy_opts</td>
+<td>[UINT16]</td>
+<td>Options for Coded PHY<br> 0 - any coding, 1 - prefer S2, 2 - prefer S8</td>
+</tr>
+<tr>
+<td><strong>phy-set-default</strong></td>
+<td></td>
+<td></td>
+<td>Set default prefered PHYs used for new connection</td>
+</tr>
+<tr>
+<td></td>
+<td>tx_phys_mask</td>
+<td>[UINT8]</td>
+<td>Prefered PHYs on TX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded</td>
+</tr>
+<tr>
+<td></td>
+<td>rx_phys_mask</td>
+<td>[UINT8]</td>
+<td>Prefered PHYs on RX is mask of following bits<br>0x00 - no preference<br>0x01 - 1M, 0x02 - 2M, 0x04 - Coded</td>
+</tr>
+<tr>
+<td><strong>phy-read</strong></td>
+<td></td>
+<td></td>
+<td>Read connection current PHY</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td><strong>l2cap-update</strong></td>
+<td></td>
+<td></td>
+<td>Update connection parameters</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_min</td>
+<td>[0-UINT16_MAX]</td>
+<td>Minimum connection interval, default: 30</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_max</td>
+<td>[0-UINT16_MAX]</td>
+<td>Maximum connection interval, default: 50</td>
+</tr>
+<tr>
+<td></td>
+<td>latency</td>
+<td>[UINT16]</td>
+<td>Connection latency, default: 0</td>
+</tr>
+<tr>
+<td></td>
+<td>timeout</td>
+<td>[UINT16]</td>
+<td>Connection timeout, default: 0x0100</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security">Security</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>security-set-data</strong></td>
+<td></td>
+<td></td>
+<td>Set security configuration</td>
+</tr>
+<tr>
+<td></td>
+<td>oob-flag</td>
+<td>[<code>0</code>-1]</td>
+<td>Set Out-Of-Band (OOB) flag in Security Manager</td>
+</tr>
+<tr>
+<td></td>
+<td>mitm-flag</td>
+<td>[<code>0</code>-1]</td>
+<td>Set Man-In-The-Middle (MITM) flag in Security Manager</td>
+</tr>
+<tr>
+<td></td>
+<td>io_capabilities</td>
+<td>0</td>
+<td>Set Input-Output Capabilities to "DisplayOnly"</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1</td>
+<td>Set Input-Output Capabilities to "DisplayYesNo"</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>2</td>
+<td>Set Input-Output Capabilities to "KeyboardOnly"</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>3</td>
+<td>Set Input-Output Capabilities to "NoInputNoOutput"</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>4</td>
+<td>Set Input-Output Capabilities to "KeyboardDisplay"</td>
+</tr>
+<tr>
+<td></td>
+<td>our_key_dist</td>
+<td>[UINT8]</td>
+<td>Set Local Keys Distribution, this is a bit field of possible values: <br> LTK (0x01), IRK (0x02), CSRK (0x04), LTK_SC(0x08)</td>
+</tr>
+<tr>
+<td></td>
+<td>their_key_dist</td>
+<td>[UINT8]</td>
+<td>Set Remote Keys Distribution, this is a bit field of possible values: <br> LTK (0x01), IRK (0x02), CSRK (0x04), LTK_SC(0x08)</td>
+</tr>
+<tr>
+<td></td>
+<td>bonding-flag</td>
+<td>[<code>0</code>-1]</td>
+<td>Set Bonding flag in Security Manager</td>
+</tr>
+<tr>
+<td></td>
+<td>sc-flag</td>
+<td>[<code>0</code>-1]</td>
+<td>Set Secure Connections flag in Security Manager</td>
+</tr>
+<tr>
+<td><strong>security-pair</strong></td>
+<td></td>
+<td></td>
+<td>Start pairing procedure</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td><strong>security-encryption</strong></td>
+<td></td>
+<td></td>
+<td>Start encryption procedure</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>ediv</td>
+<td>[UINT16]</td>
+<td>EDIV for LTK to use (use storage if not provided)</td>
+</tr>
+<tr>
+<td></td>
+<td>rand</td>
+<td>[UINT64]</td>
+<td>Rand for LTK</td>
+</tr>
+<tr>
+<td></td>
+<td>ltk</td>
+<td>XX:XX:XX...</td>
+<td>LTK (16 bytes)</td>
+</tr>
+<tr>
+<td><strong>security-start</strong></td>
+<td></td>
+<td></td>
+<td>Start security procedure <br>(This starts either pairing or encryption depending if keys are stored)</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td><strong>auth-passkey</strong></td>
+<td></td>
+<td></td>
+<td>Reply to Passkey request</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>action</td>
+<td>[UINT16]</td>
+<td>Action to reply (as received in event)</td>
+</tr>
+<tr>
+<td></td>
+<td>key</td>
+<td>[0-999999]</td>
+<td>Passkey to reply (Input or Display action)</td>
+</tr>
+<tr>
+<td></td>
+<td>oob</td>
+<td>XX:XX:XX:...</td>
+<td>Out-Of-Band secret (16 bytes) (OOB action)</td>
+</tr>
+<tr>
+<td></td>
+<td>yesno</td>
+<td>Yy-Ny</td>
+<td>Confirm passkey (for Passkey Confirm action)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="advertising-with-extended-advertising-enabled">Advertising with Extended Advertising enabled</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>advertise-configure</strong></td>
+<td></td>
+<td></td>
+<td>Configure new advertising instance</td>
+</tr>
+<tr>
+<td></td>
+<td>instance</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Advertising instance</td>
+</tr>
+<tr>
+<td></td>
+<td>connectable</td>
+<td>[<code>0</code>-1]</td>
+<td>Use connectable advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>scannable</td>
+<td>[<code>0</code>-1]</td>
+<td>Use scannable advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>peer_addr_type</td>
+<td><code>public</code></td>
+<td>Remote device public address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Remote device random address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>public_id</td>
+<td>Remote device public address type (Identity)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random_id</td>
+<td>Remote device random address type (Identity)</td>
+</tr>
+<tr>
+<td></td>
+<td>peer_addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Remote device address - if provided perform directed advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>own_addr_type</td>
+<td><code>public</code></td>
+<td>Use public address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_pub</td>
+<td>Use RPA address for scan requests <br> (fallback to public if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_rnd</td>
+<td>Use RPA address for scan requests <br> (fallback to random if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td>channel_map</td>
+<td>[<code>0</code>-UINT8_MAX}</td>
+<td>Primary advertising channels map. If 0 use all channels.</td>
+</tr>
+<tr>
+<td></td>
+<td>filter</td>
+<td><code>none</code></td>
+<td>Advertising filter policy - no filtering, no whitelist used</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>scan</td>
+<td>process all connection requests but only scans from white list</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>conn</td>
+<td>process all scan request but only connection requests from white list</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>both</td>
+<td>ignore all scan and connection requests unless in white list</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_min</td>
+<td>[<code>0</code>-UINT32_MAX]</td>
+<td>Minimum advertising interval in 0.625 miliseconds <br> If 0 use stack default.</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_max</td>
+<td>[<code>0</code>-UINT32_MAX]</td>
+<td>Maximum advertising interval in 0.625 miliseconds <br> If 0 use stack default.</td>
+</tr>
+<tr>
+<td></td>
+<td>rx_power</td>
+<td>[-127 - <code>127</code>]</td>
+<td>Advertising TX power in dBm</td>
+</tr>
+<tr>
+<td></td>
+<td>primary_phy</td>
+<td><code>1M</code></td>
+<td>Use 1M PHY on primary advertising channels</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>coded</code></td>
+<td>Use Coded PHY on primary advertising channels</td>
+</tr>
+<tr>
+<td></td>
+<td>secondary_phy</td>
+<td><code>1M</code></td>
+<td>Use 1M PHY on secondary advertising channels</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>coded</code></td>
+<td>Use coded PHY on primary advertising channels</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>2M</code></td>
+<td>Use 2M PHY on primary advertising channels</td>
+</tr>
+<tr>
+<td></td>
+<td>sid</td>
+<td>[<code>0</code>-16]</td>
+<td>Adsertising instance SID</td>
+</tr>
+<tr>
+<td></td>
+<td>high_duty</td>
+<td>[<code>0</code>-1]</td>
+<td>Use high_duty advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>anonymous</td>
+<td>[<code>0</code>-1]</td>
+<td>Use anonymous advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>legacy</td>
+<td>[<code>0</code>-1]</td>
+<td>Use legacy PDUs for advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>include_tx_power</td>
+<td>[<code>0</code>-1]</td>
+<td>Include TX power information in advertising PDUs</td>
+</tr>
+<tr>
+<td></td>
+<td>scan_req_notif</td>
+<td>[<code>0</code>-1]</td>
+<td>Enable SCAN_REQ notifications</td>
+</tr>
+<tr>
+<td><strong>advertise-set-addr</strong></td>
+<td></td>
+<td></td>
+<td>Configure <em>random</em> adress for instance</td>
+</tr>
+<tr>
+<td></td>
+<td>instance</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Advertising instance</td>
+</tr>
+<tr>
+<td></td>
+<td>addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Random address</td>
+</tr>
+<tr>
+<td><strong>advertise-set-adv-data</strong></td>
+<td></td>
+<td></td>
+<td>Configure advertising instance ADV_DATA. This allow to configure following TLVs:</td>
+</tr>
+<tr>
+<td><strong>advertise-set-scan-rsp</strong></td>
+<td></td>
+<td></td>
+<td>Configure advertising instance SCAN_RSP. This allow to configure following TLVs:</td>
+</tr>
+<tr>
+<td></td>
+<td>instance</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Advertising instance</td>
+</tr>
+<tr>
+<td></td>
+<td>flags</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Flags value</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid16</td>
+<td>[UINT16]</td>
+<td>16-bit UUID value (can be passed multiple times)</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid16_is_complete</td>
+<td>[<code>0</code>-1]</td>
+<td>I 16-bit UUID list is complete</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid32</td>
+<td>[UINT32]</td>
+<td>32-bit UUID value (can be passed multiple times)</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid32_is_complete</td>
+<td>[<code>0</code>-1]</td>
+<td>I 32-bit UUID list is complete</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid128</td>
+<td>XX:XX:XX:...</td>
+<td>128-bit UUID value (16 bytes) (can be passed multiple times)</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid128_is_complete</td>
+<td>[<code>0</code>-1]</td>
+<td>I 128-bit UUID list is complete</td>
+</tr>
+<tr>
+<td></td>
+<td>tx_power_level</td>
+<td>[-127 - 127]</td>
+<td>TX Power level to include</td>
+</tr>
+<tr>
+<td></td>
+<td>appearance</td>
+<td>[UINT16]</td>
+<td>Appearance</td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>string</td>
+<td>Name</td>
+</tr>
+<tr>
+<td></td>
+<td>advertising_interval</td>
+<td>[UINT16]</td>
+<td>Advertising interval</td>
+</tr>
+<tr>
+<td></td>
+<td>service_data_uuid32</td>
+<td>XX:XX:XX:...</td>
+<td>32-bit UUID service data</td>
+</tr>
+<tr>
+<td></td>
+<td>service_data_uuid128</td>
+<td>XX:XX:XX:...</td>
+<td>128-bit UUID service data</td>
+</tr>
+<tr>
+<td></td>
+<td>uri</td>
+<td>XX:XX:XX:...</td>
+<td>URI</td>
+</tr>
+<tr>
+<td></td>
+<td>msg_data</td>
+<td>XX:XX:XX:...</td>
+<td>Manufacturer data</td>
+</tr>
+<tr>
+<td></td>
+<td>eddystone_url</td>
+<td>string</td>
+<td>Eddystone with specified URL</td>
+</tr>
+<tr>
+<td><strong>advertise-start</strong></td>
+<td></td>
+<td></td>
+<td>Start advertising with configured instance</td>
+</tr>
+<tr>
+<td></td>
+<td>instance</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Advertising instance</td>
+</tr>
+<tr>
+<td></td>
+<td>duration</td>
+<td>[<code>0</code>-UINT16_MAX]</td>
+<td>Advertising duration in 10ms units. 0 - forver</td>
+</tr>
+<tr>
+<td></td>
+<td>max_events</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Maximum number of advertising events. 0 - no limit</td>
+</tr>
+<tr>
+<td><strong>advertise-stop</strong></td>
+<td></td>
+<td></td>
+<td>Stop advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>instance</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Advertising instance</td>
+</tr>
+<tr>
+<td><strong>advertise-remove</strong></td>
+<td></td>
+<td></td>
+<td>Remove configured advertising instance</td>
+</tr>
+<tr>
+<td></td>
+<td>instance</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Advertising instance</td>
+</tr>
+</tbody>
+</table>
+<h2 id="legacy-advertising-with-extended-advertising-disabled">Legacy Advertising with Extended Advertising disabled</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>advertise</strong></td>
+<td></td>
+<td></td>
+<td>Enable advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>stop</td>
+<td></td>
+<td>Stop enabled advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td><code>und</code></td>
+<td>Connectable mode: undirected</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>non</td>
+<td>non-connectable</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>dir</td>
+<td>directed</td>
+</tr>
+<tr>
+<td></td>
+<td>discov</td>
+<td><code>gen</code></td>
+<td>Discoverable mode: general discoverable</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>ltd</td>
+<td>limited discoverable</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>non</td>
+<td>non-discoverable</td>
+</tr>
+<tr>
+<td></td>
+<td>scannable</td>
+<td>[<code>0</code>-1]</td>
+<td>Use scannable advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>peer_addr_type</td>
+<td><code>public</code></td>
+<td>Remote device public address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Remote device random address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>public_id</td>
+<td>Remote device public address type (Identity)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random_id</td>
+<td>Remote device random address type (Identity)</td>
+</tr>
+<tr>
+<td></td>
+<td>peer_addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Remote device address - if provided perform directed advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>own_addr_type</td>
+<td><code>public</code></td>
+<td>Use public address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_pub</td>
+<td>Use RPA address for scan requests <br> (fallback to public if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>rpa_rnd</td>
+<td>Use RPA address for scan requests <br> (fallback to random if no IRK)</td>
+</tr>
+<tr>
+<td></td>
+<td>channel_map</td>
+<td>[<code>0</code>-UINT8_MAX}</td>
+<td>Primary advertising channels map. If 0 use all channels.</td>
+</tr>
+<tr>
+<td></td>
+<td>filter</td>
+<td><code>none</code></td>
+<td>Advertising filter policy - no filtering, no whitelist used</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>scan</td>
+<td>process all connection requests but only scans from white list</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>conn</td>
+<td>process all scan request but only connection requests from white list</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>both</td>
+<td>ignore all scan and connection requests unless in white list</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_min</td>
+<td>[<code>0</code>-UINT32_MAX]</td>
+<td>Minimum advertising interval in 0.625 miliseconds <br> If 0 use stack default.</td>
+</tr>
+<tr>
+<td></td>
+<td>interval_max</td>
+<td>[<code>0</code>-UINT32_MAX]</td>
+<td>Maximum advertising interval in 0.625 miliseconds <br> If 0 use stack default.</td>
+</tr>
+<tr>
+<td></td>
+<td>high_duty</td>
+<td>[<code>0</code>-1]</td>
+<td>Use high_duty advertising</td>
+</tr>
+<tr>
+<td></td>
+<td>duration</td>
+<td>[<code>1</code>-INT32_MAX]</td>
+<td>Advertising duration in ms</td>
+</tr>
+<tr>
+<td><strong>set-adv-data</strong></td>
+<td></td>
+<td></td>
+<td>Configure advertising instance ADV_DATA. This allow to configure following TLVs:</td>
+</tr>
+<tr>
+<td><strong>set-scan-rsp</strong></td>
+<td></td>
+<td></td>
+<td>Configure advertising instance SCAN_RSP. This allow to configure following TLVs:</td>
+</tr>
+<tr>
+<td></td>
+<td>flags</td>
+<td>[<code>0</code>-UINT8_MAX]</td>
+<td>Flags value</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid16</td>
+<td>[UINT16]</td>
+<td>16-bit UUID value (can be passed multiple times)</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid16_is_complete</td>
+<td>[<code>0</code>-1]</td>
+<td>I 16-bit UUID list is complete</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid32</td>
+<td>[UINT32]</td>
+<td>32-bit UUID value (can be passed multiple times)</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid32_is_complete</td>
+<td>[<code>0</code>-1]</td>
+<td>I 32-bit UUID list is complete</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid128</td>
+<td>XX:XX:XX:...</td>
+<td>128-bit UUID value (16 bytes) (can be passed multiple times)</td>
+</tr>
+<tr>
+<td></td>
+<td>uuid128_is_complete</td>
+<td>[<code>0</code>-1]</td>
+<td>I 128-bit UUID list is complete</td>
+</tr>
+<tr>
+<td></td>
+<td>tx_power_level</td>
+<td>[-127 - 127]</td>
+<td>TX Power level to include</td>
+</tr>
+<tr>
+<td></td>
+<td>appearance</td>
+<td>[UINT16]</td>
+<td>Appearance</td>
+</tr>
+<tr>
+<td></td>
+<td>name</td>
+<td>string</td>
+<td>Name</td>
+</tr>
+<tr>
+<td></td>
+<td>advertising_interval</td>
+<td>[UINT16]</td>
+<td>Advertising interval</td>
+</tr>
+<tr>
+<td></td>
+<td>service_data_uuid32</td>
+<td>XX:XX:XX:...</td>
+<td>32-bit UUID service data</td>
+</tr>
+<tr>
+<td></td>
+<td>service_data_uuid128</td>
+<td>XX:XX:XX:...</td>
+<td>128-bit UUID service data</td>
+</tr>
+<tr>
+<td></td>
+<td>uri</td>
+<td>XX:XX:XX:...</td>
+<td>URI</td>
+</tr>
+<tr>
+<td></td>
+<td>msg_data</td>
+<td>XX:XX:XX:...</td>
+<td>Manufacturer data</td>
+</tr>
+<tr>
+<td></td>
+<td>eddystone_url</td>
+<td>string</td>
+<td>Eddystone with specified URL</td>
+</tr>
+</tbody>
+</table>
+<h2 id="l2cap-connection-oriented-channels">L2CAP Connection Oriented Channels</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>l2cap-create-server</strong></td>
+<td></td>
+<td></td>
+<td>Create L2CAP server</td>
+</tr>
+<tr>
+<td></td>
+<td>psm</td>
+<td>[UINT16]</td>
+<td>PSM</td>
+</tr>
+<tr>
+<td><strong>l2cap-connect</strong></td>
+<td></td>
+<td></td>
+<td>Connect to remote L2CAP server</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>psm</td>
+<td>[UINT16]</td>
+<td>PSM</td>
+</tr>
+<tr>
+<td><strong>l2cap-disconnect</strong></td>
+<td></td>
+<td></td>
+<td>Disconnec from L2CAP server</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>idx</td>
+<td>[UINT16]</td>
+<td>L2CAP connection oriented channel identifier</td>
+</tr>
+<tr>
+<td><strong>l2cap-send</strong></td>
+<td></td>
+<td></td>
+<td>Send data over connected L2CAP channel</td>
+</tr>
+<tr>
+<td></td>
+<td>conn</td>
+<td>[UINT16]</td>
+<td>Connection handle</td>
+</tr>
+<tr>
+<td></td>
+<td>idx</td>
+<td>[UINT16]</td>
+<td>L2CAP connection oriented channel identifier</td>
+</tr>
+<tr>
+<td></td>
+<td>bytes</td>
+<td>[UINT16]</td>
+<td>Number of bytes to send (hardcoded data pattern)</td>
+</tr>
+<tr>
+<td><strong>l2cap-show-coc</strong></td>
+<td></td>
+<td></td>
+<td>Show connected L2CAP channels</td>
+</tr>
+</tbody>
+</table>
+<h2 id="keys-storage">Keys storage</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Command</strong></th>
+<th><strong>Parmeters</strong></th>
+<th><strong> Possible values</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>keystore-add</strong></td>
+<td></td>
+<td></td>
+<td>Add keys to storage</td>
+</tr>
+<tr>
+<td></td>
+<td>type</td>
+<td>msec</td>
+<td>Master Key</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>ssec</td>
+<td>Slave Key</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>cccd</td>
+<td>Client Characteristic Configuration Descriptor</td>
+</tr>
+<tr>
+<td></td>
+<td>addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Device address</td>
+</tr>
+<tr>
+<td></td>
+<td>addr_type</td>
+<td><code>public</code></td>
+<td>Device address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td>ediv</td>
+<td>[UINT16]</td>
+<td>EDIV for LTK to add</td>
+</tr>
+<tr>
+<td></td>
+<td>rand</td>
+<td>[UINT64]</td>
+<td>Rand for LTK</td>
+</tr>
+<tr>
+<td></td>
+<td>ltk</td>
+<td>XX:XX:XX...</td>
+<td>LTK (16 bytes)</td>
+</tr>
+<tr>
+<td></td>
+<td>irk</td>
+<td>XX:XX:XX...</td>
+<td>Identity Resolving Key (16 bytes)</td>
+</tr>
+<tr>
+<td></td>
+<td>csrk</td>
+<td>XX:XX:XX...</td>
+<td>Connection Signature Resolving Key (16 bytes)</td>
+</tr>
+<tr>
+<td><strong>keystore-del</strong></td>
+<td></td>
+<td></td>
+<td>Delete keys from storage</td>
+</tr>
+<tr>
+<td></td>
+<td>type</td>
+<td>msec</td>
+<td>Master Key</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>ssec</td>
+<td>Slave Key</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>cccd</td>
+<td>Client Characteristic Configuration Descriptor</td>
+</tr>
+<tr>
+<td></td>
+<td>addr</td>
+<td>XX:XX:XX:XX:XX:XX</td>
+<td>Device address</td>
+</tr>
+<tr>
+<td></td>
+<td>addr_type</td>
+<td><code>public</code></td>
+<td>Device address type</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>random</td>
+<td>Use random address for scan requests</td>
+</tr>
+<tr>
+<td></td>
+<td>ediv</td>
+<td>[UINT16]</td>
+<td>EDIV for LTK to remove</td>
+</tr>
+<tr>
+<td></td>
+<td>rand</td>
+<td>[UINT64]</td>
+<td>Rand for LTK</td>
+</tr>
+<tr>
+<td><strong>keystore-show</strong></td>
+<td></td>
+<td></td>
+<td>Show stored keys</td>
+</tr>
+<tr>
+<td></td>
+<td>type</td>
+<td>msec</td>
+<td>Master Keys</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>ssec</td>
+<td>Slave Keys</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>cccd</td>
+<td>Client Characteristic Configuration Descriptor s</td>
+</tr>
+</tbody>
+</table>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    <a href=../btshell_api/>
+        <span class="fa fa-arrow-left"></span>
+        Previous: btshell Usage API
+    </a>
+    
+    </li>
+    <li class="pull-right">
+    
+    <a href=../btshell_GATT/>
+        Next: GATT in btshell
+        <span class="fa fa-arrow-right"></span>
+    </a>
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+            </small>
+             <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+             </a>
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../../js/highlight.pack.js"></script>
+        <script src="../../../../js/base.js"></script>
+        <script src="../../../../js/custom.js"></script>
+
+    </body>
+</html>

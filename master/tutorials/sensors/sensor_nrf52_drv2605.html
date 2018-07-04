@@ -1,0 +1,546 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>Enabling and Calibrating Off-Board DRV2605 LRA Actuator &mdash; Apache Mynewt 1.3.0 documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../genindex.html"/>
+          <link rel="search" title="Search" href="../../search.html"/>
+      <link rel="top" title="Apache Mynewt 1.3.0 documentation" href="../../index.html"/>
+          <link rel="up" title="Sensors" href="sensors.html"/>
+          <link rel="next" title="Tooling" href="../tooling/tooling.html"/>
+          <link rel="prev" title="Adding an Analog Sensor on nRF52" href="nrf52_adc.html"/> 
+
+    
+    <script src="../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+              <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.4.1, Apache NimBLE 1.0.0 </a> released (July 1, 2018)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/quick-start/">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+      <a href="../tutorials.html">Tutorials</a> /
+    
+      <a href="sensors.html">Sensors</a> /
+    
+    Enabling and Calibrating Off-Board DRV2605 LRA Actuator
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-documentation/edit/master/docs/tutorials/sensors/sensor_nrf52_drv2605.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    
+<!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+    <option
+      value="/latest"
+      selected
+      >
+      Version: latest
+    </option>
+    <option
+      value="/v1_3_0/os/introduction"
+      >
+      Version: 1.3.0
+    </option>
+    <option
+      value="/v1_2_0/os/introduction"
+      >
+      Version: 1.2.0
+    </option>
+    <option
+      value="/v1_1_0/os/introduction">
+      Version: 1.1.0
+    </option>
+    <option
+      value="/v1_0_0/os/introduction">
+      Version: 1.0.0
+    </option>
+    <option
+      value="/v0_9_0/os/introduction">
+      Version: 0_9_0
+    </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts.html">Concepts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../blinky/blinky.html">Project Blinky</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../repo/add_repos.html">Working with repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../slinky/project-slinky.html">Project Slinky for Remote Comms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ble/ble.html">Bluetooth Low Energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lora/lorawanapp.html">LoRa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../os_fundamentals/os_fundamentals.html">OS Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/devmgmt.html">Remote Device Management</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="sensors.html">Sensors</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sensors_framework.html">Sensor Framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="air_quality.html">Air Quality Sensor Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nrf52_adc.html">Add an Analog Sensor</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Connect a DRV2605 actuator device</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tooling/tooling.html">Tooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other/other.html">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../os/os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../network/docs/index.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mynewt_faq.html">Mynewt OS related FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="enabling-and-calibrating-off-board-drv2605-lra-actuator">
+<h1>Enabling and Calibrating Off-Board DRV2605 LRA Actuator<a class="headerlink" href="#enabling-and-calibrating-off-board-drv2605-lra-actuator" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial shows you how to run the <strong>sensors_test</strong> application
+on an nRF52-DK board to communicate, via the I2C interface, with the <span class="xref std std-doc">Adafruit
+DRV2605</span>
+device. The DRV2605 driver includes the <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell command that allows you
+to quickly to view the status, calibrate and actuate your motor in
+preperation for using it programmatically in your own app.</p>
+<p>This tutorial shows you how to:</p>
+<ul class="simple">
+<li>Create and build the application and bootloader targets.</li>
+<li>Connect a DRV2605 actuator device to an nRF52-DK board.</li>
+<li>Run <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell commands to view the actuator data
+and control the drv2605 device.</li>
+</ul>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></li>
+<li><a class="reference internal" href="#step-1-creating-the-application-target" id="id2">Step 1: Creating the Application Target</a></li>
+<li><a class="reference internal" href="#step-2-creating-an-application-image-and-loading-it" id="id3">Step 2: Creating an Application Image and loading it</a></li>
+<li><a class="reference internal" href="#step-3-communicating-with-and-calibrating-the-drv2605-device" id="id4">Step 3: Communicating with and Calibrating the DRV2605 device</a></li>
+<li><a class="reference internal" href="#step-4-actually-actuate" id="id5">Step 4: Actually Actuate</a></li>
+<li><a class="reference internal" href="#conclusion" id="id6">Conclusion</a></li>
+</ul>
+</div>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id1">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Meet the prerequisites listed in <a class="reference internal" href="sensors.html"><span class="doc">Sensor Tutorials</span></a></li>
+<li>Understand how to <a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">add an offboard sensor</span></a>,
+we wont be covering bootloader and application console connection here.</li>
+<li>Have a Nordic nRF52-DK board.</li>
+<li>Have an <a class="reference external" href="https://learn.adafruit.com/adafruit-drv2605-haptic-controller-breakout/overview">Adafruit DRV2605</a>
+actuator and LRA motor.</li>
+</ul>
+</div>
+<div class="section" id="step-1-creating-the-application-target">
+<h2><a class="toc-backref" href="#id2">Step 1: Creating the Application Target</a><a class="headerlink" href="#step-1-creating-the-application-target" title="Permalink to this headline">¶</a></h2>
+<p>In this step, you create a target for the sensors_test application that enables the DRV2605
+off-board device.</p>
+<p>To add the DRV2605 device support, you create the application target with
+the following syscfg settings enabled:</p>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">I2C_0</span></code>: Enables the I2C interface 0 in the nRF52 BSP HAL setting.</p>
+</li>
+<li><div class="first line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">DRV2605_OFB</span></code>: Enables support for the DRV2605 actuator in the sensor
+creator package (<code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code>).</div>
+<div class="line">When this setting is enabled, the creator package performs the
+following:</div>
+</div>
+<ul class="simple">
+<li>Includes the DRV2605 driver package (<code class="docutils literal notranslate"><span class="pre">hw/drivers/drv2605</span></code>)
+as a package dependency.</li>
+<li>Creates an os device for the device in the Mynewt kernel.</li>
+<li>Configures the device with default values.</li>
+</ul>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_CLI</span></code>: Enables the <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell command in the DRV2605
+device driver package. The sensors_test application also uses this
+setting to conditionally include the call to the
+<code class="docutils literal notranslate"><span class="pre">drv2605_shell_init()</span></code> function to initialize the shell support in
+the driver.</p>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">DRV2605_EN_PIN</span></code>: The pin the driver needs to gpio in order to enable</dt>
+<dd><p class="first last">your DRV2605 device.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_RATED_VOLTAGE</span></code>: I have no easy default for you here, it is
+entirelay based on your purchased LRA motor. See 8.5.2.1 Rated Voltage
+Programming in the TI DRV2605 Datasheet or maybe talk to your motor supplier.</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_OD_CLAMP</span></code>: I have no easy default for you here, it is
+entirelay based on your purchased LRA motor. See 8.5.2.2 Overdrive
+Voltage-Clamp Programming in the TI DRV2605 Datasheet or maybe talk
+to your motor supplier. NOTE: LRA and ERM (8) and (9) equations are
+swapped in the datasheet revision “SLOS854C REVISED SEPTEMBER 2014”</p>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_DRIVE_TIME</span></code>: I have no easy default for you here, it is
+entirelay based on your purchased LRA motor. See 8.6.21, but generally
+it is computable with the equation
+LRA DRIVE_TIME = (0.5 × (1/fLRA * 1000) - 0.5 ms) /  0.1 ms</p>
+</li>
+</ul>
+<p>1. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">create</span></code> command, from your project base
+directory, to create the target. We name the target
+<code class="docutils literal notranslate"><span class="pre">nrf52_drv2605_test</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target create nrf52_drv2605_test
+<span class="go">Target targets/nrf52_drv2605_test successfully created</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+<p>2. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">set</span></code> command to set the app, bsp, and
+build_profile variables for the target:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target <span class="nb">set</span> nrf52_drv2605_test <span class="nv">app</span><span class="o">=</span>@apache-mynewt-core/apps/sensors_test <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nrf52dk <span class="nv">build_profile</span><span class="o">=</span>debug
+<span class="go">Target targets/nrf52_drv2605_test successfully set target.app to @apache-mynewt-core/apps/sensors_test</span>
+<span class="go">Target targets/nrf52_drv2605_test successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="go">Target targets/nrf52_drv2605_test successfully set target.build_profile to debug</span>
+
+<span class="gp">$</span>
+</pre></div>
+</div>
+<p>3. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">set</span></code> command to enable the <code class="docutils literal notranslate"><span class="pre">I2C_0</span></code>,
+<code class="docutils literal notranslate"><span class="pre">DRV2605_OFB</span></code>, <code class="docutils literal notranslate"><span class="pre">DRV2605_CLI</span></code>, <code class="docutils literal notranslate"><span class="pre">DRV2605_EN_PIN</span></code>, <code class="docutils literal notranslate"><span class="pre">DRV2605_RATED_VOLTAGE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">DRV2605_OD_CLAMP</span></code>, and <code class="docutils literal notranslate"><span class="pre">DRV2605_DRIVE_TIME</span></code> syscfg settings:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target <span class="nb">set</span> nrf52_drv2605_test <span class="nv">syscfg</span><span class="o">=</span><span class="nv">DRV2605_OFB</span><span class="o">=</span><span class="m">1</span>:I2C_0<span class="o">=</span><span class="m">1</span>:DRV2605_CLI<span class="o">=</span><span class="m">1</span>:DRV2605_EN_PIN<span class="o">=</span><span class="m">3</span>:DRV2605_RATED_VOLTAGE<span class="o">=</span>0x53:DRV2605_OD_CLAMP<span class="o">=</span>0x69:DRV2605_DRIVE_TIME<span class="o">=</span><span class="m">20</span>
+<span class="go">Target targets/nrf52_drv2605_test successfully set target.syscfg to DRV2605_OFB=1:I2C_0=1:DRV2605_CLI=1:DRV2605_EN_PIN=3:DRV2605_RATED_VOLTAGE=0x53:DRV2605_OD_CLAMP=0x69:DRV2605_DRIVE_TIME=20</span>
+
+<span class="gp">$</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-creating-an-application-image-and-loading-it">
+<h2><a class="toc-backref" href="#id3">Step 2: Creating an Application Image and loading it</a><a class="headerlink" href="#step-2-creating-an-application-image-and-loading-it" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial assumes you have a functioning bootloader as taught in
+<a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">add an offboard sensor</span></a>
+Now run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">create-image</span></code> command to create an image file. You may
+assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt build nrf52_drv2605_test <span class="o">&amp;&amp;</span> newt create-image nrf52_drv2605_test <span class="m">1</span>.0.0
+<span class="go">App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_drv2605_test/app/apps/sensors_test/sensors_test.img</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-communicating-with-and-calibrating-the-drv2605-device">
+<h2><a class="toc-backref" href="#id4">Step 3: Communicating with and Calibrating the DRV2605 device</a><a class="headerlink" href="#step-3-communicating-with-and-calibrating-the-drv2605-device" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial assumes you have a functioning application console as
+taught in <a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">add an offboard sensor</span></a>
+The DRV2605 device driver implements the <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell command
+that allows you to:</p>
+<ul class="simple">
+<li>Query the chip id, content of registers, calibrations.</li>
+<li>Reset the device.</li>
+<li>Change the power mode.</li>
+<li>Change the operation mode.</li>
+<li>Load waveforms to actuate.</li>
+<li>Actuate the device.</li>
+</ul>
+<p><strong>Example 1:</strong> Query the device chip id:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">711273 compat&gt; drv2605 chip_id</span>
+<span class="go">769056 0x07</span>
+</pre></div>
+</div>
+<p><strong>Example 2:</strong> Run Diagnostics on your motor setup numbers:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">827472 compat&gt; drv2605 op_mode diag</span>
+<span class="go">drv2605 op_mode diag</span>
+<span class="go">829717 op_mode succeeded</span>
+</pre></div>
+</div>
+<p>If that didn’t work or you will have to compute different DRV2605_RATED_VOLTAGE,
+DRV2605_OD_CLAMP, and DRV2605_DRIVE_TIME values and try again or maybe talk to your
+motor manufacturer or TI for more help.</p>
+<p><strong>Example 3:</strong> Run Calibration on your motor:
+Theres a lot more setup numbers you could enter here for the DRV2605 to figure out
+how to actuate your motor, but some of them it can figure out itself through auto calibration.
+Lets run autocalibration and then dump the fresh calibration numbers:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">001407 compat&gt; drv2605 op_mode cal</span>
+<span class="go">drv2605 op_mode cal</span>
+<span class="go">001931 op_mode succeeded</span>
+<span class="go">drv2605 dump_cal</span>
+<span class="go">DRV2605_CALIBRATED_COMP: 0x09</span>
+<span class="go">DRV2605_CALIBRATED_BEMF: 0x79</span>
+<span class="go">DRV2605_CALIBRATED_BEMF_GAIN: 1</span>
+</pre></div>
+</div>
+<p>You could programmatically run this on every startup, but more likely you’d want to save these
+as in your syscfg.yml and restart. Presumably you’d never have to do these steps ever again.</p>
+</div>
+<div class="section" id="step-4-actually-actuate">
+<h2><a class="toc-backref" href="#id5">Step 4: Actually Actuate</a><a class="headerlink" href="#step-4-actually-actuate" title="Permalink to this headline">¶</a></h2>
+<p>Now you’re ready to (sigh) rumble. One way to use the DRV2605 device is to enable
+the ROM mode to use its stored patterns. Technically you dont need to do this after
+first configure as ROM mode is the default mode:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">021773 compat&gt; drv2605 op_mode rom</span>
+<span class="go">drv2605 op_mode rom</span>
+<span class="go">037245 op_mode succeeded</span>
+</pre></div>
+</div>
+<p>Now you can load up to 8 internal roms or delays. In this case we’ll use four hard
+clicks (1) with max delays (255) in between. You may only have to do this once per
+boot if you wanted to use this same sequence every time you trigger the DRV2605 device.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">120858 compat&gt; drv2605 load 1 255 1 255 1 255 1 255</span>
+<span class="go">drv2605 load 1 255 1 255 1 255 1 255</span>
+<span class="go">122555 Load succeeded</span>
+</pre></div>
+</div>
+<p>The motor is in standby by default after a mode change, so enable it:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">002111 compat&gt; drv2605 power_mode active</span>
+<span class="go">drv2605 power_mode active</span>
+<span class="go">003263 power_mode succeeded</span>
+</pre></div>
+</div>
+<p>Now you can trigger those forms as many times as you want or load new forms and trigger again:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">122555 compat&gt; drv2605 trigger</span>
+<span class="go">drv2605 trigger</span>
+<span class="go">128806 Trigger succeeded</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2><a class="toc-backref" href="#id6">Conclusion</a><a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>You’ve successfully enabled a mynewt application to communicate with a drv2605 device,
+calibrated it and actuated a motor! Next youll want to look at the code comments
+on the drv2605.c file and how the drv2605_shell.c file is implemented so you can
+setup and actuate your device programmatically within your application.</p>
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="../tooling/tooling.html" class="btn btn-neutral float-right" title="Tooling" accesskey="n">Next: Tooling <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="nrf52_adc.html" class="btn btn-neutral" title="Adding an Analog Sensor on nRF52" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Adding an Analog Sensor on nRF52</a>
+      
+    </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>
