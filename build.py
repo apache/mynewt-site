@@ -4,7 +4,7 @@ import os
 import sh
 from mkdocs import config
 
-dependent_repos = ['mynewt-documentation', 'mynewt-core', 'mynewt-newt', 'mynewt-newtmgr']
+dependent_repos = ['mynewt-documentation', 'mynewt-core', 'mynewt-newt', 'mynewt-newtmgr', 'mynewt-nimble']
 
 def build(cwd, site_dir):
 

@@ -27,6 +27,8 @@ Install the requirements:
 
 ## Releasing a versioned set of MyNewt documentation
 
+NOTE: When it comes time to create a static versioned set of docs from the mynewt-documentation repo for v1.4.0, these instructions will need to be modified.
+
 When a release of MyNewt OS and its associated tools occurs, a new version directory should be created to hold all docs pertaining to that release. The documentation in the git `master` branch of this repository always shows the latest docs under development. The following steps will create a documentation directory for a new release and make it available from the mynewt-site.
 
 ### Merge all changes and update

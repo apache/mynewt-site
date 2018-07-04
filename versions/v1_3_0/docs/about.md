@@ -22,4 +22,4 @@ If you have suggestions for a new feature, use case, or implementation improveme
 
 ### FAQ
 
-<font color="#F2853F"> Questions? </font> Click [here](/latest/mynewt_faq.html)
+<font color="#F2853F"> Questions? </font> Click [here](/DOCSLINK/faq/answers)
