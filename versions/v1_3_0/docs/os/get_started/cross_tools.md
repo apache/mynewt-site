@@ -1,6 +1,6 @@
 # Installing the Cross Tools for ARM 
 
-This page shows you how to install the tools to build, run, and debug Mynewt OS applications that run on supported ARM target boards.  It shows you how to install the following tools on Mac OS, Linux and Windows:
+This page shows you how to install the tools to build, run, and debug Mynewt OS applications that run on supported ARM target boards.  It shows you how to install the following tools on macOS, Linux and Windows:
 
 * ARM cross toolchain to compile and build Mynewt applications for the target boards.
 * Debuggers to load and debug applications on the target boards.
@@ -8,30 +8,31 @@ This page shows you how to install the tools to build, run, and debug Mynewt OS 
 <br>
 
 ## Installing the ARM Cross Toolchain
-ARM maintains a pre-built GNU toolchain with gcc and gdb targeted at Embedded ARM Processors, namely Cortex-R/Cortex-M processor families. Mynewt OS has been tested with version 4.9 of the toolchain and we recommend you install this version to get started.  Mynewt OS will eventually work with multiple versions available, including the latest releases. 
+ARM maintains a pre-built GNU toolchain with gcc and gdb targeted at Embedded ARM Processors, namely Cortex-R/Cortex-M processor families. Mynewt OS has been tested with version 7.2 of the toolchain and we recommend you install 7.0 or later to get started.  Mynewt OS will eventually work with multiple versions available, including the latest releases. 
 
 ### Installing the ARM Toolchain For Mac OS X
 
-Add the **PX4/homebrew-px4** homebrew tap and install version 4.9 of the toolchain. After installing, check that the symbolic link that homebrew created points to the correct version of the debugger.
+Add the **PX4/homebrew-px4** homebrew tap and install version 7.2 of the toolchain. After installing, check that the symbolic link that homebrew created points to the correct version of the debugger.
 
 ```no-highlight
 $ brew tap PX4/homebrew-px4
 $ brew update
-$ brew install gcc-arm-none-eabi-49
-$ arm-none-eabi-gcc --version  
-arm-none-eabi-gcc (GNU Tools for ARM Embedded Processors) 4.9.3 20150529 (release) [ARM/embedded-4_9-branch revision 224288]
-Copyright (C) 2014 Free Software Foundation, Inc.
+$ brew install gcc-arm-none-eabi-74
+$ arm-none-eabi-gcc --version
+arm-none-eabi-gcc (GNU Tools for Arm Embedded Processors 7-2017-q4-major) 7.2.1 20170904 (release) [ARM/embedded-7-branch revision 255204]
+Copyright (C) 2017 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-$ ls -al /usr/local/bin/arm-none-eabi-gdb
-lrwxr-xr-x  1 aditihilbert  admin  69 Sep 22 17:16 /usr/local/bin/arm-none-eabi-gdb -> /usr/local/Cellar/gcc-arm-none-eabi-49/20150609/bin/arm-none-eabi-gdb
+$ ls -al /usr/local/bin/arm-none-eabi-gcc
+lrwxr-xr-x  1 ccollins  admin  58 Jul  5 18:12 /usr/local/bin/arm-none-eabi-gcc -> ../Cellar/gcc-arm-none-eabi/20171218/bin/arm-none-eabi-gcc
 ```
+
 **Note:** If no version is specified, brew will install the latest version available. 
 
 <br>
 ### Installing the ARM Toolchain For Linux
 
-On a Debian-based Linux distribution, gcc 4.9.3 for ARM can be installed with
+On a Debian-based Linux distribution, gcc 7 for ARM can be installed with
 apt-get as documented below. The steps are explained in depth at
 [https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa](https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa).
 
@@ -43,7 +44,7 @@ $ sudo apt-get install gcc-arm-embedded
 ```
 <br>
 ### Installing the ARM Toolchain for Windows
-Step 1: Download and run the [installer](https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q2-update/+download/gcc-arm-none-eabi-4_9-2015q2-20150609-win32.exe) to install arm-none-eabi-gcc and arm-none-eabi-gdb. Select the default destination folder: **C:\Program Files (x86)\GNU Tools ARM Embedded\4.9 2015q2**. 
+Step 1: Download and run the [installer](https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2018q2/gcc-arm-none-eabi-7-2018-q2-update-win32-sha2.exe?revision=bc72768f-9927-454e-9141-918927fb74ff?product=GNU%20Arm%20Embedded%20Toolchain,32-bit,,Windows,7-2018-q2-update) to install arm-none-eabi-gcc and arm-none-eabi-gdb. Select the default destination folder: **C:\Program Files (x86)\GNU Tools Arm Embedded\7 2018-q2-update**.
 
 **Notes:** 
 
@@ -56,9 +57,9 @@ Step 2: Check that you are using the installed versions arm-none-eabi-gcc and ar
 
 ```no-highlight
 $ which arm-none-eabi-gcc
-/c/Program Files (x86)/GNU Tools ARM Embedded/4.9 2015q2/bin/arm-none-eabi-gcc
-$which arm-none-eabi-gdb
-/c/Program Files (x86)/GNU Tools ARM Embedded/4.9 2015q2/bin/arm-none-eabi-gdb
+/c/Program Files (x86)/GNU Tools Arm Embedded/7 2018-q2-update/bin/arm-none-eabi-gcc
+$ which arm-none-eabi-gdb
+/c/Program Files (x86)/GNU Tools Arm Embedded/7 2018-q2-update/bin/arm-none-eabi-gdb
 ```
 ## Installing the Debuggers 
 Mynewt uses, depending on the board, either the OpenOCD or SEGGER J-Link debuggers. 
