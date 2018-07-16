@@ -277,8 +277,17 @@ running on an Arduino M0 Pro.</p>
 <li><a class="reference internal" href="#equipment" id="id3">Equipment</a></li>
 <li><a class="reference internal" href="#build-your-application" id="id4">Build Your Application</a></li>
 <li><a class="reference internal" href="#default-main-task" id="id5">Default Main Task</a></li>
-<li><a class="reference internal" href="#create-a-new-task" id="id6">Create a New Task</a></li>
-<li><a class="reference internal" href="#task-priority-preempting-and-context-switching" id="id7">Task Priority, Preempting, and Context Switching</a></li>
+<li><a class="reference internal" href="#create-a-new-task" id="id6">Create a New Task</a><ul>
+<li><a class="reference internal" href="#task-stack" id="id7">Task Stack</a></li>
+<li><a class="reference internal" href="#task-function" id="id8">Task Function</a></li>
+<li><a class="reference internal" href="#task-priority" id="id9">Task Priority</a></li>
+<li><a class="reference internal" href="#initialization" id="id10">Initialization</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#task-priority-preempting-and-context-switching" id="id11">Task Priority, Preempting, and Context Switching</a><ul>
+<li><a class="reference internal" href="#priority-management-considerations" id="id12">Priority Management Considerations</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="prerequisites">
@@ -339,7 +348,7 @@ etc.). A task is made up of two main elements, a task function (also
 known as a task handler) and a task stack.</p>
 <p>Next, let’s take a look at what is required to initialize our new task.</p>
 <div class="section" id="task-stack">
-<h3>Task Stack<a class="headerlink" href="#task-stack" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id7">Task Stack</a><a class="headerlink" href="#task-stack" title="Permalink to this headline">¶</a></h3>
 <p>The task stack is an array of type <code class="docutils literal notranslate"><span class="pre">os_stack_t</span></code> which holds the
 program stack frames. Mynewt gives us the ability to set the stack size
 for a task giving the application developer room to optimize memory
@@ -354,7 +363,7 @@ making our entire stack 1024 Bytes.</p>
 the hardware architecture.</p>
 </div>
 <div class="section" id="task-function">
-<h3>Task Function<a class="headerlink" href="#task-function" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id8">Task Function</a><a class="headerlink" href="#task-function" title="Permalink to this headline">¶</a></h3>
 <p>A task function is essentially an infinite loop that waits for some
 “event” to wake it up. In general, the task function is where the
 majority of work is done by a task. Let’s write a task function for
@@ -382,7 +391,7 @@ handler is the same as our task handler is for illustration purposes
 only and does not need to be in most task functions.</p>
 </div>
 <div class="section" id="task-priority">
-<h3>Task Priority<a class="headerlink" href="#task-priority" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id9">Task Priority</a><a class="headerlink" href="#task-priority" title="Permalink to this headline">¶</a></h3>
 <p>As a preemptive, multitasking RTOS, Mynewt decides which tasks to run
 based on which has a higher priority; the highest priority being 0 and
 the lowest 255. Thus, before initializing our task, we must choose a
@@ -394,7 +403,7 @@ that work is more important than blinking.</p>
 </div>
 </div>
 <div class="section" id="initialization">
-<h3>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id10">Initialization</a><a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h3>
 <p>To initialize a new task we use <code class="docutils literal notranslate"><span class="pre">os_task_init()</span></code>
 which takes a number of arguments including our new task function,
 stack, and priority.</p>
@@ -418,23 +427,22 @@ our main function clean.</p>
 </div>
 <p>Add the call to <code class="docutils literal notranslate"><span class="pre">init_tasks()</span></code> in <code class="docutils literal notranslate"><span class="pre">main()</span></code> before the <code class="docutils literal notranslate"><span class="pre">while</span></code>
 loop:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span>  int
-  main(int argc, char **argv)
-  {
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
 
-          ...
+        <span class="p">...</span>
 
-      /* Initialize the work task */
-      init_tasks();
+    <span class="cm">/* Initialize the work task */</span>
+    <span class="n">init_tasks</span><span class="p">();</span>
 
-      while (1) {
-           ...
-      }
-  }
-
-And that’s it! Now run your application using the newt run command.
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+         <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
+<p>And that’s it! Now run your application using the newt run command.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt run arduino_blinky <span class="m">0</span>.0.0
 </pre></div>
 </div>
@@ -475,7 +483,7 @@ mytask:</p>
 </div>
 </div>
 <div class="section" id="task-priority-preempting-and-context-switching">
-<h2><a class="toc-backref" href="#id7">Task Priority, Preempting, and Context Switching</a><a class="headerlink" href="#task-priority-preempting-and-context-switching" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11">Task Priority, Preempting, and Context Switching</a><a class="headerlink" href="#task-priority-preempting-and-context-switching" title="Permalink to this headline">¶</a></h2>
 <p>A preemptive RTOS is one in which a higher priority task that is <em>ready
 to run</em> will preempt (i.e.&nbsp;take the place of) the lower priority task
 which is <em>running</em>. When a lower priority task is preempted by a higher
@@ -488,37 +496,35 @@ a <em>sleep</em> state, it holds the processor focus on its context.</p>
 busy. The delay is measured in os ticks and the actual number of ticks
 per second is dependent on the board. We multiply <code class="docutils literal notranslate"><span class="pre">OS_TICKS_PER_SEC</span></code>,
 which is defined in the MCU, by the number of seconds we wish to delay.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span>  <span class="kt">void</span>
-  <span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-  <span class="p">{</span>
-      <span class="k">struct</span> <span class="n">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
 
-      <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
-      <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
-      <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-          <span class="n">t</span> <span class="o">=</span> <span class="nl">os_sched_get_current_t</span><span class="p">:</span><span class="n">ask</span><span class="p">();</span>
-          <span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span> <span class="o">==</span> <span class="n">work_task_handler</span><span class="p">);</span>
-          <span class="cm">/* Do work... */</span>
-          <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-          <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-              <span class="cm">/* Simulate doing a noticeable amount of work */</span>
-              <span class="n">hal_gpio_write</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-          <span class="p">}</span>
-          <span class="n">os_time_delay</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">OS_TICKS_PER_SEC</span><span class="p">);</span>
-      <span class="p">}</span>
-  <span class="p">}</span>
-
-<span class="n">In</span> <span class="n">order</span> <span class="n">to</span> <span class="n">notice</span> <span class="n">the</span> <span class="n">LED</span> <span class="n">changing</span><span class="p">,</span> <span class="n">modify</span> <span class="n">the</span> <span class="n">time</span> <span class="n">delay</span> <span class="n">in</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nl">os_sched_get_current_t</span><span class="p">:</span><span class="n">ask</span><span class="p">();</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span> <span class="o">==</span> <span class="n">work_task_handler</span><span class="p">);</span>
+        <span class="cm">/* Do work... */</span>
+        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* Simulate doing a noticeable amount of work */</span>
+            <span class="n">hal_gpio_write</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">os_time_delay</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">OS_TICKS_PER_SEC</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">main()</span></code> to blink at a higher frequency.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span>  os_time_delay(OS_TICKS_PER_SEC/10);
-
-Before we run the app, let’s predict the behavior. With the newest
+<p>In order to notice the LED changing, modify the time delay in
+<code class="docutils literal notranslate"><span class="pre">main()</span></code> to blink at a higher frequency.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">os_time_delay</span><span class="p">(</span><span class="n">OS_TICKS_PER_SEC</span><span class="o">/</span><span class="mi">10</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>additions to <code class="docutils literal notranslate"><span class="pre">work_task_handler()</span></code>, our first action will be to sleep
+<p>Before we run the app, let’s predict the behavior. With the newest
+additions to <code class="docutils literal notranslate"><span class="pre">work_task_handler()</span></code>, our first action will be to sleep
 for three seconds. This allows the <code class="docutils literal notranslate"><span class="pre">main</span></code> task, running <code class="docutils literal notranslate"><span class="pre">main()</span></code>, to
 take over the CPU and blink to its heart’s content. After three seconds,
 <code class="docutils literal notranslate"><span class="pre">work_task</span></code> will wake up and be made <em>ready to run</em>. This causes it to
@@ -527,7 +533,7 @@ period while <code class="docutils literal notranslate"><span class="pre">work_t
 seconds while <code class="docutils literal notranslate"><span class="pre">work_task</span></code> sleeps.</p>
 <p>You should see that our prediction was correct!</p>
 <div class="section" id="priority-management-considerations">
-<h3>Priority Management Considerations<a class="headerlink" href="#priority-management-considerations" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id12">Priority Management Considerations</a><a class="headerlink" href="#priority-management-considerations" title="Permalink to this headline">¶</a></h3>
 <p>When projects grow in scope, from blinking LEDs into more sophisticated
 applications, the number of tasks needed increases alongside complexity.
 It remains important, then, that each of our tasks is capable of doing

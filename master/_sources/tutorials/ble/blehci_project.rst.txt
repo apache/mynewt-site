@@ -29,9 +29,9 @@ one of the tutorials.
    http://www.ftdichip.com/Products/Cables/USBTTLSerial.htm to establish
    a serial USB connection between the board and the laptop.
 -  Install the newt tool and toolchains (See :doc:`Basic
-   Setup <../../get_started/get_started.html>`).
+   Setup <../../get_started/index>`).
 -  Install a BLE host such as BlueZ on a Linux machine to talk to the
-   nrf52 board running Mynewt. Use ``sudo apt-get install bluez`` to
+   nRF52 board running Mynewt. Use ``sudo apt-get install bluez`` to
    install it on your Linux machine.
 
 Create a project
@@ -57,9 +57,9 @@ Create targets
 You will create two targets - one for the bootloader, the other for the
 application. Then you will add the definitions for them. Note that you
 are using the example app ``blehci`` for the application target. Set the
-bsp to nrf52dk.
+bsp to nRF52DK.
 
-**NOTE:** The preview version, nrf52pdk, is no longer supported. If you
+**NOTE:** The preview version, nRF52PDK, is no longer supported. If you
 do not see PCA100040 on the top of your board, you have a preview
 version of the board and will need to upgrade your developer board
 before continuing.

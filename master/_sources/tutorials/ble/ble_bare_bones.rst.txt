@@ -153,7 +153,7 @@ host, and in-RAM transport to ``apps/ble_app/pkg.yml``:
         - "@apache-mynewt-core/net/nimble/transport/ram"``
 
 **Important note:** The controller package affects system configuration,
-see `this page <../../../network/ble/ble_setup/ble_lp_clock/>`__ for
+see :doc:`this page <../../../ble_setup/ble_lp_clock/>` for
 details.
 
 Build the target

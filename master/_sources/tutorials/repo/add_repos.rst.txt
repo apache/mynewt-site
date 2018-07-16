@@ -18,8 +18,8 @@ Mynewt packages organized in a specific way for redistribution.
 What differentiates a repository from a Mynewt project is the presence
 of a ``repository.yml`` file describing the repository. This will be
 described below. For a basic understanding of repositories you may read
-the `Newt Tool Guide <../../../../newt/index.html>`__ and `How to
-create repos <create_repo.html>`__.
+the :doc:`Newt Tool Guide <../../../../newt/index>` and :doc:`How to
+create repos <create_repo>`.
 
 **Note:** For the remainder of this document we'll use the term repo as
 shorthand for a Mynewt repository.
@@ -43,7 +43,7 @@ be created for several reasons.
 -  **Software licensing**. Some software have licenses that make them
    incompatible with the ASF (Apache Software Foundation) license
    policies. These may be valuable components to some Mynewt users, but
-   cannot be contained in the ``apache-Mynewt-core``.
+   cannot be contained in the ``apache-mynewt-core``.
 
 What Repos are in my Project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -144,24 +144,24 @@ below:
     project.name: "my_project"
 
     project.repositories:
-        - apache-Mynewt-core
-        - Mynewt_arduino_zero
+        - apache-mynewt-core
+        - mynewt_arduino_zero
         
     # Use github's distribution mechanism for core ASF libraries.
     # This provides mirroring automatically for us.
     #
-    repository.apache-Mynewt-core:
+    repository.apache-mynewt-core:
         type: github
         vers: 1-latest
         user: apache
         repo: mynewt-core
         
     # a special repo to hold hardware specific stuff for arduino zero
-    repository.Mynewt_arduino_zero:
+    repository.mynewt_arduino_zero:
         type: github
         vers: 1-latest
         user: runtimeco
-        repo: Mynewt_arduino_zero
+        repo: mynewt_arduino_zero
 
 What Version of the Repo to use
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,7 +177,7 @@ please use ``1-latest`` in the ``vers`` field in your repo descriptor.
 
         vers:1-latest
 
-See `Create a Repo <create_repo>`__ for a description of the versioning
+See :doc:`Create a Repo <create_repo>` for a description of the versioning
 system and all the possible ways to specify a version to use.
 
 Identifying a Repo
@@ -197,7 +197,7 @@ depending on the version specified in your ``project.yml`` file. Special
 care should be taken to ensure that this file exists only in the master
 branch.
 
-Here is the ``repository.yml`` file from the apache-Mynewt-core:
+Here is the ``repository.yml`` file from the apache-mynewt-core:
 
 .. code-block:: console
 
@@ -319,12 +319,12 @@ repositories. However, since the ``newt`` tool supports only github,
 searching github by keyword is a satisfactory option until a search tool
 is created.
 
-When searching github, recall that a Mynewt repository must have a
+When searching Github, recall that a Mynewt repository must have a
 ``repository.yml`` file in its root directory. If you don't see that
 file, it's not a Mynewt repository and can't be included in your project
 via the newt tool.
 
-Once you find a repository, the github URL and ``repository.yml`` file
+Once you find a repository, the Github URL and ``repository.yml`` file
 should give you all the information to add it to your ``project.yml``
 file.
 

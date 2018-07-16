@@ -84,4 +84,4 @@ Beacon <../ble/eddystone>`!
 
 If you see anything missing or want to send us feedback, please sign up
 for appropriate mailing lists on our `Community
-Page </community.html>`__.
+Page </community>`__.
