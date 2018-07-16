@@ -11,7 +11,7 @@ running on an Arduino M0 Pro.
 
 .. contents::
    :local:
-   :depth: 1
+   :depth: 2
 
 Prerequisites
 -------------
@@ -190,7 +190,7 @@ loop:
        }
    }
 
- And that’s it! Now run your application using the newt run command.
+And that’s it! Now run your application using the newt run command.
 
 .. code-block:: console
 
@@ -279,14 +279,14 @@ which is defined in the MCU, by the number of seconds we wish to delay.
        }
    }
 
- In order to notice the LED changing, modify the time delay in
+In order to notice the LED changing, modify the time delay in
 ``main()`` to blink at a higher frequency.
 
 .. code-block:: c
 
    os_time_delay(OS_TICKS_PER_SEC/10);
 
- Before we run the app, let’s predict the behavior. With the newest
+Before we run the app, let’s predict the behavior. With the newest
 additions to ``work_task_handler()``, our first action will be to sleep
 for three seconds. This allows the ``main`` task, running ``main()``, to
 take over the CPU and blink to its heart’s content. After three seconds,

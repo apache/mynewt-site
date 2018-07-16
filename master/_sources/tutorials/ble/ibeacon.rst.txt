@@ -22,7 +22,7 @@ Create an Empty BLE Application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This tutorial picks up where the :doc:`BLE bare bones application
-tutorial <ble_bare_bones.html>` document concludes.
+tutorial <../ble_bare_bones>` document concludes.
 The first step in creating a beaconing device is to create an empty BLE
 app, as explained in that tutorial. Before proceeding, you should have:
 
@@ -141,21 +141,21 @@ identifying information, and they are expected to change frequently.
 
 Our new function, ``ble_app_set_addr()``, makes two calls into the stack:
 
--  ```ble_hs_id_gen_rnd``: Generate an nRPA.
--  ```ble_hs_id_set_rnd``: Configure NimBLE to use the newly-generated address.
+-  ``ble_hs_id_gen_rnd``: Generate an nRPA.
+-  ``ble_hs_id_set_rnd``: Configure NimBLE to use the newly-generated address.
 
 You can click either of the function names for more detailed
 documentation.
 
 3. Advertise indefinitely
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 The first step in advertising is to configure the host with advertising
 data. This operation tells the host what data to use for the contents of
 its advertisements. The NimBLE host provides a special helper function
 for configuring iBeacon advertisement data:
-```ble_ibeacon_set_adv_data`` 
+``ble_ibeacon_set_adv_data`` 
 
 If you follow the API link, you'll see that this function takes three
 parameters: a 128-bit UUID, a major version, and a minor version. This
@@ -188,7 +188,7 @@ For now, we'll advertise the following:
 
 Now that the host knows what to advertise, the next step is to actually
 begin advertising. The function to initiate advertising is:
-```ble_gap_adv_start``.
+``ble_gap_adv_start``.
 This function takes several parameters. For simplicity, we reproduce the
 function prototype here:
 
