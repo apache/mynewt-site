@@ -1,5 +1,5 @@
-FAQ - Administrative
-====================
+Mynewt FAQ - Administrative
+===========================
 
 Here is a list of frequently asked questions about the project and administrative processes.
 
