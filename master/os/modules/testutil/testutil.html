@@ -320,35 +320,63 @@ or by including a call to your test suite from
 </div>
 <div class="section" id="example">
 <h2><a class="toc-backref" href="#id2">Example</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="/tutorials/other/unit_test.html">This Tutorial</a> shows how to create a
+<p><a class="reference internal" href="../../../tutorials/other/unit_test.html"><span class="doc">This Tutorial</span></a> shows how to create a
 test suite for a Mynewt package.</p>
 </div>
 <div class="section" id="data-structures">
 <h2><a class="toc-backref" href="#id3">Data structures</a><a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">struct tu_config {</span>
-<span class="go">    int tc_print_results;</span>
-<span class="go">    int tc_system_assert;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">struct ts_config {</span>
+<span class="go">    int ts_print_results;</span>
+<span class="go">    int ts_system_assert;</span>
 
-<span class="go">    tu_case_init_fn_t *tc_case_init_cb;</span>
-<span class="go">    void *tc_case_init_arg;</span>
+<span class="go">    const char *ts_suite_name;</span>
 
-<span class="go">    tu_case_report_fn_t *tc_case_fail_cb;</span>
-<span class="go">    void *tc_case_fail_arg;</span>
+<span class="go">    /*</span>
+<span class="go">     * Called prior to the first test in the suite</span>
+<span class="go">     */</span>
+<span class="go">    tu_init_test_fn_t *ts_suite_init_cb;</span>
+<span class="go">    void *ts_suite_init_arg;</span>
 
-<span class="go">    tu_case_report_fn_t *tc_case_pass_cb;</span>
-<span class="go">    void *tc_case_pass_arg;</span>
+<span class="go">    /*</span>
+<span class="go">     * Called after the last test in the suite</span>
+<span class="go">     */</span>
+<span class="go">    tu_init_test_fn_t *ts_suite_complete_cb;</span>
+<span class="go">    void *ts_suite_complete_arg;</span>
 
-<span class="go">    tu_suite_init_fn_t *tc_suite_init_cb;</span>
-<span class="go">    void *tc_suite_init_arg;</span>
+<span class="go">    /*</span>
+<span class="go">     * Called before every test in the suite</span>
+<span class="go">     */</span>
+<span class="go">    tu_pre_test_fn_t *ts_case_pre_test_cb;</span>
+<span class="go">    void *ts_case_pre_arg;</span>
 
-<span class="go">    tu_restart_fn_t *tc_restart_cb;</span>
-<span class="go">    void *tc_restart_arg;</span>
+<span class="go">    /*</span>
+<span class="go">     * Called after every test in the suite</span>
+<span class="go">     */</span>
+<span class="go">    tu_post_test_fn_t *ts_case_post_test_cb;</span>
+<span class="go">    void *ts_case_post_arg;</span>
+
+<span class="go">    /*</span>
+<span class="go">     * Called after test returns success</span>
+<span class="go">     */</span>
+<span class="go">    tu_case_report_fn_t *ts_case_pass_cb;</span>
+<span class="go">    void *ts_case_pass_arg;</span>
+
+<span class="go">    /*</span>
+<span class="go">     * Called after test fails (typically thoough a failed test assert)</span>
+<span class="go">     */</span>
+<span class="go">    tu_case_report_fn_t *ts_case_fail_cb;</span>
+<span class="go">    void *ts_case_fail_arg;</span>
+
+<span class="go">    /*</span>
+<span class="go">     * restart after running the test suite - self-test only</span>
+<span class="go">     */</span>
+<span class="go">    tu_suite_restart_fn_t *ts_restart_cb;</span>
+<span class="go">    void *ts_restart_arg;</span>
 <span class="go">};</span>
-<span class="go">extern struct tu_config tu_config;</span>
 </pre></div>
 </div>
-<p>The global <code class="docutils literal notranslate"><span class="pre">tu_config</span></code> struct contains all the testutil package’s
-settings. This should be populated before <code class="docutils literal notranslate"><span class="pre">tu_init()</span></code> is called.</p>
+<p>The global <code class="docutils literal notranslate"><span class="pre">ts_config</span></code> struct contains all the testutil package’s
+settings.</p>
 </div>
 <div class="section" id="api">
 <h2><a class="toc-backref" href="#id4">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
