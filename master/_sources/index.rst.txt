@@ -15,7 +15,7 @@ Introduction
    network/docs/index
    newt/index
    newtmgr/index
-   mynewt_faq
+   mynewt_faq/index
    misc/index
 
 Welcome to Apache Mynewt

@@ -198,8 +198,8 @@ boot if you wanted to use this same sequence every time you trigger the DRV2605 
 
 .. code-block:: console
 
-    120858 compat> drv2605 load 1 255 1 255 1 255 1 255
-    drv2605 load 1 255 1 255 1 255 1 255
+    120858 compat> drv2605 load_rom 1 255 1 255 1 255 1 255
+    drv2605 load_rom 1 255 1 255 1 255 1 255
     122555 Load succeeded
 
 The motor is in standby by default after a mode change, so enable it:
