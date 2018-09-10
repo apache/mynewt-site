@@ -104,4 +104,4 @@ category are listed below.
 
 **Send us an email on the dev@ mailing list if you have comments or
 suggestions!** If you haven't joined the mailing list, you will find the
-links :doc:`here <community>`
+links `here <https://mynewt.apache.org/community/>`_.

@@ -5,6 +5,20 @@ Mynewt FAQ - Syntax and Semantics
   :local:
   :depth: 1
 
+Floating Point in Mynewt
+------------------------
+
+**Q**: I am trying to print floating point in Mynewt using ``console_printf("%f", floating_var)`` but I am unable to do so. 
+How do I resolve the issue? I'm aware Mynewt uses baselibc - does it even support floating point?
+
+**A**: Baselibc does support floating point formatting, but it is not enabled
+by default.  To enable it, set the following syscfg setting to 1 in your
+target: ``FLOAT_USER``
+
+However, baselibc's float printf support is a bit limited.  In particular, it
+ignores precision specifiers and always prints three digits after the
+decimal point.
+
 Ending the Delay of a Task Blocking a Call Early
 ------------------------------------------------
 
@@ -37,7 +51,7 @@ number, or if you don’t have serial number available.
 Leading Zeros Format in ``printf``
 ----------------------------------
 
-**Q**: Is there a way to make printf and console_printf honor the leading zeroes format? As in: 
+**Q**: Is there a way to make printf and console_printf honor the leading zeros format? As in: 
 
 ``console_printf("%.2d", 5);`` 
 
