@@ -40,4 +40,4 @@ Upon successful start, several tutorials await your eager attention!
 
 **Send us an email on the dev@ mailing list if you have comments or
 suggestions!** If you haven't joined the mailing list, you will find the
-links `here </community.html>`__.
+links `here <https://mynewt.apache.org/community/>`_.
