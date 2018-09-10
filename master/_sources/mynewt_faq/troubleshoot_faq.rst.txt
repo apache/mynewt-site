@@ -78,3 +78,19 @@ Enable Trace in Mynewt
     ​
     pkg.cflags:
       - -DENABLE_TRACE
+
+Bug With Older Versions of ``gcc``
+----------------------------------
+
+**Q**: I got the following error using ``newt build``. How do I fix it?
+
+.. code-block:: console:
+
+  Error: repos/apache-mynewt-core/sys/log/modlog/src/modlog.c: In function 'modlog_alloc':
+  repos/apache-mynewt-core/sys/log/modlog/src/modlog.c:61:23: error: missing braces around initializer [-Werror=missing-braces]
+            *mm = (struct modlog_mapping) { 0 };
+                             ^
+  repos/apache-mynewt-core/sys/log/modlog/src/modlog.c:61:23: error: (near initialization for '(anonymous).next') [-Werror=missing-braces]
+  cc1: all warnings being treated as errors
+
+**A**: That is a bug in older versions of ``gcc`` (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53119).  The recommended ``gcc`` version is 7.x.
