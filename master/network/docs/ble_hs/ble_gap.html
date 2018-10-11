@@ -345,6 +345,8 @@ ga("send", "pageview");
 <span class="target" id="group__bt__host__gap_1ga6527f37b9e1e87219110d90aea2bd2d3"></span>int <code class="descname">ble_gap_adv_stop</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gap_adv_stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops the currently-active advertising procedure. </p>
 <p>A success return code indicates that advertising has been fully aborted and a new advertising procedure can be initiated immediately.</p>
+<p>NOTE: If the caller is running in the same task as the NimBLE host, or if it is running in a higher priority task than that of the host, care must be taken when restarting advertising. Under these conditions, the following is <em>not</em> a reliable method to restart advertising: <a class="reference internal" href="#group__bt__host__gap_1ga6527f37b9e1e87219110d90aea2bd2d3"><span class="std std-ref">ble_gap_adv_stop()</span></a> <a class="reference internal" href="#group__bt__host__gap_1gae8e3b25bf7737b53539f5eb0212a7fb6"><span class="std std-ref">ble_gap_adv_start()</span></a></p>
+<p>Instead, the call to <code class="docutils literal notranslate"><a class="reference internal" href="#group__bt__host__gap_1gae8e3b25bf7737b53539f5eb0212a7fb6"><span class="std std-ref"><span class="pre">ble_gap_adv_start()</span></span></a></code> must be made in a separate event context. That is, <code class="docutils literal notranslate"><a class="reference internal" href="#group__bt__host__gap_1gae8e3b25bf7737b53539f5eb0212a7fb6"><span class="std std-ref"><span class="pre">ble_gap_adv_start()</span></span></a></code> must be called asynchronously by enqueueing an event on the current task’s event queue. See <a class="reference external" href="https://github.com/apache/mynewt-nimble/pull/211">https://github.com/apache/mynewt-nimble/pull/211</a> for more information.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>0 on success, BLE_HS_EALREADY if there is no active advertising procedure, other error code on failure. </dd>
@@ -719,6 +721,35 @@ ga("send", "pageview");
 <li><code class="docutils literal notranslate"><span class="pre">out_rssi</span></code>: On success, the retrieved RSSI is written here.</li>
 </ul>
 </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ble_gap_unpair">
+<span class="target" id="group__bt__host__gap_1gad8e872075697adadc894983bb2a7f75e"></span>int <code class="descname">ble_gap_unpair</code><span class="sig-paren">(</span>const  ble_addr_t  *<em>&nbsp;peer_addr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gap_unpair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpairs a device with the specified address. </p>
+<p>The keys related to that peer device are removed from storage and peer address is removed from the resolve list from the controller. If a peer is connected, the connection is terminated.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; A BLE host HCI return code if the controller rejected the request; A BLE host core return code on unexpected error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">peer_addr</span></code>: Address of the device to be unpaired</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ble_gap_unpair_oldest_peer">
+<span class="target" id="group__bt__host__gap_1ga100cff9499ee3808528872532d4ca3c8"></span>int <code class="descname">ble_gap_unpair_oldest_peer</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gap_unpair_oldest_peer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unpairs the oldest bonded peer device. </p>
+<p>The keys related to that peer device are removed from storage and peer address is removed from the resolve list from the controller. If a peer is connected, the connection is terminated.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; A BLE host HCI return code if the controller rejected the request; A BLE host core return code on unexpected error. </dd>
 </dl>
 </p>
 </dd></dl>

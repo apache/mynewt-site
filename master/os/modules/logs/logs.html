@@ -237,6 +237,10 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../bootloader/bootloader.html">Secure Bootloader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
@@ -503,6 +507,16 @@ struct log my_package_log;
 <span class="target" id="full_2include_2log_2log_8h_1a511c7df90f30e5e8e104ed336d61084d"></span><code class="descname">LOG_CRITICAL</code><span class="sig-paren">(</span>__l, __mod, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_CRITICAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="define">
+<dt id="c.LOG_STATS_INC">
+<span class="target" id="full_2include_2log_2log_8h_1a02b2a70cb67cea8b858207c062a32e4b"></span><code class="descname">LOG_STATS_INC</code><span class="sig-paren">(</span><a class="reference internal" href="#c.log" title="log">log</a>, name<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_STATS_INC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_STATS_INCN">
+<span class="target" id="full_2include_2log_2log_8h_1a64ee73ba4b34cbd0f5c7d09fc7ed090c"></span><code class="descname">LOG_STATS_INCN</code><span class="sig-paren">(</span><a class="reference internal" href="#c.log" title="log">log</a>, name, cnt<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_STATS_INCN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
@@ -598,6 +612,38 @@ struct log my_package_log;
 <dt id="c.log_register">
 <span class="target" id="full_2include_2log_2log_8h_1aed7fcd6a580a9f1fd21bf4d5f0ff1b93"></span>int <code class="descname">log_register</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em>, struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, const struct  <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a> <em>&nbsp;*</em>, void *<em>&nbsp;arg</em>, uint8_t<em>&nbsp;level</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_register" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_set_append_cb">
+<span class="target" id="full_2include_2log_2log_8h_1a84222e15ae26580c93835da822192f69"></span>void <code class="descname">log_set_append_cb</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, log_append_cb  *<em>&nbsp;cb</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_set_append_cb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the given log with the specified append callback. </p>
+<p>A log’s append callback is executed each time an entry is appended to the log.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to configure. </li>
+<li><code class="docutils literal notranslate"><span class="pre">cb</span></code>: The callback to associate with the log. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_find">
+<span class="target" id="full_2include_2log_2log_8h_1af24693daf5b1ff0f13ea3a2f52ccad13"></span>struct <a class="reference internal" href="#c.log" title="log">log</a>* <code class="descname">log_find</code><span class="sig-paren">(</span>const char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches the list of registered logs for one with the specified name. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The sought after log if found, NULL otherwise. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name of the log to search for.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="c.log_append_typed">
@@ -1156,6 +1202,11 @@ om_len: `LOG_ENTRY_HDR_SIZE` + 3
 <span class="target" id="structlog_1a6d07240ed4fa7ac4a0076a255dc61ff5"></span><code class="descname">STAILQ_ENTRY</code><span class="sig-paren">(</span><a class="reference internal" href="#c.log" title="log">log</a><span class="sig-paren">)</span><a class="headerlink" href="#c.log::STAILQ_ENTRY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="c.log::STATS_SECT_DECL">
+<span class="target" id="structlog_1ae9c86a7ac0fc774b4fa55ac88860dcc3"></span><code class="descname">STATS_SECT_DECL</code><span class="sig-paren">(</span>logs<span class="sig-paren">)</span><a class="headerlink" href="#c.log::STATS_SECT_DECL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
@@ -1172,6 +1223,11 @@ om_len: `LOG_ENTRY_HDR_SIZE` + 3
 <dl class="variable">
 <dt id="c.log::l_arg">
 <span class="target" id="structlog_1a789d9412642d0df93d82cb935ff0e9b1"></span>void* <code class="descname">l_arg</code><a class="headerlink" href="#c.log::l_arg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log::l_append_cb">
+<span class="target" id="structlog_1ad0397d159f6f86544c204bb1c94c3285"></span>log_append_cb* <code class="descname">l_append_cb</code><a class="headerlink" href="#c.log::l_append_cb" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="variable">

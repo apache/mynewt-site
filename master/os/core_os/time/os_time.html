@@ -244,6 +244,10 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../../modules/bootloader/bootloader.html">Secure Bootloader</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/split/split.html">Split Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/imgmgr/imgmgr.html">Image Manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/fs/fs.html">File System</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/fcb/fcb.html">Flash Circular Buffer</a></li>
@@ -419,6 +423,21 @@ will not occur between times that are more than half the OS time epoch.</p>
 <span class="target" id="group___o_s_time_1ga7557d3ce9091f57daa64e5d3187067f4"></span><em class="property">typedef </em>int32_t <code class="descname">os_stime_t</code><a class="headerlink" href="#c.os_stime_t" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="typedef">
+<dt id="c.os_time_change_fn">
+<span class="target" id="group___o_s_time_1ga5ccefddbe407d5f12cb5cf70bfafdb80"></span><em class="property">typedef </em>void <code class="descname">os_time_change_fn</code><span class="sig-paren">(</span>const struct os_time_change_info<em>&nbsp;*info</em>, void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_change_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Callback that is executed when the time-of-day is set. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">info</span></code>: Describes the time change that just occurred. </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: Optional argument correponding to listener. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="c.os_time_get">
 <span class="target" id="group___o_s_time_1gac20647237280640f96f61558fb7f0762"></span><a class="reference internal" href="#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">os_time_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_get" title="Permalink to this definition">¶</a></dt>
@@ -463,7 +482,7 @@ will not occur between times that are more than half the OS time epoch.</p>
 <dt id="c.os_settimeofday">
 <span class="target" id="group___o_s_time_1ga51fe1688dd54af6c0f8f564f4cad2f0e"></span>int <code class="descname">os_settimeofday</code><span class="sig-paren">(</span>struct  os_timeval  *<em>&nbsp;utctime</em>, struct  os_timezone  *<em>&nbsp;tz</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_settimeofday" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the time of day. </p>
-<p>This does not modify os time, but rather just modifies the offset by which we are tracking real time against os time.</p>
+<p>This does not modify os time, but rather just modifies the offset by which we are tracking real time against os time. This function notifies all registered time change listeners.</p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>0 on success, non-zero on failure. </dd>
@@ -491,6 +510,17 @@ will not occur between times that are more than half the OS time epoch.</p>
 <li><code class="docutils literal notranslate"><span class="pre">tz</span></code>: The structure to put the timezone information into</li>
 </ul>
 </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_time_is_set">
+<span class="target" id="group___o_s_time_1ga02a05d0920922c01d12d1055f34a38c1"></span>bool <code class="descname">os_time_is_set</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_is_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicates whether the time has been set. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>true if time is set; false otherwise. </dd>
 </dl>
 </p>
 </dd></dl>
@@ -556,7 +586,7 @@ will not occur between times that are more than half the OS time epoch.</p>
 
 <dl class="function">
 <dt id="c.os_time_ms_to_ticks32">
-<span class="target" id="group___o_s_time_1ga84be032c5194efa398d9674887939a04"></span><a class="reference internal" href="#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">os_time_ms_to_ticks32</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ms</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_ms_to_ticks32" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_time_1ga264490bcfbf59ae518785751947e4f92"></span>static <a class="reference internal" href="#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">os_time_ms_to_ticks32</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ms</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_ms_to_ticks32" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts milliseconds to OS ticks. </p>
 <p>This function does not check if conversion overflows and should be only used in cases where input is known to be small enough not to overflow.</p>
 <p><dl class="docutils">
@@ -573,7 +603,7 @@ will not occur between times that are more than half the OS time epoch.</p>
 
 <dl class="function">
 <dt id="c.os_time_ticks_to_ms32">
-<span class="target" id="group___o_s_time_1ga348bcc02fb7d580da0601a810497a9b1"></span>uint32_t <code class="descname">os_time_ticks_to_ms32</code><span class="sig-paren">(</span><a class="reference internal" href="#c.os_time_t" title="os_time_t">os_time_t</a><em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_ticks_to_ms32" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_time_1gade77fa3814040e130429fde9d5676881"></span>static uint32_t <code class="descname">os_time_ticks_to_ms32</code><span class="sig-paren">(</span><a class="reference internal" href="#c.os_time_t" title="os_time_t">os_time_t</a><em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_ticks_to_ms32" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts OS ticks to milliseconds. </p>
 <p>This function does not check if conversion overflows and should be only used in cases where input is known to be small enough not to overflow.</p>
 <p><dl class="docutils">
@@ -582,6 +612,37 @@ will not occur between times that are more than half the OS time epoch.</p>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The OS ticks input.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_time_change_listen">
+<span class="target" id="group___o_s_time_1ga3f737da0de37ad69ed51a83c7c07a2d4"></span>void <code class="descname">os_time_change_listen</code><span class="sig-paren">(</span>struct  os_time_change_listener  *<em>&nbsp;listener</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_change_listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a time change listener. </p>
+<p>Whenever the time is set, all registered listeners are notified. The provided pointer is added to an internal list, so the listener’s lifetime must extend indefinitely (or until the listener is removed).</p>
+<p>NOTE: This function is not thread safe. The following operations must be kept exclusive: o Addition of listener o Removal of listener o Setting time</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">listener</span></code>: The listener to register. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_time_change_remove">
+<span class="target" id="group___o_s_time_1gab9d3d745af7f5ab158ee36368ccd3653"></span>int <code class="descname">os_time_change_remove</code><span class="sig-paren">(</span>const struct  os_time_change_listener  *<em>&nbsp;listener</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_time_change_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unregisters a time change listener. </p>
+<p>NOTE: This function is not thread safe. The following operations must be kept exclusive: o Addition of listener o Removal of listener o Setting time</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">listener</span></code>: The listener to unregister. </li>
 </ul>
 </dd>
 </dl>
@@ -680,6 +741,53 @@ will not occur between times that are more than half the OS time epoch.</p>
 </dd></dl>
 
 </div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv319os_time_change_info">
+<span id="_CPPv219os_time_change_info"></span><span id="os_time_change_info"></span><span class="target" id="structos__time__change__info"></span><em class="property">struct </em><code class="descname">os_time_change_info</code><a class="headerlink" href="#_CPPv319os_time_change_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_time.h&gt;</em><p>Represents a time change. </p>
+<p>Passed to time change listeners when the current time-of-day is set. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_time_change_info::tci_prev_tv">
+<span class="target" id="structos__time__change__info_1a5bff3d6cd18667b5ffab27e9e7b2a80f"></span>const struct os_timeval* <code class="descname">tci_prev_tv</code><a class="headerlink" href="#c.os_time_change_info::tci_prev_tv" title="Permalink to this definition">¶</a></dt>
+<dd><p>UTC time prior to change. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_time_change_info::tci_prev_tz">
+<span class="target" id="structos__time__change__info_1a1d27216efb4fbf89bd3a2f6ec1972c3b"></span>const struct os_timezone* <code class="descname">tci_prev_tz</code><a class="headerlink" href="#c.os_time_change_info::tci_prev_tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time zone prior to change. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_time_change_info::tci_cur_tv">
+<span class="target" id="structos__time__change__info_1aa136b1cb4363fac55302f4ced3e08c36"></span>const struct os_timeval* <code class="descname">tci_cur_tv</code><a class="headerlink" href="#c.os_time_change_info::tci_cur_tv" title="Permalink to this definition">¶</a></dt>
+<dd><p>UTC time after change. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_time_change_info::tci_cur_tz">
+<span class="target" id="structos__time__change__info_1aac2b88b4e530689a4adf2c1159a011c1"></span>const struct os_timezone* <code class="descname">tci_cur_tz</code><a class="headerlink" href="#c.os_time_change_info::tci_cur_tz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time zone after change. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.os_time_change_info::tci_newly_synced">
+<span class="target" id="structos__time__change__info_1a426ef03935226b1b2736ab86587e852f"></span>bool <code class="descname">tci_newly_synced</code><a class="headerlink" href="#c.os_time_change_info::tci_newly_synced" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if the time was not set prior to change. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv323os_time_change_listener">
+<span id="_CPPv223os_time_change_listener"></span><span id="os_time_change_listener"></span><span class="target" id="structos__time__change__listener"></span><em class="property">struct </em><code class="descname">os_time_change_listener</code><a class="headerlink" href="#_CPPv323os_time_change_listener" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;os_time.h&gt;</em><p>Time change listener. </p>
+<p>Notified when the time-of-day is set. </p>
 </dd></dl>
 
 </div>
