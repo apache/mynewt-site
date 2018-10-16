@@ -49,6 +49,8 @@ def build(cwd, site_dir):
             sh.mkdocs('build', '--site-dir', os.path.join(site_dir, version['dir']), _cwd = os.path.join("versions", version['dir']))
         else:
             repo_dir = os.path.join(cwd, '..', 'mynewt-documentation')
+            if version['dir'] != 'master':
+                repo_dir = os.path.join(repo_dir, 'versions', version['dir'], 'mynewt-documentation')
             sh.make('clean', _cwd = repo_dir)
             sh.make('docs', _cwd = repo_dir)
             sh.mv(os.path.join(repo_dir, '_build', 'html'), os.path.join(site_dir, version['dir']))
