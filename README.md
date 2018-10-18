@@ -35,11 +35,11 @@ Install the requirements:
 
 ## Deploying the latest docs
 
-NOTE: These instructions assume that your workspace has all the mynewt repos cloned under the same parent sub directory.
+NOTE: These instructions assume that your workspace has all the mynewt repos cloned under the same parent directory.
 
 ### First follow the steps at mynewt-documentation
 
-Most of the steps for releasing docs happens at the
+Most steps for releasing docs happen at the
 [mynewt-documentation](https://github.com/apache/mynewt-documentation) repo.
 Follow the instructions there first.
 
