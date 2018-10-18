@@ -63,11 +63,23 @@ You can also download the Go package directly from
 (https://golang.org/dl/) and install it in /usr/local/bin instead of
 brewing it.
 
-Installing Go on Linux and Windows
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Installing Go and git on Linux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can download Go from
-https://golang.org/dl/.
+.. code-block:: console
+
+    sudo apt-get install golang git
+
+Installing Go on and git Windows
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In msys2 terminal type
+
+.. code-block:: console
+
+    pacman -S mingw-w64-x64_64-go git
+
+Make sure to restart msys2 terminal after installation.
 
 Step 2: Setting Up Your Go Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
