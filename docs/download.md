@@ -2,10 +2,10 @@
 
 ### Latest Apache Mynewt Core OS Release
 
-*   Release Version: Apache Mynewt 1.4.1
-*   Release Date: July 1, 2018
-*   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.1)
-*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.1)
+*   Release Version: Apache Mynewt 1.5.0
+*   Release Date: Nov 5, 2018
+*   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.5.0)
+*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.5.0)
 
 ### Latest Apache Mynewt NimBLE (Bluetooth Stack) Release
 
@@ -66,6 +66,7 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 *   Apache Mynewt 1.2.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.2.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.2.0/)
 *   Apache Mynewt 1.3.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.3.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.3.0)
 *   Apache Mynewt 1.4.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
+*   Apache Mynewt 1.4.1 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.1), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.1)
 
 #### Apache Mynewt NimBLE (Bluetooth Stack)
 
