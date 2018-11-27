@@ -8,6 +8,7 @@ Setup & Get Started
    Docker Container <docker>
    Create Your First Project <project_create>
    Serial Port Setup <serial_access>
+   Debugging Mynewt <debug>
 
 If you are curious about Mynewt and want to get a quick feel for the
 project, you've come to the right place. We have two options for you:

@@ -1,9 +1,20 @@
-Mynewt FAQ - Troubleshooting
-============================
+Mynewt FAQ - Troubleshooting/Debugging
+======================================
 
 .. contents::
   :local:
   :depth: 1
+
+Concurrent debug sessions with two boards
+-----------------------------------------
+
+**Q**: Can I run concurrent GDB connections to multiple devices? Is the GDB port hardcoded?
+
+Yes, starting with release 1.5 Mynewt allows "newt debug" to have a session with JLink as well as openocd simultaneously open. And no, the GDB port is not hardcoded. You can specify it with the -port option. For example:
+
+.. code-block:: console
+ 
+    newt debug slinky_nrf52 --extrajtagcmd "-port 5431 -select usb=682148664"
 
 Error: Unsatisfied APIs detected
 --------------------------------
