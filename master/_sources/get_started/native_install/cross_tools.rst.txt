@@ -109,29 +109,20 @@ version is available to download for Mac OS, Linux, and Windows.
 Installing OpenOCD on Mac OS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#.  Download the `binary tarball for Mac
-    OS <https://github.com/runtimeco/openocd-binaries/raw/master/openocd-bin-0.10.0-MacOS.tgz>`__.
+#.  Install OpenOCD from Homebrew:
 
-#.  Change to the root directory:
+.. code-block:: console
 
-    .. code-block:: console
+        $ brew update
+        $ brew install open-ocd
 
-        $ cd /
-
-#.  Untar the tarball and install into **/usr/local/bin**. You
-    will need to replace **~/Downloads** with the directory that the
-    tarball is downloaded to.
-
-    .. code-block:: console
-
-        $ sudo tar -xf ~/Downloads/openocd-bin-0.10.0-MacOS.tgz `
-
-#.  Check the OpenOCD version you are using.
+#.  Check the OpenOCD version you are using:
 
     .. code-block:: console
 
         $ which openocd
         /usr/local/bin/openocd
+
         $ openocd -v
         Open On-Chip Debugger 0.10.0
         Licensed under GNU GPL v2
@@ -139,15 +130,6 @@ Installing OpenOCD on Mac OS
         http://openocd.org/doc/doxygen/bugs.html
 
     You should see version: **0.10.0**.
-
-    If you see one of these errors:
-
-    -  Library not loaded: /usr/local/lib/libusb-0.1.4.dylib - Run
-       ``brew install libusb-compat``.
-    -  Library not loaded: /usr/local/opt/libftdi/lib/libftdi1.2.dylib - Run
-       ``brew install libftdi``.
-    -  Library not loaded: /usr/local/lib/libhidapi.0.dylib - Run
-       ``brew install hidapi``.
 
 Installing OpenOCD on Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
