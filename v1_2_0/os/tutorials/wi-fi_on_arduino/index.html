@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/wi-fi_on_arduino/"> -->
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+	    <title>Enable Wi-Fi on Arduino MKR1000 - Apache Mynewt</title>
+
+        <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../css/highlight.css">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link href="../../../css/custom.css" rel="stylesheet">
+        <link href="../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+            (function(i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+        i[r] ||
+        function() {
+            (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+        
+    </head>
+
+
+    <body class="Enable Wi-Fi on Arduino MKR1000">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.5.0 </a> released (Nov 5, 2018)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/documentation/">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest">
+    Version: master
+  </option>
+  <option value="/v1_4_0">
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" selected="selected" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select></li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../get_started/vocabulary/">Concepts</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../tutorials/">Tutorials</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../blinky/">Project Blinky</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../project-slinky/">Project Slinky for Remote Comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../ble_bare_bones/
+">Bluetooth Low Energy</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../lora/lorawanapp/
+">LoRa</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../event_queue/
+">OS Fundamentals</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../add_newtmgr/
+">Remote Device Management</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  
+  
+  ../sensors/sensors/
+
+">Sensors</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../segger_rtt/
+">Tooling</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../codesize/
+">Other</a>
+  
+  
+    <ul>
+          
+              
+                
+    <li >
+      <a href="../codesize/">How to Reduce Application Code Size</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../unit_test/">Write a Test Suite for a Package</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Enable Wi-Fi on Arduino MKR1000</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../newt/install/prev_releases/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="/documentation/">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
+        
+      
+        
+          <li>&raquo; <a href="../codesize/">Other</a></li>
+        
+      
+      
+        <li>&raquo; Enable Wi-Fi on Arduino MKR1000</li>
+      
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/wi-fi_on_arduino.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
+      </li>
+    
+  </ul>
+</div>
+                        </div>
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                            <div class="alert alert-warning">
+                                <p>
+                                    Version 1.2.0 is not the most recent version of the Apache Mynewt
+                                    documentation. Click <a href="/latest">here</a> to read the latest
+                                    version.
+                                </p>
+                            </div>
+                          
+                        
+                        
+                            <h2 id="enable-wi-fi-on-arduino-mkr1000">Enable Wi-Fi on Arduino MKR1000</h2>
+<p>This tutorial shows you how to enable Wi-Fi on an Arduino MKR1000  board and connect to a Wi-Fi network.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Ensure that you have met the following prerequisites before continuing with this tutorial:</p>
+<ul>
+<li>Have an Arduino MKR1000 board.</li>
+<li>Have Internet connectivity to fetch remote Mynewt components.</li>
+<li>Have a computer to build a Mynewt application and connect to the board over USB.</li>
+<li>Have a Micro-USB cable to connect the board and the computer.</li>
+<li>Have local Wi-Fi network that the computer is connected to and that the MKR1000 board can join.</li>
+<li>Have a <a href="../../get_started/serial_access/">Serial Port Setup</a>.</li>
+<li>Have a <a href="https://www.segger.com/jlink-debug-probes.html">Segger J-Link Debug Probe</a>.</li>
+<li>Have a <a href="https://www.segger.com/jlink-adapters.html#CM_9pin">J-Link 9 pin Cortex-M Adapter</a> that allows JTAG, SWD and SWO connections between J-Link and Cortex M based target hardware systems</li>
+<li>Install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK Software and documentation pack</a>.</li>
+<li>Install the Newt tool and toolchains (See <a href="../../get_started/get_started/">Basic Setup</a>).</li>
+<li>Create a project space (directory structure) and populated it with the core code repository (apache-mynewt-core) or know how to as explained in <a href="../../../os/get_started/project_create">Creating Your First Project</a>.</li>
+<li>Read the Mynewt OS <a href="../../get_started/vocabulary/">Concepts</a> section.</li>
+</ul>
+<h3 id="create-a-project">Create a Project</h3>
+<p>Create a new project if you do not have an existing one.  You can skip this step and proceed to <a href="#
+fetchexternal">fetch external packages</a> if you already created a project.</p>
+<p>Run the following commands to create a new project:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    $ mkdir ~/dev
+    $ cd ~/dev
+    $ newt new arduinowifi
+    Downloading project skeleton from apache/mynewt-blinky...
+    Installing skeleton in arduinowifi...
+    Project arduinowifi successfully created.
+    $ cd arduinowifi
+    $ newt install
+    apache-mynewt-core
+    $
+</pre></div>
+
+
+<p><br></p>
+<h3 id="fetch-external-packages"><a name="fetchexternal"></a> Fetch External Packages</h3>
+<p>Mynewt uses source code provided directly from the chip manufacturer for
+low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in
+the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's git
+hub repository hosts such external third-party packages and the Newt tool can fetch them.</p>
+<p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
+the repository to the <code>project.yml</code> file in your base project directory.</p>
+<p>Mynewt uses source code provided directly from the chip manufacturer for
+low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.</p>
+<p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
+the repository to the <code>project.yml</code> file in your base project directory (<code>arduinowifi</code>).</p>
+<p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
+added. The sections with <code>mynewt_arduino_zero</code> that need to be added to
+your project file are highlighted.</p>
+<p><strong>Note:</strong> On Windows platforms: You need to set <code>vers</code> to <code>0-dev</code> and use the latest master branch for both repositories.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more project.yml
+project.name: &quot;my_project&quot;
+
+project.repositories:
+    - apache-mynewt-core
+<span style="background-color: #ffffcc">    - mynewt_arduino_zero
+</span>
+repository.apache-mynewt-core:
+    type: github
+    vers: 1-latest
+    user: apache
+    repo: mynewt-core
+
+<span style="background-color: #ffffcc">repository.mynewt_arduino_zero:
+</span><span style="background-color: #ffffcc">    type: github
+</span><span style="background-color: #ffffcc">    vers: 1-latest
+</span><span style="background-color: #ffffcc">    user: runtimeco
+</span><span style="background-color: #ffffcc">    repo: mynewt_arduino_zero
+</span>$
+</pre></div>
+
+
+<p><br>
+<br>
+Install the project dependencies using the <code>newt install</code> command (you can specify <code>-v</code> for verbose output):</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt install
+apache-mynewt-core
+mynewt_arduino_zero
+$
+</pre></div>
+
+
+<p><strong>NOTE:</strong> If there has been a new release of a repo used in your project since you last installed it, the <code>1-latest</code> version for the repo in the <code>project.yml</code> file will refer to the new release and will not match the installed files. In that case you will get an error message saying so and you will need to run <code>newt upgrade</code> to overwrite the existing files with the latest codebase.</p>
+<p><br></p>
+<h3 id="create-a-target-for-the-bootloader">Create a Target for the Bootloader</h3>
+<p>You need to create two targets for the MKR1000 board, one for the bootloader and one for the <code>winc1500_wifi</code> application. 
+<br>
+Run the following <code>newt target</code> commands, from your project directory, to create a bootloader target.  We name the target <code>mkr1000_boot</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create mkr1000_boot
+$ newt target set mkr1000_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_mkr1000
+$ newt target set mkr1000_boot app=@apache-mynewt-core/apps/boot
+$ newt target set mkr1000_boot build_profile=optimized
+$ newt target set mkr1000_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
+</pre></div>
+
+
+<p><br></p>
+<h3 id="create-a-target-for-the-wi-fi-application">Create a Target for the Wi-Fi Application</h3>
+<p>Run the following <code>newt target</code> commands to create a target for the <code>winc1500_wifi</code> application in the arduino repository.  We name the application target <code>mkr1000_wifi</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create mkr1000_wifi
+$ newt target set mkr1000_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
+$ newt target set mkr1000_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_mkr1000
+$ newt target set mkr1000_wifi build_profile=debug
+$ newt target set mkr1000_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
+</pre></div>
+
+
+<p><br></p>
+<h3 id="build-the-bootloader">Build the Bootloader</h3>
+<p>Run the <code>newt build mkr1000_boot</code> command to build the bootloader:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build mkr1000_boot
+Building target targets/mkr1000_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+
+       ...
+
+Archiving util_mem.a
+Linking ~/dev/arduinowifi/bin/targets/mkr1000_boot/app/apps/boot/boot.elf
+Target successfully built: targets/mkr1000_boot
+$
+</pre></div>
+
+
+<p><br></p>
+<h3 id="build-the-wi-fi-application">Build the Wi-Fi Application</h3>
+<p>Run the <code>newt build mkr1000_wifi</code> command to build the wi-fi application image:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$newt build mkr1000_wifi
+Building target targets/mkr1000_wifi
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+           ...
+
+Archiving util_mem.a
+Linking ~/dev/arduinowifi/bin/targets/mkr1000_wifi/app/apps/winc1500_wifi/winc1500_wifi.elf
+Target successfully built: targets/mkr1000_wifi
+$
+</pre></div>
+
+
+<p><br></p>
+<h3 id="sign-and-create-the-wi-fi-application-image">Sign and Create the Wi-Fi Application Image</h3>
+<p>Run the <code>newt create-image mkr1000_wifi 1.0.0</code> command to sign and create an image file for the Wi-Fi application. You may assign an arbitrary version (e.g. 1.0.0) number.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$newt create-image  mkr1000_wifi 1.0.0
+Compiling bin/targets/mkr1000_wifi/generated/src/mkr1000_wifi-sysinit-app.c
+Archiving mkr1000_wifi-sysinit-app.a
+Linking ~/dev/arduinowifi/bin/targets/mkr1000_wifi/app/apps/winc1500_wifi/winc1500_wifi.elf
+App image succesfully generated: ~/dev/arduinowifi/bin/targets/mkr1000_wifi/app/apps/winc1500_wifi/winc1500_wifi.img
+$
+</pre></div>
+
+
+<p><br></p>
+<h3 id="connect-to-the-board">Connect to the Board</h3>
+<ul>
+<li>Connect your computer to the MKR1000 board with the Micro-USB cable. </li>
+<li>Connect the debug probe to the JTAG port on the board using the Jlink 9-pin adapter and cable. </li>
+</ul>
+<p><br>
+<img alt="J-Link debug probe to MKR1000" src="../pics/mkr1000-jlink.jpg" title="Connecting J-Link debug probe to MKR1000" />
+<br>
+<p>
+<br>
+Mynewt will download and debug the target through this port. You should see a green LED come on and indicates the board has power. </p>
+<p><br></p>
+<h3 id="load-the-bootloader-onto-the-board">Load the Bootloader onto the Board</h3>
+<p>Run the <code>newt load mkr1000_boot</code> command to load the bootloader onto the board:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load mkr1000_boot
+Loading bootloader
+$
+</pre></div>
+
+
+<p><br></p>
+<h3 id="load-the-wi-fi-application-image-onto-the-board">Load the Wi-Fi Application Image onto the Board</h3>
+<p>Run the <code>newt load mkr1000_wifi</code> command to load the wifi application onto the board:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load mkr1000_wifi
+Loading app image into slot 1
+$
+</pre></div>
+
+
+<p><br></p>
+<h3 id="setup-a-serial-connection-between-your-computer-and-the-board">Setup a Serial Connection Between Your Computer and the Board</h3>
+<p>Set up a serial connection from your computer to the MKR1000 board (See <a href="../../get_started/serial_access/">Serial Port Setup</a>). On the MKR1000 board, the TX pin is PIN 14  and the RX pin in PIN 13.
+<br>
+<br>
+<img alt="Serial Connection to MKR1000" src="../pics/mkr1000-serial.jpg" title="Connecting to the MKR1000 Serial Port" />
+<br>
+<p>
+<br>
+<br>
+Locate the port, in the /dev directory on your computer, that the serial connection uses. The format of the port name is
+ platform dependent:</p>
+<ul>
+<li>Mac OS uses the format <code>tty.usbserial-&lt;some identifier&gt;</code>.</li>
+<li>Linux uses the format <code>TTYUSB&lt;N&gt;</code>, where <code>N</code> is a number.  For example, TTYUSB2.</li>
+<li>
+<p>MinGW on Windows uses the format <code>ttyS&lt;N&gt;</code>, where <code>N</code> is a number. You must map the port name to a Windows COM port: <code>/dev/ttyS&lt;N&gt;</code> maps to <code>COM&lt;N+1&gt;</code>. For example, <code>/dev/ttyS2</code> maps to  <code>COM3</code>.</p>
+<p>You can also use the Windows Device Manager to find the COM port number.</p>
+</li>
+</ul>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ ls /dev/tty*usbserial*
+/dev/tty.usbserial-1d13
+$
+</pre></div>
+
+
+<h3 id="start-wi-fi-via-console">Start Wi-Fi via console</h3>
+<p>Use a terminal emulation program to communicate with the board over the serial port. This tutorial shows a Minicom set up. Run the minicom command with the serial port you located on your computer:</p>
+<p><strong>Note:</strong> On Windows, you can use the PuTTY application. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ minicom -D /dev/tty.usbserial-1d13 -b 115200
+</pre></div>
+
+
+<p><br>
+Type <code>wifi start</code> to start Wi-Fi.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>Welcome to minicom 2.7.1
+
+OPTIONS: 
+Compiled on May 17 2017, 15:29:14.
+Port /dev/tty.usbserial, 15:12:10
+
+Press Meta-Z for help on special keys
+
+
+138465 compat&gt; wifi start
+<span style="background-color: #ffffcc">144570 compat&gt; (APP)(INFO)Chip ID 1503a0
+</span>(APP)(INFO)Firmware ver   : 19.4.4
+(APP)(INFO)Min driver ver : 19.3.0
+(APP)(INFO)Curr driver ver: 19.3.0
+wifi_init : 0
+</pre></div>
+
+
+<p><br>
+Connect to the local Wi-Fi network.   Note that the MKR1000 board only supports 2.4 GHz Wi-Fi networks.</p>
+<p>Run the <code>wifi connect</code> command and specify your network <ssid> and <password>. After you are connected to your wi-fi network, run the <code>net service</code> command to start network services.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>wifi connect &lt;ssid&gt; &lt;password&gt;
+<span style="background-color: #ffffcc">037624 wifi_request_scan : 0
+</span>037627 compat&gt; scan_results 7: 0
+038454 wifi_connect : 0
+039451 connect_done : 0
+039958 dhcp done 192.168.0.135
+040169 get sys time response 2017.7.12-22.41.33
+net service                                                      
+</pre></div>
+
+
+<p>The board is connected to the network succesfully and has IP address: 192.168.0.135</p>
+<h3 id="establish-tcp-connection-and-talk">Establish TCP Connection and Talk!</h3>
+<p>From a terminal on your computer, telnet to ports 7, 9, or 19 using the IP address your board has been assigned. Type something on this terminal and see the console output (on minicom). Can you see the difference in the behaviors?</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$telnet  192.168.0.135 7
+Trying 192.168.0.135...
+Connected to 192.168.0.135.
+Escape character is &#39;^]&#39;.
+hello
+hello
+^]
+telnet&gt; q
+$
+</pre></div>
+
+
+<p>One port echoes whatever is typed, one discards everything it gets, and the third spews out bits constantly. Type <code>wifi stop</code> to disable WiFi on the Arduino board.</p>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    <a href=../unit_test/>
+        <span class="fa fa-arrow-left"></span>
+        Previous: Write a Test Suite for a Package
+    </a>
+    
+    </li>
+    <li class="pull-right">
+    
+    <a href=../../os_user_guide/>
+        Next: OS User Guide
+        <span class="fa fa-arrow-right"></span>
+    </a>
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+            </small>
+             <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+             </a>
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../js/highlight.pack.js"></script>
+        <script src="../../../js/base.js"></script>
+        <script src="../../../js/custom.js"></script>
+
+    </body>
+</html>

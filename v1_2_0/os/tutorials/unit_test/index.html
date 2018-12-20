@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+        <link rel="canonical" href="http://mynewt.apache.org/os/tutorials/unit_test/"> -->
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+	    <title>Write a Test Suite for a Package - Apache Mynewt</title>
+
+        <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../css/highlight.css">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link href="../../../css/custom.css" rel="stylesheet">
+        <link href="../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link href="../../../extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+            (function(i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+        i[r] ||
+        function() {
+            (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+        
+    </head>
+
+
+    <body class="Write a Test Suite for a Package">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.5.0 </a> released (Nov 5, 2018)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/documentation/">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest">
+    Version: master
+  </option>
+  <option value="/v1_4_0">
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" selected="selected" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select></li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../get_started/vocabulary/">Concepts</a>
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../tutorials/">Tutorials</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../blinky/">Project Blinky</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../project-slinky/">Project Slinky for Remote Comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../ble_bare_bones/
+">Bluetooth Low Energy</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../lora/lorawanapp/
+">LoRa</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../event_queue/
+">OS Fundamentals</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../add_newtmgr/
+">Remote Device Management</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  
+  
+  ../sensors/sensors/
+
+">Sensors</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../segger_rtt/
+">Tooling</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../codesize/
+">Other</a>
+  
+  
+    <ul>
+          
+              
+                
+    <li >
+      <a href="../codesize/">How to Reduce Application Code Size</a>
+    </li>
+
+              
+          
+              
+                
+    <li class="active">
+      <a href="./">Write a Test Suite for a Package</a>
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino MKR1000</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+    <li >
+      <a href="../../../known_issues/">Known Issues</a>
+    </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../newt/install/prev_releases/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="/documentation/">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="../tutorials/">Tutorials</a></li>
+        
+      
+        
+          <li>&raquo; <a href="../codesize/">Other</a></li>
+        
+      
+      
+        <li>&raquo; Write a Test Suite for a Package</li>
+      
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="https://github.com/apache/mynewt-site/blob/master/docs/os/tutorials/unit_test.md"
+            class="icon icon-github"> Edit on GitHub</a>
+        
+      </li>
+    
+  </ul>
+</div>
+                        </div>
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                        
+                          
+                            <div class="alert alert-warning">
+                                <p>
+                                    Version 1.2.0 is not the most recent version of the Apache Mynewt
+                                    documentation. Click <a href="/latest">here</a> to read the latest
+                                    version.
+                                </p>
+                            </div>
+                          
+                        
+                        
+                            <h1 id="write-a-test-suite-for-a-package">Write a Test Suite for a Package</h1>
+<p>This document guides the reader through creating a test suite for a Mynewt package.</p>
+<h2 id="introduction">Introduction</h2>
+<p>Writing a test suite involves using the
+<a href="../../modules/testutil/testutil/"><code>test/testutil</code></a> package.  The testutil
+library provides the functionality needed to define test suites and test cases.</p>
+<h2 id="choose-your-package-under-test">Choose Your Package Under Test</h2>
+<p>Choose the package you want to write a test suite for.  In this tutorial, we
+will use the <code>time/datetime</code> in the apache-mynewt-core repo.  Throughout this
+tutorial, we will be inside the apache-mynewt-core repo directory, unlike most
+tutorials which operate from the top-level project directory.</p>
+<h2 id="create-a-test-package">Create A Test Package</h2>
+<p>Typically, a library has only one test package.  The convention is name the
+test package by appending <code>/test</code> to the host library name.  For example, the
+test package for <code>encoding/json</code> is <code>encoding/json/test</code>.  The directory
+structure of the json package is shown below:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">encoding/json</span>
+<span style="color: #000000">├──</span> <span style="color: #000000">include</span>
+<span style="color: #000000">│</span>   <span style="color: #000000">└──</span> <span style="color: #000000">json</span>
+<span style="color: #000000">│</span>       <span style="color: #000000">└──</span> <span style="color: #000000">json</span>.<span style="color: #000000">h</span>
+<span style="color: #000000">├──</span> <span style="color: #000000">pkg</span>.<span style="color: #000000">yml</span>
+<span style="color: #000000">├──</span> <span style="color: #000000">src</span>
+<span style="color: #000000">│</span>   <span style="color: #000000">├──</span> <span style="color: #000000">json_decode</span>.<span style="color: #000000">c</span>
+<span style="color: #000000">│</span>   <span style="color: #000000">└──</span> <span style="color: #000000">json_encode</span>.<span style="color: #000000">c</span>
+<span style="color: #000000">└──</span> <span style="color: #000000">test</span>
+    <span style="color: #000000">├──</span> <span style="color: #000000">pkg</span>.<span style="color: #000000">yml</span>
+    <span style="color: #000000">└──</span> <span style="color: #000000">src</span>
+        <span style="color: #000000">├──</span> <span style="color: #000000">test_json</span>.<span style="color: #000000">c</span>
+        <span style="color: #000000">├──</span> <span style="color: #000000">test_json</span>.<span style="color: #000000">h</span>
+        <span style="color: #000000">├──</span> <span style="color: #000000">test_json_utils</span>.<span style="color: #000000">c</span>
+        <span style="color: #000000">└──</span> <span style="color: #000000">testcases</span>
+            <span style="color: #000000">├──</span> <span style="color: #000000">json_simple_decode</span>.<span style="color: #000000">c</span>
+            <span style="color: #000000">└──</span> <span style="color: #000000">json_simple_encode</span>.<span style="color: #000000">c</span>
+</pre></div>
+
+
+<p>The top-level <code>test</code> directory contains the json test package.  To create a
+test package for the datetime package, we need to create a similar package
+called <code>time/datetime/test</code>.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt pkg new time/datetime/test -t unittest
+Download package template for package type pkg.
+Package successfuly installed into /home/me/mynewt-core/time/datetime/test.
+</pre></div>
+
+
+<p>We now have a test package inside <code>time/datetime</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>time/datetime
+├── include
+│   └── datetime
+│       └── datetime.h
+├── pkg.yml
+├── src
+│   └── datetime.c
+└── test
+    ├── README.md
+    ├── pkg.yml
+    ├── src
+    │   └── main.c
+    └── syscfg.yml
+</pre></div>
+
+
+<p>There is one modification we need to make to the new package before we can
+start writing unit test code.  A test package needs access to the code it will
+be testing, so we need to add a dependency on
+<code>@apache-mynewt-core/time/datetime</code> to our <code>pkg.yml</code> file:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.name: &quot;time/datetime/test&quot;
+pkg.type: unittest
+pkg.description: &quot;Description of your package&quot;
+pkg.author: &quot;You &lt;you@you.org&gt;&quot;
+pkg.homepage: &quot;http://your-url.org/&quot;
+pkg.keywords:
+
+pkg.deps:
+    - &#39;@apache-mynewt-core/test/testutil&#39;
+<span style="background-color: #ffffcc">    - &#39;@apache-mynewt-core/time/datetime&#39;
+</span>
+pkg.deps.SELFTEST:
+    - &#39;@apache-mynewt-core/sys/console/stub&#39;
+</pre></div>
+
+
+<p>While we have the <code>pkg.yml</code> file open, let's take a look at what newt filled in automatically:</p>
+<ul>
+<li><code>pkg.type: unittest</code> designates this as a test package.  A <em>test package</em> is
+  special in that it can be built and executed using the <code>newt test</code> command.</li>
+<li>A test package always depends on <code>@apache-mynewt-core/test/testutil</code>.  The
+  testutil library provides the tools necessary for verifying package behavior, </li>
+<li>The <code>SELFTEST</code> suffix indicates that a setting should only be applied when the <code>newt test</code> command is used.</li>
+</ul>
+<p>Regarding the conditional dependency on <code>sys/console/stub</code>, the datetime
+package requires some form of console to function.  In a regular application,
+the console dependency would be supplied by a higher order package.  Because
+<code>newt test</code> runs the test package without an application present, the test
+package needs to supply all unresolved dependencies itself when run in
+self-test mode.</p>
+<h2 id="create-your-test-suite-code">Create Your Test Suite Code</h2>
+<p>We will be adding a <em>test suite</em> to the <code>main.c</code> file.  The test suite will be empty for now.  We also need to invoke the test suite from <code>main()</code>.</p>
+<p>Our <code>main.c</code> file now looks like this:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&quot;sysinit/sysinit.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;testutil/testutil.h&quot;</span><span style="color: #633820"></span>
+
+<span style="color: #000000">TEST_SUITE</span>(<span style="color: #000000">test_datetime_suite</span>) {
+    <span style="color: #177500">/* Empty for now; add test cases later. */</span>
+}
+
+<span style="color: #633820">#if MYNEWT_VAL(SELFTEST)</span>
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+    <span style="color: #177500">/* Initialize all packages. */</span>
+    <span style="color: #000000">sysinit</span>();
+
+    <span style="color: #000000">test_datetime_suite</span>();
+
+    <span style="color: #177500">/* Indicate whether all test cases passed. */</span>
+    <span style="color: #A90D91">return</span> <span style="color: #000000">tu_any_failed</span>;
+}
+<span style="color: #633820">#endif</span>
+</pre></div>
+
+
+<h2 id="try-it-out">Try It Out</h2>
+<p>We now have a working test suite with no tests.  Let's make sure we get a passing result when we run <code>newt test</code>:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt test time/datetime
+&lt;build output&gt;
+Executing test: /home/me/mynewt-core/bin/targets/unittest/time_datetime_test/app/time/datetime/test/time_datetime_test.elf
+Passed tests: [time/datetime/test]
+All tests passed
+</pre></div>
+
+
+<h2 id="create-a-test">Create a Test</h2>
+<p>To create a test within your test suite, there are two things to do.</p>
+<ol>
+<li>Implement the test case function using the <code>testutil</code> macros.</li>
+<li>Call the test case function from within the test suite.</li>
+</ol>
+<p>For this tutorial we will create a test case to verify the <code>datetime_parse()</code>
+function.  The <code>datetime_parse()</code> function is declared as follows:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/**</span>
+<span style="color: #177500"> * Parses an RFC 3339 datetime string.  Some examples of valid datetime strings</span>
+<span style="color: #177500"> * are:</span>
+<span style="color: #177500"> * 2016-03-02T22:44:00                  UTC time (implicit)</span>
+<span style="color: #177500"> * 2016-03-02T22:44:00Z                 UTC time (explicit)</span>
+<span style="color: #177500"> * 2016-03-02T22:44:00-08:00            PST timezone</span>
+<span style="color: #177500"> * 2016-03-02T22:44:00.1                fractional seconds</span>
+<span style="color: #177500"> * 2016-03-02T22:44:00.101+05:30        fractional seconds with timezone</span>
+<span style="color: #177500"> *</span>
+<span style="color: #177500"> * On success, the two output parameters are filled in (tv and tz).</span>
+<span style="color: #177500"> *</span>
+<span style="color: #177500"> * @return                      0 on success;</span>
+<span style="color: #177500"> *                              nonzero on parse error.</span>
+<span style="color: #177500"> */</span>
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">datetime_parse</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*input</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_timeval</span> <span style="color: #000000">*tv</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_timezone</span> <span style="color: #000000">*tz</span>)
+</pre></div>
+
+
+<p>Our test case should make sure this function rejects invalid input, and that it
+parses valid input correctly.  The updated <code>main.c</code> file looks like this:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&quot;sysinit/sysinit.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;testutil/testutil.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;os/os_time.h&quot;</span><span style="color: #633820"></span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;datetime/datetime.h&quot;</span><span style="color: #633820"></span>
+
+<span style="color: #000000">TEST_SUITE</span>(<span style="color: #000000">test_datetime_suite</span>)
+{
+    <span style="color: #000000">test_datetime_parse_simple</span>();
+}
+
+<span style="color: #000000">TEST_CASE</span>(<span style="color: #000000">test_datetime_parse_simple</span>)
+{
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_timezone</span> <span style="color: #000000">tz</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_timeval</span> <span style="color: #000000">tv</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #177500">/*** Valid input. */</span>
+
+    <span style="color: #177500">/* No timezone; UTC implied. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">datetime_parse</span>(<span style="color: #C41A16">&quot;2017-06-28T22:37:59&quot;</span>, <span style="color: #000000">&amp;tv</span>, <span style="color: #000000">&amp;tz</span>);
+    <span style="color: #000000">TEST_ASSERT_FATAL</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tv</span>.<span style="color: #000000">tv_sec</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">1498689479</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tv</span>.<span style="color: #000000">tv_usec</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tz</span>.<span style="color: #000000">tz_minuteswest</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tz</span>.<span style="color: #000000">tz_dsttime</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #177500">/* PDT timezone. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">datetime_parse</span>(<span style="color: #C41A16">&quot;2013-12-05T02:43:07-07:00&quot;</span>, <span style="color: #000000">&amp;tv</span>, <span style="color: #000000">&amp;tz</span>);
+    <span style="color: #000000">TEST_ASSERT_FATAL</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tv</span>.<span style="color: #000000">tv_sec</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">1386236587</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tv</span>.<span style="color: #000000">tv_usec</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tz</span>.<span style="color: #000000">tz_minuteswest</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">420</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">tz</span>.<span style="color: #000000">tz_dsttime</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #177500">/*** Invalid input. */</span>
+
+    <span style="color: #177500">/* Nonsense. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">datetime_parse</span>(<span style="color: #C41A16">&quot;abc&quot;</span>, <span style="color: #000000">&amp;tv</span>, <span style="color: #000000">&amp;tz</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #177500">/* Date-only. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">datetime_parse</span>(<span style="color: #C41A16">&quot;2017-01-02&quot;</span>, <span style="color: #000000">&amp;tv</span>, <span style="color: #000000">&amp;tz</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #177500">/* Zero month. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">datetime_parse</span>(<span style="color: #C41A16">&quot;2017-00-28T22:37:59&quot;</span>, <span style="color: #000000">&amp;tv</span>, <span style="color: #000000">&amp;tz</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #177500">/* 13 month. */</span>
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">datetime_parse</span>(<span style="color: #C41A16">&quot;2017-13-28T22:37:59&quot;</span>, <span style="color: #000000">&amp;tv</span>, <span style="color: #000000">&amp;tz</span>);
+    <span style="color: #000000">TEST_ASSERT</span>(<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+}
+
+<span style="color: #633820">#if MYNEWT_VAL(SELFTEST)</span>
+<span style="color: #A90D91">int</span>
+<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+{
+    <span style="color: #177500">/* Initialize all packages. */</span>
+    <span style="color: #000000">sysinit</span>();
+
+    <span style="color: #000000">test_datetime_suite</span>();
+
+    <span style="color: #177500">/* Indicate whether all test cases passed. */</span>
+    <span style="color: #A90D91">return</span> <span style="color: #000000">tu_any_failed</span>;
+}
+<span style="color: #633820">#endif</span>
+</pre></div>
+
+
+<p>Take a few minutes to review the above code.  Then keep reading for some
+specifics.</p>
+<h3 id="asserting">Asserting</h3>
+<p>The <code>test/testutil</code> package provides two tools for verifying the correctness of a package:</p>
+<ul>
+<li><code>TEST_ASSERT</code></li>
+<li><code>TEST_ASSERT_FATAL</code></li>
+</ul>
+<p>Both of these macros check if the supplied condition is true.  They differ in
+how they behave when the condition is not true.  On failure, <code>TEST_ASSERT</code>
+reports the error and proceeds with the remainder of the test case.
+<code>TEST_ASSERT_FATAL</code>, on the other hand, aborts the test case on failure.</p>
+<p>The general rule is to only use <code>TEST_ASSERT_FATAL</code> when subsequent assertions
+depend on the condition being checked.  For example, when <code>datetime_parse()</code> is
+expected to succeed, the return code is checked with <code>TEST_ASSERT_FATAL</code>.  If
+<code>datetime_parse()</code> unexpectedly failed, the contents of the <code>tv</code> and <code>tz</code>
+objects would be indeterminate, so it is desirable to abort the test instead of
+checking them and reporting spurious failures.</p>
+<h3 id="scaling-up">Scaling Up</h3>
+<p>The above example is small and self contained, so it is reasonable to put
+everything in a single C file.  A typical package will need a lot more test
+code, and it helps to follow some conventions to maintain organization.  Let's
+take a look at a more realistic example.  Here is the directory structure of
+the <code>fs/nffs/test</code> package:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>fs/nffs/test
+├── pkg.yml
+└── src
+    ├── nffs_test.c
+    ├── nffs_test.h
+    ├── nffs_test_debug.c
+    ├── nffs_test_priv.h
+    ├── nffs_test_system_01.c
+    ├── nffs_test_utils.c
+    ├── nffs_test_utils.h
+    └── testcases
+        ├── append_test.c
+        ├── cache_large_file_test.c
+        ├── corrupt_block_test.c
+        ├── corrupt_scratch_test.c
+        ├── gc_on_oom_test.c
+        ├── gc_test.c
+        ├── incomplete_block_test.c
+        ├── large_system_test.c
+        ├── large_unlink_test.c
+        ├── large_write_test.c
+        ├── long_filename_test.c
+        ├── lost_found_test.c
+        ├── many_children_test.c
+        ├── mkdir_test.c
+        ├── open_test.c
+        ├── overwrite_many_test.c
+        ├── overwrite_one_test.c
+        ├── overwrite_three_test.c
+        ├── overwrite_two_test.c
+        ├── read_test.c
+        ├── readdir_test.c
+        ├── rename_test.c
+        ├── split_file_test.c
+        ├── truncate_test.c
+        ├── unlink_test.c
+        └── wear_level_test.c
+</pre></div>
+
+
+<p>The <code>fs/nffs/test</code> package follows these conventions:</p>
+<ol>
+<li>A maximum of one test case per C file.</li>
+<li>Each test case file goes in the <code>testcases</code> subdirectory.</li>
+<li>Test suites and utility functions go directly in the <code>src</code> directory.</li>
+</ol>
+<p>Test packages contributed to the Mynewt project should follow these conventions.</p>
+<h2 id="congratulations">Congratulations</h2>
+<p>Now you can begin the work of validating your packages.</p>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    <a href=../codesize/>
+        <span class="fa fa-arrow-left"></span>
+        Previous: How to Reduce Application Code Size
+    </a>
+    
+    </li>
+    <li class="pull-right">
+    
+    <a href=../wi-fi_on_arduino/>
+        Next: Enable Wi-Fi on Arduino MKR1000
+        <span class="fa fa-arrow-right"></span>
+    </a>
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+            </small>
+             <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+             </a>
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../js/highlight.pack.js"></script>
+        <script src="../../../js/base.js"></script>
+        <script src="../../../js/custom.js"></script>
+
+    </body>
+</html>
