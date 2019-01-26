@@ -224,11 +224,13 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="newtmgr.html">Device Management with Newt Manager</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="newtmgr.html">Newt Manager</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Using the OIC Framework</a></li>
 <li class="toctree-l3"><a class="reference internal" href="customize_newtmgr.html">Customizing Newt Manager Usage with mgmt</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="newtmgr.html#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
@@ -293,6 +295,29 @@ payload.</li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">oicmgr</span></code> framework supports transport over BLE, serial, and IP
 connections to the device.</p>
+<div class="section" id="newtmgr-protocol-specifics">
+<h2>NewtMgr Protocol Specifics<a class="headerlink" href="#newtmgr-protocol-specifics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="requests">
+<h3>Requests<a class="headerlink" href="#requests" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>The NMP op is indicated by the OIC op. The OIC op is always the same: put.</li>
+<li>There are no URI Query CoAP options.</li>
+<li>The NMP header is included in the payload as a key-value pair (key=”_h”). This pair is in the root map of the request and is a sibling of the other request fields. The value of this pair is the big-endian eight-byte NMP header with a length field of 0.</li>
+</ol>
+</div>
+<div class="section" id="responses">
+<h3>Responses<a class="headerlink" href="#responses" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>As with requests, the NMP header is included in the payload as a key-value pair (key=”_h”).</li>
+<li>There is no “r” or “w” field. The response fields are inserted into the root map as a sibling of the “_h” pair.</li>
+<li>Errors encountered during processing of NMP requests are reported identically to other NMP responses (embedded NMP response).</li>
+</ol>
+</div>
+<div class="section" id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h3>
+<p>Keys that start with an underscore are reserved to the OIC manager protocol (e.g., “_h”). NMP requests and responses must not name any of their fields with a leading underscore.</p>
+</div>
+</div>
 </div>
 
 
