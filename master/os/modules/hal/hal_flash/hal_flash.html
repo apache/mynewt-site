@@ -217,6 +217,7 @@ ga("send", "pageview");
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorials.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../../os_user_guide.html">OS User Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../system_modules.html">System</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../hal.html">Hardware Abstraction</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../hal_timer/hal_timer.html">Timer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../hal_gpio/hal_gpio.html">GPIO</a></li>
@@ -228,9 +229,21 @@ ga("send", "pageview");
 <li class="toctree-l3"><a class="reference internal" href="../hal_bsp/hal_bsp.html">BSP</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../split/split.html">Split Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../core_os/porting/port_os.html">Porting Guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../sysinitconfig/sysinitconfig.html">System Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../console/console.html">Console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mfg/mfg.html">Manufacturing support</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../network/docs/index.html">BLE User Guide</a></li>
@@ -275,32 +288,175 @@ and other operations.</p>
 <dl class="function">
 <dt id="c.hal_flash_read">
 <span class="target" id="group___h_a_l_flash_1gab52a043a8dc3b929f40f356c50b46e84"></span>int <code class="descname">hal_flash_read</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em>, uint32_t<em>&nbsp;address</em>, void *<em>&nbsp;dst</em>, uint32_t<em>&nbsp;num_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_read" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Reads a block of data from flash. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; SYS_EINVAL on bad argument error; SYS_EIO on flash driver error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">flash_id</span></code>: The ID of the flash device to read from. </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: The address to read from. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dst</span></code>: A buffer to fill with data read from flash. </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_bytes</span></code>: The number of bytes to read.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="c.hal_flash_write">
 <span class="target" id="group___h_a_l_flash_1gac08fc3f0c55c2e15f3249af4a16f85ae"></span>int <code class="descname">hal_flash_write</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em>, uint32_t<em>&nbsp;address</em>, const void *<em>&nbsp;src</em>, uint32_t<em>&nbsp;num_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_write" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Writes a block of data to flash. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; SYS_EINVAL on bad argument error; SYS_EACCES if flash region is write protected; SYS_EIO on flash driver error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">flash_id</span></code>: The ID of the flash device to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: The address to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">src</span></code>: A buffer containing the data to be written. </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_bytes</span></code>: The number of bytes to write.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="c.hal_flash_erase_sector">
 <span class="target" id="group___h_a_l_flash_1gaea93a1a08bb8bd22eb54c2d5178a2a13"></span>int <code class="descname">hal_flash_erase_sector</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em>, uint32_t<em>&nbsp;sector_address</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_erase_sector" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Erases a single flash sector. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; SYS_EINVAL on bad argument error; SYS_EACCES if flash region is write protected; SYS_EIO on flash driver error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">flash_id</span></code>: The ID of the flash device to erase. </li>
+<li><code class="docutils literal notranslate"><span class="pre">sector_address</span></code>: An address within the sector to erase.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="c.hal_flash_erase">
 <span class="target" id="group___h_a_l_flash_1ga9f610de40a496b16602074e1d6459433"></span>int <code class="descname">hal_flash_erase</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em>, uint32_t<em>&nbsp;address</em>, uint32_t<em>&nbsp;num_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_erase" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Erases a contiguous sequence of flash sectors. </p>
+<p>If the specified range does not correspond to a whole number of sectors, any partially-specified sectors are fully erased. For example, if a device has 1024-byte sectors, then these arguments: o address: 300 o num_bytes: 1000 cause the first two sectors to be erased in their entirety.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; SYS_EINVAL on bad argument error; SYS_EACCES if flash region is write protected; SYS_EIO on flash driver error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">flash_id</span></code>: The ID of the flash device to erase. </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: An address within the sector to begin the erase at. </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_bytes</span></code>: The length, in bytes, of the region to erase.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.hal_flash_isempty">
+<span class="target" id="group___h_a_l_flash_1ga4e9ed50e1d25beb34d8b5eddb7369314"></span>int <code class="descname">hal_flash_isempty</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em>, uint32_t<em>&nbsp;address</em>, void *<em>&nbsp;dst</em>, uint32_t<em>&nbsp;num_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_isempty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if the specified region of flash is completely unwritten. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 if any written bytes were detected; 1 if the region is completely unwritten; SYS_EINVAL on bad argument error; SYS_EIO on flash driver error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: The ID of the flash hardware to inspect. </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: The starting address of the check. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dst</span></code>: A buffer to hold the contents of the flash region. This must be at least <code class="docutils literal notranslate"><span class="pre">num_bytes</span></code> large. </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_bytes</span></code>: The number of bytes to check.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.hal_flash_isempty_no_buf">
+<span class="target" id="group___h_a_l_flash_1gaf81a38a3497772d83a86921a7c1cd58e"></span>int <code class="descname">hal_flash_isempty_no_buf</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;id</em>, uint32_t<em>&nbsp;address</em>, uint32_t<em>&nbsp;num_bytes</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_isempty_no_buf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines if the specified region of flash is completely unwritten. </p>
+<p>This function is like <code class="docutils literal notranslate"><a class="reference internal" href="#group___h_a_l_flash_1ga4e9ed50e1d25beb34d8b5eddb7369314"><span class="std std-ref"><span class="pre">hal_flash_isempty()</span></span></a></code>, except the caller does not need to provide a buffer. Instead, a buffer of size MYNEWT_VAL(HAL_FLASH_VERIFY_BUF_SZ) is allocated on the stack.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 if any written bytes were detected; 1 if the region is completely unwritten; SYS_EINVAL on bad argument error; SYS_EIO on flash driver error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: The ID of the flash hardware to inspect. </li>
+<li><code class="docutils literal notranslate"><span class="pre">address</span></code>: The starting address of the check. </li>
+<li><code class="docutils literal notranslate"><span class="pre">num_bytes</span></code>: The number of bytes of flash to check.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="c.hal_flash_align">
 <span class="target" id="group___h_a_l_flash_1ga9dda1efff3a52a664d9f76f35e25b60c"></span>uint8_t <code class="descname">hal_flash_align</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_align" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines the minimum write alignment of a flash device. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The flash device’s minimum write alignment. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: The ID of the flash hardware to check.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.hal_flash_erased_val">
+<span class="target" id="group___h_a_l_flash_1ga1602078f370fbee63ddab7d195e1dc4a"></span>uint8_t <code class="descname">hal_flash_erased_val</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;flash_id</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_erased_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the value of an erased byte for a particular flash device. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The value of an erased byte. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: The ID of the flash hardware to check.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="c.hal_flash_init">
 <span class="target" id="group___h_a_l_flash_1gaa3aed2bc9e984945102ec5d9a92f4a10"></span>int <code class="descname">hal_flash_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_init" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Initializes all flash devices in the system. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; SYS_EIO on flash driver error. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.hal_flash_write_protect">
+<span class="target" id="group___h_a_l_flash_1ga75ac8e02486cc9ad5671a723652316fb"></span>int <code class="descname">hal_flash_write_protect</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;id</em>, uint8_t<em>&nbsp;protect</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_flash_write_protect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set or clears write protection. </p>
+<p>This function allows to disable write to the device if for some reason (i.e. low power state) writes could result in data corruption.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>SYS_EINVAL - if flash id is not valid SYS_OK - on success </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">id</span></code>: The ID of the flash </li>
+<li><code class="docutils literal notranslate"><span class="pre">protect</span></code>: 1 - disable writes 0 - enable writes</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 </div>
 </div>
@@ -367,7 +523,6 @@ and other operations.</p>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

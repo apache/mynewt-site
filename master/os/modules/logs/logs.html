@@ -40,7 +40,10 @@
           <link rel="index" title="Index"
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
-      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/> 
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/>
+          <link rel="up" title="System Modules" href="../system_modules.html"/>
+          <link rel="next" title="Statistics Module" href="../stats/stats.html"/>
+          <link rel="prev" title="Config" href="../config/config.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -151,6 +154,10 @@ ga("send", "pageview");
   <div class="container">
     <a href="/documentation/">Docs</a> /
     
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
+      <a href="../system_modules.html">System Modules</a> /
+    
     Logging
     
   <div class="sourcelink">
@@ -203,12 +210,39 @@ ga("send", "pageview");
       
         
         
-            <ul>
+            <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../system_modules.html">System</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../config/config.html">Config</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Logs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../stats/stats.html">Statistics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../console/console.html">Console</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../shell/shell.html">Shell</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
@@ -237,7 +271,22 @@ ga("send", "pageview");
 <p>Mynewt log package supports logging of information within a Mynewt
 application. It allows packages to define their own log streams with
 separate names. It also allows an application to control the output
-destination of logs. ### Description</p>
+destination of logs.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#description" id="id1">Description</a></li>
+<li><a class="reference internal" href="#syscfg-settings" id="id2">Syscfg Settings</a><ul>
+<li><a class="reference internal" href="#log" id="id3">Log</a></li>
+<li><a class="reference internal" href="#log-handler" id="id4">Log Handler</a></li>
+<li><a class="reference internal" href="#configuring-logging-for-packages-that-an-application-uses" id="id5">Configuring Logging for Packages that an Application Uses</a></li>
+<li><a class="reference internal" href="#implementing-a-package-that-uses-logging" id="id6">Implementing a Package that Uses Logging</a></li>
+<li><a class="reference internal" href="#log-api-and-log-levels" id="id7">Log API and Log Levels</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="description">
+<h2><a class="toc-backref" href="#id1">Description</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>In the Mynewt OS, the log package comes in two versions:</p>
 <ul class="simple">
 <li>The <code class="docutils literal notranslate"><span class="pre">sys/log/full</span></code> package implements the complete log
@@ -256,13 +305,14 @@ package to use. A project that requires the full logging capability must
 list the <code class="docutils literal notranslate"><span class="pre">sys/log/full</span></code> package as a dependency in its <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code>
 file:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps:</span>
-<span class="go">    - sys/log/full</span>
+<span class="go">    - &quot;@apache-mynewt-core/sys/log/full&quot;</span>
 </pre></div>
 </div>
 <p>You can use the <code class="docutils literal notranslate"><span class="pre">sys/log/stub</span></code> package if you want to build your
 application without logging to reduce code size.</p>
+</div>
 <div class="section" id="syscfg-settings">
-<h2>Syscfg Settings<a class="headerlink" href="#syscfg-settings" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Syscfg Settings</a><a class="headerlink" href="#syscfg-settings" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code> syscfg setting allows you to specify the level of logs
 to enable in your application. Only logs for levels higher or equal to
 the value of <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code> are enabled. The amount of logs you include
@@ -278,12 +328,12 @@ following setting corresponds to LOG_LEVEL_ERROR:</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code> setting applies to all modules registered with the log
 package.</p>
 <div class="section" id="log">
-<h3>Log<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id3">Log</a><a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h3>
 <p>Each log stream requires a <code class="docutils literal notranslate"><span class="pre">log</span></code> structure to define its logging
 properties.</p>
 </div>
 <div class="section" id="log-handler">
-<h3>Log Handler<a class="headerlink" href="#log-handler" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id4">Log Handler</a><a class="headerlink" href="#log-handler" title="Permalink to this headline">¶</a></h3>
 <p>To use logs, a log handler that handles the I/O from the log is
 required. The log package comes with three pre-built log handlers:</p>
 <ul class="simple">
@@ -291,8 +341,8 @@ required. The log package comes with three pre-built log handlers:</p>
 support walking and reading.</li>
 <li>cbmem – writes/reads log events to a circular buffer. Supports
 walking and reading for access by newtmgr and shell commands.</li>
-<li>fcb – writes/reads log events to a <a class="reference external" href="/os/modules/fcb/fcb.html">flash circular
-buffer</a>. Supports walking and reading for
+<li>fcb – writes/reads log events to a <span class="xref std std-doc">flash circular
+buffer</span>. Supports walking and reading for
 access by newtmgr and shell commands.</li>
 </ul>
 <p>In addition, it is possible to create custom log handlers for other
@@ -348,7 +398,7 @@ specific purpose.</li>
 </ul>
 </div>
 <div class="section" id="configuring-logging-for-packages-that-an-application-uses">
-<h3>Configuring Logging for Packages that an Application Uses<a class="headerlink" href="#configuring-logging-for-packages-that-an-application-uses" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id5">Configuring Logging for Packages that an Application Uses</a><a class="headerlink" href="#configuring-logging-for-packages-that-an-application-uses" title="Permalink to this headline">¶</a></h3>
 <p>Here is an example of how an application can set the log handlers for
 the logs of the packages that the application includes.</p>
 <p>In this example, the <code class="docutils literal notranslate"><span class="pre">package1</span></code> package defines the variable
@@ -382,7 +432,7 @@ void app_log_init(void)
 </div>
 </div>
 <div class="section" id="implementing-a-package-that-uses-logging">
-<h3>Implementing a Package that Uses Logging<a class="headerlink" href="#implementing-a-package-that-uses-logging" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id6">Implementing a Package that Uses Logging</a><a class="headerlink" href="#implementing-a-package-that-uses-logging" title="Permalink to this headline">¶</a></h3>
 <p>This example shows how a package logs to console. The package registers
 default logging properties to use the console, but allows an application
 to override the values. It defines the <code class="docutils literal notranslate"><span class="pre">my_package_log</span></code> variable and
@@ -413,9 +463,806 @@ struct log my_package_log;
 </div>
 </div>
 <div class="section" id="log-api-and-log-levels">
-<h3>Log API and Log Levels<a class="headerlink" href="#log-api-and-log-levels" title="Permalink to this headline">¶</a></h3>
-<p>For more information on the <code class="docutils literal notranslate"><span class="pre">log</span></code> API and log levels, see the
-<code class="docutils literal notranslate"><span class="pre">sys/log/full/include/log/log.h</span></code> header file.</p>
+<h3><a class="toc-backref" href="#id7">Log API and Log Levels</a><a class="headerlink" href="#log-api-and-log-levels" title="Permalink to this headline">¶</a></h3>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="define">
+<dt id="c.LOG_ENTRY_HDR_SIZE">
+<span class="target" id="full_2include_2log_2log_8h_1aa351bb8575008aaa9457819cbde1cea1"></span><code class="descname">LOG_ENTRY_HDR_SIZE</code><a class="headerlink" href="#c.LOG_ENTRY_HDR_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_MODULE_STR">
+<span class="target" id="full_2include_2log_2log_8h_1aea345a9b707b66dec9fe387d1691941b"></span><code class="descname">LOG_MODULE_STR</code><span class="sig-paren">(</span>module<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_MODULE_STR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_DEBUG">
+<span class="target" id="full_2include_2log_2log_8h_1ad9197501ccd575fd396cd9f0c54e9910"></span><code class="descname">LOG_DEBUG</code><span class="sig-paren">(</span>__l, __mod, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_INFO">
+<span class="target" id="full_2include_2log_2log_8h_1a62a897df1da34bca1af27a1ba7e2bf58"></span><code class="descname">LOG_INFO</code><span class="sig-paren">(</span>__l, __mod, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_INFO" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_WARN">
+<span class="target" id="full_2include_2log_2log_8h_1ac245ad207095c74c20e4e66d5aff0ac3"></span><code class="descname">LOG_WARN</code><span class="sig-paren">(</span>__l, __mod, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_WARN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_ERROR">
+<span class="target" id="full_2include_2log_2log_8h_1a4585cc32d0af89be2ee4b50a3f097dcf"></span><code class="descname">LOG_ERROR</code><span class="sig-paren">(</span>__l, __mod, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_CRITICAL">
+<span class="target" id="full_2include_2log_2log_8h_1a511c7df90f30e5e8e104ed336d61084d"></span><code class="descname">LOG_CRITICAL</code><span class="sig-paren">(</span>__l, __mod, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_CRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_STATS_INC">
+<span class="target" id="full_2include_2log_2log_8h_1a02b2a70cb67cea8b858207c062a32e4b"></span><code class="descname">LOG_STATS_INC</code><span class="sig-paren">(</span><a class="reference internal" href="#c.log" title="log">log</a>, name<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_STATS_INC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="define">
+<dt id="c.LOG_STATS_INCN">
+<span class="target" id="full_2include_2log_2log_8h_1a64ee73ba4b34cbd0f5c7d09fc7ed090c"></span><code class="descname">LOG_STATS_INCN</code><span class="sig-paren">(</span><a class="reference internal" href="#c.log" title="log">log</a>, name, cnt<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG_STATS_INCN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Typedefs</p>
+<dl class="typedef">
+<dt id="c.log_walk_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a694681335b2ac1faffad44efdfbcee7a"></span><em class="property">typedef </em>int<code class="descname">(* log_walk_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, struct <a class="reference internal" href="#c.log_offset" title="log_offset">log_offset</a><em>&nbsp;*log_offset</em>, void<em>&nbsp;*dptr</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_walk_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.log_walk_body_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a02bd20db520aba6ec92e3f78a3e3181e"></span><em class="property">typedef </em>int<code class="descname">(* log_walk_body_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*log</em>, struct <a class="reference internal" href="#c.log_offset" title="log_offset">log_offset</a><em>&nbsp;*log_offset</em>, const struct log_entry_hdr<em>&nbsp;*hdr</em>, void<em>&nbsp;*dptr</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_walk_body_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_read_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a2f127d1e7301e582997bf9b90c807d12"></span><em class="property">typedef </em>int<code class="descname">(* lh_read_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, void<em>&nbsp;*dptr</em>, void<em>&nbsp;*buf</em>, uint16_t<em>&nbsp;offset</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_read_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_read_mbuf_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1aa66ddf4192295db784c806d09e5554a9"></span><em class="property">typedef </em>int<code class="descname">(* lh_read_mbuf_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, void<em>&nbsp;*dptr</em>, struct os_mbuf<em>&nbsp;*om</em>, uint16_t<em>&nbsp;offset</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_read_mbuf_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_append_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a19ee35f77c0d909b360a7704b672f9d1"></span><em class="property">typedef </em>int<code class="descname">(* lh_append_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, void<em>&nbsp;*buf</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_append_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_append_body_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1afe5365560529ad1532fddc605eb49f6e"></span><em class="property">typedef </em>int<code class="descname">(* lh_append_body_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*log</em>, const struct log_entry_hdr<em>&nbsp;*hdr</em>, const void<em>&nbsp;*body</em>, int<em>&nbsp;body_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_append_body_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_append_mbuf_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a46b17f0852e65446a89b93dd92ed4cb7"></span><em class="property">typedef </em>int<code class="descname">(* lh_append_mbuf_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, const struct os_mbuf<em>&nbsp;*om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_append_mbuf_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_append_mbuf_body_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a5f31599f8cf8ebb2bbae062d66633e8c"></span><em class="property">typedef </em>int<code class="descname">(* lh_append_mbuf_body_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*log</em>, const struct log_entry_hdr<em>&nbsp;*hdr</em>, const struct os_mbuf<em>&nbsp;*om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_append_mbuf_body_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_walk_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a26ea94f956c083f449619bcaea428eaa"></span><em class="property">typedef </em>int<code class="descname">(* lh_walk_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, <a class="reference internal" href="#c.log_walk_func_t" title="log_walk_func_t">log_walk_func_t</a><em>&nbsp;walk_func</em>, struct <a class="reference internal" href="#c.log_offset" title="log_offset">log_offset</a><em>&nbsp;*log_offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_walk_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_flush_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1aa56cbe1332f7ea07753f928f094310e6"></span><em class="property">typedef </em>int<code class="descname">(* lh_flush_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_flush_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_storage_info_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a26ac2afebbe5b065c8048475991b671d"></span><em class="property">typedef </em>int<code class="descname">(* lh_storage_info_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, struct <a class="reference internal" href="#c.log_storage_info" title="log_storage_info">log_storage_info</a><em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_storage_info_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_set_watermark_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1ab394d60b1d3ada996e26f187db8e10c9"></span><em class="property">typedef </em>int<code class="descname">(* lh_set_watermark_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em>, uint32_t<span class="sig-paren">)</span><a class="headerlink" href="#c.lh_set_watermark_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="typedef">
+<dt id="c.lh_registered_func_t">
+<span class="target" id="full_2include_2log_2log_8h_1a0849c4cff323e8747e981672b0ae7142"></span><em class="property">typedef </em>int<code class="descname">(* lh_registered_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.log" title="log">log</a><em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.lh_registered_func_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.log_init">
+<span class="target" id="full_2include_2log_2log_8h_1a2508fad025e49f9746b6c178dce6917e"></span>void <code class="descname">log_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.log_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_list_get_next">
+<span class="target" id="full_2include_2log_2log_8h_1ae9320c228e4d555a4778c12dcfeb8bb2"></span>struct <a class="reference internal" href="#c.log" title="log">log</a>* <code class="descname">log_list_get_next</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_list_get_next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_module_register">
+<span class="target" id="full_2include_2log_2log_8h_1a67f9a573fee1ceff149242ac1da19c6f"></span>uint8_t <code class="descname">log_module_register</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;id</em>, const char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_module_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_module_get_name">
+<span class="target" id="full_2include_2log_2log_8h_1a52cf7fd7192c68c1b91e7f84b1338dd1"></span>const char* <code class="descname">log_module_get_name</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;id</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_module_get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_register">
+<span class="target" id="full_2include_2log_2log_8h_1aed7fcd6a580a9f1fd21bf4d5f0ff1b93"></span>int <code class="descname">log_register</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em>, struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, const struct  <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a> <em>&nbsp;*</em>, void *<em>&nbsp;arg</em>, uint8_t<em>&nbsp;level</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_set_append_cb">
+<span class="target" id="full_2include_2log_2log_8h_1a84222e15ae26580c93835da822192f69"></span>void <code class="descname">log_set_append_cb</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, log_append_cb  *<em>&nbsp;cb</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_set_append_cb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configures the given log with the specified append callback. </p>
+<p>A log’s append callback is executed each time an entry is appended to the log.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to configure. </li>
+<li><code class="docutils literal notranslate"><span class="pre">cb</span></code>: The callback to associate with the log. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_find">
+<span class="target" id="full_2include_2log_2log_8h_1af24693daf5b1ff0f13ea3a2f52ccad13"></span>struct <a class="reference internal" href="#c.log" title="log">log</a>* <code class="descname">log_find</code><span class="sig-paren">(</span>const char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches the list of registered logs for one with the specified name. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The sought after log if found, NULL otherwise. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name of the log to search for.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_typed">
+<span class="target" id="full_2include_2log_2log_8h_1a98ea3294a192ada2b141ecafc30fc9c4"></span>int <code class="descname">log_append_typed</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, uint8_t<em>&nbsp;etype</em>, void *<em>&nbsp;data</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_typed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the raw contents of a flat buffer to the specified log. </p>
+<p>NOTE: The flat buffer must have an initial padding of length <code class="docutils literal notranslate"><span class="pre">LOG_ENTRY_HDR_SIZE</span></code>. This padding is <em>not</em> reflected in the specified length. So, to log the string “abc”, you should pass the following arguments to this function: <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>data: &lt;padding&gt;abc   (total of `LOG_ENTRY_HDR_SIZE`+3 bytes.)
+len: 3
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The log module of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the log entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">etype</span></code>: The type of data being written; one of the <code class="docutils literal notranslate"><span class="pre">LOG_ETYPE_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: The flat buffer to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes in the <em>message body</em>.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_mbuf_typed_no_free">
+<span class="target" id="full_2include_2log_2log_8h_1adfb6594d3de83f4ab355d3590e3daf65"></span>int <code class="descname">log_append_mbuf_typed_no_free</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, uint8_t<em>&nbsp;etype</em>, struct  os_mbuf  **<em>&nbsp;om_ptr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_mbuf_typed_no_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the contents of the provided mbuf, only freeing the mbuf on failure. </p>
+<p>Logs the contents of the provided mbuf, only freeing the mbuf on failure. On success, the mbuf remains allocated, but its structure may have been modified by pullup operations. The updated mbuf address is passed back to the caller via a write to the supplied mbuf pointer-to-pointer.</p>
+<p>NOTE: The mbuf must have an initial padding of length <code class="docutils literal notranslate"><span class="pre">LOG_ENTRY_HDR_SIZE</span></code>. So, to log the string “abc”, you should pass an mbuf with the following characteristics: <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>om_data: &lt;padding&gt;abc
+om_len: `LOG_ENTRY_HDR_SIZE` + 3
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module ID of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the entry to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">etype</span></code>: The type of data to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_ETYPE_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om_ptr</span></code>: Indirectly points to the mbuf to write. This function updates the mbuf address if it changes.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_mbuf_typed">
+<span class="target" id="full_2include_2log_2log_8h_1aa26f6262bf42387f253b57cc24f1a343"></span>int <code class="descname">log_append_mbuf_typed</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, uint8_t<em>&nbsp;etype</em>, struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_mbuf_typed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the contents of the provided mbuf. </p>
+<p>Logs the contents of the provided mbuf. This function always frees the mbuf regardless of the outcome.</p>
+<p>NOTE: The mbuf must have an initial padding of length <code class="docutils literal notranslate"><span class="pre">LOG_ENTRY_HDR_SIZE</span></code>. So, to log the string “abc”, you should pass an mbuf with the following characteristics: <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>om_data: &lt;padding&gt;abc
+om_len: `LOG_ENTRY_HDR_SIZE` + 3
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module ID of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the entry to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">etype</span></code>: The type of data to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_ETYPE_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to write.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_body">
+<span class="target" id="full_2include_2log_2log_8h_1add4c8f9c455a9f587cff9dd9a6ab8619"></span>int <code class="descname">log_append_body</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, uint8_t<em>&nbsp;etype</em>, const void *<em>&nbsp;body</em>, uint16_t<em>&nbsp;body_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the contents of a flat buffer to the specified log. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The log module of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the log entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">etype</span></code>: The type of data being written; one of the <code class="docutils literal notranslate"><span class="pre">LOG_ETYPE_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: The flat buffer to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes in the message body.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_mbuf_body_no_free">
+<span class="target" id="full_2include_2log_2log_8h_1a45890da99ae6c556b54d2e335ea6dfde"></span>int <code class="descname">log_append_mbuf_body_no_free</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, uint8_t<em>&nbsp;etype</em>, struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_mbuf_body_no_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the contents of the provided mbuf, only freeing the mbuf on failure. </p>
+<p>Logs the contents of the provided mbuf, only freeing the mbuf on failure. On success, the mbuf remains allocated, but its structure may have been modified by pullup operations. The updated mbuf address is passed back to the caller via a write to the supplied mbuf pointer-to-pointer.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module ID of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the entry to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">etype</span></code>: The type of data to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_ETYPE_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om_ptr</span></code>: Indirectly points to the mbuf to write. This function updates the mbuf address if it changes.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_mbuf_body">
+<span class="target" id="full_2include_2log_2log_8h_1a2272eb80f21c5f7ee4eb84d743030a95"></span>int <code class="descname">log_append_mbuf_body</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, uint8_t<em>&nbsp;etype</em>, struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_mbuf_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the contents of the provided mbuf. </p>
+<p>Logs the contents of the provided mbuf. This function always frees the mbuf regardless of the outcome.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module ID of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the entry to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">etype</span></code>: The type of data to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_ETYPE_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to write.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_console_get">
+<span class="target" id="full_2include_2log_2log_8h_1a57a222f756bcdf4bd52d2b6554ab06b1"></span>struct <a class="reference internal" href="#c.log" title="log">log</a>* <code class="descname">log_console_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.log_console_get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_console_init">
+<span class="target" id="full_2include_2log_2log_8h_1a9d9b2b134e1b6ca4e55fcee6e005c199"></span>void <code class="descname">log_console_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.log_console_init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_append">
+<span class="target" id="full_2include_2log_2log_8h_1a10393bc5be19f2b3d125f819577e3971"></span>static int <code class="descname">log_append</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, void *<em>&nbsp;data</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the raw contents of a flat buffer to the specified log. </p>
+<p>NOTE: The flat buffer must have an initial padding of length <code class="docutils literal notranslate"><span class="pre">LOG_ENTRY_HDR_SIZE</span></code>. This padding is <em>not</em> reflected in the specified length. So, to log the string “abc”, you should pass the following arguments to this function: <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>data: &lt;padding&gt;abc   (total of `LOG_ENTRY_HDR_SIZE`+3 bytes.)
+len: 3
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The log module of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the log entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">data</span></code>: The flat buffer to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of byte in the <em>message body</em>.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_mbuf_no_free">
+<span class="target" id="full_2include_2log_2log_8h_1ab922a267c207a4b8fa4ef3af4e590e48"></span>static int <code class="descname">log_append_mbuf_no_free</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, struct  os_mbuf  **<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_mbuf_no_free" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the contents of the provided mbuf, only freeing the mbuf on failure. </p>
+<p>Logs the contents of the provided mbuf, only freeing the mbuf on failure. On success, the mbuf remains allocated, but its structure may have been modified by pullup operations. The updated mbuf address is passed back to the caller via a write to the supplied mbuf pointer-to-pointer.</p>
+<p>NOTE: The mbuf must have an initial padding of length <code class="docutils literal notranslate"><span class="pre">LOG_ENTRY_HDR_SIZE</span></code>. So, to log the string “abc”, you should pass an mbuf with the following characteristics: <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>om_data: &lt;padding&gt;abc
+om_len: `LOG_ENTRY_HDR_SIZE` + 3
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module ID of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the entry to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om_ptr</span></code>: Indirectly points to the mbuf to write. This function updates the mbuf address if it changes.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_append_mbuf">
+<span class="target" id="full_2include_2log_2log_8h_1ac6e318ca6cce6eff5ebbd6e83d06b077"></span>static int <code class="descname">log_append_mbuf</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_append_mbuf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logs the contents of the provided mbuf. </p>
+<p>Logs the contents of the provided mbuf. This function always frees the mbuf regardless of the outcome.</p>
+<p>NOTE: The mbuf must have an initial padding of length <code class="docutils literal notranslate"><span class="pre">LOG_ENTRY_HDR_SIZE</span></code>. So, to log the string “abc”, you should pass an mbuf with the following characteristics: <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>om_data: &lt;padding&gt;abc
+om_len: `LOG_ENTRY_HDR_SIZE` + 3
+</pre></div>
+</div>
+</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to write to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module ID of the entry to write. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The severity of the entry to write; one of the <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL_[...]</span></code> constants. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to write.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_printf">
+<span class="target" id="full_2include_2log_2log_8h_1a13dfd7c147ad1fc5b03ee0e7c2c98000"></span>void <code class="descname">log_printf</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em>, const char *<em>&nbsp;msg</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.log_printf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_read">
+<span class="target" id="full_2include_2log_2log_8h_1a5c69ec30ce725dcde16eda0cbff96068"></span>int <code class="descname">log_read</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, void *<em>&nbsp;dptr</em>, void *<em>&nbsp;buf</em>, uint16_t<em>&nbsp;off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_read_hdr">
+<span class="target" id="full_2include_2log_2log_8h_1a34ad590c3c24cfeb1f73bf0929830b3f"></span>int <code class="descname">log_read_hdr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, void *<em>&nbsp;dptr</em>, struct log_entry_hdr *<em>&nbsp;hdr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_read_hdr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a single log entry header. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to read from. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dptr</span></code>: Medium-specific data describing the area to read from; typically obtained by a call to <code class="docutils literal notranslate"><span class="pre">log_walk</span></code>. </li>
+<li><code class="docutils literal notranslate"><span class="pre">hdr</span></code>: The destination header to read into.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_read_body">
+<span class="target" id="full_2include_2log_2log_8h_1adc82f26289ef95ebe75aeae022c36b78"></span>int <code class="descname">log_read_body</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, void *<em>&nbsp;dptr</em>, void *<em>&nbsp;buf</em>, uint16_t<em>&nbsp;off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_read_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads data from the body of a log entry into a flat buffer. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The number of bytes actually read on success; -1 on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to read from. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dptr</span></code>: Medium-specific data describing the area to read from; typically obtained by a call to <code class="docutils literal notranslate"><span class="pre">log_walk</span></code>. </li>
+<li><code class="docutils literal notranslate"><span class="pre">buf</span></code>: The destination buffer to read into. </li>
+<li><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset within the log entry at which to start the read. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to read.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_read_mbuf">
+<span class="target" id="full_2include_2log_2log_8h_1ad37e8ee63ba278e3c2116329ade0ecdb"></span>int <code class="descname">log_read_mbuf</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, void *<em>&nbsp;dptr</em>, struct  os_mbuf  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_read_mbuf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_read_mbuf_body">
+<span class="target" id="full_2include_2log_2log_8h_1a8109bb6a89e17c959cfdacc1cc02b797"></span>int <code class="descname">log_read_mbuf_body</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, void *<em>&nbsp;dptr</em>, struct  os_mbuf  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_read_mbuf_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads data from the body of a log entry into an mbuf. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The number of bytes actually read on success; -1 on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to read from. </li>
+<li><code class="docutils literal notranslate"><span class="pre">dptr</span></code>: Medium-specific data describing the area to read from; typically obtained by a call to <code class="docutils literal notranslate"><span class="pre">log_walk</span></code>. </li>
+<li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The destination mbuf to read into. </li>
+<li><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset within the log entry at which to start the read. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to read.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_walk">
+<span class="target" id="full_2include_2log_2log_8h_1a4f49fb75a702ea9b33d716fef212cd79"></span>int <code class="descname">log_walk</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, <a class="reference internal" href="#c.log_walk_func_t" title="log_walk_func_t">log_walk_func_t</a><em>&nbsp;walk_func</em>, struct  <a class="reference internal" href="#c.log_offset" title="log_offset">log_offset</a>  *<em>&nbsp;log_offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_walk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_walk_body">
+<span class="target" id="full_2include_2log_2log_8h_1a4339e8e8df0c2a5a36ed8e93b971cef1"></span>int <code class="descname">log_walk_body</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, <a class="reference internal" href="#c.log_walk_body_func_t" title="log_walk_body_func_t">log_walk_body_func_t</a><em>&nbsp;walk_body_func</em>, struct  <a class="reference internal" href="#c.log_offset" title="log_offset">log_offset</a>  *<em>&nbsp;log_offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_walk_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a callback to each message in the specified log. </p>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">log_walk</span></code>, except it passes the message header and body separately to the callback.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 if the walk completed successfully; nonzero on error or if the walk was aborted. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to iterate. </li>
+<li><code class="docutils literal notranslate"><span class="pre">walk_body_func</span></code>: The function to apply to each log entry. </li>
+<li><code class="docutils literal notranslate"><a class="reference internal" href="#structlog__offset"><span class="std std-ref"><span class="pre">log_offset</span></span></a></code>: Specifies the range of entries to process. Entries not matching these criteria are skipped during the walk.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_flush">
+<span class="target" id="full_2include_2log_2log_8h_1accfb1bc70fe3fa3abe408c712674ec30"></span>int <code class="descname">log_flush</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log_level_get">
+<span class="target" id="full_2include_2log_2log_8h_1a6319f1de50eaf79073f38865116cd846"></span>uint8_t <code class="descname">log_level_get</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;module</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_level_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the globally configured minimum log level for the specified module ID. </p>
+<p>Writes with a level less than the module’s minimum level are discarded.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The configured minimum level, or 0 (LOG_LEVEL_DEBUG) if unconfigured. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module whose level should be retrieved.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_level_set">
+<span class="target" id="full_2include_2log_2log_8h_1a61233ae0ab774efeb1919228a4f2b585"></span>int <code class="descname">log_level_set</code><span class="sig-paren">(</span>uint8_t<em>&nbsp;module</em>, uint8_t<em>&nbsp;level</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_level_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the globally configured minimum log level for the specified module ID. </p>
+<p>Writes with a level less than the module’s minimum level are discarded.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">module</span></code>: The module to configure. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: The minimum level to assign to the module (0-15, inclusive). </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_set_level">
+<span class="target" id="full_2include_2log_2log_8h_1a46fd9c9e1b0d143244a10427afa19332"></span>void <code class="descname">log_set_level</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint8_t<em>&nbsp;level</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_set_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set log level for a logger. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to set level to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">level</span></code>: New log level </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_get_level">
+<span class="target" id="full_2include_2log_2log_8h_1a675385dfb0c085145bc9b8864d3b29b2"></span>uint8_t <code class="descname">log_get_level</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_get_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get log level for a logger. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>current value of log level. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to set level to.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_storage_info">
+<span class="target" id="full_2include_2log_2log_8h_1a1eecb86f5b2426e3941319bdb8e9a99d"></span>int <code class="descname">log_storage_info</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, struct  <a class="reference internal" href="#c.log_storage_info" title="log_storage_info">log_storage_info</a>  *<em>&nbsp;info</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_storage_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return information about log storage. </p>
+<p>This return information about size and usage of storage on top of which log instance is created.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, error code otherwise </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to query. </li>
+<li><code class="docutils literal notranslate"><span class="pre">info</span></code>: The destination to write information to.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_set_watermark">
+<span class="target" id="full_2include_2log_2log_8h_1a475fecb446d0e0d93d0acf5512da90c1"></span>int <code class="descname">log_set_watermark</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.log" title="log">log</a>  *<em>&nbsp;log</em>, uint32_t<em>&nbsp;index</em><span class="sig-paren">)</span><a class="headerlink" href="#c.log_set_watermark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set watermark on log. </p>
+<p>This sets watermark on log item with given index. This information is used to calculate size of entries which were logged after watermark item, i.e. unread items. The watermark is stored persistently for each log.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, error code otherwise. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">log</span></code>: The log to set watermark on. </li>
+<li><code class="docutils literal notranslate"><span class="pre">index</span></code>: The index of a watermarked item.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.log_nmgr_register_group">
+<span class="target" id="full_2include_2log_2log_8h_1ac8206ec2c106a9ce9424a39b386d12c4"></span>int <code class="descname">log_nmgr_register_group</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.log_nmgr_register_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Variables</p>
+<dl class="variable">
+<dt id="c.log_console_handler">
+<span class="target" id="full_2include_2log_2log_8h_1a881289dbd9a79c6225239e2b72cec4a8"></span>const struct <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a> <code class="descname">log_console_handler</code><a class="headerlink" href="#c.log_console_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_cbmem_handler">
+<span class="target" id="full_2include_2log_2log_8h_1a649ef9595a9a890e38154e54bf243c71"></span>const struct <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a> <code class="descname">log_cbmem_handler</code><a class="headerlink" href="#c.log_cbmem_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_fcb_handler">
+<span class="target" id="full_2include_2log_2log_8h_1ae85ac1f42826982b5f0198fd19fc6b46"></span>const struct <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a> <code class="descname">log_fcb_handler</code><a class="headerlink" href="#c.log_fcb_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_fcb_slot1_handler">
+<span class="target" id="full_2include_2log_2log_8h_1a73ba118a04cf811f881d627996af953b"></span>const struct <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a> <code class="descname">log_fcb_slot1_handler</code><a class="headerlink" href="#c.log_fcb_slot1_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="struct">
+<dt id="c.log_offset">
+<span class="target" id="structlog__offset"></span><em class="property">struct </em><code class="descname">log_offset</code><a class="headerlink" href="#c.log_offset" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;log.h&gt;</em><p>Used for walks and reads; indicates part of log to access. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.log_offset::lo_ts">
+<span class="target" id="structlog__offset_1abf717145b82aec45493449d150b39cf0"></span>int64_t <code class="descname">lo_ts</code><a class="headerlink" href="#c.log_offset::lo_ts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_offset::lo_index">
+<span class="target" id="structlog__offset_1a4c8cec5bf5b2ab35d0bce92e09dd5aa5"></span>uint32_t <code class="descname">lo_index</code><a class="headerlink" href="#c.log_offset::lo_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_offset::lo_data_len">
+<span class="target" id="structlog__offset_1a158a12500f1125b1e7575fa9856d9894"></span>uint32_t <code class="descname">lo_data_len</code><a class="headerlink" href="#c.log_offset::lo_data_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_offset::lo_arg">
+<span class="target" id="structlog__offset_1aba3119779984fc002c80bbbe797ba90f"></span>void* <code class="descname">lo_arg</code><a class="headerlink" href="#c.log_offset::lo_arg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt>
+<span class="target" id="structlog__storage__info"></span><em class="property">struct </em><code class="descname">log_storage_info</code></dt>
+<dd><em>#include &lt;log.h&gt;</em><p>Log storage information. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.log_storage_info::size">
+<span class="target" id="structlog__storage__info_1a087d5d8877514ec2e890afbca40ba856"></span>uint32_t <code class="descname">size</code><a class="headerlink" href="#c.log_storage_info::size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_storage_info::used">
+<span class="target" id="structlog__storage__info_1a3669711e5ba1493660521b060a4b963b"></span>uint32_t <code class="descname">used</code><a class="headerlink" href="#c.log_storage_info::used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_storage_info::used_unread">
+<span class="target" id="structlog__storage__info_1af2c854c7f21ac43b03af1f97f02b9993"></span>uint32_t <code class="descname">used_unread</code><a class="headerlink" href="#c.log_storage_info::used_unread" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.log_handler">
+<span class="target" id="structlog__handler"></span><em class="property">struct </em><code class="descname">log_handler</code><a class="headerlink" href="#c.log_handler" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;log.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.log_handler::log_type">
+<span class="target" id="structlog__handler_1ad65f3c291144c9563af323a410aa6a6d"></span>int <code class="descname">log_type</code><a class="headerlink" href="#c.log_handler::log_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_read">
+<span class="target" id="structlog__handler_1ae6b70c2bf453741b0fe1d41d2e866112"></span><a class="reference internal" href="#c.lh_read_func_t" title="lh_read_func_t">lh_read_func_t</a> <code class="descname">log_read</code><a class="headerlink" href="#c.log_handler::log_read" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_read_mbuf">
+<span class="target" id="structlog__handler_1aa2f5adc40b8c4203dcec0990780b915c"></span><a class="reference internal" href="#c.lh_read_mbuf_func_t" title="lh_read_mbuf_func_t">lh_read_mbuf_func_t</a> <code class="descname">log_read_mbuf</code><a class="headerlink" href="#c.log_handler::log_read_mbuf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_append">
+<span class="target" id="structlog__handler_1a662b191acd442da61df5ddd97c252229"></span><a class="reference internal" href="#c.lh_append_func_t" title="lh_append_func_t">lh_append_func_t</a> <code class="descname">log_append</code><a class="headerlink" href="#c.log_handler::log_append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_append_body">
+<span class="target" id="structlog__handler_1a56c2abd3d5be4e8b08f55268a443eca1"></span><a class="reference internal" href="#c.lh_append_body_func_t" title="lh_append_body_func_t">lh_append_body_func_t</a> <code class="descname">log_append_body</code><a class="headerlink" href="#c.log_handler::log_append_body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_append_mbuf">
+<span class="target" id="structlog__handler_1a0a9057b12824b959f6aabaf432f85d0a"></span><a class="reference internal" href="#c.lh_append_mbuf_func_t" title="lh_append_mbuf_func_t">lh_append_mbuf_func_t</a> <code class="descname">log_append_mbuf</code><a class="headerlink" href="#c.log_handler::log_append_mbuf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_append_mbuf_body">
+<span class="target" id="structlog__handler_1ab665988efee4cda3288a76b3030955e1"></span><a class="reference internal" href="#c.lh_append_mbuf_body_func_t" title="lh_append_mbuf_body_func_t">lh_append_mbuf_body_func_t</a> <code class="descname">log_append_mbuf_body</code><a class="headerlink" href="#c.log_handler::log_append_mbuf_body" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_walk">
+<span class="target" id="structlog__handler_1afaa4f87e34e4ebca54b8fc4f5ec9ca95"></span><a class="reference internal" href="#c.lh_walk_func_t" title="lh_walk_func_t">lh_walk_func_t</a> <code class="descname">log_walk</code><a class="headerlink" href="#c.log_handler::log_walk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_flush">
+<span class="target" id="structlog__handler_1a9088643ee5fa07573e9636b6f920085a"></span><a class="reference internal" href="#c.lh_flush_func_t" title="lh_flush_func_t">lh_flush_func_t</a> <code class="descname">log_flush</code><a class="headerlink" href="#c.log_handler::log_flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_storage_info">
+<span class="target" id="structlog__handler_1a6eacea99532cc31ceb761ad079232e2d"></span><a class="reference internal" href="#c.lh_storage_info_func_t" title="lh_storage_info_func_t">lh_storage_info_func_t</a> <code class="descname">log_storage_info</code><a class="headerlink" href="#c.log_handler::log_storage_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_set_watermark">
+<span class="target" id="structlog__handler_1a0a13093d3dc457c4fb19021018bc5bc9"></span><a class="reference internal" href="#c.lh_set_watermark_func_t" title="lh_set_watermark_func_t">lh_set_watermark_func_t</a> <code class="descname">log_set_watermark</code><a class="headerlink" href="#c.log_handler::log_set_watermark" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log_handler::log_registered">
+<span class="target" id="structlog__handler_1a1e9bff519eaea7728d99be4d62b5da69"></span><a class="reference internal" href="#c.lh_registered_func_t" title="lh_registered_func_t">lh_registered_func_t</a> <code class="descname">log_registered</code><a class="headerlink" href="#c.log_handler::log_registered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.log">
+<span class="target" id="structlog"></span><em class="property">struct </em><code class="descname">log</code><a class="headerlink" href="#c.log" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;log.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="c.log::STAILQ_ENTRY">
+<span class="target" id="structlog_1a6d07240ed4fa7ac4a0076a255dc61ff5"></span><code class="descname">STAILQ_ENTRY</code><span class="sig-paren">(</span><a class="reference internal" href="#c.log" title="log">log</a><span class="sig-paren">)</span><a class="headerlink" href="#c.log::STAILQ_ENTRY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="c.log::STATS_SECT_DECL">
+<span class="target" id="structlog_1ae9c86a7ac0fc774b4fa55ac88860dcc3"></span><code class="descname">STATS_SECT_DECL</code><span class="sig-paren">(</span>logs<span class="sig-paren">)</span><a class="headerlink" href="#c.log::STATS_SECT_DECL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.log::l_name">
+<span class="target" id="structlog_1a51e12071c1c1b1e792701a60f5bc0299"></span>char* <code class="descname">l_name</code><a class="headerlink" href="#c.log::l_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log::l_log">
+<span class="target" id="structlog_1ac65e462e8879b0aa7afacdc652bb1836"></span>const struct <a class="reference internal" href="#c.log_handler" title="log_handler">log_handler</a>* <code class="descname">l_log</code><a class="headerlink" href="#c.log::l_log" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log::l_arg">
+<span class="target" id="structlog_1a789d9412642d0df93d82cb935ff0e9b1"></span>void* <code class="descname">l_arg</code><a class="headerlink" href="#c.log::l_arg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log::l_append_cb">
+<span class="target" id="structlog_1ad0397d159f6f86544c204bb1c94c3285"></span>log_append_cb* <code class="descname">l_append_cb</code><a class="headerlink" href="#c.log::l_append_cb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="variable">
+<dt id="c.log::l_level">
+<span class="target" id="structlog_1a79e2701bcf76fccfcf8df56835d8cd2b"></span>uint8_t <code class="descname">l_level</code><a class="headerlink" href="#c.log::l_level" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
 </div>
 </div>
 </div>
@@ -424,6 +1271,15 @@ struct log my_package_log;
                    </div>
                   </div>
                   
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="../stats/stats.html" class="btn btn-neutral float-right" title="Statistics Module" accesskey="n">Next: Statistics Module <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../config/config.html" class="btn btn-neutral" title="Config" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Config</a>
+      
+    </div>
+
                 </div>
               </div>
             </div>
@@ -473,7 +1329,6 @@ struct log my_package_log;
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

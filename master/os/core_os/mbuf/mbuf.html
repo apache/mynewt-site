@@ -231,10 +231,23 @@ ga("send", "pageview");
 <li class="toctree-l3"><a class="reference internal" href="../sanity/sanity.html">Sanity</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/system_modules.html">System</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../modules/hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/split/split.html">Split Images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">System Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../modules/console/console.html">Console</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/mfg/mfg.html">Manufacturing support</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
@@ -302,7 +315,7 @@ of mbufs. Note that the numbers/text in parentheses denote the size of
 the structures/elements (in bytes) and that MBLEN is the memory block
 length of the memory pool used by the mbuf pool.</p>
 <div class="figure" id="id1">
-<img alt="Packet header mbuf" src="os/core_os/mbuf/pics/mbuf_fig1.png" />
+<img alt="Packet header mbuf" src="../../../_images/mbuf_fig1.png" />
 <p class="caption"><span class="caption-text">Packet header mbuf</span></p>
 </div>
 </div>
@@ -335,14 +348,14 @@ has been allocated. This is used internally by the mbuf library.</li>
 <li>The <code class="xref c c-member docutils literal notranslate"><span class="pre">omp_next</span></code> field is a linked list element which is used to chain
 mbufs.</li>
 </ul>
-<p>Figure 2 also shows a normal mbuf with actual values in the <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><code class="xref c c-type docutils literal notranslate"><span class="pre">os_mbuf</span></code></a>
+<p>Figure 2 also shows a normal mbuf with actual values in the <code class="xref c c-type docutils literal notranslate"><span class="pre">os_mbuf</span></code>
 structure. This mbuf starts at address 0x1000 and is 256 bytes in total
 length. In this example, the user has copied 33 bytes into the data
 buffer starting at address 0x1010 (this is where <code class="xref c c-member docutils literal notranslate"><span class="pre">om_data</span></code> points). Note
 that the packet header length in this mbuf is 0 as it is not a packet
 header mbuf.</p>
 <div class="figure" id="id2">
-<img alt="OS mbuf structure" src="os/core_os/mbuf/pics/mbuf_fig2.png" />
+<img alt="OS mbuf structure" src="../../../_images/mbuf_fig2.png" />
 <p class="caption"><span class="caption-text">OS mbuf structure</span></p>
 </div>
 <p>Figure 3 illustrates the packet header mbuf along with some chained
@@ -353,7 +366,7 @@ want to show various examples of valid mbufs. For all the mbufs (both
 packet header and normal ones) the total length of the memory block is
 128 bytes.</p>
 <div class="figure" id="id3">
-<img alt="Packet" src="os/core_os/mbuf/pics/mbuf_fig3.png" />
+<img alt="Packet" src="../../../_images/mbuf_fig3.png" />
 <p class="caption"><span class="caption-text">Packet</span></p>
 </div>
 </div>
@@ -391,32 +404,32 @@ overhead required per memory block. The macro <em>MBUF_BUF_SIZE</em> is used
 to denote the amount of payload that the application requires (aligned
 on a 32-bit boundary in this case). All this leads to the total memory
 block size required, denoted by the macro <em>MBUF_MEMBLOCK_OVERHEAD</em>.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)
-#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)</span>
+<span class="cp">#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD</span>
 
-#define MBUF_NUM_MBUFS      (32)
-#define MBUF_PAYLOAD_SIZE   (64)
-#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)
-#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)
-#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)
+<span class="cp">#define MBUF_NUM_MBUFS      (32)</span>
+<span class="cp">#define MBUF_PAYLOAD_SIZE   (64)</span>
+<span class="cp">#define MBUF_BUF_SIZE       OS_ALIGN(MBUF_PAYLOAD_SIZE, 4)</span>
+<span class="cp">#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)</span>
+<span class="cp">#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)</span>
 
-struct os_mbuf_pool g_mbuf_pool;
-struct os_mempool g_mbuf_mempool;
-os_membuf_t g_mbuf_buffer[MBUF_MEMPOOL_SIZE];
+<span class="k">struct</span> <span class="n">os_mbuf_pool</span> <span class="n">g_mbuf_pool</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">os_mempool</span> <span class="n">g_mbuf_mempool</span><span class="p">;</span>
+<span class="n">os_membuf_t</span> <span class="n">g_mbuf_buffer</span><span class="p">[</span><span class="n">MBUF_MEMPOOL_SIZE</span><span class="p">];</span>
 
-void
-create_mbuf_pool(void)
-{
-    int rc;
+<span class="kt">void</span>
+<span class="nf">create_mbuf_pool</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
-    rc = os_mempool_init(&amp;g_mbuf_mempool, MBUF_NUM_MBUFS,
-                          MBUF_MEMBLOCK_SIZE, &amp;g_mbuf_buffer[0], &quot;mbuf_pool&quot;);
-    assert(rc == 0);
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mempool_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_mempool</span><span class="p">,</span> <span class="n">MBUF_NUM_MBUFS</span><span class="p">,</span>
+                          <span class="n">MBUF_MEMBLOCK_SIZE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">g_mbuf_buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&quot;mbuf_pool&quot;</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
 
-    rc = os_mbuf_pool_init(&amp;g_mbuf_pool, &amp;g_mbuf_mempool, MBUF_MEMBLOCK_SIZE,
-                           MBUF_NUM_MBUFS);
-    assert(rc == 0);
-}
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mbuf_pool_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">g_mbuf_mempool</span><span class="p">,</span> <span class="n">MBUF_MEMBLOCK_SIZE</span><span class="p">,</span>
+                           <span class="n">MBUF_NUM_MBUFS</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -466,30 +479,30 @@ provided API to copy data into/out of mbuf chains and/or manipulate mbufs.</p>
 packet to a networking interface. The code sample also provides an
 example of copying data out of an mbuf as well as use of the “pullup”
 api (another very common mbuf api).</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
-mbuf_usage_example1(uint8_t *mydata, int mydata_length)
-{
-    int rc;
-    struct os_mbuf *om;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">mbuf_usage_example1</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">mydata</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mydata_length</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
 
-    /* get a packet header mbuf */
-    om = os_mbuf_get_pkthdr(&amp;g_mbuf_pool, sizeof(struct user_hdr));
-    if (om) {
-        /*
-         * Copy user data into mbuf. NOTE: if mydata_length is greater than the
-         * mbuf payload size (64 bytes using above example), mbufs are allocated
-         * and chained together to accommodate the total packet length.
-         */
-        rc = os_mbuf_copyinto(om, 0, mydata, len);
-        if (rc) {
-            /* Error! Could not allocate enough mbufs for total packet length */
-            return -1;
-        }
+    <span class="cm">/* get a packet header mbuf */</span>
+    <span class="n">om</span> <span class="o">=</span> <span class="n">os_mbuf_get_pkthdr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">user_hdr</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">om</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/*</span>
+<span class="cm">         * Copy user data into mbuf. NOTE: if mydata_length is greater than the</span>
+<span class="cm">         * mbuf payload size (64 bytes using above example), mbufs are allocated</span>
+<span class="cm">         * and chained together to accommodate the total packet length.</span>
+<span class="cm">         */</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mbuf_copyinto</span><span class="p">(</span><span class="n">om</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mydata</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* Error! Could not allocate enough mbufs for total packet length */</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        /* Send packet to networking interface */
-        send_pkt(om);
-    }
-}
+        <span class="cm">/* Send packet to networking interface */</span>
+        <span class="n">send_pkt</span><span class="p">(</span><span class="n">om</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>In <code class="docutils literal notranslate"><span class="pre">example2</span></code> we show use of the pullup api as this illustrates some
@@ -524,42 +537,42 @@ endian format and convert to host format.</p>
 data to/from mbufs and flat buffers!</p>
 <p>A final note: these examples assume the same mbuf struture and
 definitions used in the first example.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
-mbuf_usage_example2(struct mbuf *rxpkt)
-{
-    int rc;
-    uint8_t packet_data[16];
-    struct mbuf *om;
-    struct my_protocol_header *phdr;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">mbuf_usage_example2</span><span class="p">(</span><span class="k">struct</span> <span class="n">mbuf</span> <span class="o">*</span><span class="n">rxpkt</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">packet_data</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+    <span class="k">struct</span> <span class="n">mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">my_protocol_header</span> <span class="o">*</span><span class="n">phdr</span><span class="p">;</span>
 
-    /* Make sure that &quot;my_protocol_header&quot; bytes are contiguous in mbuf */
-    om = os_mbuf_pullup(&amp;g_mbuf_pool, sizeof(struct my_protocol_header));
-    if (!om) {
-        /* Not able to pull up data into contiguous area */
-        return -1;
-    }
+    <span class="cm">/* Make sure that &quot;my_protocol_header&quot; bytes are contiguous in mbuf */</span>
+    <span class="n">om</span> <span class="o">=</span> <span class="n">os_mbuf_pullup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">my_protocol_header</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">om</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* Not able to pull up data into contiguous area */</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    /*
-     * Get the protocol information from the packet. In this example we presume that we
-     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero
-     * length, and have had some time in flight.
-     */
-    phdr = OS_MBUF_DATA(om, struct my_protocol_header *);
-    type = ntohs(phdr-&gt;prot_type);
-    length = ntohs(phdr-&gt;prot_length);
-    time_in_flight = ntohl(phdr-&gt;prot_tif);
+    <span class="cm">/*</span>
+<span class="cm">     * Get the protocol information from the packet. In this example we presume that we</span>
+<span class="cm">     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero</span>
+<span class="cm">     * length, and have had some time in flight.</span>
+<span class="cm">     */</span>
+    <span class="n">phdr</span> <span class="o">=</span> <span class="n">OS_MBUF_DATA</span><span class="p">(</span><span class="n">om</span><span class="p">,</span> <span class="k">struct</span> <span class="n">my_protocol_header</span> <span class="o">*</span><span class="p">);</span>
+    <span class="n">type</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">phdr</span><span class="o">-&gt;</span><span class="n">prot_type</span><span class="p">);</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">phdr</span><span class="o">-&gt;</span><span class="n">prot_length</span><span class="p">);</span>
+    <span class="n">time_in_flight</span> <span class="o">=</span> <span class="n">ntohl</span><span class="p">(</span><span class="n">phdr</span><span class="o">-&gt;</span><span class="n">prot_tif</span><span class="p">);</span>
 
-    if ((type == MY_PROTOCOL_TYPE) &amp;&amp; (length &gt; 0) &amp;&amp; (time_in_flight &gt; 0)) {
-        rc = os_mbuf_copydata(rxpkt, sizeof(struct my_protocol_header), 16, packet_data);
-        if (!rc) {
-            /* Success! Perform operations on packet data */
-            &lt;... user code here ...&gt;
-        }
-    }
+    <span class="k">if</span> <span class="p">((</span><span class="n">type</span> <span class="o">==</span> <span class="n">MY_PROTOCOL_TYPE</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">time_in_flight</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mbuf_copydata</span><span class="p">(</span><span class="n">rxpkt</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">my_protocol_header</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="n">packet_data</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* Success! Perform operations on packet data */</span>
+            <span class="o">&lt;</span><span class="p">...</span> <span class="n">user</span> <span class="n">code</span> <span class="n">here</span> <span class="p">...</span><span class="o">&gt;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 
-    /* Free passed in packet (mbuf chain) since we don&#39;t need it anymore */
-    os_mbuf_free_chain(om);
-}
+    <span class="cm">/* Free passed in packet (mbuf chain) since we don&#39;t need it anymore */</span>
+    <span class="n">os_mbuf_free_chain</span><span class="p">(</span><span class="n">om</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -582,61 +595,61 @@ counter)</li>
 </ul>
 <p>Not shown in the code example is a call <code class="docutils literal notranslate"><span class="pre">my_task_rx_data_func</span></code>.
 Presumably, some other code will call this API.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>uint32_t pkts_rxd;
-struct os_mqueue rxpkt_q;
-struct os_eventq my_task_evq;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">pkts_rxd</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">os_mqueue</span> <span class="n">rxpkt_q</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">os_eventq</span> <span class="n">my_task_evq</span><span class="p">;</span>
 
-/**
- * Removes each packet from the receive queue and processes it.
- */
-void
-process_rx_data_queue(void)
-{
-    struct os_mbuf *om;
+<span class="cm">/**</span>
+<span class="cm"> * Removes each packet from the receive queue and processes it.</span>
+<span class="cm"> */</span>
+<span class="kt">void</span>
+<span class="nf">process_rx_data_queue</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
 
-    while ((om = os_mqueue_get(&amp;rxpkt_q)) != NULL) {
-        ++pkts_rxd;
-        os_mbuf_free_chain(om);
-    }
-}
+    <span class="k">while</span> <span class="p">((</span><span class="n">om</span> <span class="o">=</span> <span class="n">os_mqueue_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rxpkt_q</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">++</span><span class="n">pkts_rxd</span><span class="p">;</span>
+        <span class="n">os_mbuf_free_chain</span><span class="p">(</span><span class="n">om</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-/**
- * Called when a packet is received.
- */
-int
-my_task_rx_data_func(struct os_mbuf *om)
-{
-    int rc;
+<span class="cm">/**</span>
+<span class="cm"> * Called when a packet is received.</span>
+<span class="cm"> */</span>
+<span class="kt">int</span>
+<span class="nf">my_task_rx_data_func</span><span class="p">(</span><span class="k">struct</span> <span class="n">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
-    /* Enqueue the received packet and wake up the listening task. */
-    rc = os_mqueue_put(&amp;rxpkt_q, &amp;my_task_evq, om);
-    if (rc != 0) {
-        return -1;
-    }
+    <span class="cm">/* Enqueue the received packet and wake up the listening task. */</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mqueue_put</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rxpkt_q</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_task_evq</span><span class="p">,</span> <span class="n">om</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    return 0;
-}
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 
-void
-my_task_handler(void *arg)
-{
-    struct os_event *ev;
-    struct os_callout_func *cf;
-    int rc;
+<span class="kt">void</span>
+<span class="nf">my_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">os_callout_func</span> <span class="o">*</span><span class="n">cf</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
-    /* Initialize eventq */
-    os_eventq_init(&amp;my_task_evq);
+    <span class="cm">/* Initialize eventq */</span>
+    <span class="n">os_eventq_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_task_evq</span><span class="p">);</span>
 
-    /* Initialize mqueue */
-    os_mqueue_init(&amp;rxpkt_q, NULL);
+    <span class="cm">/* Initialize mqueue */</span>
+    <span class="n">os_mqueue_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rxpkt_q</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 
-    /* Process each event posted to our eventq.  When there are no events to
-     * process, sleep until one arrives.
-     */
-    while (1) {
-        os_eventq_run(&amp;my_task_evq);
-    }
-}
+    <span class="cm">/* Process each event posted to our eventq.  When there are no events to</span>
+<span class="cm">     * process, sleep until one arrives.</span>
+<span class="cm">     */</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">os_eventq_run</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_task_evq</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -644,7 +657,7 @@ my_task_handler(void *arg)
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="c.os_mqueue_init">
-<span class="target" id="group___o_s_mbuf_1ga9763522ccbaeb6844dab335f6ee91342"></span>int <code class="descname">os_mqueue_init</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mqueue" title="os_mqueue">os_mqueue</a>  *<em>&nbsp;mq</em>, <a class="reference internal" href="../event_queue/event_queue.html#c.os_event_fn" title="os_event_fn">os_event_fn</a>  *<em>&nbsp;ev_cb</em>, void *<em>&nbsp;arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_init" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga9763522ccbaeb6844dab335f6ee91342"></span>int <code class="descname">os_mqueue_init</code><span class="sig-paren">(</span>struct  os_mqueue  *<em>&nbsp;mq</em>, <a class="reference internal" href="../event_queue/event_queue.html#c.os_event_fn" title="os_event_fn">os_event_fn</a>  *<em>&nbsp;ev_cb</em>, void *<em>&nbsp;arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes an mqueue. </p>
 <p>An mqueue is a queue of mbufs that ties to a particular task’s event queue. Mqueues form a helper API around a common paradigm: wait on an event queue until at least one packet is available, then process a queue of packets.</p>
 <p>When mbufs are available on the queue, an event OS_EVENT_T_MQUEUE_DATA will be posted to the task’s mbuf queue.</p>
@@ -664,7 +677,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mqueue_get">
-<span class="target" id="group___o_s_mbuf_1ga32306d7188418fdde8d0be121844b291"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mqueue_get</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mqueue" title="os_mqueue">os_mqueue</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_get" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga32306d7188418fdde8d0be121844b291"></span>struct os_mbuf* <code class="descname">os_mqueue_get</code><span class="sig-paren">(</span>struct  os_mqueue <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove and return a single mbuf from the mbuf queue. </p>
 <p>Does not block.</p>
 <p><dl class="docutils">
@@ -681,7 +694,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mqueue_put">
-<span class="target" id="group___o_s_mbuf_1ga39221c77178f12af8bd4b2c24cad07b6"></span>int <code class="descname">os_mqueue_put</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mqueue" title="os_mqueue">os_mqueue</a> <em>&nbsp;*</em>, struct  <a class="reference internal" href="../event_queue/event_queue.html#c.os_eventq" title="os_eventq">os_eventq</a> <em>&nbsp;*</em>, struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_put" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga39221c77178f12af8bd4b2c24cad07b6"></span>int <code class="descname">os_mqueue_put</code><span class="sig-paren">(</span>struct  os_mqueue <em>&nbsp;*</em>, struct  os_eventq <em>&nbsp;*</em>, struct  os_mbuf <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a packet (i.e. </p>
 <p>packet header mbuf) to an mqueue. The event associated with the mqueue gets posted to the specified eventq.</p>
 <p><dl class="docutils">
@@ -700,7 +713,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_msys_register">
-<span class="target" id="group___o_s_mbuf_1ga164e3f90cdee2692a85c249761ba001e"></span>int <code class="descname">os_msys_register</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool">os_mbuf_pool</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_register" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga164e3f90cdee2692a85c249761ba001e"></span>int <code class="descname">os_msys_register</code><span class="sig-paren">(</span>struct  os_mbuf_pool <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_register" title="Permalink to this definition">¶</a></dt>
 <dd><p>MSYS is a system level mbuf registry. </p>
 <p>Allows the system to share packet buffers amongst the various networking stacks that can be running simultaeneously.</p>
 <p>Mbuf pools are created in the system initialization code, and then when a mbuf is allocated out of msys, it will try and find the best fit based upon estimated mbuf size.</p>
@@ -719,7 +732,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_msys_get">
-<span class="target" id="group___o_s_mbuf_1ga0e887615518be2d1fc721815dfd157c5"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_msys_get</code><span class="sig-paren">(</span>uint16_t<em>&nbsp;dsize</em>, uint16_t<em>&nbsp;leadingspace</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga0e887615518be2d1fc721815dfd157c5"></span>struct os_mbuf* <code class="descname">os_msys_get</code><span class="sig-paren">(</span>uint16_t<em>&nbsp;dsize</em>, uint16_t<em>&nbsp;leadingspace</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allocate a mbuf from msys. </p>
 <p>Based upon the data size requested, <a class="reference internal" href="#group___o_s_mbuf_1ga0e887615518be2d1fc721815dfd157c5"><span class="std std-ref">os_msys_get()</span></a> will choose the mbuf pool that has the best fit.</p>
 <p><dl class="docutils">
@@ -743,7 +756,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_msys_get_pkthdr">
-<span class="target" id="group___o_s_mbuf_1ga841e0b4f77115ec9df4b5becc252f03e"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_msys_get_pkthdr</code><span class="sig-paren">(</span>uint16_t<em>&nbsp;dsize</em>, uint16_t<em>&nbsp;user_hdr_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get_pkthdr" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga841e0b4f77115ec9df4b5becc252f03e"></span>struct os_mbuf* <code class="descname">os_msys_get_pkthdr</code><span class="sig-paren">(</span>uint16_t<em>&nbsp;dsize</em>, uint16_t<em>&nbsp;user_hdr_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get_pkthdr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allocate a packet header structure from the MSYS pool. </p>
 <p>See <a class="reference internal" href="#group___o_s_mbuf_1ga164e3f90cdee2692a85c249761ba001e"><span class="std std-ref">os_msys_register()</span></a> for a description of MSYS.</p>
 <p><dl class="docutils">
@@ -783,7 +796,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_pool_init">
-<span class="target" id="group___o_s_mbuf_1ga2895885c2f34a9582d2490558e782ff5"></span>int <code class="descname">os_mbuf_pool_init</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool">os_mbuf_pool</a> <em>&nbsp;*</em>, struct  <a class="reference internal" href="../memory_pool/memory_pool.html#c.os_mempool" title="os_mempool">os_mempool</a>  *<em>&nbsp;mp</em>, uint16_t, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pool_init" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga2895885c2f34a9582d2490558e782ff5"></span>int <code class="descname">os_mbuf_pool_init</code><span class="sig-paren">(</span>struct  os_mbuf_pool <em>&nbsp;*</em>, struct  os_mempool  *<em>&nbsp;mp</em>, uint16_t, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pool_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a pool of mbufs. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -802,7 +815,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_get">
-<span class="target" id="group___o_s_mbuf_1gabf3bb711c79f3435c1da86f533e50296"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_get</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool">os_mbuf_pool</a>  *<em>&nbsp;omp</em>, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1gabf3bb711c79f3435c1da86f533e50296"></span>struct os_mbuf* <code class="descname">os_mbuf_get</code><span class="sig-paren">(</span>struct  os_mbuf_pool  *<em>&nbsp;omp</em>, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an mbuf from the mbuf pool. </p>
 <p>The mbuf is allocated, and initialized prior to being returned.</p>
 <p><dl class="docutils">
@@ -820,7 +833,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_get_pkthdr">
-<span class="target" id="group___o_s_mbuf_1ga717bd3c356c7555d5b93245d6e0e1b47"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_get_pkthdr</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool">os_mbuf_pool</a>  *<em>&nbsp;omp</em>, uint8_t<em>&nbsp;pkthdr_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get_pkthdr" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga717bd3c356c7555d5b93245d6e0e1b47"></span>struct os_mbuf* <code class="descname">os_mbuf_get_pkthdr</code><span class="sig-paren">(</span>struct  os_mbuf_pool  *<em>&nbsp;omp</em>, uint8_t<em>&nbsp;pkthdr_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get_pkthdr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allocate a new packet header mbuf out of the <a class="reference internal" href="#structos__mbuf__pool"><span class="std std-ref">os_mbuf_pool</span></a>. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -837,7 +850,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_dup">
-<span class="target" id="group___o_s_mbuf_1ga69b900ec646d9251fac4050ff49c3ab6"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_dup</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;m</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_dup" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga69b900ec646d9251fac4050ff49c3ab6"></span>struct os_mbuf* <code class="descname">os_mbuf_dup</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;m</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_dup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Duplicate a chain of mbufs. </p>
 <p>Return the start of the duplicated chain.</p>
 <p><dl class="docutils">
@@ -855,7 +868,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_off">
-<span class="target" id="group___o_s_mbuf_1gabbd3dd2b8880a323c70478f8988902af"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_off</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, int<em>&nbsp;off</em>, uint16_t *<em>&nbsp;out_off</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_off" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1gabbd3dd2b8880a323c70478f8988902af"></span>struct os_mbuf* <code class="descname">os_mbuf_off</code><span class="sig-paren">(</span>const struct  os_mbuf  *<em>&nbsp;om</em>, int<em>&nbsp;off</em>, uint16_t *<em>&nbsp;out_off</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locates the specified absolute offset within an mbuf chain. </p>
 <p>The offset can be one past than the total length of the chain, but no greater.</p>
 <p><dl class="docutils">
@@ -874,12 +887,29 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_copydata">
-<span class="target" id="group___o_s_mbuf_1ga31d793aa91e9c7ae5b5002b10f95dd64"></span>int <code class="descname">os_mbuf_copydata</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;m</em>, int<em>&nbsp;off</em>, int<em>&nbsp;len</em>, void *<em>&nbsp;dst</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copydata" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga31d793aa91e9c7ae5b5002b10f95dd64"></span>int <code class="descname">os_mbuf_copydata</code><span class="sig-paren">(</span>const struct  os_mbuf  *<em>&nbsp;m</em>, int<em>&nbsp;off</em>, int<em>&nbsp;len</em>, void *<em>&nbsp;dst</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copydata" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="c.os_mbuf_len">
+<span class="target" id="group___o_s_mbuf_1ga71a365a381016fb89b7b5d4acef5ddb3"></span>uint16_t <code class="descname">os_mbuf_len</code><span class="sig-paren">(</span>const struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_len" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the length of an mbuf chain. </p>
+<p>Calculates the length of an mbuf chain. If the mbuf contains a packet header, you should use <code class="docutils literal notranslate"><a class="reference internal" href="#group___o_s_mbuf_1gae286e94341ed58ac3be7b7a3cd0f1c25"><span class="std std-ref"><span class="pre">OS_MBUF_PKTLEN()</span></span></a></code> as a more efficient alternative to this function.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The length, in bytes, of the provided mbuf chain. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to measure.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="c.os_mbuf_append">
-<span class="target" id="group___o_s_mbuf_1ga672d3e6990c4d8fe60046ee6cde32ac1"></span>int <code class="descname">os_mbuf_append</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;m</em>, const void<em>&nbsp;*</em>, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_append" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga672d3e6990c4d8fe60046ee6cde32ac1"></span>int <code class="descname">os_mbuf_append</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;m</em>, const void<em>&nbsp;*</em>, uint16_t<span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Append data onto a mbuf. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -897,7 +927,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_appendfrom">
-<span class="target" id="group___o_s_mbuf_1ga66da7f4e54d6dbf4dc2d7531b68d7db0"></span>int <code class="descname">os_mbuf_appendfrom</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;dst</em>, const struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;src</em>, uint16_t<em>&nbsp;src_off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_appendfrom" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga66da7f4e54d6dbf4dc2d7531b68d7db0"></span>int <code class="descname">os_mbuf_appendfrom</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;dst</em>, const struct  os_mbuf  *<em>&nbsp;src</em>, uint16_t<em>&nbsp;src_off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_appendfrom" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads data from one mbuf and appends it to another. </p>
 <p>On error, the specified data range may be partially appended. Neither mbuf is required to contain an mbuf packet header.</p>
 <p><dl class="docutils">
@@ -917,7 +947,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_free">
-<span class="target" id="group___o_s_mbuf_1ga2bcbfe183bd88962d78017cc51c59ed2"></span>int <code class="descname">os_mbuf_free</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;mb</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga2bcbfe183bd88962d78017cc51c59ed2"></span>int <code class="descname">os_mbuf_free</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;mb</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release a mbuf back to the pool. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -934,7 +964,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_free_chain">
-<span class="target" id="group___o_s_mbuf_1ga66de6a0a042c35435547a1df9534cc3f"></span>int <code class="descname">os_mbuf_free_chain</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free_chain" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga66de6a0a042c35435547a1df9534cc3f"></span>int <code class="descname">os_mbuf_free_chain</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free_chain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free a chain of mbufs. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -951,7 +981,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_adj">
-<span class="target" id="group___o_s_mbuf_1gad1379ba25e8dc203a84ad6fc21f2880e"></span>void <code class="descname">os_mbuf_adj</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;mp</em>, int<em>&nbsp;req_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_adj" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1gad1379ba25e8dc203a84ad6fc21f2880e"></span>void <code class="descname">os_mbuf_adj</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;mp</em>, int<em>&nbsp;req_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_adj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjust the length of a mbuf, trimming either from the head or the tail of the mbuf. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
@@ -966,7 +996,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_cmpf">
-<span class="target" id="group___o_s_mbuf_1gac5d238e8abd1a459c2daf8fe814e13d4"></span>int <code class="descname">os_mbuf_cmpf</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, int<em>&nbsp;off</em>, const void *<em>&nbsp;data</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpf" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1gac5d238e8abd1a459c2daf8fe814e13d4"></span>int <code class="descname">os_mbuf_cmpf</code><span class="sig-paren">(</span>const struct  os_mbuf  *<em>&nbsp;om</em>, int<em>&nbsp;off</em>, const void *<em>&nbsp;data</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a memory compare of the specified region of an mbuf chain against a flat buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
@@ -985,7 +1015,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_cmpm">
-<span class="target" id="group___o_s_mbuf_1ga11d6f4ce57b2c5c7b619831689f519f1"></span>int <code class="descname">os_mbuf_cmpm</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om1</em>, uint16_t<em>&nbsp;offset1</em>, const struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om2</em>, uint16_t<em>&nbsp;offset2</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpm" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga11d6f4ce57b2c5c7b619831689f519f1"></span>int <code class="descname">os_mbuf_cmpm</code><span class="sig-paren">(</span>const struct  os_mbuf  *<em>&nbsp;om1</em>, uint16_t<em>&nbsp;offset1</em>, const struct  os_mbuf  *<em>&nbsp;om2</em>, uint16_t<em>&nbsp;offset2</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compares the contents of two mbuf chains. </p>
 <p>The ranges of the two chains to be compared are specified via the two offset parameters and the len parameter. Neither mbuf chain is required to contain a packet header.</p>
 <p><dl class="docutils">
@@ -1006,7 +1036,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_prepend">
-<span class="target" id="group___o_s_mbuf_1gac16c27c68f35e4647823ae020411763f"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_prepend</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1gac16c27c68f35e4647823ae020411763f"></span>struct os_mbuf* <code class="descname">os_mbuf_prepend</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increases the length of an mbuf chain by adding data to the front. </p>
 <p>If there is insufficient room in the leading mbuf, additional mbufs are allocated and prepended as necessary. If this function fails to allocate an mbuf, the entire chain is freed.</p>
 <p>The specified mbuf chain does not need to contain a packet header.</p>
@@ -1026,7 +1056,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_prepend_pullup">
-<span class="target" id="group___o_s_mbuf_1gac6e76dec13d44abd6032eb293aa1b63a"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_prepend_pullup</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend_pullup" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1gac6e76dec13d44abd6032eb293aa1b63a"></span>struct os_mbuf* <code class="descname">os_mbuf_prepend_pullup</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend_pullup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepends a chunk of empty data to the specified mbuf chain and ensures the chunk is contiguous. </p>
 <p>If either operation fails, the specified mbuf chain is freed and NULL is returned.</p>
 <p><dl class="docutils">
@@ -1044,7 +1074,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_copyinto">
-<span class="target" id="group___o_s_mbuf_1ga5e87037857c05e8a9379bb2889947854"></span>int <code class="descname">os_mbuf_copyinto</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, int<em>&nbsp;off</em>, const void *<em>&nbsp;src</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copyinto" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga5e87037857c05e8a9379bb2889947854"></span>int <code class="descname">os_mbuf_copyinto</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em>, int<em>&nbsp;off</em>, const void *<em>&nbsp;src</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copyinto" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copies the contents of a flat buffer into an mbuf chain, starting at the specified destination offset. </p>
 <p>If the mbuf is too small for the source data, it is extended as necessary. If the destination mbuf contains a packet header, the header length is updated.</p>
 <p><dl class="docutils">
@@ -1065,7 +1095,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_concat">
-<span class="target" id="group___o_s_mbuf_1ga65ab8ccc2730629ca0dd8c5190575213"></span>void <code class="descname">os_mbuf_concat</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;first</em>, struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;second</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_concat" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga65ab8ccc2730629ca0dd8c5190575213"></span>void <code class="descname">os_mbuf_concat</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;first</em>, struct  os_mbuf  *<em>&nbsp;second</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attaches a second mbuf chain onto the end of the first. </p>
 <p>If the first chain contains a packet header, the header’s length is updated. If the second chain has a packet header, its header is cleared.</p>
 <p><dl class="docutils">
@@ -1081,7 +1111,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_extend">
-<span class="target" id="group___o_s_mbuf_1ga67d81c50479c67444fd1a9449d4241ed"></span>void* <code class="descname">os_mbuf_extend</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_extend" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga67d81c50479c67444fd1a9449d4241ed"></span>void* <code class="descname">os_mbuf_extend</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_extend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Increases the length of an mbuf chain by the specified amount. </p>
 <p>If there is not sufficient room in the last buffer, a new buffer is allocated and appended to the chain. It is an error to request more data than can fit in a single buffer.</p>
 <p><dl class="docutils">
@@ -1100,7 +1130,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_pullup">
-<span class="target" id="group___o_s_mbuf_1ga3afad6750be6e7647ff0a19112ea36f7"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_pullup</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pullup" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga3afad6750be6e7647ff0a19112ea36f7"></span>struct os_mbuf* <code class="descname">os_mbuf_pullup</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pullup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rearrange a mbuf chain so that len bytes are contiguous, and in the data area of an mbuf (so that <a class="reference internal" href="#group___o_s_mbuf_1ga4bf84d7b323b20131da17c8bfed65674"><span class="std std-ref">OS_MBUF_DATA()</span></a> will work on a structure of size len.) Returns the resulting mbuf chain on success, free’s it and returns NULL on failure. </p>
 <p>If there is room, it will add up to “max_protohdr - len” extra bytes to the contiguous region, in an attempt to avoid being called next time.</p>
 <p><dl class="docutils">
@@ -1119,7 +1149,7 @@ my_task_handler(void *arg)
 
 <dl class="function">
 <dt id="c.os_mbuf_trim_front">
-<span class="target" id="group___o_s_mbuf_1ga76d87394f85361c8a72d7ec0f0416bd6"></span>struct <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>* <code class="descname">os_mbuf_trim_front</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_mbuf" title="os_mbuf">os_mbuf</a>  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_trim_front" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_mbuf_1ga76d87394f85361c8a72d7ec0f0416bd6"></span>struct os_mbuf* <code class="descname">os_mbuf_trim_front</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_trim_front" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes and frees empty mbufs from the front of a chain. </p>
 <p>If the chain contains a packet header, it is preserved.</p>
 <p><dl class="docutils">
@@ -1128,6 +1158,26 @@ my_task_handler(void *arg)
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to trim.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_mbuf_widen">
+<span class="target" id="group___o_s_mbuf_1gaa5e6acfb8702f5333567f758f620e1f3"></span>int <code class="descname">os_mbuf_widen</code><span class="sig-paren">(</span>struct  os_mbuf  *<em>&nbsp;om</em>, uint16_t<em>&nbsp;off</em>, uint16_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_widen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increases the length of an mbuf chain by inserting a gap at the specified offset. </p>
+<p>The contents of the gap are indeterminate. If the mbuf chain contains a packet header, its total length is increased accordingly.</p>
+<p>This function never frees the provided mbuf chain.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; SYS_[…] error code on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to widen. </li>
+<li><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset at which to insert the gap. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: The size of the gap to insert.</li>
 </ul>
 </dd>
 </dl>
@@ -1242,9 +1292,9 @@ my_task_handler(void *arg)
 </p>
 </dd></dl>
 
-<dl class="struct">
-<dt id="c.os_mbuf_pool">
-<span class="target" id="structos__mbuf__pool"></span><em class="property">struct </em><code class="descname">os_mbuf_pool</code><a class="headerlink" href="#c.os_mbuf_pool" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="_CPPv312os_mbuf_pool">
+<span id="_CPPv212os_mbuf_pool"></span><span id="os_mbuf_pool"></span><span class="target" id="structos__mbuf__pool"></span><em class="property">struct </em><code class="descname">os_mbuf_pool</code><a class="headerlink" href="#_CPPv312os_mbuf_pool" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;os_mbuf.h&gt;</em><p>A mbuf pool from which to allocate mbufs. </p>
 <p>This contains a pointer to the os mempool to allocate mbufs out of, the total number of elements in the pool, and the amount of “user” data in a non-packet header mbuf. The total pool size, in bytes, should be: os_mbuf_count * (omp_databuf_len + sizeof(struct os_mbuf)) </p>
 <div class="breathe-sectiondef docutils container">
@@ -1258,16 +1308,16 @@ my_task_handler(void *arg)
 
 <dl class="variable">
 <dt id="c.os_mbuf_pool::omp_pool">
-<span class="target" id="structos__mbuf__pool_1a883d0c3aa305284ebd19bd3c62037430"></span>struct <a class="reference internal" href="../memory_pool/memory_pool.html#c.os_mempool" title="os_mempool">os_mempool</a>* <code class="descname">omp_pool</code><a class="headerlink" href="#c.os_mbuf_pool::omp_pool" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structos__mbuf__pool_1a883d0c3aa305284ebd19bd3c62037430"></span>struct os_mempool* <code class="descname">omp_pool</code><a class="headerlink" href="#c.os_mbuf_pool::omp_pool" title="Permalink to this definition">¶</a></dt>
 <dd><p>The memory pool which to allocate mbufs out of. </p>
 </dd></dl>
 
 </div>
 </dd></dl>
 
-<dl class="struct">
-<dt id="c.os_mbuf_pkthdr">
-<span class="target" id="structos__mbuf__pkthdr"></span><em class="property">struct </em><code class="descname">os_mbuf_pkthdr</code><a class="headerlink" href="#c.os_mbuf_pkthdr" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="_CPPv314os_mbuf_pkthdr">
+<span id="_CPPv214os_mbuf_pkthdr"></span><span id="os_mbuf_pkthdr"></span><span class="target" id="structos__mbuf__pkthdr"></span><em class="property">struct </em><code class="descname">os_mbuf_pkthdr</code><a class="headerlink" href="#_CPPv314os_mbuf_pkthdr" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;os_mbuf.h&gt;</em><p>A packet header structure that preceeds the mbuf packet headers. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
@@ -1286,9 +1336,9 @@ my_task_handler(void *arg)
 </div>
 </dd></dl>
 
-<dl class="struct">
-<dt id="c.os_mbuf">
-<span class="target" id="structos__mbuf"></span><em class="property">struct </em><code class="descname">os_mbuf</code><a class="headerlink" href="#c.os_mbuf" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="_CPPv37os_mbuf">
+<span id="_CPPv27os_mbuf"></span><span id="os_mbuf"></span><span class="target" id="structos__mbuf"></span><em class="property">struct </em><code class="descname">os_mbuf</code><a class="headerlink" href="#_CPPv37os_mbuf" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;os_mbuf.h&gt;</em><p>Chained memory buffer. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
@@ -1318,7 +1368,7 @@ my_task_handler(void *arg)
 
 <dl class="variable">
 <dt id="c.os_mbuf::om_omp">
-<span class="target" id="structos__mbuf_1a06b4de9c818acdf09241b0cbe3d6a207"></span>struct <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool">os_mbuf_pool</a>* <code class="descname">om_omp</code><a class="headerlink" href="#c.os_mbuf::om_omp" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structos__mbuf_1a06b4de9c818acdf09241b0cbe3d6a207"></span>struct os_mbuf_pool* <code class="descname">om_omp</code><a class="headerlink" href="#c.os_mbuf::om_omp" title="Permalink to this definition">¶</a></dt>
 <dd><p>The mbuf pool this mbuf was allocated out of. </p>
 </dd></dl>
 
@@ -1331,15 +1381,15 @@ my_task_handler(void *arg)
 </div>
 </dd></dl>
 
-<dl class="struct">
-<dt id="c.os_mqueue">
-<span class="target" id="structos__mqueue"></span><em class="property">struct </em><code class="descname">os_mqueue</code><a class="headerlink" href="#c.os_mqueue" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="_CPPv39os_mqueue">
+<span id="_CPPv29os_mqueue"></span><span id="os_mqueue"></span><span class="target" id="structos__mqueue"></span><em class="property">struct </em><code class="descname">os_mqueue</code><a class="headerlink" href="#_CPPv39os_mqueue" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;os_mbuf.h&gt;</em><p>Structure representing a queue of mbufs. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.os_mqueue::mq_ev">
-<span class="target" id="structos__mqueue_1a30ed7b555fcb87d7829dd6a1f34540db"></span>struct <a class="reference internal" href="../event_queue/event_queue.html#c.os_event" title="os_event">os_event</a> <code class="descname">mq_ev</code><a class="headerlink" href="#c.os_mqueue::mq_ev" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structos__mqueue_1a30ed7b555fcb87d7829dd6a1f34540db"></span>struct os_event <code class="descname">mq_ev</code><a class="headerlink" href="#c.os_mqueue::mq_ev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Event to post when new buffers are available on the queue. </p>
 </dd></dl>
 
@@ -1411,7 +1461,6 @@ my_task_handler(void *arg)
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>
