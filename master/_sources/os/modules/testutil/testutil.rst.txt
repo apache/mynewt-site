@@ -6,6 +6,10 @@ specifying test cases and recording test results.
 
 You would use it to build regression tests for your library.
 
+.. contents::
+  :local:
+  :depth: 2
+
 Description
 ~~~~~~~~~~~
 
@@ -68,7 +72,7 @@ or by including a call to your test suite from
 Example
 ~~~~~~~
 
-`This Tutorial <../../tutorials/unit_test.html>`__ shows how to create a
+:doc:`This Tutorial <../../../tutorials/other/unit_test>` shows how to create a
 test suite for a Mynewt package.
 
 Data structures
@@ -76,82 +80,61 @@ Data structures
 
 .. code-block:: console
 
-    struct tu_config {
-        int tc_print_results;
-        int tc_system_assert;
+    struct ts_config {
+        int ts_print_results;
+        int ts_system_assert;
 
-        tu_case_init_fn_t *tc_case_init_cb;
-        void *tc_case_init_arg;
+        const char *ts_suite_name;
 
-        tu_case_report_fn_t *tc_case_fail_cb;
-        void *tc_case_fail_arg;
+        /*
+         * Called prior to the first test in the suite
+         */
+        tu_init_test_fn_t *ts_suite_init_cb;
+        void *ts_suite_init_arg;
 
-        tu_case_report_fn_t *tc_case_pass_cb;
-        void *tc_case_pass_arg;
+        /*
+         * Called after the last test in the suite
+         */
+        tu_init_test_fn_t *ts_suite_complete_cb;
+        void *ts_suite_complete_arg;
 
-        tu_suite_init_fn_t *tc_suite_init_cb;
-        void *tc_suite_init_arg;
+        /*
+         * Called before every test in the suite
+         */
+        tu_pre_test_fn_t *ts_case_pre_test_cb;
+        void *ts_case_pre_arg;
 
-        tu_restart_fn_t *tc_restart_cb;
-        void *tc_restart_arg;
+        /*
+         * Called after every test in the suite
+         */
+        tu_post_test_fn_t *ts_case_post_test_cb;
+        void *ts_case_post_arg;
+
+        /*
+         * Called after test returns success
+         */
+        tu_case_report_fn_t *ts_case_pass_cb;
+        void *ts_case_pass_arg;
+
+        /*
+         * Called after test fails (typically thoough a failed test assert)
+         */
+        tu_case_report_fn_t *ts_case_fail_cb;
+        void *ts_case_fail_arg;
+
+        /*
+         * restart after running the test suite - self-test only
+         */
+        tu_suite_restart_fn_t *ts_restart_cb;
+        void *ts_restart_arg;
     };
-    extern struct tu_config tu_config;
 
-The global ``tu_config`` struct contains all the testutil package's
-settings. This should be populated before ``tu_init()`` is called.
+The global ``ts_config`` struct contains all the testutil package's
+settings.
 
-List of Functions
-~~~~~~~~~~~~~~~~~
+API
+~~~~
 
-The functions, and macros available in ``testutil`` are:
-
-+------------+----------------+
-| Function   | Description    |
-+============+================+
-| `tu\_init  | Initializes    |
-| <tu_init.m | the test       |
-| d>`__      | framework      |
-|            | according to   |
-|            | the contents   |
-|            | of the         |
-|            | tu\_config     |
-|            | struct.        |
-+------------+----------------+
-| `TEST\_ASS | Asserts that   |
-| ERT <test_ | the specified  |
-| assert.html> | condition is   |
-| `__        | true.          |
-+------------+----------------+
-| `TEST\_PAS | Reports a      |
-| S <test_pa | success result |
-| ss.html>`__  | for the        |
-|            | current test.  |
-+------------+----------------+
-| `TEST\_SUI | Declares a     |
-| TE <test_s | test suite     |
-| uite.html>`_ | function.      |
-| _          |                |
-+------------+----------------+
-| `TEST\_CAS | Defines a test |
-| E <test_ca | case function. |
-| se.html>`__  |                |
-+------------+----------------+
-| `TEST\_CAS | Declares a     |
-| E\_DECL <t | test case      |
-| est_decl.m | function. his  |
-| d>`__      | is only        |
-|            | required if    |
-|            | the test case  |
-|            | function       |
-|            | exists in a    |
-|            | different file |
-|            | than the test  |
-|            | suite.         |
-+------------+----------------+
-| `tu\_resta | This function  |
-| rt <tu_res | is used when a |
-| tart.html>`_ | system reset   |
-| _          | is necessary   |
-|            | to proceed     |
-|            | with testing.  |
-+------------+----------------+
+.. doxygengroup:: OSTestutil
+    :members:
+    :content-only:

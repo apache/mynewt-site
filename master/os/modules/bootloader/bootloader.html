@@ -40,7 +40,10 @@
           <link rel="index" title="Index"
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
-      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/> 
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/>
+          <link rel="up" title="OS User Guide" href="../../os_user_guide.html"/>
+          <link rel="next" title="Split Images" href="../split/split.html"/>
+          <link rel="prev" title="BSP" href="../hal/hal_bsp/hal_bsp.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -151,6 +154,8 @@ ga("send", "pageview");
   <div class="container">
     <a href="/documentation/">Docs</a> /
     
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
     Bootloader
     
   <div class="sourcelink">
@@ -203,12 +208,32 @@ ga("send", "pageview");
       
         
         
-            <ul>
+            <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_modules.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
@@ -244,10 +269,27 @@ performs a check to see if an attempt to update software is already
 underway and manage the progress of the process.</p>
 <p>The bootloader in the Apache Mynewt project verifies the cryptographic
 signature of the firmware image before running it. It maintains a
-detailed status log for each stage of the boot process. For verification
-of the authenticity of the OS image, it:</p>
+detailed status log for each stage of the boot process.</p>
 <p>The “secure bootloader” should be placed in protected memory on a given
 microcontroller.</p>
+<p>The Apache Mynewt bootloader is the foundation of <a class="reference external" href="https://github.com/runtimeco/mcuboot/">MCUboot</a>,
+a secure bootloader for 32-bit MCUs that has been ported to other Operating Systems as well.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#limitations" id="id1">Limitations</a></li>
+<li><a class="reference internal" href="#image-format" id="id2">Image Format</a></li>
+<li><a class="reference internal" href="#flash-map" id="id3">Flash Map</a></li>
+<li><a class="reference internal" href="#image-slots" id="id4">Image Slots</a></li>
+<li><a class="reference internal" href="#boot-states" id="id5">Boot States</a></li>
+<li><a class="reference internal" href="#boot-vector" id="id6">Boot Vector</a></li>
+<li><a class="reference internal" href="#high-level-operation" id="id7">High-level Operation</a></li>
+<li><a class="reference internal" href="#image-swapping" id="id8">Image Swapping</a></li>
+<li><a class="reference internal" href="#swap-status" id="id9">Swap Status</a></li>
+<li><a class="reference internal" href="#reset-recovery" id="id10">Reset Recovery</a></li>
+<li><a class="reference internal" href="#integrity-check" id="id11">Integrity Check</a></li>
+<li><a class="reference internal" href="#image-signing-and-verification" id="id12">Image Signing and Verification</a></li>
+</ul>
+</div>
 <p>The Mynewt bootloader comprises two packages:</p>
 <ul class="simple">
 <li>The bootutil library (boot/bootutil)</li>
@@ -267,7 +309,7 @@ be unit tested since a library can be unit tested but an applicant
 can’t.</li>
 </ol>
 <div class="section" id="limitations">
-<h2>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id1">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The boot loader currently only supports images with the following
 characteristics:</p>
 <ul class="simple">
@@ -276,7 +318,7 @@ characteristics:</p>
 </ul>
 </div>
 <div class="section" id="image-format">
-<h2>Image Format<a class="headerlink" href="#image-format" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id2">Image Format</a><a class="headerlink" href="#image-format" title="Permalink to this headline">¶</a></h2>
 <p>The following definitions describe the image header format.</p>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define IMAGE_MAGIC                 0x96f3b83c
 #define IMAGE_MAGIC_NONE            0xffffffff
@@ -336,7 +378,7 @@ struct image_tlv {
 </div>
 </div>
 <div class="section" id="flash-map">
-<h2>Flash Map<a class="headerlink" href="#flash-map" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3">Flash Map</a><a class="headerlink" href="#flash-map" title="Permalink to this headline">¶</a></h2>
 <p>A Mynewt device’s flash is partitioned according to its <em>flash map</em>. At
 a high level, the flash map maps numeric IDs to <em>flash areas</em>. A flash
 area is a region of disk with the following properties:</p>
@@ -353,7 +395,7 @@ area is a region of disk with the following properties:</p>
 </div>
 </div>
 <div class="section" id="image-slots">
-<h2>Image Slots<a class="headerlink" href="#image-slots" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Image Slots</a><a class="headerlink" href="#image-slots" title="Permalink to this headline">¶</a></h2>
 <p>A portion of the flash memory is partitioned into two image slots: a
 primary slot and a secondary slot. The boot loader will only run an
 image from the primary slot, so images must be built such that they can
@@ -364,7 +406,7 @@ flash prior to booting.</p>
 area to allow for reliable image swapping.</p>
 </div>
 <div class="section" id="boot-states">
-<h2>Boot States<a class="headerlink" href="#boot-states" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Boot States</a><a class="headerlink" href="#boot-states" title="Permalink to this headline">¶</a></h2>
 <p>Logically, you can think of a pair of flags associated with each image
 slot: pending and confirmed. On startup, the boot loader determines the
 state of the device by inspecting each pair of flags. These flags have
@@ -419,7 +461,7 @@ Revert to image 1 on next reboot |
 </div>
 </div>
 <div class="section" id="boot-vector">
-<h2>Boot Vector<a class="headerlink" href="#boot-vector" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6">Boot Vector</a><a class="headerlink" href="#boot-vector" title="Permalink to this headline">¶</a></h2>
 <p>At startup, the boot loader determines which of the above three boot
 states a device is in by inspecting the boot vector. The boot vector
 consists of two records (called “image trailers”), one written at the
@@ -534,7 +576,7 @@ State IV
 </div>
 </div>
 <div class="section" id="high-level-operation">
-<h2>High-level Operation<a class="headerlink" href="#high-level-operation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">High-level Operation</a><a class="headerlink" href="#high-level-operation" title="Permalink to this headline">¶</a></h2>
 <p>With the terms defined, we can now explore the boot loader’s operation.
 First, a high-level overview of the boot process is presented. Then, the
 following sections describe each step of the process in more detail.</p>
@@ -561,7 +603,7 @@ C. Boot into image in slot 0.
 </div>
 </div>
 <div class="section" id="image-swapping">
-<h2>Image Swapping<a class="headerlink" href="#image-swapping" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8">Image Swapping</a><a class="headerlink" href="#image-swapping" title="Permalink to this headline">¶</a></h2>
 <p>The boot loader swaps the contents of the two image slots for two
 reasons:</p>
 <ul class="simple">
@@ -617,7 +659,7 @@ tested or reverted:</p>
 </div>
 </div>
 <div class="section" id="swap-status">
-<h2>Swap Status<a class="headerlink" href="#swap-status" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9">Swap Status</a><a class="headerlink" href="#swap-status" title="Permalink to this headline">¶</a></h2>
 <p>The swap status region allows the boot loader to recover in case it
 restarts in the middle of an image swap operation. The swap status
 region consists of a series of single-byte records. These records are
@@ -691,7 +733,7 @@ sectors, the first sector index that gets swapped is 63, which
 corresponds to the exact halfway point within the region.</p>
 </div>
 <div class="section" id="reset-recovery">
-<h2>Reset Recovery<a class="headerlink" href="#reset-recovery" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10">Reset Recovery</a><a class="headerlink" href="#reset-recovery" title="Permalink to this headline">¶</a></h2>
 <p>If the boot loader resets in the middle of a swap operation, the two
 images may be discontiguous in flash. Bootutil recovers from this
 condition by using the boot vector to determine how the image parts are
@@ -751,7 +793,7 @@ whether the part belongs to image 0 or image 1.</p>
 though it had just been started.</p>
 </div>
 <div class="section" id="integrity-check">
-<h2>Integrity Check<a class="headerlink" href="#integrity-check" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11">Integrity Check</a><a class="headerlink" href="#integrity-check" title="Permalink to this headline">¶</a></h2>
 <p>An image is checked for integrity immediately before it gets copied into
 the primary slot. If the boot loader doesn’t perform an image swap, then
 it doesn’t perform an integrity check.</p>
@@ -766,7 +808,7 @@ verifiable using a key embedded in the boot loader.</li>
 </ul>
 </div>
 <div class="section" id="image-signing-and-verification">
-<h2>Image Signing and Verification<a class="headerlink" href="#image-signing-and-verification" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12">Image Signing and Verification</a><a class="headerlink" href="#image-signing-and-verification" title="Permalink to this headline">¶</a></h2>
 <p>As indicated above, the final step of the integrity check is signature
 verification. The boot loader can have one or more public keys embedded
 in it at build time. During signature verification, the boot loader
@@ -775,35 +817,7 @@ one of its public keys. The image signature TLV indicates the index of
 the key that is has been signed with. The boot loader uses this index to
 identify the corresponding public key.</p>
 <p>For information on embedding public keys in the boot loader, as well as
-producing signed images, see: boot/bootutil/signed_images.md</p>
-<ul class="simple">
-<li><a class="reference external" href="boot_build_status.html">boot_build_status</a></li>
-<li><a class="reference external" href="boot_build_status_one.html">boot_build_status_one</a></li>
-<li><a class="reference external" href="boot_clear_status.html">boot_clear_status</a></li>
-<li><a class="reference external" href="boot_copy_area.html">boot_copy_area</a></li>
-<li><a class="reference external" href="boot_copy_image.html">boot_copy_image</a></li>
-<li><a class="reference external" href="boot_erase_area.html">boot_erase_area</a></li>
-<li><a class="reference external" href="boot_fill_slot.html">boot_fill_slot</a></li>
-<li><a class="reference external" href="boot_find_image_area_idx.html">boot_find_image_area_idx</a></li>
-<li><a class="reference external" href="boot_find_image_part.html">boot_find_image_part</a></li>
-<li><a class="reference external" href="boot_find_image_slot.html">boot_find_image_slot</a></li>
-<li><a class="reference external" href="boot_go.html">boot_go</a></li>
-<li><a class="reference external" href="boot_init_flash.html">boot_init_flash</a></li>
-<li><a class="reference external" href="boot_move_area.html">boot_move_area</a></li>
-<li><a class="reference external" href="boot_read_image_header.html">boot_read_image_header</a></li>
-<li><a class="reference external" href="boot_read_image_headers.html">boot_read_image_headers</a></li>
-<li><a class="reference external" href="boot_read_status.html">boot_read_status</a></li>
-<li><a class="reference external" href="boot_select_image_slot.html">boot_select_image_slot</a></li>
-<li><a class="reference external" href="boot_slot_addr.html">boot_slot_addr</a></li>
-<li><a class="reference external" href="boot_slot_to_area_idx.html">boot_slot_to_area_idx</a></li>
-<li><a class="reference external" href="boot_swap_areas.html">boot_swap_areas</a></li>
-<li><a class="reference external" href="boot_vect_delete_main.html">boot_vect_delete_main</a></li>
-<li><a class="reference external" href="boot_vect_delete_test.html">boot_vect_delete_test</a></li>
-<li><a class="reference external" href="boot_vect_read_main.html">boot_vect_read_main</a></li>
-<li><a class="reference external" href="boot_vect_read_one.html">boot_vect_read_one</a></li>
-<li><a class="reference external" href="boot_vect_read_test.html">boot_vect_read_test</a></li>
-<li><a class="reference external" href="boot_write_status.html">boot_write_status</a></li>
-</ul>
+producing signed images, see <a class="reference external" href="https://github.com/apache/mynewt-core/blob/master/boot/bootutil/signed_images.md">here</a>.</p>
 </div>
 </div>
 
@@ -811,6 +825,15 @@ producing signed images, see: boot/bootutil/signed_images.md</p>
                    </div>
                   </div>
                   
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="../split/split.html" class="btn btn-neutral float-right" title="Split Images" accesskey="n">Next: Split Images <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../hal/hal_bsp/hal_bsp.html" class="btn btn-neutral" title="BSP" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: BSP</a>
+      
+    </div>
+
                 </div>
               </div>
             </div>
@@ -860,7 +883,6 @@ producing signed images, see: boot/bootutil/signed_images.md</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

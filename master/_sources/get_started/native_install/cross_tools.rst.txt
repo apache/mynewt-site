@@ -109,12 +109,12 @@ version is available to download for Mac OS, Linux, and Windows.
 Installing OpenOCD on Mac OS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#.  Install OpenOCD from Homebrew:
+#.  Install latest OpenOCD from Homebrew:
 
 .. code-block:: console
 
         $ brew update
-        $ brew install open-ocd
+        $ brew install open-ocd --HEAD
 
 #.  Check the OpenOCD version you are using:
 
@@ -129,7 +129,7 @@ Installing OpenOCD on Mac OS
         For bug reports, read
         http://openocd.org/doc/doxygen/bugs.html
 
-    You should see version: **0.10.0**.
+    You should see version: **0.10.0+dev-<latest#>**.
 
 Installing OpenOCD on Linux
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

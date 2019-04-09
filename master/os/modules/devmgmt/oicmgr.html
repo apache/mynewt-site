@@ -40,7 +40,10 @@
           <link rel="index" title="Index"
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
-      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/> 
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/>
+          <link rel="up" title="Newt Manager" href="newtmgr.html"/>
+          <link rel="next" title="Customizing Newt Manager Usage with mgmt" href="customize_newtmgr.html"/>
+          <link rel="prev" title="Newt Manager" href="newtmgr.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -151,6 +154,10 @@ ga("send", "pageview");
   <div class="container">
     <a href="/documentation/">Docs</a> /
     
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
+      <a href="newtmgr.html">Newt Manager</a> /
+    
     Using the OIC Framework
     
   <div class="sourcelink">
@@ -203,12 +210,36 @@ ga("send", "pageview");
       
         
         
-            <ul>
+            <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_modules.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="newtmgr.html">Device Management with Newt Manager</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Using the OIC Framework</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customize_newtmgr.html">Customizing Newt Manager Usage with mgmt</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
@@ -245,16 +276,13 @@ an OIC Server resource with the following identity and properties:</p>
 </td><td><p>oic.if_rw (default), oic.if.baseline</p>
 </td></tr><td><p><strong>Discoverable</strong></p>
 </td><td><p>Yes</p>
-</td></tr></table><div class="line-block">
-<div class="line">The newtmgr application tool uses CoAP (Constrained Application
-Protocol) requests to send commands to oicmgr.</div>
-<div class="line">It sends a CoAP request for <strong>/omgr</strong> as follows:</div>
-</div>
+</td></tr></table><p>The newtmgr application tool uses CoAP (Constrained ApplicationProtocol) requests to send commands to oicmgr.
+It sends a CoAP request for <strong>/omgr</strong> as follows:</p>
 <ul class="simple">
 <li>Specifies the newtmgr command to execute in the URI query string.</li>
-<li>Uses a GET method for newtmgr commands that retreive information from
+<li>Initially the GET method was used for newtmgr commands that retreive information from
 your application, for example, the <code class="docutils literal notranslate"><span class="pre">taskstat</span></code> and <code class="docutils literal notranslate"><span class="pre">mpstat</span></code>
-commands.</li>
+commands. Now it uses the PUT operation as described below..</li>
 <li>Uses a PUT method for newtmgr commands that send data to or modify
 the state of your application, for example, the <code class="docutils literal notranslate"><span class="pre">echo</span></code> or
 <code class="docutils literal notranslate"><span class="pre">datetime</span></code> commands.</li>
@@ -263,12 +291,44 @@ payload.</li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">oicmgr</span></code> framework supports transport over BLE, serial, and IP
 connections to the device.</p>
+<div class="section" id="newtmgr-protocol-specifics">
+<h2>NewtMgr Protocol Specifics<a class="headerlink" href="#newtmgr-protocol-specifics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="requests">
+<h3>Requests<a class="headerlink" href="#requests" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>The NMP op is indicated by the OIC op. The OIC op is always the same: put.</li>
+<li>There are no URI Query CoAP options.</li>
+<li>The NMP header is included in the payload as a key-value pair (key=”_h”). This pair is in the root map of the request and is a sibling of the other request fields. The value of this pair is the big-endian eight-byte NMP header with a length field of 0.</li>
+</ol>
+</div>
+<div class="section" id="responses">
+<h3>Responses<a class="headerlink" href="#responses" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>As with requests, the NMP header is included in the payload as a key-value pair (key=”_h”).</li>
+<li>There is no “r” or “w” field. The response fields are inserted into the root map as a sibling of the “_h” pair.</li>
+<li>Errors encountered during processing of NMP requests are reported identically to other NMP responses (embedded NMP response).</li>
+</ol>
+</div>
+<div class="section" id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h3>
+<p>Keys that start with an underscore are reserved to the OIC manager protocol (e.g., “_h”). NMP requests and responses must not name any of their fields with a leading underscore.</p>
+</div>
+</div>
 </div>
 
 
                    </div>
                   </div>
                   
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="customize_newtmgr.html" class="btn btn-neutral float-right" title="Customizing Newt Manager Usage with mgmt" accesskey="n">Next: Customizing Newt Manager Usage with mgmt <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="newtmgr.html" class="btn btn-neutral" title="Newt Manager" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Newt Manager</a>
+      
+    </div>
+
                 </div>
               </div>
             </div>
@@ -318,7 +378,6 @@ connections to the device.</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

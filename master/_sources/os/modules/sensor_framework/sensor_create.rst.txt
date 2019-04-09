@@ -12,7 +12,7 @@ create an off-board sensor. We also discuss how an application can
 change the default configuration for a sensor device.
 
 Creating an Onboard Sensor
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To create and initialize a sensor device named ``SENSORNAME``, the BSP implements the following in the
 ``hal_bsp.c`` file.
@@ -36,8 +36,8 @@ application. For example:
 
 2. Include the "<sensorname>/<sensorname>.h" header file. The BSP uses
 the functions and data structures that a device driver package exports.
-See the `Sensor Device
-Driver </os/modules/sensor_framework/sensor_driver.html>`__ page for
+See the :doc:`Sensor Device
+Driver <../os/modules/sensor_framework/sensor_driver>` page for
 details.
 
 3. Declare a variable named ``sensorname`` of type
@@ -76,37 +76,32 @@ following to the function:
 
 For example:
 
-\`\`\`hl\_lines="7 8 9 10 11"
-
-static void sensor\_dev\_create(void) { int rc; (void)rc;
-
-if MYNEWT\_VAL(LIS2DH12\_ONB)
-=============================
-
 ::
-
-    rc = os_dev_create((struct os_dev *) &lis2dh12, "lis2dh12_0",
-      OS_DEV_INIT_PRIMARY, 0, lis2dh12_init, (void *)&i2c_0_itf_lis);
-    assert(rc == 0);
-
-endif
-=====
-
-}
-
-void hal\_bsp\_init(void) { int rc;
-
-::
+    
+    static void sensor\_dev\_create(void) 
+    { 
+        int rc; 
+        (void)rc;
+    
+        #if MYNEWT\_VAL(LIS2DH12\_ONB)
+    
+        rc = os_dev_create((struct os_dev *) &lis2dh12, "lis2dh12_0",
+          OS_DEV_INIT_PRIMARY, 0, lis2dh12_init, (void *)&i2c_0_itf_lis);
+        assert(rc == 0);
+    
+        #endif
+        }
+    
+    void hal_bsp_init(void) { int rc;
 
       ...
 
 
     sensor_dev_create();
+    
+    }
 
-}
-
-\`\`\ ``<br> 6. Define a``\ config\_\_sensor()\ ``function to set the default configuration for the sensor. This function opens the OS device for the sensor device, initializes the a``\ cfg\ ``variable of type``\ struct
-\_cfg\ ``with the default settings, calls the``\ \_config()\` driver
+6. Define a ``config_<sensorname>_sensor()`` function to set the default configuration for the sensor. This function opens the OS device for the sensor device, initializes the a``cfg`` variable of type``struct <sensorname>_cfg `` with the default settings, calls the ``<sensorname>_config()`` driver
 function to configure the device, and closes the device. This function
 is called when the BSP is initialized during sysinit(). For example:
 
@@ -154,13 +149,13 @@ For example:
 
 
     pkg.deps.LIS2DH12_ONB:
-        - hw/drivers/sensors/lis2dh12
+        - "@apache-mynewt-core/hw/drivers/sensors/lis2dh12"
 
     pkg.init:
         config_lis2dh12_sensor: 400
 
 Creating an Off-Board Sensor
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 The steps to create an off-board sensor is very similar to the steps for
@@ -230,7 +225,7 @@ For example:
 
 
     pkg.deps.BNO055_OFB:
-        - hw/drivers/sensors/bno055
+        - "@apache-mynewt-core/hw/drivers/sensors/bno055"
 
 Reconfiguring A Sensor Device by an Application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,7 +245,7 @@ and change the desired settings. Note that you must keep all the fields
 in the ``<sensorname>_cfg`` structure initialized with the default
 values for the settings that you do not want to change.
 
-See the `Changing the Default Configuration for a Sensor
-Tutorial </os/tutorials/sensors/sensor_offboard_config/>`__ for more
+See the :doc:`Changing the Default Configuration for a Sensor
+Tutorial <../../../tutorials/sensors/sensor_offboard_config>` for more
 details on how to change the default sensor configuration from an
 application.
