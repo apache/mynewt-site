@@ -272,17 +272,17 @@ BSP scripts are quite simple, and you can likely get away with just copying them
     # This script attaches a gdb session to a Mynewt image running on your BSP.
 
     # If your BSP uses JLink, a good example script to copy is:
-    #     repos/apache-mynewt-core/hw/bsp/nordic_pca10040/nordic_pca10040_debug.sh
+    #     repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh
     #
     # If your BSP uses OpenOCD, a good example script to copy is:
     #     repos/apache-mynewt-core/hw/bsp/rb-nano2/rb-nano2_debug.sh
 
-Our example Nordic nRF52 BSP uses JLink, so we will copy the Nordic PCA10040 (nRF52 DK) BSP's scripts:
+Our example nRF52 BSP uses JLink, so we will copy the nRF52dk BSP's scripts:
 
 ::
 
-    cp repos/apache-mynewt-core/hw/bsp/nordic_pca10040/nordic_pca10040_debug.sh hw/bsp/myboard/myboard_debug.sh
-    cp repos/apache-mynewt-core/hw/bsp/nordic_pca10040/nordic_pca10040_download.sh hw/bsp/myboard/myboard_download.sh
+    cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh hw/bsp/myboard/myboard_debug.sh
+    cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_download.sh hw/bsp/myboard/myboard_download.sh
 
 Fill in BSP functions and defines
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -354,22 +354,30 @@ This file is named according to the following pattern: ``hw/bsp/myboard/src/arch
 The best approach for creating this file is to copy from other BSPs. If there is another BSP that uses the same MCU, you
 might be able to use most or all of its startup file.
 
-For our example BSP, we'll just copy the Nordic PCA10040 (nRF52 DK) BSP's startup code:
+For our example BSP, we'll just copy the nRF52dk BSP's startup code:
 
 .. code-block:: console
 
     $ mkdir -p hw/bsp/myboard/src/arch/cortex_m4
-    $ cp repos/apache-mynewt-core/hw/bsp/nordic_pca10040/src/arch/cortex_m4/gcc_startup_nrf52.s hw/bsp/myboard/src/arch/cortex_m4/
+    $ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52.s hw/bsp/myboard/src/arch/cortex_m4/
 
 Satisfy MCU requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 The MCU package probably requires some build-time configuration. Typically, it is the BSP which provides this configuration.
-Completing this step will likely involve some trial and error as each unmet requirement gets reported as a build error.
+For example, many MCU packages depend on the ``cmsis-core`` package, which expects the BSP to provide a header file called
+``bsp/cmsis_nvic.h``. Completing this step will likely involve some trial and error as each unmet requirement gets reported
+as a build error.
 
 Our example nRF52 BSP requires the following changes:
 
-1.  Macro indicating MCU type. We add this to our BSP's ``pkg.yml`` file:
+1.  The nRF52 MCU package uses ``cmsis-core``, so for our example we will copy the nRF52dk BSP's ``cmsis_nvic.h`` file to our BSP:
+
+    .. code-block:: console
+
+        $ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/include/bsp/cmsis_nvic.h hw/bsp/myboard/include/bsp/
+
+2.  Macro indicating MCU type. We add this to our BSP's ``pkg.yml`` file:
 
     .. code-block:: yaml
        :emphasize-lines: 2
@@ -377,7 +385,7 @@ Our example nRF52 BSP requires the following changes:
         pkg.cflags:
             - '-DNRF52'
 
-2.  Enable exactly one low-frequency timer setting in our BSP's ``syscfg.yml`` file. This is required by the nRF51 and nRF52 MCU packages:
+3.  Enable exactly one low-frequency timer setting in our BSP's ``syscfg.yml`` file. This is required by the nRF51 and nRF52 MCU packages:
 
     .. code-block:: yaml
        :emphasize-lines: 3
