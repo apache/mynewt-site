@@ -40,7 +40,10 @@
           <link rel="index" title="Index"
                 href="../../../genindex.html"/>
           <link rel="search" title="Search" href="../../../search.html"/>
-      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/> 
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/>
+          <link rel="up" title="File System Abstraction" href="fs.html"/>
+          <link rel="next" title="Adding a new file system" href="fs_add.html"/>
+          <link rel="prev" title="The FAT File System" href="fatfs.html"/> 
 
     
     <script src="../../../_static/js/modernizr.min.js"></script>
@@ -80,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-              <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.5.0 </a> released (Nov 5, 2018)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.6.0, Apache NimBLE 1.1.0 </a> released (April 9, 2019)
             </div>
         </div>
     </div>
@@ -151,6 +154,10 @@ ga("send", "pageview");
   <div class="container">
     <a href="/documentation/">Docs</a> /
     
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
+      <a href="fs.html">File System Abstraction</a> /
+    
     Other File Systems
     
   <div class="sourcelink">
@@ -179,6 +186,9 @@ ga("send", "pageview");
   <option value="/latest" selected>
     Version: latest
   </option>
+  <option value="/v1_5_0">
+    Version: 1.5.0
+  </option>
   <option value="/v1_4_0">
     Version: 1.4.0
   </option>
@@ -195,7 +205,7 @@ ga("send", "pageview");
     Version: 1.0.0
   </option>
   <option value="/v0_9_0/os/introduction">
-    Version: 0_9_0
+    Version: 0.9.0
   </option>
 </select>
     <div class="region region-sidebar">
@@ -203,12 +213,38 @@ ga("send", "pageview");
       
         
         
-            <ul>
+            <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_modules.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="fs.html">File System</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="nffs.html">Newtron Flash Filesystem (nffs)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fatfs.html">The FAT File System</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Other File Systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fs_add.html">Adding a new file system</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
@@ -247,11 +283,11 @@ Newtron Flash File System (nffs) <code class="docutils literal notranslate"><spa
 the first item in the <code class="docutils literal notranslate"><span class="pre">pkg.deps</span></code> list.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.name: fs/nffs</span>
 <span class="go">pkg.deps:</span>
-<span class="go">    - fs/fs</span>
-<span class="go">    - hw/hal</span>
-<span class="go">    - libs/os</span>
-<span class="go">    - libs/testutil</span>
-<span class="go">    - sys/log</span>
+<span class="go">    - &quot;@apache-mynewt-core/fs/fs&quot;</span>
+<span class="go">    - &quot;@apache-mynewt-core/hw/hal&quot;</span>
+<span class="go">    - &quot;@apache-mynewt-core/libs/os&quot;</span>
+<span class="go">    - &quot;@apache-mynewt-core/libs/testutil&quot;</span>
+<span class="go">    - &quot;@apache-mynewt-core/sys/log&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -310,6 +346,15 @@ following header:</p>
                    </div>
                   </div>
                   
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="fs_add.html" class="btn btn-neutral float-right" title="Adding a new file system" accesskey="n">Next: Adding a new file system <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fatfs.html" class="btn btn-neutral" title="The FAT File System" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: The FAT File System</a>
+      
+    </div>
+
                 </div>
               </div>
             </div>

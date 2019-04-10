@@ -1,6 +1,13 @@
 Newt Manager
 ------------
 
+.. toctree::
+   :maxdepth: 1
+
+   Using the OIC Framework <oicmgr>
+   Customizing Newt Manager Usage with mgmt <customize_newtmgr>
+
+
 Newt Manager is the protocol that enables your Mynewt application to
 communicate remotely with your device running the Mynewt OS in order to
 configure, manage, conduct maintenance, and monitor it. The core device
@@ -43,3 +50,11 @@ newtmgr supports BLE and serial connections.
 
 The newtmgr framework has a smaller code size and memory footprint than
 oicmgr but does not support open connectivity.
+
+API
+~~~~
+
+.. doxygengroup:: Newtmgr
+    :content-only:
+    :members:
+
