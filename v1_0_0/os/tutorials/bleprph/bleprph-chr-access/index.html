@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+         -->
+        <link rel="shortcut icon" href="../../../../img/favicon.ico">
+
+        <title>Characteristic Access - Apache Mynewt</title>
+
+        <link href="../../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../../css/highlight.css">
+        <link href="../../../../css/base.css" rel="stylesheet">
+        <link href="../../../../css/custom.css" rel="stylesheet">
+        <link href="../../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+            (function(i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+        i[r] ||
+        function() {
+            (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+        
+    </head>
+
+
+    <body class="Characteristic Access">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.6.0, Apache NimBLE 1.1.0 </a> released (April 9, 2019)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/documentation/">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest">
+    Version: master
+  </option>
+  <option value="/v1_5_0/" >
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0/" >
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" selected="selected" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select></li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../../get_started/vocabulary/">Concepts</a>
+  </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../tutorials/">Tutorials</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../blinky/">Project Blinky</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../repo/add_repos/">Work with repositories</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../project-slinky/">Project Slinky for Remote Comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../ibeacon/">BLE iBeacon</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../eddystone/">BLE Eddystone</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../add_newtmgr/">Enable Newt Manager in any app</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../add_shell/">Enable the OS Shell and Console</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../tasks_lesson/">Tasks and Priority Management</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../wi-fi_on_arduino/">Enable Wi-Fi on Arduino MKR1000</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../unit_test/">Write a Test Suite for a Package</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../event_queue/">Events and Event Queues</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../bletiny_project/">BLE app to check stats via console</a>
+  </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../bleprph-intro/">BLE peripheral project</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  <li >
+    <a href="../bleprph-svc-reg/">Service Registration</a>
+  </li>
+
+              
+          
+              
+                
+  <li class="active">
+    <a href="./">Characteristic Access</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../bleprph-adv/">Advertising</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../bleprph-gap-event/">GAP Event Callbacks</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../bleprph-app/">BLE Peripheral App</a>
+  </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../blehci_project/">BLE HCI interface</a>
+  </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../air_quality_sensor/
+">Air-quality Sensor project</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../nrf52_adc/">Add an Analog Sensor</a>
+  </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../../../known_issues/">Known Issues</a>
+  </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../../faq/go_env/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="/documentation/">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="os/tutorials/bleprph/bleprph-intro/">BLE peripheral project</a></li>
+        
+      
+        
+          <li>&raquo; <a href="os/tutorials/tutorials/">Tutorials</a></li>
+        
+      
+        
+          <li>&raquo; <a href="os/introduction/">Mynewt Documentation</a></li>
+        
+      
+      
+        <li>&raquo; Characteristic Access</li>
+      
+    
+    
+  </ul>
+</div>
+                        </div>
+                        
+                          
+                        
+                          
+                        
+                          
+                            <div class="alert alert-warning">
+                                <p>
+                                    Version 1.0.0 is not the most recent version of the Apache Mynewt
+                                    documentation. Click <a href="/latest">here</a> to read the latest
+                                    version.
+                                </p>
+                            </div>
+                          
+                        
+                        
+                            <h2 id="ble-peripheral-project">BLE Peripheral Project</h2>
+<h3 id="characteristic-access">Characteristic Access</h3>
+<p><br></p>
+<h4 id="review">Review</h4>
+<p>A characteristic's access callback implements its behavior.  Recall that
+services and characteristics are registered with NimBLE via attribute tables.
+Each characteristic definition in an attribute table contains an <em>access_cb</em>
+field.  The <em>access_cb</em> field is an application callback that gets executed
+whenever a peer device attempts to read or write the characteristic.</p>
+<p>Earlier in this tutorial, we looked at how <em>bleprph</em> implements the ANS
+service.  Let's take another look at how <em>bleprph</em> specifies the first few
+characteristics in this service.</p>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
+    {
+        <span style="color: #177500">/*** Alert Notification Service. */</span>
+        .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
+        .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_SVC_ALERT_UUID</span>),
+        .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
+            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>),
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
+        }, {
+            .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16</span>(<span style="color: #000000">GATT_SVR_CHR_NEW_ALERT</span>),
+            .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_alert</span>,
+            .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
+        }, {
+    <span style="color: #177500">// [...]</span>
+</pre></div>
+
+
+<p>As you can see, <em>bleprph</em> uses the same <em>access_cb</em> function for all the ANS
+service characteristics, but the developer could have implemented separate
+functions for each characteristic if they preferred.  Here is part of the
+<em>access_cb</em> function that the ANS service characteristics use:</p>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">gatt_svr_chr_access_alert</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
+                          <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
+                          <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+{
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+
+    <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_128_to_16</span>(<span style="color: #000000">ctxt-&gt;chr-&gt;uuid128</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">uuid16</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #A90D91">switch</span> (<span style="color: #000000">uuid16</span>) {
+    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>:
+        <span style="color: #000000">assert</span>(<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_READ_CHR</span>);
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_append</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">&amp;gatt_svr_new_alert_cat</span>,
+                            <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_new_alert_cat</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">BLE_ATT_ERR_INSUFFICIENT_RES</span>;
+
+    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_UNR_ALERT_STAT_UUID</span>:
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_WRITE_CHR</span>) {
+            <span style="color: #A90D91">if</span> (<span style="color: #000000">OS_MBUF_PKTLEN</span>(<span style="color: #000000">ctxt-&gt;om</span>) <span style="color: #000000">!=</span> <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>) {
+                <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN</span>;
+            }
+
+            <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_mbuf_to_flat</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">&amp;gatt_svr_unr_alert_stat</span>,
+                                     <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>, <span style="color: #A90D91">NULL</span>);
+            <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+                <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_UNLIKELY</span>;
+            }
+
+            <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+
+    <span style="color: #177500">/* [...] */</span>
+
+    <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
+        <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_UNLIKELY</span>;
+    }
+}
+</pre></div>
+
+
+<p>After you've taken a moment to examine the structure of this function, let's explore some details.</p>
+<p><br></p>
+<h4 id="function-signature">Function signature</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">gatt_svr_chr_access_alert</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
+                          <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
+                          <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+</pre></div>
+
+
+<p>A characteristic access function always takes this same set of parameters and
+always returns an int.  The parameters to this function type are documented
+below.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Parameter</strong></th>
+<th><strong>Purpose</strong></th>
+<th><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>conn_handle</td>
+<td>Indicates which connection the characteristic access was sent over.</td>
+<td>Use this value to determine which peer is accessing the characteristic.</td>
+</tr>
+<tr>
+<td>attr_handle</td>
+<td>The low-level ATT handle of the characteristic value attribute.</td>
+<td>Can be used to determine which characteristic is being accessed if you don't want to perform a UUID lookup.</td>
+</tr>
+<tr>
+<td>op</td>
+<td>Indicates whether this is a read or write operation</td>
+<td>Valid values are:<br><em>BLE_GATT_ACCESS_OP_READ_CHR</em><br><em>BLE_GATT_ACCESS_OP_WRITE_CHR</em></td>
+</tr>
+<tr>
+<td>ctxt</td>
+<td>Contains the characteristic value mbuf that the application needs to access.</td>
+<td>For characteristic accesses, use the <em>ctxt-&gt;chr</em> member; for descriptor accesses, use the <em>ctxt-&gt;dsc</em> member.</td>
+</tr>
+</tbody>
+</table>
+<p>The return value of the access function tells the NimBLE stack how to respond
+to the peer performing the operation.  A value of 0 indicates success.  For
+failures, the function returns the specific <a href="../../../network/ble/ble_hs/ble_hs_return_codes/#return-codes-att">ATT error code</a> that the NimBLE
+stack should respond with.  <em>Note:</em> The return code is a formal code, <strong>not</strong> a NimBLE value!</p>
+<p><br></p>
+<h4 id="determine-characteristic-being-accessed">Determine characteristic being accessed</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>{
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
+
+    <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_128_to_16</span>(<span style="color: #000000">ctxt-&gt;chr-&gt;uuid128</span>);
+    <span style="color: #000000">assert</span>(<span style="color: #000000">uuid16</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>);
+
+    <span style="color: #A90D91">switch</span> (<span style="color: #000000">uuid16</span>) {
+        <span style="color: #177500">// [...]</span>
+</pre></div>
+
+
+<p>This function uses the UUID to determine which characteristic is being
+accessed.  There are two alternative methods <em>bleprph</em> could have used to
+accomplish this task:</p>
+<ul>
+<li>Map characteristics to ATT handles during service registration; use the <em>attr_handle</em> parameter as a key into this table during characteristic access.</li>
+<li>Implement a dedicated function for each characteristic; each function inherently knows which characteristic it corresponds to.</li>
+</ul>
+<p>All the ANS service characteristics have 16-bit UUIDs, so this function uses
+the <em>ble_uuid_128_to_16()</em> function to convert the 128-bit UUID to its
+corresponding 16-bit UUID.  This conversion function returns the corresponding
+16-bit UUID on success, or 0 on failure.  Success is asserted here to ensure
+the NimBLE stack is doing its job properly; the stack should only call this
+function for accesses to characteristics that it is registered with, and all
+ANS service characteristics have valid 16-bit UUIDs.</p>
+<p><br></p>
+<h4 id="read-access">Read access</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_SUP_NEW_ALERT_CAT_UUID</span>:
+        <span style="color: #000000">assert</span>(<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_READ_CHR</span>);
+        <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_append</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">&amp;gatt_svr_new_alert_cat</span>,
+                            <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_new_alert_cat</span>);
+        <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">?</span> <span style="color: #1C01CE">0</span> <span style="color: #000000">:</span> <span style="color: #000000">BLE_ATT_ERR_INSUFFICIENT_RES</span>;
+</pre></div>
+
+
+<p>This code excerpt handles read accesses to the Supported New Alert Category
+characteristic.  The <em>assert()</em> here is another case of making sure the NimBLE
+stack is doing its job; this characteristic was registered as read-only, so the
+stack should have prevented write accesses.</p>
+<p>To fulfill a characteristic read request, the application needs fill a buffer (<em>om</em>) with the characteristic value.  The NimBLE host will then include the contents of this buffer in its read response.  NimBLE uses <a href="../../../os/core_os/mbuf/mbuf">mbufs</a> to exchange data between itself and the application.  To fill an mbuf with data that is available in a contiguous chunk of memory, the <em>os_mbuf_append()</em> function suffices.  The source of the data, <em>gatt_svr_new_alert_cat</em>, is is stored in read-only memory as follows:</p>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">gatt_svr_new_alert_cat</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0x01</span>; <span style="color: #177500">/* Simple alert. */</span>
+</pre></div>
+
+
+<p>It is not shown in the above snippet, but this function ultimately returns 0.
+By returning 0, <em>bleprph</em> indicates that the characteristic data in
+<em>ctxt-&gt;om</em> is valid and that NimBLE should include it in its response
+to the peer.</p>
+<p><br></p>
+<h4 id="write-access">Write access</h4>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>;
+</pre></div>
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">case</span> <span style="color: #000000">GATT_SVR_CHR_UNR_ALERT_STAT_UUID</span>:
+        <span style="color: #A90D91">if</span> (<span style="color: #000000">ctxt-&gt;op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_WRITE_CHR</span>) {
+            <span style="color: #A90D91">if</span> (<span style="color: #000000">OS_MBUF_PKTLEN</span>(<span style="color: #000000">ctxt-&gt;om</span>) <span style="color: #000000">!=</span> <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>) {
+                <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN</span>;
+            }
+
+            <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_mbuf_to_flat</span>(<span style="color: #000000">ctxt-&gt;om</span>, <span style="color: #000000">&amp;gatt_svr_unr_alert_stat</span>,
+                                     <span style="color: #A90D91">sizeof</span> <span style="color: #000000">gatt_svr_unr_alert_stat</span>, <span style="color: #A90D91">NULL</span>);
+            <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
+                <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_UNLIKELY</span>;
+            }
+
+            <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
+        } <span style="color: #A90D91">else</span> <span style="color: #177500">/* [...] */</span>
+</pre></div>
+
+
+<p>This code excerpt handles writes to the New Alert characteristic.  For writes,
+the role of the <em>ctxt-&gt;om</em> field is the reverse of the read case.  The NimBLE
+stack uses these fields to indicate the data written by the peer.</p>
+<p>Many characteristics have strict length requirements for write operations.
+This characteristic has such a restriction; if the written data is not a 2-byte
+value, the application tells NimBLE to respond with an invalid attribute value
+length error.</p>
+<p><em>bleprph</em> copies the data out of the supplied mbuf and writes it to a contiguous chunk of storage (the <em>gatt_svr_unr_alert_stat</em> variable).  This is accomplished with the <a href="../../../network/ble/ble_hs/other/functions/ble_hs_mbuf_to_flat">ble_hs_mbuf_to_flat()</a> function.  If the application did not have a suitable destination for the data handy, it could have inherited the mbuf from the context object.  This is done by saving a copy of the mbuf pointer, and assigning <em>NULL</em> to <em>ctxt-&gt;om</em>.  By assigning <em>NULL</em> to the mbuf pointer, your application prevents the stack from freeing the mbuf while it is still being used.  Be aware, however, that it is the application's responsibility to free inherited mbufs.</p>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    </li>
+    <li class="pull-right">
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt (incubating) is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+            </small>
+             <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+             </a>
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../../js/highlight.pack.js"></script>
+        <script src="../../../../js/base.js"></script>
+        <script src="../../../../js/custom.js"></script>
+            <script src="search/main.js"></script>
+
+    </body>
+</html>

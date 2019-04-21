@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <!-- This is broken by doc revisioning.
+         -->
+        <link rel="shortcut icon" href="../../../img/favicon.ico">
+
+        <title>BLE app to check stats via console - Apache Mynewt</title>
+
+        <link href="../../../css/bootstrap-3.0.3.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../../css/highlight.css">
+        <link href="../../../css/base.css" rel="stylesheet">
+        <link href="../../../css/custom.css" rel="stylesheet">
+        <link href="../../../css/v2.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+            <script>
+            (function(i, s, o, g, r, a, m) {
+    i["GoogleAnalyticsObject"] = r;
+    (i[r] =
+        i[r] ||
+        function() {
+            (i[r].q = i[r].q || []).push(arguments);
+        }),
+        (i[r].l = 1 * new Date());
+    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+        
+    </head>
+
+
+    <body class="BLE app to check stats via console">
+
+
+        <div class="container">
+    <div class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.6.0, Apache NimBLE 1.1.0 </a> released (April 9, 2019)
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
+
+
+
+
+
+<nav id="navbar" class="navbar navbar-inverse affix-top" data-spy="affix" data-offset-top="150" role="navigation">
+    <div class="container">
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            <!-- Main navigation -->
+            <ul class="nav navbar-nav navbar-right">
+                <li 
+  class=""
+>
+                    <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                </li>
+                <li 
+  class="important"
+>
+                    <a href="/quick-start/">Quick Start</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/about/">About</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/talks/">Talks</a>
+                </li>
+                <li 
+  class="active"
+>
+                    <a href="/documentation/">Documentation</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/download/">Download</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/community/">Community</a>
+                </li>
+                <li 
+  class=""
+>
+                    <a href="/events/">Events</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+        
+
+        <div class="container">
+            
+                <div class="row">
+                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+    <div class="top">
+        <div role="search">
+            <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+                <div class="form-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search documentation" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <ul class="toc-nav">
+      <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest">
+    Version: master
+  </option>
+  <option value="/v1_5_0/" >
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0/" >
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" selected="selected" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select></li>
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+  
+  
+    <li ><a href="../../introduction/">Mynewt Documentation</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../get_started/get_started/">Basic Setup</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../get_started/vocabulary/">Concepts</a>
+  </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../tutorials/">Tutorials</a>
+  
+  
+    <ul>
+          
+              
+          
+              
+                
+  
+  
+    <li ><a href="../blinky/">Project Blinky</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../repo/add_repos/">Work with repositories</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../project-slinky/">Project Slinky for Remote Comms</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../ibeacon/">BLE iBeacon</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../eddystone/">BLE Eddystone</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../add_newtmgr/">Enable Newt Manager in any app</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../add_shell/">Enable the OS Shell and Console</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../tasks_lesson/">Tasks and Priority Management</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../wi-fi_on_arduino/">Enable Wi-Fi on Arduino MKR1000</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../unit_test/">Write a Test Suite for a Package</a>
+  </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../event_queue/">Events and Event Queues</a>
+  </li>
+
+              
+          
+              
+                
+  <li class="active">
+    <a href="./">BLE app to check stats via console</a>
+  </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../bleprph/bleprph-intro/">BLE peripheral project</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../blehci_project/">BLE HCI interface</a>
+  </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../air_quality_sensor/
+">Air-quality Sensor project</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../nrf52_adc/">Add an Analog Sensor</a>
+  </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../os_user_guide/">OS User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li><a href="
+  ../../../network/ble/ble_intro/
+">BLE User Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newt/newt_intro/">Newt Tool Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  
+  
+    <li ><a href="../../../newtmgr/overview/">Newt Manager Guide</a>
+  
+  
+    </li>
+
+              
+          
+              
+                
+  <li >
+    <a href="../../../known_issues/">Known Issues</a>
+  </li>
+
+              
+          
+    </ul>
+  
+    </li>
+
+        
+      
+        
+          
+  
+  
+    <li><a href="
+  ../../../faq/go_env/
+">Appendix</a>
+  
+  
+    </li>
+
+        
+      
+    </ul>
+</div></div>
+
+                    <div class="col-md-9" role="main">
+                        <div class="doc-header">
+                            <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="/documentation/">Docs</a></li>
+    
+    
+        
+          <li>&raquo; <a href="os/tutorials/tutorials/">Tutorials</a></li>
+        
+      
+        
+          <li>&raquo; <a href="os/introduction/">Mynewt Documentation</a></li>
+        
+      
+      
+        <li>&raquo; BLE app to check stats via console</li>
+      
+    
+    
+  </ul>
+</div>
+                        </div>
+                        
+                          
+                        
+                          
+                        
+                          
+                            <div class="alert alert-warning">
+                                <p>
+                                    Version 1.0.0 is not the most recent version of the Apache Mynewt
+                                    documentation. Click <a href="/latest">here</a> to read the latest
+                                    version.
+                                </p>
+                            </div>
+                          
+                        
+                        
+                            <h2 id="check-stats-for-a-ble-application-the-nrf52-board">Check stats for a BLE Application  the NRF52 Board</h2>
+<p><br></p>
+<p>This tutorial explains how to run an example BLE app on a board and command it to scan and spew some stats. The stats will be seen over a serial port, not a BLE wireless connection.</p>
+<p><br></p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Ensure that you have met the following prerequisites before continuing with this tutorial:</p>
+<ul>
+<li>Have Internet connectivity to fetch remote Mynewt components.</li>
+<li>Have a board with BLE radio that is supported by Mynewt. We will use an nRF52 Dev board in this tutorial.</li>
+<li>Have a cable to establish a serial USB connection between the board and the laptop</li>
+<li>Install the newt tool and toolchains (See <a href="/os/get_started/get_started.md">Basic Setup</a>).</li>
+<li>Install the <a href="https://www.segger.com/jlink-software.html">Segger JLINK package</a> to load your project on the board.</li>
+</ul>
+<p><br></p>
+<h3 id="create-a-project">Create a project</h3>
+<p>Use the newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt new myproj 
+Downloading project skeleton from apache/incubator-mynewt-blinky...
+Installing skeleton in myproj...
+Project myproj successfully created.
+$ cd myproj
+
+$ newt install 
+</pre></div>
+
+
+<p><br></p>
+<h3 id="create-targets">Create targets</h3>
+<p>You will create two targets - one for the bootloader, the other for the application.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create myble
+Target targets/myble successfully created
+$ newt target create nrf52_boot
+Target targets/myble successfully created
+$ newt target show
+targets/my_blinky_sim
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/native
+    build_profile=debug
+targets/myble
+targets/nrf52_boot
+</pre></div>
+
+
+<p><br></p>
+<p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp </p>
+<p><strong>NOTE:</strong> The preview version, nrf52pdk, is no longer supported. If you do not see PCA100040 on the top of your board, you have a preview version of the board and will need to upgrade your developer board before continuing.</p>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
+$ newt target set myble app=@apache-mynewt-core/apps/bletiny
+Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
+$ newt target set myble build_profile=optimized
+Target targets/myble successfully set target.build_profile to optimized
+</pre></div>
+
+
+<p>Use the same <code>newt target set</code> command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>targets/nrf52_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    build_profile=optimized
+</pre></div>
+
+
+<p>You should have the following targets by the end of this step.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target show
+targets/my_blinky_sim
+    app=apps/blinky
+    bsp=@apache-mynewt-core/hw/bsp/native
+    build_profile=debug
+targets/myble
+    app=@apache-mynewt-core/apps/bletiny
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    build_profile=optimized
+targets/nrf52_boot
+    app=@apache-mynewt-core/apps/boot
+    bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    build_profile=optimized
+</pre></div>
+
+
+<p>Since we're interested in seeing the stats, we'll need to enable the stats module for the target. By default, the stats module is not enabled, so we will have to override the default behavior.
+To do this, you'll need to create a configuration file <code>syscfg.yml</code> in the app directory. from the target definition above, you can see that the app is in <code>apache-mynewt-core/apps/bletiny</code>
+so that is where you'll put your configuration file. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># Package: apps/bletiny
+
+syscfg.vals:
+    SHELL_TASK: 1
+    STATS_NAMES: 1
+    STATS_CLI: 1
+</pre></div>
+
+
+<p>The first configuration value turns on the Shell Task, and we'll need this to get to the shell. The next 2 enable the names for the various stats, and then turns on the stats CLI option.</p>
+<h3 id="build-targets">Build targets</h3>
+<p>Then build the two targets.</p>
+<p>Run the <code>newt build nrf52_boot</code> command to build the bootloader:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>Building target targets/nrf52_boot
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+
+Archiving sys_sysinit.a
+Archiving util_mem.a
+Linking ~/myproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+Target successfully built: targets/nrf52_boot
+</pre></div>
+
+
+<p><br>
+Run the <code>newt build myble</code> command to build the bletiny application:</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span> newt build myble
+Building target targets/myble
+Compiling repos/apache-mynewt-core/encoding/base64/src/base64.c
+Compiling repos/apache-mynewt-core/encoding/base64/src/hex.c
+Compiling repos/apache-mynewt-core/hw/bsp/nrf52dk/src/hal_bsp.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/parse.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/misc.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/gatt_svr.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/cmd.c
+Compiling repos/apache-mynewt-core/apps/bletiny/src/main.c
+
+Archiving util_mem.a
+Linking ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+Target successfully built: targets/myble
+</pre></div>
+
+
+<p><br></p>
+<h3 id="create-the-app-image">Create the app image</h3>
+<p>Run the <code>newt create-image myble 1.0.0</code> command to generate a signed application image for the <code>myble</code> target. The version number is arbitrary.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$newt create-image myble 1.0.0
+Compiling bin/targets/myble/generated/src/myble-sysinit-app.c
+Archiving myble-sysinit-app.a
+Linking ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+App image succesfully generated: ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.img
+</pre></div>
+
+
+<p><br></p>
+<h3 id="load-the-image">Load the image</h3>
+<p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load nrf52_boot
+$ newt load myble
+</pre></div>
+
+
+<p><br></p>
+<h3 id="establish-serial-connection">Establish serial connection</h3>
+<p>You will now look for some BLE related stats over a serial connection and see the radio is actually working. 
+If you haven't done so already, make sure you're familiar with the <a href="../../get_started/serial_access/">Serial Port Setup and Configuration</a>
+section. </p>
+<p><br></p>
+<p>Once you have a connection set up, you can connect to your device as follows:</p>
+<ul>
+<li>
+<p>On Mac OS and Linux platforms, you can run <code>minicom -D /dev/tty.usbserial-&lt;port&gt; -b 115200</code> to connect to the console of your app. Note that on Linux, the format of the port name is <code>/dev/ttyUSB&lt;N&gt;</code>, where N is a number.</p>
+</li>
+<li>
+<p>On Windows, you can run <code>PuTTY</code> to connect to the device.</p>
+<p>If you located your port from a MinGW terminal, the port name format is <code>/dev/ttyS&lt;N&gt;</code>, where <code>N</code> is a number. You must map the port name to a Windows COM port: <code>/dev/ttyS&lt;N&gt;</code> maps to <code>COM&lt;N+1&gt;</code>. For example, <code>/dev/ttyS2</code> maps to  <code>COM3</code>.</p>
+<p>You can also use the Windows Device Manager to locate the COM port number.</p>
+</li>
+</ul>
+<p><br>
+This tutorial uses minicom.  When the Minicom screen comes up, type in <code>?</code></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>Welcome to minicom 2.7
+
+OPTIONS: 
+Compiled on Mar 18 2016, 04:59:47.
+Port /dev/tty.usbserial-1a12, 21:24:09
+
+Press Meta-Z for help on special keys
+
+<span style="background-color: #ffffcc">?
+</span>7471:Commands:
+7471:     stat      echo         ?    prompt     ticks     tasks 
+7474: mempools      date         b 
+</pre></div>
+
+
+<p><br></p>
+<p>If you'd like a shell prompt, try the <code>prompt</code> command.</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">prompt
+</span>14025:Usage: prompt [set|show] [prompt_char]
+prompt set &gt;
+15086:Prompt set to: &gt;
+15086:Usage: prompt [set|show] [prompt_char]
+15087: &gt;
+</pre></div>
+
+
+<p>You'll notice that there is an ever-increasing counter before the prompt (and before any output to the terminal).
+This is just a counter kept by the MCU.</p>
+<p><strong>Note</strong>: If you want to have a shell prompt by default, simply add the line: <code>CONSOLE_PROMPT: 1</code> to your <code>syscfg.yml</code> file and it will be turned on by default.</p>
+<p><br></p>
+<p>Try the <code>tasks</code> command. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">&gt; tasks
+</span>Tasks: 
+46682:    task pri tid  runtime      csw    stksz   stkuse   lcheck   ncheck fg
+46684:    idle 255   0    46683       99       64       31        0        0  0
+46686:    main 127   1        1       29      512      156        0        0  0
+46688:  ble_ll   0   2        0       12       80       58        0        0  0
+46691: &gt; 
+</pre></div>
+
+
+<p><br></p>
+<p>Try specifying a BLE related stat, for example <code>ble_ll</code>. You should see some HCI (Host Controller Interface) command counts. </p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">113136: &gt; stat ble_ll
+</span>hci_cmds: 11
+155545:hci_cmd_errs: 0
+155545:hci_events_sent: 11
+155547:bad_ll_state: 0
+155547:bad_acl_hdr: 0
+155548:no_bufs: 0
+155548:rx_adv_pdu_crc_ok: 0
+155549:rx_adv_pdu_crc_err: 0
+155550:rx_adv_bytes_crc_ok: 0
+155551:rx_adv_bytes_crc_err: 0
+155552:rx_data_pdu_crc_ok: 0
+
+    ...
+
+155564:scan_req_txf: 0
+155565:scan_req_txg: 0
+155565:scan_rsp_txg: 0
+155566: &gt; 
+</pre></div>
+
+
+<p><br></p>
+<p>For a more exciting output, try scanning your surroundings for BLE advertisements. The HCI command shown below specifies a scan duration in ms, scan to passive, and no duplicates.  You should see some scan data flying by!</p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">b scan dur=10000 passive=1 nodups=1
+</span>37266:[ts=291140616ssb, mod=4 level=1] GAP procedure initiated: discovery; own_as
+
+37641:
+38256:received advertisement; event_type=0 rssi=-48 addr_type=1 addr=59:cc:3d:a3:
+38261:    flags=0x1a:
+38261:        General discoverable mode
+38262:    uuids16(complete)=0x1802 
+38263:    name(complete)=Find Me
+38264:
+38551:scanning finished
+</pre></div>
+
+
+<p><br></p>
+<p>If you're still not seeing any output from the device, try running the debugger and see if you are seeing the program execute properly. </p>
+<p><br></p>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$newt debug myble
+[~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/nrf52dk ~/dev/wanda/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny]
+~/dev/myproj/repos/apache-mynewt-core/hw/scripts/common.sh: line 38: [: =: unary operator expected
+Debugging ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf
+GNU gdb (GNU Tools for ARM Embedded Processors) 7.8.0.20150604-cvs
+Copyright (C) 2014 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;
+and &quot;show warranty&quot; for details.
+This GDB was configured as &quot;--host=x86_64-apple-darwin10 --target=arm-none-eabi&quot;.
+Type &quot;show configuration&quot; for configuration details.
+For bug reporting instructions, please see:
+&lt;http://www.gnu.org/software/gdb/bugs/&gt;.
+Find the GDB manual and other documentation resources online at:
+&lt;http://www.gnu.org/software/gdb/documentation/&gt;.
+For help, type &quot;help&quot;.
+Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...
+Reading symbols from ~/dev/myproj/bin/targets/myble/app/apps/bletiny/bletiny.elf...done.
+os_tick_idle (ticks=1920)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+200    if (ticks &gt; 0) {
+(gdb) monitor reset
+Resetting target
+(gdb) c
+Continuing.
+^C
+Program received signal SIGTRAP, Trace/breakpoint trap.
+os_tick_idle (ticks=1907)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+200    if (ticks &gt; 0) {
+(gdb) p g_os_time
+$1 = 13
+(gdb) c
+Continuing.
+^C
+Program received signal SIGTRAP, Trace/breakpoint trap.
+os_tick_idle (ticks=1920)
+    at repos/apache-mynewt-core/hw/mcu/nordic/nrf52xxx/src/hal_os_tick.c:200
+200    if (ticks &gt; 0) {
+(gdb) p g_os_time
+$2 = 6611
+(gdb) 
+</pre></div>
+
+
+<p><br></p>
+<p>You should see the g_os_time advancing as above, as each os time tick is 1ms. If the system ticks aren't advancing, then nothing's actually running.</p>
+                        
+                        <div class="row">
+                            
+
+
+
+<ul class="nav nav-pills" style="margin-bottom: 10px">
+    <li>
+    
+    </li>
+    <li class="pull-right">
+    
+    </li>
+</ul>
+                        </div>
+                        <footer class="row">
+    <div class="col-xs-12">
+        
+            <p class="copyright">Apache Mynewt (incubating) is available under Apache License, version 2.0.</p>
+        
+    </div>
+    <div class="col-xs-12">
+        <div class="logos">
+            <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+            <small class="footnote">
+            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+            </small>
+             <a href="https://join.slack.com/mynewt/shared_invite/MTkwMTg1ODM1NTg5LTE0OTYxNzQ4NzQtZTU1YmNhYjhkMg">
+                <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+             </a>
+        </div>
+    </div>
+</footer>
+                    </div>
+                </div>
+            
+            
+        </div>
+
+        <script src="../../../js/jquery-1.10.2.min.js"></script>
+        <script src="../../../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../../../js/highlight.pack.js"></script>
+        <script src="../../../js/base.js"></script>
+        <script src="../../../js/custom.js"></script>
+            <script src="search/main.js"></script>
+
+    </body>
+</html>
