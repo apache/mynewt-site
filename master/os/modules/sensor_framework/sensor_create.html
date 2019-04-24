@@ -293,7 +293,7 @@ onboard sensor named <code class="docutils literal notranslate"><span class="pre
 by default. The setting is used to conditionally include the code to
 create a sensor device for <code class="docutils literal notranslate"><span class="pre">SENSORNAME</span></code> when it is enabled by the
 application. For example:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">syscfg.defs:</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="go">syscfg.defs:</span>
 <span class="go">    LIS2DH12_ONB:</span>
 <span class="go">        description: &#39;NRF52 Thingy onboard lis2dh12 sensor&#39;</span>
 <span class="go">        value:  0</span>
@@ -306,7 +306,7 @@ Driver</span> page for
 details.</p>
 <p>3. Declare a variable named <code class="docutils literal notranslate"><span class="pre">sensorname</span></code> of type
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensorname</span></code>. For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(LIS2DH12_ONB)
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>#if MYNEWT_VAL(LIS2DH12_ONB)
 #include &lt;lis2dh12/lis2dh12.h&gt;
 static struct lis2dh12 lis2dh12;
 #endif
@@ -315,7 +315,7 @@ static struct lis2dh12 lis2dh12;
 <p>4. Declare and specify the values for a variable of type
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> that the sensor device driver uses to communicate
 with the sensor device. For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(LIS2DH12_ONB)
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>#if MYNEWT_VAL(LIS2DH12_ONB)
 static struct sensor_itf i2c_0_itf_lis = {
     .si_type = SENSOR_ITF_I2C,
     .si_num  = 0,
@@ -333,7 +333,7 @@ the device driver package exports this function.</li>
 <li>A pointer to the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> variable from step 4.</li>
 </ul>
 <p>For example:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void sensor\_dev\_create(void)
+<div class="highlight-none notranslate"><div class="highlight"><pre>static void sensor\_dev\_create(void)
 {
     int rc;
     (void)rc;
@@ -360,7 +360,7 @@ sensor_dev_create();
 <p>6. Define a <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor()</span></code> function to set the default configuration for the sensor. This function opens the OS device for the sensor device, initializes the a``cfg`` variable of type``struct &lt;sensorname&gt;_cfg `` with the default settings, calls the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code> driver
 function to configure the device, and closes the device. This function
 is called when the BSP is initialized during sysinit(). For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>int
 config_lis2dh12_sensor(void)
 {
 #if MYNEWT_VAL(LIS2DH12_ONB)
@@ -398,7 +398,7 @@ config_lis2dh12_sensor(void)
 to the <code class="docutils literal notranslate"><span class="pre">pkg.init</span></code> parameter.</li>
 </ul>
 <p>For example:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps.LIS2DH12_ONB:</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="go">pkg.deps.LIS2DH12_ONB:</span>
 <span class="go">    - &quot;@apache-mynewt-core/hw/drivers/sensors/lis2dh12&quot;</span>
 
 <span class="go">pkg.init:</span>
@@ -419,7 +419,7 @@ off-board sensor named <code class="docutils literal notranslate"><span class="p
 disabled by default. The <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code> package uses the setting
 to conditionally include the code to create the sensor device when it is
 enabled by the application.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Package: hw/sensor/creator
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="gp">#</span> Package: hw/sensor/creator
 
 <span class="go">syscfg.defs:</span>
 <span class="go">      ...</span>
@@ -437,7 +437,7 @@ enabled by the application.</p>
 file . The <code class="docutils literal notranslate"><span class="pre">sensor_dev_create()</span></code> function is the <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code>
 package initialization function that <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> calls.</p>
 <p>For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>void
 sensor_dev_create(void)
 {
     int rc;
@@ -461,7 +461,7 @@ sensor_dev_create(void)
 <p>3. Add a conditional package dependency for the
 <code class="docutils literal notranslate"><span class="pre">hw/drivers/sensors/&lt;sensorname&gt;</span></code> package when the
 <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_OFB</span></code> setting is enabled. For example:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps.BNO055_OFB:</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="go">pkg.deps.BNO055_OFB:</span>
 <span class="go">    - &quot;@apache-mynewt-core/hw/drivers/sensors/bno055&quot;</span>
 </pre></div>
 </div>

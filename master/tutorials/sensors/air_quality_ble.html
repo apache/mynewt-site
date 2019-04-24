@@ -274,7 +274,7 @@ ga("send", "pageview");
 <h2>Add Bluetooth GATT Services<a class="headerlink" href="#add-bluetooth-gatt-services" title="Permalink to this headline">¶</a></h2>
 <p>Since we already built the previous demo on the <span class="xref std std-doc">bluetooth peripheral</span> basic app most of the Bluetooth plumbing has already been taken care of for us. What’s left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.</p>
 <p>First, we’ll define the GATT Services in <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/bleprph.h</span></code>. Be sure to include the header files as well.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;host/ble_hs.h&quot;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="cp">#include</span> <span class="cpf">&quot;host/ble_hs.h&quot;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&quot;host/ble_uuid.h&quot;</span><span class="cp"></span>
 <span class="p">....</span>
 <span class="cm">/* Sensor Data */</span>
@@ -291,7 +291,7 @@ ga("send", "pageview");
 </div>
 <p>You can use any hex values you choose for the sensor type and sensor values, and you can even forget the sensor type and sensor string definitions altogether but they make the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we’ll add those services to <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/gatt_svr.c</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="k">static</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
     <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
@@ -300,7 +300,7 @@ ga("send", "pageview");
 </pre></div>
 </div>
 <p>Make sure it is added as <em>primary</em> service.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">{</span>
         <span class="cm">/*** Service: Security test. */</span>
         <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BLE_GATT_SVC_TYPE_PRIMARY</span><span class="p">,</span>
@@ -344,7 +344,7 @@ ga("send", "pageview");
 </pre></div>
 </div>
 <p>Next we need to tell the GATT Server how to handle requests for CO2 readings :</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="k">static</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
                           <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
                           <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
@@ -383,7 +383,7 @@ ga("send", "pageview");
 </div>
 <p>Now it’s time to go into our <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/main.c</span></code> and change how we read CO2 readings and respond to requests.</p>
 <p>We’ll need a task handler with an event queue for the CO2 readings.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* CO2 Task settings */</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="cm">/* CO2 Task settings */</span>
 <span class="cp">#define CO2_TASK_PRIO           128</span>
 <span class="cp">#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
 <span class="k">struct</span> <span class="n">os_eventq</span> <span class="n">co2_evq</span><span class="p">;</span>
@@ -392,7 +392,7 @@ ga("send", "pageview");
 </pre></div>
 </div>
 <p>And of course we’ll need to go to our <code class="docutils literal notranslate"><span class="pre">main()</span></code> and do all the standard task and event setup we normally do by adding the following:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Initialize sensor eventq */</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="cm">/* Initialize sensor eventq */</span>
 <span class="n">os_eventq_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">co2_evq</span><span class="p">);</span>
 
 <span class="cm">/* Create the CO2 reader task.</span>
@@ -404,7 +404,7 @@ ga("send", "pageview");
 </pre></div>
 </div>
 <p>We’ll also need to add a task handler – since we initialized it above:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="cm">/**</span>
 <span class="cm"> * Event loop for the sensor task.</span>
 <span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">void</span>
@@ -420,7 +420,7 @@ ga("send", "pageview");
 </pre></div>
 </div>
 <p>And finally, we’ll take care of that <code class="docutils literal notranslate"><span class="pre">co2_read_event()</span></code> function:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span class="kt">int</span>
 <span class="nf">co2_read_event</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>

@@ -299,7 +299,7 @@ characteristic.</p>
 <p>Earlier in this tutorial, we looked at how <em>bleprph</em> implements the GAP
 service. Let’s take another look at how <em>bleprph</em> specifies the first
 few characteristics in this service.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
         /*** Service: GAP. */
         .type               = BLE_GATT_SVC_TYPE_PRIMARY,
@@ -323,7 +323,7 @@ the GAP service characteristics, but the developer could have
 implemented separate functions for each characteristic if they
 preferred. Here is the <em>access_cb</em> function that the GAP service
 characteristics use:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>static int
 gatt_svr_chr_access_gap(uint16_t conn_handle, uint16_t attr_handle, uint8_t op,
                         union ble_gatt_access_ctxt *ctxt, void *arg)
 {
@@ -380,7 +380,7 @@ let’s explore some details.</p>
 </div>
 <div class="section" id="function-signature">
 <h2><a class="toc-backref" href="#id2">Function signature</a><a class="headerlink" href="#function-signature" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>static int
 gatt_svr_chr_access_gap(uint16_t conn_handle, uint16_t attr_handle, uint8_t op,
                         union ble_gatt_access_ctxt *ctxt, void *arg)
 </pre></div>
@@ -497,7 +497,7 @@ defined in
 </div>
 <div class="section" id="determine-characteristic-being-accessed">
 <h2><a class="toc-backref" href="#id3">Determine characteristic being accessed</a><a class="headerlink" href="#determine-characteristic-being-accessed" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>{
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>{
     uint16_t uuid16;
 
     uuid16 = ble_uuid_128_to_16(ctxt-&gt;chr_access.chr-&gt;uuid128);
@@ -528,7 +528,7 @@ valid 16-bit UUIDs.</p>
 </div>
 <div class="section" id="read-access">
 <h2><a class="toc-backref" href="#id4">Read access</a><a class="headerlink" href="#read-access" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>case BLE_GAP_CHR_UUID16_DEVICE_NAME:
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>case BLE_GAP_CHR_UUID16_DEVICE_NAME:
     assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
     ctxt-&gt;chr_access.data = (void *)bleprph_device_name;
     ctxt-&gt;chr_access.len = strlen(bleprph_device_name);
@@ -544,7 +544,7 @@ assign the <em>ctxt-&gt;chr_access.data</em> field to point to the attribute dat
 to respond with, and fill the <em>ctxt-&gt;chr_access.len</em> field with the
 length of the attribute data. <em>bleprph</em> stores the device name in
 read-only memory as follows:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>const char *bleprph_device_name = &quot;nimble-bleprph&quot;;
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>const char *bleprph_device_name = &quot;nimble-bleprph&quot;;
 </pre></div>
 </div>
 <p>The cast to pointer-to-void is a necessary annoyance to remove the
@@ -563,7 +563,7 @@ same time, so it is OK to use the same memory for repeated accesses.</p>
 </div>
 <div class="section" id="write-access">
 <h2><a class="toc-backref" href="#id5">Write access</a><a class="headerlink" href="#write-access" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>case BLE_GAP_CHR_UUID16_RECONNECT_ADDR:
+<div class="code c highlight-none notranslate"><div class="highlight"><pre>case BLE_GAP_CHR_UUID16_RECONNECT_ADDR:
     assert(op == BLE_GATT_ACCESS_OP_WRITE_CHR);
     if (ctxt-&gt;chr_access.len != sizeof bleprph_reconnect_addr) {
         return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;

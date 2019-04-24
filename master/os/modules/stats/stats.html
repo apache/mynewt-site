@@ -315,7 +315,7 @@ section. Please ensure all stats in a section have the same size.</p>
 <p>Stats sections are currently stored in a single global stats group.</p>
 <p>Statistics are stored in a simple structure which contains a small stats
 header followed by a list of stats. The stats header contains:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">struct stats_hdr {</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="go">struct stats_hdr {</span>
 <span class="go">     char *s_name;</span>
 <span class="go">     uint8_t s_size;</span>
 <span class="go">     uint8_t s_cnt;</span>
@@ -342,14 +342,14 @@ within the image.</p>
 application <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file or use the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">set</span></code> command
 to set the syscfg setting value. Here are examples for each method:</p>
 <p>Method 1 - Set the value in the application <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Package: apps/myapp
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="gp">#</span> Package: apps/myapp
 
 <span class="go">syscfg.vals:</span>
 <span class="go">    STATS_NAMES: 1</span>
 </pre></div>
 </div>
 <p>Method 2 - Set the target <code class="docutils literal notranslate"><span class="pre">syscfg</span></code> variable:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">newt target set myapp syscfg=STATS_NAMES=1</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span class="go">newt target set myapp syscfg=STATS_NAMES=1</span>
 </pre></div>
 </div>
 <p><strong>Note:</strong> This <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">set</span></code> command only sets the syscfg variable
@@ -374,12 +374,12 @@ override.</p>
 <h3><a class="toc-backref" href="#id4">Include the stats header file</a><a class="headerlink" href="#include-the-stats-header-file" title="Permalink to this headline">¶</a></h3>
 <p>Add the stats library to your pkg.yml file for your package or app by
 adding this line to your package dependencies.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pkg.deps:
+<div class="highlight-none notranslate"><div class="highlight"><pre>pkg.deps:
     - &quot;@apache-mynewt-core/sys/stats&quot;
 </pre></div>
 </div>
 <p>Add this include directive to code files using the stats library.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>#include &lt;stats/stats.h&gt;
+<div class="highlight-none notranslate"><div class="highlight"><pre>#include &lt;stats/stats.h&gt;
 </pre></div>
 </div>
 </div>
@@ -387,7 +387,7 @@ adding this line to your package dependencies.</p>
 <h3><a class="toc-backref" href="#id5">Define a stats section</a><a class="headerlink" href="#define-a-stats-section" title="Permalink to this headline">¶</a></h3>
 <p>You must use the <code class="docutils literal notranslate"><span class="pre">stats.h</span></code> macros to define your stats table. A stats
 section definition looks like this.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>STATS_SECT_START(my_stat_section)
+<div class="highlight-none notranslate"><div class="highlight"><pre>STATS_SECT_START(my_stat_section)
     STATS_SECT_ENTRY(attempt_stat)
     STATS_SECT_ENTRY(error_stat)
 STATS_SECT_END
@@ -402,7 +402,7 @@ supports three different stats sizes through the following macros:</p>
 </ul>
 <p>When this compiles/pre-processes, it produces a structure definition
 like this</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct stats_my_stat_section {
+<div class="highlight-none notranslate"><div class="highlight"><pre>struct stats_my_stat_section {
     struct stats_hdr s_hdr;
     uint32_t sattempt_stat;
     uint32_t serror_stat;
@@ -420,13 +420,13 @@ need to include this definition in a header file.</p>
 possible to have multiple copies of the same section (for example a stat
 section for each of 5 identical peripherals), the variable name of the
 stats section must be unique.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>STATS_SECT_DECL(my_stat_section) g_mystat;
+<div class="highlight-none notranslate"><div class="highlight"><pre>STATS_SECT_DECL(my_stat_section) g_mystat;
 </pre></div>
 </div>
 <p>Again, if your stats section is used in multiple C files you will need
 to include the above definition in one of the C files and ‘extern’ this
 declaration in your header file.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>extern STATS_SECT_DECL(my_stat_section) g_mystat;
+<div class="highlight-none notranslate"><div class="highlight"><pre>extern STATS_SECT_DECL(my_stat_section) g_mystat;
 </pre></div>
 </div>
 </div>
@@ -435,7 +435,7 @@ declaration in your header file.</p>
 <p>Whether or not you have <code class="docutils literal notranslate"><span class="pre">STATS_NAMES</span></code> enabled, you must define a stats
 name table. If <code class="docutils literal notranslate"><span class="pre">STATS_NAMES</span></code> is not enabled, this will not take any
 code space or image size.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>/* define a few stats for querying */
+<div class="highlight-none notranslate"><div class="highlight"><pre>/* define a few stats for querying */
 STATS_NAME_START(my_stat_section)
     STATS_NAME(my_stat_section, attempt_stat)
     STATS_NAME(my_stat_section, error_stat)
@@ -444,7 +444,7 @@ STATS_NAME_END(my_stat_section)
 </div>
 <p>When compiled by the preprocessor, it creates a structure that looks
 like this.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>struct stats_name_map g_stats_map_my_stat_section[] = {
+<div class="highlight-none notranslate"><div class="highlight"><pre>struct stats_name_map g_stats_map_my_stat_section[] = {
     { __builtin_offsetof (struct stats_my_stat_section, sattempt_stat), &quot;attempt_stat&quot; },
     { __builtin_offsetof (struct stats_my_stat_section, serror_stat), &quot;error_stat&quot; },
 };
@@ -457,7 +457,7 @@ the stat.</p>
 <h3><a class="toc-backref" href="#id8">Implement stats in your code.</a><a class="headerlink" href="#implement-stats-in-your-code" title="Permalink to this headline">¶</a></h3>
 <p>You can use the <code class="docutils literal notranslate"><span class="pre">STATS_INC</span></code> or <code class="docutils literal notranslate"><span class="pre">STATS_INCN</span></code> macros to increment your
 statistics within your C-code. For example, your code may do this:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>STATS_INC(g_mystat, attempt_stat);
+<div class="highlight-none notranslate"><div class="highlight"><pre>STATS_INC(g_mystat, attempt_stat);
 rc = do_task();
 if(rc == ERR) {
     STATS_INC(g_mystat, error_stat);
@@ -472,7 +472,7 @@ library. As per our example above, it would look like the following.</p>
 <p>This tells the system how large each statistic is and the number of
 statistics in the section. It also initialize the name information for
 the statistics if enabled as shown above.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rc = stats_init(
+<div class="highlight-none notranslate"><div class="highlight"><pre>rc = stats_init(
     STATS_HDR(g_mystat),
     STATS_SIZE_INIT_PARMS(g_mystat, STATS_SIZE_32),
     STATS_NAME_INIT_PARMS(my_stat_section));
@@ -483,7 +483,7 @@ assert(rc == 0);
 <div class="section" id="register-the-statistic-section">
 <h3><a class="toc-backref" href="#id10">Register the statistic section</a><a class="headerlink" href="#register-the-statistic-section" title="Permalink to this headline">¶</a></h3>
 <p>If you want the system to know about your stats, you must register them.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>rc = stats_register(&quot;my_stats&quot;, STATS_HDR(g_mystat));
+<div class="highlight-none notranslate"><div class="highlight"><pre>rc = stats_register(&quot;my_stats&quot;, STATS_HDR(g_mystat));
 assert(rc == 0);
 </pre></div>
 </div>
@@ -496,13 +496,13 @@ same time, called <code class="docutils literal notranslate"><span class="pre">s
 <p>If you enable console in your project you can see stats through the
 serial port defined.</p>
 <p>This is the stats as shown from the example above with names enabled.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>stat my_stats
+<div class="highlight-none notranslate"><div class="highlight"><pre>stat my_stats
 12274:attempt_stat: 3
 12275:error_stat: 0
 </pre></div>
 </div>
 <p>This is the stats as shown from the example without names enabled.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>stat my_stats
+<div class="highlight-none notranslate"><div class="highlight"><pre>stat my_stats
 29149:s0: 3
 29150:s1: 0
 </pre></div>
@@ -521,7 +521,7 @@ not let two sections be entered with the same name.</p>
 </div>
 <div class="section" id="api">
 <h2><a class="toc-backref" href="#id13">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<div class="breathe-sectiondef docutils container">
+<div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.STATS_HDR_F_PERSIST">
@@ -732,7 +732,7 @@ not let two sections be entered with the same name.</p>
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef docutils container">
+<div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.stats_walk_func_t">
@@ -745,7 +745,7 @@ not let two sections be entered with the same name.</p>
 <dd></dd></dl>
 
 </div>
-<div class="breathe-sectiondef docutils container">
+<div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.stats_init">
@@ -836,7 +836,7 @@ not let two sections be entered with the same name.</p>
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef docutils container">
+<div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Variables</p>
 <dl class="variable">
 <dt id="c.snm_off">
@@ -852,7 +852,7 @@ not let two sections be entered with the same name.</p>
 <dl class="struct">
 <dt id="c.stats_name_map">
 <span class="target" id="structstats__name__map"></span><em class="property">struct </em><code class="descname">stats_name_map</code><a class="headerlink" href="#c.stats_name_map" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;stats.h&gt;</em><div class="breathe-sectiondef docutils container">
+<dd><em>#include &lt;stats.h&gt;</em><div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.stats_name_map::snm_off">
@@ -870,7 +870,7 @@ not let two sections be entered with the same name.</p>
 <dl class="struct">
 <dt id="c.stats_hdr">
 <span class="target" id="structstats__hdr"></span><em class="property">struct </em><code class="descname">stats_hdr</code><a class="headerlink" href="#c.stats_hdr" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;stats.h&gt;</em><div class="breathe-sectiondef docutils container">
+<dd><em>#include &lt;stats.h&gt;</em><div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="c.stats_hdr::STAILQ_ENTRY">
@@ -878,7 +878,7 @@ not let two sections be entered with the same name.</p>
 <dd></dd></dl>
 
 </div>
-<div class="breathe-sectiondef docutils container">
+<div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.stats_hdr::s_name">
@@ -918,7 +918,7 @@ not let two sections be entered with the same name.</p>
 <span class="target" id="structstats__persisted__hdr"></span><em class="property">struct </em><code class="descname">stats_persisted_hdr</code><a class="headerlink" href="#c.stats_persisted_hdr" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;stats.h&gt;</em><p>Header describing a persistent stat group. </p>
 <p>A pointer to a regular <code class="docutils literal notranslate"><a class="reference internal" href="#structstats__hdr"><span class="std std-ref"><span class="pre">stats_hdr</span></span></a></code> can be safely cast to a pointer to <code class="docutils literal notranslate"><a class="reference internal" href="#structstats__persisted__hdr"><span class="std std-ref"><span class="pre">stats_persisted_hdr</span></span></a></code> (and vice-versa) if the <code class="docutils literal notranslate"><span class="pre">STATS_HDR_F_PERSIST</span></code> flag is set. </p>
-<div class="breathe-sectiondef docutils container">
+<div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.stats_persisted_hdr::sp_hdr">
