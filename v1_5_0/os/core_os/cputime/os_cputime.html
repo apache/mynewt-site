@@ -1,0 +1,603 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>CPU Time &mdash; Apache Mynewt 1.5.0 documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../../genindex.html"/>
+          <link rel="search" title="Search" href="../../../search.html"/>
+      <link rel="top" title="Apache Mynewt 1.5.0 documentation" href="../../../index.html"/>
+          <link rel="up" title="Apache Mynewt Operating System Kernel" href="../mynewt_os.html"/>
+          <link rel="next" title="OS Time" href="../time/os_time.html"/>
+          <link rel="prev" title="Mbufs" href="../mbuf/mbuf.html"/> 
+
+    
+    <script src="../../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.6.0, Apache NimBLE 1.1.0 </a> released (April 9, 2019)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/quick-start/">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
+      <a href="../mynewt_os.html">Apache Mynewt Operating System Kernel</a> /
+    
+    CPU Time
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/core_os/cputime/os_cputime.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    <!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest">
+    Version: latest
+  </option>
+  <option value="/v1_5_0" selected>
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0">
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction">
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction">
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction">
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction">
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction">
+    Version: 0_9_0
+  </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../mynewt_os.html">Kernel</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../context_switch/context_switch.html">Scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../task/task.html">Task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mutex/mutex.html">Mutex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../semaphore/semaphore.html">Semaphore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../event_queue/event_queue.html">Event Queues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../callout/callout.html">Callout</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../heap/heap.html">Heap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../memory_pool/memory_pool.html">Memory Pools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../mbuf/mbuf.html">Mbufs</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">CPU Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../time/os_time.html">OS Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sanity/sanity.html">Sanity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/system_modules.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules/json/json.html">JSON</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mynewt_faq/index.html">Mynewt FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              <div class="alert alert-warning">
+                <p>
+                  Version 1.5.0 is not the most recent version of the Apache Mynewt
+                  documentation. Click <a href="/latest">here</a> to read the latest
+                  version.
+                </p>
+              </div>
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="cpu-time">
+<h1>CPU Time<a class="headerlink" href="#cpu-time" title="Permalink to this headline">¶</a></h1>
+<p>The MyNewt <code class="docutils literal notranslate"><span class="pre">cputime</span></code> module provides high resolution time and timer
+support.</p>
+<div class="section" id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">cputime</span></code> API provides high resolution time and timer support. The
+module must be initialized, using the <a class="reference internal" href="#c.os_cputime_init" title="os_cputime_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_cputime_init()</span></code></a> function,
+with the clock frequency to use. The module uses the <code class="docutils literal notranslate"><span class="pre">hal_timer</span></code> API,
+defined in hal/hal_timer.h, to access the hardware timers. It uses the
+hardware timer number specified by the <code class="docutils literal notranslate"><span class="pre">OS_CPUTIME_TIMER_NUM</span></code> system
+configuration setting.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="c.os_cputime_init">
+<span class="target" id="group___o_s_c_p_u_time_1ga7aa50ce2ac6e1dae6bed02647822f358"></span>int <code class="descname">os_cputime_init</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;clock_freq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the cputime module. </p>
+<p>This must be called after os_init is called and before any other timer API are used. This should be called only once and should be called before the hardware timer is used.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>int 0 on success; -1 on error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">clock_freq</span></code>: The desired cputime frequency, in hertz (Hz).</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_get32">
+<span class="target" id="group___o_s_c_p_u_time_1gafb6a952579e92ce3356df29991aaa9f5"></span>uint32_t <code class="descname">os_cputime_get32</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_get32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the low 32 bits of cputime. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The lower 32 bits of cputime </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_nsecs_to_ticks">
+<span class="target" id="group___o_s_c_p_u_time_1gafb439dfff3071b7c294fcf33929470fa"></span>uint32_t <code class="descname">os_cputime_nsecs_to_ticks</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;nsecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_nsecs_to_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given number of nanoseconds into cputime ticks. </p>
+<p>Not defined if OS_CPUTIME_FREQ_PWR2 is defined.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of ticks corresponding to ‘nsecs’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of nanoseconds to convert to ticks</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_ticks_to_nsecs">
+<span class="target" id="group___o_s_c_p_u_time_1ga8643177f7b726a6e16eb9304849b89df"></span>uint32_t <code class="descname">os_cputime_ticks_to_nsecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_ticks_to_nsecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given number of ticks into nanoseconds. </p>
+<p>Not defined if OS_CPUTIME_FREQ_PWR2 is defined.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of nanoseconds corresponding to ‘ticks’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to convert to nanoseconds.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_delay_nsecs">
+<span class="target" id="group___o_s_c_p_u_time_1gab604f54b3bef695127d93738adc09632"></span>void <code class="descname">os_cputime_delay_nsecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;nsecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_delay_nsecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until ‘nsecs’ nanoseconds has elapsed. </p>
+<p>This is a blocking delay. Not defined if OS_CPUTIME_FREQ_PWR2 is defined.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">nsecs</span></code>: The number of nanoseconds to wait. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_usecs_to_ticks">
+<span class="target" id="group___o_s_c_p_u_time_1gaa54a2647142c5104ab507da518b7c51a"></span>uint32_t <code class="descname">os_cputime_usecs_to_ticks</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;usecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_usecs_to_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the given number of microseconds into cputime ticks. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of ticks corresponding to ‘usecs’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of microseconds to convert to ticks</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_ticks_to_usecs">
+<span class="target" id="group___o_s_c_p_u_time_1ga359fa2d0037720cf7c485c9c2c811a4b"></span>uint32_t <code class="descname">os_cputime_ticks_to_usecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_ticks_to_usecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the given number of ticks into microseconds. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>uint32_t The number of microseconds corresponding to ‘ticks’ </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to convert to microseconds.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_delay_ticks">
+<span class="target" id="group___o_s_c_p_u_time_1gacb8a96b8a28174810a1d1030abbccc62"></span>void <code class="descname">os_cputime_delay_ticks</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_delay_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until the number of ticks has elapsed. </p>
+<p>This is a blocking delay.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to wait. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_delay_usecs">
+<span class="target" id="group___o_s_c_p_u_time_1ga5d02f111807229adcbe1a63f6bcd6dfd"></span>void <code class="descname">os_cputime_delay_usecs</code><span class="sig-paren">(</span>uint32_t<em>&nbsp;usecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_delay_usecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until ‘usecs’ microseconds has elapsed. </p>
+<p>This is a blocking delay.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of usecs to wait. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_init">
+<span class="target" id="group___o_s_c_p_u_time_1gaaa77925d4b99f92de3fdb3a33763f3ee"></span>void <code class="descname">os_cputime_timer_init</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="../../modules/hal/hal_timer/hal_timer.html#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;timer</em>, <a class="reference internal" href="../../modules/hal/hal_timer/hal_timer.html#c.hal_timer_cb" title="hal_timer_cb">hal_timer_cb</a><em>&nbsp;fp</em>, void *<em>&nbsp;arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a CPU timer, using the given HAL timer. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: The timer to initialize. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">fp</span></code>: The timer callback function. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: Pointer to data object to pass to timer. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_start">
+<span class="target" id="group___o_s_c_p_u_time_1ga7ee4efebfb9ace6abc53aab7befbb36b"></span>int <code class="descname">os_cputime_timer_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="../../modules/hal/hal_timer/hal_timer.html#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;timer</em>, uint32_t<em>&nbsp;cputime</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a cputimer that will expire at ‘cputime’. </p>
+<p>If cputime has already passed, the timer callback will still be called (at interrupt context).</p>
+<p>NOTE: This must be called when the timer is stopped.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>int 0 on success; EINVAL if timer already started or timer struct invalid </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: Pointer to timer to start. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">cputime</span></code>: The cputime at which the timer should expire.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_relative">
+<span class="target" id="group___o_s_c_p_u_time_1ga178a0ad1206ee2f3921ec812cc4dbd93"></span>int <code class="descname">os_cputime_timer_relative</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="../../modules/hal/hal_timer/hal_timer.html#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;timer</em>, uint32_t<em>&nbsp;usecs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_relative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a cpu timer that will expire ‘usecs’ microseconds from the current cputime. </p>
+<p>NOTE: This must be called when the timer is stopped.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>int 0 on success; EINVAL if timer already started or timer struct invalid </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: Pointer to timer. Cannot be NULL. </li>
+<li><code class="docutils literal notranslate"><span class="pre">usecs</span></code>: The number of usecs from now at which the timer will expire.</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.os_cputime_timer_stop">
+<span class="target" id="group___o_s_c_p_u_time_1ga941919d476b402d1afd0d23f1b1e06fe"></span>void <code class="descname">os_cputime_timer_stop</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="../../modules/hal/hal_timer/hal_timer.html#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;timer</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_cputime_timer_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops a cputimer from running. </p>
+<p>The timer is removed from the timer queue and interrupts are disabled if no timers are left on the queue. Can be called even if timer is not running.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">timer</span></code>: Pointer to cputimer to stop. Cannot be NULL. </li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_LT">
+<span class="target" id="group___o_s_c_p_u_time_1ga4309205f199bb636919dbfc5d73ef12e"></span><code class="descname">CPUTIME_LT</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_LT" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is before t2 in time </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_GT">
+<span class="target" id="group___o_s_c_p_u_time_1gadad5099542aece9275da4d725eb480ac"></span><code class="descname">CPUTIME_GT</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_GT" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is after t2 in time </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_GEQ">
+<span class="target" id="group___o_s_c_p_u_time_1gab2d4411ac9afee90785a47fcb9b0667f"></span><code class="descname">CPUTIME_GEQ</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_GEQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is after t2 in time </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.CPUTIME_LEQ">
+<span class="target" id="group___o_s_c_p_u_time_1gad1fc43d68f68ce9a60261f94864cdfdd"></span><code class="descname">CPUTIME_LEQ</code><span class="sig-paren">(</span>__t1, __t2<span class="sig-paren">)</span><a class="headerlink" href="#c.CPUTIME_LEQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates to true if t1 is on or after t2 in time </p>
+</dd></dl>
+
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="../time/os_time.html" class="btn btn-neutral float-right" title="OS Time" accesskey="n">Next: OS Time <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../mbuf/mbuf.html" class="btn btn-neutral" title="Mbufs" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Mbufs</a>
+      
+    </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="">
+                <img src="../../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.5.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>
