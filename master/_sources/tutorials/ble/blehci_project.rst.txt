@@ -195,7 +195,9 @@ package such as the application. So, for example, you may set the
 
 If there is no CTS/RTS lines present in the test environment, flow
 control should be turned off. This can be done with -N option for
-btattach. **Note:** -N option came with BlueZ ver 5.44.
+btattach. **Note:** -N option came with BlueZ ver 5.44. 
+Also, modify the value of ``BLE_HCI_UART_FLOW_CTRL`` in the 
+``nimble/transport/uart/syscfg.yml`` to ``HAL_UART_FLOW_CTL_NONE``.
 
 Start btmgmt to send commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
