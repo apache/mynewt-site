@@ -6,13 +6,11 @@ import sh
 from mkdocs import config
 import yaml
 
-dependent_repos = [
-    'mynewt-documentation',
-    'mynewt-core',
-    'mynewt-newt',
-    'mynewt-newtmgr',
-    'mynewt-nimble'
-]
+# repos of products that are released together
+mynewt_repos = ['mynewt-core', 'mynewt-newt', 'mynewt-newtmgr']
+nimble_repo = 'mynewt-nimble'
+revisioned_repos = [nimble_repo] + mynewt_repos[:]
+dependent_repos = ['mynewt-documentation'] + revisioned_repos[:]
 
 BSP_DIR = "hw/bsp"
 BSP_ARCH_NAMES = {
@@ -84,15 +82,6 @@ def build(cwd, site_dir):
 
     cfg = config.load_config()
 
-    # sanity check - the version dirs exist as named
-    for version in cfg['extra']['versions']:
-        if 'separate' not in version or not version['separate']:
-            d = path.join('versions', version['dir'])
-            print('Verifying dir {}'.format(d))
-            if not path.isdir(d):
-                print("The directory {} does not exist".format(d))
-                return
-
     # sanity check - dependent_repos exist in '..'
     for repo in dependent_repos:
         d = path.join(cwd, '..', repo)
@@ -101,12 +90,19 @@ def build(cwd, site_dir):
             print("The directory %s does not exist".format(d))
             return
 
+    # return all extra repos to master in case last run failed
+    for repo in revisioned_repos:
+        repo_dir = path.normpath(path.join(cwd, '..', repo))
+        sh.git('checkout', 'master', _cwd=repo_dir)
+
     # sanity check - only one latest
     latest = False
+    latest_version = None
     for version in cfg['extra']['versions']:
         if not latest and 'latest' in version and version['latest']:
-            print('Latest is {}'.format(version['dir']))
+            print('Latest is {}'.format(version['label']))
             latest = True
+            latest_version = version['label']
         elif latest and 'latest' in version and version['latest']:
             print('ERROR: More than one version is latest.')
             print('Only one version can be latest: True.')
@@ -122,22 +118,32 @@ def build(cwd, site_dir):
     sh.mkdocs('build', '--clean', '--site-dir', site_dir)
 
     for version in cfg['extra']['versions']:
-        print("Building doc pages for: {}".format(version['dir']))
-        if 'separate' not in version or not version['separate']:
+        print("Building doc pages for: {}".format(version['label']))
+
+        if 'sha' not in version:
             sh.mkdocs('build', '--site-dir',
                       path.join(site_dir, version['dir']),
                       _cwd=path.join("versions", version['dir']))
+
         else:
-            repo_dir = path.join(cwd, '..', 'mynewt-documentation')
-            if version['dir'] != 'master':
-                repo_dir = path.join(repo_dir,
-                                     'versions',
-                                     version['dir'],
-                                     'mynewt-documentation')
+            sha = version['sha']
+            for repo in mynewt_repos:
+                repo_dir = path.normpath(path.join(cwd, '..', repo))
+                sh.git('checkout', sha, _cwd=repo_dir)
+
+            sha = version['nimble_sha']
+            nimble_dir = path.normpath(path.join(cwd, '..', nimble_repo))
+            sh.git('checkout', sha, _cwd=nimble_dir)
+
+            repo_dir = path.normpath(path.join(cwd, '..',
+                                               'mynewt-documentation'))
             sh.make('clean', _cwd=repo_dir)
-            sh.make('docs', _cwd=repo_dir)
+            sh.make('docs',
+                    'O=-A cur_version={} -A latest_version={}'.format(
+                        version['label'], latest_version), _cwd=repo_dir)
             sh.mv(path.join(repo_dir, '_build', 'html'),
                   path.join(site_dir, version['dir']))
+
         if 'latest' in version and version['latest']:
             sh.ln('-s', version['dir'], 'latest', _cwd=site_dir)
 
