@@ -3,6 +3,7 @@
 -   Latest version:
     -   [latest](/latest/)
 -   Earlier versions:
+    -   [1.6.0](/v1_6_0/)
     -   [1.5.0](/v1_5_0/)
     -   [1.4.0](/v1_4_0/)
     -   [1.3.0](/v1_3_0/os/introduction/)
