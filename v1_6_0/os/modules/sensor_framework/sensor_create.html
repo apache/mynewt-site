@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>Creating and Configuring a Sensor Device &mdash; Apache Mynewt latest documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../../genindex.html"/>
+          <link rel="search" title="Search" href="../../../search.html"/>
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/>
+          <link rel="up" title="Mynewt Sensor Framework Overview" href="sensor_framework.html"/>
+          <link rel="next" title="testutil" href="../testutil/testutil.html"/>
+          <link rel="prev" title="Sensor Device Driver" href="sensor_driver.html"/> 
+
+    
+    <script src="../../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.6.0, Apache NimBLE 1.1.0 </a> released (April 9, 2019)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/quick-start/">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
+      <a href="sensor_framework.html">Mynewt Sensor Framework Overview</a> /
+    
+    Creating and Configuring a Sensor Device
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/modules/sensor_framework/sensor_create.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    <!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest" selected>
+    Version: latest
+  </option>
+  <option value="/v1_6_0" selected="selected" >
+    Version: 1.6.0
+  </option>
+  <option value="/v1_5_0" >
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0" >
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_modules.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fcb/fcb.html">Flash Circular Buffer</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="sensor_framework.html">Sensor Framework</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="sensor_api.html">Sensor API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_mgr_api.html">Sensor Manager API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_listener_api.html">Sensor Listener API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_notifier_api.html">Sensor Notifier API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_oic.html">OIC Sensor API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_shell.html">Sensor Shell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_driver.html">Sensor Device Driver</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Creating and Configuring Sensor Devices</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../network/docs/index.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mynewt_faq/index.html">Mynewt FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              
+                <div class="alert alert-warning">
+                  <p>
+                    Version 1.6.0 is not the most recent version of the
+                    Apache Mynewt documentation. Click <a href="/latest">here</a> to
+                    read the latest version.
+                  </p>
+                </div>
+              
+
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="creating-and-configuring-a-sensor-device">
+<h1>Creating and Configuring a Sensor Device<a class="headerlink" href="#creating-and-configuring-a-sensor-device" title="Permalink to this headline">¶</a></h1>
+<p>The steps to create and configure OS devices for onboard and off-board
+sensors are very similar. The BSP creates the OS devices for onboard
+sensors and the <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator/</span></code> package creates the OS devices
+for off-board sensors.</p>
+<p>We discuss how a BSP creates a device for an onboard sensor and then
+discuss what the <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code> package does differently to
+create an off-board sensor. We also discuss how an application can
+change the default configuration for a sensor device.</p>
+<div class="section" id="creating-an-onboard-sensor">
+<h2>Creating an Onboard Sensor<a class="headerlink" href="#creating-an-onboard-sensor" title="Permalink to this headline">¶</a></h2>
+<p>To create and initialize a sensor device named <code class="docutils literal notranslate"><span class="pre">SENSORNAME</span></code>, the BSP implements the following in the
+<code class="docutils literal notranslate"><span class="pre">hal_bsp.c</span></code> file.</p>
+<p><strong>Note</strong>: All example excerpts are from the code that creates the
+LIS2DH12 onboard sensor in the nrf52_thingy BSP.</p>
+<p>1. Define a <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_ONB</span></code> syscfg setting to specify whether the
+onboard sensor named <code class="docutils literal notranslate"><span class="pre">SENSORNAME</span></code> is enabled. The setting is disabled
+by default. The setting is used to conditionally include the code to
+create a sensor device for <code class="docutils literal notranslate"><span class="pre">SENSORNAME</span></code> when it is enabled by the
+application. For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">syscfg.defs:</span>
+<span class="go">    LIS2DH12_ONB:</span>
+<span class="go">        description: &#39;NRF52 Thingy onboard lis2dh12 sensor&#39;</span>
+<span class="go">        value:  0</span>
+</pre></div>
+</div>
+<p>2. Include the “&lt;sensorname&gt;/&lt;sensorname&gt;.h” header file. The BSP uses
+the functions and data structures that a device driver package exports.
+See the <span class="xref std std-doc">Sensor Device
+Driver</span> page for
+details.</p>
+<p>3. Declare a variable named <code class="docutils literal notranslate"><span class="pre">sensorname</span></code> of type
+<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensorname</span></code>. For example:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(LIS2DH12_ONB)
+#include &lt;lis2dh12/lis2dh12.h&gt;
+static struct lis2dh12 lis2dh12;
+#endif
+</pre></div>
+</div>
+<p>4. Declare and specify the values for a variable of type
+<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> that the sensor device driver uses to communicate
+with the sensor device. For example:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(LIS2DH12_ONB)
+static struct sensor_itf i2c_0_itf_lis = {
+    .si_type = SENSOR_ITF_I2C,
+    .si_num  = 0,
+    .si_addr = 0x19
+&lt;br&gt;
+</pre></div>
+</div>
+<p>5. In the <code class="docutils literal notranslate"><span class="pre">hal_bsp_init()</span></code> function, create an OS device for the
+sensor device. Call the <code class="docutils literal notranslate"><span class="pre">os_dev_create()</span></code> function and pass the
+following to the function:</p>
+<ul class="simple">
+<li>A pointer to the <code class="docutils literal notranslate"><span class="pre">sensorname</span></code> variable from step 3.</li>
+<li>A pointer to the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code> callback function. Note that
+the device driver package exports this function.</li>
+<li>A pointer to the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> variable from step 4.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void sensor\_dev\_create(void)
+{
+    int rc;
+    (void)rc;
+
+    #if MYNEWT\_VAL(LIS2DH12\_ONB)
+
+    rc = os_dev_create((struct os_dev *) &amp;lis2dh12, &quot;lis2dh12_0&quot;,
+      OS_DEV_INIT_PRIMARY, 0, lis2dh12_init, (void *)&amp;i2c_0_itf_lis);
+    assert(rc == 0);
+
+    #endif
+    }
+
+void hal_bsp_init(void) { int rc;
+
+  ...
+
+
+sensor_dev_create();
+
+}
+</pre></div>
+</div>
+<p>6. Define a <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor()</span></code> function to set the default configuration for the sensor. This function opens the OS device for the sensor device, initializes the a``cfg`` variable of type``struct &lt;sensorname&gt;_cfg `` with the default settings, calls the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code> driver
+function to configure the device, and closes the device. This function
+is called when the BSP is initialized during sysinit(). For example:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+config_lis2dh12_sensor(void)
+{
+#if MYNEWT_VAL(LIS2DH12_ONB)
+    int rc;
+    struct os_dev *dev;
+    struct lis2dh12_cfg cfg;
+
+    dev = (struct os_dev *) os_dev_open(&quot;lis2dh12_0&quot;, OS_TIMEOUT_NEVER, NULL);
+    assert(dev != NULL);
+
+    memset(&amp;cfg, 0, sizeof(cfg));
+
+    cfg.lc_s_mask = SENSOR_TYPE_ACCELEROMETER;
+    cfg.lc_rate = LIS2DH12_DATA_RATE_HN_1344HZ_L_5376HZ;
+    cfg.lc_fs = LIS2DH12_FS_2G;
+    cfg.lc_pull_up_disc = 1;
+
+    rc = lis2dh12_config((struct lis2dh12 *)dev, &amp;cfg);
+    SYSINIT_PANIC_ASSERT(rc == 0);
+
+    os_dev_close(dev);
+#endif
+    return 0;
+}
+</pre></div>
+</div>
+<ol class="arabic simple" start="7">
+<li>Add the following in the BSP <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file:</li>
+</ol>
+<ul class="simple">
+<li>A conditional package dependency for the
+<code class="docutils literal notranslate"><span class="pre">hw/drivers/sensors/&lt;sensorname&gt;</span></code> package when the
+<code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_ONB</span></code> setting is enabled.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor</span></code> function with an init stage of 400
+to the <code class="docutils literal notranslate"><span class="pre">pkg.init</span></code> parameter.</li>
+</ul>
+<p>For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps.LIS2DH12_ONB:</span>
+<span class="go">    - &quot;@apache-mynewt-core/hw/drivers/sensors/lis2dh12&quot;</span>
+
+<span class="go">pkg.init:</span>
+<span class="go">    config_lis2dh12_sensor: 400</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-an-off-board-sensor">
+<h2>Creating an Off-Board Sensor<a class="headerlink" href="#creating-an-off-board-sensor" title="Permalink to this headline">¶</a></h2>
+<p>The steps to create an off-board sensor is very similar to the steps for
+a BSP. The <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator/</span></code> package also declares the variables
+and implements the <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor()</span></code> function described
+for a BSP. The package does the following differently.</p>
+<p><strong>Note</strong>: All example excerpts are from the code that creates the BNO055
+off-board sensor in <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code> package.</p>
+<p>1. Define a <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_OFB</span></code> syscfg setting to specify whether the
+off-board sensor named <code class="docutils literal notranslate"><span class="pre">SENSORNAME</span></code> is enabled. This setting is
+disabled by default. The <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code> package uses the setting
+to conditionally include the code to create the sensor device when it is
+enabled by the application.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> Package: hw/sensor/creator
+
+<span class="go">syscfg.defs:</span>
+<span class="go">      ...</span>
+
+<span class="go">    BNO055_OFB:</span>
+<span class="go">        description: &#39;BNO055 is present&#39;</span>
+<span class="go">        value : 0</span>
+
+<span class="go">       ...</span>
+</pre></div>
+</div>
+<p>2. Add the calls to the <code class="docutils literal notranslate"><span class="pre">os_dev_create()</span></code> and the
+<code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor()</span></code> functions in the
+<code class="docutils literal notranslate"><span class="pre">sensor_dev_create()</span></code> function defined in the <code class="docutils literal notranslate"><span class="pre">sensor_creator.c</span></code>
+file . The <code class="docutils literal notranslate"><span class="pre">sensor_dev_create()</span></code> function is the <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code>
+package initialization function that <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> calls.</p>
+<p>For example:</p>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
+sensor_dev_create(void)
+{
+    int rc;
+
+     ...
+
+#if MYNEWT_VAL(BNO055_OFB)
+    rc = os_dev_create((struct os_dev *) &amp;bno055, &quot;bno055_0&quot;,
+      OS_DEV_INIT_PRIMARY, 0, bno055_init, (void *)&amp;i2c_0_itf_bno);
+    assert(rc == 0);
+
+    rc = config_bno055_sensor();
+    assert(rc == 0);
+#endif
+
+     ....
+
+}
+</pre></div>
+</div>
+<p>3. Add a conditional package dependency for the
+<code class="docutils literal notranslate"><span class="pre">hw/drivers/sensors/&lt;sensorname&gt;</span></code> package when the
+<code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_OFB</span></code> setting is enabled. For example:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps.BNO055_OFB:</span>
+<span class="go">    - &quot;@apache-mynewt-core/hw/drivers/sensors/bno055&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reconfiguring-a-sensor-device-by-an-application">
+<h2>Reconfiguring A Sensor Device by an Application<a class="headerlink" href="#reconfiguring-a-sensor-device-by-an-application" title="Permalink to this headline">¶</a></h2>
+<p>The BSP and sensor creator package use a default configuration and
+enable all supported sensors on a sensor device by default. If the
+default configuration does not meet your application requirements, you
+may change the default configuration for a sensor device. As in the
+<code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor</span></code> function, an application must open the OS
+device for the sensor, set up the values for the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_cfg</span></code>
+structure, call the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code> device driver function to
+change the configuration in the device, and close the OS device.</p>
+<p>We recommend that you copy the <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor()</span></code> function
+from the BSP or the sensor creator package in to your application code
+and change the desired settings. Note that you must keep all the fields
+in the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_cfg</span></code> structure initialized with the default
+values for the settings that you do not want to change.</p>
+<p>See the <a class="reference internal" href="../../../tutorials/sensors/sensor_offboard_config.html"><span class="doc">Changing the Default Configuration for a Sensor
+Tutorial</span></a> for more
+details on how to change the default sensor configuration from an
+application.</p>
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="../testutil/testutil.html" class="btn btn-neutral float-right" title="testutil" accesskey="n">Next: testutil <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sensor_driver.html" class="btn btn-neutral" title="Sensor Device Driver" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Sensor Device Driver</a>
+      
+    </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="">
+                <img src="../../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'latest',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>
