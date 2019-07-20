@@ -11,6 +11,7 @@ Introduction
    get_started/index
    concepts
    tutorials/tutorials
+   external_links
    os/os_user_guide
    network/docs/index
    newt/index
