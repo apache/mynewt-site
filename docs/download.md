@@ -2,27 +2,27 @@
 
 ### Latest Apache Mynewt Core OS Release
 
-*   Release Version: Apache Mynewt 1.6.0
-*   Release Date: April 9, 2019
-*   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.6.0)
-*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.6.0/)
- *  [core](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.6.0/apache-mynewt-core-1.6.0.tgz)
-    [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.6.0/apache-mynewt-core-1.6.0.tgz.asc)
-    [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.6.0/apache-mynewt-newt-1.6.0.tgz.sha512)
- *   [newt](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.6.0/apache-mynewt-newt-1.6.0.tgz)
-    [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.6.0/apache-mynewt-newt-1.6.0.tgz.asc)
-    [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.6.0/apache-mynewt-newt-1.6.0.tgz.sha512)
+*   Release Version: Apache Mynewt 1.7.0
+*   Release Date: August 4, 2019
+*   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.7.0)
+*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/)
+ *  [core](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/apache-mynewt-core-1.7.0.tgz)
+    [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-core-1.7.0.tgz.asc)
+    [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz.sha512)
+ *   [newt](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz)
+    [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz.asc)
+    [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz.sha512)
 
 ### Latest Apache Mynewt NimBLE (Bluetooth Stack) Release
 
 Mynewt's Bluetooth stack is now a separate release with a porting layer that allows it to be easily ported to another OS!
 
-*   Release Version: Apache NimBLE 1.1.0
-*   Release Date: April 9, 2019
-*   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.1.0)
-*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.1.0/apache-mynewt-nimble-1.1.0.tgz)
-    [[PGP]](https://www.apache.org/dist/mynewt/apache-nimble-1.1.0/apache-mynewt-nimble-1.1.0.tgz.asc)
-    [[SHA512]](https://www.apache.org/dist/mynewt/apache-nimble-1.1.0/apache-mynewt-nimble-1.1.0.tgz.sha512)
+*   Release Version: Apache NimBLE 1.2.0
+*   Release Date: August 4, 2019
+*   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.2.0)
+*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz)
+    [[PGP]](https://www.apache.org/dist/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz.asc)
+    [[SHA512]](https://www.apache.org/dist/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz.sha512)
 
 #### Fresh install
 
@@ -76,10 +76,12 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 *   Apache Mynewt 1.4.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
 *   Apache Mynewt 1.4.1 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.1), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.1)
 *   Apache Mynewt 1.5.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.5.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.5.0)
+*   Apache Mynewt 1.6.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.6.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.6.0)
 
 #### Apache Mynewt NimBLE (Bluetooth Stack)
 
 *   Apache NimBLE 1.0.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.0.0)
+*   Apache NimBLE 1.1.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.1.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.1.0)
 
 <br>
 <br>
