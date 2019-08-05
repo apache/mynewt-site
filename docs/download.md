@@ -5,11 +5,11 @@
 *   Release Version: Apache Mynewt 1.7.0
 *   Release Date: August 4, 2019
 *   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.7.0)
-*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/)
- *  [core](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/apache-mynewt-core-1.7.0.tgz)
+*   [Release Download](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/)
+ *  [core](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/apache-mynewt-core-1.7.0.tgz)
     [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-core-1.7.0.tgz.asc)
     [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz.sha512)
- *   [newt](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz)
+ *   [newt](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz)
     [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz.asc)
     [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.7.0/apache-mynewt-newt-1.7.0.tgz.sha512)
 
@@ -20,7 +20,7 @@ Mynewt's Bluetooth stack is now a separate release with a porting layer that all
 *   Release Version: Apache NimBLE 1.2.0
 *   Release Date: August 4, 2019
 *   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.2.0)
-*   [Release Download](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz)
+*   [Release Download](https://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz)
     [[PGP]](https://www.apache.org/dist/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz.asc)
     [[SHA512]](https://www.apache.org/dist/mynewt/apache-nimble-1.2.0/apache-mynewt-nimble-1.2.0.tgz.sha512)
 
@@ -72,16 +72,16 @@ For general information on using Git at Apache, go to https://git-wip-us.apache.
 *   Apache Mynewt 1.0.0-incubating, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.0.0-incubating), [Release Archive](https://archive.apache.org/dist/incubator/mynewt/apache-mynewt-1.0.0-incubating/)
 *   Apache Mynewt 1.1.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.1.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.1.0/)
 *   Apache Mynewt 1.2.0, [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.2.0), [Release Archive](https://archive.apache.org/dist/mynewt/apache-mynewt-1.2.0/)
-*   Apache Mynewt 1.3.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.3.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.3.0)
-*   Apache Mynewt 1.4.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
-*   Apache Mynewt 1.4.1 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.1), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.1)
-*   Apache Mynewt 1.5.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.5.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.5.0)
-*   Apache Mynewt 1.6.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.6.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.6.0)
+*   Apache Mynewt 1.3.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.3.0), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.3.0)
+*   Apache Mynewt 1.4.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.0)
+*   Apache Mynewt 1.4.1 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.1), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.4.1)
+*   Apache Mynewt 1.5.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.5.0), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.5.0)
+*   Apache Mynewt 1.6.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.6.0), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.6.0)
 
 #### Apache Mynewt NimBLE (Bluetooth Stack)
 
-*   Apache NimBLE 1.0.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.0.0)
-*   Apache NimBLE 1.1.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.1.0), [Release Archive](http://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.1.0)
+*   Apache NimBLE 1.0.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-1.4.0), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.0.0)
+*   Apache NimBLE 1.1.0 [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.1.0), [Release Archive](https://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.1.0)
 
 <br>
 <br>
