@@ -67,7 +67,7 @@ the correct bsp for the board you are using.
     :emphasize-lines: 3
 
     $ newt target create nrf52_boot
-    $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set nrf52_boot app=@mcuboot/boot/mynewt
     $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     $ newt target set nrf52_boot build_profile=optimized
 
@@ -93,7 +93,7 @@ settings:
         bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=debug
     targets/nrf52_boot
-        app=@apache-mynewt-core/apps/boot
+        app=@mcuboot/boot/mynewt
         bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=optimized
 
@@ -106,21 +106,21 @@ Run the ``newt build nrf52_boot`` command to build the bootloader:
 
     $ newt build nrf52_boot
     Building target targets/nrf52_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
 
         ...
 
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/nrf52_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/nrf52_boot
 
 Run the ``newt build nrf52_blinky`` command to build the Blinky

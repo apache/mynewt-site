@@ -52,7 +52,7 @@ to create a bootloader target. We name the target ``stm32_boot``.
     $ newt target create stm32_boot
     $ newt target set stm32_boot bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
     $ newt target set stm32_boot build_profile=optimized
-    $ newt target set stm32_boot target.app=@apache-mynewt-core/apps/boot
+    $ newt target set stm32_boot target.app=@mcuboot/boot/mynewt
 
 Run the following ``newt target`` commands to create a target for the
 Slinky application. We name the target ``stm32_slinky``.
@@ -73,21 +73,21 @@ Run the ``newt build stm32_boot`` command to build the bootloader:
 
     $ newt build stm32_boot
     Building target targets/stm32_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
 
           ...
 
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/stm32_boot/app/apps/boot/boot.elf
+    Linking ~/dev/slinky/bin/targets/stm32_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/stm32_boot
     $
 
@@ -98,13 +98,13 @@ application:
 
     $newt build stm32_slinky
     Building target targets/stm32_slinky
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
     Compiling repos/apache-mynewt-core/boot/split/src/split.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
     Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
 
            ...

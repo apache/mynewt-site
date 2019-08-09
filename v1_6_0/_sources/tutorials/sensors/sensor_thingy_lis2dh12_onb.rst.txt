@@ -201,8 +201,8 @@ target ``thingy_boot``.
     Target targets/thingy_boot successfully created
     $ newt target set thingy_boot bsp=@apache-mynewt-core/hw/bsp/nrf52-thingy
     Target targets/thingy_boot successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52-thingy
-    $ newt target set thingy_boot app=@apache-mynewt-core/apps/boot
-    Target targets/thingy_boot successfully set target.app to @apache-mynewt-core/apps/boot
+    $ newt target set thingy_boot app=@mcuboot/boot/mynewt
+    Target targets/thingy_boot successfully set target.app to @mcuboot/boot/mynewt
     $ newt target set thingy_boot build_profile=optimized
     Target targets/thingy_boot successfully set target.build_profile to optimized
 
@@ -218,7 +218,7 @@ target ``thingy_boot``.
 
     Archiving thingy_boot-sysinit-app.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/thingy_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/thingy_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/thingy_boot
 
 Step 6: Connecting the Thingy to your Computer

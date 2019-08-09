@@ -63,7 +63,7 @@ Create two targets - one for the bootloader and one for the lora app shell appli
 
     $ newt target create telee02_boot
     $ newt target set telee02_boot bsp=@apache-mynewt-core/hw/bsp/telee02
-    $ newt target set telee02_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set telee02_boot app=@mcuboot/boot/mynewt
     $ newt target set telee02_boot build_profile=optimized
 
     $ newt target create lora_app_shell_telee02
@@ -89,7 +89,7 @@ You can now "display" the targets you created to make sure they are correct:
 
     $ newt target show telee02_boot
     targets/telee02_boot
-        app=@apache-mynewt-core/apps/boot
+        app=@mcuboot/boot/mynewt
         bsp=@apache-mynewt-core/hw/bsp/telee02
         build_profile=optimized
         
@@ -119,7 +119,7 @@ Build the target executables
 
     Archiving telee02_boot-sysinit-app.a
     Archiving util_mem.a
-    Linking /Users/wes/dev/wes/bin/targets/telee02_boot/app/apps/boot/boot.elf
+    Linking /Users/wes/dev/wes/bin/targets/telee02_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/telee02_boot
 
     $ newt clean lora_app_shell_telee02

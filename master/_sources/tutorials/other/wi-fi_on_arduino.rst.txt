@@ -146,7 +146,7 @@ create a bootloader target. We name the target ``mkr1000_boot``.
 
     $ newt target create mkr1000_boot
     $ newt target set mkr1000_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_mkr1000
-    $ newt target set mkr1000_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set mkr1000_boot app=@mcuboot/boot/mynewt
     $ newt target set mkr1000_boot build_profile=optimized
     $ newt target set mkr1000_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
 
@@ -175,17 +175,17 @@ Run the ``newt build mkr1000_boot`` command to build the bootloader:
 
     $ newt build mkr1000_boot
     Building target targets/mkr1000_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
 
            ...
 
     Archiving util_mem.a
-    Linking ~/dev/arduinowifi/bin/targets/mkr1000_boot/app/apps/boot/boot.elf
+    Linking ~/dev/arduinowifi/bin/targets/mkr1000_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/mkr1000_boot
     $
 

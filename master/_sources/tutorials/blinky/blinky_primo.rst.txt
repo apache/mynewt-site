@@ -76,7 +76,7 @@ to create a bootloader target. We name the target ``primo_boot``.
 .. code-block:: console
 
     $ newt target create primo_boot
-    $ newt target set primo_boot app=@apache-mynewt-core/apps/boot bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=optimized
+    $ newt target set primo_boot app=@mcuboot/boot/mynewt bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52 build_profile=optimized
 
 Run the following ``newt target`` commands to create a target for the
 Blinky application. We name the target ``primoblinky``.
@@ -105,7 +105,7 @@ settings:
         bsp=@apache-mynewt-core/hw/bsp/native
         build_profile=debug
     targets/primo_boot
-        app=@apache-mynewt-core/apps/boot
+        app=@mcuboot/boot/mynewt
         bsp=@apache-mynewt-core/hw/bsp/arduino_primo_nrf52
         build_profile=optimized
     targets/primoblinky
@@ -122,20 +122,20 @@ Run the ``newt build primo_boot`` command to build the bootloader:
 
     $ newt build primo_boot
     Building target targets/primo_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
 
           ...
 
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/primo_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/primo_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/primo_boot
 
 Run the ``newt build primoblinky`` command to build the Blinky

@@ -46,7 +46,7 @@ to create a bootloader target. We name the target ``stm32f4disc_boot``:
 .. code-block:: console
 
     $ newt target create stm32f4disc_boot
-    $ newt target set stm32f4disc_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set stm32f4disc_boot app=@mcuboot/boot/mynewt
     $ newt target set stm32f4disc_boot bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
     $ newt target set stm32f4disc_boot build_profile=optimized
 
@@ -75,7 +75,7 @@ settings:
         bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
         build_profile=debug
     targets/stm32f4disc_boot
-        app=@apache-mynewt-core/apps/boot
+        app=@mcuboot/boot/mynewt
         bsp=@apache-mynewt-core/hw/bsp/stm32f4discovery
         build_profile=optimized
 
@@ -88,13 +88,13 @@ Run the ``newt build stm32f4disc_boot`` command to build the bootloader:
 
     $ newt build stm32f4disc_boot
     Building target targets/stm32f4disc_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
 
         ...
 
@@ -102,7 +102,7 @@ Run the ``newt build stm32f4disc_boot`` command to build the bootloader:
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/stm32f4disc_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/stm32f4disc_boot/app/boot/mynwet/mynewt.elf
     Target successfully built: targets/stm32f4disc_boot
 
 Run the ``newt build stm32f4disc_blinky`` command to build the Blinky

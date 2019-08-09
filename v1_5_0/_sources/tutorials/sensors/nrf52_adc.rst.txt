@@ -83,8 +83,11 @@ that you can get started.
     ....
     Downloading repository mynewt-nimble (commit: master) ...
     ....
+    Downloading repository mcuboot (commit: master) ...
+    ....
     apache-mynewt-core successfully installed version 0.0.0
     apache-mynewt-nimble successfully installed version 0.0.0
+    mcuboot successfully installed version 0.0.0
 
 Create the App and Targets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -109,9 +112,9 @@ Next, you'll modify the ``pkg.yml`` file for your app. Note the change in ``pkg.
     pkg.homepage: "http://mynewt.apache.org/" 
     pkg.keywords:
 
-    pkg.deps: 
+    pkg.deps:
         - "@apache-mynewt-core/boot/split"
-        - "@apache-mynewt-core/boot/bootutil"
+        - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
         - "@apache-mynewt-core/mgmt/imgmgr"
         - "@apache-mynewt-core/mgmt/newtmgr"
@@ -144,18 +147,18 @@ Create two targets - one for the bootloader and one for the nrf52 board.
     $ newt target set nrf52_adc build_profile=debug
 
     $ newt target create nrf52_boot 
-    $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot 
+    $ newt target set nrf52_boot app=@mcuboot/boot/mynewt
     $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk 
     $ newt target set nrf52_boot build_profile=optimized
 
-    $ newt target show 
-    targets nrf52_adc 
+    $ newt target show
+    targets nrf52_adc
         app=apps/nrf52_adc
-        bsp=@apache-mynewt-core/hw/bsp/nrf52dk 
+        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=debug
-    targets nrf52_boot 
-        app=@apache-mynewt-core/apps/boot
-        bsp=@apache-mynewt-core/hw/bsp/nrf52dk 
+    targets nrf52_boot
+        app=@mcuboot/boot/mynewt
+        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=optimized
 
 **Note**: If you've already built and installed a bootloader for your NRF52dk then you do 
@@ -166,12 +169,12 @@ Build the Target Executables
 
 .. code-block:: console
 
-    $ newt build nrf52_boot 
-    ... 
-    Compiling boot.c 
-    Archiving boot.a 
-    Linking boot.elf 
-    App successfully built: ~/dev/myadc/bin/nrf52_boot/apps/boot/boot.elf
+    $ newt build nrf52_boot
+    ...
+    Compiling boot.c
+    Archiving boot.a
+    Linking boot.elf
+    App successfully built: ~/dev/myadc/bin/nrf52_boot/boot/mynewt/mynewt.elf
 
 .. code-block:: console
 
@@ -483,7 +486,7 @@ file of your app. You will also need to add the ``mcu/nordic`` package. Add them
    
     pkg.deps: 
         - "@apache-mynewt-core/boot/split"
-        - "@apache-mynewt-core/boot/bootutil"
+        - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
         - "@apache-mynewt-core/mgmt/imgmgr"
         - "@apache-mynewt-core/mgmt/newtmgr"

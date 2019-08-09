@@ -58,8 +58,8 @@ Next, create a target for the nRF52DK bootloader:
     Target targets/boot_nrf52dk successfully created
     [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     Target targets/boot_nrf52dk successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
-    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk app=@apache-mynewt-core/apps/boot
-    Target targets/boot_nrf52dk successfully set target.app to @apache-mynewt-core/apps/boot
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk app=@mcuboot/boot/mynewt
+    Target targets/boot_nrf52dk successfully set target.app to @mcuboot/boot/mynewt
     [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk build_profile=optimized
     Target targets/boot_nrf52dk successfully set target.build_profile to optimized
     [user@IsMyLaptop:~/src/air_quality]$ newt target show
@@ -68,7 +68,7 @@ Next, create a target for the nRF52DK bootloader:
         build_profile=debug
         compiler=compiler/sim
     targets/boot_nrf52dk
-        app=@apache-mynewt-core/apps/boot
+        app=@mcuboot/boot/mynewt
         bsp=@apache-mynewt-core/hw/bsp/nrf52dk
         build_profile=optimized
     targets/my_blinky_sim
@@ -83,7 +83,7 @@ Build the bootloader target and load it onto the board:
     newt build boot_nrf52dk
     ....
     Linking boot.elf
-    App successfully built: /Users/user/src/air_quality/bin/boot_nrf52dk/apps/boot/boot.elf
+    App successfully built: /Users/user/src/air_quality/bin/boot_nrf52dk/boot/mynewt/mynewt.elf
     [user@IsMyLaptop:~/src/air_quality]
     $ newt load boot_nrf52dk
 
@@ -110,9 +110,9 @@ Modify the apps/air\_quality/pkg.yml for air_quality in order to change the *pkg
     pkg.homepage: "http://mynewt.apache.org/"
     pkg.keywords:
 
-    pkg.deps: 
+    pkg.deps:
         - "@apache-mynewt-core/boot/split"
-        - "@apache-mynewt-core/boot/bootutil"
+        - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
         - "@apache-mynewt-core/mgmt/imgmgr"
         - "@apache-mynewt-core/mgmt/newtmgr"
@@ -273,7 +273,7 @@ Here's the listing from apps/air\_quality/pkg.yml:
 
     pkg.deps:
         - "@apache-mynewt-core/boot/split"
-        - "@apache-mynewt-core/boot/bootutil"
+        - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
         ....
         - "@apache-mynewt-core/sys/id"

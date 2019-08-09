@@ -55,7 +55,7 @@ to create a bootloader target. We name the target ``boot_olimex``.
 
     $ newt target create boot_olimex
     $ newt target set boot_olimex build_profile=optimized
-    $ newt target set boot_olimex app=@apache-mynewt-core/apps/boot
+    $ newt target set boot_olimex app=@mcuboot/boot/mynewt
     $ newt target set boot_olimex bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
 
 Run the following ``newt target`` commands to create a target for the
@@ -77,9 +77,9 @@ Run the ``newt build boot_olimex`` command to build the bootloader:
 
     $ newt build boot_olimex
     Building target targets/boot_olimex
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
     Compiling bin/targets/boot_olimex/generated/src/boot_olimex-sysflash.c
 
          ...
@@ -89,7 +89,7 @@ Run the ``newt build boot_olimex`` command to build the bootloader:
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/boot_olimex/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/boot_olimex/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/boot_olimex
 
 Build the Blinky Application
@@ -184,7 +184,7 @@ onto the board:
 
     $ newt load -v boot_olimex
     Loading bootloader
-    Load command: ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard ~/dev/myproj/bin/targets/boot_olimex/app/apps/boot/boot
+    Load command: ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard/olimex_stm32-e407_devboard_download.sh ~/dev/myproj/repos/apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard ~/dev/myproj/bin/targets/boot_olimex/app/boot/mynewt/mynewt
     Successfully loaded image.
 
 Note: If you are using Windows and get a ``no device found`` error, you

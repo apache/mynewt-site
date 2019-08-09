@@ -149,7 +149,7 @@ Build the two targets as follows:
 
    $ newt build nrf52_boot
    <snip>
-   App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
+   App successfully built: ./bin/nrf52_boot/boot/mynewt/mynewt.elf
    $ newt build myble
    Compiling hci_common.c
    Compiling util.c

@@ -171,8 +171,8 @@ bootloader target. We name the target ``nrf52_boot``:
 
     $ newt target create nrf52_boot
     Target targets/nrf52_boot successfully created
-    $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk  build_profile=optimized
-    Target targets/nrf52_boot successfully set target.app to @apache-mynewt-core/apps/boot
+    $ newt target set nrf52_boot app=@mcuboot/boot/mynewt bsp=@apache-mynewt-core/hw/bsp/nrf52dk  build_profile=optimized
+    Target targets/nrf52_boot successfully set target.app to @mcuboot/boot/mynewt
     Target targets/nrf52_boot successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
     Target targets/nrf52_boot successfully set target.build_profile to optimized
     $
@@ -186,19 +186,19 @@ Step 3: Building the Bootloader and Application Image
 
     $ newt build nrf52_boot
     Building target targets/nrf52_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
 
        ...
 
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/nrf52_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/nrf52_boot
 
 2. Run the ``newt build nrf52_bno055_test`` command to build the
@@ -208,11 +208,11 @@ sensors\_test application:
 
     $ newt build nrf52_bno055_test
     Building target targets/nrf52_bno055_test
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
     Compiling repos/apache-mynewt-core/apps/sensors_test/src/misc.c
     Compiling repos/apache-mynewt-core/apps/sensors_test/src/gatt_svr.c
     Compiling repos/apache-mynewt-core/apps/sensors_test/src/main.c

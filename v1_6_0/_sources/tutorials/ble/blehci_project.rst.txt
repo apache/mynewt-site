@@ -67,7 +67,7 @@ before continuing.
 ::
     
     $ newt target create nrf52_boot
-    $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set nrf52_boot app=@mcuboot/boot/mynewt
     $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     $ newt target set nrf52_boot build_profile=optimized
 
@@ -92,7 +92,7 @@ Check that the targets are defined correctly.
            bsp=@apache-mynewt-core/hw/bsp/nrf52dk
            build_profile=optimized
        targets/nrf52_boot
-           app=@apache-mynewt-core/apps/boot
+           app=@mcuboot/boot/mynewt
            bsp=@apache-mynewt-core/hw/bsp/nrf52dk
            build_profile=optimized
 
@@ -105,7 +105,7 @@ Then build the two targets.
 
     $ newt build nrf52_boot
     <snip>
-    Linking ~/dev/blehciproj/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+    Linking ~/dev/blehciproj/bin/targets/nrf52_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/nrf52_boot
 
     $ newt build myble2

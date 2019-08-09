@@ -49,7 +49,7 @@ to create a bootloader target. We name the target ``rbnano2_boot``:
 .. code-block:: console
 
     $ newt target create rbnano2_boot
-    $ newt target set rbnano2_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set rbnano2_boot app=@mcuboot/boot/mynewt
     $ newt target set rbnano2_boot bsp=@apache-mynewt-core/hw/bsp/rb-nano2
     $ newt target set rbnano2_boot build_profile=optimized
 
@@ -74,7 +74,7 @@ settings:
         bsp=@apache-mynewt-core/hw/bsp/rb-nano2
         build_profile=debug
     targets/rbnano2_boot
-        app=@apache-mynewt-core/apps/boot
+        app=@mcuboot/boot/mynewt
         bsp=@apache-mynewt-core/hw/bsp/rb-nano2
         build_profile=optimized
 
@@ -87,20 +87,20 @@ Run the ``newt build rbnano2_boot`` command to build the bootloader:
 
     $ newt build rbnano2_boot
     Building target targets/rbnano2_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
 
           ...
 
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/rbnano2_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/rbnano2_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/rbnano2_boot
 
 Run the ``newt build rbnano2_blinky`` command to build the Blinky

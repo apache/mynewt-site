@@ -53,7 +53,7 @@ to create a bootloader target. We name the target ``nrf52_boot``.
     $ newt target create nrf52_boot
     $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
     $ newt target set nrf52_boot build_profile=optimized
-    $ newt target set nrf52_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set nrf52_boot app=@mcuboot/boot/mynewt
 
 Run the following ``newt target`` commands to create a target for the
 Slinky application. We name the target ``nrf52_slinky``.
@@ -74,20 +74,20 @@ Run the ``newt build nrf52_boot`` command to build the bootloader:
 
     $ newt build nrf52-boot
     Building target targets/nrf52_boot
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mucboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
         ...
 
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/nrf52_boot/app/apps/boot/boot.elf
+    Linking ~/dev/slinky/bin/targets/nrf52_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/nrf52_boot
 
 Run the ``newt build nrf52_slinky`` command to build the Slinky
@@ -97,15 +97,15 @@ application:
 
     $newt build nrf52_slinky
     Building target targets/nrf52_slinky
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
     Compiling repos/apache-mynewt-core/boot/split/src/split.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
     Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
     Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
 

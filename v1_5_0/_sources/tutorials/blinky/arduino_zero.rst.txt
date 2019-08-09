@@ -134,7 +134,7 @@ directory, to create a bootloader target. We name the target
 
     $ newt target create arduino_boot
     $ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
-    $ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
+    $ newt target set arduino_boot app=@mcuboot/boot/mynewt
     $ newt target set arduino_boot build_profile=optimized
     Target targets/arduino_boot successfully set target.build_profile to optimized
     $ newt target set arduino_boot syscfg=BSP_ARDUINO_ZERO_PRO=1
@@ -150,7 +150,7 @@ These commands perform the following:
 -  Create a target named ``arduino_boot`` for the Arduino Zero
    Bootloader.
 -  Set the application for the ``arduino_boot`` target to the default
-   Apache Mynewt bootloader (``@apache-mynewt-core/apps/boot``)
+   MCUBoot bootloader (``@mcuboot/boot/mynewt``)
 -  Set the board support package for the target to
    ``@mynewt_arduino_zero/hw/bsp/arduino_zero``. This is a reference to
    the downloaded Arduino Zero support from Github.
@@ -198,15 +198,15 @@ Run the ``newt build arduino_boot`` command to build the bootloader:
     $ newt build arduino_boot
     Building target targets/arduino_boot
     Compiling bin/targets/arduino_boot/generated/src/arduino_boot-sysinit-app.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
     Compiling bin/targets/arduino_boot/generated/src/arduino_boot-sysflash.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/apps/boot/src/boot.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/mcuboot/boot/mynewt/src/main.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/arc4.c
-    Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/loader.c
     Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
 
           ....
@@ -214,7 +214,7 @@ Run the ``newt build arduino_boot`` command to build the bootloader:
     Archiving sys_mfg.a
     Archiving sys_sysinit.a
     Archiving util_mem.a
-    Linking ~/dev/myproj/bin/targets/arduino_boot/app/apps/boot/boot.elf
+    Linking ~/dev/myproj/bin/targets/arduino_boot/app/boot/mynewt/mynewt.elf
     Target successfully built: targets/arduino_boot
 
 Build the Blinky Application
@@ -290,7 +290,7 @@ will need to erase the board.
 
     $ newt load arduino_boot -v
     Loading bootloader
-    Error: Downloading ~/dev/myproj/bin/targets/arduino_boot/app/apps/boot/boot.elf.bin to 0x0
+    Error: Downloading ~/dev/myproj/bin/targets/arduino_boot/boot/mynewt/mynewt.elf.bin to 0x0
     Open On-Chip Debugger 0.9.0 (2015-11-15-05:39)
     Licensed under GNU GPL v2
     For bug reports, read
