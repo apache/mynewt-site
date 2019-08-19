@@ -60,8 +60,9 @@ Run the following commands to create a new project:
         Installing skeleton in myproj...
         Project myproj successfully created.
         $ cd myproj
-        $ newt install
-        apache-mynewt-core
+        $ newt upgrade
+        Downloading repository mynewt-core (commit: [...])
+        apache-mynewt-core successfully upgraded to version 1.7.0
         $
 
 Create the Targets

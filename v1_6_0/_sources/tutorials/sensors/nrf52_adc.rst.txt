@@ -77,17 +77,13 @@ that you can get started.
 
 .. code-block:: console
 
-    $ newt install -v 
-    apache-mynewt-core
-    Downloading repository mynewt-core (commit: master) ...
-    ....
-    Downloading repository mynewt-nimble (commit: master) ...
-    ....
-    Downloading repository mcuboot (commit: master) ...
-    ....
-    apache-mynewt-core successfully installed version 0.0.0
-    apache-mynewt-nimble successfully installed version 0.0.0
-    mcuboot successfully installed version 0.0.0
+    $ newt upgrade -v 
+    Downloading repository mynewt-core (commit: [...])
+    Downloading repository mynewt-nimble (commit: [...])
+    Downloading repository mcuboot (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
+    apache-mynewt-nimble successfully upgraded to version 1.2.0
+    mcuboot successfully upgraded to version 1.3.1
 
 Create the App and Targets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

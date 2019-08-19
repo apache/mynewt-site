@@ -145,7 +145,7 @@ branch may not be stable and you may encounter bugs or other problems.**
 and use the latest master branch. Release 1.0.0 is not supported on
 Windows.
 
-Run the ``newt install`` command, from your project base directory
+Run the ``newt upgrade`` command, from your project base directory
 (myproj), to fetch the source repository and dependencies.
 
 **Note:** It may take a while to download the apache-mynewt-core
@@ -154,8 +154,9 @@ progress.
 
 .. code-block:: console
 
-    $ newt install
-    apache-mynewt-core successfully installed version 1.3.0-none
+    $ newt upgrade
+    Downloading repository mynewt-core (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
 
 **Note:** If you get the following error:
 

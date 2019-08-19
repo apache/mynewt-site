@@ -32,8 +32,9 @@ We will name the project ``slinky``.
     Installing skeleton in slink...
     Project slinky successfully created
     $ cd slinky
-    $newt install
-    apache-mynewt-core
+    $newt upgrade
+    Downloading repository mynewt-core (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
 
 Setting up your target build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

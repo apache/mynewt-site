@@ -48,8 +48,9 @@ skeletal Mynewt framework. Change into the newly created directory.
     Project blehciproj  successfully created.
     $ cd mblehciproj 
 
-    $ newt install
-    apache-mynewt-core
+    $ newt upgrade
+    Downloading repository mynewt-core (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
 
 Create targets
 ~~~~~~~~~~~~~~

@@ -47,11 +47,9 @@ Now that you have defined the needed repositories, it's time to install everythi
 
 ::
 
-        $ newt install -v 
-        apache-mynewt-core
-        Downloading repository description for apache-mynewt-core... success!
-        ...
-        apache-mynewt-core successfully installed version 1.2.0-none
+        $ newt upgrade -v 
+        Downloading repository mynewt-core (commit: [...])
+        apache-mynewt-core successfully upgraded to version 1.7.0
         ...
 
 Create the targets

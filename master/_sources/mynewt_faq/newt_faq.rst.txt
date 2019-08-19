@@ -5,16 +5,12 @@ Mynewt FAQ - Newt
   :local:
   :depth: 1
 
-Newt Commands: ``install``, ``upgrade``, ``sync``
+Newt Commands: ``upgrade``, ``install``, ``sync``
 -------------------------------------------------
 
-**Q**: What’s the difference between ``newt install``, ``newt upgrade``, and ``newt sync``?
+**Q**: What’s the difference between ``newt upgrade``, ``newt install``, and ``newt sync``?
 
-**A**: 
-
-- ``newt install``: downloads repos that aren't installed yet.  The downloaded version matches what ``project.yml`` specifies.
-- ``newt upgrade``: performs an install, but also applies to repos that are already installed.
-- ``newt sync``: fetches and pulls the latest for each repo, but does not change the branch (version).
+**A**: Only use ``newt upgrade``.  The other two commands (``install`` and ``sync``) are deprecated and will be removed soon.
 
 ``newt size`` Command vs. Elf File Size
 ---------------------------------------

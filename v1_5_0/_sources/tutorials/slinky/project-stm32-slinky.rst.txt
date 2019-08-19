@@ -35,8 +35,9 @@ already have a project created or completed the
     Installing skeleton in slink...
     Project slink successfully created
     $ cd slinky
-    $newt install
-    apache-mynewt-core
+    $ newt upgrade
+    Downloading repository mynewt-core (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
 
 Create the Targets
 ~~~~~~~~~~~~~~~~~~~

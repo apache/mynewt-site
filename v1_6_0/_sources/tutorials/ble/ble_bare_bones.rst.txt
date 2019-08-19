@@ -58,13 +58,14 @@ operating system, NimBLE stack, and other system libraries. Later, our
 app may need packages from additional repos, but for now the core repo
 suits our needs.
 
-We download the dependent repos using the ``newt install`` command:
+We download the dependent repos using the ``newt upgrade`` command:
 
 ::
 
     ~/dev$ cd my_proj1
-    ~/dev/my_proj1$ newt install
-    apache-mynewt-core
+    ~/dev/my_proj1$ newt upgrade
+    Downloading repository mynewt-core (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
 
 Now it's time to create your own app.
 

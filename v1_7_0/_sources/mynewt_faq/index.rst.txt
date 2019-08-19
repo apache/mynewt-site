@@ -47,5 +47,5 @@ Version Control Applications with Git
 
 **A**: You can simply have a separate git for your app. For example, if you followed the Blinky tutorial, your git would be in ``apps/foo``, while repos gits are in repos. You may also keep your app in the core repo, just have your own working branch for it. 
 
-Another option is to have your git repository with local packages (including apps) and have ``repository.yml`` there so ``newt install`` can download all dependencies. Just make sure to put e.g. ``bin``, ``repos``, and ``project.state``, and others in ``.gitignore`` so they are not in version control. 
+Another option is to have your git repository with local packages (including apps) and have ``repository.yml`` there so ``newt upgrade`` can download all dependencies. Just make sure to put e.g. ``bin``, ``repos``, and ``project.state``, and others in ``.gitignore`` so they are not in version control. 
 

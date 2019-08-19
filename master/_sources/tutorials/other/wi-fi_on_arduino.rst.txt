@@ -57,8 +57,9 @@ Run the following commands to create a new project:
         Installing skeleton in arduinowifi...
         Project arduinowifi successfully created.
         $ cd arduinowifi
-        $ newt install
-        apache-mynewt-core
+        $ newt upgrade
+        Downloading repository mynewt-core (commit: [...])
+        apache-mynewt-core successfully upgraded to version 1.7.0
         $
 
 Fetch External Packages
@@ -117,14 +118,16 @@ and use the latest master branch for both repositories.
         repo: mynewt_arduino_zero 
     $
 
-Install the project dependencies using the ``newt install`` command
+Install the project dependencies using the ``newt upgrade`` command
 (you can specify ``-v`` for verbose output):
 
 .. code-block:: console
 
-    $ newt install
-    apache-mynewt-core
-    mynewt_arduino_zero
+    $ newt upgrade
+    Downloading repository mynewt-core (commit: [...])
+    Downloading repository mynewt_arduino_zero (commit: [...])
+    apache-mynewt-core successfully upgraded to version 1.7.0
+    mynewt_arduino_zero successfully upgraded to version 1.7.0
     $
 
 **NOTE:** If there has been a new release of a repo used in your project
