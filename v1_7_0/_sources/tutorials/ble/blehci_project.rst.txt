@@ -58,7 +58,7 @@ Create targets
 You will create two targets - one for the bootloader, the other for the
 application. Then you will add the definitions for them. Note that you
 are using the example app ``blehci`` for the application target. Set the
-bsp to nRF52DK.
+bsp to nordic_pca10040.
 
 **NOTE:** The preview version, nRF52PDK, is no longer supported. If you
 do not see PCA100040 on the top of your board, you have a preview
@@ -69,14 +69,14 @@ before continuing.
     
     $ newt target create nrf52_boot
     $ newt target set nrf52_boot app=@mcuboot/boot/mynewt
-    $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
     $ newt target set nrf52_boot build_profile=optimized
 
 ::
     
     $ newt target create myble2
-    $ newt target set myble2 bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    $ newt target set myble2 app=@apache-mynewt-core/apps/blehci
+    $ newt target set myble2 bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
+    $ newt target set myble2 app=@apache-mynewt-nimble/apps/blehci
     $ newt target set myble2 build_profile=optimized
 
 Check that the targets are defined correctly.
@@ -89,12 +89,12 @@ Check that the targets are defined correctly.
            bsp=@apache-mynewt-core/hw/bsp/native
            build_profile=debug
        targets/myble2
-           app=@apache-mynewt-core/apps/blehci
-           bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+           app=@apache-mynewt-nimble/apps/blehci
+           bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
            build_profile=optimized
        targets/nrf52_boot
            app=@mcuboot/boot/mynewt
-           bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+           bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
            build_profile=optimized
 
 Build targets
