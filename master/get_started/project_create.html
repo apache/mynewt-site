@@ -261,21 +261,21 @@ ga("send", "pageview");
 <p>This page shows you how to create a Mynewt project using the <code class="docutils literal notranslate"><span class="pre">newt</span></code>
 command-line tool. The project is a blinky application that toggles a
 pin. The application uses the Mynewt’s simulated hardware and runs as a
-native application on Mac OS and Linux.</p>
-<p><strong>Note:</strong> The Mynewt simulator is not yet supported on Windows. If you
-are using the native install option (not the Docker option), you will
-need to create the blinky application for a target board. We recommend
-that you read the section on creating a new project and fetching the
-source repository to understand the Mynewt repository structure, create
-a new project, and fetch the source dependencies before proceeding to
+native application on Linux, FreeBSD and older versions of Mac OS.</p>
+<p><strong>Note:</strong> The Mynewt simulator is not yet supported natively on Windows or
+newer Mac OS versions.</p>
+<p>If you are using the native install option (not the Docker option), you will
+need to create the blinky application for a target board. We recommend that
+you read the section on creating a new project and fetching the source
+repository to understand the Mynewt repository structure, create a new
+project, and fetch the source dependencies before proceeding to
 one of the <a class="reference internal" href="../tutorials/blinky/blinky.html#blinky-tutorials"><span class="std std-ref">Project Blinky</span></a>.</p>
 <p>This guide shows you how to:</p>
 <ol class="arabic simple">
 <li>Create a new project and fetch the source repository and
 dependencies.</li>
-<li>Test the project packages. (Not supported on Windows.)</li>
-<li>Build and run the simulated blinky application. (Not supported on
-Windows.)</li>
+<li>Test the project packages. (Using Docker image for Windows and MacOS.)</li>
+<li>Build and run the simulated blinky application.</li>
 </ol>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -335,7 +335,8 @@ populates this new project with a base skeleton of a new Apache Mynewt
 project in the project base directory. It has the following structure:</p>
 <p><strong>Note</strong>: If you do not have <code class="docutils literal notranslate"><span class="pre">tree</span></code>, run <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">tree</span></code> to
 install on Mac OS, <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">tree</span></code> to install on Linux,
-and <code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-Su</span> <span class="pre">tree</span></code> from a MinGW terminal to install on Windows.</p>
+<code class="docutils literal notranslate"><span class="pre">pacman</span> <span class="pre">-Su</span> <span class="pre">tree</span></code> from a MinGW terminal to install on Windows, and
+<code class="docutils literal notranslate"><span class="pre">pkg</span> <span class="pre">install</span> <span class="pre">tree</span></code> on FreeBSD.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> <span class="nb">cd</span> myproj
 <span class="gp">$</span> tree
 <span class="go">.</span>
@@ -395,13 +396,10 @@ the project.yml file:</p>
 </div>
 <p>Changing vers to 0-dev will put you on the latest master branch. <strong>This
 branch may not be stable and you may encounter bugs or other problems.</strong></p>
-<p><strong>Note:</strong> On Windows platforms, you will need to change vers to 0-dev
-and use the latest master branch. Release 1.0.0 is not supported on
-Windows.</p>
 <p>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">upgrade</span></code> command, from your project base directory
 (myproj), to fetch the source repository and dependencies.</p>
 <p><strong>Note:</strong> It may take a while to download the apache-mynewt-core
-reposistory. Use the <em>-v</em> (verbose) option to see the installation
+repository. Use the <em>-v</em> (verbose) option to see the installation
 progress.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt upgrade
 <span class="go">Downloading repository mynewt-core (commit: [...])</span>
@@ -540,7 +538,9 @@ directory.</p>
 </div>
 <div class="section" id="testing-the-project-packages">
 <h2><a class="toc-backref" href="#id5">Testing the Project Packages</a><a class="headerlink" href="#testing-the-project-packages" title="Permalink to this headline">¶</a></h2>
-<p><strong>Note</strong>: This is not yet supported on Windows.</p>
+<p><strong>Note:</strong> If you’re running this with Docker, use <code class="docutils literal notranslate"><span class="pre">newt</span></code> wrapper
+script as described in <a class="reference internal" href="docker.html"><span class="doc">Docker Container</span></a>. Unit tests
+depend on Mynewt simulator.</p>
 <p>You can use the newt tool to execute the unit tests in a package. For
 example, run the following command to test the <code class="docutils literal notranslate"><span class="pre">sys/config</span></code> package in
 the <code class="docutils literal notranslate"><span class="pre">apache-mynewt-core</span></code> repo:</p>
@@ -587,7 +587,9 @@ downgrade your installation to gcc-5 and use the default gcc compiler configurat
 <p><strong>Note:</strong> If you are running the standard gcc for 64-bit machines, it
 does not support 32-bit. In that case you will see compilation errors.
 You need to install multilib gcc (e.g. gcc-multilib if you running on a
-64-bit Ubuntu).</p>
+64-bit Ubuntu).
+<strong>Note:</strong> Running <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">test</span> <span class="pre">all</span></code> within Docker Container can take
+a long time.</p>
 <p>To test all the packages in a project, specify <code class="docutils literal notranslate"><span class="pre">all</span></code> instead of the
 package name.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt <span class="nb">test</span> all
@@ -612,8 +614,7 @@ package name.</p>
 <h2><a class="toc-backref" href="#id6">Building and Running the Simulated Blinky Application</a><a class="headerlink" href="#building-and-running-the-simulated-blinky-application" title="Permalink to this headline">¶</a></h2>
 <p>The section shows you how to build and run the blinky application to run
 on Mynewt’s simulated hardware.</p>
-<p><strong>Note</strong>: This is not yet supported on Windows. Refer to the <a class="reference internal" href="../tutorials/blinky/blinky.html#blinky-tutorials"><span class="std std-ref">Project Blinky</span></a> to create a blinky application
-for a target board.</p>
+<p><strong>Note</strong>: This is not yet supported on Windows or newer versions of MacOS. Refer to the <a class="reference internal" href="../tutorials/blinky/blinky.html#blinky-tutorials"><span class="std std-ref">Project Blinky</span></a> to create a blinky application for a target board, or run the the application within Docker Container.</p>
 <div class="section" id="building-the-application">
 <h3><a class="toc-backref" href="#id7">Building the Application</a><a class="headerlink" href="#building-the-application" title="Permalink to this headline">¶</a></h3>
 <p>To build the simulated blinky application, run <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">build</span> <span class="pre">my_blinky_sim</span></code>:</p>
@@ -645,8 +646,8 @@ LED blink.</p>
 <span class="go">hal_gpio set pin  1 to 0</span>
 </pre></div>
 </div>
-<p>If you are using newt docker, use <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">run</span></code> to run the simulated
-binary.</p>
+<p>If you are using newt docker, use <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">run</span></code> to run the simulated binary.
+Remember to use the <code class="docutils literal notranslate"><span class="pre">newt</span></code> wrapper script when doing that.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt run my_blinky_sim
 <span class="go">Loading app image into slot 1</span>
 <span class="go">    ...</span>

@@ -4,23 +4,24 @@ Creating Your First Mynewt Project
 This page shows you how to create a Mynewt project using the ``newt``
 command-line tool. The project is a blinky application that toggles a
 pin. The application uses the Mynewt's simulated hardware and runs as a
-native application on Mac OS and Linux.
+native application on Linux, FreeBSD and older versions of Mac OS.
 
-**Note:** The Mynewt simulator is not yet supported on Windows. If you
-are using the native install option (not the Docker option), you will
-need to create the blinky application for a target board. We recommend
-that you read the section on creating a new project and fetching the
-source repository to understand the Mynewt repository structure, create
-a new project, and fetch the source dependencies before proceeding to
+**Note:** The Mynewt simulator is not yet supported natively on Windows or
+newer Mac OS versions.
+
+If you are using the native install option (not the Docker option), you will
+need to create the blinky application for a target board. We recommend that
+you read the section on creating a new project and fetching the source
+repository to understand the Mynewt repository structure, create a new
+project, and fetch the source dependencies before proceeding to
 one of the :ref:`blinky_tutorials`.
 
 This guide shows you how to:
 
 1. Create a new project and fetch the source repository and
    dependencies.
-2. Test the project packages. (Not supported on Windows.)
-3. Build and run the simulated blinky application. (Not supported on
-   Windows.)
+2. Test the project packages. (Using Docker image for Windows and MacOS.)
+3. Build and run the simulated blinky application.
 
 .. contents::
  :local:
@@ -74,7 +75,8 @@ project in the project base directory. It has the following structure:
 
 **Note**: If you do not have ``tree``, run ``brew install tree`` to
 install on Mac OS, ``sudo apt-get install tree`` to install on Linux,
-and ``pacman -Su tree`` from a MinGW terminal to install on Windows.
+``pacman -Su tree`` from a MinGW terminal to install on Windows, and
+``pkg install tree`` on FreeBSD.
 
 .. code-block:: console
 
@@ -141,15 +143,11 @@ the project.yml file:
 Changing vers to 0-dev will put you on the latest master branch. **This
 branch may not be stable and you may encounter bugs or other problems.**
 
-**Note:** On Windows platforms, you will need to change vers to 0-dev
-and use the latest master branch. Release 1.0.0 is not supported on
-Windows.
-
 Run the ``newt upgrade`` command, from your project base directory
 (myproj), to fetch the source repository and dependencies.
 
 **Note:** It may take a while to download the apache-mynewt-core
-reposistory. Use the *-v* (verbose) option to see the installation
+repository. Use the *-v* (verbose) option to see the installation
 progress.
 
 .. code-block:: console
@@ -297,7 +295,9 @@ directory.
 Testing the Project Packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Note**: This is not yet supported on Windows.
+**Note:** If you're running this with Docker, use ``newt`` wrapper
+script as described in :doc:`Docker Container <docker>`. Unit tests
+depend on Mynewt simulator.
 
 You can use the newt tool to execute the unit tests in a package. For
 example, run the following command to test the ``sys/config`` package in
@@ -350,6 +350,8 @@ downgrade your installation to gcc-5 and use the default gcc compiler configurat
 does not support 32-bit. In that case you will see compilation errors.
 You need to install multilib gcc (e.g. gcc-multilib if you running on a
 64-bit Ubuntu).
+**Note:** Running ``newt test all`` within Docker Container can take
+a long time.
 
 To test all the packages in a project, specify ``all`` instead of the
 package name.
@@ -378,8 +380,7 @@ Building and Running the Simulated Blinky Application
 The section shows you how to build and run the blinky application to run
 on Mynewt's simulated hardware.
 
-**Note**: This is not yet supported on Windows. Refer to the :ref:`blinky_tutorials` to create a blinky application
-for a target board.
+**Note**: This is not yet supported on Windows or newer versions of MacOS. Refer to the :ref:`blinky_tutorials` to create a blinky application for a target board, or run the the application within Docker Container.
 
 Building the Application
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -418,8 +419,8 @@ If you natively install the toolchain execute the binary directly:
     $ ./bin/targets/my_blinky_sim/app/apps/blinky/blinky.elf
     hal_gpio set pin  1 to 0
 
-If you are using newt docker, use ``newt run`` to run the simulated
-binary.
+If you are using newt docker, use ``newt run`` to run the simulated binary.
+Remember to use the ``newt`` wrapper script when doing that.
 
 .. code-block:: console
 
