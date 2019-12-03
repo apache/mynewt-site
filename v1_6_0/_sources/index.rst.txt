@@ -13,7 +13,7 @@ Introduction
    tutorials/tutorials
    external_links
    os/os_user_guide
-   network/docs/index
+   network/index
    newt/index
    newtmgr/index
    mynewt_faq/index
