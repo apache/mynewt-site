@@ -125,10 +125,10 @@ profiles: ``debug`` and ``optimized``.
 
     ~/dev/my_proj1$ newt target set ble_tgt     \
         app=apps/ble_app                        \
-        bsp=@apache-mynewt-core/hw/bsp/nrf52dk  \
+        bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040  \
         build_profile=optimized
     Target targets/ble_tgt successfully set target.app to apps/ble_app
-    Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
+    Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040
     Target targets/ble_tgt successfully set target.build_profile to optimized
 
 Enter BLE
@@ -136,25 +136,31 @@ Enter BLE
 
 Since our application will support BLE functionality, we need to give it
 access to a BLE stack. We do this by adding the necessary NimBLE
-packages to the app's dependency list. To enable a combined
-host-controller in the app, add dependencies for the NimBLE controller,
-host, and in-RAM transport to ``apps/ble_app/pkg.yml``:
+packages to the app's dependency list in ``apps/ble_app/pkg.yml``:
 
 .. code-block:: console
-    :emphasize-lines: 6,7,8
+    :emphasize-lines: 5,6,7
 
     pkg.deps:
         - "@apache-mynewt-core/kernel/os"
         - "@apache-mynewt-core/sys/console/full"
         - "@apache-mynewt-core/sys/log/full"
         - "@apache-mynewt-core/sys/stats/full"
-        - "@apache-mynewt-core/net/nimble/controller"
-        - "@apache-mynewt-core/net/nimble/host"
-        - "@apache-mynewt-core/net/nimble/host/store/config"
-        - "@apache-mynewt-core/net/nimble/transport/ram"``
+        - "@apache-mynewt-nimble/nimble/host"
+        - "@apache-mynewt-nimble/nimble/host/store/config"
+        - "@apache-mynewt-nimble/nimble/transport"
+
+To enable a combined host-controller in the app set correct transport which will include
+NimBLE controller into build. For this update ``apps/ble_app/syscfg.yml``
+
+.. code-block:: console
+
+    syscfg.vals:
+            BLE_HCI_TRANSPORT: builtin
+
 
 **Important note:** The controller package affects system configuration,
-see :doc:`this page <../../../ble_setup/ble_lp_clock/>` for
+see :doc:`this page <../../../ble_setup/ble_setup_intro/>` for
 details.
 
 Build the target

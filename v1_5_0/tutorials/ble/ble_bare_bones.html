@@ -388,10 +388,10 @@ options to use during the build. Apache Mynewt supports two build
 profiles: <code class="docutils literal notranslate"><span class="pre">debug</span></code> and <code class="docutils literal notranslate"><span class="pre">optimized</span></code>.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">~/dev/my_proj1$ newt target set ble_tgt     \</span>
 <span class="go">    app=apps/ble_app                        \</span>
-<span class="go">    bsp=@apache-mynewt-core/hw/bsp/nrf52dk  \</span>
+<span class="go">    bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040  \</span>
 <span class="go">    build_profile=optimized</span>
 <span class="go">Target targets/ble_tgt successfully set target.app to apps/ble_app</span>
-<span class="go">Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="go">Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040</span>
 <span class="go">Target targets/ble_tgt successfully set target.build_profile to optimized</span>
 </pre></div>
 </div>
@@ -400,18 +400,21 @@ profiles: <code class="docutils literal notranslate"><span class="pre">debug</sp
 <h2><a class="toc-backref" href="#id4">Enter BLE</a><a class="headerlink" href="#enter-ble" title="Permalink to this headline">¶</a></h2>
 <p>Since our application will support BLE functionality, we need to give it
 access to a BLE stack. We do this by adding the necessary NimBLE
-packages to the app’s dependency list. To enable a combined
-host-controller in the app, add dependencies for the NimBLE controller,
-host, and in-RAM transport to <code class="docutils literal notranslate"><span class="pre">apps/ble_app/pkg.yml</span></code>:</p>
+packages to the app’s dependency list in <code class="docutils literal notranslate"><span class="pre">apps/ble_app/pkg.yml</span></code>:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps:</span>
 <span class="go">    - &quot;@apache-mynewt-core/kernel/os&quot;</span>
 <span class="go">    - &quot;@apache-mynewt-core/sys/console/full&quot;</span>
 <span class="go">    - &quot;@apache-mynewt-core/sys/log/full&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/stats/full&quot;</span>
-<span class="hll"><span class="go">    - &quot;@apache-mynewt-core/net/nimble/controller&quot;</span>
-</span><span class="hll"><span class="go">    - &quot;@apache-mynewt-core/net/nimble/host&quot;</span>
-</span><span class="hll"><span class="go">    - &quot;@apache-mynewt-core/net/nimble/host/store/config&quot;</span>
-</span><span class="go">    - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;``</span>
+<span class="hll"><span class="go">    - &quot;@apache-mynewt-core/sys/stats/full&quot;</span>
+</span><span class="hll"><span class="go">    - &quot;@apache-mynewt-nimble/nimble/host&quot;</span>
+</span><span class="hll"><span class="go">    - &quot;@apache-mynewt-nimble/nimble/host/store/config&quot;</span>
+</span><span class="go">    - &quot;@apache-mynewt-nimble/nimble/transport&quot;</span>
+</pre></div>
+</div>
+<p>To enable a combined host-controller in the app set correct transport which will include
+NimBLE controller into build. For this update <code class="docutils literal notranslate"><span class="pre">apps/ble_app/syscfg.yml</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">syscfg.vals:</span>
+<span class="go">        BLE_HCI_TRANSPORT: builtin</span>
 </pre></div>
 </div>
 <p><strong>Important note:</strong> The controller package affects system configuration,
