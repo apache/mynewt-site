@@ -65,7 +65,7 @@ def find_BSPs():
     bsps = []
     for bsp in listdir(bsp_dir):
         with open(path.join(bsp_dir, bsp, "bsp.yml"), 'r') as f:
-            data = yaml.load(f)
+            data = yaml.full_load(f)
             for k in ['bsp.name', 'bsp.url', 'bsp.maker', 'bsp.arch']:
                 # XXX might also skip bsp.arch that starts with 'sim'?
                 if k not in data:
