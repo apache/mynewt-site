@@ -580,7 +580,7 @@ your C code.</p>
 <p>The third service, newtmgr, is vendor-specific service supported by most Mynewt devices.  This service is used for remote configuration, status queries, and firmware updates.  As with GAP and GATT, this service is implemented in a package separate from the <em>bleprph</em> app.</p>
 <p>The final two services, <em>Alert Notification</em> and <em>Security Test</em>, are not implemented in separate libraries.  Rather, these services are specific to the app, so they are implemented the <em>bleprph</em> app itself.  The attribute table used to express these services is located in the <em>gatt_svr.c</em> file, so let's take a look at that now.  The attribute table is called <code>gatt_svr_svcs</code>; here are the first several lines from this table:</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
     {
         <span style="color: #177500">/*** Alert Notification Service. */</span>
         .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
@@ -595,7 +595,7 @@ your C code.</p>
             .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_NOTIFY</span>,
         }, {
     <span style="color: #177500">// [...]</span>
-</pre></div>
+</code></pre></div>
 
 
 <p><br></p>
@@ -668,7 +668,7 @@ terminated with an empty entry, represented with a 0.  The below code listing
 shows the last service in the array, including terminating zeros for the
 characteristic array and service array.</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    {
         <span style="color: #177500">/*** Service: Security test. */</span>
         .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
         .<span style="color: #000000">uuid128</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_svc_sec_test_uuid</span>,
@@ -691,14 +691,14 @@ characteristic array and service array.</p>
     {
         <span style="color: #1C01CE">0</span>, <span style="color: #177500">/* No more services. */</span>
     },
-</pre></div>
+</code></pre></div>
 
 
 <p><br></p>
 <h4 id="registration-function">Registration function</h4>
 <p>After you have created your service table, your app needs to register it with the NimBLE stack.  This is done by calling the <a href="../../../../network/ble/ble_hs/ble_gatts/functions/ble_gatts_add_svcs/">ble_gatts_add_svcs()</a> function.  There is a small complication, though.  The NimBLE host needs to allocate sufficient resources upfront to accommodate all of your peripheral's services.  You can ensure your GATT services are accounted for in the host configuration object by calling the <a href="../../../../network/ble/ble_hs/ble_gatts/functions/ble_gatts_count_cfg/">ble_gatts_count_cfg()</a> function.</p>
 <p>The <em>bleprph</em> app registers its services in <em>gatt_svr.c</em> as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_init</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_hs_cfg</span> <span style="color: #000000">*cfg</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
@@ -715,7 +715,7 @@ characteristic array and service array.</p>
 
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
-</pre></div>
+</code></pre></div>
 
 
 <p>You application will perform the above two-step process for each service definition array that you wish to register.  Libraries that implement GATT services will generally expose an initialization function which does this for you.</p>
