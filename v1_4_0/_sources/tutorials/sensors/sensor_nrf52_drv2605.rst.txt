@@ -111,7 +111,7 @@ build\_profile variables for the target:
     $
 
 Step 2: Creating an Application Image and loading it
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This tutorial assumes you have a functioning bootloader as taught in
 :doc:`add an offboard sensor <sensor_nrf52_bno055>`

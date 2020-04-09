@@ -61,7 +61,7 @@ The list of repos used by your project are contained within the
 View the ``project.yml`` section and you will see a line describing the
 repos:
 
-.. code-block:: console
+.. code-block:: yaml
 
     project.repositories:
         - apache-Mynewt-core
@@ -72,7 +72,8 @@ By default, this newly created project uses a single repo called
 If you wish to add additional repos, you would add additional lines to
 the ``project.repositories`` variable like this.
 
-.. code:: hl_lines="3"
+.. code-block:: yaml
+    :emphasize-lines: 3
 
     project.repositories:
         - apache-Mynewt-core
@@ -87,7 +88,7 @@ information on obtaining the repo.
 
 In the same ``myproj`` above you will see the following repo descriptor.
 
-.. code-block:: console
+.. code-block:: yaml
 
     repository.apache-Mynewt-core:
         type: github
@@ -139,7 +140,7 @@ To add a new repo to your project, you have to complete two steps.
 An example of a ``project.yml`` file with two repositories is shown
 below:
 
-.. code-block:: console
+.. code-block:: yaml
 
     project.name: "my_project"
 
@@ -199,7 +200,7 @@ branch.
 
 Here is the ``repository.yml`` file from the apache-mynewt-core:
 
-.. code-block:: console
+.. code-block:: yaml
 
     repo.name: apache-mynewt-core
     repo.versions:
@@ -285,7 +286,7 @@ It's up to the repository maintainer to map these to branches of the
 repository. For example, let's say in a fictitious repository the
 following are defined.
 
-.. code-block:: console
+.. code-block:: yaml
 
     repo.versions:
         "0.8.0": "xxx_branch_0_8_0"

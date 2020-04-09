@@ -39,7 +39,7 @@ Run the following commands to create a new project:
         $ cd myproj
 
         $ newt upgrade
-        Downloading repository mynewt-core (commit: [...])
+        Downloading repository mynewt-core (commit: master) ...
         apache-mynewt-core successfully upgraded to version 1.7.0
         $
 

@@ -204,7 +204,7 @@ communicating with the newtmgr tool:
    $ newtmgr -c myconn echo hello
    hello
 
- Test your application to ensure that it can process a Newt Manager
+Test your application to ensure that it can process a Newt Manager
 command that is supported by a different package. Issue the ``stat``
 command to see the BLE stats.
 

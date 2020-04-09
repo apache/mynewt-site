@@ -1,0 +1,923 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>Enabling an Off-Board Sensor in an Existing Application &mdash; Apache Mynewt latest documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../genindex.html"/>
+          <link rel="search" title="Search" href="../../search.html"/>
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../index.html"/>
+          <link rel="up" title="Sensor Tutorials Overview" href="sensors_framework.html"/>
+          <link rel="next" title="Changing the Default Configuration for a Sensor" href="sensor_offboard_config.html"/>
+          <link rel="prev" title="Sensor Tutorials Overview" href="sensors_framework.html"/> 
+
+    
+    <script src="../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/quick-start/">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+      <a href="../tutorials.html">Tutorials</a> /
+    
+      <a href="sensors.html">Sensors</a> /
+    
+      <a href="sensors_framework.html">Sensor Tutorials Overview</a> /
+    
+    Enabling an Off-Board Sensor in an Existing Application
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-documentation/edit/master/docs/tutorials/sensors/sensor_nrf52_bno055.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    <!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest" selected>
+    Version: latest
+  </option>
+  <option value="/v1_7_0" >
+    Version: 1.7.0
+  </option>
+  <option value="/v1_6_0" >
+    Version: 1.6.0
+  </option>
+  <option value="/v1_5_0" >
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0" >
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts.html">Concepts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../blinky/blinky.html">Project Blinky</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../repo/add_repos.html">Working with repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../slinky/project-slinky.html">Project Slinky for Remote Comms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ble/ble.html">Bluetooth Low Energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lora/lorawanapp.html">LoRa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../os_fundamentals/os_fundamentals.html">OS Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/devmgmt.html">Remote Device Management</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="sensors.html">Sensors</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="sensors_framework.html">Sensor Framework</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Enable an Off-Board Sensor in an Existing Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sensor_offboard_config.html">Change the Default Configuration For a Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sensor_thingy_lis2dh12_onb.html">Develope an Application for an Onboard Sensor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sensor_oic_overview.html">Enable OIC Sensor Data Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="air_quality.html">Air Quality Sensor Project</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nrf52_adc.html">Add an Analog Sensor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sensor_nrf52_drv2605.html">Connect a DRV2605 actuator device</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tooling/tooling.html">Tooling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../other/other.html">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../external_links.html">Third-party Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../os/os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../network/index.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mynewt_faq/index.html">Mynewt FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              
+                <div class="alert alert-warning">
+                  <p>
+                    Version 1.8.0 is not the most recent version of the
+                    Apache Mynewt documentation. Click <a href="/latest">here</a> to
+                    read the latest version.
+                  </p>
+                </div>
+              
+
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="enabling-an-off-board-sensor-in-an-existing-application">
+<h1>Enabling an Off-Board Sensor in an Existing Application<a class="headerlink" href="#enabling-an-off-board-sensor-in-an-existing-application" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial shows you how to enable an existing application to run on
+a device with an off-board sensor device connected to it. It allows you
+to quickly bring up and run a Mynewt application on a device to view
+sensor data from a sensor device.</p>
+<p>We use the <strong>sensors_test</strong> application running on an nRF52-DK board to
+communicate, via the I2C interface, with the <span class="xref std std-doc">Adafruit
+BNO055</span>
+sensor. The sensors_test application is a sample application that
+demonstrates all the features of the Mynewt sensor framework. The
+application includes the sensor framework <code class="docutils literal notranslate"><span class="pre">sensor</span></code> shell command that
+allows you to view the sensors and sensor data managed by the sensor
+framework, and the <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell command that allows you to control
+and query the BNO055 device and to view the sensor data.</p>
+<p>This tutorial shows you how to:</p>
+<ul class="simple">
+<li>Create and build the application and bootloader targets.</li>
+<li>Connect a BNO055 sensor device to an nRF52-DK board.</li>
+<li>Run <code class="docutils literal notranslate"><span class="pre">sensor</span></code> and <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell commands to view the sensor data
+and control the bno055 sensor device.</li>
+</ul>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></li>
+<li><a class="reference internal" href="#description-of-the-packages-needed-for-the-sample-application" id="id2">Description of the Packages Needed for the Sample Application</a></li>
+<li><a class="reference internal" href="#step-1-creating-the-application-target" id="id3">Step 1: Creating the Application Target</a></li>
+<li><a class="reference internal" href="#step-2-creating-the-bootloader-target" id="id4">Step 2: Creating the Bootloader Target</a></li>
+<li><a class="reference internal" href="#step-3-building-the-bootloader-and-application-image" id="id5">Step 3: Building the Bootloader and Application Image</a></li>
+<li><a class="reference internal" href="#step-4-creating-an-application-image" id="id6">Step 4: Creating an Application Image</a></li>
+<li><a class="reference internal" href="#step-5-connecting-the-bno055-sensor-to-the-nrf52-dk-board" id="id7">Step 5: Connecting the BNO055 Sensor to the nRF52-DK Board</a></li>
+<li><a class="reference internal" href="#step-6-connecting-the-nrf52-dk-board-to-your-computer" id="id8">Step 6: Connecting the nRF52-DK Board to your Computer</a></li>
+<li><a class="reference internal" href="#step-7-loading-the-bootloader-and-the-application-image" id="id9">Step 7: Loading the Bootloader and the Application Image</a></li>
+<li><a class="reference internal" href="#step-8-using-a-terminal-emulator-to-connect-to-the-application-console" id="id10">Step 8: Using a Terminal Emulator to Connect to the Application Console</a></li>
+<li><a class="reference internal" href="#step-9-viewing-the-registered-sensors-and-sensor-data" id="id11">Step 9: Viewing the Registered Sensors and Sensor Data</a><ul>
+<li><a class="reference internal" href="#listing-the-registered-sensors" id="id12">Listing the Registered Sensors</a></li>
+<li><a class="reference internal" href="#listing-the-types-that-a-sensor-supports" id="id13">Listing the Types that a Sensor Supports</a></li>
+<li><a class="reference internal" href="#viewing-sensor-data-samples" id="id14">Viewing Sensor Data Samples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#step-10-controlling-and-viewing-sensor-device-hardware-and-sensor-data" id="id15">Step 10: Controlling and Viewing Sensor Device Hardware and Sensor Data</a></li>
+<li><a class="reference internal" href="#next-steps" id="id16">Next Steps</a></li>
+</ul>
+</div>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id1">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Meet the prerequisites listed in <a class="reference internal" href="sensors.html"><span class="doc">Sensor
+Tutorials</span></a></li>
+<li>Have a Nordic nRF52-DK board.</li>
+<li>Have an <a class="reference external" href="https://learn.adafruit.com/adafruit-bno055-absolute-orientation-sensor/overview">Adafruit
+BNO055</a>
+sensor.</li>
+<li>Have a <a class="reference internal" href="../../get_started/serial_access.html"><span class="doc">serial port setup</span></a></li>
+<li>Install the <a class="reference external" href="https://www.segger.com/jlink-software.html">Segger JLINK software and documentation
+pack</a>.</li>
+</ul>
+</div>
+<div class="section" id="description-of-the-packages-needed-for-the-sample-application">
+<h2><a class="toc-backref" href="#id2">Description of the Packages Needed for the Sample Application</a><a class="headerlink" href="#description-of-the-packages-needed-for-the-sample-application" title="Permalink to this headline">¶</a></h2>
+<p>The sensors_test application includes all the packages, and sets the
+syscfg settings to values, that are required to enable the full set of
+sensor framework features. This tutorial uses a subset of the
+sensors_test application functionality because the objective of the
+tutorial is to show you how to quickly bring up the sensors_test
+application and use the <code class="docutils literal notranslate"><span class="pre">sensor</span></code> and <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell commands to view
+the sensor data from the BNO055 sensor. The instructions in this
+tutorial show the syscfg settings that must be enabled in the
+sensors_test application to demonstrate the examples shown. The
+instructions do not explicity exclude the packages or change the syscfg
+setting values to disable the functionality that is not used in the
+sensors_test application.</p>
+<p>For your reference, we describe the packages and the setting values that
+enable the application functionality that this tutorial demonstrates:</p>
+<ul>
+<li><p class="first"><strong>hw/sensor</strong>: The sensor framework package. This package defines the
+<code class="docutils literal notranslate"><span class="pre">SENSOR_CLI</span></code> setting that specifies whether the <code class="docutils literal notranslate"><span class="pre">sensor</span></code> shell
+command is enabled. This setting is enabled by default.</p>
+</li>
+<li><p class="first"><strong>hw/sensor/creator</strong>: The sensor creator package. This package
+supports off-board sensor devices. This package creates the os
+devices in the kernel for the sensors and configures the sensor
+devices with default values. It defines a syscfg setting for each
+sensor device and uses the naming convention <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_OFB</span></code>.
+For example, the syscfg setting for the BNO055 sensor is
+<code class="docutils literal notranslate"><span class="pre">BNO055_OFB</span></code>. The <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_OFB</span></code> setting specifies whether
+the sensor named SENSORNAME is enabled. The setting is disabled by
+default. This package includes the sensor device driver package
+<code class="docutils literal notranslate"><span class="pre">hw/drivers/sensors/&lt;sensorname&gt;</span></code> and creates and configures a
+sensor named SENSORNAME when the <code class="docutils literal notranslate"><span class="pre">SENSORNAME_OFB</span></code> setting is
+enabled by the application.</p>
+</li>
+<li><p class="first"><strong>hw/drivers/sensors/bno055</strong>: The driver package for the BNO055
+sensor. The creator package adds this package as a package dependency
+when the <code class="docutils literal notranslate"><span class="pre">BNO055_OFB</span></code> setting is enabled. The driver package
+defines the <code class="docutils literal notranslate"><span class="pre">BNO055_CLI</span></code> setting that specfies whether the
+<code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell command is enabled. This setting is disabled by
+default and is enabled by the application. The package also exports
+the <code class="docutils literal notranslate"><span class="pre">bno055_shell_init()</span></code> function that an application calls to
+initialize the driver shell support.</p>
+<p><strong>Note:</strong> All sensor driver packages that support a sensor shell
+command define a syscfg setting to specify whether the shell command
+is enabled. They also export a shell initialization function that an
+application must call. The naming convention is <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_CLI</span></code>
+for the syscfg setting and <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_shell_init()</span></code> for the
+initialization function.</p>
+</li>
+<li><p class="first"><strong>sys/shell</strong> and <strong>sys/console/full</strong>: The shell and console
+packages for shell support over the console. The <code class="docutils literal notranslate"><span class="pre">SHELL_TASK</span></code>
+setting needs to be set to enable the shell support in the package.
+The sensors_test application enables this setting by default.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="step-1-creating-the-application-target">
+<h2><a class="toc-backref" href="#id3">Step 1: Creating the Application Target</a><a class="headerlink" href="#step-1-creating-the-application-target" title="Permalink to this headline">¶</a></h2>
+<p>In this step, you create a target for the sensors_test application that enables the BNO055
+off-board sensor.</p>
+<p>To add the BNO055 sensor support, you create the application target with
+the following syscfg settings enabled:</p>
+<ul>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">I2C_0</span></code>: Enables the I2C interface 0 in the nRF52 BSP HAL setting.</p>
+</li>
+<li><div class="first line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">BNO055_OFB</span></code>: Enables support for the BNO055 sensor in the sensor
+creator package (<code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code>).</div>
+<div class="line">When this setting is enabled, the creator package performs the
+following:</div>
+</div>
+<ul class="simple">
+<li>Includes the BNO055 driver package (<code class="docutils literal notranslate"><span class="pre">hw/drivers/sensors/bno055</span></code>)
+as a package dependency.</li>
+<li>Creates an os device for the sensor in the Mynewt kernel.</li>
+<li>Configures the sensor device with default values.</li>
+</ul>
+</li>
+<li><p class="first"><code class="docutils literal notranslate"><span class="pre">BNO055_CLI</span></code>: Enables the <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell command in the bno055
+device driver package. The sensors_test application also uses this
+setting to conditionally include the call to the
+<code class="docutils literal notranslate"><span class="pre">bno055_shell_init()</span></code> function to initialize the shell support in
+the driver.</p>
+</li>
+</ul>
+<p><strong>Note:</strong> This tutorial uses the <code class="docutils literal notranslate"><span class="pre">sensor</span></code> and the <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell
+commands. The <code class="docutils literal notranslate"><span class="pre">SENSOR_CLI</span></code> setting, that specifies whether the
+<code class="docutils literal notranslate"><span class="pre">sensor</span></code> shell command is enabled, is enabled by default.</p>
+<p>1. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">create</span></code> command, from your project base
+directory, to create the target. We name the target
+<code class="docutils literal notranslate"><span class="pre">nrf52_bno055_test</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target create nrf52_bno055_test
+<span class="go">Target targets/nrf52_bno055_test successfully created</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+<p>2. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">set</span></code> command to set the app, bsp, and
+build_profile variables for the target:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target <span class="nb">set</span> nrf52_bno055_test <span class="nv">app</span><span class="o">=</span>@apache-mynewt-core/apps/sensors_test <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nrf52dk <span class="nv">build_profile</span><span class="o">=</span>debug
+<span class="go">Target targets/nrf52_bno055_test successfully set target.app to @apache-mynewt-core/apps/sensors_test</span>
+<span class="go">Target targets/nrf52_bno055_test successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="go">Target targets/nrf52_bno055_test successfully set target.build_profile to debug</span>
+
+<span class="gp">$</span>
+</pre></div>
+</div>
+<p>3. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">set</span></code> command to enable the <code class="docutils literal notranslate"><span class="pre">I2C_0</span></code>,
+<code class="docutils literal notranslate"><span class="pre">BNO055_OFB</span></code>, and <code class="docutils literal notranslate"><span class="pre">BBNO055_CLI</span></code> syscfg settings:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target <span class="nb">set</span> nrf52_bno055_test <span class="nv">syscfg</span><span class="o">=</span><span class="nv">BNO055_OFB</span><span class="o">=</span><span class="m">1</span>:I2C_0<span class="o">=</span><span class="m">1</span>:BNO055_CLI<span class="o">=</span><span class="m">1</span>
+<span class="go">Target targets/nrf52_bno055_test successfully set target.syscfg to BNO055_OFB=1:I2C_0=1:BNO055_CLI=1</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-creating-the-bootloader-target">
+<h2><a class="toc-backref" href="#id4">Step 2: Creating the Bootloader Target</a><a class="headerlink" href="#step-2-creating-the-bootloader-target" title="Permalink to this headline">¶</a></h2>
+<p>Run the following <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span></code> commands, from your project directory, to create a
+bootloader target. We name the target <code class="docutils literal notranslate"><span class="pre">nrf52_boot</span></code>:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target create nrf52_boot
+<span class="go">Target targets/nrf52_boot successfully created</span>
+<span class="gp">$</span> newt target <span class="nb">set</span> nrf52_boot <span class="nv">app</span><span class="o">=</span>@mcuboot/boot/mynewt <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nrf52dk  <span class="nv">build_profile</span><span class="o">=</span>optimized
+<span class="go">Target targets/nrf52_boot successfully set target.app to @mcuboot/boot/mynewt</span>
+<span class="go">Target targets/nrf52_boot successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="go">Target targets/nrf52_boot successfully set target.build_profile to optimized</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-building-the-bootloader-and-application-image">
+<h2><a class="toc-backref" href="#id5">Step 3: Building the Bootloader and Application Image</a><a class="headerlink" href="#step-3-building-the-bootloader-and-application-image" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">build</span> <span class="pre">nrf52_boot</span></code> command to build the bootloader:</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt build nrf52_boot
+<span class="go">Building target targets/nrf52_boot</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_ec.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/loader.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c</span>
+<span class="go">Compiling repos/mcuboot/boot/mynewt/src/main.c</span>
+
+<span class="go">   ...</span>
+
+<span class="go">Archiving sys_mfg.a</span>
+<span class="go">Archiving sys_sysinit.a</span>
+<span class="go">Archiving util_mem.a</span>
+<span class="go">Linking ~/dev/myproj/bin/targets/nrf52_boot/app/boot/mynewt/mynewt.elf</span>
+<span class="go">Target successfully built: targets/nrf52_boot</span>
+</pre></div>
+</div>
+<p>2. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">build</span> <span class="pre">nrf52_bno055_test</span></code> command to build the
+sensors_test application:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt build nrf52_bno055_test
+<span class="go">Building target targets/nrf52_bno055_test</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_ec.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/image_validate.c</span>
+<span class="go">Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/apps/sensors_test/src/misc.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/apps/sensors_test/src/gatt_svr.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/apps/sensors_test/src/main.c</span>
+
+<span class="go">   ...</span>
+
+<span class="go">Compiling repos/apache-mynewt-core/hw/drivers/sensors/bno055/src/bno055.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/hw/drivers/sensors/bno055/src/bno055_shell.c</span>
+
+<span class="go">   ...</span>
+
+<span class="go">Compiling repos/apache-mynewt-core/hw/sensor/src/sensor.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/hw/sensor/src/sensor_oic.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/hw/sensor/src/sensor_shell.c</span>
+<span class="go">Compiling repos/apache-mynewt-core/hw/sensor/creator/src/sensor_creator.c</span>
+
+<span class="go">    ...</span>
+
+<span class="go">Archiving util_mem.a</span>
+<span class="go">Archiving util_parse.a</span>
+<span class="go">Linking ~/dev/myproj/bin/targets/nrf52_bno055_test/app/apps/sensors_test/sensors_test.elf</span>
+<span class="go">Target successfully built: targets/nrf52_bno055_test</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-4-creating-an-application-image">
+<h2><a class="toc-backref" href="#id6">Step 4: Creating an Application Image</a><a class="headerlink" href="#step-4-creating-an-application-image" title="Permalink to this headline">¶</a></h2>
+<p>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">create-image</span></code> command to create an image file. You may
+assign an arbitrary version (e.g. 1.0.0) to the image.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt create-image nrf52_bno055_test <span class="m">1</span>.0.0
+<span class="go">App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_bno055_test/app/apps/sensors_test/sensors_test.img</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-5-connecting-the-bno055-sensor-to-the-nrf52-dk-board">
+<h2><a class="toc-backref" href="#id7">Step 5: Connecting the BNO055 Sensor to the nRF52-DK Board</a><a class="headerlink" href="#step-5-connecting-the-bno055-sensor-to-the-nrf52-dk-board" title="Permalink to this headline">¶</a></h2>
+<p>Connect the pins from the BNO055 sensor to the nRF52-DK board as
+specified in the following table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="35%" />
+<col width="40%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Lines</th>
+<th class="head">BNO055 Pin</th>
+<th class="head">nRF52-DK Pin</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Power</td>
+<td>Vin</td>
+<td>5V</td>
+</tr>
+<tr class="row-odd"><td>Clock</td>
+<td>SCL</td>
+<td>P0.27</td>
+</tr>
+<tr class="row-even"><td>Data</td>
+<td>SDA</td>
+<td>P0.26</td>
+</tr>
+<tr class="row-odd"><td>Ground</td>
+<td>GND</td>
+<td>GND</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="Alt Layout - BNO055" src="../../_images/BNO055_small.jpg" /> <img alt="Alt Layout - NRF52_I2C" src="../../_images/NRF52_I2C_small.jpg" /></p>
+</div>
+<div class="section" id="step-6-connecting-the-nrf52-dk-board-to-your-computer">
+<h2><a class="toc-backref" href="#id8">Step 6: Connecting the nRF52-DK Board to your Computer</a><a class="headerlink" href="#step-6-connecting-the-nrf52-dk-board-to-your-computer" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Set up two connections between your computer and the nRF52-DK board:</li>
+</ol>
+<ul>
+<li><p class="first">A serial connection to communicate with the sensors_test application
+and view the sensor data and hardware information via the Mynewt
+shell.</p>
+<p>You can reference the <a class="reference internal" href="../../get_started/serial_access.html"><span class="doc">Serial Port
+Setup</span></a> tutorial for more
+information on setting up a serial communication.</p>
+</li>
+<li><p class="first">A connection from your computer to the micro-USB port on the nRF52-DK
+board to power the board and to load the bootloader and application
+image.</p>
+</li>
+</ul>
+<p>2. Turn the power on the board to ON. You should see the green LED
+light up on the board.</p>
+</div>
+<div class="section" id="step-7-loading-the-bootloader-and-the-application-image">
+<h2><a class="toc-backref" href="#id9">Step 7: Loading the Bootloader and the Application Image</a><a class="headerlink" href="#step-7-loading-the-bootloader-and-the-application-image" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">load</span> <span class="pre">nrf52_boot</span></code> command to load the bootloader onto the board:</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt load nrf52_boot
+<span class="go">Loading bootloader</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+<p>2. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">load</span> <span class="pre">nrf52_bno055_test</span></code> command to load the
+application image on to the board:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt load nrf52_bno055_test
+<span class="go">Loading app image into slot 1</span>
+<span class="gp">$</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Power the nRF52-DK board OFF and ON.</li>
+</ol>
+</div>
+<div class="section" id="step-8-using-a-terminal-emulator-to-connect-to-the-application-console">
+<h2><a class="toc-backref" href="#id10">Step 8: Using a Terminal Emulator to Connect to the Application Console</a><a class="headerlink" href="#step-8-using-a-terminal-emulator-to-connect-to-the-application-console" title="Permalink to this headline">¶</a></h2>
+<p>Start up a terminal emulator to connect the sensors_test application
+console. You can use one of the terminal emulators listed below or one
+of your choice:</p>
+<ul>
+<li><p class="first">On Mac OS and Linux platforms, you can run
+<code class="docutils literal notranslate"><span class="pre">minicom</span> <span class="pre">-D</span> <span class="pre">/dev/tty.usbserial-&lt;port&gt;</span> <span class="pre">-b</span> <span class="pre">115200</span></code> to connect to the
+console of your app. Note that on Linux, the format of the port name
+is <code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB&lt;N&gt;</span></code>, where N is a number.</p>
+</li>
+<li><p class="first">On Windows, you can use a terminal application such as PuTTY to
+connect to the device.</p>
+<p>If you located your port from a MinGW terminal, the port name format
+is <code class="docutils literal notranslate"><span class="pre">/dev/ttyS&lt;N&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code> is a number. You must map the port
+name to a Windows COM port: <code class="docutils literal notranslate"><span class="pre">/dev/ttyS&lt;N&gt;</span></code> maps to <code class="docutils literal notranslate"><span class="pre">COM&lt;N+1&gt;</span></code>.
+For example, <code class="docutils literal notranslate"><span class="pre">/dev/ttyS2</span></code> maps to <code class="docutils literal notranslate"><span class="pre">COM3</span></code>.</p>
+<p>You can also use the Windows Device Manager to locate the COM port.</p>
+</li>
+</ul>
+<p>We use minicom for this tutorial. After minicom connects, enter
+&lt;return&gt; to ensure the shell is running. You should see the <code class="docutils literal notranslate"><span class="pre">compat&gt;</span></code>
+prompt:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Welcome to minicom 2.7.1</span>
+
+<span class="go">OPTIONS:</span>
+<span class="go">Compiled on May 17 2017, 15:29:14.</span>
+<span class="go">Port /dev/tty.usbserial, 13:55:21</span>
+
+<span class="go">Press Meta-Z for help on special keys</span>
+
+
+<span class="go">010674 compat&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-9-viewing-the-registered-sensors-and-sensor-data">
+<h2><a class="toc-backref" href="#id11">Step 9: Viewing the Registered Sensors and Sensor Data</a><a class="headerlink" href="#step-9-viewing-the-registered-sensors-and-sensor-data" title="Permalink to this headline">¶</a></h2>
+<p>The sensor framework package implements the <code class="docutils literal notranslate"><span class="pre">sensor</span></code> shell command. This command
+allows you to:</p>
+<ul class="simple">
+<li>List all the registered sensor devices.</li>
+<li>View the sensor types that a registered sensor device supports.</li>
+<li>Read sensor data samples.</li>
+</ul>
+<p>To view the command syntax, enter <code class="docutils literal notranslate"><span class="pre">sensor</span></code></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">002340 Possible commands for sensor are:</span>
+<span class="go">002341   list</span>
+<span class="go">002341       list of sensors registered</span>
+<span class="go">002342   read &lt;sensor_name&gt; &lt;type&gt; [-n nsamples] [-i poll_itvl(ms)] [-d poll_du]</span>
+<span class="go">002344       read &lt;no_of_samples&gt; from sensor&lt;sensor_name&gt; of type:&lt;type&gt; at pr</span>
+<span class="go">002347       at &lt;poll_interval&gt; rate for &lt;poll_duration&gt;</span>
+<span class="go">002348   type &lt;sensor_name&gt;</span>
+<span class="go">002349       types supported by registered sensor</span>
+<span class="go">002350 compat&gt;</span>
+</pre></div>
+</div>
+<div class="section" id="listing-the-registered-sensors">
+<h3><a class="toc-backref" href="#id12">Listing the Registered Sensors</a><a class="headerlink" href="#listing-the-registered-sensors" title="Permalink to this headline">¶</a></h3>
+<p>You use the <code class="docutils literal notranslate"><span class="pre">sensor</span> <span class="pre">list</span></code> command to list all the registered sensor devices:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">031798 compat&gt; sensor list</span>
+<span class="go">129441 sensor dev = bno055_0, configured type = 0x1 0x2 0x4 0x200 0x1000 0x2000</span>
+<span class="go">129444 compat&gt;</span>
+</pre></div>
+</div>
+<p>The output shows one sensor, <strong>bno055_0</strong>, registered, and the
+configured types for the sensor. A configure type is a subset of the
+types that a sensor supports.</p>
+</div>
+<div class="section" id="listing-the-types-that-a-sensor-supports">
+<h3><a class="toc-backref" href="#id13">Listing the Types that a Sensor Supports</a><a class="headerlink" href="#listing-the-types-that-a-sensor-supports" title="Permalink to this headline">¶</a></h3>
+<p>You use the <code class="docutils literal notranslate"><span class="pre">sensor</span> <span class="pre">type</span></code> command to list the types that a sensor
+supports:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">031822 compat&gt; sensor type bno055_0</span>
+<span class="go">033156 sensor dev = bno055_0,</span>
+<span class="go">type =</span>
+<span class="go">033157     accelerometer: 0x1</span>
+<span class="go">033157     magnetic field: 0x2</span>
+<span class="go">033158     gyroscope: 0x4</span>
+<span class="go">033159     temperature: 0x10</span>
+<span class="go">033160     vector: 0x200</span>
+<span class="go">033160     accel: 0x1000</span>
+<span class="go">033161     gravity: 0x2000</span>
+<span class="go">033162     euler: 0x4000</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="viewing-sensor-data-samples">
+<h3><a class="toc-backref" href="#id14">Viewing Sensor Data Samples</a><a class="headerlink" href="#viewing-sensor-data-samples" title="Permalink to this headline">¶</a></h3>
+<p>You use the <code class="docutils literal notranslate"><span class="pre">sensor</span> <span class="pre">read</span></code> command to
+read data samples for a configured type. You can specify the number of
+samples to read, a poll interval, and a poll duration. You can only view
+sensor data for the sensor types that a sensor device is configured for.</p>
+<p><strong>Example 1:</strong> Read 5 samples of accelerometer data from the
+<strong>bno055_0</strong> sensor:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">033163 compat&gt; sensor read bno055_0 0x1 -n 5</span>
+<span class="go">042974 ts: [ secs: 335 usecs: 745441 cputime: 336218225 ]</span>
+<span class="go">042976 x = -0.519999968 y = -7.289999968 z = 6.489999776</span>
+<span class="go">042978 ts: [ secs: 335 usecs: 771216 cputime: 336244000 ]</span>
+<span class="go">042979 x = -0.529999968 y = -7.360000128 z = 6.559999936</span>
+<span class="go">042981 ts: [ secs: 335 usecs: 794640 cputime: 336267424 ]</span>
+<span class="go">042982 x = -0.529999968 y = -7.340000160 z = 6.480000032</span>
+<span class="go">042983 ts: [ secs: 335 usecs: 810795 cputime: 336283579 ]</span>
+<span class="go">042984 x = -0.519999968 y = -7.300000192 z = 6.530000224</span>
+<span class="go">042986 ts: [ secs: 335 usecs: 833703 cputime: 336306487 ]</span>
+<span class="go">042987 x = -0.510000000 y = -7.309999936 z = 6.380000128</span>
+</pre></div>
+</div>
+<p>Each sample contains two lines of output. The first line is the time
+when the sample is read. The second line is the sample data. For the
+example output:</p>
+<p>These two lines are for the first sample:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">042974 ts: [ secs: 335 usecs: 745441 cputime: 336218225 ]</span>
+<span class="go">042976 x = -0.519999968 y = -7.289999968 z = 6.489999776</span>
+</pre></div>
+</div>
+<p>These two lines are for the last sample:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">042986 ts: [ secs: 335 usecs: 833703 cputime: 336306487 ]</span>
+<span class="go">042987 x = -0.510000000 y = -7.309999936 z = 6.380000128</span>
+</pre></div>
+</div>
+<p><strong>Example 2:</strong> Read the vector data at 20 ms poll interval. You can
+enter <code class="docutils literal notranslate"><span class="pre">ctrl-c</span></code>, <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">&lt;return&gt;</span></code>, or <code class="docutils literal notranslate"><span class="pre">Q</span> <span class="pre">&lt;return&gt;</span></code> to stop the polling.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">002350 compat&gt; sensor read bno055_0 0x200 -i 20</span>
+<span class="go">019271 ts: [ secs: 150 usecs: 560056 cputime: 151019584 ]</span>
+<span class="go">019272 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019274 ts: [ secs: 150 usecs: 580598 cputime: 151040126 ]</span>
+<span class="go">019275 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019277 ts: [ secs: 150 usecs: 604036 cputime: 151063564 ]</span>
+<span class="go">019278 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019280 ts: [ secs: 150 usecs: 627474 cputime: 151087002 ]</span>
+<span class="go">019281 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019283 ts: [ secs: 150 usecs: 650912 cputime: 151110440 ]</span>
+<span class="go">019284 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019286 ts: [ secs: 150 usecs: 674350 cputime: 151133878 ]</span>
+<span class="go">019287 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019289 ts: [ secs: 150 usecs: 697788 cputime: 151157316 ]</span>
+<span class="go">019290 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019292 ts: [ secs: 150 usecs: 721225 cputime: 151180753 ]</span>
+<span class="go">019293 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019295 ts: [ secs: 150 usecs: 744663 cputime: 151204191 ]</span>
+<span class="go">019296 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019298 ts: [ secs: 150 usecs: 768101 cputime: 151227629 ]</span>
+<span class="go">019299 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+<span class="go">019301 ts: [ secs: 150 usecs: 791539 cputime: 151251067 ]</span>
+<span class="go">019302 x = 3.442626944 y = 0.026977540 z = 3.993286144 w = 0.829833984</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="step-10-controlling-and-viewing-sensor-device-hardware-and-sensor-data">
+<h2><a class="toc-backref" href="#id15">Step 10: Controlling and Viewing Sensor Device Hardware and Sensor Data</a><a class="headerlink" href="#step-10-controlling-and-viewing-sensor-device-hardware-and-sensor-data" title="Permalink to this headline">¶</a></h2>
+<p>The BNO055 device driver implements the <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell command
+that allows you to:</p>
+<ul>
+<li><p class="first">Read sensor data samples for all the sensor types that the device
+supports.</p>
+<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">sensor</span></code> shell command discussed previously only
+reads sensor data for configured sensor types.</p>
+</li>
+<li><p class="first">Query the chip id, sensor revisions, content of registers, sensor
+offsets.</p>
+</li>
+<li><p class="first">Reset the device.</p>
+</li>
+<li><p class="first">Change the power mode.</p>
+</li>
+<li><p class="first">Change the operation mode.</p>
+</li>
+</ul>
+<p>Enter <code class="docutils literal notranslate"><span class="pre">bno055</span></code> to see the command syntax:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">   711258 bno055 cmd  [flags...]</span>
+<span class="go">   711259 cmd:</span>
+<span class="go">   711259  r     [n_samples] [ 0-acc          | 1 -mag       | 2 -gyro    | 4 -tem|</span>
+<span class="go">                               9-quat         | 26-linearacc | 27-gravity | 28-eul]</span>
+
+<span class="go">   711264  mode  [0-config   | 1-acc          | 2 -mag       | 3 -gyro    | 4 -acc|</span>
+<span class="go">                  5-accgyro  | 6-maggyro      | 7 -amg       | 8 -imuplus | 9 -com|</span>
+<span class="go">                  9-m4g      |11-NDOF_FMC_OFF | 12-NDOF  ]</span>
+<span class="go">   711269  chip_id</span>
+<span class="go">   711270  rev</span>
+<span class="go">   711270  reset</span>
+<span class="go">   711270  pmode [0-normal   | 1-lowpower     | 2-suspend]</span>
+<span class="go">   711272  sensor_offsets</span>
+<span class="go">   711272  dumpreg [addr]</span>
+
+<span class="go">\*\* Example 3: \*\* Query the device chip id:</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">711273 compat&gt; bno055 chip_id</span>
+<span class="go">769056 0xA0</span>
+</pre></div>
+</div>
+<p><strong>Example 4:</strong> View the sensor revisions:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">827472 compat&gt; bno055 rev</span>
+<span class="go">862354 accel_rev:0xFB</span>
+<span class="go">mag_rev:0x32</span>
+<span class="go">gyro_rev:0x0F</span>
+<span class="go">sw_rev:0x311</span>
+<span class="go">bl_rev:0x15</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="next-steps">
+<h2><a class="toc-backref" href="#id16">Next Steps</a><a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>Now that you have successfully enabled an application to communicate
+with a sensor, We recommend that you:</p>
+<ul class="simple">
+<li>Experiment with other <code class="docutils literal notranslate"><span class="pre">sensor</span></code> and <code class="docutils literal notranslate"><span class="pre">bno055</span></code> shell commands in
+this tutorial to view other types of sensor data.</li>
+<li>Change the default configuration values for the sensor. See the
+<a class="reference internal" href="sensor_offboard_config.html"><span class="doc">Changing the Default Configuration for a Sensor
+tutorial</span></a></li>
+<li>Try a different off-board sensor. You can follow most of the
+procedures in this tutorial to enable other sensors in the
+sensors_test application. The <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file for the
+<code class="docutils literal notranslate"><span class="pre">hw/sensor/creator/</span></code> package specifies the off-board sensors that
+Mynewt currently supports. You will need to:<ul>
+<li>Enable the <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_OFB</span></code> setting to include the sensor
+driver package and to create and initialize the sensor device.</li>
+<li>Enable the correct interface in the nRF52 BSP to communicate with
+the sensor device.</li>
+<li>Enable the sensor device driver shell command if the driver
+supports the shell. You can check the <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file for the
+sensor device driver package in the
+<code class="docutils literal notranslate"><span class="pre">hw/drivers/sensor/&lt;sensorname&gt;</span></code> directory.</li>
+</ul>
+</li>
+<li>Try one of the other sensor tutorials listed in the <a class="reference internal" href="sensors.html"><span class="doc">Sensor Tutorials
+Overview</span></a></li>
+</ul>
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="sensor_offboard_config.html" class="btn btn-neutral float-right" title="Changing the Default Configuration for a Sensor" accesskey="n">Next: Changing the Default Configuration for a Sensor <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sensors_framework.html" class="btn btn-neutral" title="Sensor Tutorials Overview" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Sensor Tutorials Overview</a>
+      
+    </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="">
+                <img src="../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'latest',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
+      <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>

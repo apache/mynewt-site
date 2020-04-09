@@ -95,7 +95,7 @@ Bug With Older Versions of ``gcc``
 
 **Q**: I got the following error using ``newt build``. How do I fix it?
 
-.. code-block:: console:
+.. code-block:: console
 
   Error: repos/apache-mynewt-core/sys/log/modlog/src/modlog.c: In function 'modlog_alloc':
   repos/apache-mynewt-core/sys/log/modlog/src/modlog.c:61:23: error: missing braces around initializer [-Werror=missing-braces]

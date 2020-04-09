@@ -64,7 +64,7 @@ We download the dependent repos using the ``newt upgrade`` command:
 
     ~/dev$ cd my_proj1
     ~/dev/my_proj1$ newt upgrade
-    Downloading repository mynewt-core (commit: [...])
+    Downloading repository mynewt-core (commit: master) ...
     apache-mynewt-core successfully upgraded to version 1.7.0
 
 Now it's time to create your own app.

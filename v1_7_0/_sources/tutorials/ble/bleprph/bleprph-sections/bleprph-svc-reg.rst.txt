@@ -23,19 +23,20 @@ file, so let's take a look at that now. The attribute table is called
 
     static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         {
-            /*** Service: GAP. */
+            /*** Service: Security test. */
             .type               = BLE_GATT_SVC_TYPE_PRIMARY,
-            .uuid128            = BLE_UUID16(BLE_GAP_SVC_UUID16),
+            .uuid               = &gatt_svr_svc_sec_test_uuid.u,
             .characteristics    = (struct ble_gatt_chr_def[]) { {
-                /*** Characteristic: Device Name. */
-                .uuid128            = BLE_UUID16(BLE_GAP_CHR_UUID16_DEVICE_NAME),
-                .access_cb          = gatt_svr_chr_access_gap,
-                .flags              = BLE_GATT_CHR_F_READ,
+                /*** Characteristic: Random number generator. */
+                .uuid               = &gatt_svr_chr_sec_test_rand_uuid.u,
+                .access_cb          = gatt_svr_chr_access_sec_test,
+                .flags              = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_READ_ENC,
             }, {
-                /*** Characteristic: Appearance. */
-                .uuid128            = BLE_UUID16(BLE_GAP_CHR_UUID16_APPEARANCE),
-                .access_cb          = gatt_svr_chr_access_gap,
-                .flags              = BLE_GATT_CHR_F_READ,
+                /*** Characteristic: Static value. */
+                .uuid               = gatt_svr_chr_sec_test_static_uuid.u,
+                .access_cb          = gatt_svr_chr_access_sec_test,
+                .flags              = BLE_GATT_CHR_F_READ |
+                                      BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_ENC,
             }, {
         // [...]
 
@@ -69,10 +70,10 @@ A service definition consists of the following fields:
 |          |            | .        |
 +----------+------------+----------+
 | uuid128  | The        | If the   |
-|          | 128-bit    | service  |
-|          | UUID of    | has a    |
-|          | this       | 16-bit   |
-|          | service.   | UUID,    |
+|          | UUID of    | service  |
+|          | this       | has a    |
+|          | service.   | 16-bit   |
+|          |            | UUID,    |
 |          |            | you can  |
 |          |            | convert  |
 |          |            | it to    |
@@ -104,11 +105,11 @@ characteristic definition consists of the following fields:
 | *Field*  | *Meaning*  | *Notes*  |
 +==========+============+==========+
 | uuid128  | The        | If the   |
-|          | 128-bit    | characte |
-|          | UUID of    | ristic   |
-|          | this       | has a    |
-|          | characteri | 16-bit   |
-|          | stic.      | UUID,    |
+|          | UUID of    | characte |
+|          | this       | ristic   |
+|          | characteri | has a    |
+|          | stic.      | 16-bit   |
+|          |            | UUID,    |
 |          |            | you can  |
 |          |            | convert  |
 |          |            | it to    |
@@ -188,7 +189,7 @@ listing shows the last service in the array, including terminating zeros
 for the characteristic array and service array.
 
 .. code-block:: console
-    :emphasize-lines: 16,21
+    :emphasize-lines: 17,22
 
     {
         /*** Service: Security test. */
@@ -198,12 +199,13 @@ for the characteristic array and service array.
             /*** Characteristic: Random number generator. */
             .uuid = &gatt_svr_chr_sec_test_rand_uuid.u,
             .access_cb = gatt_svr_chr_access_sec_test,
-            .flags = BLE_GATT_CHR_F_READ,
+            .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_READ_ENC,
         }, {
             /*** Characteristic: Static value. */
             .uuid = &gatt_svr_chr_sec_test_static_uuid.u,
             .access_cb = gatt_svr_chr_access_sec_test,
-            .flags = BLE_GATT_CHR_F_READ,
+            .flags = BLE_GATT_CHR_F_READ |
+                     BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_ENC,
         }, {
             0, /* No more characteristics in this service. */
         } },
@@ -223,50 +225,11 @@ with the NimBLE stack. This is done by calling the following function:
 .. code:: c
 
     int
-    ble_gatts_register_svcs(const struct ble_gatt_svc_def *svcs,
-                            ble_gatt_register_fn *cb, void *cb_arg)
+    ble_gatts_add_svcs(const struct ble_gatt_svc_def *svcs)
 
-The function parameters are documented below.
+where *svcs* is table of services to register.
 
-+--------------+------------+----------+
-| *Parameter*  | *Meaning*  | *Notes*  |
-+==============+============+==========+
-| svcs         | The table  |          |
-|              | of         |          |
-|              | services   |          |
-|              | to         |          |
-|              | register.  |          |
-+--------------+------------+----------+
-| cb           | A callback | Optional |
-|              | that gets  | ;        |
-|              | executed   | pass     |
-|              | each time  | NULL if  |
-|              | a service, | you      |
-|              | characteri | don't    |
-|              | stic,      | want to  |
-|              | or         | be       |
-|              | descriptor | notified |
-|              | is         | .        |
-|              | registered |          |
-|              | .          |          |
-+--------------+------------+----------+
-| cb\_arg      | An         | Optional |
-|              | argument   | ;        |
-|              | that gets  | pass     |
-|              | passed to  | NULL if  |
-|              | the        | there is |
-|              | callback   | no       |
-|              | function   | callback |
-|              | on each    | or if    |
-|              | invocation | you      |
-|              | .          | don't    |
-|              |            | need a   |
-|              |            | special  |
-|              |            | argument |
-|              |            | .        |
-+--------------+------------+----------+
-
-The ``ble_gatts_register_svcs()`` function returns 0 on success, or a
+The ``ble_gatts_add_svcs()`` function returns 0 on success, or a
 *BLE_HS_E[...]* error code on failure.
 
 More detailed information about the registration callback function can
@@ -277,8 +240,10 @@ The *bleprph* app registers its services as follows:
 
 .. code:: c
 
-        rc = ble_gatts_register_svcs(gatt_svr_svcs, gatt_svr_register_cb, NULL);
+        rc = ble_gatts_add_svcs(gatt_svr_svcs);
         assert(rc == 0);
+
+which adds services to registration queue. On startup NimBLE host automatically calls ``ble_gatts_start()`` function which makes all registered serivices available to peers.
 
 Descriptors and Included Services
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

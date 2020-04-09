@@ -61,8 +61,14 @@ Run the following commands to create a new project:
         Project myproj successfully created.
         $ cd myproj
         $ newt upgrade
-        Downloading repository mynewt-core (commit: [...])
+        Downloading repository mynewt-core (commit: master) ...
+        Downloading repository mynewt-nimble (commit: master) ...
+        Downloading repository mcuboot (commit: master) ...
+        Downloading repository mynewt-mcumgr (commit: master) ...
+        Making the following changes to the project:
         apache-mynewt-core successfully upgraded to version 1.7.0
+        apache-mynewt-nimble successfully upgraded to version 1.2.0
+        mcuboot successfully upgraded to version 1.3.1
         $
 
 Create the Targets

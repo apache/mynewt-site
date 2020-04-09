@@ -33,12 +33,13 @@ Run the following commands to create a new project. We name the project
     $ newt new slinky
     Downloading project skeleton from apache/mynewt-blinky...
     ...
-    Installing skeleton in slink...
+    Installing skeleton in slinky...
     Project slinky successfully created
     $ cd slinky
     $ newt upgrade
-    Downloading repository mynewt-core (commit: [...])
-    apache-mynewt-core successfully upgraded to version 1.7.0
+    Downloading repository mynewt-core (commit: master) ...
+    ...
+    mcuboot successfully upgraded to version 1.3.1
 
 Create the Targets
 ~~~~~~~~~~~~~~~~~~~
@@ -73,22 +74,21 @@ Run the ``newt build nrf52_boot`` command to build the bootloader:
 
 .. code-block:: console
 
-    $ newt build nrf52-boot
+    $ newt build nrf52_boot
     Building target targets/nrf52_boot
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/caps.c
+    Compiling repos/mcuboot/boot/bootutil/src/encrypted.c
+    Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
+    Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
     Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ed25519.c
     Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-    Compiling repos/mcuboot/boot/bootutil/src/loader.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
-    Compiling repos/mucboot/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/mcuboot/boot/mynewt/src/main.c
+    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
         ...
-
-    Archiving sys_mfg.a
-    Archiving sys_sysinit.a
-    Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/nrf52_boot/app/boot/mynewt/mynewt.elf
+    Archiving @apache-mynewt-core_util_rwlock.a
+    Archiving @apache-mynewt-core_util_streamer.a
+    Linking ~/dev/slinky/bin/targets/nrf52_boot/app/@mcuboot/boot/mynewt/mynewt.elf
     Target successfully built: targets/nrf52_boot
 
 Run the ``newt build nrf52_slinky`` command to build the Slinky
@@ -98,22 +98,19 @@ application:
 
     $newt build nrf52_slinky
     Building target targets/nrf52_slinky
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
-    Compiling repos/apache-mynewt-core/boot/split/src/split.c
-    Compiling repos/mcuboot/boot/bootutil/src/loader.c
+    Compiling repos/mcuboot/boot/bootutil/src/caps.c
+    Compiling repos/mcuboot/boot/bootutil/src/encrypted.c
     Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
-    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
     Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
-
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ed25519.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
            ...
-
-    Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/nrf52_slinky/app/apps/slinky/slinky.elf
+    Archiving @apache-mynewt-core_util_rwlock.a
+    Archiving @apache-mynewt-core_util_streamer.a
+    Linking ~/dev/slinky/bin/targets/nrf52_slinky/app/@apache-mynewt-core/apps/slinky/slinky.elf
     Target successfully built: targets/nrf52_slinky
 
 Sign and Create the Slinky Application Image
@@ -126,7 +123,7 @@ sign the application image. You may assign an arbitrary version (e.g.
 .. code-block:: console
 
     $ newt create-image nrf52_slinky 1.0.0
-    App image succesfully generated: ~/dev/slinky/bin/targets/nrf52_slinky/app/apps/slinky/slinky.img
+    App image succesfully generated: ~/dev/slinky/bin/targets/nrf52_slinky/app/@apache-mynewt-core/apps/slinky/slinky.img
     $
 
 Connect to the Board

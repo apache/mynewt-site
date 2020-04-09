@@ -38,6 +38,7 @@ commands below.
         $ cd ~/dev
         $ newt new myadc
         Downloading project skeleton from apache/mynewt-blinky...
+        Downloading repository mynewt-blinky (commit: master) ...
         Installing skeleton in myadc...
         Project myadc successfully created.
         $ cd myadc
@@ -50,12 +51,12 @@ see the section on :doc:`repositories <../repo/add_repos>` before continuing.
 
 In your ``project.yml`` file, change the ``vers`` field under ``repository.apache-mynewt-core`` from ``1-latest`` to ``0-dev``. When you're done, your ``project.yml`` file should look like this:
 
-.. code-block:: console
+.. code-block:: yaml
 
     project.name: "my_project"
 
     project.repositories:
-        - apache-mynewt-core 
+        - apache-mynewt-core
         - mynewt_nordic
 
     # Use github's distribution mechanism for core ASF libraries.
@@ -65,9 +66,9 @@ In your ``project.yml`` file, change the ``vers`` field under ``repository.apach
         type: github
         vers: 0-dev
         user: apache
-        repo: incubator-mynewt-core
-        
-If you already have newt previously installed, you can still change the repo version in your ``project.yml`` file, but you will need to run ``newt upgrade`` for the change to take effect. 
+        repo: mynewt-core
+
+If you already have newt previously installed, you can still change the repo version in your ``project.yml`` file, but you will need to run ``newt upgrade`` for the change to take effect.
 
 Install Everything
 ~~~~~~~~~~~~~~~~~~
@@ -77,13 +78,15 @@ that you can get started.
 
 .. code-block:: console
 
-    $ newt upgrade -v 
-    Downloading repository mynewt-core (commit: [...])
-    Downloading repository mynewt-nimble (commit: [...])
-    Downloading repository mcuboot (commit: [...])
-    apache-mynewt-core successfully upgraded to version 1.7.0
-    apache-mynewt-nimble successfully upgraded to version 1.2.0
-    mcuboot successfully upgraded to version 1.3.1
+    $ newt upgrade -v
+    Downloading repository mynewt-core (commit: master) ...
+    Downloading repository mynewt-nimble (commit: master) ...
+    Downloading repository mynewt-mcumgr (commit: master) ...
+    Downloading repository mcuboot (commit: master) ...
+    apache-mynewt-core successfully installed version 0.0.0
+    apache-mynewt-nimble successfully installed version 0.0.0
+    apache-mynewt-mcumgr successfully installed version 0.0.0
+    mcuboot successfully installed version 0.0.0
 
 Create the App and Targets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,14 +101,14 @@ Next, you'll modify the ``pkg.yml`` file for your app. Note the change in ``pkg.
 
 .. code-block:: console
 
-    $ cat apps/nrf52_adc/pkg.yml 
-    ... 
+    $ cat apps/nrf52_adc/pkg.yml
+    ...
     pkg.name: apps/nrf52_adc
-    pkg.type: app 
+    pkg.type: app
     pkg.description: Simple BLE peripheral
-    application for ADC Sensors. 
-    pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>" 
-    pkg.homepage: "http://mynewt.apache.org/" 
+    application for ADC Sensors.
+    pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
+    pkg.homepage: "http://mynewt.apache.org/"
     pkg.keywords:
 
     pkg.deps:
@@ -190,6 +193,7 @@ Use the ``newt create-image`` command to perform this action. You may assign an 
 version (e.g. 1.0.0) to the image.
 
 .. code-block:: console
+
     $ newt create-image nrf52_adc 1.0.0
     App image successfully generated: ~/dev/myadc/bin/nrf52_adc/apps/nrf52_adc/nrf52_adc.img
     Build manifest: ~/dev/myadc/bin/nrf52_adc/apps/nrf52_adc/manifest.json
@@ -207,36 +211,36 @@ Don't forget to reset the board if you don't see the LED blinking right away!
 
 .. code-block:: console
 
-    $ newt load nrf52_boot 
+    $ newt load nrf52_boot
     $ newt load nrf52_adc
 
 **Note:** If you want to erase the flash and load the image again, you can use JLinkExe to issue an `erase` command.
 
 .. code-block:: console
 
-    $ JLinkExe -device nRF52 -speed 4000 -if SWD 
+    $ JLinkExe -device nRF52 -speed 4000 -if SWD
     SEGGER J-Link Commander
-    V5.12c (Compiled Apr 21 2016 16:05:51) 
+    V5.12c (Compiled Apr 21 2016 16:05:51)
     DLL version V5.12c, compiled Apr 21 2016 16:05:45
 
-    Connecting to J-Link via USB...O.K. 
+    Connecting to J-Link via USB...O.K.
     Firmware: J-Link
-    OB-SAM3U128-V2-NordicSemi compiled Mar 15 2016 18:03:17 
-    Hardware version: V1.00 
-    S/N: 682863966 
+    OB-SAM3U128-V2-NordicSemi compiled Mar 15 2016 18:03:17
+    Hardware version: V1.00
+    S/N: 682863966
     VTref = 3.300V
 
     Type "connect" to establish a target connection, '?' for help
-    J-Link>erase 
-    Cortex-M4 identified. 
-    Erasing device (0;?i?)... 
-    Comparing flash     [100%] Done. 
-    Erasing flash       [100%] Done. 
-    Verifying flash     [100%] Done. 
+    J-Link>erase
+    Cortex-M4 identified.
+    Erasing device (0;?i?)...
+    Comparing flash     [100%] Done.
+    Erasing flash       [100%] Done.
+    Verifying flash     [100%] Done.
     J-Link: Flash download: Total time needed: 0.363s (Prepare: 0.093s, Compare: 0.000s, Erase: 0.262s, Program: 0.000
-    s, Verify: 0.000s, Restore: 0.008s) 
-    Erasing done. 
-    J-Link>exit 
+    s, Verify: 0.000s, Restore: 0.008s)
+    Erasing done.
+    J-Link>exit
     $
 
 So you have a BLE app, but really all you've done is change the name of
@@ -365,7 +369,7 @@ directory. This is where we'll implement the specifics of the driver:
                 goto err;
             }
             my_result_mv = adc_result_mv(adc, 0, adc_result);
-        }        
+        }
         adc_buf_release(adc, buffer, buffer_len);
         return my_result_mv;
     err:
@@ -479,8 +483,8 @@ file of your app. You will also need to add the ``mcu/nordic`` package. Add them
     pkg.author: "Apache Mynewt <dev@mynewt.incubator.apache.org>"
     pkg.homepage: "http://mynewt.apache.org/"
     pkg.keywords:
-   
-    pkg.deps: 
+
+    pkg.deps:
         - "@apache-mynewt-core/boot/split"
         - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
@@ -526,30 +530,30 @@ Next we'll need to initialize the task ``event_q`` so we'll add the
 highlighted code to ``main()`` as shown below. You can also change the name of your Bluetooth device in ``ble_svc_gap_device_name_set``:
 
 .. code-block:: c
-   
-    /* Set the default device name. */ 
-    rc = ble_svc_gap_device_name_set("nimble-adc"); 
+
+    /* Set the default device name. */
+    rc = ble_svc_gap_device_name_set("nimble-adc");
     assert(rc == 0);
-    
+
     #if MYNEWT_VAL(BLEPRPH_LE_PHY_SUPPORT)
       phy_init();
     #endif
-    
+
     conf_load();
 
     /* Initialize adc sensor task eventq */
     os_eventq_init(&adc_evq);
 
-    /* Create the ADC reader task.  
+    /* Create the ADC reader task.
      * All sensor operations are performed in this task.
      */
     os_task_init(&adc_task, "sensor", adc_task_handler,
             NULL, ADC_TASK_PRIO, OS_WAIT_FOREVER,
             adc_stack, ADC_STACK_SIZE);
 
-We'll need that ``adc_task_handler()`` function to exist, and that's where 
-we'll initialize the ADC Device and set the event handler. In the task's 
-while() loop, we'll just make a call to``adc_sample()`` to cause the ADC 
+We'll need that ``adc_task_handler()`` function to exist, and that's where
+we'll initialize the ADC Device and set the event handler. In the task's
+while() loop, we'll just make a call to``adc_sample()`` to cause the ADC
 driver to sample the adc device.
 
 .. code-block:: c
@@ -566,7 +570,7 @@ driver to sample the adc device.
         adc = adc_init();
         rc = adc_event_handler_set(adc, adc_read_event, (void *) NULL);
         assert(rc == 0);
-        
+
         while (1) {
             adc_sample(adc);
             /* Wait 2 second */
@@ -601,7 +605,7 @@ Above the ``adc_task_handler``, add code to handle the
         return (0);
     err:
         return (rc);
-    } 
+    }
 
 This is where we actually read the ADC value and then update the BLE
 Characteristic for that value.
@@ -637,7 +641,7 @@ service and the characteristics in that service in ``bleprph.h`` in the
     #define ADC_SNS_TYPE          0xDEAD
     #define ADC_SNS_STRING "eTape Liquid Level Sensor"
     #define ADC_SNS_VAL           0xBEAD
-    uint16_t gatt_adc_val; 
+    uint16_t gatt_adc_val;
 
 The first is the UUID of the service, followed by the 2 characteristics
 we are going to offer. The first characteristic is going to advertise
@@ -656,7 +660,7 @@ If we then go look at ``gatt_svr.c`` we can see the structure of the
 service and characteristic offering that we set up:
 
 .. code-block:: c
-   
+
     static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
         {
             /*** Service: Security test. */

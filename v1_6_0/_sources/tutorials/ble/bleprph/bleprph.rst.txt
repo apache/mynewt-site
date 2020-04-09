@@ -20,7 +20,7 @@ Introduction
 Overview
 ^^^^^^^^
 
-*bleprph* is an example app included in the apache-mynewt-core
+*bleprph* is an example app included in the apache-mynewt-nimble
 repository. This app implements a simple BLE peripheral with the
 following properties:
 

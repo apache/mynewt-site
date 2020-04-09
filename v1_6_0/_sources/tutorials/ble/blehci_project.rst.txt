@@ -49,7 +49,7 @@ skeletal Mynewt framework. Change into the newly created directory.
     $ cd mblehciproj 
 
     $ newt upgrade
-    Downloading repository mynewt-core (commit: [...])
+    Downloading repository mynewt-core (commit: master) ...
     apache-mynewt-core successfully upgraded to version 1.7.0
 
 Create targets

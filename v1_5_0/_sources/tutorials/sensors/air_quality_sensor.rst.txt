@@ -46,8 +46,8 @@ Your project.yml file should look like this:
             repo: mynewt-core
 
         [user@IsMyLaptop:~/src/air_quality]$ newt upgrade
-        Downloading repository mynewt-core (commit: [...])
-        Downloading repository mynewt-nimble (commit: [...])
+        Downloading repository mynewt-core (commit: master) ...
+        Downloading repository mynewt-nimble (commit: master) ...
         apache-mynewt-core successfully upgraded to version 0.0.0
         apache-mynewt-nimble successfully upgraded to version 0.0.0
         [user@IsMyLaptop:~/src/air_quality]$ ls repos/

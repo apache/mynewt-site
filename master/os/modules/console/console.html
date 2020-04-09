@@ -251,6 +251,7 @@ ga("send", "pageview");
 <li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bsp/index.html">Board support</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../network/index.html">BLE User Guide</a></li>
@@ -523,6 +524,8 @@ pointers to the callback and the <a class="reference internal" href="#c.console_
 added to the avail_queue.</p>
 </li>
 </ul>
+<div class="section" id="minimal-console-example">
+<h4>Minimal Console Example<a class="headerlink" href="#minimal-console-example" title="Permalink to this headline">¶</a></h4>
 <p>Here is a code excerpt that shows how to use the
 <code class="xref c c-func docutils literal notranslate"><span class="pre">console_set_queues()</span></code> function. The example adds one event to the
 avail_queue and uses the OS default event queue for the lines_queue.</p>
@@ -564,6 +567,48 @@ avail_queue and uses the OS default event queue for the lines_queue.</p>
     <span class="n">console_set_queues</span><span class="p">(</span><span class="o">&amp;</span><span class="n">avail_queue</span><span class="p">,</span> <span class="n">os_eventq_dflt_get</span><span class="p">());</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="full-console-example">
+<h4>Full Console Example<a class="headerlink" href="#full-console-example" title="Permalink to this headline">¶</a></h4>
+<p>For the full console, setting the queue is done via
+<a class="reference internal" href="#c.console_line_queue_set" title="console_line_queue_set"><code class="xref c c-func docutils literal notranslate"><span class="pre">console_line_queue_set()</span></code></a>. This example uses the OS default event
+queue for calling the line received callback.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="nf">myapp_process_input</span><span class="p">(</span><span class="k">struct</span> <span class="n">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">);</span>
+
+<span class="k">static</span> <span class="k">struct</span> <span class="n">console_input</span> <span class="n">myapp_console_buf</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="k">struct</span> <span class="n">os_event</span> <span class="n">myapp_console_event</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">.</span><span class="n">ev_cb</span> <span class="o">=</span> <span class="n">myapp_process_input</span><span class="p">,</span>
+    <span class="p">.</span><span class="n">ev_arg</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">myapp_console_buf</span>
+<span class="p">};</span>
+
+<span class="cm">/* Event callback to process a line of input from console. */</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">myapp_process_input</span><span class="p">(</span><span class="k">struct</span> <span class="n">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">line</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">console_input</span> <span class="o">*</span><span class="n">input</span><span class="p">;</span>
+
+    <span class="n">input</span> <span class="o">=</span> <span class="n">ev</span><span class="o">-&gt;</span><span class="n">ev_arg</span><span class="p">;</span>
+    <span class="n">assert</span> <span class="p">(</span><span class="n">input</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
+
+    <span class="n">line</span> <span class="o">=</span> <span class="n">input</span><span class="o">-&gt;</span><span class="n">line</span><span class="p">;</span>
+    <span class="cm">/* Do some work with line */</span>
+         <span class="p">....</span>
+    <span class="cm">/* Done processing line. Add the event back to the avail_queue */</span>
+    <span class="n">console_line_event_put</span><span class="p">(</span><span class="n">ev</span><span class="p">);</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">myapp_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">console_line_event_put</span><span class="p">(</span><span class="o">&amp;</span><span class="n">myapp_console_event</span><span class="p">);</span>
+    <span class="n">console_line_queue_set</span><span class="p">(</span><span class="n">os_eventq_dflt_get</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>

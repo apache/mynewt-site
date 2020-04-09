@@ -5,13 +5,6 @@ Mynewt FAQ - Newt
   :local:
   :depth: 1
 
-Newt Commands: ``upgrade``, ``install``, ``sync``
--------------------------------------------------
-
-**Q**: What’s the difference between ``newt upgrade``, ``newt install``, and ``newt sync``?
-
-**A**: Only use ``newt upgrade``.  The other two commands (``install`` and ``sync``) are deprecated and will be removed soon.
-
 ``newt size`` Command vs. Elf File Size
 ---------------------------------------
 

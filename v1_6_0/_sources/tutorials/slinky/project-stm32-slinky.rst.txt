@@ -32,12 +32,14 @@ already have a project created or completed the
     $ newt new slinky
     Downloading project skeleton from apache/mynewt-blinky...
     ...
-    Installing skeleton in slink...
+    Installing skeleton in slinky...
     Project slink successfully created
     $ cd slinky
     $ newt upgrade
-    Downloading repository mynewt-core (commit: [...])
+    Downloading repository mynewt-core (commit: master) ...
+    ...
     apache-mynewt-core successfully upgraded to version 1.7.0
+    mcuboot successfully upgraded to version 1.3.1
 
 Create the Targets
 ~~~~~~~~~~~~~~~~~~~
@@ -74,21 +76,19 @@ Run the ``newt build stm32_boot`` command to build the bootloader:
 
     $ newt build stm32_boot
     Building target targets/stm32_boot
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
-    Compiling repos/mcuboot/boot/bootutil/src/loader.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
+    Compiling repos/mcuboot/boot/bootutil/src/caps.c
+    Compiling repos/mcuboot/boot/bootutil/src/encrypted.c
     Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
-    Compiling repos/mcuboot/boot/mynewt/src/main.c
-
+    Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ed25519.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
           ...
-
-    Archiving sys_mfg.a
-    Archiving sys_sysinit.a
-    Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/stm32_boot/app/boot/mynewt/mynewt.elf
+    Archiving @apache-mynewt-core_util_rwlock.a
+    Archiving @apache-mynewt-core_util_streamer.a
+    Linking ~/dev/slinky/bin/targets/stm32_boot/app/@mcuboot/boot/mynewt/mynewt.elf
     Target successfully built: targets/stm32_boot
     $
 
@@ -99,20 +99,19 @@ application:
 
     $newt build stm32_slinky
     Building target targets/stm32_slinky
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
-    Compiling repos/mcuboot/boot/bootutil/src/loader.c
-    Compiling repos/mcuboot/boot/bootutil/src/image_validate.c
-    Compiling repos/apache-mynewt-core/boot/split/src/split.c
+    Compiling repos/mcuboot/boot/bootutil/src/caps.c
+    Compiling repos/mcuboot/boot/bootutil/src/encrypted.c
     Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
     Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
-
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_ed25519.c
+    Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+    Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
            ...
-
-    Archiving util_crc.a
-    Archiving util_mem.a
-    Linking ~/dev/slinky/bin/targets/stm32_slinky/app/apps/slinky/slinky.elf
+    Archiving @apache-mynewt-core_util_rwlock.a
+    Archiving @apache-mynewt-core_util_streamer.a
+    Linking ~/dev/slinky/bin/targets/stm32_slinky/app/@apache-mynewt-core/apps/slinky/slinky.elf
     Target successfully built: targets/stm32_slinky
     $
 

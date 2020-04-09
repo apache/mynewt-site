@@ -201,6 +201,7 @@ And finally, we'll take care of that ``co2_read_event()`` function:
     err:
         return (rc);
     }
+
 This one simply reads and updates the CO2 value and sends that over BLE to any connected clients instead.
 
 We can now build, create-image and load the app onto our nRF52DK board, and then connect and see the updated values! To view the results over Bluetooth, you can use LightBlue or any other application that can connect to, and read, Bluetooth data. By default, the device will show up as nimble-bleprph, since we used the ``bleprph`` app as our template. I've changed mine to something a bit more applicable: BLE CO2 Sensor.

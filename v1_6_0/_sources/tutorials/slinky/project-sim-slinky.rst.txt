@@ -29,12 +29,14 @@ We will name the project ``slinky``.
     $ newt new slinky
     Downloading project skeleton from apache/mynewt-blinky...
     ...
-    Installing skeleton in slink...
-    Project slinky successfully created
+    Installing skeleton in slinky...
+    Project slinky successfully created.
     $ cd slinky
-    $newt upgrade
-    Downloading repository mynewt-core (commit: [...])
+    $ newt upgrade
+    Downloading repository mynewt-core (commit: master) ...
+    ...
     apache-mynewt-core successfully upgraded to version 1.7.0
+    mcuboot successfully upgraded to version 1.3.1
 
 Setting up your target build
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,25 +59,24 @@ file is created.
 
 .. code-block:: console
 
-        $ newt build sim_slinky 
+        $ newt build sim_slinky
         Building target targets/sim_slinky
-        Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec256.c
-        Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
-        Compiling repos/apache-mynewt-core/boot/bootutil/src/image_ec.c
-        Compiling repos/apache-mynewt-core/boot/split/src/split.c
-        Compiling repos/apache-mynewt-core/boot/bootutil/src/image_validate.c
-        Compiling repos/apache-mynewt-core/boot/bootutil/src/loader.c
-        Compiling repos/apache-mynewt-core/boot/bootutil/src/bootutil_misc.c
-        Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
-        Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
-        Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
+        Compiling repos/mcuboot/boot/bootutil/src/caps.c
+        Compiling repos/mcuboot/boot/bootutil/src/encrypted.c
+        Compiling repos/mcuboot/boot/bootutil/src/bootutil_misc.c
         Compiling repos/apache-mynewt-core/apps/slinky/src/main.c
+        Compiling repos/mcuboot/boot/bootutil/src/image_ec.c
+        Compiling repos/mcuboot/boot/bootutil/src/image_ec256.c
+        Compiling repos/mcuboot/boot/bootutil/src/image_ed25519.c
+        Compiling repos/mcuboot/boot/bootutil/src/image_rsa.c
+        Compiling repos/apache-mynewt-core/boot/split/src/split_config.c
+        Compiling repos/mcuboot/boot/bootutil/src/loader.c
 
                   ...
 
-        Archiving util_crc.a
-        Archiving util_mem.a
-        Linking ~/dev/slinky/bin/targets/sim_slinky/app/apps/slinky/slinky.elf
+        Archiving @apache-mynewt-core_util_rwlock.a
+        Archiving @apache-mynewt-core_util_streamer.a
+        Linking ~/dev/slinky/bin/targets/sim_slinky/app/@apache-mynewt-core/apps/slinky/slinky.elf
         Target successfully built: targets/sim_slinky
 
 Run the target
@@ -108,7 +109,7 @@ device.
         $ newtmgr conn add sim1 type=serial connstring=/dev/ttys005
         Connection profile sim1 successfully added
         $ newtmgr conn show
-        Connection profiles: 
+        Connection profiles:
           sim1: type=serial, connstring='/dev/ttys005'
 
 Executing newtmgr commands with the target

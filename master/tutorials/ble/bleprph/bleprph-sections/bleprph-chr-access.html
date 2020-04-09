@@ -303,19 +303,20 @@ service. Let’s take another look at how <em>bleprph</em> specifies the first
 few characteristics in this service.</p>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
     {
-        /*** Service: GAP. */
+        /*** Service: Security test. */
         .type               = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid128            = BLE_UUID16(BLE_GAP_SVC_UUID16),
+        .uuid               = &amp;gatt_svr_svc_sec_test_uuid.u,
         .characteristics    = (struct ble_gatt_chr_def[]) { {
-            /*** Characteristic: Device Name. */
-            .uuid128            = BLE_UUID16(BLE_GAP_CHR_UUID16_DEVICE_NAME),
-            .access_cb          = gatt_svr_chr_access_gap,
-            .flags              = BLE_GATT_CHR_F_READ,
+            /*** Characteristic: Random number generator. */
+            .uuid               = &amp;gatt_svr_chr_sec_test_rand_uuid.u,
+            .access_cb          = gatt_svr_chr_access_sec_test,
+            .flags              = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_READ_ENC,
         }, {
-            /*** Characteristic: Appearance. */
-            .uuid128            = BLE_UUID16(BLE_GAP_CHR_UUID16_APPEARANCE),
-            .access_cb          = gatt_svr_chr_access_gap,
-            .flags              = BLE_GATT_CHR_F_READ,
+            /*** Characteristic: Static value. */
+            .uuid               = gatt_svr_chr_sec_test_static_uuid.u,
+            .access_cb          = gatt_svr_chr_access_sec_test,
+            .flags              = BLE_GATT_CHR_F_READ |
+                                  BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_ENC,
         }, {
     // [...]
 </pre></div>
@@ -326,54 +327,54 @@ implemented separate functions for each characteristic if they
 preferred. Here is the <em>access_cb</em> function that the GAP service
 characteristics use:</p>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int
-gatt_svr_chr_access_gap(uint16_t conn_handle, uint16_t attr_handle, uint8_t op,
-                        union ble_gatt_access_ctxt *ctxt, void *arg)
+gatt_svr_chr_access_sec_test(uint16_t conn_handle, uint16_t attr_handle,
+                             struct ble_gatt_access_ctxt *ctxt,
+                             void *arg)
 {
-    uint16_t uuid16;
+    const ble_uuid_t *uuid;
+    int rand_num;
+    int rc;
 
-    uuid16 = ble_uuid_128_to_16(ctxt-&gt;chr_access.chr-&gt;uuid128);
-    assert(uuid16 != 0);
+    uuid = ctxt-&gt;chr-&gt;uuid;
 
-    switch (uuid16) {
-    case BLE_GAP_CHR_UUID16_DEVICE_NAME:
-        assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
-        ctxt-&gt;chr_access.data = (void *)bleprph_device_name;
-        ctxt-&gt;chr_access.len = strlen(bleprph_device_name);
-        break;
+    /* Determine which characteristic is being accessed by examining its
+     * 128-bit UUID.
+     */
 
-    case BLE_GAP_CHR_UUID16_APPEARANCE:
-        assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
-        ctxt-&gt;chr_access.data = (void *)&amp;bleprph_appearance;
-        ctxt-&gt;chr_access.len = sizeof bleprph_appearance;
-        break;
+    if (ble_uuid_cmp(uuid, &amp;gatt_svr_chr_sec_test_rand_uuid.u) == 0) {
+        assert(ctxt-&gt;op == BLE_GATT_ACCESS_OP_READ_CHR);
 
-    case BLE_GAP_CHR_UUID16_PERIPH_PRIV_FLAG:
-        assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
-        ctxt-&gt;chr_access.data = (void *)&amp;bleprph_privacy_flag;
-        ctxt-&gt;chr_access.len = sizeof bleprph_privacy_flag;
-        break;
-
-    case BLE_GAP_CHR_UUID16_RECONNECT_ADDR:
-        assert(op == BLE_GATT_ACCESS_OP_WRITE_CHR);
-        if (ctxt-&gt;chr_access.len != sizeof bleprph_reconnect_addr) {
-            return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
-        }
-        memcpy(bleprph_reconnect_addr, ctxt-&gt;chr_access.data,
-               sizeof bleprph_reconnect_addr);
-        break;
-
-    case BLE_GAP_CHR_UUID16_PERIPH_PREF_CONN_PARAMS:
-        assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
-        ctxt-&gt;chr_access.data = (void *)&amp;bleprph_pref_conn_params;
-        ctxt-&gt;chr_access.len = sizeof bleprph_pref_conn_params;
-        break;
-
-    default:
-        assert(0);
-        break;
+        /* Respond with a 32-bit random number. */
+        rand_num = rand();
+        rc = os_mbuf_append(ctxt-&gt;om, &amp;rand_num, sizeof rand_num);
+        return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
     }
 
-    return 0;
+    if (ble_uuid_cmp(uuid, &amp;gatt_svr_chr_sec_test_static_uuid.u) == 0) {
+        switch (ctxt-&gt;op) {
+        case BLE_GATT_ACCESS_OP_READ_CHR:
+            rc = os_mbuf_append(ctxt-&gt;om, &amp;gatt_svr_sec_test_static_val,
+                                sizeof gatt_svr_sec_test_static_val);
+            return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
+
+        case BLE_GATT_ACCESS_OP_WRITE_CHR:
+            rc = gatt_svr_chr_write(ctxt-&gt;om,
+                                    sizeof gatt_svr_sec_test_static_val,
+                                    sizeof gatt_svr_sec_test_static_val,
+                                    &amp;gatt_svr_sec_test_static_val, NULL);
+            return rc;
+
+        default:
+            assert(0);
+            return BLE_ATT_ERR_UNLIKELY;
+        }
+    }
+
+    /* Unknown characteristic; the nimble stack should not have called this
+    * function.
+    */
+    assert(0);
+    return BLE_ATT_ERR_UNLIKELY;
 }
 </pre></div>
 </div>
@@ -383,8 +384,8 @@ let’s explore some details.</p>
 <div class="section" id="function-signature">
 <h2><a class="toc-backref" href="#id2">Function signature</a><a class="headerlink" href="#function-signature" title="Permalink to this headline">¶</a></h2>
 <div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int
-gatt_svr_chr_access_gap(uint16_t conn_handle, uint16_t attr_handle, uint8_t op,
-                        union ble_gatt_access_ctxt *ctxt, void *arg)
+gatt_svr_chr_access_sec_test(uint16_t conn_handle, uint16_t attr_handle,
+                             struct ble_gatt_access_ctxt *ctxt, void *arg)
 </pre></div>
 </div>
 <p>A characteristic access function always takes this same set of
@@ -445,24 +446,7 @@ to perform
 a UUID
 lookup.</td>
 </tr>
-<tr class="row-even"><td>op</td>
-<td>Indicates
-whether this
-is a read or
-write
-operation</td>
-<td>Valid
-values
-are:<em>BLE
-_GATT_AC
-CESS_OP_
-READ_CHR</em>
-<em>BLE_
-GATT_ACCE
-SS_OP_WR
-ITE_CHR</em></td>
-</tr>
-<tr class="row-odd"><td>ctxt</td>
+<tr class="row-even"><td>ctxt</td>
 <td>Contains the
 characterist
 ic
@@ -499,19 +483,12 @@ defined in
 </div>
 <div class="section" id="determine-characteristic-being-accessed">
 <h2><a class="toc-backref" href="#id3">Determine characteristic being accessed</a><a class="headerlink" href="#determine-characteristic-being-accessed" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>{
-    uint16_t uuid16;
-
-    uuid16 = ble_uuid_128_to_16(ctxt-&gt;chr_access.chr-&gt;uuid128);
-    assert(uuid16 != 0);
-
-    switch (uuid16) {
-        // [...]
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>ble_uuid_cmp(uuid, &amp;gatt_svr_chr_sec_test_rand_uuid.u)
 </pre></div>
 </div>
-<p>This function uses the UUID to determine which characteristic is being
-accessed. There are two alternative methods <em>bleprph</em> could have used to
-accomplish this task:</p>
+<p>The function compares UUID with UUIDs of characteristic - if it fits,
+characteristic is being accessed. There are two alternative methods <em>bleprph</em>
+could have used to accomplish this task:</p>
 <ul class="simple">
 <li>Map characteristics to ATT handles during service registration; use
 the <em>attr_handle</em> parameter as a key into this table during
@@ -519,78 +496,61 @@ characteristic access.</li>
 <li>Implement a dedicated function for each characteristic; each function
 inherently knows which characteristic it corresponds to.</li>
 </ul>
-<p>All the GAP service characteristics have 16-bit UUIDs, so this function
-uses the <em>ble_uuid_128_to_16()</em> function to convert the 128-bit UUID
-to its corresponding 16-bit UUID. This conversion function returns the
-corresponding 16-bit UUID on success, or 0 on failure. Success is
-asserted here to ensure the NimBLE stack is doing its job properly; the
-stack should only call this function for accesses to characteristics
-that it is registered with, and all GAP service characteristics have
-valid 16-bit UUIDs.</p>
 </div>
 <div class="section" id="read-access">
 <h2><a class="toc-backref" href="#id4">Read access</a><a class="headerlink" href="#read-access" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>case BLE_GAP_CHR_UUID16_DEVICE_NAME:
-    assert(op == BLE_GATT_ACCESS_OP_READ_CHR);
-    ctxt-&gt;chr_access.data = (void *)bleprph_device_name;
-    ctxt-&gt;chr_access.len = strlen(bleprph_device_name);
-    break;
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>case BLE_GATT_ACCESS_OP_READ_CHR:
+    rc = os_mbuf_append(ctxt-&gt;om, &amp;gatt_svr_sec_test_static_val,
+                        sizeof gatt_svr_sec_test_static_val);
+    return rc == 0 ? 0 : BLE_ATT_ERR_INSUFFICIENT_RES;
 </pre></div>
 </div>
-<p>This code excerpt handles read accesses to the device name
-characteristic. The <em>assert()</em> here is another case of making sure the
+<p>This code excerpt handles read accesses to the device characteristic.
+<em>ctxt-&gt;om</em> is chained memory buffer that for reads is being populated
+with characteristic data. Returned value is either 0 for success or
+<em>BLE_ATT_ERR_INSUFFICIENT_RES</em> if failed. The check makes sure the
 NimBLE stack is doing its job; this characteristic was registered as
 read-only, so the stack should have prevented write accesses.</p>
-<p>To fulfill a characteristic read request, the application needs to
-assign the <em>ctxt-&gt;chr_access.data</em> field to point to the attribute data
-to respond with, and fill the <em>ctxt-&gt;chr_access.len</em> field with the
-length of the attribute data. <em>bleprph</em> stores the device name in
-read-only memory as follows:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>const char *bleprph_device_name = &quot;nimble-bleprph&quot;;
-</pre></div>
-</div>
-<p>The cast to pointer-to-void is a necessary annoyance to remove the
-<em>const</em> qualifier from the device name variable. You will need to “cast
-away const” whenever you respond to read requests with read-only data.</p>
-<p>It is not shown in the above snippet, but this function ultimately
-returns 0. By returning 0, <em>bleprph</em> indicates that the characteristic
-data in <em>ctxt-&gt;chr_access</em> is valid and that NimBLE should include it
-in its response to the peer.</p>
-<p><strong>A word of warning:</strong> The attribute data that <em>ctxt-&gt;chr_access.data</em>
-points to must remain valid after the access function returns, as the
-NimBLE stack needs to use it to form a GATT read response. In other
-words, you must not allocate the characteristic value data on the stack
-of the access function. Two characteristic accesses never occur at the
-same time, so it is OK to use the same memory for repeated accesses.</p>
 </div>
 <div class="section" id="write-access">
 <h2><a class="toc-backref" href="#id5">Write access</a><a class="headerlink" href="#write-access" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>case BLE_GAP_CHR_UUID16_RECONNECT_ADDR:
-    assert(op == BLE_GATT_ACCESS_OP_WRITE_CHR);
-    if (ctxt-&gt;chr_access.len != sizeof bleprph_reconnect_addr) {
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int
+gatt_svr_chr_write(struct os_mbuf *om, uint16_t min_len, uint16_t max_len,
+                   void *dst, uint16_t *len)
+{
+    uint16_t om_len;
+    int rc;
+
+    om_len = OS_MBUF_PKTLEN(om);
+    if (om_len &lt; min_len || om_len &gt; max_len) {
         return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
     }
-    memcpy(bleprph_reconnect_addr, ctxt-&gt;chr_access.data,
-           sizeof bleprph_reconnect_addr);
-    break;
+
+    rc = ble_hs_mbuf_to_flat(om, dst, max_len, len);
+    if (rc != 0) {
+        return BLE_ATT_ERR_UNLIKELY;
+    }
+
+    return 0;
+}
+// [...]
+case BLE_GATT_ACCESS_OP_WRITE_CHR:
+    rc = gatt_svr_chr_write(ctxt-&gt;om,
+                            sizeof gatt_svr_sec_test_static_val,
+                            sizeof gatt_svr_sec_test_static_val,
+                            &amp;gatt_svr_sec_test_static_val, NULL);
+    return rc;
 </pre></div>
 </div>
-<p>This code excerpt handles writes to the reconnect address
-characteristic. This characteristic was registered as write-only, so the
-<em>assert()</em> here is just a safety precaution to ensure the NimBLE stack
+<p>This code excerpt handles writes to the Static value
+characteristic. This characteristic was registered as read-write, so the
+<em>return rc</em> here is just a safety precaution to ensure the NimBLE stack
 is doing its job.</p>
-<p>For writes, the roles of the <em>ctxt-&gt;chr_access.data</em> and
-<em>ctxt-&gt;chr_access.len</em> fields are the reverse of the read case. The
-NimBLE stack uses these fields to indicate the data written by the peer.</p>
+<p>Data is written to the <em>ctxt-&gt;om</em> buffer from <em>gatt_svr_sec_test_static_val</em>
+by <code class="docutils literal notranslate"><span class="pre">ble_hs_mbuf_to_flat()</span></code> function. If length of written data greater or
+smaller than length of <em>gatt_svr_sec_test_static_val</em>, function return error.</p>
 <p>Many characteristics have strict length requirements for write
-operations. This characteristic has such a restriction; if the written
-data is not a 48-bit BR address, the application tells NimBLE to respond
-with an invalid attribute value length error.</p>
-<p>For writes, the <em>ctxt-&gt;chr_access.data</em> pointer is only valid for the
-duration of the access function. If the application needs to save the
-written data, it should store it elsewhere before the function returns.
-In this case, <em>bleprph</em> stores the specified address in a global
-variable called <em>bleprph_reconnect_addr</em>.</p>
+operations.</p>
 </div>
 </div>
 

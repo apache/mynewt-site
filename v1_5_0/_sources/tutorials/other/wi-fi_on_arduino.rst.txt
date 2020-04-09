@@ -54,12 +54,18 @@ Run the following commands to create a new project:
         $ cd ~/dev
         $ newt new arduinowifi
         Downloading project skeleton from apache/mynewt-blinky...
+        Downloading repository mynewt-blinky (commit: master) ...
         Installing skeleton in arduinowifi...
         Project arduinowifi successfully created.
         $ cd arduinowifi
         $ newt upgrade
-        Downloading repository mynewt-core (commit: [...])
+        Downloading repository mynewt-core (commit: master) ...
+        Downloading repository mcuboot (commit: master) ...
+        Downloading repository mynewt-nimble (commit: master) ...
+        Making the following changes to the project:
         apache-mynewt-core successfully upgraded to version 1.7.0
+        apache-mynewt-nimble successfully upgraded to version 1.2.0
+        mcuboot successfully upgraded to version 1.3.1
         $
 
 Fetch External Packages
@@ -97,25 +103,25 @@ and use the latest master branch for both repositories.
 .. code-block:: console
    :emphasize-lines: 7, 15, 16, 17, 18, 19
 
-    $ more project.yml 
+    $ more project.yml
 
     project.name: "my_project"
 
-    project.repositories: 
-        - apache-mynewt-core 
+    project.repositories:
+        - apache-mynewt-core
         - mynewt_arduino_zero
 
-    repository.apache-mynewt-core: 
+    repository.apache-mynewt-core:
         type: github
         vers: 1-latest
         user: apache
         repo: mynewt-core
 
-    repository.mynewt_arduino_zero: 
-        type: github 
-        vers: 1-latest 
-        user: runtimeco 
-        repo: mynewt_arduino_zero 
+    repository.mynewt_arduino_zero:
+        type: github
+        vers: 1-latest
+        user: runtimeco
+        repo: mynewt_arduino_zero
     $
 
 Install the project dependencies using the ``newt upgrade`` command
@@ -124,9 +130,11 @@ Install the project dependencies using the ``newt upgrade`` command
 .. code-block:: console
 
     $ newt upgrade
-    Downloading repository mynewt-core (commit: [...])
-    Downloading repository mynewt_arduino_zero (commit: [...])
-    apache-mynewt-core successfully upgraded to version 1.7.0
+    Downloading repository mynewt_arduino_zero (commit: master) ...
+    Skipping "apache-mynewt-core": already upgraded (1.7.0)
+    Skipping "apache-mynewt-nimble": already upgraded (1.2.0)
+    Skipping "mcuboot": already upgraded (1.3.1)
+    Making the following changes to the project:
     mynewt_arduino_zero successfully upgraded to version 1.7.0
     $
 
@@ -188,7 +196,7 @@ Run the ``newt build mkr1000_boot`` command to build the bootloader:
            ...
 
     Archiving util_mem.a
-    Linking ~/dev/arduinowifi/bin/targets/mkr1000_boot/app/boot/mynewt/mynewt.elf
+    Linking ~/dev/arduinowifi/bin/targets/mkr1000_boot/app/@mcuboot/boot/mynewt/mynewt.elf
     Target successfully built: targets/mkr1000_boot
     $
 

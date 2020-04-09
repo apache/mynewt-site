@@ -65,6 +65,7 @@ your home directory.
     $ cd ~/dev
     $ newt new myproj
     Downloading project skeleton from apache/mynewt-blinky...
+    Downloading repository mynewt-blinky (commit: master) ...
     Installing skeleton in myproj...
     Project myproj successfully created.
 
@@ -153,28 +154,14 @@ progress.
 .. code-block:: console
 
     $ newt upgrade
-    Downloading repository mynewt-core (commit: [...])
+    Downloading repository mynewt-core (commit: master) ...
+    Downloading repository mynewt-mcumgr (commit: master) ...
+    Downloading repository mynewt-nimble (commit: master) ...
+    Downloading repository mcuboot (commit: master) from ...
+    Making the following changes to the project:
     apache-mynewt-core successfully upgraded to version 1.7.0
-
-**Note:** If you get the following error:
-
-.. code-block:: console
-
-    ReadDesc: No matching branch for apache-mynewt-core repo
-    Error: No matching branch for apache-mynewt-core repop
-
-You must edit the ``project.yml`` file and change the line
-``repo: incubator-mynewt-core`` as shown in the following example to
-``repo: mynewt-core``:
-
-.. code-block:: yaml
-    :emphasize-lines: 5
-
-    repository.apache-mynewt-core:
-        type: github
-        vers: 1-latest
-        user: apache
-        repo: incubator-mynewt-core
+    apache-mynewt-nimble successfully upgraded to version 1.2.0
+    mcuboot successfully upgraded to version 1.3.1
 
 View the core of the Apache Mynewt OS that is downloaded into your local
 directory.
@@ -183,52 +170,61 @@ directory.
 
 .. code-block:: console
 
-    $ tree -L 2 repos/apache-mynewt-core/
-
-    repos/apache-mynewt-core/
-    ├── CODING_STANDARDS.md
-    ├── DISCLAIMER
-    ├── LICENSE
-    ├── NOTICE
-    ├── README.md
-    ├── RELEASE_NOTES.md
+    $ repos/apache-mynewt-core/
     ├── apps
-    │   ├── blecent
-    │   ├── blehci
-    │   ├── bleprph
     │   ├── bleprph_oic
     │   ├── blesplit
-    │   ├── bletest
     │   ├── bleuart
-    │   ├── boot
-    │   ├── btshell
-    │   ├── fat2native
+    │   ├── bsncent
+    │   ├── bsnprph
+    │   ├── bus_test
+    │   ├── coremark
+    │   ├── crypto_test
     │   ├── ffs2native
+    │   ├── flash_loader
+    │   ├── iptest
+    │   ├── lora_app_shell
+    │   ├── loraping
+    │   ├── lorashell
+    │   ├── metrics
     │   ├── ocf_sample
+    │   ├── pwm_test
+    │   ├── sensors_test
     │   ├── slinky
     │   ├── slinky_oic
     │   ├── spitest
     │   ├── splitty
-    │   ├── test
     │   ├── testbench
-    │   └── timtest
+    │   ├── timtest
+    │   └── trng_test
     ├── boot
-    │   ├── boot_serial
-    │   ├── bootutil
     │   ├── split
     │   └── split_app
+    ├── CODING_STANDARDS.md
     ├── compiler
+    │   ├── arc
     │   ├── arm-none-eabi-m0
+    │   ├── arm-none-eabi-m3
+    │   ├── arm-none-eabi-m33
     │   ├── arm-none-eabi-m4
+    │   ├── arm-none-eabi-m7
     │   ├── gdbmacros
     │   ├── mips
+    │   ├── riscv64
     │   ├── sim
-    │   └── sim-mips
+    │   ├── sim-armv7
+    │   ├── sim-mips
+    │   └── xc32
     ├── crypto
     │   ├── mbedtls
     │   └── tinycrypt
     ├── docs
-    │   └── doxygen.xml
+    │   ├── conf.py
+    │   ├── doxygen.xml
+    │   ├── index.rst
+    │   ├── Makefile
+    │   ├── os
+    │   └── README.rst
     ├── encoding
     │   ├── base64
     │   ├── cborattr
@@ -238,19 +234,28 @@ directory.
     │   ├── disk
     │   ├── fatfs
     │   ├── fcb
+    │   ├── fcb2
     │   ├── fs
     │   └── nffs
     ├── hw
+    │   ├── battery
     │   ├── bsp
+    │   ├── bus
+    │   ├── charge-control
     │   ├── cmsis-core
     │   ├── drivers
     │   ├── hal
     │   ├── mcu
-    │   └── scripts
+    │   ├── mips-hal
+    │   ├── scripts
+    │   ├── sensor
+    │   └── util
     ├── kernel
-    │   └── os
+    │   ├── os
+    │   └── sim
     ├── libc
     │   └── baselibc
+    ├── LICENSE
     ├── mgmt
     │   ├── imgmgr
     │   ├── mgmt
@@ -258,39 +263,61 @@ directory.
     │   └── oicmgr
     ├── net
     │   ├── ip
-    │   ├── nimble
+    │   ├── lora
+    │   ├── mqtt
     │   ├── oic
     │   └── wifi
+    ├── NOTICE
     ├── project.yml
+    ├── README.md
+    ├── RELEASE_NOTES.md
     ├── repository.yml
     ├── sys
     │   ├── config
     │   ├── console
     │   ├── coredump
     │   ├── defs
+    │   ├── fault
     │   ├── flash_map
     │   ├── id
     │   ├── log
+    │   ├── metrics
     │   ├── mfg
     │   ├── reboot
     │   ├── shell
     │   ├── stats
-    │   └── sysinit
+    │   ├── sys
+    │   ├── sysdown
+    │   ├── sysinit
+    │   └── sysview
     ├── targets
     │   └── unittest
     ├── test
     │   ├── crash_test
     │   ├── flash_test
+    │   ├── i2c_scan
     │   ├── runtest
+    │   ├── spiflash_stress_test
     │   └── testutil
     ├── time
-    │   └── datetime
-    └── util
-        ├── cbmem
-        ├── crc
-        └── mem
+    │   ├── datetime
+    │   ├── timepersist
+    │   └── timesched
+    ├── uncrustify.cfg
+    ├── util
+    │   ├── cbmem
+    │   ├── cmdarg
+    │   ├── crc
+    │   ├── debounce
+    │   ├── easing
+    │   ├── mem
+    │   ├── parse
+    │   ├── rwlock
+    │   ├── streamer
+    │   └── taskpool
+    └── version.yml
 
-    94 directories, 9 files
+    131 directories, 14 files
 
 Testing the Project Packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -306,17 +333,17 @@ the ``apache-mynewt-core`` repo:
 .. code-block:: console
 
     $ newt test @apache-mynewt-core/sys/config
-    Testing package @apache-mynewt-core/sys/config/test-fcb
-    Compiling bootutil_misc.c
-    Compiling image_ec.c
-    Compiling image_rsa.c
-    Compiling image_validate.c
-
+    Testing package @apache-mynewt-core/sys/config/selftest-fcb
+    Compiling repos/apache-mynewt-core/crypto/tinycrypt/src/aes_decrypt.c
+    Compiling repos/apache-mynewt-core/crypto/tinycrypt/src/aes_encrypt.c
+    Compiling repos/apache-mynewt-core/crypto/tinycrypt/src/cbc_mode.c
+    Compiling repos/apache-mynewt-core/crypto/tinycrypt/src/ccm_mode.c
+    Compiling repos/apache-mynewt-core/crypto/tinycrypt/src/cmac_mode.c
     ...
 
-    Linking ~/dev/myproj/bin/targets/unittest/sys_config_test-fcb/app/sys/config/test-fcb/sys_config_test-fcb.elf
-    Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_test-fcb/app/sys/config/test-fcb/sys_config_test-fcb.elf
-    Testing package @apache-mynewt-core/sys/config/test-nffs
+    Linking ~/dev/myproj/bin/targets/unittest/sys_config_selftest-fcb/app/sys/config/selftest-fcb/sys_config_selftest-fcb.elf
+    Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_selftest-fcb/app/sys/config/selftest-fcb/sys_config_selftest-fcb.elf
+    Testing package @apache-mynewt-core/sys/config/selftest-nffs
     Compiling repos/apache-mynewt-core/encoding/base64/src/hex.c
     Compiling repos/apache-mynewt-core/fs/fs/src/fs_cli.c
     Compiling repos/apache-mynewt-core/fs/fs/src/fs_dirent.c
@@ -331,9 +358,9 @@ the ``apache-mynewt-core`` repo:
 
     ...
 
-    Linking ~/dev/myproj/bin/targets/unittest/sys_config_test-nffs/app/sys/config/test-nffs/sys_config_test-nffs.elf
-    Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_test-nffs/app/sys/config/test-nffs/sys_config_test-nffs.elf
-    Passed tests: [sys/config/test-fcb sys/config/test-nffs]
+    Linking ~/dev/myproj/bin/targets/unittest/sys_config_selftest-nffs/app/sys/config/selftest-nffs/sys_config_selftest-nffs.elf
+    Executing test: ~/dev/myproj/bin/targets/unittest/sys_config_selftest-nffs/app/sys/config/selftest-nffs/sys_config_selftest-nffs.elf
+    Passed tests: [sys/config/selftest-fcb sys/config/selftest-nffs]
     All tests passed
 
 **Note:** If you installed the latest gcc using homebrew on your Mac,
@@ -359,19 +386,22 @@ package name.
 .. code-block:: console
 
     $ newt test all
-    Testing package @apache-mynewt-core/boot/boot_serial/test
-    Compiling repos/apache-mynewt-core/boot/boot_serial/test/src/boot_test.c
-    Compiling repos/apache-mynewt-core/boot/boot_serial/test/src/testcases/boot_serial_setup.c
+    Testing package @apache-mynewt-core/crypto/mbedtls/selftest
+    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aesni.c
+    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aria.c
+    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/arc4.c
+    Compiling repos/apache-mynewt-core/crypto/mbedtls/src/aes.c
 
     ...
 
-    Linking ~/dev/myproj/bin/targets/unittest/boot_boot_serial_test/app/boot/boot_serial/test/boot_boot_serial_test.elf
+    Linking ~/dev/myproj/bin/targets/unittest/crypto_mbedtls_selftest/app/@apache-mynewt-core/crypto/mbedtls/selftest/@apache-mynewt-core_crypto_mbedtls_selftest.elf
+    Executing test: ~/dev/myproj/bin/targets/unittest/crypto_mbedtls_selftest/app/@apache-mynewt-core/crypto/mbedtls/selftest/@apache-mynewt-core_crypto_mbedtls_selftest.elf
 
     ...lots of compiling and testing...
 
-    Linking ~/dev/myproj/bin/targets/unittest/util_cbmem_test/app/util/cbmem/test/util_cbmem_test.elf
-    Executing test: ~/dev/myproj/bin/targets/unittest/util_cbmem_test/app/util/cbmem/test/util_cbmem_test.elf
-    Passed tests: [boot/boot_serial/test boot/bootutil/test crypto/mbedtls/test encoding/base64/test encoding/cborattr/test encoding/json/test fs/fcb/test fs/nffs/test kernel/os/test net/ip/mn_socket/test net/nimble/host/test net/oic/test sys/config/test-fcb sys/config/test-nffs sys/flash_map/test sys/log/full/test util/cbmem/test]
+    Linking ~/dev/myproj/bin/targets/unittest/boot_boot_serial_test/app/@mcuboot/boot/boot_serial/test/@mcuboot_boot_boot_serial_test.elf
+    Executing test: ~/dev/myproj/bin/targets/unittest/boot_boot_serial_test/app/@mcuboot/boot/boot_serial/test/@mcuboot_boot_boot_serial_test.elf
+    Passed tests: [crypto/mbedtls/selftest encoding/base64/selftest encoding/cborattr/selftest encoding/json/selftest fs/fcb/selftest fs/fcb2/selftest fs/nffs/selftest hw/drivers/flash/enc_flash/selftest hw/drivers/trng/trng_sw/selftest hw/sensor/selftest kernel/os/selftest net/ip/mn_socket/selftest net/oic/selftest sys/config/selftest-fcb sys/config/selftest-nffs sys/flash_map/selftest sys/log/full/selftest/align1 sys/log/full/selftest/align2 sys/log/full/selftest/align4 sys/log/full/selftest/align8 sys/log/full/selftest/fcb_bookmarks sys/log/modlog/selftest util/cbmem/selftest util/debounce/selftest util/rwlock/selftest cborattr/test nimble/controller/test nimble/host/test boot/boot_serial/test]
     All tests passed
 
 Building and Running the Simulated Blinky Application

@@ -83,8 +83,8 @@ off-board sensor support.
 do not need to include the ``net/oic`` package as a dependency in this
 package.
 
-.. code-block:: console
-   :emphasize-lines: 13, 14
+.. code-block:: yaml
+   :emphasize-lines: 10, 11
    
     pkg.deps: 
         - kernel/os
@@ -94,9 +94,6 @@ package.
         - net/nimble/host/services/gatt
         - net/nimble/host/store/ram 
         - net/nimble/transport/ram
-
- 
-
              ...
         - hw/sensor
         - hw/sensor/creator
@@ -121,17 +118,17 @@ Add the following setting values to ``syscfg.vals`` in the
    Apps on the iOS and Android devices only sees 128 bit UUID
    advertisements.
 
-.. code-block:: console
+.. code-block:: yaml
    :emphasize-lines: 4, 5, 6, 7, 8
 
      syscfg.vals: 
-            ...
+         ...
 
-    SENSOR_OIC: 1
-    OC_SERVER: 1
-    FLOAT_USER: 1
-    ADVERTISE_128BIT_UUID: 1
-    ADVERTISE_16BIT_UUID: 0
+         SENSOR_OIC: 1
+         OC_SERVER: 1
+         FLOAT_USER: 1
+         ADVERTISE_128BIT_UUID: 1
+         ADVERTISE_16BIT_UUID: 0
 
 Step 4: Modifying main.c
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,8 +155,8 @@ Adding the Sensor Package Header File:
 Add the sensor package header file ``sensor/sensor.h`` below
 ``#include "bleprph.h"`` file:
 
-.. code-block:: console
-   :emphasize-lines: 4
+.. code-block:: c
+   :emphasize-lines: 3
 
     #include "bleprph.h"
 
@@ -173,13 +170,13 @@ Make the following modifications to the ``omgr_app_init()`` function:
 1. Delete the code segment that creates the OIC device and resource.
 The lines to delete are highlighted below:
 
-.. code-block:: console
+.. code-block:: c
    :emphasize-lines: 4, 6, 7, 8, 10, 11, 12, 13, 15, 16, 17, 18, 19
 
      static void 
      omgr_app_init(void) 
      {
-         oc\_resource_t *res;
+         oc_resource_t *res;
 
          oc_init_platform("MyNewt", NULL, NULL);
          oc_add_device("/oic/d", "oic.d.light", "MynewtLed", "1.0", "1.0", NULL,

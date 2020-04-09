@@ -10,6 +10,7 @@ Project Blinky
    Blinky on Arduino Primo <blinky_primo>
    Blinky on Olimex <olimex>
    Blinky on nRF52 DK <nRF52>
+   Blinky on PineTime <pinetime>
    Blinky on RedBear Nano 2 <rbnano2>
    Blinky on STM32F4-Discovery <blinky_stm32f4disc>
    Add Console and Shell to Blinky <blinky_console>
@@ -40,6 +41,7 @@ Tutorials are available for the following boards:
 -  :doc:`blinky_primo`
 -  :doc:`olimex`
 -  :doc:`nRF52`
+-  :doc:`pinetime`
 -  :doc:`rbnano2`
 -  :doc:`blinky_stm32f4disc`
 

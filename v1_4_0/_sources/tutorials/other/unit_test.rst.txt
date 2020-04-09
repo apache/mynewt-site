@@ -161,7 +161,7 @@ Try It Out
 We now have a working test suite with no tests. Let's make sure we get a
 passing result when we run ``newt test``:
 
-.. code-block:: c
+.. code-block:: console
 
     $ newt test time/datetime
     <build output>

@@ -157,8 +157,8 @@ its advertisements. The NimBLE host provides a special helper function
 for configuring iBeacon advertisement data:
 ``ble_ibeacon_set_adv_data`` 
 
-If you follow the API link, you'll see that this function takes three
-parameters: a 128-bit UUID, a major version, and a minor version. This
+If you follow the API link, you'll see that this function takes four
+parameters: a 128-bit UUID, a major version,a minor version, and a RSSI value. This
 corresponds with the iBeacon specification, as these three items are the
 primary components in an iBeacon advertisement.
 
@@ -180,7 +180,7 @@ For now, we'll advertise the following:
         memset(uuid128, 0x11, sizeof uuid128);
 
         /* Major version=2; minor version=10. */
-        rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+        rc = ble_ibeacon_set_adv_data(uuid128, 2, 10, 0);
         assert(rc == 0);
 
         /* TODO: Begin advertising. */
@@ -279,7 +279,7 @@ instance of the ``ble_gap_adv_params`` struct as our argument.
         memset(uuid128, 0x11, sizeof uuid128);
     
         /* Major version=2; minor version=10. */
-        rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+        rc = ble_ibeacon_set_adv_data(uuid128, 2, 10, 0);
         assert(rc == 0);
     
         /* Begin advertising. */
@@ -333,7 +333,7 @@ For reference, here is the complete application source:
         memset(uuid128, 0x11, sizeof uuid128);
 
         /* Major version=2; minor version=10. */
-        rc = ble_ibeacon_set_adv_data(uuid128, 2, 10);
+        rc = ble_ibeacon_set_adv_data(uuid128, 2, 10, 0);
         assert(rc == 0);
 
         /* Begin advertising. */
