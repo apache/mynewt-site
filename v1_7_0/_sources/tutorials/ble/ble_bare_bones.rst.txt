@@ -158,6 +158,12 @@ NimBLE controller into build. For this update ``apps/ble_app/syscfg.yml``
     syscfg.vals:
             BLE_HCI_TRANSPORT: builtin
 
+Your `main.c` will also need to include the nimble host header:
+
+.. code-block:: console
+    :emphasize-lines: 1
+
+    #include "host/ble_hs.h"
 
 **Important note:** The controller package affects system configuration,
 see :doc:`this page <../../network/ble_setup/ble_lp_clock>` for
