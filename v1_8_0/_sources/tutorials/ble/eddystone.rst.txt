@@ -70,14 +70,15 @@ We achieve this by configuring the NimBLE host with a callback function
 that gets called when sync takes place:
 
 .. code-block:: console
-    :emphasize-lines: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,23
+    :emphasize-lines: 1-17,24
     
     static void 
     ble_app_set_addr() 
     { }
     
     static void 
-    ble_app_advertise(); { }
+    ble_app_advertise()
+    { }
     
     static void 
     ble_app_on_sync(void) 
@@ -138,7 +139,7 @@ identifying information, and they are expected to change frequently.
         assert(rc == 0);
     }
     
-    static void ble_app_advertise(); 
+    static void ble_app_advertise()
     { }
     
     static void ble_app_on_sync(void) 
@@ -250,55 +251,33 @@ advertising is to be done. The default values are mostly fine for our
 simple beaconing application. We will pass the following values to this
 function:
 
-+--------------+----------+----------+
-| Parameter    | Value    | Notes    |
-+==============+==========+==========+
-| own\_addr\_t | BLE\_OWN | Use the  |
-| ype          | \_ADDR\_ | nRPA we  |
-|              | RANDOM   | generate |
-|              |          | d        |
-|              |          | earlier. |
-+--------------+----------+----------+
-| direct\_addr | NULL     | We are   |
-|              |          | broadcas |
-|              |          | ting,    |
-|              |          | not      |
-|              |          | targetin |
-|              |          | g        |
-|              |          | a peer.  |
-+--------------+----------+----------+
-| duration\_ms | BLE\_HS\ | Advertis |
-|              | _FOREVER | e        |
-|              |          | indefini |
-|              |          | tely.    |
-+--------------+----------+----------+
-| adv\_params  | defaults | Can be   |
-|              |          | used to  |
-|              |          | specify  |
-|              |          | low      |
-|              |          | level    |
-|              |          | advertis |
-|              |          | ing      |
-|              |          | paramete |
-|              |          | rs.      |
-+--------------+----------+----------+
-| cb           | NULL     | We are   |
-|              |          | non-conn |
-|              |          | ectable, |
-|              |          | so no    |
-|              |          | need for |
-|              |          | an event |
-|              |          | callback |
-|              |          | .        |
-+--------------+----------+----------+
-| cb\_arg      | NULL     | No       |
-|              |          | callback |
-|              |          | implies  |
-|              |          | no       |
-|              |          | callback |
-|              |          | argument |
-|              |          | .        |
-+--------------+----------+----------+
++-----------------+------------------------+--------------------+
+| Parameter       | Value                  | Notes              |
++=================+========================+====================+
+| own\_addr\_type | BLE\_OWN\_ADDR\_RANDOM | Use the nRPA we    |
+|                 |                        | generated earlier. |
++-----------------+------------------------+--------------------+
+| direct\_addr    | NULL                   | We are             |
+|                 |                        | broadcasting, not  |
+|                 |                        | targeting a peer.  |
++-----------------+------------------------+--------------------+
+| duration\_ms    | BLE\_HS\_FOREVER       | Advertise          |
+|                 |                        | indefinitely.      |
++-----------------+------------------------+--------------------+
+| adv\_params     | defaults               | Can be used to     |
+|                 |                        | specify low level  |
+|                 |                        | advertising        |
+|                 |                        | parameters.        |
++-----------------+------------------------+--------------------+
+| cb              | NULL                   | We are             |
+|                 |                        | non-connectable,   |
+|                 |                        | so no need for an  |
+|                 |                        | event callback.    |
++-----------------+------------------------+--------------------+
+| cb\_arg         | NULL                   | No callback        |
+|                 |                        | implies no         |
+|                 |                        | callback argument. |
++-----------------+------------------------+--------------------+
 
 These arguments are mostly self-explanatory. The exception is
 ``adv_params``, which can be used to specify a number of low-level
