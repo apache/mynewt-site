@@ -75,7 +75,7 @@ the correct bsp for the board you are using.
 
     $ newt target create nrf52_boot
     $ newt target set nrf52_boot app=@mcuboot/boot/mynewt
-    $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    $ newt target set nrf52_boot bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
     $ newt target set nrf52_boot build_profile=optimized
 
 Run the following ``newt target`` commands to create a target for the
@@ -86,7 +86,7 @@ Blinky application. We name the target ``nrf52_blinky``.
 
     $ newt target create nrf52_blinky
     $ newt target set nrf52_blinky app=apps/blinky
-    $ newt target set nrf52_blinky bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+    $ newt target set nrf52_blinky bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
     $ newt target set nrf52_blinky build_profile=debug
 
 You can run the ``newt target show`` command to verify the target
@@ -97,11 +97,11 @@ settings:
     $ newt target show
     targets/nrf52_blinky
         app=apps/blinky
-        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+        bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
         build_profile=debug
     targets/nrf52_boot
         app=@mcuboot/boot/mynewt
-        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+        bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
         build_profile=optimized
 
 Build the Target Executables
