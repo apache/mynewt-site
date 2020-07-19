@@ -455,15 +455,39 @@ application to be build as .a-library. This will be needed in a later step.</p>
 <p>Next we need a script for running <code class="docutils literal notranslate"><span class="pre">cargo</span></code> and moving the library to the correct
 place. Create a new file named <code class="docutils literal notranslate"><span class="pre">apps/blinky/cargo_build.sh</span></code> with the following contents:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="ch">#!/bin/bash</span>
+</span><span class="hll">
 </span><span class="hll"><span class="nb">set</span> -eu
-</span><span class="hll"><span class="nv">TARGET</span><span class="o">=</span><span class="s2">&quot;thumbv7m-none-eabi&quot;</span>
+</span><span class="hll">
+</span><span class="hll"><span class="k">if</span> <span class="o">[[</span> <span class="si">${</span><span class="nv">MYNEWT_VAL_ARCH_NAME</span><span class="si">}</span> <span class="o">==</span> <span class="s1">&#39;&quot;cortex_m0&quot;&#39;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span><span class="hll">  <span class="nv">TARGET</span><span class="o">=</span><span class="s2">&quot;thumbv6m-none-eabi&quot;</span>
+</span><span class="hll"><span class="k">elif</span> <span class="o">[[</span> <span class="si">${</span><span class="nv">MYNEWT_VAL_ARCH_NAME</span><span class="si">}</span> <span class="o">==</span> <span class="s1">&#39;&quot;cortex_m3&quot;&#39;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span><span class="hll">  <span class="nv">TARGET</span><span class="o">=</span><span class="s2">&quot;thumbv7m-none-eabi&quot;</span>
+</span><span class="hll"><span class="k">elif</span> <span class="o">[[</span> <span class="si">${</span><span class="nv">MYNEWT_VAL_ARCH_NAME</span><span class="si">}</span> <span class="o">==</span> <span class="s1">&#39;&quot;cortex_m4&quot;&#39;</span> <span class="o">||</span> <span class="si">${</span><span class="nv">MYNEWT_VAL_ARCH_NAME</span><span class="si">}</span> <span class="o">==</span> <span class="s1">&#39;&quot;cortex_m7&quot;&#39;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span><span class="hll">  <span class="k">if</span> <span class="o">[[</span> <span class="nv">$MYNEWT_VAL_HARDFLOAT</span> -eq <span class="m">1</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+</span><span class="hll">    <span class="nv">TARGET</span><span class="o">=</span><span class="s2">&quot;thumbv7em-none-eabihf&quot;</span>
+</span><span class="hll">  <span class="k">else</span>
+</span><span class="hll">    <span class="nv">TARGET</span><span class="o">=</span><span class="s2">&quot;thumbv7em-none-eabi&quot;</span>
+</span><span class="hll">  <span class="k">fi</span>
+</span><span class="hll"><span class="k">else</span>
+</span><span class="hll">  <span class="nb">echo</span> <span class="s2">&quot;The ARCH_NAME </span><span class="si">${</span><span class="nv">MYNEWT_VAL_ARCH_NAME</span><span class="si">}</span><span class="s2"> is not supported&quot;</span>
+</span><span class="hll">  <span class="nb">exit</span> <span class="m">1</span>
+</span><span class="hll"><span class="k">fi</span>
+</span><span class="hll">
 </span><span class="hll">cargo build --target<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TARGET</span><span class="si">}</span><span class="s2">&quot;</span> --target-dir<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">MYNEWT_PKG_BIN_DIR</span><span class="si">}</span><span class="s2">&quot;</span>
 </span><span class="hll">cp <span class="s2">&quot;</span><span class="si">${</span><span class="nv">MYNEWT_PKG_BIN_DIR</span><span class="si">}</span><span class="s2">&quot;</span>/<span class="si">${</span><span class="nv">TARGET</span><span class="si">}</span>/debug/*.a <span class="s2">&quot;</span><span class="si">${</span><span class="nv">MYNEWT_PKG_BIN_ARCHIVE</span><span class="si">}</span><span class="s2">&quot;</span>
 </span></pre></div>
 </div>
 <p>The script first sets the name of the target as the Rust compiler knows it. Sadly
 this is not the same as the names mynewt uses. You need to choose the same type of
-compiler as mynewt uses. For nrf52 you need <code class="docutils literal notranslate"><span class="pre">thumbv7m-none-eabi</span></code>.</p>
+compiler as mynewt uses. The following targets are available depending on the
+MCU type:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">thumbv6m-none-eabi</span></code> - use this for Cortex-M0 and Cortex-M0+.</li>
+<li><code class="docutils literal notranslate"><span class="pre">thumbv7m-none-eabi</span></code> - use this for Cortex-M3.</li>
+<li><code class="docutils literal notranslate"><span class="pre">thumbv7em-none-eabi</span></code> - use this for Cortex-M4 and Cortex-M7.</li>
+<li><code class="docutils literal notranslate"><span class="pre">thumbv7em-none-eabihf</span></code> - use this for Cortex-M4 and Cortex-M7 with the
+<code class="docutils literal notranslate"><span class="pre">HARDFLOAT</span></code> syscfg enabled.</li>
+</ul>
 <p>Then it runs <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">build</span></code> with
 the target directory set to a path that <code class="docutils literal notranslate"><span class="pre">newt</span></code> provides. Lastly it copies the
 generated library to the correct path.</p>
@@ -496,7 +520,7 @@ also in baselibc.</p>
 <p>If this command complains about a target may not be installed, then you need to
 install it. You need the same toolchain as configured earlier for the <code class="docutils literal notranslate"><span class="pre">TARGET</span></code>
 variable:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> rustup target add thumbv7m-none-eabi
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> rustup target add &lt;your-target&gt;
 </pre></div>
 </div>
 </div>

@@ -208,17 +208,40 @@ Next we need a script for running ``cargo`` and moving the library to the correc
 place. Create a new file named ``apps/blinky/cargo_build.sh`` with the following contents:
 
 .. code-block:: bash
-    :emphasize-lines: 1-5
+    :emphasize-lines: 1-21
 
     #!/bin/bash
+
     set -eu
-    TARGET="thumbv7m-none-eabi"
+
+    if [[ ${MYNEWT_VAL_ARCH_NAME} == '"cortex_m0"' ]]; then
+      TARGET="thumbv6m-none-eabi"
+    elif [[ ${MYNEWT_VAL_ARCH_NAME} == '"cortex_m3"' ]]; then
+      TARGET="thumbv7m-none-eabi"
+    elif [[ ${MYNEWT_VAL_ARCH_NAME} == '"cortex_m4"' || ${MYNEWT_VAL_ARCH_NAME} == '"cortex_m7"' ]]; then
+      if [[ $MYNEWT_VAL_HARDFLOAT -eq 1 ]]; then
+        TARGET="thumbv7em-none-eabihf"
+      else
+        TARGET="thumbv7em-none-eabi"
+      fi
+    else
+      echo "The ARCH_NAME ${MYNEWT_VAL_ARCH_NAME} is not supported"
+      exit 1
+    fi
+
     cargo build --target="${TARGET}" --target-dir="${MYNEWT_PKG_BIN_DIR}"
     cp "${MYNEWT_PKG_BIN_DIR}"/${TARGET}/debug/*.a "${MYNEWT_PKG_BIN_ARCHIVE}"
 
 The script first sets the name of the target as the Rust compiler knows it. Sadly
 this is not the same as the names mynewt uses. You need to choose the same type of
-compiler as mynewt uses. For nrf52 you need ``thumbv7m-none-eabi``.
+compiler as mynewt uses. The following targets are available depending on the
+MCU type:
+
+* ``thumbv6m-none-eabi`` - use this for Cortex-M0 and Cortex-M0+.
+* ``thumbv7m-none-eabi`` - use this for Cortex-M3.
+* ``thumbv7em-none-eabi`` - use this for Cortex-M4 and Cortex-M7.
+* ``thumbv7em-none-eabihf`` - use this for Cortex-M4 and Cortex-M7 with the
+  ``HARDFLOAT`` syscfg enabled.
 
 Then it runs ``cargo build`` with
 the target directory set to a path that ``newt`` provides. Lastly it copies the 
@@ -257,14 +280,14 @@ Now we are ready to build a firmware! Remove ``main.c`` and start the build:
 
     $ rm apps/blinky/src/main.c
     $ newt build nrf52_blinky
-        
+
 If this command complains about a target may not be installed, then you need to 
 install it. You need the same toolchain as configured earlier for the ``TARGET``
 variable:
 
 .. code-block:: console
 
-    $ rustup target add thumbv7m-none-eabi
+    $ rustup target add <your-target>
 
 Conclusion
 ~~~~~~~~~~
