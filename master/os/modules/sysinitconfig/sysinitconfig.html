@@ -312,16 +312,23 @@ hardware dependent system initialization.</li>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#generated-syscfg-h-and-referencing-system-configuration-settings" id="id11">Generated syscfg.h and Referencing System Configuration Settings</a><ul>
-<li><a class="reference internal" href="#example-of-syscfg-h-and-how-to-reference-a-setting-name" id="id12">Example of syscfg.h and How to Reference a Setting Name</a></li>
+<li><a class="reference internal" href="#conditional-settings" id="id11">Conditional Settings</a><ul>
+<li><a class="reference internal" href="#examples-of-conditional-settings" id="id12">Examples of Conditional Settings</a><ul>
+<li><a class="reference internal" href="#example-6" id="id13">Example 6</a></li>
+<li><a class="reference internal" href="#example-7" id="id14">Example 7</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#system-initialization" id="id13">System Initialization</a><ul>
-<li><a class="reference internal" href="#specifying-package-initialization-functions" id="id14">Specifying Package Initialization Functions</a></li>
-<li><a class="reference internal" href="#generated-sysinit-app-function" id="id15">Generated sysinit_app() Function</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#conditional-configurations" id="id16">Conditional Configurations</a></li>
+<li><a class="reference internal" href="#generated-syscfg-h-and-referencing-system-configuration-settings" id="id15">Generated syscfg.h and Referencing System Configuration Settings</a><ul>
+<li><a class="reference internal" href="#example-of-syscfg-h-and-how-to-reference-a-setting-name" id="id16">Example of syscfg.h and How to Reference a Setting Name</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#system-initialization" id="id17">System Initialization</a><ul>
+<li><a class="reference internal" href="#specifying-package-initialization-functions" id="id18">Specifying Package Initialization Functions</a></li>
+<li><a class="reference internal" href="#generated-sysinit-app-function" id="id19">Generated sysinit_app() Function</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <p>Mynewt defines several configuration parameters in the <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> and
@@ -640,8 +647,41 @@ use the flash area named <code class="docutils literal notranslate"><span class=
 </div>
 </div>
 </div>
+<div class="section" id="conditional-settings">
+<h2><a class="toc-backref" href="#id11">Conditional Settings</a><a class="headerlink" href="#conditional-settings" title="Permalink to this headline">¶</a></h2>
+<p>Setings in most Mynewt YAML files can be made conditional on syscfg
+settings.  For example, a package might depend on a second package
+<em>only if a syscfg setting has a particular value</em>.  The condition can
+be the value of a single syscfg setting or an arbitrary expression
+involving many settings.</p>
+<div class="section" id="examples-of-conditional-settings">
+<h3><a class="toc-backref" href="#id12">Examples of Conditional Settings</a><a class="headerlink" href="#examples-of-conditional-settings" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="example-6">
+<h4><a class="toc-backref" href="#id13">Example 6</a><a class="headerlink" href="#example-6" title="Permalink to this headline">¶</a></h4>
+<p>In this example, a package depends on <code class="docutils literal notranslate"><span class="pre">lib/pkg2</span></code> only if
+<code class="docutils literal notranslate"><span class="pre">MY_SETTING</span></code> has a true value.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.deps.MY_SETTING</span><span class="p">:</span>
+    <span class="c1"># Only depend on pkg2 if MY_SETTING is true.</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">lib/pkg2</span>
+</pre></div>
+</div>
+<p>A setting is “true” if it has a value other than 0 or the empty string.
+Undefined settings are not true.</p>
+</div>
+<div class="section" id="example-7">
+<h4><a class="toc-backref" href="#id14">Example 7</a><a class="headerlink" href="#example-7" title="Permalink to this headline">¶</a></h4>
+<p>In this example, a package overrides the setting <code class="docutils literal notranslate"><span class="pre">FOO</span></code> only if
+<code class="docutils literal notranslate"><span class="pre">BAR</span></code> is greater than 5 and <code class="docutils literal notranslate"><span class="pre">BAZ</span></code> is not true.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.vals.&#39;(BAR &gt; 5 &amp;&amp; !BAZ)</span><span class="p p-Indicator">:</span>
+    <span class="c1"># Only override FOO if BAR is greater than 5 and BAZ is untrue.</span>
+    <span class="nt">FOO</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">35</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 <div class="section" id="generated-syscfg-h-and-referencing-system-configuration-settings">
-<h2><a class="toc-backref" href="#id11">Generated syscfg.h and Referencing System Configuration Settings</a><a class="headerlink" href="#generated-syscfg-h-and-referencing-system-configuration-settings" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15">Generated syscfg.h and Referencing System Configuration Settings</a><a class="headerlink" href="#generated-syscfg-h-and-referencing-system-configuration-settings" title="Permalink to this headline">¶</a></h2>
 <p>The newt tool processes all the package <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files and
 generates the <code class="docutils literal notranslate"><span class="pre">bin/&lt;target-path&gt;/generated/include/syscfg/syscfg.h</span></code>
 include file with <code class="docutils literal notranslate"><span class="pre">#define</span></code> statements for each system configuration
@@ -666,7 +706,7 @@ the <code class="docutils literal notranslate"><span class="pre">my-config-name<
 files to access the <code class="docutils literal notranslate"><span class="pre">syscfg.h</span></code> file. The newt tool sets the correct
 include path to build your target.</p>
 <div class="section" id="example-of-syscfg-h-and-how-to-reference-a-setting-name">
-<h3><a class="toc-backref" href="#id12">Example of syscfg.h and How to Reference a Setting Name</a><a class="headerlink" href="#example-of-syscfg-h-and-how-to-reference-a-setting-name" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id16">Example of syscfg.h and How to Reference a Setting Name</a><a class="headerlink" href="#example-of-syscfg-h-and-how-to-reference-a-setting-name" title="Permalink to this headline">¶</a></h3>
 <p><strong>Example 6</strong>: The following example are excerpts from a sample
 <code class="docutils literal notranslate"><span class="pre">syscfg.h</span></code> file generated for an app/slinky target and from the
 <code class="docutils literal notranslate"><span class="pre">sys/log/full</span></code> package <code class="docutils literal notranslate"><span class="pre">log.c</span></code> file that shows how to reference a
@@ -752,7 +792,7 @@ when the setting value is non-zero.</p>
 </div>
 </div>
 <div class="section" id="system-initialization">
-<h2><a class="toc-backref" href="#id13">System Initialization</a><a class="headerlink" href="#system-initialization" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17">System Initialization</a><a class="headerlink" href="#system-initialization" title="Permalink to this headline">¶</a></h2>
 <p>During system startup, Mynewt creates a default event queue and a main
 task to process events from this queue. You can override the
 <code class="docutils literal notranslate"><span class="pre">OS_MAIN_TASK_PRIO</span></code> and <code class="docutils literal notranslate"><span class="pre">OS_MAIN_TASK_STACK_SIZE</span></code> setting values
@@ -786,7 +826,7 @@ access the <code class="docutils literal notranslate"><span class="pre">sysinit(
 </pre></div>
 </div>
 <div class="section" id="specifying-package-initialization-functions">
-<h3><a class="toc-backref" href="#id14">Specifying Package Initialization Functions</a><a class="headerlink" href="#specifying-package-initialization-functions" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id18">Specifying Package Initialization Functions</a><a class="headerlink" href="#specifying-package-initialization-functions" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> function calls the <code class="docutils literal notranslate"><span class="pre">sysinit_app()</span></code> function to
 perform system initialization for the packages in the target. You can,
 optionally, specify one or more package initialization functions that
@@ -832,7 +872,7 @@ releases and we recommend that you migrate to use the <code class="docutils lite
 parameter.</p>
 </div>
 <div class="section" id="generated-sysinit-app-function">
-<h3><a class="toc-backref" href="#id15">Generated sysinit_app() Function</a><a class="headerlink" href="#generated-sysinit-app-function" title="Permalink to this headline">¶</a></h3>
+<h3><a class="toc-backref" href="#id19">Generated sysinit_app() Function</a><a class="headerlink" href="#generated-sysinit-app-function" title="Permalink to this headline">¶</a></h3>
 <p>The newt tool processes the <code class="docutils literal notranslate"><span class="pre">pkg.init</span></code> parameters in all the
 <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> files for a target, generates the <code class="docutils literal notranslate"><span class="pre">sysinit_app()</span></code> function
 in the <code class="docutils literal notranslate"><span class="pre">&lt;target-path&gt;/generated/src/&lt;target-name&gt;-sysinit_app.c</span></code> file,
@@ -903,33 +943,6 @@ function:</p>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="conditional-configurations">
-<h2><a class="toc-backref" href="#id16">Conditional Configurations</a><a class="headerlink" href="#conditional-configurations" title="Permalink to this headline">¶</a></h2>
-<p>You can use the system configuration setting values to conditionally
-specify parameter values in <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files. The
-syntax is:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">parameter_name.PKGA_SYSCFG_NAME</span><span class="p">:</span>
-     <span class="l l-Scalar l-Scalar-Plain">parameter_value</span>
-</pre></div>
-</div>
-<p>This specifies that <code class="docutils literal notranslate"><span class="pre">parameter_value</span></code> is only set for
-<code class="docutils literal notranslate"><span class="pre">parameter_name</span></code> if the <code class="docutils literal notranslate"><span class="pre">PKGA_SYSCFG_NAME</span></code> configuration setting
-value is non-zero. Here is an example from the <code class="docutils literal notranslate"><span class="pre">libs/os</span></code> package
-<code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.deps</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/sysinit&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/util/mem&quot;</span>
-
-<span class="l l-Scalar l-Scalar-Plain">pkg.deps.OS_CLI</span>
-    <span class="l l-Scalar l-Scalar-Plain">- &quot;@apache-mynewt-core/sys/shell&quot;</span>
-</pre></div>
-</div>
-<p>This example specifies that the <code class="docutils literal notranslate"><span class="pre">os</span></code> package depends on the
-<code class="docutils literal notranslate"><span class="pre">sysinit</span></code> and <code class="docutils literal notranslate"><span class="pre">mem</span></code> packages, and also depends on the <code class="docutils literal notranslate"><span class="pre">shell</span></code>
-package when <code class="docutils literal notranslate"><span class="pre">OS_CLI</span></code> is enabled.</p>
-<p>The newt tool aborts the build when it detects circular conditional
-dependencies.</p>
 </div>
 </div>
 
