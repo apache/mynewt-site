@@ -84,6 +84,12 @@ that the runtime-bot PRs are used to deploy changes to the site instead of PRs
 from individual contributors. The runtime-bot PRs give us repeatable builds
 using known versions of the build tools.
 
+The update process replaces an earlier version of all or part of a software
+system with a newer release. It commonly consists of deactivation followed 
+by installation. On some systems, such as on Linux when using the system's 
+package manager, the old version of a software application is typically also
+uninstalled as an automatic part of the process.
+
 ## Links to Documentation
 
 For the deployed site a version prefix is added to the URL for each mkdocs page.
