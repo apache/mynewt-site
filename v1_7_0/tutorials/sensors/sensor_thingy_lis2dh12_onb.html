@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.8.0, Apache NimBLE 1.3.0 </a> released (April 9, 2020)
             </div>
         </div>
     </div>
@@ -187,6 +187,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
   </option>
   <option value="/v1_7_0" selected="selected" >
     Version: 1.7.0
@@ -295,29 +298,30 @@ Tutorial</span></a> and are familiar with the sensor
 framework and sensor shell command.</p>
 <p>This tutorial shows you how to:</p>
 <ul class="simple">
-<li>Develop an application for the Nordic Thingy LIS2DH12 accelerometer
+<li><p>Develop an application for the Nordic Thingy LIS2DH12 accelerometer
 onboard sensor with the sensor framework <code class="docutils literal notranslate"><span class="pre">sensor</span></code> shell command
-enabled to view sensor data.</li>
-<li>Extend the application to use the sensor framework API to read the
-sensor data and output the data to the Mynewt console.</li>
+enabled to view sensor data.</p></li>
+<li><p>Extend the application to use the sensor framework API to read the
+sensor data and output the data to the Mynewt console.</p></li>
 </ul>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></li>
-<li><a class="reference internal" href="#developing-a-sensor-enabled-application-with-shell-support" id="id2">Developing a Sensor Enabled Application with Shell Support</a><ul>
-<li><a class="reference internal" href="#step-1-creating-a-new-app-package" id="id3">Step 1: Creating a New App Package</a></li>
-<li><a class="reference internal" href="#step-2-adding-the-package-dependencies" id="id4">Step 2: Adding the Package Dependencies</a></li>
-<li><a class="reference internal" href="#step-3-using-the-skeleton-main-c-file" id="id5">Step 3: Using the Skeleton main.c File</a></li>
-<li><a class="reference internal" href="#step-4-creating-the-target-for-the-my-sensor-app-application" id="id6">Step 4: Creating the Target for the my_sensor_app Application</a></li>
-<li><a class="reference internal" href="#step-5-creating-and-building-the-bootloader-target" id="id7">Step 5: Creating and Building the Bootloader Target</a></li>
-<li><a class="reference internal" href="#step-6-connecting-the-thingy-to-your-computer" id="id8">Step 6: Connecting the Thingy to your Computer</a></li>
-<li><a class="reference internal" href="#step-7-loading-the-image-and-connecting-to-the-console-via-rtt" id="id9">Step 7: Loading the Image and Connecting to the Console via RTT</a></li>
-<li><a class="reference internal" href="#step-8-viewing-the-list-of-sensors-and-sensor-data" id="id10">Step 8: Viewing the list of Sensors and Sensor Data</a></li>
-<li><a class="reference internal" href="#extending-the-application-to-use-the-sensor-api-to-read-sensor-data" id="id11">Extending the Application to Use the Sensor API to Read Sensor Data</a></li>
-<li><a class="reference internal" href="#step-1-modifying-main-c-to-add-a-sensor-listener" id="id12">Step 1: Modifying main.c to Add a Sensor Listener</a></li>
-<li><a class="reference internal" href="#step-2-rebuilding-the-application-and-connecting-to-console" id="id13">Step 2: Rebuilding the Application and Connecting to Console</a></li>
-<li><a class="reference internal" href="#step-3-modifying-main-c-to-use-sensor-read-instead-of-a-listener" id="id14">Step 3: Modifying main.c to Use sensor_read() Instead of a Listener</a></li>
-<li><a class="reference internal" href="#step-4-rebuilding-the-application-and-connecting-to-console" id="id15">Step 4: Rebuilding the Application and Connecting to Console</a></li>
+<li><p><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#developing-a-sensor-enabled-application-with-shell-support" id="id2">Developing a Sensor Enabled Application with Shell Support</a></p>
+<ul>
+<li><p><a class="reference internal" href="#step-1-creating-a-new-app-package" id="id3">Step 1: Creating a New App Package</a></p></li>
+<li><p><a class="reference internal" href="#step-2-adding-the-package-dependencies" id="id4">Step 2: Adding the Package Dependencies</a></p></li>
+<li><p><a class="reference internal" href="#step-3-using-the-skeleton-main-c-file" id="id5">Step 3: Using the Skeleton main.c File</a></p></li>
+<li><p><a class="reference internal" href="#step-4-creating-the-target-for-the-my-sensor-app-application" id="id6">Step 4: Creating the Target for the my_sensor_app Application</a></p></li>
+<li><p><a class="reference internal" href="#step-5-creating-and-building-the-bootloader-target" id="id7">Step 5: Creating and Building the Bootloader Target</a></p></li>
+<li><p><a class="reference internal" href="#step-6-connecting-the-thingy-to-your-computer" id="id8">Step 6: Connecting the Thingy to your Computer</a></p></li>
+<li><p><a class="reference internal" href="#step-7-loading-the-image-and-connecting-to-the-console-via-rtt" id="id9">Step 7: Loading the Image and Connecting to the Console via RTT</a></p></li>
+<li><p><a class="reference internal" href="#step-8-viewing-the-list-of-sensors-and-sensor-data" id="id10">Step 8: Viewing the list of Sensors and Sensor Data</a></p></li>
+<li><p><a class="reference internal" href="#extending-the-application-to-use-the-sensor-api-to-read-sensor-data" id="id11">Extending the Application to Use the Sensor API to Read Sensor Data</a></p></li>
+<li><p><a class="reference internal" href="#step-1-modifying-main-c-to-add-a-sensor-listener" id="id12">Step 1: Modifying main.c to Add a Sensor Listener</a></p></li>
+<li><p><a class="reference internal" href="#step-2-rebuilding-the-application-and-connecting-to-console" id="id13">Step 2: Rebuilding the Application and Connecting to Console</a></p></li>
+<li><p><a class="reference internal" href="#step-3-modifying-main-c-to-use-sensor-read-instead-of-a-listener" id="id14">Step 3: Modifying main.c to Use sensor_read() Instead of a Listener</a></p></li>
+<li><p><a class="reference internal" href="#step-4-rebuilding-the-application-and-connecting-to-console" id="id15">Step 4: Rebuilding the Application and Connecting to Console</a></p></li>
 </ul>
 </li>
 </ul>
@@ -325,19 +329,19 @@ sensor data and output the data to the Mynewt console.</li>
 <div class="section" id="prerequisites">
 <h2><a class="toc-backref" href="#id1">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Meet the prerequisites listed in the <a class="reference internal" href="sensors_framework.html"><span class="doc">Sensor Tutorials
-Overview</span></a></li>
-<li>Have a Nordic Thingy.</li>
-<li><a class="reference external" href="https://www.segger.com/jlink-debug-probes.html">Segger J-Link Debug
-Probe</a>.</li>
-<li><a class="reference external" href="https://www.segger.com/jlink-adapters.html#CM_9pin">J-Link 9 pin Cortex-M
+<li><p>Meet the prerequisites listed in the <a class="reference internal" href="sensors_framework.html"><span class="doc">Sensor Tutorials
+Overview</span></a></p></li>
+<li><p>Have a Nordic Thingy.</p></li>
+<li><p><a class="reference external" href="https://www.segger.com/jlink-debug-probes.html">Segger J-Link Debug
+Probe</a>.</p></li>
+<li><p><a class="reference external" href="https://www.segger.com/jlink-adapters.html#CM_9pin">J-Link 9 pin Cortex-M
 Adapter</a> that
 allows JTAG, SWD and SWO connections between J-Link and Cortex M
-based target hardware systems.</li>
-<li>Install the <a class="reference external" href="https://www.segger.com/jlink-software.html">Segger JLINK Software and documentation
-pack</a>.</li>
-<li>Complete the <a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">Enabling an Off-Board Sensor in an Existing Application
-Tutorial</span></a></li>
+based target hardware systems.</p></li>
+<li><p>Install the <a class="reference external" href="https://www.segger.com/jlink-software.html">Segger JLINK Software and documentation
+pack</a>.</p></li>
+<li><p>Complete the <a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">Enabling an Off-Board Sensor in an Existing Application
+Tutorial</span></a></p></li>
 </ul>
 </div>
 <div class="section" id="developing-a-sensor-enabled-application-with-shell-support">
@@ -415,10 +419,9 @@ event queue.</p>
 <p>You create a target for the my_sensor_app to run on the Nordic Thingy.
 The following syscfg settings must be set:</p>
 <ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">I2C_0=1</span></code> : Enables the I2C interface 0 for the nRF52 Thingy BSP
-HAL setting to communicate with the onboard sensor.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">LIS2DH12_ONB=1</span></code>: Enables the lis2dh12 onboard sensor support in
+<li><p><code class="docutils literal notranslate"><span class="pre">I2C_0=1</span></code> : Enables the I2C interface 0 for the nRF52 Thingy BSP
+HAL setting to communicate with the onboard sensor.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIS2DH12_ONB=1</span></code>: Enables the lis2dh12 onboard sensor support in
 the nRF52 Thingy BSP.</p>
 <p>A BSP with onboard sensors defines a syscfg setting for each onboard
 sensor it supports and uses the naming convention
@@ -429,19 +432,15 @@ package <code class="docutils literal notranslate"><span class="pre">hw/drivers/
 configures the onboard sensor named SENSORNAME when the
 <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_ONB</span></code> setting is enabled by the application.</p>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">SHELL_TASK=1</span></code>: Enables the shell task for the shell command
+<li><p><code class="docutils literal notranslate"><span class="pre">SHELL_TASK=1</span></code>: Enables the shell task for the shell command
 support. Note that the <code class="docutils literal notranslate"><span class="pre">hw/sensor</span></code> package enables the
-<code class="docutils literal notranslate"><span class="pre">SENSOR_CLI</span></code> setting by default.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">SENSOR_OIC=0</span></code>: Disables the OIC sensor server support in the
-sensor framework.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">CONSOLE_RTT=1</span></code>: Enables console communication via the SEGGER RTT.
+<code class="docutils literal notranslate"><span class="pre">SENSOR_CLI</span></code> setting by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SENSOR_OIC=0</span></code>: Disables the OIC sensor server support in the
+sensor framework.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CONSOLE_RTT=1</span></code>: Enables console communication via the SEGGER RTT.
 The nRF52 Thingy does not have a UART so we use the RTT for the
-console.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">CONSOLE_UART=0</span></code>: Disables the console communication via a UART.</p>
-</li>
+console.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CONSOLE_UART=0</span></code>: Disables the console communication via a UART.</p></li>
 </ul>
 <p><strong>Note:</strong> The lis2dh12 sensor device driver package,
 <code class="docutils literal notranslate"><span class="pre">/hw/driver/sensors/lis2dh12</span></code>, currently does not support a shell
@@ -470,7 +469,7 @@ settings:</p>
 <p>Create a target for the bootloader for the nRF52 Thingy. We name the
 target <code class="docutils literal notranslate"><span class="pre">thingy_boot</span></code>.</p>
 <ol class="arabic simple">
-<li>Run the following <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span></code> commands to create the target:</li>
+<li><p>Run the following <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span></code> commands to create the target:</p></li>
 </ol>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt target create thingy_boot
 <span class="go">Target targets/thingy_boot successfully created</span>
@@ -483,7 +482,7 @@ target <code class="docutils literal notranslate"><span class="pre">thingy_boot<
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">build</span></code> command to build the bootloader target:</li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">build</span></code> command to build the bootloader target:</p></li>
 </ol>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt build thingy_boot
 <span class="go">Building target targets/thingy_boot</span>
@@ -501,14 +500,16 @@ target <code class="docutils literal notranslate"><span class="pre">thingy_boot<
 <h3><a class="toc-backref" href="#id8">Step 6: Connecting the Thingy to your Computer</a><a class="headerlink" href="#step-6-connecting-the-thingy-to-your-computer" title="Permalink to this headline">¶</a></h3>
 <p>Perform the following steps to connect the Thingy to your computer:</p>
 <ol class="arabic simple">
-<li>Move the power switch to the left to power ON the Thingy:</li>
+<li><p>Move the power switch to the left to power ON the Thingy:</p></li>
 </ol>
 <blockquote>
-<div><img alt="Thingy" src="../../_images/thingy.jpg" /></div></blockquote>
+<div><p><img alt="Thingy" src="../../_images/thingy.jpg" /></p>
+</div></blockquote>
 <p>2. Connect the debug probe to the JTAG port on the board using the
 Jlink 9-pin adapter and cable, and connect the probe to your computer.</p>
 <blockquote>
-<div><img alt="J-Link debug probe to Thingy" src="../../_images/thingy_jlink.jpg" /></div></blockquote>
+<div><p><img alt="J-Link debug probe to Thingy" src="../../_images/thingy_jlink.jpg" /></p>
+</div></blockquote>
 <p></div>
 <div class="section" id="step-7-loading-the-image-and-connecting-to-the-console-via-rtt">
 <h3><a class="toc-backref" href="#id9">Step 7: Loading the Image and Connecting to the Console via RTT</a><a class="headerlink" href="#step-7-loading-the-image-and-connecting-to-the-console-via-rtt" title="Permalink to this headline">¶</a></h3>
@@ -516,7 +517,7 @@ Jlink 9-pin adapter and cable, and connect the probe to your computer.</p>
 device, load the application image, and start a GDB debug process for
 RTT to attach to.</p>
 <ol class="arabic simple">
-<li>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">load</span></code> command to load the bootloader:</li>
+<li><p>Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">load</span></code> command to load the bootloader:</p></li>
 </ol>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt load thingy_boot
 <span class="go">Loading bootloader</span>
@@ -569,7 +570,7 @@ application:</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>Enter <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">&lt;return&gt;</span></code> in the (gdb) prompt to continue.</li>
+<li><p>Enter <code class="docutils literal notranslate"><span class="pre">c</span> <span class="pre">&lt;return&gt;</span></code> in the (gdb) prompt to continue.</p></li>
 </ol>
 <p>4. Run the following telnet command to connect to the Mynewt console
 via RTT and enter &lt;return&gt; to get the shell prompt after you are
@@ -626,7 +627,7 @@ extend the application to use the sensor API to read the sensor data.</p>
 <p>There are two sensor functions that you can use to read data from a
 sensor device:</p>
 <ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">sensor_register_listener()</span></code>: This function allows you to register
+<li><p><code class="docutils literal notranslate"><span class="pre">sensor_register_listener()</span></code>: This function allows you to register
 a listener for a sensor device. You specify a bit mask of the types
 of sensor data to listen for and a callback to call when data is read
 from the sensor device. The listener callback is called whenever the
@@ -638,12 +639,11 @@ poller reads sensor data for all the configured sensor types from the
 sensor device at each polling interval and calls the registered
 listener callbacks with the sensor data.</p>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">sensor_read()</span></code>: This function reads sensor data from a sensor
+<li><p><code class="docutils literal notranslate"><span class="pre">sensor_read()</span></code>: This function reads sensor data from a sensor
 device and calls the specified user callback to receive the sensor
 data. You specify a bit mask of the types of sensor data to read from
 a sensor device and a callback. This callback is called for each
-sensor type you specify to read.</p>
-</li>
+sensor type you specify to read.</p></li>
 </ul>
 <p>We first extend the application to a register a sensor listener to
 demonstrate how to use the sensor framework polling support. We then
@@ -656,7 +656,7 @@ read the sensor data when it receives a request.</p>
 <h3><a class="toc-backref" href="#id12">Step 1: Modifying main.c to Add a Sensor Listener</a><a class="headerlink" href="#step-1-modifying-main-c-to-add-a-sensor-listener" title="Permalink to this headline">¶</a></h3>
 <p>Add the following code to the <code class="docutils literal notranslate"><span class="pre">my_sensor_app/src/main.c</span></code> file:</p>
 <ol class="arabic simple">
-<li>Add the highlighted include files:</li>
+<li><p>Add the highlighted include files:</p></li>
 </ol>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span> <span class="cp">#include</span> <span class="cpf">&quot;sysinit/sysinit.h&quot;</span><span class="cp"></span>
  <span class="cp">#include</span> <span class="cpf">&quot;os/os.h&quot;</span><span class="cp"></span>
@@ -670,7 +670,7 @@ read the sensor data when it receives a request.</p>
 <p>2. Add the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor</span> <span class="pre">*my_sensor</span></code>. This is the handle for the
 sensor that the sensor API uses to perform operations on the sensor. We
 set this variable when we lookup the sensor.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">struct</span> <span class="n">sensor</span> <span class="o">*</span><span class="n">my_sensor</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">struct</span> <span class="nc">sensor</span> <span class="o">*</span><span class="n">my_sensor</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>3. Declare and initialize a sensor listener. You specify a bit mask for
@@ -688,9 +688,9 @@ callback.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define LISTENER_CB 1</span>
 <span class="cp">#define READ_CB 2</span>
 
-<span class="k">static</span> <span class="kt">int</span> <span class="nf">read_accelerometer</span><span class="p">(</span><span class="k">struct</span> <span class="n">sensor</span><span class="o">*</span> <span class="n">sensor</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">databuf</span><span class="p">,</span> <span class="n">sensor_type_t</span> <span class="n">type</span><span class="p">);</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">read_accelerometer</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sensor</span><span class="o">*</span> <span class="n">sensor</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">databuf</span><span class="p">,</span> <span class="n">sensor_type_t</span> <span class="n">type</span><span class="p">);</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">sensor_listener</span> <span class="n">listener</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">sensor_listener</span> <span class="n">listener</span> <span class="o">=</span> <span class="p">{</span>
    <span class="p">.</span><span class="n">sl_sensor_type</span> <span class="o">=</span> <span class="n">SENSOR_TYPE_ACCELEROMETER</span><span class="p">,</span>
    <span class="p">.</span><span class="n">sl_func</span> <span class="o">=</span> <span class="n">read_accelerometer</span><span class="p">,</span>
    <span class="p">.</span><span class="n">sl_arg</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">LISTENER_CB</span><span class="p">,</span>
@@ -701,17 +701,17 @@ callback.</p>
 data is stored in the <code class="docutils literal notranslate"><span class="pre">databuf</span></code> and <code class="docutils literal notranslate"><span class="pre">type</span></code> specifies the type of
 sensor data.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
-<span class="nf">read_accelerometer</span><span class="p">(</span><span class="k">struct</span> <span class="n">sensor</span><span class="o">*</span> <span class="n">sensor</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">databuf</span><span class="p">,</span> <span class="n">sensor_type_t</span> <span class="n">type</span><span class="p">)</span>
+<span class="n">read_accelerometer</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sensor</span><span class="o">*</span> <span class="n">sensor</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">databuf</span><span class="p">,</span> <span class="n">sensor_type_t</span> <span class="n">type</span><span class="p">)</span>
 <span class="p">{</span>
 
     <span class="kt">char</span> <span class="n">tmpstr</span><span class="p">[</span><span class="mi">13</span><span class="p">];</span>
-    <span class="k">struct</span> <span class="n">sensor_accel_data</span> <span class="o">*</span><span class="n">sad</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sensor_accel_data</span> <span class="o">*</span><span class="n">sad</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">databuf</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="n">SYS_EINVAL</span><span class="p">;</span>
 
     <span class="p">}</span>
-    <span class="n">sad</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sensor_accel_data</span> <span class="o">*</span><span class="p">)</span><span class="n">databuf</span><span class="p">;</span>
+    <span class="n">sad</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sensor_accel_data</span> <span class="o">*</span><span class="p">)</span><span class="n">databuf</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">sad</span><span class="o">-&gt;</span><span class="n">sad_x_is_valid</span> <span class="o">||</span>
         <span class="o">!</span><span class="n">sad</span><span class="o">-&gt;</span><span class="n">sad_y_is_valid</span> <span class="o">||</span>
@@ -826,7 +826,7 @@ new image, load the image, and start a GDB process:</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li>Connect to the console via RTT:</li>
+<li><p>Connect to the console via RTT:</p></li>
 </ol>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> telnet localhost <span class="m">19021</span>
 
@@ -876,10 +876,10 @@ from the <code class="docutils literal notranslate"><span class="pre">sensor_rea
 
 <span class="cp">#define READ_SENSOR_INTERVAL (5 * OS_TICKS_PER_SEC)</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">os_callout</span> <span class="n">sensor_callout</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">os_callout</span> <span class="n">sensor_callout</span><span class="p">;</span>
 
 <span class="k">static</span> <span class="kt">void</span>
-<span class="nf">timer_ev_cb</span><span class="p">(</span><span class="k">struct</span> <span class="n">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">)</span>
+<span class="n">timer_ev_cb</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">)</span>
 <span class="p">{</span>
 
 
@@ -897,7 +897,7 @@ from the <code class="docutils literal notranslate"><span class="pre">sensor_rea
 
 
 <span class="k">static</span> <span class="kt">void</span>
-<span class="nf">init_timer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="n">init_timer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="cm">/*</span>
 <span class="cm">     * Initialize the callout for a timer event.</span>
@@ -966,7 +966,7 @@ image, and start a GDB process:</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li>Connect to the console via RTT:</li>
+<li><p>Connect to the console via RTT:</p></li>
 </ol>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> telnet localhost <span class="m">19021</span>
 <span class="go">Trying ::1...</span>

@@ -588,7 +588,7 @@ app most of the bluetooth plumbing has already been taken care of for us. What's
 to add the required GATT services for advertising the Carbon Dioxide sensor so that
 other devices can get those values.</p>
 <p>First, we'll define the GATT Services in <code>apps/air_quality/src/bleprph.h</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #177500">/* Sensor Data */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/* Sensor Data */</span>
 <span style="color: #177500">/* e761d2af-1c15-4fa7-af80-b5729002b340 */</span>
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #000000">ble_uuid128_t</span> <span style="color: #000000">gatt_svr_svc_co2_uuid</span> <span style="color: #000000">=</span>
     <span style="color: #000000">BLE_UUID128_INIT</span>(<span style="color: #1C01CE">0x40</span>, <span style="color: #1C01CE">0xb3</span>, <span style="color: #1C01CE">0x20</span>, <span style="color: #1C01CE">0x90</span>, <span style="color: #1C01CE">0x72</span>, <span style="color: #1C01CE">0xb5</span>, <span style="color: #1C01CE">0x80</span>, <span style="color: #1C01CE">0xaf</span>,
@@ -600,27 +600,25 @@ other devices can get those values.</p>
 <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_co2_val</span>; 
 </code></pre></div>
 
-
 <p>You can use any hex values you choose for the sensor type and sensor values, and you can 
 even forget the sensor type and sensor string definitions altogether but they make
 the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we'll add those services to <code>apps/air_quality/src/gatt_svr.c</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_sns_access</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
     <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>);
 
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">gatt_co2_val_len</span>;
 </code></pre></div>
 
-
 <p>Make sure it is added as <em>primary</em> service.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
     {
         <span style="color: #177500">/*** Service: Security test. */</span>
         .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
         .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_svc_sec_test_uuid</span>.<span style="color: #000000">u</span>,
-        .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
+        .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">ble_gatt_chr_def</span>[]) { {
             <span style="color: #177500">/*** Characteristic: Random number generator. */</span>
             .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_chr_sec_test_rand_uuid</span>.<span style="color: #000000">u</span>,
             .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_chr_access_sec_test</span>,
@@ -639,7 +637,7 @@ the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
             <span style="color: #177500">/*** CO2 Level Notification Service. */</span>
             .<span style="color: #000000">type</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
             .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">&amp;gatt_svr_svc_co2_uuid</span>.<span style="color: #000000">u</span>,
-            .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_chr_def</span>[]) { {
+            .<span style="color: #000000">characteristics</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">ble_gatt_chr_def</span>[]) { {
                 .<span style="color: #000000">uuid</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_UUID16_DECLARE</span>(<span style="color: #000000">CO2_SNS_TYPE</span>),
                 .<span style="color: #000000">access_cb</span> <span style="color: #000000">=</span> <span style="color: #000000">gatt_svr_sns_access</span>,
                 .<span style="color: #000000">flags</span> <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
@@ -658,11 +656,10 @@ the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
     };
 </code></pre></div>
 
-
 <p>Next we need to tell the GATT Server how to handle requests for CO<sub>2</sub> readings :</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #000000">sstatic</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">sstatic</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_sns_access</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>,
-                          <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
+                          <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>,
                           <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
@@ -697,22 +694,20 @@ the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 }
 </code></pre></div>
 
-
 <p>Now it's time to go into our <code>apps/air_quality/src/main.c</code> and change how we read CO<sub>2</sub> readings and 
 respond to requests. </p>
 <p>We'll need a task handler with an event queue for the CO<sub>2</sub> readings -- they were handled by the shell task in the previous tutorial but now it needs to be replaced by a different handler as shown below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #177500">/* CO2 Task settings */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/* CO2 Task settings */</span>
 <span style="color: #633820">#define CO2_TASK_PRIO           5</span>
 <span style="color: #633820">#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">co2_evq</span>;
-<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">co2_task</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_eventq</span> <span style="color: #000000">co2_evq</span>;
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000000">co2_task</span>;
 <span style="color: #000000">bssnz_t</span> <span style="color: #000000">os_stack_t</span> <span style="color: #000000">co2_stack</span>[<span style="color: #000000">CO2_STACK_SIZE</span>];
 </code></pre></div>
 
-
 <p>And of course we'll need to go to our <code>main()</code> and do all the standard task and event setup we
 normally do by adding the following. Again, remember to delete all the shell event queues and tasks.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #177500">/* Initialize sensor eventq */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/* Initialize sensor eventq */</span>
 <span style="color: #000000">os_eventq_init</span>(<span style="color: #000000">&amp;co2_evq</span>);
 
 <span style="color: #177500">/* Create the CO2 reader task.  </span>
@@ -723,9 +718,8 @@ normally do by adding the following. Again, remember to delete all the shell eve
             <span style="color: #000000">co2_stack</span>, <span style="color: #000000">CO2_STACK_SIZE</span>);
 </code></pre></div>
 
-
 <p>We'll also need to add a task handler -- since we initialized it above:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #177500">/**</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/**</span>
 <span style="color: #177500"> * Event loop for the sensor task.</span>
 <span style="color: #177500"> */</span>
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
@@ -740,9 +734,8 @@ normally do by adding the following. Again, remember to delete all the shell eve
 }
 </code></pre></div>
 
-
 <p>And finally, we'll take care of that <code>co2_read_event()</code> function:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">int</span>
 <span style="color: #000000">co2_read_event</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">value</span>;
@@ -766,7 +759,6 @@ normally do by adding the following. Again, remember to delete all the shell eve
     <span style="color: #A90D91">return</span> (<span style="color: #000000">rc</span>);
 }
 </code></pre></div>
-
 
 <p>You'll notice that it looks eeirily similar to a portion of the shell event we created 
 earlier. This one simply reads and updates the CO<sub>2</sub> value and sends that over BLE to any

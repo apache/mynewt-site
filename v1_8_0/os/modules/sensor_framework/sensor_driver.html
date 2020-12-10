@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.8.0, Apache NimBLE 1.3.0 </a> released (April 9, 2020)
             </div>
         </div>
     </div>
@@ -185,6 +185,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_8_0" selected="selected" >
+    Version: 1.8.0
   </option>
   <option value="/v1_7_0" >
     Version: 1.7.0
@@ -310,7 +313,7 @@ package.</p>
 export the following data structures and functions to initialize and
 configure a device:</p>
 <ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">&lt;sensorname&gt;</span></code>: This data structure represents a sensor
+<li><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">&lt;sensorname&gt;</span></code>: This data structure represents a sensor
 device. The structure must include a <code class="docutils literal notranslate"><span class="pre">dev</span></code> field of type
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">os_dev</span></code> and a <code class="docutils literal notranslate"><span class="pre">sensor</span></code> field of type <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor</span></code>.
 For example:</p>
@@ -323,7 +326,7 @@ For example:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">&lt;sensorname&gt;_cfg</span></code>: This data structure defines the
+<li><p><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">&lt;sensorname&gt;_cfg</span></code>: This data structure defines the
 configuration for a sensor device. The structure fields are specific
 to the device. This is the data structure that a BSP, the sensor
 creator package, or an application sets to configure a sensor device.
@@ -343,7 +346,7 @@ For example:</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code>: This is the os device initialization
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code>: This is the os device initialization
 callback of type
 <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">(*os_dev_init_func_t)(struct</span> <span class="pre">os_dev</span> <span class="pre">*,</span> <span class="pre">void</span> <span class="pre">*)</span></code> that the
 <code class="docutils literal notranslate"><span class="pre">os_dev_create()</span></code> function calls to initialize the device. For
@@ -356,10 +359,10 @@ function:</p>
 creator package, which creates a device for an off-board sensor,
 calls the <code class="docutils literal notranslate"><span class="pre">os_dev_create()</span></code> function and passes:</p>
 <ul class="simple">
-<li>A pointer to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">&lt;sensorname&gt;</span></code> variable.</li>
-<li>The <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code> function pointer.</li>
-<li>A pointer to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> variable that specifies the
-interface the driver uses to communicate with the sensor device.</li>
+<li><p>A pointer to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">&lt;sensorname&gt;</span></code> variable.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code> function pointer.</p></li>
+<li><p>A pointer to a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> variable that specifies the
+interface the driver uses to communicate with the sensor device.</p></li>
 </ul>
 <p>See the <span class="xref std std-doc">Creating Sensor
 Devices</span> page for
@@ -369,7 +372,7 @@ function with a pointer to the <code class="docutils literal notranslate"><span 
 <code class="docutils literal notranslate"><span class="pre">dev</span></code> parameter and a pointer to the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> for the
 <code class="docutils literal notranslate"><span class="pre">arg</span></code> parameter.</p>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code>: This is the sensor configuration function
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code>: This is the sensor configuration function
 that the BSP, sensor creator package, or an application calls to
 configure the sensor device. For example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>int bno055_config(struct bno055 *bno055, struct bno055_cfg *cfg)
@@ -384,40 +387,40 @@ configure the sensor device. For example:</p>
 API uses to read sensor data and to get the configuration value type for
 a sensor:</p>
 <ul class="simple">
-<li>A function of type
+<li><p>A function of type
 <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">(*sensor_read_func_t)(struct</span> <span class="pre">sensor</span> <span class="pre">*,</span> <span class="pre">sensor_type_t,</span> <span class="pre">sensor_data_func_t,</span> <span class="pre">void</span> <span class="pre">*,</span> <span class="pre">uint32_t)</span></code>
 that the sensor framework uses to read a single value from a sensor
 for the specified sensor types. The device driver must implement this
 function such that it reads, for each sensor type set in the bit
 mask, a single value from the sensor and calls the
 <code class="docutils literal notranslate"><span class="pre">sensor_data_funct_t</span></code> callback with the opaque callback argument ,
-the sensor data, and the sensor type.</li>
-<li>A function of type
+the sensor data, and the sensor type.</p></li>
+<li><p>A function of type
 <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">(*sensor_get_config_func_t)(struct</span> <span class="pre">sensor</span> <span class="pre">*,</span> <span class="pre">sensor_type_t,</span> <span class="pre">struct</span> <span class="pre">sensor_cfg</span> <span class="pre">*)</span></code>
 that returns the value type for the specified sensor type. For
 example, the value type for a <code class="docutils literal notranslate"><span class="pre">SENSOR_VALUE_TYPE_TEMPERATURE</span></code>
 sensor might be <code class="docutils literal notranslate"><span class="pre">SENSOR_VALUE_TYPE_FLOAT</span></code> and the value type for a
 <code class="docutils literal notranslate"><span class="pre">SENSOR_TYPE_ACCELEROMETER</span></code> sensor might be
-<code class="docutils literal notranslate"><span class="pre">SENSOR_VALUE_TYPE_FLOAT_TRIPLET</span></code>.</li>
+<code class="docutils literal notranslate"><span class="pre">SENSOR_VALUE_TYPE_FLOAT_TRIPLET</span></code>.</p></li>
 </ul>
 <p>The driver initializes a <code class="docutils literal notranslate"><span class="pre">sensor_driver</span></code> structure, shown below, with
 the pointers to these functions:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct sensor_driver {
-    sensor_read_func_t sd_read;
-    sensor_get_config_func_t sd_get_config;
-};
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">sensor_driver</span> <span class="p">{</span>
+    <span class="n">sensor_read_func_t</span> <span class="n">sd_read</span><span class="p">;</span>
+    <span class="n">sensor_get_config_func_t</span> <span class="n">sd_get_config</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int bno055_sensor_read(struct sensor *, sensor_type_t,
-        sensor_data_func_t, void *, uint32_t);
-static int bno055_sensor_get_config(struct sensor *, sensor_type_t,
-        struct sensor_cfg *);
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span> <span class="n">bno055_sensor_read</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sensor</span> <span class="o">*</span><span class="p">,</span> <span class="n">sensor_type_t</span><span class="p">,</span>
+        <span class="n">sensor_data_func_t</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">);</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="n">bno055_sensor_get_config</span><span class="p">(</span><span class="k">struct</span> <span class="nc">sensor</span> <span class="o">*</span><span class="p">,</span> <span class="n">sensor_type_t</span><span class="p">,</span>
+        <span class="k">struct</span> <span class="nc">sensor_cfg</span> <span class="o">*</span><span class="p">);</span>
 
-static const struct sensor_driver g_bno055_sensor_driver = {
-    bno055_sensor_read,
-    bno055_sensor_get_config
-};
+<span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">sensor_driver</span> <span class="n">g_bno055_sensor_driver</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">bno055_sensor_read</span><span class="p">,</span>
+    <span class="n">bno055_sensor_get_config</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 </div>
@@ -431,79 +434,79 @@ pages for more details.</p>
 <p>The device driver <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code> function initializes and
 registers a sensor object as follows:</p>
 <ul class="simple">
-<li>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_init()</span></code> function to initialize the
-<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor</span></code> object.</li>
-<li>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_set_driver()</span></code> function to specify the sensor
+<li><p>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_init()</span></code> function to initialize the
+<code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor</span></code> object.</p></li>
+<li><p>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_set_driver()</span></code> function to specify the sensor
 types that the sensor device supports, and the pointer to the
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_driver</span></code> variable that specifies the driver functions
-to read the sensor data and to get the value type for a sensor.</li>
-<li>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_set_interface()</span></code> function to set the interface
+to read the sensor data and to get the value type for a sensor.</p></li>
+<li><p>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_set_interface()</span></code> function to set the interface
 that the device driver uses to communicate with the sensor device.
 The BSP, or sensor creator package for an off-board sensors, sets up
 the <code class="docutils literal notranslate"><span class="pre">sensor_itf</span></code> and passes it to the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code>
 function. The <code class="docutils literal notranslate"><span class="pre">sensor_set_interface()</span></code> functions saves this
 information in the sensor object. The device driver uses the
 <code class="docutils literal notranslate"><span class="pre">SENSOR_GET_ITF()</span></code> macro to retrieve the sensor_itf when it needs
-to communicate with the sensor device.</li>
-<li>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_mgr_register()</span></code> function to register the sensor
-with the sensor manager.</li>
+to communicate with the sensor device.</p></li>
+<li><p>Calls the <code class="docutils literal notranslate"><span class="pre">sensor_mgr_register()</span></code> function to register the sensor
+with the sensor manager.</p></li>
 </ul>
 <p>For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
-bno055_init(struct os_dev *dev, void *arg)
-{
-    struct bno055 *bno055;
-    struct sensor *sensor;
-    int rc;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">bno055_init</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">bno055</span> <span class="o">*</span><span class="n">bno055</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sensor</span> <span class="o">*</span><span class="n">sensor</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
-    if (!arg || !dev) {
-        rc = SYS_ENODEV;
-        goto err;
-    }
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">arg</span> <span class="o">||</span> <span class="o">!</span><span class="n">dev</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">SYS_ENODEV</span><span class="p">;</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    bno055 = (struct bno055 *) dev;
+    <span class="n">bno055</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">bno055</span> <span class="o">*</span><span class="p">)</span> <span class="n">dev</span><span class="p">;</span>
 
-    rc = bno055_default_cfg(&amp;bno055-&gt;cfg);
-    if (rc) {
-        goto err;
-    }
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">bno055_default_cfg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bno055</span><span class="o">-&gt;</span><span class="n">cfg</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    sensor = &amp;bno055-&gt;sensor;
+    <span class="n">sensor</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">bno055</span><span class="o">-&gt;</span><span class="n">sensor</span><span class="p">;</span>
 
-    /* Code to setup logging and stats may go here */
-    ....
+    <span class="cm">/* Code to setup logging and stats may go here */</span>
+    <span class="p">....</span>
 
-    rc = sensor_init(sensor, dev);
-    if (rc != 0) {
-        goto err;
-    }
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">sensor_init</span><span class="p">(</span><span class="n">sensor</span><span class="p">,</span> <span class="n">dev</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    /* Add the accelerometer/magnetometer driver */
-    rc = sensor_set_driver(sensor, SENSOR_TYPE_ACCELEROMETER         |
-            SENSOR_TYPE_MAGNETIC_FIELD | SENSOR_TYPE_GYROSCOPE       |
-            SENSOR_TYPE_TEMPERATURE    | SENSOR_TYPE_ROTATION_VECTOR |
-            SENSOR_TYPE_GRAVITY        | SENSOR_TYPE_LINEAR_ACCEL    |
-            SENSOR_TYPE_EULER, (struct sensor_driver *) &amp;g_bno055_sensor_driver);
-    if (rc != 0) {
-        goto err;
-    }
+    <span class="cm">/* Add the accelerometer/magnetometer driver */</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">sensor_set_driver</span><span class="p">(</span><span class="n">sensor</span><span class="p">,</span> <span class="n">SENSOR_TYPE_ACCELEROMETER</span>         <span class="o">|</span>
+            <span class="n">SENSOR_TYPE_MAGNETIC_FIELD</span> <span class="o">|</span> <span class="n">SENSOR_TYPE_GYROSCOPE</span>       <span class="o">|</span>
+            <span class="n">SENSOR_TYPE_TEMPERATURE</span>    <span class="o">|</span> <span class="n">SENSOR_TYPE_ROTATION_VECTOR</span> <span class="o">|</span>
+            <span class="n">SENSOR_TYPE_GRAVITY</span>        <span class="o">|</span> <span class="n">SENSOR_TYPE_LINEAR_ACCEL</span>    <span class="o">|</span>
+            <span class="n">SENSOR_TYPE_EULER</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sensor_driver</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">g_bno055_sensor_driver</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    /* Set the interface */
-    rc = sensor_set_interface(sensor, arg);
-    if (rc) {
-        goto err;
-    }
+    <span class="cm">/* Set the interface */</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">sensor_set_interface</span><span class="p">(</span><span class="n">sensor</span><span class="p">,</span> <span class="n">arg</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    rc = sensor_mgr_register(sensor);
-    if (rc != 0) {
-        goto err;
-    }
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">sensor_mgr_register</span><span class="p">(</span><span class="n">sensor</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    return (0);
+    <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
-err:
-    return (rc);
-}
+<span class="nl">err</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">rc</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -521,63 +524,63 @@ device supports and the sensor framework only reads sensor data for
 configured sensor types.</p>
 <p><strong>Notes:</strong></p>
 <ul class="simple">
-<li>The device driver uses the <code class="docutils literal notranslate"><span class="pre">SENSOR_GET_ITF()</span></code> macro to retrieve the
-sensor interface to communicate with the sensor.</li>
-<li>If a sensor device has a chip ID that can be queried, we recommend
+<li><p>The device driver uses the <code class="docutils literal notranslate"><span class="pre">SENSOR_GET_ITF()</span></code> macro to retrieve the
+sensor interface to communicate with the sensor.</p></li>
+<li><p>If a sensor device has a chip ID that can be queried, we recommend
 that the device driver read and verify the chip ID with the data
-sheet.</li>
-<li>An application may call the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code> function to
-configure the sensor device.</li>
+sheet.</p></li>
+<li><p>An application may call the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code> function to
+configure the sensor device.</p></li>
 </ul>
 <p>For example:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
-bno055_config(struct bno055 *bno055, struct bno055_cfg *cfg)
-{
-    int rc;
-    uint8_t id;
-    uint8_t mode;
-    struct sensor_itf *itf;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">bno055_config</span><span class="p">(</span><span class="k">struct</span> <span class="nc">bno055</span> <span class="o">*</span><span class="n">bno055</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">bno055_cfg</span> <span class="o">*</span><span class="n">cfg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">id</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">mode</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">sensor_itf</span> <span class="o">*</span><span class="n">itf</span><span class="p">;</span>
 
-    itf = SENSOR_GET_ITF(&amp;(bno055-&gt;sensor));
+    <span class="n">itf</span> <span class="o">=</span> <span class="n">SENSOR_GET_ITF</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">bno055</span><span class="o">-&gt;</span><span class="n">sensor</span><span class="p">));</span>
 
-    /* Check if we can read the chip address */
-    rc = bno055_get_chip_id(itf, &amp;id);
-    if (rc) {
-        goto err;
-    }
+    <span class="cm">/* Check if we can read the chip address */</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">bno055_get_chip_id</span><span class="p">(</span><span class="n">itf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">id</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    if (id != BNO055_ID) {
-        os_time_delay((OS_TICKS_PER_SEC * 100)/1000 + 1);
+    <span class="k">if</span> <span class="p">(</span><span class="n">id</span> <span class="o">!=</span> <span class="n">BNO055_ID</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">os_time_delay</span><span class="p">((</span><span class="n">OS_TICKS_PER_SEC</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
 
-        rc = bno055_get_chip_id(itf, &amp;id);
-        if (rc) {
-            goto err;
-        }
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">bno055_get_chip_id</span><span class="p">(</span><span class="n">itf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">id</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        if(id != BNO055_ID) {
-            rc = SYS_EINVAL;
-            goto err;
-        }
-    }
+        <span class="k">if</span><span class="p">(</span><span class="n">id</span> <span class="o">!=</span> <span class="n">BNO055_ID</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">rc</span> <span class="o">=</span> <span class="n">SYS_EINVAL</span><span class="p">;</span>
+            <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 
-       ....
+       <span class="p">....</span>
 
-/* Other code to set the configuration on the sensor device. */
+<span class="cm">/* Other code to set the configuration on the sensor device. */</span>
 
-       ....
+       <span class="p">....</span>
 
-    rc = sensor_set_type_mask(&amp;(bno055-&gt;sensor), cfg-&gt;bc_mask);
-    if (rc) {
-        goto err;
-    }
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">sensor_set_type_mask</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="n">bno055</span><span class="o">-&gt;</span><span class="n">sensor</span><span class="p">),</span> <span class="n">cfg</span><span class="o">-&gt;</span><span class="n">bc_mask</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    bno055-&gt;cfg.bc_mask = cfg-&gt;bc_mask;
+    <span class="n">bno055</span><span class="o">-&gt;</span><span class="n">cfg</span><span class="p">.</span><span class="n">bc_mask</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">-&gt;</span><span class="n">bc_mask</span><span class="p">;</span>
 
-    return 0;
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 
-err:
-    return rc;
-}
+<span class="nl">err</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -597,14 +600,14 @@ types that the device supports because the sensor framework <code class="docutil
 shell command only reads sensor data for configured sensor types.</p>
 <p>The package should:</p>
 <ul class="simple">
-<li>Name the sensor device shell command <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;</span></code>. For example,
+<li><p>Name the sensor device shell command <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;</span></code>. For example,
 the sensor device shell command for the BNO055 sensor device is
-<code class="docutils literal notranslate"><span class="pre">bno055</span></code>.</li>
-<li>Define a <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_CLI</span></code> syscfg setting to specify whether the
-shell command is enabled and disable the setting by default.</li>
-<li>Export a <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_shell_init()</span></code> function that an application
+<code class="docutils literal notranslate"><span class="pre">bno055</span></code>.</p></li>
+<li><p>Define a <code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_CLI</span></code> syscfg setting to specify whether the
+shell command is enabled and disable the setting by default.</p></li>
+<li><p>Export a <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_shell_init()</span></code> function that an application
 calls to initialize the sensor shell command when the
-<code class="docutils literal notranslate"><span class="pre">SENSORNAME_CLI</span></code> setting is enabled.</li>
+<code class="docutils literal notranslate"><span class="pre">SENSORNAME_CLI</span></code> setting is enabled.</p></li>
 </ul>
 <p>For an example on how to implement a sensor device shell command, see
 the <a class="reference external" href="https://github.com/apache/mynewt-core/blob/master/hw/drivers/sensors/bno055/src/bno055_shell.c">bno055 shell
@@ -621,40 +624,40 @@ add logs. The driver should define a <code class="docutils literal notranslate">
 to specify whether logging is enabled and disable the setting by
 default.</p>
 <p>Here is an example from the BNO055 sensor driver package:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(BNO055_LOG)
-#include &quot;log/log.h&quot;
-#endif
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#if MYNEWT_VAL(BNO055_LOG)</span>
+<span class="cp">#include</span> <span class="cpf">&quot;log/log.h&quot;</span><span class="cp"></span>
+<span class="cp">#endif</span>
 
-#if MYNEWT_VAL(BNO055_LOG)
-#define LOG_MODULE_BNO055 (305)
-#define BNO055_INFO(...) LOG_INFO(&amp;_log, LOG_MODULE_BNO055, _VA_ARGS_)
-#define BNO055_ERR(...) LOG_ERROR(&amp;_log, LOG_MODULE_BNO055,_VA_ARGS_)
-static struct log _log;
-#else
-#define BNO055_INFO(...)
-#define BNO055_ERR(...)
-#endif
+<span class="cp">#if MYNEWT_VAL(BNO055_LOG)</span>
+<span class="cp">#define LOG_MODULE_BNO055 (305)</span>
+<span class="cp">#define BNO055_INFO(...) LOG_INFO(&amp;_log, LOG_MODULE_BNO055, _VA_ARGS_)</span>
+<span class="cp">#define BNO055_ERR(...) LOG_ERROR(&amp;_log, LOG_MODULE_BNO055,_VA_ARGS_)</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="nc">log</span> <span class="n">_log</span><span class="p">;</span>
+<span class="cp">#else</span>
+<span class="cp">#define BNO055_INFO(...)</span>
+<span class="cp">#define BNO055_ERR(...)</span>
+<span class="cp">#endif</span>
 
- ...
+ <span class="p">...</span>
 
-int
-bno055_init(struct os_dev *dev, void *arg)
-{
+<span class="kt">int</span>
+<span class="n">bno055_init</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
 
- ...
+ <span class="p">...</span>
 
-    rc = bno055_default_cfg(&amp;bno055-&gt;cfg);
-    if (rc) {
-        goto err;
-    }
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">bno055_default_cfg</span><span class="p">(</span><span class="o">&amp;</span><span class="n">bno055</span><span class="o">-&gt;</span><span class="n">cfg</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-#if MYNEWT_VAL(BNO055_LOG)
-    log_register(dev-&gt;od_name, &amp;_log, &amp;log_console_handler, NULL, LOG_SYSLEVEL);
-#endif
+<span class="cp">#if MYNEWT_VAL(BNO055_LOG)</span>
+    <span class="n">log_register</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">od_name</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">_log</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">log_console_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">LOG_SYSLEVEL</span><span class="p">);</span>
+<span class="cp">#endif</span>
 
-  ...
+  <span class="p">...</span>
 
-}
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -666,51 +669,51 @@ to add stats. The driver should define a <code class="docutils literal notransla
 setting to specify whether stats is enabled and disable the setting by
 default.</p>
 <p>Here is an example from the BNO055 sensor driver package:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(BNO055_STATS)
-#include &quot;stats/stats.h&quot;
-#endif
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#if MYNEWT_VAL(BNO055_STATS)</span>
+<span class="cp">#include</span> <span class="cpf">&quot;stats/stats.h&quot;</span><span class="cp"></span>
+<span class="cp">#endif</span>
 
-#if MYNEWT_VAL(BNO055_STATS)
+<span class="cp">#if MYNEWT_VAL(BNO055_STATS)</span>
 
-/* Define the stats section and records */
-STATS_SECT_START(bno055_stat_section)
-STATS_SECT_ENTRY(errors)
-STATS_SECT_END
+<span class="cm">/* Define the stats section and records */</span>
+<span class="n">STATS_SECT_START</span><span class="p">(</span><span class="n">bno055_stat_section</span><span class="p">)</span>
+<span class="n">STATS_SECT_ENTRY</span><span class="p">(</span><span class="n">errors</span><span class="p">)</span>
+<span class="n">STATS_SECT_END</span>
 
-/* Define stat names for querying */
-STATS_NAME_START(bno055_stat_section)
-STATS_NAME(bno055_stat_section, errors)
-STATS_NAME_END(bno055_stat_section)
+<span class="cm">/* Define stat names for querying */</span>
+<span class="n">STATS_NAME_START</span><span class="p">(</span><span class="n">bno055_stat_section</span><span class="p">)</span>
+<span class="n">STATS_NAME</span><span class="p">(</span><span class="n">bno055_stat_section</span><span class="p">,</span> <span class="n">errors</span><span class="p">)</span>
+<span class="n">STATS_NAME_END</span><span class="p">(</span><span class="n">bno055_stat_section</span><span class="p">)</span>
 
-/* Global variable used to hold stats data */
-STATS_SECT_DECL(bno055_stat_section) g_bno055stats;
-#endif
+<span class="cm">/* Global variable used to hold stats data */</span>
+<span class="n">STATS_SECT_DECL</span><span class="p">(</span><span class="n">bno055_stat_section</span><span class="p">)</span> <span class="n">g_bno055stats</span><span class="p">;</span>
+<span class="cp">#endif</span>
 
-...
+<span class="p">...</span>
 
-int
-bno055_init(struct os_dev *dev, void *arg)
-{
+<span class="kt">int</span>
+<span class="n">bno055_init</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
 
-  ...
+  <span class="p">...</span>
 
-#if MYNEWT\_VAL(BNO055\_STATS)
+<span class="cp">#if MYNEWT\_VAL(BNO055\_STATS)</span>
 
-    /* Initialise the stats entry */
-    rc = stats_init(
-        STATS_HDR(g_bno055stats),
-        STATS_SIZE_INIT_PARMS(g_bno055stats, STATS_SIZE_32),
-        STATS_NAME_INIT_PARMS(bno055_stat_section));
-    SYSINIT_PANIC_ASSERT(rc == 0);
-    /* Register the entry with the stats registry */
-    rc = stats_register(dev-&gt;od_name, STATS_HDR(g_bno055stats));
-    SYSINIT_PANIC_ASSERT(rc == 0);
+    <span class="cm">/* Initialise the stats entry */</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">stats_init</span><span class="p">(</span>
+        <span class="n">STATS_HDR</span><span class="p">(</span><span class="n">g_bno055stats</span><span class="p">),</span>
+        <span class="n">STATS_SIZE_INIT_PARMS</span><span class="p">(</span><span class="n">g_bno055stats</span><span class="p">,</span> <span class="n">STATS_SIZE_32</span><span class="p">),</span>
+        <span class="n">STATS_NAME_INIT_PARMS</span><span class="p">(</span><span class="n">bno055_stat_section</span><span class="p">));</span>
+    <span class="n">SYSINIT_PANIC_ASSERT</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="cm">/* Register the entry with the stats registry */</span>
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">stats_register</span><span class="p">(</span><span class="n">dev</span><span class="o">-&gt;</span><span class="n">od_name</span><span class="p">,</span> <span class="n">STATS_HDR</span><span class="p">(</span><span class="n">g_bno055stats</span><span class="p">));</span>
+    <span class="n">SYSINIT_PANIC_ASSERT</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
 
-#endif
+<span class="cp">#endif</span>
 
-  ...
+  <span class="p">...</span>
 
-}
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>

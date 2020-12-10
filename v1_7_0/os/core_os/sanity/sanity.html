@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.8.0, Apache NimBLE 1.3.0 </a> released (April 9, 2020)
             </div>
         </div>
     </div>
@@ -185,6 +185,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
   </option>
   <option value="/v1_7_0" selected="selected" >
     Version: 1.7.0
@@ -300,9 +303,9 @@ check system state, and ensure that everything is still operating
 properly.</p>
 <p>In a typical system design, there are multiple stages of watchdog:</p>
 <ul class="simple">
-<li>Internal Watchdog</li>
-<li>External Watchdog</li>
-<li>Sanity Watchdog</li>
+<li><p>Internal Watchdog</p></li>
+<li><p>External Watchdog</p></li>
+<li><p>Sanity Watchdog</p></li>
 </ul>
 <p>The <em>Internal Watchdog</em> is typically an MCU watchdog, which is tickled
 in the core of the OS. The internal watchdog is tickled frequently, and
@@ -324,9 +327,9 @@ checks.</p>
 <p>By default, every operating system task provides the frequency it will
 check in with the sanity task, with the <code class="docutils literal notranslate"><span class="pre">sanity_itvl</span></code> parameter in the
 c:func:<cite>os_task_init()</cite> function:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int os_task_init(struct os_task *t, char *name, os_task_func_t func,
-    void *arg, uint8_t prio, os_time_t sanity_itvl, os_stack_t *bottom,
-    uint16_t stack_size);
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">os_task_init</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="n">os_task_func_t</span> <span class="n">func</span><span class="p">,</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">prio</span><span class="p">,</span> <span class="n">os_time_t</span> <span class="n">sanity_itvl</span><span class="p">,</span> <span class="n">os_stack_t</span> <span class="o">*</span><span class="n">bottom</span><span class="p">,</span>
+    <span class="kt">uint16_t</span> <span class="n">stack_size</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>c:var:<cite>sanity_itvl</cite> is the time in OS time ticks that the task being created
@@ -339,45 +342,45 @@ must register in with the sanity task.</p>
 <a class="reference internal" href="#c.os_sanity_task_checkin" title="os_sanity_task_checkin"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sanity_task_checkin()</span></code></a> function, which will reset the sanity check
 associated with this task. Here is an example of a task that uses a
 callout to checkin with the sanity task every 50 seconds:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define TASK1_SANITY_CHECKIN_ITVL (50 * OS_TICKS_PER_SEC)
-struct os_eventq task1_evq;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define TASK1_SANITY_CHECKIN_ITVL (50 * OS_TICKS_PER_SEC)</span>
+<span class="k">struct</span> <span class="nc">os_eventq</span> <span class="n">task1_evq</span><span class="p">;</span>
 
-static void
-task1(void *arg)
-{
-    struct os_task *t;
-    struct os_event *ev;
-    struct os_callout c;
+<span class="k">static</span> <span class="kt">void</span>
+<span class="n">task1</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">os_callout</span> <span class="n">c</span><span class="p">;</span>
 
-    /* Get current OS task */
-    t = os_sched_get_current_task();
+    <span class="cm">/* Get current OS task */</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">os_sched_get_current_task</span><span class="p">();</span>
 
-    /* Initialize the event queue. */
-    os_eventq_init(&amp;task1_evq);
+    <span class="cm">/* Initialize the event queue. */</span>
+    <span class="n">os_eventq_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">task1_evq</span><span class="p">);</span>
 
-    /* Initialize the callout */
-    os_callout_init(&amp;c, &amp;task1_evq, NULL);
+    <span class="cm">/* Initialize the callout */</span>
+    <span class="n">os_callout_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">task1_evq</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
 
-    /* reset the callout to checkin with the sanity task
-     * in 50 seconds to kick off timing.
-     */
-    os_callout_reset(&amp;c, TASK1_SANITY_CHECKIN_ITVL);
+    <span class="cm">/* reset the callout to checkin with the sanity task</span>
+<span class="cm">     * in 50 seconds to kick off timing.</span>
+<span class="cm">     */</span>
+    <span class="n">os_callout_reset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">c</span><span class="p">,</span> <span class="n">TASK1_SANITY_CHECKIN_ITVL</span><span class="p">);</span>
 
-    while (1) {
-        ev = os_eventq_get(&amp;task1_evq);
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ev</span> <span class="o">=</span> <span class="n">os_eventq_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">task1_evq</span><span class="p">);</span>
 
-        /* The sanity timer has reset */
-        if (ev-&gt;ev_arg == &amp;c) {
-            os_sanity_task_checkin(t);
-        } else {
-            /* not expecting any other events */
-            assert(0);
-        }
-    }
+        <span class="cm">/* The sanity timer has reset */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ev</span><span class="o">-&gt;</span><span class="n">ev_arg</span> <span class="o">==</span> <span class="o">&amp;</span><span class="n">c</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">os_sanity_task_checkin</span><span class="p">(</span><span class="n">t</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="cm">/* not expecting any other events */</span>
+            <span class="n">assert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
 
-    /* Should never reach */
-    assert(0);
-}
+    <span class="cm">/* Should never reach */</span>
+    <span class="n">assert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -387,42 +390,42 @@ task1(void *arg)
 perform other checks during the sanity task’s operation, it can do so by
 registering a <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">os_sanity_check</span></code> using the
 <a class="reference internal" href="#c.os_sanity_check_register" title="os_sanity_check_register"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_sanity_check_register()</span></code></a> function.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int
-mymodule_perform_sanity_check(struct os_sanity_check *sc, void *arg)
-{
-    /* Perform your checking here.  In this case, we check if there
-     * are available buffers in mymodule, and return 0 (all good)
-     * if true, and -1 (error) if not.
-     */
-    if (mymodule_has_buffers()) {
-        return (0);
-    } else {
-        return (-1);
-    }
-}
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
+<span class="n">mymodule_perform_sanity_check</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_sanity_check</span> <span class="o">*</span><span class="n">sc</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="cm">/* Perform your checking here.  In this case, we check if there</span>
+<span class="cm">     * are available buffers in mymodule, and return 0 (all good)</span>
+<span class="cm">     * if true, and -1 (error) if not.</span>
+<span class="cm">     */</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">mymodule_has_buffers</span><span class="p">())</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">-1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-static int
-mymodule_register_sanity_check(void)
-{
-    struct os_sanity_check sc;
+<span class="k">static</span> <span class="kt">int</span>
+<span class="n">mymodule_register_sanity_check</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">os_sanity_check</span> <span class="n">sc</span><span class="p">;</span>
 
-    os_sanity_check_init(&amp;sc);
-    /* Only assert() if mymodule_perform_sanity_check() fails 50
-     * times.  SANITY_TASK_INTERVAL is defined by the user, and
-     * is the frequency at which the sanity_task runs in seconds.
-     */
-    OS_SANITY_CHECK_SETFUNC(&amp;sc, mymodule_perform_sanity_check, NULL,
-        50 * SANITY_TASK_INTERVAL);
+    <span class="n">os_sanity_check_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sc</span><span class="p">);</span>
+    <span class="cm">/* Only assert() if mymodule_perform_sanity_check() fails 50</span>
+<span class="cm">     * times.  SANITY_TASK_INTERVAL is defined by the user, and</span>
+<span class="cm">     * is the frequency at which the sanity_task runs in seconds.</span>
+<span class="cm">     */</span>
+    <span class="n">OS_SANITY_CHECK_SETFUNC</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sc</span><span class="p">,</span> <span class="n">mymodule_perform_sanity_check</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+        <span class="mi">50</span> <span class="o">*</span> <span class="n">SANITY_TASK_INTERVAL</span><span class="p">);</span>
 
-    rc = os_sanity_check_register(&amp;sc);
-    if (rc != 0) {
-        goto err;
-    }
+    <span class="n">rc</span> <span class="o">=</span> <span class="n">os_sanity_check_register</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sc</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    return (0);
-err:
-    return (rc);
-}
+    <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="nl">err</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">rc</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>In the above example, every time the custom sanity check
@@ -439,106 +442,102 @@ crashing for temporary failures.</p>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<dl class="typedef">
+<dl class="c type">
 <dt id="c.os_sanity_check_func_t">
-<span class="target" id="group___o_s_sanity_1ga354458457ad42d0bab3d8d08de482fc9"></span><em class="property">typedef </em>int<code class="descname">(* os_sanity_check_func_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a><em>&nbsp;*</em>, void<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_func_t" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_sanity_1ga354458457ad42d0bab3d8d08de482fc9"></span><em class="property">typedef </em>int (*<code class="sig-name descname">os_sanity_check_func_t</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a>*, void*<span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_func_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.os_sanity_task_checkin">
-<span class="target" id="group___o_s_sanity_1ga048cde3537cb470594fc2528201572ba"></span>int <code class="descname">os_sanity_task_checkin</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="../task/task.html#c.os_task" title="os_task">os_task</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_task_checkin" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_sanity_1ga048cde3537cb470594fc2528201572ba"></span>int <code class="sig-name descname">os_sanity_task_checkin</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="../task/task.html#c.os_task" title="os_task">os_task</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_task_checkin" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Provide a “task checkin” for the sanity task. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, error code on failure </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">t</span></code>: The task to check in</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, error code on failure </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code>: The task to check in</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.os_sanity_check_init">
-<span class="target" id="group___o_s_sanity_1ga34eb185813afec28e2d61059e2fdd064"></span>int <code class="descname">os_sanity_check_init</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_init" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_sanity_1ga34eb185813afec28e2d61059e2fdd064"></span>int <code class="sig-name descname">os_sanity_check_init</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialize a sanity check. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, error code on failure. </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">sc</span></code>: The sanity check to initialize</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, error code on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sc</span></code>: The sanity check to initialize</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.os_sanity_check_register">
-<span class="target" id="group___o_s_sanity_1ga2c5ad3969bf12870a0adfa7b9a8a8611"></span>int <code class="descname">os_sanity_check_register</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_register" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_sanity_1ga2c5ad3969bf12870a0adfa7b9a8a8611"></span>int <code class="sig-name descname">os_sanity_check_register</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_register" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Register a sanity check. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, error code on failure </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">sc</span></code>: The sanity check to register</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, error code on failure </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sc</span></code>: The sanity check to register</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.os_sanity_check_reset">
-<span class="target" id="group___o_s_sanity_1ga92ea98a26001d84aee06d600c62b7140"></span>int <code class="descname">os_sanity_check_reset</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_reset" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_sanity_1ga92ea98a26001d84aee06d600c62b7140"></span>int <code class="sig-name descname">os_sanity_check_reset</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.os_sanity_check" title="os_sanity_check">os_sanity_check</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.os_sanity_check_reset" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Reset the os sanity check, so that it doesn’t trip up the sanity timer. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, error code on failure </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">sc</span></code>: The sanity check to reset</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, error code on failure </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sc</span></code>: The sanity check to reset</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.OS_SANITY_CHECK_SETFUNC">
-<span class="target" id="group___o_s_sanity_1ga53501a44869b9cda63c92f031d8a46c5"></span><code class="descname">OS_SANITY_CHECK_SETFUNC</code><span class="sig-paren">(</span>__sc, __f, __arg, __itvl<span class="sig-paren">)</span><a class="headerlink" href="#c.OS_SANITY_CHECK_SETFUNC" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___o_s_sanity_1ga53501a44869b9cda63c92f031d8a46c5"></span><code class="sig-name descname">OS_SANITY_CHECK_SETFUNC</code><span class="sig-paren">(</span><em>__sc</em>, <em>__f</em>, <em>__arg</em>, <em>__itvl</em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_SANITY_CHECK_SETFUNC" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="struct">
+<dl class="c struct">
 <dt id="c.os_sanity_check">
-<span class="target" id="structos__sanity__check"></span><em class="property">struct </em><code class="descname">os_sanity_check</code><a class="headerlink" href="#c.os_sanity_check" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structos__sanity__check"></span><em class="property">struct </em><code class="sig-name descname">os_sanity_check</code><a class="headerlink" href="#c.os_sanity_check" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;os_sanity.h&gt;</em><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.os_sanity_check::sc_checkin_last">
-<span class="target" id="structos__sanity__check_1a7701ac67d9e7ba081cef9a6540a35003"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">sc_checkin_last</code><a class="headerlink" href="#c.os_sanity_check::sc_checkin_last" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.os_sanity_check.sc_checkin_last">
+<span class="target" id="structos__sanity__check_1a7701ac67d9e7ba081cef9a6540a35003"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="sig-name descname">sc_checkin_last</code><a class="headerlink" href="#c.os_sanity_check.sc_checkin_last" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Time this check last ran successfully. </p>
 </dd></dl>
 
-<dl class="variable">
-<dt id="c.os_sanity_check::sc_checkin_itvl">
-<span class="target" id="structos__sanity__check_1ad9b79d0e7c0dcc9fcbfe57d2b7d43c53"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="descname">sc_checkin_itvl</code><a class="headerlink" href="#c.os_sanity_check::sc_checkin_itvl" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.os_sanity_check.sc_checkin_itvl">
+<span class="target" id="structos__sanity__check_1ad9b79d0e7c0dcc9fcbfe57d2b7d43c53"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a> <code class="sig-name descname">sc_checkin_itvl</code><a class="headerlink" href="#c.os_sanity_check.sc_checkin_itvl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Interval this task should check in at. </p>
 </dd></dl>
 
-<dl class="variable">
-<dt id="c.os_sanity_check::sc_func">
-<span class="target" id="structos__sanity__check_1ab5be2cbf4891bc9f42f25b7f4cfb9b45"></span><a class="reference internal" href="#c.os_sanity_check_func_t" title="os_sanity_check_func_t">os_sanity_check_func_t</a> <code class="descname">sc_func</code><a class="headerlink" href="#c.os_sanity_check::sc_func" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.os_sanity_check.sc_func">
+<span class="target" id="structos__sanity__check_1ab5be2cbf4891bc9f42f25b7f4cfb9b45"></span><a class="reference internal" href="#c.os_sanity_check_func_t" title="os_sanity_check_func_t">os_sanity_check_func_t</a> <code class="sig-name descname">sc_func</code><a class="headerlink" href="#c.os_sanity_check.sc_func" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sanity check to run. </p>
 </dd></dl>
 
-<dl class="variable">
-<dt id="c.os_sanity_check::sc_arg">
-<span class="target" id="structos__sanity__check_1a5b22c20409427a0561fb2418a251706a"></span>void* <code class="descname">sc_arg</code><a class="headerlink" href="#c.os_sanity_check::sc_arg" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.os_sanity_check.sc_arg">
+<span class="target" id="structos__sanity__check_1a5b22c20409427a0561fb2418a251706a"></span>void *<code class="sig-name descname">sc_arg</code><a class="headerlink" href="#c.os_sanity_check.sc_arg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Argument to pass to sanity check. </p>
 </dd></dl>
 

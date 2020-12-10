@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.8.0, Apache NimBLE 1.3.0 </a> released (April 9, 2020)
             </div>
         </div>
     </div>
@@ -187,6 +187,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
   </option>
   <option value="/v1_7_0" >
     Version: 1.7.0
@@ -309,20 +312,20 @@ ga("send", "pageview");
 <p>You can use any hex values you choose for the sensor type and sensor values, and you can even forget the sensor type and sensor string definitions altogether but they make the results look nice in our Bluetooth App for Mac OS X and iOS.</p>
 <p>Next we’ll add those services to <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/gatt_svr.c</span></code>.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
-<span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
-    <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
+<span class="n">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
+    <span class="k">struct</span> <span class="nc">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
 
 <span class="k">static</span> <span class="kt">uint16_t</span> <span class="n">gatt_co2_val_len</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Make sure it is added as <em>primary</em> service.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">{</span>
         <span class="cm">/*** Service: Security test. */</span>
         <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BLE_GATT_SVC_TYPE_PRIMARY</span><span class="p">,</span>
         <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_svc_sec_test_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-        <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
             <span class="cm">/*** Characteristic: Random number generator. */</span>
             <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_chr_sec_test_rand_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
             <span class="p">.</span><span class="n">access_cb</span> <span class="o">=</span> <span class="n">gatt_svr_chr_access_sec_test</span><span class="p">,</span>
@@ -341,7 +344,7 @@ ga("send", "pageview");
             <span class="cm">/*** CO2 Level Notification Service. */</span>
             <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BLE_GATT_SVC_TYPE_PRIMARY</span><span class="p">,</span>
             <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_svc_co2_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-            <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
+            <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
                 <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">BLE_UUID16_DECLARE</span><span class="p">(</span><span class="n">CO2_SNS_TYPE</span><span class="p">),</span>
                 <span class="p">.</span><span class="n">access_cb</span> <span class="o">=</span> <span class="n">gatt_svr_sns_access</span><span class="p">,</span>
                 <span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">BLE_GATT_CHR_F_READ</span><span class="p">,</span>
@@ -362,8 +365,8 @@ ga("send", "pageview");
 </div>
 <p>Next we need to tell the GATT Server how to handle requests for CO2 readings :</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
-<span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
-                          <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
+<span class="n">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
+                          <span class="k">struct</span> <span class="nc">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
                           <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">uint16_t</span> <span class="n">uuid16</span><span class="p">;</span>
@@ -403,8 +406,8 @@ ga("send", "pageview");
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* CO2 Task settings */</span>
 <span class="cp">#define CO2_TASK_PRIO           128</span>
 <span class="cp">#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
-<span class="k">struct</span> <span class="n">os_eventq</span> <span class="n">co2_evq</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">os_task</span> <span class="n">co2_task</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">os_eventq</span> <span class="n">co2_evq</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">os_task</span> <span class="n">co2_task</span><span class="p">;</span>
 <span class="n">bssnz_t</span> <span class="n">os_stack_t</span> <span class="n">co2_stack</span><span class="p">[</span><span class="n">CO2_STACK_SIZE</span><span class="p">];</span>
 </pre></div>
 </div>
@@ -425,7 +428,7 @@ ga("send", "pageview");
 <span class="cm"> * Event loop for the sensor task.</span>
 <span class="cm"> */</span>
 <span class="k">static</span> <span class="kt">void</span>
-<span class="nf">co2_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">unused</span><span class="p">)</span>
+<span class="n">co2_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">unused</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">co2_read_event</span><span class="p">();</span>
@@ -464,9 +467,9 @@ ga("send", "pageview");
 </div>
 <p>This one simply reads and updates the CO2 value and sends that over BLE to any connected clients instead.</p>
 <p>We can now build, create-image and load the app onto our nRF52DK board, and then connect and see the updated values! To view the results over Bluetooth, you can use LightBlue or any other application that can connect to, and read, Bluetooth data. By default, the device will show up as nimble-bleprph, since we used the <code class="docutils literal notranslate"><span class="pre">bleprph</span></code> app as our template. I’ve changed mine to something a bit more applicable: BLE CO2 Sensor.</p>
-<div class="figure" id="id1">
+<div class="figure align-default" id="id1">
 <img alt="../../_images/airquality_lightblue.png" src="../../_images/airquality_lightblue.png" />
-<p class="caption"><span class="caption-text">LightBlue app connected to BLE CO2 Sensor</span></p>
+<p class="caption"><span class="caption-text">LightBlue app connected to BLE CO2 Sensor</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>Congratulations!!</p>
 </div>

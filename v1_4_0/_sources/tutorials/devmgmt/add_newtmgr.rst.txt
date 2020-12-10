@@ -55,23 +55,25 @@ or application ``pkg.yml`` file:
 .. code-block:: console
 
    pkg.deps:
-       - mgmt/newtmgr
-       - mgmt/newtmgr/transport/nmgr_shell
-       - mgmt/imgmgr
-       - sys/log/full
-       - sys/stats/full
-       - sys/config
-       - test/crash_test
-       - test/runtest
+       - "@apache-mynewt-core/mgmt/mgmt"
+       - "@apache-mynewt-core/mgmt/smp/transport/smp_shell"
+       - "@apache-mynewt-core/mgmt/imgmgr"
+       - "@apache-mynewt-core/sys/console/full"
+       - "@apache-mynewt-core/sys/log/full"
+       - "@apache-mynewt-core/sys/stats/full"
+       - "@apache-mynewt-core/sys/config"
+       - "@apache-mynewt-core/test/crash_test"
+       - "@apache-mynewt-core/test/runtest"
 
 Each package provides the following Newt Manager functionality:
 
--  ``mgmt/newtmgr``: Supports the newtmgr framework and the Newt Manager
+-  ``mgmt/mgmt``: Supports the newtmgr framework and the Newt Manager
    ``echo``, ``taskstat`` ``mpstat``, ``datetime``, and ``reset``
    commands.
--  ``mgmt/newtmgr/transport/nmgr_shell``: Supports serial transport.
--  ``mgmt/imgmgr``: Supports the ``newtmgr image`` command
--  ``sys/log/full`` : Supports the ``newtmgr log`` command.
+-  ``mgmt/newtmgr/smp/transport/nmgr_shell``: Supports serial transport.
+-  ``mgmt/imgmgr``: Supports the ``newtmgr image`` command.
+-  ``sys/console/full``: Supports a text-based IO interface with completion.
+-  ``sys/log/full``: Supports the ``newtmgr log`` command.
 -  ``sys/stats/full``: Supports the ``newtmgr stat`` command.
 -  ``sys/config``: Supports the ``newtmgr config`` command.
 -  ``test/crash_test``: Supports the ``newtmgr crash`` command.

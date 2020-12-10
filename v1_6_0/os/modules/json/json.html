@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.8.0, Apache NimBLE 1.3.0 </a> released (April 9, 2020)
             </div>
         </div>
     </div>
@@ -184,6 +184,9 @@ ga("send", "pageview");
   <option value="/latest" selected>
     Version: latest
   </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
+  </option>
   <option value="/v1_7_0" >
     Version: 1.7.0
   </option>
@@ -283,13 +286,14 @@ ga("send", "pageview");
 found from IETF RFC 4627.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#description" id="id1">Description</a></li>
-<li><a class="reference internal" href="#data-structures" id="id2">Data structures</a><ul>
-<li><a class="reference internal" href="#encoding" id="id3">Encoding</a></li>
-<li><a class="reference internal" href="#decoding" id="id4">Decoding</a></li>
+<li><p><a class="reference internal" href="#description" id="id1">Description</a></p></li>
+<li><p><a class="reference internal" href="#data-structures" id="id2">Data structures</a></p>
+<ul>
+<li><p><a class="reference internal" href="#encoding" id="id3">Encoding</a></p></li>
+<li><p><a class="reference internal" href="#decoding" id="id4">Decoding</a></p></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#api" id="id5">API</a></li>
+<li><p><a class="reference internal" href="#api" id="id5">API</a></p></li>
 </ul>
 </div>
 <div class="section" id="description">
@@ -301,16 +305,16 @@ objects. It supports both encoding and decoding.</p>
 <h2><a class="toc-backref" href="#id2">Data structures</a><a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="encoding">
 <h3><a class="toc-backref" href="#id3">Encoding</a><a class="headerlink" href="#encoding" title="Permalink to this headline">¶</a></h3>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/* Encoding functions */
-typedef int (*json_write_func_t)(void *buf, char *data,
-        int len);
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Encoding functions */</span>
+<span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">json_write_func_t</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span>
+        <span class="kt">int</span> <span class="n">len</span><span class="p">);</span>
 
-struct json_encoder {
-    json_write_func_t je_write;
-    void *je_arg;
-    int je_wr_commas:1;
-    char je_encode_buf[64];
-};
+<span class="k">struct</span> <span class="nc">json_encoder</span> <span class="p">{</span>
+    <span class="n">json_write_func_t</span> <span class="n">je_write</span><span class="p">;</span>
+    <span class="kt">void</span> <span class="o">*</span><span class="n">je_arg</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="nl">je_wr_commas</span><span class="p">:</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">je_encode_buf</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>Here’s the data structure encoder funtions use, and it must be
@@ -321,24 +325,24 @@ first argument. The rest of the structure contents are for internal
 state management. This function should collect all the data encoder
 function generates. It can collect this data to a flat buffer, chain of
 mbufs or even stream through.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/**
- * For encode.  The contents of a JSON value to encode.
- */
-struct json_value {
-    uint8_t jv_pad1;
-    uint8_t jv_type;
-    uint16_t jv_len;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
+<span class="cm"> * For encode.  The contents of a JSON value to encode.</span>
+<span class="cm"> */</span>
+<span class="k">struct</span> <span class="nc">json_value</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">jv_pad1</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">jv_type</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">jv_len</span><span class="p">;</span>
 
-    union {
-        uint64_t u;
-        float fl;
-        char *str;
-        struct {
-            char **keys;
-            struct json_value **values;
-        } composite;
-    } jv_val;
-};
+    <span class="k">union</span> <span class="p">{</span>
+        <span class="kt">uint64_t</span> <span class="n">u</span><span class="p">;</span>
+        <span class="kt">float</span> <span class="n">fl</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="p">{</span>
+            <span class="kt">char</span> <span class="o">**</span><span class="n">keys</span><span class="p">;</span>
+            <span class="k">struct</span> <span class="nc">json_value</span> <span class="o">**</span><span class="n">values</span><span class="p">;</span>
+        <span class="p">}</span> <span class="n">composite</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">jv_val</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>This data structure is filled with data to be encoded. It is best to
@@ -348,82 +352,82 @@ value is an integer, and so forth.</p>
 </div>
 <div class="section" id="decoding">
 <h3><a class="toc-backref" href="#id4">Decoding</a><a class="headerlink" href="#decoding" title="Permalink to this headline">¶</a></h3>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/* when you implement a json buffer, you must implement these functions */
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* when you implement a json buffer, you must implement these functions */</span>
 
-/* returns the next character in the buffer or &#39;\0&#39;*/
-typedef char (*json_buffer_read_next_byte_t)(struct json_buffer *);
-/* returns the previous character in the buffer or &#39;\0&#39; */
-typedef char (*json_buffer_read_prev_byte_t)(struct json_buffer *);
-/* returns the number of characters read or zero */
-typedef int (*json_buffer_readn_t)(struct json_buffer *, char *buf, int n);
+<span class="cm">/* returns the next character in the buffer or &#39;\0&#39;*/</span>
+<span class="k">typedef</span> <span class="nf">char</span> <span class="p">(</span><span class="o">*</span><span class="n">json_buffer_read_next_byte_t</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">json_buffer</span> <span class="o">*</span><span class="p">);</span>
+<span class="cm">/* returns the previous character in the buffer or &#39;\0&#39; */</span>
+<span class="k">typedef</span> <span class="nf">char</span> <span class="p">(</span><span class="o">*</span><span class="n">json_buffer_read_prev_byte_t</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">json_buffer</span> <span class="o">*</span><span class="p">);</span>
+<span class="cm">/* returns the number of characters read or zero */</span>
+<span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">json_buffer_readn_t</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">json_buffer</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">);</span>
 
-struct json_buffer {
-    json_buffer_readn_t jb_readn;
-    json_buffer_read_next_byte_t jb_read_next;
-    json_buffer_read_prev_byte_t jb_read_prev;
-};
+<span class="k">struct</span> <span class="nc">json_buffer</span> <span class="p">{</span>
+    <span class="n">json_buffer_readn_t</span> <span class="n">jb_readn</span><span class="p">;</span>
+    <span class="n">json_buffer_read_next_byte_t</span> <span class="n">jb_read_next</span><span class="p">;</span>
+    <span class="n">json_buffer_read_prev_byte_t</span> <span class="n">jb_read_prev</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>Function pointers within this structure are used by decoder when it is
 reading in more data to decode.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct json_attr_t {
-    char *attribute;
-    json_type type;
-    union {
-        int *integer;
-        unsigned int *uinteger;
-        double *real;
-        char *string;
-        bool *boolean;
-        char *character;
-        struct json_array_t array;
-        size_t offset;
-    } addr;
-    union {
-        int integer;
-        unsigned int uinteger;
-        double real;
-        bool boolean;
-        char character;
-        char *check;
-    } dflt;
-    size_t len;
-    const struct json_enum_t *map;
-    bool nodefault;
-};
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">json_attr_t</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">attribute</span><span class="p">;</span>
+    <span class="n">json_type</span> <span class="n">type</span><span class="p">;</span>
+    <span class="k">union</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="o">*</span><span class="n">integer</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="o">*</span><span class="n">uinteger</span><span class="p">;</span>
+        <span class="kt">double</span> <span class="o">*</span><span class="n">real</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">string</span><span class="p">;</span>
+        <span class="kt">bool</span> <span class="o">*</span><span class="n">boolean</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">character</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="nc">json_array_t</span> <span class="n">array</span><span class="p">;</span>
+        <span class="kt">size_t</span> <span class="n">offset</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">addr</span><span class="p">;</span>
+    <span class="k">union</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">integer</span><span class="p">;</span>
+        <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">uinteger</span><span class="p">;</span>
+        <span class="kt">double</span> <span class="n">real</span><span class="p">;</span>
+        <span class="kt">bool</span> <span class="n">boolean</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="n">character</span><span class="p">;</span>
+        <span class="kt">char</span> <span class="o">*</span><span class="n">check</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">dflt</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">len</span><span class="p">;</span>
+    <span class="k">const</span> <span class="k">struct</span> <span class="nc">json_enum_t</span> <span class="o">*</span><span class="n">map</span><span class="p">;</span>
+    <span class="kt">bool</span> <span class="n">nodefault</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>This structure tells the decoder about a particular name/value pair.
 Structure must be filled in before calling the decoder routine
 <em>json_read_object()</em>.</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="19%" />
-<col width="81%" />
+<col style="width: 19%" />
+<col style="width: 81%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Element</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>attribute</td>
-<td>Name of the value</td>
+<tbody>
+<tr class="row-even"><td><p>attribute</p></td>
+<td><p>Name of the value</p></td>
 </tr>
-<tr class="row-odd"><td>type</td>
-<td>The type of the variable; see enum json_type</td>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>The type of the variable; see enum json_type</p></td>
 </tr>
-<tr class="row-even"><td>addr</td>
-<td>Contains the address where value should be stored</td>
+<tr class="row-even"><td><p>addr</p></td>
+<td><p>Contains the address where value should be stored</p></td>
 </tr>
-<tr class="row-odd"><td>dflt</td>
-<td>Default value to fill in, if this name is not found</td>
+<tr class="row-odd"><td><p>dflt</p></td>
+<td><p>Default value to fill in, if this name is not found</p></td>
 </tr>
-<tr class="row-even"><td>len</td>
-<td>Max number of bytes to read in for value</td>
+<tr class="row-even"><td><p>len</p></td>
+<td><p>Max number of bytes to read in for value</p></td>
 </tr>
-<tr class="row-odd"><td>nodefault</td>
-<td>If set, default value is not copied name</td>
+<tr class="row-odd"><td><p>nodefault</p></td>
+<td><p>If set, default value is not copied name</p></td>
 </tr>
 </tbody>
 </table>
@@ -433,284 +437,284 @@ Structure must be filled in before calling the decoder routine
 <h2><a class="toc-backref" href="#id5">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_TYPE_BOOL">
-<span class="target" id="json_8h_1a11ab3cb66539e2449c658827a457e93f"></span><code class="descname">JSON_VALUE_TYPE_BOOL</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_BOOL" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a11ab3cb66539e2449c658827a457e93f"></span><code class="sig-name descname">JSON_VALUE_TYPE_BOOL</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_BOOL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_TYPE_UINT64">
-<span class="target" id="json_8h_1adce2e00a80a073a5e510b7e867ff41ed"></span><code class="descname">JSON_VALUE_TYPE_UINT64</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_UINT64" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1adce2e00a80a073a5e510b7e867ff41ed"></span><code class="sig-name descname">JSON_VALUE_TYPE_UINT64</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_UINT64" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_TYPE_INT64">
-<span class="target" id="json_8h_1ab2c19f524e9a60082e572c8a0e1b25a1"></span><code class="descname">JSON_VALUE_TYPE_INT64</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_INT64" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ab2c19f524e9a60082e572c8a0e1b25a1"></span><code class="sig-name descname">JSON_VALUE_TYPE_INT64</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_INT64" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_TYPE_STRING">
-<span class="target" id="json_8h_1a764c6ff4bd22d59e87b764e7fe4e5758"></span><code class="descname">JSON_VALUE_TYPE_STRING</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_STRING" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a764c6ff4bd22d59e87b764e7fe4e5758"></span><code class="sig-name descname">JSON_VALUE_TYPE_STRING</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_STRING" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_TYPE_ARRAY">
-<span class="target" id="json_8h_1a6767b994750c2c67164a5cbef9d3b80b"></span><code class="descname">JSON_VALUE_TYPE_ARRAY</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_ARRAY" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a6767b994750c2c67164a5cbef9d3b80b"></span><code class="sig-name descname">JSON_VALUE_TYPE_ARRAY</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_ARRAY" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_TYPE_OBJECT">
-<span class="target" id="json_8h_1a60c05d128fd472885c682134391bb890"></span><code class="descname">JSON_VALUE_TYPE_OBJECT</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_OBJECT" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a60c05d128fd472885c682134391bb890"></span><code class="sig-name descname">JSON_VALUE_TYPE_OBJECT</code><a class="headerlink" href="#c.JSON_VALUE_TYPE_OBJECT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_STRING">
-<span class="target" id="json_8h_1a8224bb688ff811e7c2529fdf33f00c98"></span><code class="descname">JSON_VALUE_STRING</code><span class="sig-paren">(</span>__jv, __str<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_STRING" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a8224bb688ff811e7c2529fdf33f00c98"></span><code class="sig-name descname">JSON_VALUE_STRING</code><span class="sig-paren">(</span><em>__jv</em>, <em>__str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_STRING" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_STRINGN">
-<span class="target" id="json_8h_1ac2898f9e8d34e76185a32e517ad1c162"></span><code class="descname">JSON_VALUE_STRINGN</code><span class="sig-paren">(</span>__jv, __str, __len<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_STRINGN" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ac2898f9e8d34e76185a32e517ad1c162"></span><code class="sig-name descname">JSON_VALUE_STRINGN</code><span class="sig-paren">(</span><em>__jv</em>, <em>__str</em>, <em>__len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_STRINGN" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_BOOL">
-<span class="target" id="json_8h_1abdf2bbd17c29ba5d8ae9bd89c65cb2ae"></span><code class="descname">JSON_VALUE_BOOL</code><span class="sig-paren">(</span>__jv, __v<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_BOOL" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1abdf2bbd17c29ba5d8ae9bd89c65cb2ae"></span><code class="sig-name descname">JSON_VALUE_BOOL</code><span class="sig-paren">(</span><em>__jv</em>, <em>__v</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_BOOL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_INT">
-<span class="target" id="json_8h_1a9d091db19c4f474ce8de520feb826abd"></span><code class="descname">JSON_VALUE_INT</code><span class="sig-paren">(</span>__jv, __v<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_INT" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a9d091db19c4f474ce8de520feb826abd"></span><code class="sig-name descname">JSON_VALUE_INT</code><span class="sig-paren">(</span><em>__jv</em>, <em>__v</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_INT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VALUE_UINT">
-<span class="target" id="json_8h_1a35c659ef5aafea168b29f2d7e054cfac"></span><code class="descname">JSON_VALUE_UINT</code><span class="sig-paren">(</span>__jv, __v<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_UINT" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a35c659ef5aafea168b29f2d7e054cfac"></span><code class="sig-name descname">JSON_VALUE_UINT</code><span class="sig-paren">(</span><em>__jv</em>, <em>__v</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_VALUE_UINT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_NITEMS">
-<span class="target" id="json_8h_1a37bd2b159616b9d97930ca56d9de2578"></span><code class="descname">JSON_NITEMS</code><span class="sig-paren">(</span>x<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_NITEMS" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a37bd2b159616b9d97930ca56d9de2578"></span><code class="sig-name descname">JSON_NITEMS</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_NITEMS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ATTR_MAX">
-<span class="target" id="json_8h_1a53cc0c059c9024bb8cf3e5ec4c5ae6f1"></span><code class="descname">JSON_ATTR_MAX</code><a class="headerlink" href="#c.JSON_ATTR_MAX" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a53cc0c059c9024bb8cf3e5ec4c5ae6f1"></span><code class="sig-name descname">JSON_ATTR_MAX</code><a class="headerlink" href="#c.JSON_ATTR_MAX" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_VAL_MAX">
-<span class="target" id="json_8h_1a052936e3c29907971b3a4c9ab78bd5fc"></span><code class="descname">JSON_VAL_MAX</code><a class="headerlink" href="#c.JSON_VAL_MAX" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a052936e3c29907971b3a4c9ab78bd5fc"></span><code class="sig-name descname">JSON_VAL_MAX</code><a class="headerlink" href="#c.JSON_VAL_MAX" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_OBSTART">
-<span class="target" id="json_8h_1ae9b6b147c3f6f6a2802d2b5f663ad3ed"></span><code class="descname">JSON_ERR_OBSTART</code><a class="headerlink" href="#c.JSON_ERR_OBSTART" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ae9b6b147c3f6f6a2802d2b5f663ad3ed"></span><code class="sig-name descname">JSON_ERR_OBSTART</code><a class="headerlink" href="#c.JSON_ERR_OBSTART" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_ATTRSTART">
-<span class="target" id="json_8h_1ab5f935675d0c4aae102f580b2e444101"></span><code class="descname">JSON_ERR_ATTRSTART</code><a class="headerlink" href="#c.JSON_ERR_ATTRSTART" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ab5f935675d0c4aae102f580b2e444101"></span><code class="sig-name descname">JSON_ERR_ATTRSTART</code><a class="headerlink" href="#c.JSON_ERR_ATTRSTART" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_BADATTR">
-<span class="target" id="json_8h_1a49588f5bac2e1cfc7b29a6bf14bd8ce6"></span><code class="descname">JSON_ERR_BADATTR</code><a class="headerlink" href="#c.JSON_ERR_BADATTR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a49588f5bac2e1cfc7b29a6bf14bd8ce6"></span><code class="sig-name descname">JSON_ERR_BADATTR</code><a class="headerlink" href="#c.JSON_ERR_BADATTR" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_ATTRLEN">
-<span class="target" id="json_8h_1aa2b5457f31db0dd45547497c49c7d22d"></span><code class="descname">JSON_ERR_ATTRLEN</code><a class="headerlink" href="#c.JSON_ERR_ATTRLEN" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1aa2b5457f31db0dd45547497c49c7d22d"></span><code class="sig-name descname">JSON_ERR_ATTRLEN</code><a class="headerlink" href="#c.JSON_ERR_ATTRLEN" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_NOARRAY">
-<span class="target" id="json_8h_1a50ca5aac77197d251d2cccc2a8eede64"></span><code class="descname">JSON_ERR_NOARRAY</code><a class="headerlink" href="#c.JSON_ERR_NOARRAY" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a50ca5aac77197d251d2cccc2a8eede64"></span><code class="sig-name descname">JSON_ERR_NOARRAY</code><a class="headerlink" href="#c.JSON_ERR_NOARRAY" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_NOBRAK">
-<span class="target" id="json_8h_1a62fe3d48bff4f4d8da521cc826039072"></span><code class="descname">JSON_ERR_NOBRAK</code><a class="headerlink" href="#c.JSON_ERR_NOBRAK" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a62fe3d48bff4f4d8da521cc826039072"></span><code class="sig-name descname">JSON_ERR_NOBRAK</code><a class="headerlink" href="#c.JSON_ERR_NOBRAK" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_STRLONG">
-<span class="target" id="json_8h_1a262de1ba9430fcf34d698cb1e3e00840"></span><code class="descname">JSON_ERR_STRLONG</code><a class="headerlink" href="#c.JSON_ERR_STRLONG" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a262de1ba9430fcf34d698cb1e3e00840"></span><code class="sig-name descname">JSON_ERR_STRLONG</code><a class="headerlink" href="#c.JSON_ERR_STRLONG" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_TOKLONG">
-<span class="target" id="json_8h_1a1fcd61c50cd518e662fe6e0f0d63999d"></span><code class="descname">JSON_ERR_TOKLONG</code><a class="headerlink" href="#c.JSON_ERR_TOKLONG" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a1fcd61c50cd518e662fe6e0f0d63999d"></span><code class="sig-name descname">JSON_ERR_TOKLONG</code><a class="headerlink" href="#c.JSON_ERR_TOKLONG" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_BADTRAIL">
-<span class="target" id="json_8h_1a15733fb3ee36332d5fc92a1bc4918fa2"></span><code class="descname">JSON_ERR_BADTRAIL</code><a class="headerlink" href="#c.JSON_ERR_BADTRAIL" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a15733fb3ee36332d5fc92a1bc4918fa2"></span><code class="sig-name descname">JSON_ERR_BADTRAIL</code><a class="headerlink" href="#c.JSON_ERR_BADTRAIL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_ARRAYSTART">
-<span class="target" id="json_8h_1a902bc1be02d2560d7ff3bf2bb96d9a3d"></span><code class="descname">JSON_ERR_ARRAYSTART</code><a class="headerlink" href="#c.JSON_ERR_ARRAYSTART" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a902bc1be02d2560d7ff3bf2bb96d9a3d"></span><code class="sig-name descname">JSON_ERR_ARRAYSTART</code><a class="headerlink" href="#c.JSON_ERR_ARRAYSTART" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_OBJARR">
-<span class="target" id="json_8h_1a25eaf8851f318c9fc148f9307abff072"></span><code class="descname">JSON_ERR_OBJARR</code><a class="headerlink" href="#c.JSON_ERR_OBJARR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a25eaf8851f318c9fc148f9307abff072"></span><code class="sig-name descname">JSON_ERR_OBJARR</code><a class="headerlink" href="#c.JSON_ERR_OBJARR" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_SUBTOOLONG">
-<span class="target" id="json_8h_1a82fecd648f98823f35d2a8955a44caa3"></span><code class="descname">JSON_ERR_SUBTOOLONG</code><a class="headerlink" href="#c.JSON_ERR_SUBTOOLONG" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a82fecd648f98823f35d2a8955a44caa3"></span><code class="sig-name descname">JSON_ERR_SUBTOOLONG</code><a class="headerlink" href="#c.JSON_ERR_SUBTOOLONG" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_BADSUBTRAIL">
-<span class="target" id="json_8h_1ad0243a253b7c930223c03ad8177c302d"></span><code class="descname">JSON_ERR_BADSUBTRAIL</code><a class="headerlink" href="#c.JSON_ERR_BADSUBTRAIL" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ad0243a253b7c930223c03ad8177c302d"></span><code class="sig-name descname">JSON_ERR_BADSUBTRAIL</code><a class="headerlink" href="#c.JSON_ERR_BADSUBTRAIL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_SUBTYPE">
-<span class="target" id="json_8h_1a0a3fa03e0db4341a39cd4ab4b8702c6f"></span><code class="descname">JSON_ERR_SUBTYPE</code><a class="headerlink" href="#c.JSON_ERR_SUBTYPE" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a0a3fa03e0db4341a39cd4ab4b8702c6f"></span><code class="sig-name descname">JSON_ERR_SUBTYPE</code><a class="headerlink" href="#c.JSON_ERR_SUBTYPE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_BADSTRING">
-<span class="target" id="json_8h_1a9229773bc0269e975ca50cfd7773004e"></span><code class="descname">JSON_ERR_BADSTRING</code><a class="headerlink" href="#c.JSON_ERR_BADSTRING" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a9229773bc0269e975ca50cfd7773004e"></span><code class="sig-name descname">JSON_ERR_BADSTRING</code><a class="headerlink" href="#c.JSON_ERR_BADSTRING" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_CHECKFAIL">
-<span class="target" id="json_8h_1a6eeaa58961e416b9e365f0f1a9bb02f9"></span><code class="descname">JSON_ERR_CHECKFAIL</code><a class="headerlink" href="#c.JSON_ERR_CHECKFAIL" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a6eeaa58961e416b9e365f0f1a9bb02f9"></span><code class="sig-name descname">JSON_ERR_CHECKFAIL</code><a class="headerlink" href="#c.JSON_ERR_CHECKFAIL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_NOPARSTR">
-<span class="target" id="json_8h_1aa2fbb24cc33f7c02782eb55931216ebf"></span><code class="descname">JSON_ERR_NOPARSTR</code><a class="headerlink" href="#c.JSON_ERR_NOPARSTR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1aa2fbb24cc33f7c02782eb55931216ebf"></span><code class="sig-name descname">JSON_ERR_NOPARSTR</code><a class="headerlink" href="#c.JSON_ERR_NOPARSTR" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_BADENUM">
-<span class="target" id="json_8h_1adc614fc0da80c147e0a151c6cff885fb"></span><code class="descname">JSON_ERR_BADENUM</code><a class="headerlink" href="#c.JSON_ERR_BADENUM" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1adc614fc0da80c147e0a151c6cff885fb"></span><code class="sig-name descname">JSON_ERR_BADENUM</code><a class="headerlink" href="#c.JSON_ERR_BADENUM" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_QNONSTRING">
-<span class="target" id="json_8h_1aa0520a896b6fb83d207d15d251920d63"></span><code class="descname">JSON_ERR_QNONSTRING</code><a class="headerlink" href="#c.JSON_ERR_QNONSTRING" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1aa0520a896b6fb83d207d15d251920d63"></span><code class="sig-name descname">JSON_ERR_QNONSTRING</code><a class="headerlink" href="#c.JSON_ERR_QNONSTRING" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_NONQSTRING">
-<span class="target" id="json_8h_1af025d85e2942410dfb1f0710317aa7f4"></span><code class="descname">JSON_ERR_NONQSTRING</code><a class="headerlink" href="#c.JSON_ERR_NONQSTRING" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1af025d85e2942410dfb1f0710317aa7f4"></span><code class="sig-name descname">JSON_ERR_NONQSTRING</code><a class="headerlink" href="#c.JSON_ERR_NONQSTRING" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_MISC">
-<span class="target" id="json_8h_1a254fbb573de24c7b9e3ed97645276c10"></span><code class="descname">JSON_ERR_MISC</code><a class="headerlink" href="#c.JSON_ERR_MISC" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a254fbb573de24c7b9e3ed97645276c10"></span><code class="sig-name descname">JSON_ERR_MISC</code><a class="headerlink" href="#c.JSON_ERR_MISC" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_BADNUM">
-<span class="target" id="json_8h_1a594e72a77760007ddc6a10ca7815903a"></span><code class="descname">JSON_ERR_BADNUM</code><a class="headerlink" href="#c.JSON_ERR_BADNUM" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a594e72a77760007ddc6a10ca7815903a"></span><code class="sig-name descname">JSON_ERR_BADNUM</code><a class="headerlink" href="#c.JSON_ERR_BADNUM" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_ERR_NULLPTR">
-<span class="target" id="json_8h_1ad254d2a4dc8f19dbc77b754f1f474c3a"></span><code class="descname">JSON_ERR_NULLPTR</code><a class="headerlink" href="#c.JSON_ERR_NULLPTR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ad254d2a4dc8f19dbc77b754f1f474c3a"></span><code class="sig-name descname">JSON_ERR_NULLPTR</code><a class="headerlink" href="#c.JSON_ERR_NULLPTR" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_STRUCT_OBJECT">
-<span class="target" id="json_8h_1ab8064a761eae5bfc5692146cbc221ada"></span><code class="descname">JSON_STRUCT_OBJECT</code><span class="sig-paren">(</span>s, f<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_STRUCT_OBJECT" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ab8064a761eae5bfc5692146cbc221ada"></span><code class="sig-name descname">JSON_STRUCT_OBJECT</code><span class="sig-paren">(</span><em>s</em>, <em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_STRUCT_OBJECT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="define">
+<dl class="c macro">
 <dt id="c.JSON_STRUCT_ARRAY">
-<span class="target" id="json_8h_1a000ccd5256487dea6e2cdece3dc22487"></span><code class="descname">JSON_STRUCT_ARRAY</code><span class="sig-paren">(</span>a, e, n<span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_STRUCT_ARRAY" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a000ccd5256487dea6e2cdece3dc22487"></span><code class="sig-name descname">JSON_STRUCT_ARRAY</code><span class="sig-paren">(</span><em>a</em>, <em>e</em>, <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#c.JSON_STRUCT_ARRAY" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
-<dl class="typedef">
+<dl class="c type">
 <dt id="c.json_write_func_t">
-<span class="target" id="json_8h_1a69ffd31fcc1a28b60ad7663fe751fe20"></span><em class="property">typedef </em>int<code class="descname">(* json_write_func_t)</code><span class="sig-paren">(</span>void<em>&nbsp;*buf</em>, char<em>&nbsp;*data</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_write_func_t" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a69ffd31fcc1a28b60ad7663fe751fe20"></span><em class="property">typedef </em>int (*<code class="sig-name descname">json_write_func_t</code>)<span class="sig-paren">(</span>void *buf, char *data, int len<span class="sig-paren">)</span><a class="headerlink" href="#c.json_write_func_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="typedef">
+<dl class="c type">
 <dt id="c.json_buffer_read_next_byte_t">
-<span class="target" id="json_8h_1a549ad08a01c91b8e724db44b2ddf3fbb"></span><em class="property">typedef </em>char<code class="descname">(* json_buffer_read_next_byte_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a><em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_buffer_read_next_byte_t" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a549ad08a01c91b8e724db44b2ddf3fbb"></span><em class="property">typedef </em>char (*<code class="sig-name descname">json_buffer_read_next_byte_t</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_buffer_read_next_byte_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="typedef">
+<dl class="c type">
 <dt id="c.json_buffer_read_prev_byte_t">
-<span class="target" id="json_8h_1a3b4f99ff7b7fc542b1a0f9940ee1ed26"></span><em class="property">typedef </em>char<code class="descname">(* json_buffer_read_prev_byte_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a><em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_buffer_read_prev_byte_t" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a3b4f99ff7b7fc542b1a0f9940ee1ed26"></span><em class="property">typedef </em>char (*<code class="sig-name descname">json_buffer_read_prev_byte_t</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_buffer_read_prev_byte_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="typedef">
+<dl class="c type">
 <dt id="c.json_buffer_readn_t">
-<span class="target" id="json_8h_1afdb5e06ff85fb414196c0bac63050349"></span><em class="property">typedef </em>int<code class="descname">(* json_buffer_readn_t)</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a><em>&nbsp;*</em>, char<em>&nbsp;*buf</em>, int<em>&nbsp;n</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_buffer_readn_t" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1afdb5e06ff85fb414196c0bac63050349"></span><em class="property">typedef </em>int (*<code class="sig-name descname">json_buffer_readn_t</code>)<span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a>*, char *buf, int n<span class="sig-paren">)</span><a class="headerlink" href="#c.json_buffer_readn_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Enums</p>
-<dl class="enum">
+<dl class="c enum">
 <dt id="c.json_type">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06c"></span><em class="property">enum </em><code class="descname">json_type</code><a class="headerlink" href="#c.json_type" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06c"></span><em class="property">enum </em><code class="sig-name descname">json_type</code><a class="headerlink" href="#c.json_type" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><em>Values:</em></p>
-<dl class="enumvalue">
-<dt id="c.t_integer">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06caa5e808cd90a0f95eebf92ce1ef8c6ee8"></span><code class="descname">t_integer</code><a class="headerlink" href="#c.t_integer" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_integer">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06caa5e808cd90a0f95eebf92ce1ef8c6ee8"></span><em class="property">enumerator </em><code class="sig-name descname">t_integer</code><a class="headerlink" href="#c.json_type.t_integer" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_uinteger">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca0ac65198ff55ee5dd3ae1f7463330705"></span><code class="descname">t_uinteger</code><a class="headerlink" href="#c.t_uinteger" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_uinteger">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca0ac65198ff55ee5dd3ae1f7463330705"></span><em class="property">enumerator </em><code class="sig-name descname">t_uinteger</code><a class="headerlink" href="#c.json_type.t_uinteger" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_real">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06cab7d40da723d37968f9553fc42dfca586"></span><code class="descname">t_real</code><a class="headerlink" href="#c.t_real" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_real">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06cab7d40da723d37968f9553fc42dfca586"></span><em class="property">enumerator </em><code class="sig-name descname">t_real</code><a class="headerlink" href="#c.json_type.t_real" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_string">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca8246d1915b02da046caa65da7b069675"></span><code class="descname">t_string</code><a class="headerlink" href="#c.t_string" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_string">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca8246d1915b02da046caa65da7b069675"></span><em class="property">enumerator </em><code class="sig-name descname">t_string</code><a class="headerlink" href="#c.json_type.t_string" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_boolean">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca43e05912dd4d27a96ece5e1993f8c9e8"></span><code class="descname">t_boolean</code><a class="headerlink" href="#c.t_boolean" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_boolean">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca43e05912dd4d27a96ece5e1993f8c9e8"></span><em class="property">enumerator </em><code class="sig-name descname">t_boolean</code><a class="headerlink" href="#c.json_type.t_boolean" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_character">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca82166ed312c58365bc369faf61e77b4c"></span><code class="descname">t_character</code><a class="headerlink" href="#c.t_character" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_character">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca82166ed312c58365bc369faf61e77b4c"></span><em class="property">enumerator </em><code class="sig-name descname">t_character</code><a class="headerlink" href="#c.json_type.t_character" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_object">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca63d3156c32c0c1b4fa4c386b09f07b7c"></span><code class="descname">t_object</code><a class="headerlink" href="#c.t_object" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_object">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca63d3156c32c0c1b4fa4c386b09f07b7c"></span><em class="property">enumerator </em><code class="sig-name descname">t_object</code><a class="headerlink" href="#c.json_type.t_object" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_structobject">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06caeea09a68055a2331c5b65597e50995f1"></span><code class="descname">t_structobject</code><a class="headerlink" href="#c.t_structobject" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_structobject">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06caeea09a68055a2331c5b65597e50995f1"></span><em class="property">enumerator </em><code class="sig-name descname">t_structobject</code><a class="headerlink" href="#c.json_type.t_structobject" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_array">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06cad80026c5b004fb095839e2fece6e3fde"></span><code class="descname">t_array</code><a class="headerlink" href="#c.t_array" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_array">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06cad80026c5b004fb095839e2fece6e3fde"></span><em class="property">enumerator </em><code class="sig-name descname">t_array</code><a class="headerlink" href="#c.json_type.t_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_check">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca09c543b90060fee4eaf13f459c36fe1a"></span><code class="descname">t_check</code><a class="headerlink" href="#c.t_check" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_check">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06ca09c543b90060fee4eaf13f459c36fe1a"></span><em class="property">enumerator </em><code class="sig-name descname">t_check</code><a class="headerlink" href="#c.json_type.t_check" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="enumvalue">
-<dt id="c.t_ignore">
-<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06cadc4bd949759bc4c9505eb101ae9da92c"></span><code class="descname">t_ignore</code><a class="headerlink" href="#c.t_ignore" title="Permalink to this definition">¶</a></dt>
+<dl class="c enumerator">
+<dt id="c.json_type.t_ignore">
+<span class="target" id="json_8h_1ac75c61993722a9b8aaa44704072ec06cadc4bd949759bc4c9505eb101ae9da92c"></span><em class="property">enumerator </em><code class="sig-name descname">t_ignore</code><a class="headerlink" href="#c.json_type.t_ignore" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -718,488 +722,488 @@ Structure must be filled in before calling the decoder routine
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_object_start">
-<span class="target" id="json_8h_1a60de81baf4d0fb064319f65476357b1f"></span>int <code class="descname">json_encode_object_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_start" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a60de81baf4d0fb064319f65476357b1f"></span>int <code class="sig-name descname">json_encode_object_start</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_object_key">
-<span class="target" id="json_8h_1a66c51fb624e215f2d9cc88291fc95ee5"></span>int <code class="descname">json_encode_object_key</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>  *<em>&nbsp;encoder</em>, char *<em>&nbsp;key</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_key" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a66c51fb624e215f2d9cc88291fc95ee5"></span>int <code class="sig-name descname">json_encode_object_key</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> *<em>encoder</em>, char *<em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_key" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_object_entry">
-<span class="target" id="json_8h_1a5bb380e43c2aff392b23b4671aba1117"></span>int <code class="descname">json_encode_object_entry</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> <em>&nbsp;*</em>, char<em>&nbsp;*</em>, struct  <a class="reference internal" href="#c.json_value" title="json_value">json_value</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_entry" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a5bb380e43c2aff392b23b4671aba1117"></span>int <code class="sig-name descname">json_encode_object_entry</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>*, char*, <em class="property">struct</em> <a class="reference internal" href="#c.json_value" title="json_value">json_value</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_entry" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_object_finish">
-<span class="target" id="json_8h_1a2440f4fea6c79c9d886e5d9fd6ccd255"></span>int <code class="descname">json_encode_object_finish</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_finish" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a2440f4fea6c79c9d886e5d9fd6ccd255"></span>int <code class="sig-name descname">json_encode_object_finish</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_object_finish" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_array_name">
-<span class="target" id="json_8h_1af4158fed79453824ee310aeaf12d2c6f"></span>int <code class="descname">json_encode_array_name</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>  *<em>&nbsp;encoder</em>, char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_name" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1af4158fed79453824ee310aeaf12d2c6f"></span>int <code class="sig-name descname">json_encode_array_name</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> *<em>encoder</em>, char *<em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_name" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_array_start">
-<span class="target" id="json_8h_1a49eceabeb1866eb8f3568f584c5f62a1"></span>int <code class="descname">json_encode_array_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>  *<em>&nbsp;encoder</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_start" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a49eceabeb1866eb8f3568f584c5f62a1"></span>int <code class="sig-name descname">json_encode_array_start</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> *<em>encoder</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_array_value">
-<span class="target" id="json_8h_1a3ad18484b654fbea01746f2633bc80d4"></span>int <code class="descname">json_encode_array_value</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>  *<em>&nbsp;encoder</em>, struct  <a class="reference internal" href="#c.json_value" title="json_value">json_value</a>  *<em>&nbsp;val</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_value" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a3ad18484b654fbea01746f2633bc80d4"></span>int <code class="sig-name descname">json_encode_array_value</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> *<em>encoder</em>, <em class="property">struct</em> <a class="reference internal" href="#c.json_value" title="json_value">json_value</a> *<em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_encode_array_finish">
-<span class="target" id="json_8h_1a4b331504f35a3b492658e3cf46e7d173"></span>int <code class="descname">json_encode_array_finish</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a>  *<em>&nbsp;encoder</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_finish" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a4b331504f35a3b492658e3cf46e7d173"></span>int <code class="sig-name descname">json_encode_array_finish</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_encoder" title="json_encoder">json_encoder</a> *<em>encoder</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_encode_array_finish" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_read_object">
-<span class="target" id="json_8h_1a0d74b15e9c3a69fd85b1dffd7c26740f"></span>int <code class="descname">json_read_object</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a> <em>&nbsp;*</em>, const struct  <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_read_object" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a0d74b15e9c3a69fd85b1dffd7c26740f"></span>int <code class="sig-name descname">json_read_object</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a>*, <em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_read_object" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.json_read_array">
-<span class="target" id="json_8h_1a3b1c480e9a3e520c76b4f196f06e162f"></span>int <code class="descname">json_read_array</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a> <em>&nbsp;*</em>, const struct  <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.json_read_array" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="json_8h_1a3b1c480e9a3e520c76b4f196f06e162f"></span>int <code class="sig-name descname">json_read_array</code><span class="sig-paren">(</span><em class="property">struct</em> <a class="reference internal" href="#c.json_buffer" title="json_buffer">json_buffer</a>*, <em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>*<span class="sig-paren">)</span><a class="headerlink" href="#c.json_read_array" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
-<dl class="struct">
+<dl class="c struct">
 <dt id="c.json_value">
-<span class="target" id="structjson__value"></span><em class="property">struct </em><code class="descname">json_value</code><a class="headerlink" href="#c.json_value" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structjson__value"></span><em class="property">struct </em><code class="sig-name descname">json_value</code><a class="headerlink" href="#c.json_value" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.json_value::jv_pad1">
-<span class="target" id="structjson__value_1a4dbb78de5550df4839f6905098307dd2"></span>uint8_t <code class="descname">jv_pad1</code><a class="headerlink" href="#c.json_value::jv_pad1" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_pad1">
+<span class="target" id="structjson__value_1a4dbb78de5550df4839f6905098307dd2"></span>uint8_t <code class="sig-name descname">jv_pad1</code><a class="headerlink" href="#c.json_value.jv_pad1" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt id="c.json_value::jv_type">
-<span class="target" id="structjson__value_1a10775a32dbe037efe80d34f7323aab09"></span>uint8_t <code class="descname">jv_type</code><a class="headerlink" href="#c.json_value::jv_type" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_type">
+<span class="target" id="structjson__value_1a10775a32dbe037efe80d34f7323aab09"></span>uint8_t <code class="sig-name descname">jv_type</code><a class="headerlink" href="#c.json_value.jv_type" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt id="c.json_value::jv_len">
-<span class="target" id="structjson__value_1a1b8d344d2706dcda6a210be81327ee05"></span>uint16_t <code class="descname">jv_len</code><a class="headerlink" href="#c.json_value::jv_len" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_len">
+<span class="target" id="structjson__value_1a1b8d344d2706dcda6a210be81327ee05"></span>uint16_t <code class="sig-name descname">jv_len</code><a class="headerlink" href="#c.json_value.jv_len" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt id="c.json_value::jv_val">
-<span class="target" id="structjson__value_1a18668657f5a25feff95a78e85321bbea"></span>union <a class="reference internal" href="#c.json_value" title="json_value">json_value</a>::&#64;12  <code class="descname">jv_val</code><a class="headerlink" href="#c.json_value::jv_val" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_encoder">
-<span class="target" id="structjson__encoder"></span><em class="property">struct </em><code class="descname">json_encoder</code><a class="headerlink" href="#c.json_encoder" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.json_encoder::je_write">
-<span class="target" id="structjson__encoder_1a8c57b97304cc40133c7622cc235553b5"></span><a class="reference internal" href="#c.json_write_func_t" title="json_write_func_t">json_write_func_t</a> <code class="descname">je_write</code><a class="headerlink" href="#c.json_encoder::je_write" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_encoder::je_arg">
-<span class="target" id="structjson__encoder_1a208e659f1d009189e3b01adba9f1fb35"></span>void* <code class="descname">je_arg</code><a class="headerlink" href="#c.json_encoder::je_arg" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_encoder::je_wr_commas">
-<span class="target" id="structjson__encoder_1a13ad211e80a1cfa0a2f95d2216fdb8f5"></span>int <code class="descname">je_wr_commas</code><a class="headerlink" href="#c.json_encoder::je_wr_commas" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__encoder_1a0e8407af7666345ea144e3309e71f27f"></span><code class="descname">char json_encoder::je_encode_buf[64]</code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_enum_t">
-<span class="target" id="structjson__enum__t"></span><em class="property">struct </em><code class="descname">json_enum_t</code><a class="headerlink" href="#c.json_enum_t" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.json_enum_t::name">
-<span class="target" id="structjson__enum__t_1ae862509591dc420f72f1969406d24d74"></span>char* <code class="descname">name</code><a class="headerlink" href="#c.json_enum_t::name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_enum_t::value">
-<span class="target" id="structjson__enum__t_1ace6bd6837b006c8a656e2fc2f0caa86f"></span>long long int <code class="descname">value</code><a class="headerlink" href="#c.json_enum_t::value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_array_t">
-<span class="target" id="structjson__array__t"></span><em class="property">struct </em><code class="descname">json_array_t</code><a class="headerlink" href="#c.json_array_t" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.json_array_t::element_type">
-<span class="target" id="structjson__array__t_1a8cd8a1de109d557b4c415aaf51fc3dbc"></span><a class="reference internal" href="#c.json_type" title="json_type">json_type</a> <code class="descname">element_type</code><a class="headerlink" href="#c.json_array_t::element_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_array_t::arr">
-<span class="target" id="structjson__array__t_1a934c4efcd10b666ff824519004573742"></span>union <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>::&#64;14  <code class="descname">arr</code><a class="headerlink" href="#c.json_array_t::arr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_array_t::count">
-<span class="target" id="structjson__array__t_1ab863103f7024c73a33486826ee4cd4d3"></span>int* <code class="descname">count</code><a class="headerlink" href="#c.json_array_t::count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_array_t::maxlen">
-<span class="target" id="structjson__array__t_1a5a8c05a0ca8b218cff165905a631d129"></span>int <code class="descname">maxlen</code><a class="headerlink" href="#c.json_array_t::maxlen" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_attr_t">
-<span class="target" id="structjson__attr__t"></span><em class="property">struct </em><code class="descname">json_attr_t</code><a class="headerlink" href="#c.json_attr_t" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.json_attr_t::attribute">
-<span class="target" id="structjson__attr__t_1a79c32d3aa2aef950f06211648dff349f"></span>char* <code class="descname">attribute</code><a class="headerlink" href="#c.json_attr_t::attribute" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_attr_t::type">
-<span class="target" id="structjson__attr__t_1ad655f40e27ee571d94f95c88288c2226"></span><a class="reference internal" href="#c.json_type" title="json_type">json_type</a> <code class="descname">type</code><a class="headerlink" href="#c.json_attr_t::type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_attr_t::addr">
-<span class="target" id="structjson__attr__t_1ab04312ac1fd9a4ddd0fb93ae82e7c356"></span>union <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a>::&#64;21  <code class="descname">addr</code><a class="headerlink" href="#c.json_attr_t::addr" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_attr_t::dflt">
-<span class="target" id="structjson__attr__t_1aff5510051ae0db34dddd8ecd961be7ef"></span>union <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a>::&#64;22  <code class="descname">dflt</code><a class="headerlink" href="#c.json_attr_t::dflt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_attr_t::len">
-<span class="target" id="structjson__attr__t_1a74e96688c431b799ecd6477cee550943"></span>size_t <code class="descname">len</code><a class="headerlink" href="#c.json_attr_t::len" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_attr_t::map">
-<span class="target" id="structjson__attr__t_1a2392183304f21ee8c6bd897a3136d431"></span>const struct <a class="reference internal" href="#c.json_enum_t" title="json_enum_t">json_enum_t</a>* <code class="descname">map</code><a class="headerlink" href="#c.json_attr_t::map" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_attr_t::nodefault">
-<span class="target" id="structjson__attr__t_1a1d514270f3a0bf1470f7e798ccf2d7c1"></span>bool <code class="descname">nodefault</code><a class="headerlink" href="#c.json_attr_t::nodefault" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_buffer">
-<span class="target" id="structjson__buffer"></span><em class="property">struct </em><code class="descname">json_buffer</code><a class="headerlink" href="#c.json_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.json_buffer::jb_readn">
-<span class="target" id="structjson__buffer_1acca8019b4ff5dbc8720c8fe81d8f211a"></span><a class="reference internal" href="#c.json_buffer_readn_t" title="json_buffer_readn_t">json_buffer_readn_t</a> <code class="descname">jb_readn</code><a class="headerlink" href="#c.json_buffer::jb_readn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_buffer::jb_read_next">
-<span class="target" id="structjson__buffer_1a8c575de00f3ccf24b63f25962b5cf9e9"></span><a class="reference internal" href="#c.json_buffer_read_next_byte_t" title="json_buffer_read_next_byte_t">json_buffer_read_next_byte_t</a> <code class="descname">jb_read_next</code><a class="headerlink" href="#c.json_buffer::jb_read_next" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt id="c.json_buffer::jb_read_prev">
-<span class="target" id="structjson__buffer_1a9f63fd401c42d75adf3edcc41055b5e7"></span><a class="reference internal" href="#c.json_buffer_read_prev_byte_t" title="json_buffer_read_prev_byte_t">json_buffer_read_prev_byte_t</a> <code class="descname">jb_read_prev</code><a class="headerlink" href="#c.json_buffer::jb_read_prev" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="union">
+<dl class="c var">
 <dt id="c.json_value.jv_val">
-<span class="target" id="unionjson__value_8jv__val"></span><em class="property">union </em><code class="descname">json_value.jv_val</code><a class="headerlink" href="#c.json_value.jv_val" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__value_8jv__val_1a7b774effe4a349c6dd82ad4f4f21d34c"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__value_8jv__val_1a3d296788f2a7e19ffbd912521d94a5f4"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__value_8jv__val_1a341be97d9aff90c9978347f66f945b77"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__value_8jv__val_1aece0fa92c82afc69092153da33069c87"></span><code class="descname"></code></dt>
+<span class="target" id="structjson__value_1aa7dfa1a5685146963a9a648fff704934"></span><em class="property">union</em> <a class="reference internal" href="#c.json_value" title="json_value">json_value</a>.<strong>[anonymous]</strong> <code class="sig-name descname">jv_val</code><a class="headerlink" href="#c.json_value.jv_val" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 </dd></dl>
 
-<dl class="struct">
-<dt id="c.json_value.jv_val.composite">
-<span class="target" id="structjson__value_8jv__val_8composite"></span><em class="property">struct </em><code class="descname">json_value.jv_val.composite</code><a class="headerlink" href="#c.json_value.jv_val.composite" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
+<dl class="c struct">
+<dt id="c.json_encoder">
+<span class="target" id="structjson__encoder"></span><em class="property">struct </em><code class="sig-name descname">json_encoder</code><a class="headerlink" href="#c.json_encoder" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__value_8jv__val_8composite_1a14f802e1fba977727845e8872c1743a7"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_encoder.je_write">
+<span class="target" id="structjson__encoder_1a8c57b97304cc40133c7622cc235553b5"></span><a class="reference internal" href="#c.json_write_func_t" title="json_write_func_t">json_write_func_t</a> <code class="sig-name descname">je_write</code><a class="headerlink" href="#c.json_encoder.je_write" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__value_8jv__val_8composite_1af09cc7ee3a9a93273f4b80601cafb00c"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_encoder.je_arg">
+<span class="target" id="structjson__encoder_1a208e659f1d009189e3b01adba9f1fb35"></span>void *<code class="sig-name descname">je_arg</code><a class="headerlink" href="#c.json_encoder.je_arg" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_encoder.je_wr_commas">
+<span class="target" id="structjson__encoder_1a13ad211e80a1cfa0a2f95d2216fdb8f5"></span>int <code class="sig-name descname">je_wr_commas</code><a class="headerlink" href="#c.json_encoder.je_wr_commas" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_encoder.je_encode_buf">
+<span class="target" id="structjson__encoder_1a0e8407af7666345ea144e3309e71f27f"></span>char <code class="sig-name descname">je_encode_buf</code>[64]<a class="headerlink" href="#c.json_encoder.je_encode_buf" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 </dd></dl>
 
-<dl class="union">
+<dl class="c struct">
+<dt id="c.json_enum_t">
+<span class="target" id="structjson__enum__t"></span><em class="property">struct </em><code class="sig-name descname">json_enum_t</code><a class="headerlink" href="#c.json_enum_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_enum_t.name">
+<span class="target" id="structjson__enum__t_1ae862509591dc420f72f1969406d24d74"></span>char *<code class="sig-name descname">name</code><a class="headerlink" href="#c.json_enum_t.name" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_enum_t.value">
+<span class="target" id="structjson__enum__t_1ace6bd6837b006c8a656e2fc2f0caa86f"></span>long long int <code class="sig-name descname">value</code><a class="headerlink" href="#c.json_enum_t.value" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt id="c.json_array_t">
+<span class="target" id="structjson__array__t"></span><em class="property">struct </em><code class="sig-name descname">json_array_t</code><a class="headerlink" href="#c.json_array_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.element_type">
+<span class="target" id="structjson__array__t_1a8cd8a1de109d557b4c415aaf51fc3dbc"></span><a class="reference internal" href="#c.json_type" title="json_type">json_type</a> <code class="sig-name descname">element_type</code><a class="headerlink" href="#c.json_array_t.element_type" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
 <dt id="c.json_array_t.arr">
-<span class="target" id="unionjson__array__t_8arr"></span><em class="property">union </em><code class="descname">json_array_t.arr</code><a class="headerlink" href="#c.json_array_t.arr" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__array__t_8arr_1a5891da2d64975cae48d175d1e001f5da"></span><code class="descname"></code></dt>
+<span class="target" id="structjson__array__t_1a12afe641f75dbf8bb9e5299beef3fb11"></span><em class="property">union</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong> <code class="sig-name descname">arr</code><a class="headerlink" href="#c.json_array_t.arr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__array__t_8arr_1a8bcf6629759bd278a5c6266bd9c054f8"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_array_t.count">
+<span class="target" id="structjson__array__t_1ab863103f7024c73a33486826ee4cd4d3"></span>int *<code class="sig-name descname">count</code><a class="headerlink" href="#c.json_array_t.count" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__array__t_8arr_1a0f6d4c87224d52f488225cab8b1096f5"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__array__t_8arr_1aea551a855dcde1be2a73e5a36931ba56"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__array__t_8arr_1a7d1dbc271aa4b8e06fc199d250ce8e17"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__array__t_8arr_1aefff7868ab542964cb9b3752d3ab0357"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_array_t.maxlen">
+<span class="target" id="structjson__array__t_1a5a8c05a0ca8b218cff165905a631d129"></span>int <code class="sig-name descname">maxlen</code><a class="headerlink" href="#c.json_array_t.maxlen" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 </dd></dl>
 
-<dl class="struct">
-<dt id="c.json_array_t.arr.objects">
-<span class="target" id="structjson__array__t_8arr_8objects"></span><em class="property">struct </em><code class="descname">json_array_t.arr.objects</code><a class="headerlink" href="#c.json_array_t.arr.objects" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
+<dl class="c struct">
+<dt id="c.json_attr_t">
+<span class="target" id="structjson__attr__t"></span><em class="property">struct </em><code class="sig-name descname">json_attr_t</code><a class="headerlink" href="#c.json_attr_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8objects_1a2e282b0d23d6ec55185caeb87b41c0e0"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_attr_t.attribute">
+<span class="target" id="structjson__attr__t_1a79c32d3aa2aef950f06211648dff349f"></span>char *<code class="sig-name descname">attribute</code><a class="headerlink" href="#c.json_attr_t.attribute" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8objects_1a593616de15330c0fb2d55e55410bf994"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_attr_t.type">
+<span class="target" id="structjson__attr__t_1ad655f40e27ee571d94f95c88288c2226"></span><a class="reference internal" href="#c.json_type" title="json_type">json_type</a> <code class="sig-name descname">type</code><a class="headerlink" href="#c.json_attr_t.type" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8objects_1a47101375aa96fa02cfb1d55fd00af989"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_array_t.arr.strings">
-<span class="target" id="structjson__array__t_8arr_8strings"></span><em class="property">struct </em><code class="descname">json_array_t.arr.strings</code><a class="headerlink" href="#c.json_array_t.arr.strings" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8strings_1a8639cc5d6bb46f78e955b2876250222a"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8strings_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8strings_1a35bb86a90f9e22d8e6019b81ab8535e5"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_array_t.arr.integers">
-<span class="target" id="structjson__array__t_8arr_8integers"></span><em class="property">struct </em><code class="descname">json_array_t.arr.integers</code><a class="headerlink" href="#c.json_array_t.arr.integers" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8integers_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_array_t.arr.uintegers">
-<span class="target" id="structjson__array__t_8arr_8uintegers"></span><em class="property">struct </em><code class="descname">json_array_t.arr.uintegers</code><a class="headerlink" href="#c.json_array_t.arr.uintegers" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8uintegers_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_array_t.arr.reals">
-<span class="target" id="structjson__array__t_8arr_8reals"></span><em class="property">struct </em><code class="descname">json_array_t.arr.reals</code><a class="headerlink" href="#c.json_array_t.arr.reals" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8reals_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="struct">
-<dt id="c.json_array_t.arr.booleans">
-<span class="target" id="structjson__array__t_8arr_8booleans"></span><em class="property">struct </em><code class="descname">json_array_t.arr.booleans</code><a class="headerlink" href="#c.json_array_t.arr.booleans" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="structjson__array__t_8arr_8booleans_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-</div>
-</dd></dl>
-
-<dl class="union">
+<dl class="c var">
 <dt id="c.json_attr_t.addr">
-<span class="target" id="unionjson__attr__t_8addr"></span><em class="property">union </em><code class="descname">json_attr_t.addr</code><a class="headerlink" href="#c.json_attr_t.addr" title="Permalink to this definition">¶</a></dt>
-<dd><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1a157db7df530023575515d366c9b672e8"></span><code class="descname"></code></dt>
+<span class="target" id="structjson__attr__t_1a3f53074e44e639830b62209efef29ebf"></span><em class="property">union</em> <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a>.<strong>[anonymous]</strong> <code class="sig-name descname">addr</code><a class="headerlink" href="#c.json_attr_t.addr" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1a7ae91ffc6993509a08960de7d8307a71"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_attr_t.dflt">
+<span class="target" id="structjson__attr__t_1a513906d095552436267529275400f639"></span><em class="property">union</em> <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a>.<strong>[anonymous]</strong> <code class="sig-name descname">dflt</code><a class="headerlink" href="#c.json_attr_t.dflt" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1a4bca24304861acde5770fdbe3cc2503b"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_attr_t.len">
+<span class="target" id="structjson__attr__t_1a74e96688c431b799ecd6477cee550943"></span>size_t <code class="sig-name descname">len</code><a class="headerlink" href="#c.json_attr_t.len" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1ab45cffe084dd3d20d928bee85e7b0f21"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_attr_t.map">
+<span class="target" id="structjson__attr__t_1a2392183304f21ee8c6bd897a3136d431"></span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.json_enum_t" title="json_enum_t">json_enum_t</a> *<code class="sig-name descname">map</code><a class="headerlink" href="#c.json_attr_t.map" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1a84e2c64f38f78ba3ea5c905ab5a2da27"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1aa956161a69928cd130a889b88082fb6e"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1af1f713c9e000f5d3f280adbd124df4f5"></span><code class="descname"></code></dt>
-<dd></dd></dl>
-
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8addr_1a7a86c157ee9713c34fbd7a1ee40f0c5a"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_attr_t.nodefault">
+<span class="target" id="structjson__attr__t_1a1d514270f3a0bf1470f7e798ccf2d7c1"></span>bool <code class="sig-name descname">nodefault</code><a class="headerlink" href="#c.json_attr_t.nodefault" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 </dd></dl>
 
-<dl class="union">
-<dt id="c.json_attr_t.dflt">
-<span class="target" id="unionjson__attr__t_8dflt"></span><em class="property">union </em><code class="descname">json_attr_t.dflt</code><a class="headerlink" href="#c.json_attr_t.dflt" title="Permalink to this definition">¶</a></dt>
+<dl class="c struct">
+<dt id="c.json_buffer">
+<span class="target" id="structjson__buffer"></span><em class="property">struct </em><code class="sig-name descname">json_buffer</code><a class="headerlink" href="#c.json_buffer" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;json.h&gt;</em><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_buffer.jb_readn">
+<span class="target" id="structjson__buffer_1acca8019b4ff5dbc8720c8fe81d8f211a"></span><a class="reference internal" href="#c.json_buffer_readn_t" title="json_buffer_readn_t">json_buffer_readn_t</a> <code class="sig-name descname">jb_readn</code><a class="headerlink" href="#c.json_buffer.jb_readn" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_buffer.jb_read_next">
+<span class="target" id="structjson__buffer_1a8c575de00f3ccf24b63f25962b5cf9e9"></span><a class="reference internal" href="#c.json_buffer_read_next_byte_t" title="json_buffer_read_next_byte_t">json_buffer_read_next_byte_t</a> <code class="sig-name descname">jb_read_next</code><a class="headerlink" href="#c.json_buffer.jb_read_next" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_buffer.jb_read_prev">
+<span class="target" id="structjson__buffer_1a9f63fd401c42d75adf3edcc41055b5e7"></span><a class="reference internal" href="#c.json_buffer_read_prev_byte_t" title="json_buffer_read_prev_byte_t">json_buffer_read_prev_byte_t</a> <code class="sig-name descname">jb_read_prev</code><a class="headerlink" href="#c.json_buffer.jb_read_prev" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c union">
+<dt>
+<span class="target" id="unionjson__value_8jv__val"></span><em class="property">union </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_value" title="json_value">json_value</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">jv_val</code><br /></dt>
 <dd><div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8dflt_1a157db7df530023575515d366c9b672e8"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_val.u">
+<span class="target" id="unionjson__value_8jv__val_1a7b774effe4a349c6dd82ad4f4f21d34c"></span>uint64_t <code class="sig-name descname">u</code><a class="headerlink" href="#c.json_value.jv_val.u" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8dflt_1a7ae91ffc6993509a08960de7d8307a71"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_val.fl">
+<span class="target" id="unionjson__value_8jv__val_1a3d296788f2a7e19ffbd912521d94a5f4"></span>float <code class="sig-name descname">fl</code><a class="headerlink" href="#c.json_value.jv_val.fl" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8dflt_1a4bca24304861acde5770fdbe3cc2503b"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_val.str">
+<span class="target" id="unionjson__value_8jv__val_1a341be97d9aff90c9978347f66f945b77"></span>char *<code class="sig-name descname">str</code><a class="headerlink" href="#c.json_value.jv_val.str" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
-<dt>
-<span class="target" id="unionjson__attr__t_8dflt_1a84e2c64f38f78ba3ea5c905ab5a2da27"></span><code class="descname"></code></dt>
+<dl class="c var">
+<dt id="c.json_value.jv_val.composite">
+<span class="target" id="unionjson__value_8jv__val_1aece0fa92c82afc69092153da33069c87"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_value" title="json_value">json_value</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">composite</code><a class="headerlink" href="#c.json_value.jv_val.composite" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
+</div>
+</dd></dl>
+
+<dl class="c struct">
 <dt>
-<span class="target" id="unionjson__attr__t_8dflt_1aa956161a69928cd130a889b88082fb6e"></span><code class="descname"></code></dt>
+<span class="target" id="structjson__value_8jv__val_8composite"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_value" title="json_value">json_value</a>.<a class="reference internal" href="#c.json_value.jv_val" title="json_value.jv_val">jv_val</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">composite</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_value.jv_val.composite.keys">
+<span class="target" id="structjson__value_8jv__val_8composite_1a14f802e1fba977727845e8872c1743a7"></span>char **<code class="sig-name descname">keys</code><a class="headerlink" href="#c.json_value.jv_val.composite.keys" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="variable">
+<dl class="c var">
+<dt id="c.json_value.jv_val.composite.values">
+<span class="target" id="structjson__value_8jv__val_8composite_1af09cc7ee3a9a93273f4b80601cafb00c"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_value" title="json_value">json_value</a> **<code class="sig-name descname">values</code><a class="headerlink" href="#c.json_value.jv_val.composite.values" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c union">
 <dt>
-<span class="target" id="unionjson__attr__t_8dflt_1a0ba4439ee9a46d9d9f14c60f88f45f87"></span><code class="descname"></code></dt>
+<span class="target" id="unionjson__array__t_8arr"></span><em class="property">union </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">arr</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.arr.objects">
+<span class="target" id="unionjson__array__t_8arr_1a5891da2d64975cae48d175d1e001f5da"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">objects</code><a class="headerlink" href="#c.json_array_t.arr.objects" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.strings">
+<span class="target" id="unionjson__array__t_8arr_1a8bcf6629759bd278a5c6266bd9c054f8"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">strings</code><a class="headerlink" href="#c.json_array_t.arr.strings" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.integers">
+<span class="target" id="unionjson__array__t_8arr_1a0f6d4c87224d52f488225cab8b1096f5"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">integers</code><a class="headerlink" href="#c.json_array_t.arr.integers" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.uintegers">
+<span class="target" id="unionjson__array__t_8arr_1aea551a855dcde1be2a73e5a36931ba56"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">uintegers</code><a class="headerlink" href="#c.json_array_t.arr.uintegers" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.reals">
+<span class="target" id="unionjson__array__t_8arr_1a7d1dbc271aa4b8e06fc199d250ce8e17"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">reals</code><a class="headerlink" href="#c.json_array_t.arr.reals" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.booleans">
+<span class="target" id="unionjson__array__t_8arr_1aefff7868ab542964cb9b3752d3ab0357"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<strong>[anonymous]</strong>.<strong>[anonymous]</strong> <code class="sig-name descname">booleans</code><a class="headerlink" href="#c.json_array_t.arr.booleans" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8objects"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<a class="reference internal" href="#c.json_array_t.arr" title="json_array_t.arr">arr</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">objects</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.arr.objects.subtype">
+<span class="target" id="structjson__array__t_8arr_8objects_1a2e282b0d23d6ec55185caeb87b41c0e0"></span><em class="property">const</em> <em class="property">struct</em> <a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a> *<code class="sig-name descname">subtype</code><a class="headerlink" href="#c.json_array_t.arr.objects.subtype" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.objects.base">
+<span class="target" id="structjson__array__t_8arr_8objects_1a593616de15330c0fb2d55e55410bf994"></span>char *<code class="sig-name descname">base</code><a class="headerlink" href="#c.json_array_t.arr.objects.base" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.objects.stride">
+<span class="target" id="structjson__array__t_8arr_8objects_1a47101375aa96fa02cfb1d55fd00af989"></span>size_t <code class="sig-name descname">stride</code><a class="headerlink" href="#c.json_array_t.arr.objects.stride" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8strings"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<a class="reference internal" href="#c.json_array_t.arr" title="json_array_t.arr">arr</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">strings</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.arr.strings.ptrs">
+<span class="target" id="structjson__array__t_8arr_8strings_1a8639cc5d6bb46f78e955b2876250222a"></span>char **<code class="sig-name descname">ptrs</code><a class="headerlink" href="#c.json_array_t.arr.strings.ptrs" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.strings.store">
+<span class="target" id="structjson__array__t_8arr_8strings_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span>char *<code class="sig-name descname">store</code><a class="headerlink" href="#c.json_array_t.arr.strings.store" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_array_t.arr.strings.storelen">
+<span class="target" id="structjson__array__t_8arr_8strings_1a35bb86a90f9e22d8e6019b81ab8535e5"></span>int <code class="sig-name descname">storelen</code><a class="headerlink" href="#c.json_array_t.arr.strings.storelen" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8integers"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<a class="reference internal" href="#c.json_array_t.arr" title="json_array_t.arr">arr</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">integers</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.arr.integers.store">
+<span class="target" id="structjson__array__t_8arr_8integers_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span>long long int *<code class="sig-name descname">store</code><a class="headerlink" href="#c.json_array_t.arr.integers.store" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8uintegers"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<a class="reference internal" href="#c.json_array_t.arr" title="json_array_t.arr">arr</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">uintegers</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8uintegers_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span><code class="sig-name descname">long long unsigned int * store</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8reals"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<a class="reference internal" href="#c.json_array_t.arr" title="json_array_t.arr">arr</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">reals</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.arr.reals.store">
+<span class="target" id="structjson__array__t_8arr_8reals_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span>double *<code class="sig-name descname">store</code><a class="headerlink" href="#c.json_array_t.arr.reals.store" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt>
+<span class="target" id="structjson__array__t_8arr_8booleans"></span><em class="property">struct </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a>.<a class="reference internal" href="#c.json_array_t.arr" title="json_array_t.arr">arr</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">booleans</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_array_t.arr.booleans.store">
+<span class="target" id="structjson__array__t_8arr_8booleans_1a8cd892b7b97ef9489ae4479d3f4ef0fc"></span>bool *<code class="sig-name descname">store</code><a class="headerlink" href="#c.json_array_t.arr.booleans.store" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c union">
+<dt>
+<span class="target" id="unionjson__attr__t_8addr"></span><em class="property">union </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">addr</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_attr_t.addr.integer">
+<span class="target" id="unionjson__attr__t_8addr_1a157db7df530023575515d366c9b672e8"></span>long long int *<code class="sig-name descname">integer</code><a class="headerlink" href="#c.json_attr_t.addr.integer" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt>
+<span class="target" id="unionjson__attr__t_8addr_1a7ae91ffc6993509a08960de7d8307a71"></span><code class="sig-name descname">long long unsigned int * uinteger</code></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.addr.real">
+<span class="target" id="unionjson__attr__t_8addr_1a4bca24304861acde5770fdbe3cc2503b"></span>double *<code class="sig-name descname">real</code><a class="headerlink" href="#c.json_attr_t.addr.real" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.addr.string">
+<span class="target" id="unionjson__attr__t_8addr_1ab45cffe084dd3d20d928bee85e7b0f21"></span>char *<code class="sig-name descname">string</code><a class="headerlink" href="#c.json_attr_t.addr.string" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.addr.boolean">
+<span class="target" id="unionjson__attr__t_8addr_1a84e2c64f38f78ba3ea5c905ab5a2da27"></span>bool *<code class="sig-name descname">boolean</code><a class="headerlink" href="#c.json_attr_t.addr.boolean" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.addr.character">
+<span class="target" id="unionjson__attr__t_8addr_1aa956161a69928cd130a889b88082fb6e"></span>char *<code class="sig-name descname">character</code><a class="headerlink" href="#c.json_attr_t.addr.character" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.addr.array">
+<span class="target" id="unionjson__attr__t_8addr_1af1f713c9e000f5d3f280adbd124df4f5"></span><em class="property">struct</em> <a class="reference internal" href="#c.json_array_t" title="json_array_t">json_array_t</a> <code class="sig-name descname">array</code><a class="headerlink" href="#c.json_attr_t.addr.array" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.addr.offset">
+<span class="target" id="unionjson__attr__t_8addr_1a7a86c157ee9713c34fbd7a1ee40f0c5a"></span>size_t <code class="sig-name descname">offset</code><a class="headerlink" href="#c.json_attr_t.addr.offset" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c union">
+<dt>
+<span class="target" id="unionjson__attr__t_8dflt"></span><em class="property">union </em><code class="sig-prename descclassname"><a class="reference internal" href="#c.json_attr_t" title="json_attr_t">json_attr_t</a><code class="sig-prename descclassname">.</code></code><code class="sig-name descname">dflt</code><br /></dt>
+<dd><div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="c var">
+<dt id="c.json_attr_t.dflt.integer">
+<span class="target" id="unionjson__attr__t_8dflt_1a157db7df530023575515d366c9b672e8"></span>long long int <code class="sig-name descname">integer</code><a class="headerlink" href="#c.json_attr_t.dflt.integer" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt>
+<span class="target" id="unionjson__attr__t_8dflt_1a7ae91ffc6993509a08960de7d8307a71"></span><code class="sig-name descname">long long unsigned int uinteger</code></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.dflt.real">
+<span class="target" id="unionjson__attr__t_8dflt_1a4bca24304861acde5770fdbe3cc2503b"></span>double <code class="sig-name descname">real</code><a class="headerlink" href="#c.json_attr_t.dflt.real" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.dflt.boolean">
+<span class="target" id="unionjson__attr__t_8dflt_1a84e2c64f38f78ba3ea5c905ab5a2da27"></span>bool <code class="sig-name descname">boolean</code><a class="headerlink" href="#c.json_attr_t.dflt.boolean" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.dflt.character">
+<span class="target" id="unionjson__attr__t_8dflt_1aa956161a69928cd130a889b88082fb6e"></span>char <code class="sig-name descname">character</code><a class="headerlink" href="#c.json_attr_t.dflt.character" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c var">
+<dt id="c.json_attr_t.dflt.check">
+<span class="target" id="unionjson__attr__t_8dflt_1a0ba4439ee9a46d9d9f14c60f88f45f87"></span>char *<code class="sig-name descname">check</code><a class="headerlink" href="#c.json_attr_t.dflt.check" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>

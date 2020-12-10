@@ -80,7 +80,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.7.0, Apache NimBLE 1.2.0 </a> released (August 4, 2019)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.8.0, Apache NimBLE 1.3.0 </a> released (April 9, 2020)
             </div>
         </div>
     </div>
@@ -178,6 +178,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
   </option>
   <option value="/v1_7_0" >
     Version: 1.7.0
@@ -279,12 +282,12 @@ don’t have a valid checksum.</p>
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To add an element to circular buffer:</p>
 <ul class="simple">
-<li>Call fcb_append() to get the location where data can be written. If
+<li><p>Call fcb_append() to get the location where data can be written. If
 this fails due to lack of space, you can call fcb_rotate() to make
-some. And then call fcb_append() again.</li>
-<li>Use flash_area_write() to write element contents.</li>
-<li>Call fcb_append_finish() when done. This completes the entry by
-calculating the checksum.</li>
+some. And then call fcb_append() again.</p></li>
+<li><p>Use flash_area_write() to write element contents.</p></li>
+<li><p>Call fcb_append_finish() when done. This completes the entry by
+calculating the checksum.</p></li>
 </ul>
 <p>To read contents of the circular buffer: * Call fcb_walk() with a
 pointer to your callback function. * Within callback function copy in
@@ -303,45 +306,45 @@ to get the next one. And so on.</p>
 would use it figure out what parameters to pass to flash_area_read()
 to read element contents. Or to flash_area_write() when adding a new
 element.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct fcb_entry {
-    struct flash_area *fe_area;
-    uint32_t fe_elem_off;
-    uint32_t fe_data_off;
-    uint16_t fe_data_len;
-};
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">fcb_entry</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">flash_area</span> <span class="o">*</span><span class="n">fe_area</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">fe_elem_off</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">fe_data_off</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">fe_data_len</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="43%" />
-<col width="57%" />
+<col style="width: 43%" />
+<col style="width: 57%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Element</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>fe_area</td>
-<td>Pointer to
+<tbody>
+<tr class="row-even"><td><p>fe_area</p></td>
+<td><p>Pointer to
 info about the
 flash sector.
 Pass this to
 flash_area_x
 x()
-routines.</td>
+routines.</p></td>
 </tr>
-<tr class="row-odd"><td>fe_elem_
-off</td>
-<td>Byte offset
+<tr class="row-odd"><td><p>fe_elem_
+off</p></td>
+<td><p>Byte offset
 from the start
 of the sector
 to beginning
-of element.</td>
+of element.</p></td>
 </tr>
-<tr class="row-even"><td>fe_data_
-off</td>
-<td>Byte offset
+<tr class="row-even"><td><p>fe_data_
+off</p></td>
+<td><p>Byte offset
 from start of
 the sector to
 beginning of
@@ -350,49 +353,49 @@ Pass this to
 to
 flash_area_x
 x()
-routines.</td>
+routines.</p></td>
 </tr>
-<tr class="row-odd"><td>fe_data_
-len</td>
-<td>Number of
+<tr class="row-odd"><td><p>fe_data_
+len</p></td>
+<td><p>Number of
 bytes in the
-element.</td>
+element.</p></td>
 </tr>
 </tbody>
 </table>
 <p>The following data structure describes the FCB itself. First part should
 be filled in by the user before calling fcb_init(). The second part is
 used by FCB for its internal bookkeeping.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct fcb {
-    /* Caller of fcb_init fills this in */
-    uint32_t f_magic;           /* As placed on the disk */
-    uint8_t f_version;          /* Current version number of the data */
-    uint8_t f_sector_cnt;       /* Number of elements in sector array */
-    uint8_t f_scratch_cnt;      /* How many sectors should be kept empty */
-    struct flash_area *f_sectors; /* Array of sectors, must be contiguous */
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">fcb</span> <span class="p">{</span>
+    <span class="cm">/* Caller of fcb_init fills this in */</span>
+    <span class="kt">uint32_t</span> <span class="n">f_magic</span><span class="p">;</span>           <span class="cm">/* As placed on the disk */</span>
+    <span class="kt">uint8_t</span> <span class="n">f_version</span><span class="p">;</span>          <span class="cm">/* Current version number of the data */</span>
+    <span class="kt">uint8_t</span> <span class="n">f_sector_cnt</span><span class="p">;</span>       <span class="cm">/* Number of elements in sector array */</span>
+    <span class="kt">uint8_t</span> <span class="n">f_scratch_cnt</span><span class="p">;</span>      <span class="cm">/* How many sectors should be kept empty */</span>
+    <span class="k">struct</span> <span class="nc">flash_area</span> <span class="o">*</span><span class="n">f_sectors</span><span class="p">;</span> <span class="cm">/* Array of sectors, must be contiguous */</span>
 
-    /* Flash circular buffer internal state */
-    struct os_mutex f_mtx;      /* Locking for accessing the FCB data */
-    struct flash_area *f_oldest;
-    struct fcb_entry f_active;
-    uint16_t f_active_id;
-    uint8_t f_align;            /* writes to flash have to aligned to this */
-};
+    <span class="cm">/* Flash circular buffer internal state */</span>
+    <span class="k">struct</span> <span class="nc">os_mutex</span> <span class="n">f_mtx</span><span class="p">;</span>      <span class="cm">/* Locking for accessing the FCB data */</span>
+    <span class="k">struct</span> <span class="nc">flash_area</span> <span class="o">*</span><span class="n">f_oldest</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">fcb_entry</span> <span class="n">f_active</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">f_active_id</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">f_align</span><span class="p">;</span>            <span class="cm">/* writes to flash have to aligned to this */</span>
+<span class="p">};</span>
 </pre></div>
 </div>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="43%" />
-<col width="57%" />
+<col style="width: 43%" />
+<col style="width: 57%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Element</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>f_magic</td>
-<td>Magic number
+<tbody>
+<tr class="row-even"><td><p>f_magic</p></td>
+<td><p>Magic number
 in the
 beginning of
 FCB flash
@@ -401,25 +404,25 @@ uses this when
 determining
 whether sector
 contains valid
-data or not.</td>
+data or not.</p></td>
 </tr>
-<tr class="row-odd"><td>f_version</td>
-<td>Current
+<tr class="row-odd"><td><p>f_version</p></td>
+<td><p>Current
 version number
 of the data.
 Also stored in
 flash sector
-header.</td>
+header.</p></td>
 </tr>
-<tr class="row-even"><td>f_sector_cnt</td>
-<td>Number of
+<tr class="row-even"><td><p>f_sector_cnt</p></td>
+<td><p>Number of
 elements in
 the f_sectors
-array.</td>
+array.</p></td>
 </tr>
-<tr class="row-odd"><td>f_scratch
-_cnt</td>
-<td>Number of
+<tr class="row-odd"><td><p>f_scratch
+_cnt</p></td>
+<td><p>Number of
 sectors to
 keep empty.
 This can be
@@ -429,33 +432,33 @@ scratch space
 for garbage
 collecting
 when FCB fills
-up.</td>
+up.</p></td>
 </tr>
-<tr class="row-even"><td>f_sectors</td>
-<td>Array of
+<tr class="row-even"><td><p>f_sectors</p></td>
+<td><p>Array of
 entries
 describing
 flash sectors
-to use.</td>
+to use.</p></td>
 </tr>
-<tr class="row-odd"><td>f_mtx</td>
-<td>Lock
+<tr class="row-odd"><td><p>f_mtx</p></td>
+<td><p>Lock
 protecting
 access to FCBs
-internal data.</td>
+internal data.</p></td>
 </tr>
-<tr class="row-even"><td>f_oldest</td>
-<td>Pointer to
+<tr class="row-even"><td><p>f_oldest</p></td>
+<td><p>Pointer to
 flash sector
 containing the
 oldest data.
 This is where
 data is served
 when read is
-started.</td>
+started.</p></td>
 </tr>
-<tr class="row-odd"><td>f_active</td>
-<td>Flash location
+<tr class="row-odd"><td><p>f_active</p></td>
+<td><p>Flash location
 where the
 newest data
 is. This is
@@ -463,10 +466,10 @@ used by
 fcb_append()
 to figure out
 where the data
-should go to.</td>
+should go to.</p></td>
 </tr>
-<tr class="row-even"><td>f_active_id</td>
-<td>Flash sectors
+<tr class="row-even"><td><p>f_active_id</p></td>
+<td><p>Flash sectors
 are assigned
 ever-increasin
 g
@@ -477,10 +480,10 @@ figures out
 where oldest
 data is on
 system
-restart.</td>
+restart.</p></td>
 </tr>
-<tr class="row-odd"><td>f_align</td>
-<td>Some flashes
+<tr class="row-odd"><td><p>f_align</p></td>
+<td><p>Some flashes
 have
 restrictions
 on alignment
@@ -488,7 +491,7 @@ for writes.
 FCB keeps a
 copy of this
 number for the
-flash here.</td>
+flash here.</p></td>
 </tr>
 </tbody>
 </table>
