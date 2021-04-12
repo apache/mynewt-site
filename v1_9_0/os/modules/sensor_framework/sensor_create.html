@@ -332,31 +332,31 @@ Driver</span></a> page for
 details.</p>
 <p>3. Declare a variable named <code class="docutils literal notranslate"><span class="pre">sensorname</span></code> of type
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensorname</span></code>. For example:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
-<span class="cp">#include</span> <span class="cpf">&lt;lis2dh12/lis2dh12.h&gt;</span><span class="cp"></span>
-<span class="k">static</span> <span class="k">struct</span> <span class="nc">lis2dh12</span> <span class="n">lis2dh12</span><span class="p">;</span>
-<span class="cp">#endif</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(LIS2DH12_ONB)
+#include &lt;lis2dh12/lis2dh12.h&gt;
+static struct lis2dh12 lis2dh12;
+#endif
 </pre></div>
 </div>
 <p>4. Declare and specify the values for a variable of type
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> that the sensor device driver uses to communicate
 with the sensor device. For example:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
-<span class="k">static</span> <span class="k">struct</span> <span class="nc">sensor_itf</span> <span class="n">i2c_0_itf_lis</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">si_type</span> <span class="o">=</span> <span class="n">SENSOR_ITF_I2C</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">si_num</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">si_addr</span> <span class="o">=</span> <span class="mh">0x19</span>
-<span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#if MYNEWT_VAL(LIS2DH12_ONB)
+static struct sensor_itf i2c_0_itf_lis = {
+    .si_type = SENSOR_ITF_I2C,
+    .si_num  = 0,
+    .si_addr = 0x19
+&lt;br&gt;
 </pre></div>
 </div>
 <p>5. In the <code class="docutils literal notranslate"><span class="pre">hal_bsp_init()</span></code> function, create an OS device for the
 sensor device. Call the <code class="docutils literal notranslate"><span class="pre">os_dev_create()</span></code> function and pass the
 following to the function:</p>
 <ul class="simple">
-<li><p>A pointer to the <code class="docutils literal notranslate"><span class="pre">sensorname</span></code> variable from step 3.</p></li>
-<li><p>A pointer to the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code> callback function. Note that
-the device driver package exports this function.</p></li>
-<li><p>A pointer to the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> variable from step 4.</p></li>
+<li>A pointer to the <code class="docutils literal notranslate"><span class="pre">sensorname</span></code> variable from step 3.</li>
+<li>A pointer to the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_init()</span></code> callback function. Note that
+the device driver package exports this function.</li>
+<li>A pointer to the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> variable from step 4.</li>
 </ul>
 <p>For example:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>static void sensor\_dev\_create(void)
@@ -386,42 +386,42 @@ sensor_dev_create();
 <p>6. Define a <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor()</span></code> function to set the default configuration for the sensor. This function opens the OS device for the sensor device, initializes the a``cfg`` variable of type``struct &lt;sensorname&gt;_cfg `` with the default settings, calls the <code class="docutils literal notranslate"><span class="pre">&lt;sensorname&gt;_config()</span></code> driver
 function to configure the device, and closes the device. This function
 is called when the BSP is initialized during sysinit(). For example:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">config_lis2dh12_sensor</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-<span class="cp">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="nc">os_dev</span> <span class="o">*</span><span class="n">dev</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="nc">lis2dh12_cfg</span> <span class="n">cfg</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+config_lis2dh12_sensor(void)
+{
+#if MYNEWT_VAL(LIS2DH12_ONB)
+    int rc;
+    struct os_dev *dev;
+    struct lis2dh12_cfg cfg;
 
-    <span class="n">dev</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">os_dev</span> <span class="o">*</span><span class="p">)</span> <span class="n">os_dev_open</span><span class="p">(</span><span class="s">&quot;lis2dh12_0&quot;</span><span class="p">,</span> <span class="n">OS_TIMEOUT_NEVER</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="n">assert</span><span class="p">(</span><span class="n">dev</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
+    dev = (struct os_dev *) os_dev_open(&quot;lis2dh12_0&quot;, OS_TIMEOUT_NEVER, NULL);
+    assert(dev != NULL);
 
-    <span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cfg</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">cfg</span><span class="p">));</span>
+    memset(&amp;cfg, 0, sizeof(cfg));
 
-    <span class="n">cfg</span><span class="p">.</span><span class="n">lc_s_mask</span> <span class="o">=</span> <span class="n">SENSOR_TYPE_ACCELEROMETER</span><span class="p">;</span>
-    <span class="n">cfg</span><span class="p">.</span><span class="n">lc_rate</span> <span class="o">=</span> <span class="n">LIS2DH12_DATA_RATE_HN_1344HZ_L_5376HZ</span><span class="p">;</span>
-    <span class="n">cfg</span><span class="p">.</span><span class="n">lc_fs</span> <span class="o">=</span> <span class="n">LIS2DH12_FS_2G</span><span class="p">;</span>
-    <span class="n">cfg</span><span class="p">.</span><span class="n">lc_pull_up_disc</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    cfg.lc_s_mask = SENSOR_TYPE_ACCELEROMETER;
+    cfg.lc_rate = LIS2DH12_DATA_RATE_HN_1344HZ_L_5376HZ;
+    cfg.lc_fs = LIS2DH12_FS_2G;
+    cfg.lc_pull_up_disc = 1;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">lis2dh12_config</span><span class="p">((</span><span class="k">struct</span> <span class="nc">lis2dh12</span> <span class="o">*</span><span class="p">)</span><span class="n">dev</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cfg</span><span class="p">);</span>
-    <span class="n">SYSINIT_PANIC_ASSERT</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+    rc = lis2dh12_config((struct lis2dh12 *)dev, &amp;cfg);
+    SYSINIT_PANIC_ASSERT(rc == 0);
 
-    <span class="n">os_dev_close</span><span class="p">(</span><span class="n">dev</span><span class="p">);</span>
-<span class="cp">#endif</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+    os_dev_close(dev);
+#endif
+    return 0;
+}
 </pre></div>
 </div>
 <ol class="arabic simple" start="7">
-<li><p>Add the following in the BSP <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file:</p></li>
+<li>Add the following in the BSP <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file:</li>
 </ol>
 <ul class="simple">
-<li><p>A conditional package dependency for the
+<li>A conditional package dependency for the
 <code class="docutils literal notranslate"><span class="pre">hw/drivers/sensors/&lt;sensorname&gt;</span></code> package when the
-<code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_ONB</span></code> setting is enabled.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor</span></code> function with an init stage of 400
-to the <code class="docutils literal notranslate"><span class="pre">pkg.init</span></code> parameter.</p></li>
+<code class="docutils literal notranslate"><span class="pre">&lt;SENSORNAME&gt;_ONB</span></code> setting is enabled.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">config_&lt;sensorname&gt;_sensor</span></code> function with an init stage of 400
+to the <code class="docutils literal notranslate"><span class="pre">pkg.init</span></code> parameter.</li>
 </ul>
 <p>For example:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.deps.LIS2DH12_ONB:</span>
@@ -463,25 +463,25 @@ enabled by the application.</p>
 file . The <code class="docutils literal notranslate"><span class="pre">sensor_dev_create()</span></code> function is the <code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code>
 package initialization function that <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> calls.</p>
 <p>For example:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">sensor_dev_create</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
+sensor_dev_create(void)
+{
+    int rc;
 
-     <span class="p">...</span>
+     ...
 
-<span class="cp">#if MYNEWT_VAL(BNO055_OFB)</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">os_dev_create</span><span class="p">((</span><span class="k">struct</span> <span class="nc">os_dev</span> <span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">bno055</span><span class="p">,</span> <span class="s">&quot;bno055_0&quot;</span><span class="p">,</span>
-      <span class="n">OS_DEV_INIT_PRIMARY</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bno055_init</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">i2c_0_itf_bno</span><span class="p">);</span>
-    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+#if MYNEWT_VAL(BNO055_OFB)
+    rc = os_dev_create((struct os_dev *) &amp;bno055, &quot;bno055_0&quot;,
+      OS_DEV_INIT_PRIMARY, 0, bno055_init, (void *)&amp;i2c_0_itf_bno);
+    assert(rc == 0);
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">config_bno055_sensor</span><span class="p">();</span>
-    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-<span class="cp">#endif</span>
+    rc = config_bno055_sensor();
+    assert(rc == 0);
+#endif
 
-     <span class="p">....</span>
+     ....
 
-<span class="p">}</span>
+}
 </pre></div>
 </div>
 <p>3. Add a conditional package dependency for the
@@ -576,6 +576,7 @@ application.</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

@@ -304,18 +304,18 @@ abstractions to application developers.</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>The Board Support Package (BSP) abstracts board specific
+<li>The Board Support Package (BSP) abstracts board specific
 configurations e.g. CPU frequency, input voltage, LED pins, on-chip
-flash map etc.</p></li>
-<li><p>The Hardware Abstraction Layer (HAL) abstracts architecture-specific
+flash map etc.</li>
+<li>The Hardware Abstraction Layer (HAL) abstracts architecture-specific
 functionality. It initializes and enables components within a master
 processor. It is designed to be portable across all the various MCUs
 supported in Mynewt (e.g. Nordic’s nRF51, Nordic’s nRF52, NXP’s
 MK64F12 etc.). It includes code that initializes and manages access
 to components of the board such as board buses (I2C, PCI, PCMCIA,
 etc.), off-chip memory (controllers, level 2+ cache, Flash, etc.),
-and off-chip I/O (Ethernet, RS-232, display, mouse, etc.)</p></li>
-<li><p>The driver sits atop the BSP and HAL. It abstracts the common modes
+and off-chip I/O (Ethernet, RS-232, display, mouse, etc.)</li>
+<li>The driver sits atop the BSP and HAL. It abstracts the common modes
 of operation for each peripheral device connected via the standard
 interfaces to the processor. There may be multiple driver
 implementations of differing complexities for a particular peripheral
@@ -328,20 +328,19 @@ buffer and posting an event to a task every ’n’ samples. The drivers
 are the ones that register with the kernel’s power management APIs,
 and manage turning on and off peripherals and external chipsets, etc.
 The Mynewt core repository comes with a base set of drivers to help
-the user get started.</p></li>
+the user get started.</li>
 </ul>
 </div>
 <div class="section" id="general-design-principles">
 <h2>General design principles<a class="headerlink" href="#general-design-principles" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Device drivers should have a consistent structure and unified
+<li>Device drivers should have a consistent structure and unified
 interface whenever possible. For example, we have a top-level
 package, “adc”, which contains the interface for all ADC drivers, and
 then we have the individual implementation of the driver itself. The
-following source files point to this:</p>
-<ul>
-<li><p>high-level ADC API: <code class="docutils literal notranslate"><span class="pre">hw/drivers/adc/include/adc/adc.h</span></code></p></li>
-<li><p>implementation of ADC for STM32F4:
+following source files point to this:<ul>
+<li>high-level ADC API: <code class="docutils literal notranslate"><span class="pre">hw/drivers/adc/include/adc/adc.h</span></code></li>
+<li>implementation of ADC for STM32F4:
 <code class="docutils literal notranslate"><span class="pre">hw/drivers/adc/adc_stm32f4/src/adc_stm32f4.c</span></code> (As of the
 1.0.0-beta release, ADC for nRF51 and nRF52 are available at an
 external
@@ -351,10 +350,10 @@ after the license terms are clarified.). The only exported call in
 this example is
 <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">stm32f4_adc_dev_init(struct</span> <span class="pre">os_dev</span> <span class="pre">*,</span> <span class="pre">void</span> <span class="pre">*)</span></code> which is
 passed as a function pointer to <code class="docutils literal notranslate"><span class="pre">os_dev_create()</span></code> in
-<code class="docutils literal notranslate"><span class="pre">hal_bsp.c</span></code>, when the adc device is created.</p></li>
+<code class="docutils literal notranslate"><span class="pre">hal_bsp.c</span></code>, when the adc device is created.</li>
 </ul>
 </li>
-<li><p>Device drivers should be easy to use. In Mynewt, creating a device
+<li>Device drivers should be easy to use. In Mynewt, creating a device
 initializes it as well, making it readily available for the user to
 open, use (e.g. read, configure etc.) and close. Creating a device is
 simple using
@@ -362,36 +361,36 @@ simple using
 The <code class="docutils literal notranslate"><span class="pre">od_init</span></code> function is defined within the appropriate driver
 directory e.g. <code class="docutils literal notranslate"><span class="pre">stm32f4_adc_dev_init</span></code> in
 <code class="docutils literal notranslate"><span class="pre">hw/drivers/adc/adc_stm32f4/src/adc_stm32f4.c</span></code> for the ADC device
-initialization function.</p></li>
-<li><p>The implementation should allow for builds optimized for minimal
+initialization function.</li>
+<li>The implementation should allow for builds optimized for minimal
 memory usage. Additional functionality can be enabled by writing a
 more complex driver (usually based on the simple implementation
 included by default in the core repository) and optionally compiling
 the relevant packages in. Typically, only a basic driver that
 addresses a device’s core functionality (covering ~90% of use cases)
 is included in the Mynewt core repository, thus keeping the footprint
-small.</p></li>
-<li><p>The implementation should allow a user to be able to instantiate
+small.</li>
+<li>The implementation should allow a user to be able to instantiate
 multiple devices of a certain kind. In the Mynewt environment the
 user can, for example, maintain separate contexts for multiple ADCs
 over different peripheral connections such as SPI, I2C etc. It is
 also possible for a user to use a single peripheral interface (e.g.
 SPI) to drive multiple devices (e.g. ADC), and in that case the
 device driver has to handle the proper synchronization of the various
-tasks.</p></li>
-<li><p>Device drivers should be MCU independent. In Mynewt, device creation
-and operation functions are independent of the underlying MCU.</p></li>
-<li><p>Device drivers should be able to offer high-level interfaces for
+tasks.</li>
+<li>Device drivers should be MCU independent. In Mynewt, device creation
+and operation functions are independent of the underlying MCU.</li>
+<li>Device drivers should be able to offer high-level interfaces for
 generic operations common to a particular device group. An example of
 such a class or group of devices is a group for sensors with generic
 operations such as channel discovery, configure, and read values. The
 organization of the driver directory is work in progress - so we
 encourage you to hop on the dev&#64; mailing list and offer your
-insights!</p></li>
-<li><p>Device drivers should be searchable. The plan is to have the newt
+insights!</li>
+<li>Device drivers should be searchable. The plan is to have the newt
 tool offer a <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">pkg</span> <span class="pre">search</span></code> capability. This is work in
 progress. You are welcome to join the conversation on the dev&#64;
-mailing list!</p></li>
+mailing list!</li>
 </ul>
 </div>
 <div class="section" id="example">
@@ -408,37 +407,37 @@ implement that driver API using the HAL and BSP APIs.</p>
 <h2>Implemented drivers<a class="headerlink" href="#implemented-drivers" title="Permalink to this headline">¶</a></h2>
 <p>Drivers live under <code class="docutils literal notranslate"><span class="pre">hw/drivers</span></code>. The current list of supported drivers
 includes:</p>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 61%" />
-<col style="width: 39%" />
+<col width="61%" />
+<col width="39%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Driver</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Driver</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">adc</span></code></p></td>
-<td><p>TODO: ADC driver.</p></td>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">adc</span></code></td>
+<td>TODO: ADC driver.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flash</span></code></p></td>
-<td><p>SPI/I2C flash drivers.</p></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">flash</span></code></td>
+<td>SPI/I2C flash drivers.</td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lwip</span></code></p></td>
-<td><p>TODO: LWIP.</p></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">lwip</span></code></td>
+<td>TODO: LWIP.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mmc</span></code></p></td>
-<td><p>MMC/SD card driver.</p></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">mmc</span></code></td>
+<td>MMC/SD card driver.</td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sensors</span></code></p></td>
-<td><p>TODO: sensors.</p></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">sensors</span></code></td>
+<td>TODO: sensors.</td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">uart</span></code></p></td>
-<td><p>TODO: UART driver.</p></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">uart</span></code></td>
+<td>TODO: UART driver.</td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">chg_ctrl</span></code></p></td>
-<td><p>Charge control drivers.</p></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">chg_ctrl</span></code></td>
+<td>Charge control drivers.</td>
 </tr>
 </tbody>
 </table>
@@ -507,6 +506,7 @@ includes:</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

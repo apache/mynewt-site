@@ -309,32 +309,32 @@ from string.</p>
 <p>Config handlers for subtree implement a set of handler functions.
 These are registered using a call to <code class="docutils literal notranslate"><span class="pre">conf_register()</span></code>.</p>
 <ul class="simple">
-<li><dl class="simple">
-<dt>ch_get</dt><dd><p>This gets called when somebody asks for a config element value
-by it’s name using <code class="docutils literal notranslate"><span class="pre">conf_get_value()</span></code>.</p>
-</dd>
+<li><dl class="first docutils">
+<dt>ch_get</dt>
+<dd>This gets called when somebody asks for a config element value
+by it’s name using <code class="docutils literal notranslate"><span class="pre">conf_get_value()</span></code>.</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>ch_set</dt><dd><p>This is called when value is being set using <code class="docutils literal notranslate"><span class="pre">conf_set_value()</span></code>, and
+<li><dl class="first docutils">
+<dt>ch_set</dt>
+<dd>This is called when value is being set using <code class="docutils literal notranslate"><span class="pre">conf_set_value()</span></code>, and
 also when configuration is loaded from persisted storage with
-<code class="docutils literal notranslate"><span class="pre">conf_load()</span></code>.</p>
-</dd>
+<code class="docutils literal notranslate"><span class="pre">conf_load()</span></code>.</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>ch_commit</dt><dd><p>This gets called after configuration has been loaded in full.
+<li><dl class="first docutils">
+<dt>ch_commit</dt>
+<dd>This gets called after configuration has been loaded in full.
 Sometimes you don’t want individual configuration value to take
 effect right away, for example if there are multiple settings
-which are interdependent.</p>
-</dd>
+which are interdependent.</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>ch_export</dt><dd><p>This gets called to dump all current configuration. This happens
+<li><dl class="first docutils">
+<dt>ch_export</dt>
+<dd>This gets called to dump all current configuration. This happens
 when <code class="docutils literal notranslate"><span class="pre">conf_save()</span></code> tries to save the settings, or when CLI is
-dumping current system configuration to console.</p>
-</dd>
+dumping current system configuration to console.</dd>
 </dl>
 </li>
 </ul>
@@ -365,25 +365,25 @@ variable CONFIG_CLI to 1.</p>
 <p>Here you can set config variables, inspect their values and print
 both saved configuration as well as running configuration.</p>
 <ul class="simple">
-<li><dl class="simple">
-<dt>config dump</dt><dd><p>Dump the current running configuration</p>
-</dd>
+<li><dl class="first docutils">
+<dt>config dump</dt>
+<dd>Dump the current running configuration</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>config dump saved</dt><dd><p>Dump the saved configuration. The values are printed in the ordered
-they’re restored.</p>
-</dd>
+<li><dl class="first docutils">
+<dt>config dump saved</dt>
+<dd>Dump the saved configuration. The values are printed in the ordered
+they’re restored.</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>config &lt;key&gt;</dt><dd><p>Print the value of config variable identified by &lt;key&gt;</p>
-</dd>
+<li><dl class="first docutils">
+<dt>config &lt;key&gt;</dt>
+<dd>Print the value of config variable identified by &lt;key&gt;</dd>
 </dl>
 </li>
-<li><dl class="simple">
-<dt>config &lt;key&gt; &lt;value&gt;</dt><dd><p>Set the value of config variable &lt;key&gt; to be &lt;value&gt;</p>
-</dd>
+<li><dl class="first docutils">
+<dt>config &lt;key&gt; &lt;value&gt;</dt>
+<dd>Set the value of config variable &lt;key&gt; to be &lt;value&gt;</dd>
 </dl>
 </li>
 </ul>
@@ -394,34 +394,34 @@ they’re restored.</p>
 <code class="docutils literal notranslate"><span class="pre">ch_export</span></code>. <code class="docutils literal notranslate"><span class="pre">ch_set</span></code> is called when value is restored from storage (or
 when set initially), and <code class="docutils literal notranslate"><span class="pre">ch_export</span></code> is used to write the value to
 storage (or dump to console).</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">int8</span> <span class="n">foo_val</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int8 foo_val;
 
-<span class="k">struct</span> <span class="nc">conf_handler</span> <span class="n">my_conf</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">ch_name</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">ch_set</span> <span class="o">=</span> <span class="n">foo_conf_set</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">ch_export</span> <span class="o">=</span> <span class="n">foo_conf_export</span>
-<span class="p">}</span>
+struct conf_handler my_conf = {
+    .ch_name = &quot;foo&quot;,
+    .ch_set = foo_conf_set,
+    .ch_export = foo_conf_export
+}
 
-<span class="k">static</span> <span class="kt">int</span>
-<span class="n">foo_conf_set</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">val</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&quot;bar&quot;</span><span class="p">))</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nf">CONF_VALUE_SET</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">CONF_INT8</span><span class="p">,</span> <span class="n">foo_val</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">OS_ENOENT</span><span class="p">;</span>
-<span class="p">}</span>
+static int
+foo_conf_set(int argc, char **argv, char *val)
+{
+    if (argc == 1) {
+        if (!strcmp(argv[0], &quot;bar&quot;)) {
+            return CONF_VALUE_SET(val, CONF_INT8, foo_val);
+        }
+    }
+    return OS_ENOENT;
+}
 
-<span class="k">static</span> <span class="kt">int</span>
-<span class="n">foo_conf_export</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">val</span><span class="p">),</span> <span class="k">enum</span> <span class="n">conf_export_tgt</span> <span class="n">tgt</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+static int
+foo_conf_export(void (*func)(char *name, char *val), enum conf_export_tgt tgt)
+{
+    char buf[4];
 
-    <span class="n">conf_str_from_value</span><span class="p">(</span><span class="n">CONF_INT8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">foo_val</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
-    <span class="n">func</span><span class="p">(</span><span class="s">&quot;foo/bar&quot;</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+    conf_str_from_value(CONF_INT8, &amp;foo_val, buf, sizeof(buf));
+    func(&quot;foo/bar&quot;, buf)
+    return 0;
+}
 </pre></div>
 </div>
 </div>
@@ -433,544 +433,550 @@ persisted storage.</p>
 <p>There’s a os_callout function which increments foo_val, and then
 persists the latest number. When system restarts, and calls <code class="docutils literal notranslate"><span class="pre">conf_load()</span></code>,
 foo_val will continue counting up from where it was before restart.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="n">int8</span> <span class="n">foo_val</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static int8 foo_val;
 
-<span class="k">struct</span> <span class="nc">conf_handler</span> <span class="n">my_conf</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">ch_name</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">ch_set</span> <span class="o">=</span> <span class="n">foo_conf_set</span>
-<span class="p">}</span>
+struct conf_handler my_conf = {
+    .ch_name = &quot;foo&quot;,
+    .ch_set = foo_conf_set
+}
 
-<span class="k">static</span> <span class="kt">int</span>
-<span class="n">foo_conf_set</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">val</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">strcmp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&quot;bar&quot;</span><span class="p">))</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="nf">CONF_VALUE_SET</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">CONF_INT8</span><span class="p">,</span> <span class="n">foo_val</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">OS_ENOENT</span><span class="p">;</span>
-<span class="p">}</span>
+static int
+foo_conf_set(int argc, char **argv, char *val)
+{
+    if (argc == 1) {
+        if (!strcmp(argv[0], &quot;bar&quot;)) {
+            return CONF_VALUE_SET(val, CONF_INT8, foo_val);
+        }
+    }
+    return OS_ENOENT;
+}
 
-<span class="k">static</span> <span class="kt">void</span>
-<span class="n">foo_callout</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">os_callout</span> <span class="o">*</span><span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">os_callout</span> <span class="o">*</span><span class="p">)</span><span class="n">ev</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+static void
+foo_callout(struct os_event *ev)
+{
+    struct os_callout *c = (struct os_callout *)ev;
+    char buf[4];
 
-    <span class="n">foo_val</span><span class="o">++</span><span class="p">;</span>
-    <span class="n">conf_str_from_value</span><span class="p">(</span><span class="n">CONF_INT8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">foo_val</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">buf</span><span class="p">));</span>
-    <span class="n">conf_save_one</span><span class="p">(</span><span class="s">&quot;foo/bar&quot;</span><span class="p">,</span> <span class="n">bar</span><span class="p">);</span>
+    foo_val++;
+    conf_str_from_value(CONF_INT8, &amp;foo_val, buf, sizeof(buf));
+    conf_save_one(&quot;foo/bar&quot;, bar);
 
-    <span class="n">callout_reset</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">OS_TICKS_PER_SEC</span> <span class="o">*</span> <span class="mi">120</span><span class="p">);</span>
-<span class="p">}</span>
+    callout_reset(c, OS_TICKS_PER_SEC * 120);
+}
 </pre></div>
 </div>
 <div class="section" id="api">
 <h3>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
-<dl class="c enum">
-<dt id="c.conf_type">
-<span class="target" id="group___sys_config_1gadaa57f7be62fb82725711436838525fb"></span><em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">conf_type</span></code><a class="headerlink" href="#c.conf_type" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="enum">
+<dt id="c.SysConfig::conf_type">
+<span class="target" id="group___sys_config_1gadaa57f7be62fb82725711436838525fb"></span><em class="property">enum </em><code class="descclassname">SysConfig::</code><code class="descname">conf_type</code><a class="headerlink" href="#c.SysConfig::conf_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of configuration value. </p>
 <p><em>Values:</em></p>
 </dd></dl>
 
-<dl class="c enum">
-<dt id="c.conf_export_tgt">
-<span class="target" id="group___sys_config_1ga15704e06649f43f84b77a132135b06b4"></span><em class="property"><span class="pre">enum</span> </em><code class="sig-name descname"><span class="pre">conf_export_tgt</span></code><a class="headerlink" href="#c.conf_export_tgt" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="enum">
+<dt id="c.SysConfig::conf_export_tgt">
+<span class="target" id="group___sys_config_1ga15704e06649f43f84b77a132135b06b4"></span><em class="property">enum </em><code class="descclassname">SysConfig::</code><code class="descname">conf_export_tgt</code><a class="headerlink" href="#c.SysConfig::conf_export_tgt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parameter to commit handler describing where data is going to. </p>
 <p><em>Values:</em></p>
-<dl class="c enumerator">
-<dt id="c.conf_export_tgt.CONF_EXPORT_PERSIST">
-<span class="target" id="group___sys_config_1gga15704e06649f43f84b77a132135b06b4a072d4d507c5eedded69e65fcb7e15e29"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">CONF_EXPORT_PERSIST</span></code><a class="headerlink" href="#c.conf_export_tgt.CONF_EXPORT_PERSIST" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="enumvalue">
+<dt id="c.SysConfig::CONF_EXPORT_PERSIST">
+<span class="target" id="group___sys_config_1gga15704e06649f43f84b77a132135b06b4a072d4d507c5eedded69e65fcb7e15e29"></span><code class="descname">CONF_EXPORT_PERSIST</code><a class="headerlink" href="#c.SysConfig::CONF_EXPORT_PERSIST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value is to be persisted. </p>
 </dd></dl>
 
-<dl class="c enumerator">
-<dt id="c.conf_export_tgt.CONF_EXPORT_SHOW">
-<span class="target" id="group___sys_config_1gga15704e06649f43f84b77a132135b06b4a9de243286fbb6af8898b33c46f60aef3"></span><em class="property"><span class="pre">enumerator</span> </em><code class="sig-name descname"><span class="pre">CONF_EXPORT_SHOW</span></code><a class="headerlink" href="#c.conf_export_tgt.CONF_EXPORT_SHOW" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="enumvalue">
+<dt id="c.SysConfig::CONF_EXPORT_SHOW">
+<span class="target" id="group___sys_config_1gga15704e06649f43f84b77a132135b06b4a9de243286fbb6af8898b33c46f60aef3"></span><code class="descname">CONF_EXPORT_SHOW</code><a class="headerlink" href="#c.SysConfig::CONF_EXPORT_SHOW" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value is to be display. </p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_export_tgt_t">
-<span class="target" id="group___sys_config_1ga3139953d688ce6e67e5bf294254a717e"></span><em class="property"><span class="pre">typedef</span> </em><em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.conf_export_tgt" title="conf_export_tgt"><span class="pre">conf_export_tgt</span></a> <code class="sig-name descname"><span class="pre">conf_export_tgt_t</span></code><a class="headerlink" href="#c.conf_export_tgt_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga3139953d688ce6e67e5bf294254a717e"></span><em class="property">typedef </em>enum conf_export_tgt <code class="descname">conf_export_tgt_t</code><a class="headerlink" href="#c.conf_export_tgt_t" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_get_handler_t">
-<span class="target" id="group___sys_config_1ga7972bd63f95c6bed4e8fea7bc491883d"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">char</span> <span class="pre">*</span><span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_get_handler_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">int</span> <span class="pre">argc</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><span class="pre">argv</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">val</span>, <span class="pre">int</span> <span class="pre">val_len_max</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_handler_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga7972bd63f95c6bed4e8fea7bc491883d"></span><em class="property">typedef </em>char*<code class="descname">(* conf_get_handler_t)</code><span class="sig-paren">(</span>int<em>&nbsp;argc</em>, char<em>&nbsp;**argv</em>, char<em>&nbsp;*val</em>, int<em>&nbsp;val_len_max</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_handler_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Handler for getting configuration items, this handler is called per-configuration section. </p>
 <p>Configuration sections are delimited by ‘/’, for example:</p>
 <p><ul class="simple">
-<li><p>section/name/value</p></li>
+<li>section/name/value</li>
 </ul>
 </p>
 <p>Would be passed as:</p>
 <p><ul class="simple">
-<li><p>argc = 3</p></li>
-<li><p>argv[0] = section</p></li>
-<li><p>argv[1] = name</p></li>
-<li><p>argv[2] = value</p></li>
+<li>argc = 3</li>
+<li>argv[0] = section</li>
+<li>argv[1] = name</li>
+<li>argv[2] = value</li>
 </ul>
 </p>
 <p>The handler returns the value into val, null terminated, up to val_len_max.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>A pointer to val or NULL if error. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The number of sections in the configuration variable </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of configuration sections </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val</span></code>: A pointer to the buffer to return the configuration value into. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val_len_max</span></code>: The maximum length of the val buffer to copy into.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A pointer to val or NULL if error. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The number of sections in the configuration variable </li>
+<li><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of configuration sections </li>
+<li><code class="docutils literal notranslate"><span class="pre">val</span></code>: A pointer to the buffer to return the configuration value into. </li>
+<li><code class="docutils literal notranslate"><span class="pre">val_len_max</span></code>: The maximum length of the val buffer to copy into.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_get_handler_ext_t">
-<span class="target" id="group___sys_config_1ga65bfc5b8a0356c9ce64f00ceeacfb488"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">char</span> <span class="pre">*</span><span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_get_handler_ext_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">int</span> <span class="pre">argc</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><span class="pre">argv</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">val</span>, <span class="pre">int</span> <span class="pre">val_len_max</span>, <span class="pre">void</span> <span class="pre">*</span><span class="pre">arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_handler_ext_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga65bfc5b8a0356c9ce64f00ceeacfb488"></span><em class="property">typedef </em>char*<code class="descname">(* conf_get_handler_ext_t)</code><span class="sig-paren">(</span>int<em>&nbsp;argc</em>, char<em>&nbsp;**argv</em>, char<em>&nbsp;*val</em>, int<em>&nbsp;val_len_max</em>, void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_handler_ext_t" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_set_handler_t">
-<span class="target" id="group___sys_config_1ga17c92dca2b6152bc1fdb72352b6a39d6"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_set_handler_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">int</span> <span class="pre">argc</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><span class="pre">argv</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">val</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_handler_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga17c92dca2b6152bc1fdb72352b6a39d6"></span><em class="property">typedef </em>int<code class="descname">(* conf_set_handler_t)</code><span class="sig-paren">(</span>int<em>&nbsp;argc</em>, char<em>&nbsp;**argv</em>, char<em>&nbsp;*val</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_handler_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the configuration variable pointed to by argc and argv. </p>
 <p>See description of ch_get_handler_t for format of these variables. This sets the configuration variable to the shadow value, but does not apply the configuration change. In order to apply the change, call the ch_commit() handler.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The number of sections in the configuration variable. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of configuration sections </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val</span></code>: The value to configure that variable to</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero error code on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The number of sections in the configuration variable. </li>
+<li><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of configuration sections </li>
+<li><code class="docutils literal notranslate"><span class="pre">val</span></code>: The value to configure that variable to</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_set_handler_ext_t">
-<span class="target" id="group___sys_config_1ga28f4e2c355d23818613387306670828c"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_set_handler_ext_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">int</span> <span class="pre">argc</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">*</span><span class="pre">argv</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">val</span>, <span class="pre">void</span> <span class="pre">*</span><span class="pre">arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_handler_ext_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga28f4e2c355d23818613387306670828c"></span><em class="property">typedef </em>int<code class="descname">(* conf_set_handler_ext_t)</code><span class="sig-paren">(</span>int<em>&nbsp;argc</em>, char<em>&nbsp;**argv</em>, char<em>&nbsp;*val</em>, void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_handler_ext_t" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_commit_handler_t">
-<span class="target" id="group___sys_config_1ga1f131dd7f98b14eca5645021c5495d1c"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_commit_handler_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_commit_handler_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga1f131dd7f98b14eca5645021c5495d1c"></span><em class="property">typedef </em>int<code class="descname">(* conf_commit_handler_t)</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_commit_handler_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commit shadow configuration state to the active configuration. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero error code on failure. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_commit_handler_ext_t">
-<span class="target" id="group___sys_config_1gae6b1d1084ce4abfa0e9e547b5505e93b"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_commit_handler_ext_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><span class="pre">arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_commit_handler_ext_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gae6b1d1084ce4abfa0e9e547b5505e93b"></span><em class="property">typedef </em>int<code class="descname">(* conf_commit_handler_ext_t)</code><span class="sig-paren">(</span>void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_commit_handler_ext_t" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_export_func_t">
-<span class="target" id="group___sys_config_1ga865b6196a4967a677093acab1c30cd9c"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">void</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_export_func_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><span class="pre">name</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">val</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_export_func_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga865b6196a4967a677093acab1c30cd9c"></span><em class="property">typedef </em>void<code class="descname">(* conf_export_func_t)</code><span class="sig-paren">(</span>char<em>&nbsp;*name</em>, char<em>&nbsp;*val</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_export_func_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called per-configuration variable being exported. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name of the variable to export </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val</span></code>: The value of the variable to export </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: The name of the variable to export </li>
+<li><code class="docutils literal notranslate"><span class="pre">val</span></code>: The value of the variable to export </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_export_handler_t">
-<span class="target" id="group___sys_config_1ga1f4844e6263870c3ba17fc505928907a"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_export_handler_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><a class="reference internal" href="#c.conf_export_func_t" title="conf_export_func_t"><span class="pre">conf_export_func_t</span></a> <span class="pre">export_func</span>, <a class="reference internal" href="#c.conf_export_tgt_t" title="conf_export_tgt_t"><span class="pre">conf_export_tgt_t</span></a> <span class="pre">tgt</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_export_handler_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga1f4844e6263870c3ba17fc505928907a"></span><em class="property">typedef </em>int<code class="descname">(* conf_export_handler_t)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.conf_export_func_t" title="conf_export_func_t">conf_export_func_t</a><em>&nbsp;export_func</em>, <a class="reference internal" href="#c.conf_export_tgt_t" title="conf_export_tgt_t">conf_export_tgt_t</a><em>&nbsp;tgt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_export_handler_t" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export all of the configuration variables, calling the export_func per variable being exported. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">export_func</span></code>: The export function to call. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">tgt</span></code>: The target of the export, either for persistence or display.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero error code on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">export_func</span></code>: The export function to call. </li>
+<li><code class="docutils literal notranslate"><span class="pre">tgt</span></code>: The target of the export, either for persistence or display.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_export_handler_ext_t">
-<span class="target" id="group___sys_config_1gafdd07789cf8b5686ec447179d731ea80"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_export_handler_ext_t</span></code><span class="pre">)</span><span class="sig-paren">(</span><a class="reference internal" href="#c.conf_export_func_t" title="conf_export_func_t"><span class="pre">conf_export_func_t</span></a> <span class="pre">export_func</span>, <a class="reference internal" href="#c.conf_export_tgt_t" title="conf_export_tgt_t"><span class="pre">conf_export_tgt_t</span></a> <span class="pre">tgt</span>, <span class="pre">void</span> <span class="pre">*</span><span class="pre">arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_export_handler_ext_t" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gafdd07789cf8b5686ec447179d731ea80"></span><em class="property">typedef </em>int<code class="descname">(* conf_export_handler_ext_t)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.conf_export_func_t" title="conf_export_func_t">conf_export_func_t</a><em>&nbsp;export_func</em>, <a class="reference internal" href="#c.conf_export_tgt_t" title="conf_export_tgt_t">conf_export_tgt_t</a><em>&nbsp;tgt</em>, void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_export_handler_ext_t" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.conf_store_load_cb">
-<span class="target" id="group___sys_config_1gad4deb6f6d582e89c74f3c5acb72656b3"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">void</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_store_load_cb</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><span class="pre">name</span>, <span class="pre">char</span> <span class="pre">*</span><span class="pre">val</span>, <span class="pre">void</span> <span class="pre">*</span><span class="pre">cb_arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_store_load_cb" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gad4deb6f6d582e89c74f3c5acb72656b3"></span><em class="property">typedef </em>void<code class="descname">(* conf_store_load_cb)</code><span class="sig-paren">(</span>char<em>&nbsp;*name</em>, char<em>&nbsp;*val</em>, void<em>&nbsp;*cb_arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_store_load_cb" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_init">
-<span class="target" id="group___sys_config_1ga52d24de486941818e4a754fcdf0caf89"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">conf_init</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_init" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga52d24de486941818e4a754fcdf0caf89"></span>void <code class="descname">conf_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_init" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_store_init">
-<span class="target" id="group___sys_config_1gaf1daa987dacc4151f4e23ed0a026a840"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">conf_store_init</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_store_init" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gaf1daa987dacc4151f4e23ed0a026a840"></span>void <code class="descname">conf_store_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_store_init" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_register">
-<span class="target" id="group___sys_config_1ga466993e72af044cf7bc40385c89e871b"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.conf_handler" title="conf_handler"><span class="pre">conf_handler</span></a> <span class="pre">*</span><em><span class="pre">cf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_register" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga466993e72af044cf7bc40385c89e871b"></span>int <code class="descname">conf_register</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>  *<em>&nbsp;cf</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_register" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register a handler for configurations items. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">cf</span></code>: Structure containing registration info.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">cf</span></code>: Structure containing registration info.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_load">
-<span class="target" id="group___sys_config_1gacf73e033ff513cc8097d4cb43612997f"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_load</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_load" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gacf73e033ff513cc8097d4cb43612997f"></span>int <code class="descname">conf_load</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load configuration from registered persistence sources. </p>
 <p>Handlers for configuration subtrees registered earlier will be called for encountered values.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_load_one">
-<span class="target" id="group___sys_config_1ga950145c930b2d43a40d374970322abe3"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_load_one</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_load_one" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga950145c930b2d43a40d374970322abe3"></span>int <code class="descname">conf_load_one</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_load_one" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load configuration from a specific registered persistence source. </p>
 <p>Handlers will be called for configuration subtree for encountered values.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: of the configuration subtree. </p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: of the configuration subtree. </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_ensure_loaded">
-<span class="target" id="group___sys_config_1ga93ced8f3e2027102b6779748cc83fe27"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_ensure_loaded</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_ensure_loaded" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga93ced8f3e2027102b6779748cc83fe27"></span>int <code class="descname">conf_ensure_loaded</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_ensure_loaded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the configuration if it hasn’t been loaded since reboot. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_set_from_storage">
-<span class="target" id="group___sys_config_1gaa1850e76a42811c56663d5879880073d"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_set_from_storage</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_from_storage" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gaa1850e76a42811c56663d5879880073d"></span>int <code class="descname">conf_set_from_storage</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_from_storage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Config setting comes as a result of <a class="reference internal" href="#group___sys_config_1gacf73e033ff513cc8097d4cb43612997f"><span class="std std-ref">conf_load()</span></a>. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>1 if yes, 0 if not. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>1 if yes, 0 if not. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_save">
-<span class="target" id="group___sys_config_1gaea200fb1a87284e617f19dd07693fc02"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_save</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_save" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gaea200fb1a87284e617f19dd07693fc02"></span>int <code class="descname">conf_save</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save currently running configuration. </p>
 <p>All configuration which is different from currently persisted values will be saved.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_save_tree">
-<span class="target" id="group___sys_config_1gaca7e9b95fc76cd55f9ed725de2bd6b32"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_save_tree</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_save_tree" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gaca7e9b95fc76cd55f9ed725de2bd6b32"></span>int <code class="descname">conf_save_tree</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_save_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save currently running configuration for configuration subtree. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the configuration subtree.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the configuration subtree.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_save_one">
-<span class="target" id="group___sys_config_1ga83e07b7401ab7d18bb53f5c949e54520"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_save_one</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">var</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_save_one" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga83e07b7401ab7d18bb53f5c949e54520"></span>int <code class="descname">conf_save_one</code><span class="sig-paren">(</span>const char *<em>&nbsp;name</em>, char *<em>&nbsp;var</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_save_one" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a single configuration value to persisted storage (if it has changed value). </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">var</span></code>: Value of the configuration item.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </li>
+<li><code class="docutils literal notranslate"><span class="pre">var</span></code>: Value of the configuration item.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_set_value">
-<span class="target" id="group___sys_config_1ga19bea2a80aae229bdcf329d06220546d"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_set_value</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">val_str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_value" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga19bea2a80aae229bdcf329d06220546d"></span>int <code class="descname">conf_set_value</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em>, char *<em>&nbsp;val_str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_set_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set configuration item identified by <code class="docutils literal notranslate"><span class="pre">name</span></code> to be value <code class="docutils literal notranslate"><span class="pre">val_str</span></code>. </p>
 <p>This finds the configuration handler for this subtree and calls it’s set handler.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </li>
+<li><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_get_value">
-<span class="target" id="group___sys_config_1ga328b57ed20a40480601aae1133118825"></span><span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_get_value</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">int</span> <em><span class="pre">buf_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_value" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga328b57ed20a40480601aae1133118825"></span>char* <code class="descname">conf_get_value</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em>, char *<em>&nbsp;buf</em>, int<em>&nbsp;buf_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get value of configuration item identified by <code class="docutils literal notranslate"><span class="pre">name</span></code>. </p>
 <p>This calls the configuration handler ch_get for the subtree.</p>
 <p>Configuration handler can copy the string to <code class="docutils literal notranslate"><span class="pre">buf</span></code>, the maximum number of bytes it will copy is limited by <code class="docutils literal notranslate"><span class="pre">buf_len</span></code>.</p>
 <p>Return value will be pointer to beginning of the value. Note that this might, or might not be the same as buf.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>pointer to value on success, NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>pointer to value on success, NULL on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </li>
+<li><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_get_stored_value">
-<span class="target" id="group___sys_config_1ga65dd1133ba67a2856c286db731d1aae6"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_get_stored_value</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">int</span> <em><span class="pre">buf_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_stored_value" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga65dd1133ba67a2856c286db731d1aae6"></span>int <code class="descname">conf_get_stored_value</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em>, char *<em>&nbsp;buf</em>, int<em>&nbsp;buf_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_get_stored_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get stored value of configuration item identified by <code class="docutils literal notranslate"><span class="pre">name</span></code>. </p>
 <p>This traverses the configuration area(s), and copies the value of the latest value.</p>
 <p>Value is copied to <code class="docutils literal notranslate"><span class="pre">buf</span></code>, the maximum number of bytes it will copy is limited by <code class="docutils literal notranslate"><span class="pre">buf_len</span></code>.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name/key of the configuration item. </li>
+<li><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_commit">
-<span class="target" id="group___sys_config_1ga18261aaac34e82bed8abab36720c5106"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_commit</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_commit" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga18261aaac34e82bed8abab36720c5106"></span>int <code class="descname">conf_commit</code><span class="sig-paren">(</span>char *<em>&nbsp;name</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_commit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call commit for all configuration handler. </p>
 <p>This should apply all configuration which has been set, but not applied yet.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the configuration subtree, or NULL to commit everything.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">name</span></code>: Name of the configuration subtree, or NULL to commit everything.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_value_from_str">
-<span class="target" id="group___sys_config_1ga44b534581b99102aa3c71ec0c074be74"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_value_from_str</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">val_str</span></em>, <em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.conf_type" title="conf_type"><span class="pre">conf_type</span></a> <em><span class="pre">type</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vp</span></em>, <span class="pre">int</span> <em><span class="pre">maxlen</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_value_from_str" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga44b534581b99102aa3c71ec0c074be74"></span>int <code class="descname">conf_value_from_str</code><span class="sig-paren">(</span>char *<em>&nbsp;val_str</em>, enum  conf_type<em>&nbsp;type</em>, void *<em>&nbsp;vp</em>, int<em>&nbsp;maxlen</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_value_from_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience routine for converting value passed as a string to native data type. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item as string. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Type of the value to convert to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to fill with the decoded value. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Size of that variable.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item as string. </li>
+<li><code class="docutils literal notranslate"><span class="pre">type</span></code>: Type of the value to convert to. </li>
+<li><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to fill with the decoded value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Size of that variable.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_bytes_from_str">
-<span class="target" id="group___sys_config_1ga59c8f9f2729a65ec60dbeabc82cc1d83"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">conf_bytes_from_str</span></code><span class="sig-paren">(</span><span class="pre">char</span> <span class="pre">*</span><em><span class="pre">val_str</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vp</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_bytes_from_str" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga59c8f9f2729a65ec60dbeabc82cc1d83"></span>int <code class="descname">conf_bytes_from_str</code><span class="sig-paren">(</span>char *<em>&nbsp;val_str</em>, void *<em>&nbsp;vp</em>, int *<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_bytes_from_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience routine for converting byte array passed as a base64 encoded string. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item as string. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to fill with the decoded value. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: Size of that variable. On return the number of bytes in the array.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">val_str</span></code>: Value of the configuration item as string. </li>
+<li><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to fill with the decoded value. </li>
+<li><code class="docutils literal notranslate"><span class="pre">len</span></code>: Size of that variable. On return the number of bytes in the array.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_str_from_value">
-<span class="target" id="group___sys_config_1gaae067816c43888ce983d56c06857288c"></span><span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_str_from_value</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">enum</span></em> <a class="reference internal" href="#c.conf_type" title="conf_type"><span class="pre">conf_type</span></a> <em><span class="pre">type</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vp</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">int</span> <em><span class="pre">buf_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_str_from_value" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gaae067816c43888ce983d56c06857288c"></span>char* <code class="descname">conf_str_from_value</code><span class="sig-paren">(</span>enum  conf_type<em>&nbsp;type</em>, void *<em>&nbsp;vp</em>, char *<em>&nbsp;buf</em>, int<em>&nbsp;buf_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_str_from_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience routine for converting native data type to a string. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code>: Type of the value to convert from. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to convert. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Buffer where string value will be stored. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf_len</span></code>: Size of the buffer.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">type</span></code>: Type of the value to convert from. </li>
+<li><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to convert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Buffer where string value will be stored. </li>
+<li><code class="docutils literal notranslate"><span class="pre">buf_len</span></code>: Size of the buffer.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_str_from_bytes">
-<span class="target" id="group___sys_config_1gac587d4020d3441d91acd0319bc3cc7df"></span><span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">conf_str_from_bytes</span></code><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><em><span class="pre">vp</span></em>, <span class="pre">int</span> <em><span class="pre">vp_len</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">buf</span></em>, <span class="pre">int</span> <em><span class="pre">buf_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_str_from_bytes" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gac587d4020d3441d91acd0319bc3cc7df"></span>char* <code class="descname">conf_str_from_bytes</code><span class="sig-paren">(</span>void *<em>&nbsp;vp</em>, int<em>&nbsp;vp_len</em>, char *<em>&nbsp;buf</em>, int<em>&nbsp;buf_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_str_from_bytes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience routine for converting byte array into a base64 encoded string. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to convert. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vp_len</span></code>: Number of bytes to convert. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Buffer where string value will be stored. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf_len</span></code>: Size of the buffer.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success, non-zero on failure. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">vp</span></code>: Pointer to variable to convert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">vp_len</span></code>: Number of bytes to convert. </li>
+<li><code class="docutils literal notranslate"><span class="pre">buf</span></code>: Buffer where string value will be stored. </li>
+<li><code class="docutils literal notranslate"><span class="pre">buf_len</span></code>: Size of the buffer.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_lock">
-<span class="target" id="group___sys_config_1gae7cb9d8c796ec2add536238109c5f4c7"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">conf_lock</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_lock" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gae7cb9d8c796ec2add536238109c5f4c7"></span>void <code class="descname">conf_lock</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_lock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Locks the config package. </p>
 <p>If another task tries to read or write a setting while the config package is locked, the operation will block until the package is unlocked. The locking task is permitted to read and write settings as usual. A call to <code class="docutils literal notranslate"><a class="reference internal" href="#group___sys_config_1gae7cb9d8c796ec2add536238109c5f4c7"><span class="std std-ref"><span class="pre">conf_lock()</span></span></a></code> should always be followed by <code class="docutils literal notranslate"><a class="reference internal" href="#group___sys_config_1gac439a0f1d5f28cc9ecc8271909941d1d"><span class="std std-ref"><span class="pre">conf_unlock()</span></span></a></code>.</p>
 <p>Typical usage of the config API does not require manual locking. This function is only needed for unusual use cases such as temporarily changing the destination medium for an isolated series of writes. </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_unlock">
-<span class="target" id="group___sys_config_1gac439a0f1d5f28cc9ecc8271909941d1d"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">conf_unlock</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_unlock" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gac439a0f1d5f28cc9ecc8271909941d1d"></span>void <code class="descname">conf_unlock</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.conf_unlock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unlocks the config package. </p>
 <p>This function reverts the effects of the <code class="docutils literal notranslate"><a class="reference internal" href="#group___sys_config_1gae7cb9d8c796ec2add536238109c5f4c7"><span class="std std-ref"><span class="pre">conf_lock()</span></span></a></code> function. Typical usage of the config API does not require manual locking. </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_src_register">
-<span class="target" id="group___sys_config_1ga54590c33750ade1d1769693f083d06db"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">conf_src_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.conf_store" title="conf_store"><span class="pre">conf_store</span></a> <span class="pre">*</span><em><span class="pre">cs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_src_register" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga54590c33750ade1d1769693f083d06db"></span>void <code class="descname">conf_src_register</code><span class="sig-paren">(</span>struct  conf_store  *<em>&nbsp;cs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_src_register" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.conf_dst_register">
-<span class="target" id="group___sys_config_1ga0afa0c695e46aed92328ba9eb64621df"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">conf_dst_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.conf_store" title="conf_store"><span class="pre">conf_store</span></a> <span class="pre">*</span><em><span class="pre">cs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_dst_register" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga0afa0c695e46aed92328ba9eb64621df"></span>void <code class="descname">conf_dst_register</code><span class="sig-paren">(</span>struct  conf_store  *<em>&nbsp;cs</em><span class="sig-paren">)</span><a class="headerlink" href="#c.conf_dst_register" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.CONF_STR_FROM_BYTES_LEN">
-<span class="target" id="group___sys_config_1ga461179cab6050d584dbbcc17b750ce19"></span><code class="sig-name descname"><span class="pre">CONF_STR_FROM_BYTES_LEN</span></code><span class="sig-paren">(</span><em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.CONF_STR_FROM_BYTES_LEN" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1ga461179cab6050d584dbbcc17b750ce19"></span><code class="descname">CONF_STR_FROM_BYTES_LEN</code><span class="sig-paren">(</span>len<span class="sig-paren">)</span><a class="headerlink" href="#c.CONF_STR_FROM_BYTES_LEN" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the length of a configuration string from buffer length. </p>
 </dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.CONF_VALUE_SET">
-<span class="target" id="group___sys_config_1gabb0645b39f5af9ded6e29d57419f8b81"></span><code class="sig-name descname"><span class="pre">CONF_VALUE_SET</span></code><span class="sig-paren">(</span><em><span class="pre">str</span></em>, <em><span class="pre">type</span></em>, <em><span class="pre">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.CONF_VALUE_SET" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___sys_config_1gabb0645b39f5af9ded6e29d57419f8b81"></span><code class="descname">CONF_VALUE_SET</code><span class="sig-paren">(</span>str, <a class="reference internal" href="../mfg/mfg.html#c.type" title="type">type</a>, val<span class="sig-paren">)</span><a class="headerlink" href="#c.CONF_VALUE_SET" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a string into a value of type. </p>
 </dd></dl>
 
-<dl class="c struct">
+<dl class="struct">
 <dt id="c.conf_handler">
-<span class="target" id="structconf__handler"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">conf_handler</span></code><a class="headerlink" href="#c.conf_handler" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structconf__handler"></span><em class="property">struct </em><code class="descname">conf_handler</code><a class="headerlink" href="#c.conf_handler" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;config.h&gt;</em><p>Configuration handler, used to register a config item/subtree. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="c var">
-<dt id="c.conf_handler.ch_name">
-<span class="target" id="structconf__handler_1a35034e3b248fd18443874d14628172c3"></span><span class="pre">char</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ch_name</span></code><a class="headerlink" href="#c.conf_handler.ch_name" title="Permalink to this definition">¶</a><br /></dt>
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.conf_handler::ch_name">
+<span class="target" id="structconf__handler_1a35034e3b248fd18443874d14628172c3"></span>char* <code class="descname">ch_name</code><a class="headerlink" href="#c.conf_handler::ch_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>The name of the conifguration item/subtree. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.conf_handler.ch_ext">
-<span class="target" id="structconf__handler_1a38c8592b4f9186e676c01ab9c68ae319"></span><span class="pre">bool</span> <code class="sig-name descname"><span class="pre">ch_ext</span></code><a class="headerlink" href="#c.conf_handler.ch_ext" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.conf_handler::ch_ext">
+<span class="target" id="structconf__handler_1a38c8592b4f9186e676c01ab9c68ae319"></span>bool <code class="descname">ch_ext</code><a class="headerlink" href="#c.conf_handler::ch_ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether to use the extended callbacks. </p>
 <p>false: standard true: extended </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.conf_handler.&#64;1">
-<span class="target" id="structconf__handler_1a00c12fd2261b70c352c7fed58fab77c4"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.conf_handler" title="conf_handler"><span class="pre">conf_handler</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.conf_handler.@1" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.1">
+<span class="target" id="structconf__handler_1a00c12fd2261b70c352c7fed58fab77c4"></span>union <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;0 <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;<code class="descname">1</code><a class="headerlink" href="#c.1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get configuration value. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.conf_handler.&#64;3">
-<span class="target" id="structconf__handler_1a737734cef94915a706c906a2c8fac7e9"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.conf_handler" title="conf_handler"><span class="pre">conf_handler</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.conf_handler.@3" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.3">
+<span class="target" id="structconf__handler_1a737734cef94915a706c906a2c8fac7e9"></span>union <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;2 <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;<code class="descname">3</code><a class="headerlink" href="#c.3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set configuration value. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.conf_handler.&#64;5">
-<span class="target" id="structconf__handler_1a214c1c1eb1abf29b6e2653068d99b1c1"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.conf_handler" title="conf_handler"><span class="pre">conf_handler</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.conf_handler.@5" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.5">
+<span class="target" id="structconf__handler_1a214c1c1eb1abf29b6e2653068d99b1c1"></span>union <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;4 <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;<code class="descname">5</code><a class="headerlink" href="#c.5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commit configuration value. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.conf_handler.&#64;7">
-<span class="target" id="structconf__handler_1ae1ca297ae4a66712d9b092a400425ad8"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.conf_handler" title="conf_handler"><span class="pre">conf_handler</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.conf_handler.@7" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.7">
+<span class="target" id="structconf__handler_1ae1ca297ae4a66712d9b092a400425ad8"></span>union <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;6 <a class="reference internal" href="#c.conf_handler" title="conf_handler">conf_handler</a>::&#64;<code class="descname">7</code><a class="headerlink" href="#c.7" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export configuration value. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.conf_handler.ch_arg">
-<span class="target" id="structconf__handler_1ade184964cb051f98839dda87e4f120b3"></span><span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ch_arg</span></code><a class="headerlink" href="#c.conf_handler.ch_arg" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.conf_handler::ch_arg">
+<span class="target" id="structconf__handler_1ade184964cb051f98839dda87e4f120b3"></span>void* <code class="descname">ch_arg</code><a class="headerlink" href="#c.conf_handler::ch_arg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom argument that gets passed to the extended callbacks. </p>
 </dd></dl>
 
 </div>
 </dd></dl>
-
-<dl class="c struct">
-<dt id="c.conf_store_itf">
-<span class="target" id="structconf__store__itf"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">conf_store_itf</span></code><a class="headerlink" href="#c.conf_store_itf" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;config_store.h&gt;</em></dd></dl>
-
-<dl class="c struct">
-<dt id="c.conf_store">
-<span class="target" id="structconf__store"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">conf_store</span></code><a class="headerlink" href="#c.conf_store" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;config_store.h&gt;</em></dd></dl>
 
 </div>
 </div>
@@ -1038,6 +1044,7 @@ foo_val will continue counting up from where it was before restart.</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

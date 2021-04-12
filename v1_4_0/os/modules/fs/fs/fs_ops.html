@@ -260,32 +260,32 @@ ga("send", "pageview");
                     
   <div class="section" id="struct-fs-ops">
 <h1>struct fs_ops<a class="headerlink" href="#struct-fs-ops" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">fs_ops</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_open</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">access_flags</span><span class="p">,</span>
-              <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">**</span><span class="n">out_file</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_close</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_read</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">len</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">out_data</span><span class="p">,</span>
-      <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">out_len</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_write</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">len</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct fs_ops {
+    int (*f_open)(const char *filename, uint8_t access_flags,
+              struct fs_file **out_file);
+    int (*f_close)(struct fs_file *file);
+    int (*f_read)(struct fs_file *file, uint32_t len, void *out_data,
+      uint32_t *out_len);
+    int (*f_write)(struct fs_file *file, const void *data, int len);
 
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_seek</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">offset</span><span class="p">);</span>
-    <span class="kt">uint32_t</span> <span class="p">(</span><span class="o">*</span><span class="n">f_getpos</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_filelen</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">out_len</span><span class="p">);</span>
+    int (*f_seek)(struct fs_file *file, uint32_t offset);
+    uint32_t (*f_getpos)(const struct fs_file *file);
+    int (*f_filelen)(const struct fs_file *file, uint32_t *out_len);
 
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_unlink</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_rename</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">from</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">to</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_mkdir</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">);</span>
+    int (*f_unlink)(const char *filename);
+    int (*f_rename)(const char *from, const char *to);
+    int (*f_mkdir)(const char *path);
 
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_opendir</span><span class="p">)(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">fs_dir</span> <span class="o">**</span><span class="n">out_dir</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_readdir</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">fs_dir</span> <span class="o">*</span><span class="n">dir</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">fs_dirent</span> <span class="o">**</span><span class="n">out_dirent</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_closedir</span><span class="p">)(</span><span class="k">struct</span> <span class="nc">fs_dir</span> <span class="o">*</span><span class="n">dir</span><span class="p">);</span>
+    int (*f_opendir)(const char *path, struct fs_dir **out_dir);
+    int (*f_readdir)(struct fs_dir *dir, struct fs_dirent **out_dirent);
+    int (*f_closedir)(struct fs_dir *dir);
 
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_dirent_name</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">fs_dirent</span> <span class="o">*</span><span class="n">dirent</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">max_len</span><span class="p">,</span>
-      <span class="kt">char</span> <span class="o">*</span><span class="n">out_name</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">out_name_len</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">f_dirent_is_dir</span><span class="p">)(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">fs_dirent</span> <span class="o">*</span><span class="n">dirent</span><span class="p">);</span>
+    int (*f_dirent_name)(const struct fs_dirent *dirent, size_t max_len,
+      char *out_name, uint8_t *out_name_len);
+    int (*f_dirent_is_dir)(const struct fs_dirent *dirent);
 
-    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">f_name</span><span class="p">;</span>
-<span class="p">};</span>
+    const char *f_name;
+};
 </pre></div>
 </div>
 <p>This data structure consists of a set of function pointers. Each
@@ -297,7 +297,7 @@ system package.</p>
 the <a class="reference external" href="fs.md#api">file system abstraction layer API</a>.</p>
 <div class="section" id="header-file">
 <h2>Header file<a class="headerlink" href="#header-file" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;fs/fs_if.h&quot;</span><span class="cp"></span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#include &quot;fs/fs_if.h&quot;
 </pre></div>
 </div>
 </div>
@@ -356,6 +356,7 @@ the <a class="reference external" href="fs.md#api">file system abstraction layer
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

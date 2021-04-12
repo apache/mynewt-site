@@ -260,7 +260,7 @@ ga("send", "pageview");
                     
   <div class="section" id="fs-seek">
 <h1>fs_seek<a class="headerlink" href="#fs-seek" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">fs_seek</span><span class="p">(</span><span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">offset</span><span class="p">)</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int fs_seek(struct fs_file *file, uint32_t offset)
 </pre></div>
 </div>
 <p>Positions a file’s read and write pointer at the specified offset. The
@@ -269,22 +269,22 @@ offset is expressed as the number of bytes from the start of the file
 file).</p>
 <div class="section" id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 27%" />
-<col style="width: 73%" />
+<col width="27%" />
+<col width="73%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><em>Argument</em></p></th>
-<th class="head"><p><em>Description</em></p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>Argument</em></th>
+<th class="head"><em>Description</em></th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>file</p></td>
-<td><p>Pointer to the file to reposition</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>file</td>
+<td>Pointer to the file to reposition</td>
 </tr>
-<tr class="row-odd"><td><p>offset</p></td>
-<td><p>The 0-based file offset to seek to</p></td>
+<tr class="row-odd"><td>offset</td>
+<td>The 0-based file offset to seek to</td>
 </tr>
 </tbody>
 </table>
@@ -292,8 +292,8 @@ file).</p>
 <div class="section" id="returned-values">
 <h2>Returned values<a class="headerlink" href="#returned-values" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>0 on success</p></li>
-<li><p><a class="reference external" href="fs_return_codes.html">FS error code</a> on failure</p></li>
+<li>0 on success</li>
+<li><a class="reference external" href="fs_return_codes.html">FS error code</a> on failure</li>
 </ul>
 </div>
 <div class="section" id="notes">
@@ -304,7 +304,7 @@ only affects the read pointer.</p>
 </div>
 <div class="section" id="header-file">
 <h2>Header file<a class="headerlink" href="#header-file" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;fs/fs.h&quot;</span><span class="cp"></span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#include &quot;fs/fs.h&quot;
 </pre></div>
 </div>
 </div>
@@ -312,33 +312,33 @@ only affects the read pointer.</p>
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>The following example reads four bytes from a file, starting at an
 offset of eight.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">read_part1_middle</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">bytes_read</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">buf</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+read_part1_middle(void)
+{
+    struct fs_file *file;
+    uint32_t bytes_read;
+    uint8_t buf[4];
+    int rc;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_open</span><span class="p">(</span><span class="s">&quot;/data/parts/1.bin&quot;</span><span class="p">,</span> <span class="n">FS_ACCESS_READ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">file</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="cm">/* Advance to offset 8. */</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_seek</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="cm">/* Read bytes 8, 9, 10, and 11. */</span>
-            <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_read</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bytes_read</span><span class="p">);</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-                <span class="cm">/* buf now contains up to 4 bytes of file data. */</span>
-                <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;read %u bytes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">bytes_read</span><span class="p">)</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
+    rc = fs_open(&quot;/data/parts/1.bin&quot;, FS_ACCESS_READ, &amp;file);
+    if (rc == 0) {
+        /* Advance to offset 8. */
+        rc = fs_seek(file, 8);
+        if (rc == 0) {
+            /* Read bytes 8, 9, 10, and 11. */
+            rc = fs_read(file, 4, buf, &amp;bytes_read);
+            if (rc == 0) {
+                /* buf now contains up to 4 bytes of file data. */
+                console_printf(&quot;read %u bytes\n&quot;, bytes_read)
+            }
+        }
 
-        <span class="cm">/* Close the file. */</span>
-        <span class="n">fs_close</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
-    <span class="p">}</span>
+        /* Close the file. */
+        fs_close(file);
+    }
 
-    <span class="k">return</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+    return rc == 0 ? 0 : -1;
+}
 </pre></div>
 </div>
 </div>
@@ -397,6 +397,7 @@ offset of eight.</p>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

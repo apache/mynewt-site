@@ -291,8 +291,8 @@ load the application to your Arduino to verify that everything is in order. Now 
 <p>The purpose of this section is to give an introduction to the important aspects of tasks 
 and how to properly initialize them. First, let’s define a second task called <code>work_task</code> 
 in main.c (located in apps/blinky/src):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000000">work_task</span>;
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">work_task</span>;
+</pre></div>
 
 <p>A task is represented by the <a href="http://mynewt.apache.org/os/core_os/task/task/#data-structures"><em>os_task</em></a><br />
 struct which will hold the task’s information (name, state, priority, etc.). A task is made up of two 
@@ -304,9 +304,9 @@ us the ability to set the stack size for a task giving the application developer
 memory usage. Since we’re not short on memory, our <code>blinky_stack</code> and <code>work_stack</code> are plenty large 
 for the purpose of this lesson. Notice that the elements in our task stack are of type <code>os_stack_t</code> 
 which are generally 32 bits, making our entire stack 1024 Bytes.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>  <span style="color: #633820">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>  <span style="color: #633820">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
   <span style="color: #000000">os_stack_t</span> <span style="color: #000000">work_stack</span>[<span style="color: #000000">WORK_STACK_SIZE</span>];
-</code></pre></div>
+</pre></div>
 
 <p>Note: The <code>OS_STACK_ALIGN</code> macro is used to align the stack based on the hardware architecture.</p>
 <h3 id="task-function">Task Function</h3>
@@ -314,10 +314,10 @@ which are generally 32 bits, making our entire stack 1024 Bytes.</p>
 Blinky app the task function, named <code>blinky_task_handler()</code>, is initially called when we call <code>os_start()</code> 
 in <code>main()</code>. In general, the task function is where the majority of work is done by a task. Let’s write 
 a task function for <code>work_task</code> called <code>work_task_handler()</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">void</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
 <span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000000">*t</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
 
     <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
     <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
@@ -328,7 +328,7 @@ a task function for <code>work_task</code> called <code>work_task_handler()</cod
         <span style="color: #177500">/* Do work... */</span>
     }
 }
-</code></pre></div>
+</pre></div>
 
 <p>The task function is called when the task is initially put into the <em>running</em> state by the scheduler. 
 We use an infinite loop to ensure that the task function never returns. Our assertion that the current 
@@ -339,14 +339,14 @@ be in most task functions.</p>
 priority; the highest priority being 0 and the lowest 255. Thus, before initializing our task, we 
 must choose a priority defined as a macro variable.</p>
 <p>Let’s set the priority of <code>work_task</code> to 0, because everyone knows that work is more important than blinking.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>  <span style="color: #633820">#define WORK_TASK_PRIO (0)</span>
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>  <span style="color: #633820">#define WORK_TASK_PRIO (0)</span>
+</pre></div>
 
 <h3 id="initialization">Initialization</h3>
 <p>To initialize a new task we use <a href="http://mynewt.apache.org/os/core_os/task/os_task_init/"><em>os_task_init()</em></a> 
 which takes a number of arguments including our new task function, stack, and priority. Much like <code>blinky_task</code>, 
 we’re going to initialize <code>work_task</code> inside <code>init_tasks</code> to keep our main function clean.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
 <span style="color: #000000">init_tasks</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #177500">/* … */</span>
@@ -357,40 +357,40 @@ we’re going to initialize <code>work_task</code> inside <code>init_tasks</code
     <span style="color: #000000">tasks_initialized</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
-</code></pre></div>
+</pre></div>
 
 <p>And that’s it! Now run your application using the newt run command.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ newt run arduino_blinky 0.0.0
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt run arduino_blinky 0.0.0
+</pre></div>
 
 <p>When GDB appears press C then Enter to continue and … <em>wait, why doesn't our LED blink anymore?</em></p>
 <h4 id="review">Review</h4>
 <p>Before we run our new app, let’s review what we need in order to create a task. This is a general case for a new task called mytask:</p>
 <p><strong>1)</strong>   Define a new task, task stack, and priority:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/* My Task */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000000">mytask</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/* My Task */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">mytask</span>
 <span style="color: #177500">/* My Task Stack */</span>
 <span style="color: #633820">#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)</span>
 <span style="color: #000000">os_stack_t</span> <span style="color: #000000">mytask_stack</span>[<span style="color: #000000">MYTASK_STACK_SIZE</span>];
 <span style="color: #177500">/* My Task Priority */</span>
 <span style="color: #633820">#define MYTASK_PRIO (0)</span>
-</code></pre></div>
+</pre></div>
 
 <p><strong>2)</strong> Define task function:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">void</span> 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span> 
 <span style="color: #000000">mytask_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
   <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
       <span style="color: #177500">/* ... */</span>
   }
 }
-</code></pre></div>
+</pre></div>
 
 <p><strong>3)</strong> Initialize task before calling <code>os_start()</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;mytask</span>, <span style="color: #C41A16">&quot;mytask&quot;</span>, <span style="color: #000000">mytask_handler</span>, <span style="color: #A90D91">NULL</span>, 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;mytask</span>, <span style="color: #C41A16">&quot;mytask&quot;</span>, <span style="color: #000000">mytask_handler</span>, <span style="color: #A90D91">NULL</span>, 
             <span style="color: #000000">MYTASK_PRIO</span>, <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">mytask_stack</span>,
             <span style="color: #000000">MYTASK_STACK_SIZE</span>);
-</code></pre></div>
+</pre></div>
 
 <h2 id="task-priority-preempting-and-context-switching">Task Priority, Preempting, and Context Switching</h2>
 <p>A preemptive RTOS is one in which a higher priority task that is <em>ready to run</em> will preempt (i.e. take the 
@@ -402,10 +402,10 @@ task is switched in.</p>
 work to keep it busy. Because the delay is measured in os ticks, the actual number of ticks per second is 
 dependent on the board. Therefore, we multiply <code>OS_TICKS_PER_SEC</code>, which is defined in the MCU, by the 
 number of seconds we wish to delay.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #A90D91">void</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
 <span style="color: #000000">work_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
-    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000000">*t</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
 
     <span style="color: #000000">g_led_pin</span> <span style="color: #000000">=</span> <span style="color: #000000">LED_BLINK_PIN</span>;
     <span style="color: #000000">hal_gpio_init_out</span>(<span style="color: #000000">g_led_pin</span>, <span style="color: #1C01CE">1</span>);
@@ -422,11 +422,11 @@ number of seconds we wish to delay.</p>
         <span style="color: #000000">os_time_delay</span>(<span style="color: #1C01CE">3</span><span style="color: #000000">*OS_TICKS_PER_SECOND</span>);
     }
 }
-</code></pre></div>
+</pre></div>
 
 <p>In order to notice the LED changing, modify the time delay in <code>blinky_task_handler()</code> to blink at a higher frequency.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC/</span><span style="color: #1C01CE">10</span>);
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">os_time_delay</span>(<span style="color: #000000">OS_TICKS_PER_SEC/</span><span style="color: #1C01CE">10</span>);
+</pre></div>
 
 <p>Before we run the app, let’s predict the behavior. With the newest additions to <code>work_task_handler()</code>, 
 our first action will be to sleep for three seconds. This will allow <code>blinky_task</code> to take over the CPU 
@@ -452,17 +452,17 @@ executed during the millisecond delays in <code>blinky_task</code>, saving us id
 github and copy an existing target.</p>
 <p>Change directory into apps and clone the repository to get our new
 files:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ cd apps
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd apps
 $ git clone https://github.com/bgiori/mynewt_tasks_lesson.git
-</code></pre></div>
+</pre></div>
 
 <p>Change directory back to your project root and copy  the arduino_blinky target to a new target called task_tgt.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">copy</span> <span style="color: #000000">arduino_blinky</span> <span style="color: #000000">task_tgt</span>
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">copy</span> <span style="color: #000000">arduino_blinky</span> <span style="color: #000000">task_tgt</span>
+</pre></div>
 
 <p>Set a new app location.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">task_tgt</span> <span style="color: #000000">app=apps/mynewt_tasks_lesson</span>
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">target</span> <span style="color: #000000">set</span> <span style="color: #000000">task_tgt</span> <span style="color: #000000">app=apps/mynewt_tasks_lesson</span>
+</pre></div>
 
 <p>Now let’s take a look at our new code. First, notice that we have abandoned blinking, instead choosing t
 o use the <a href="http://mynewt.apache.org/latest/os/modules/console/console/"><em>console</em></a> and <a href="http://mynewt.apache.org/latest/os/modules/shell/shell/"><em>shell</em></a> 
@@ -510,25 +510,25 @@ two and calculate a final speedup (simulation2 / simulation1).</li>
 <p>Before running our new app, we must first connect to the serial console. First make sure the 
 mynewt_arduino_zero repository is set to the develop branch. (Remove once changes have been 
 moved to master). </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ cd repos/mynewt_arduino_zero
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd repos/mynewt_arduino_zero
 $ git checkout develop
-</code></pre></div>
+</pre></div>
 
 <p>Open a new terminal window and list your serial connections to find our Arduino.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">$</span> <span style="color: #000000">ls</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">*</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">$</span> <span style="color: #000000">ls</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">*</span>
 
 <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">Bluetooth-Incoming-Port</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">usbmodem14132</span>
-</code></pre></div>
+</pre></div>
 
 <p>In the same window, connect to the serial port using a serial communication program. 
 In this case I’ll be using mincom as it can scroll through output.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">$</span> <span style="color: #000000">minicom</span> <span style="color: #000000">-D</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">usbmodem14132</span> <span style="color: #000000">-b</span> <span style="color: #1C01CE">115200</span>
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">$</span> <span style="color: #000000">minicom</span> <span style="color: #000000">-D</span> <span style="color: #000000">/dev/tty</span>.<span style="color: #000000">usbmodem14132</span> <span style="color: #000000">-b</span> <span style="color: #1C01CE">115200</span>
+</pre></div>
 
 <p>If you see minicom welcome you, you’re ready to move on!</p>
 <h3 id="output-analysis">Output Analysis</h3>
 <p>Run our new target, task_tgt, and you should see an output similar to this:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>Starting First Simulation...
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>Starting First Simulation...
 1:     Task B: 0% 
 78:     Task B: 1% 
 155:     Task B: 2% 
@@ -588,7 +588,7 @@ In this case I’ll be using mincom as it can scroll through output.</p>
 40058:
 
  Final Speedup (Sim2 / Sim1): 1.26
-</code></pre></div>
+</pre></div>
 
 <p>The console output reaffirms our previous prediction and makes both the scheduling differences 
 and subsequent efficiency boost far more apparent. Let’s take a look at scheduling differences 

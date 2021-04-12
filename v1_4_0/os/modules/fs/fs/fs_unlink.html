@@ -260,7 +260,7 @@ ga("send", "pageview");
                     
   <div class="section" id="fs-unlink">
 <h1>fs_unlink<a class="headerlink" href="#fs-unlink" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">fs_unlink</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">filename</span><span class="p">)</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int fs_unlink(const char *filename)
 </pre></div>
 </div>
 <p>Unlinks the file or directory at the specified path. This is the
@@ -271,19 +271,19 @@ file remain valid, and can be read from and written to as long as they
 remain open.</p>
 <div class="section" id="arguments">
 <h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 23%" />
-<col style="width: 77%" />
+<col width="23%" />
+<col width="77%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><em>Argument</em></p></th>
-<th class="head"><p><em>Description</em></p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>Argument</em></th>
+<th class="head"><em>Description</em></th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>filename</p></td>
-<td><p>The path of the file or directory to unlink</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>filename</td>
+<td>The path of the file or directory to unlink</td>
 </tr>
 </tbody>
 </table>
@@ -291,13 +291,13 @@ remain open.</p>
 <div class="section" id="returned-values">
 <h2>Returned values<a class="headerlink" href="#returned-values" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>0 on success</p></li>
-<li><p><a class="reference external" href="fs_return_codes.html">FS error code</a> on failure</p></li>
+<li>0 on success</li>
+<li><a class="reference external" href="fs_return_codes.html">FS error code</a> on failure</li>
 </ul>
 </div>
 <div class="section" id="header-file">
 <h2>Header file<a class="headerlink" href="#header-file" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;fs/fs.h&quot;</span><span class="cp"></span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#include &quot;fs/fs.h&quot;
 </pre></div>
 </div>
 </div>
@@ -306,31 +306,31 @@ remain open.</p>
 <p>The following example creates a file and then immediately unlinks it. By
 unlinking the file, this function prevents other OS tasks from accessing
 it. When the function closes the file, it is deleted from the disk.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">process_data</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+process_data(void)
+{
+    struct fs_file *file;
+    int rc;
 
-    <span class="cm">/* If the file doesn&#39;t exist, create it.  If it does exist, truncate it to</span>
-<span class="cm">     * zero bytes.</span>
-<span class="cm">     */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_open</span><span class="p">(</span><span class="s">&quot;/tmp/buffer.bin&quot;</span><span class="p">,</span> <span class="n">FS_ACCESS_WRITE</span> <span class="o">|</span> <span class="n">FS_ACCESS_TRUNCATE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">file</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="cm">/* Unlink the file so that other tasks cannot access it. */</span>
-        <span class="n">fs_unlink</span><span class="p">(</span><span class="s">&quot;/tmp/buffer.bin&quot;</span><span class="p">)</span>
+    /* If the file doesn&#39;t exist, create it.  If it does exist, truncate it to
+     * zero bytes.
+     */
+    rc = fs_open(&quot;/tmp/buffer.bin&quot;, FS_ACCESS_WRITE | FS_ACCESS_TRUNCATE, &amp;file);
+    if (rc == 0) {
+        /* Unlink the file so that other tasks cannot access it. */
+        fs_unlink(&quot;/tmp/buffer.bin&quot;)
 
-        <span class="cm">/* &lt;use the file as a data buffer&gt; */</span>
+        /* &lt;use the file as a data buffer&gt; */
 
-        <span class="cm">/* Close the file.  This operation causes the file to be deleted from</span>
-<span class="cm">         * the disk because it was unlinked earlier (and it has no other open</span>
-<span class="cm">         * file handles).</span>
-<span class="cm">         */</span>
-        <span class="n">fs_close</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
-    <span class="p">}</span>
+        /* Close the file.  This operation causes the file to be deleted from
+         * the disk because it was unlinked earlier (and it has no other open
+         * file handles).
+         */
+        fs_close(file);
+    }
 
-    <span class="k">return</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+    return rc == 0 ? 0 : -1;
+}
 </pre></div>
 </div>
 </div>
@@ -389,6 +389,7 @@ it. When the function closes the file, it is deleted from the disk.</p>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

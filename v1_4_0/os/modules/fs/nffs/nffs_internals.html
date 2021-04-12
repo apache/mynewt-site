@@ -263,54 +263,54 @@ ga("send", "pageview");
 <div class="section" id="disk-structure">
 <h2>Disk structure<a class="headerlink" href="#disk-structure" title="Permalink to this headline">¶</a></h2>
 <p>On disk, each area is prefixed with the following header:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of an area header. */</span>
-<span class="k">struct</span> <span class="nc">nffs_disk_area</span> <span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">nda_magic</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>  <span class="cm">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
-    <span class="kt">uint32_t</span> <span class="n">nda_length</span><span class="p">;</span>    <span class="cm">/* Total size of area, in bytes. */</span>
-    <span class="kt">uint8_t</span> <span class="n">nda_ver</span><span class="p">;</span>        <span class="cm">/* Current nffs version: 0 */</span>
-    <span class="kt">uint8_t</span> <span class="n">nda_gc_seq</span><span class="p">;</span>     <span class="cm">/* Garbage collection count. */</span>
-    <span class="kt">uint8_t</span> <span class="n">reserved8</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">nda_id</span><span class="p">;</span>         <span class="cm">/* 0xff if scratch area. */</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** On-disk representation of an area header. */
+struct nffs_disk_area {
+    uint32_t nda_magic[4];  /* NFFS_AREA_MAGIC{0,1,2,3} */
+    uint32_t nda_length;    /* Total size of area, in bytes. */
+    uint8_t nda_ver;        /* Current nffs version: 0 */
+    uint8_t nda_gc_seq;     /* Garbage collection count. */
+    uint8_t reserved8;
+    uint8_t nda_id;         /* 0xff if scratch area. */
+};
 </pre></div>
 </div>
 <p>Beyond its header, an area contains a sequence of disk objects,
 representing the contents of the file system. There are two types of
 objects: <em>inodes</em> and <em>data blocks</em>. An inode represents a file or
 directory; a data block represents part of a file’s contents.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of an inode (file or directory). */</span>
-<span class="k">struct</span> <span class="nc">nffs_disk_inode</span> <span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">ndi_magic</span><span class="p">;</span>         <span class="cm">/* NFFS_INODE_MAGIC */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndi_id</span><span class="p">;</span>            <span class="cm">/* Unique object ID. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndi_seq</span><span class="p">;</span>           <span class="cm">/* Sequence number; greater supersedes</span>
-<span class="cm">                                   lesser. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndi_parent_id</span><span class="p">;</span>     <span class="cm">/* Object ID of parent directory inode. */</span>
-    <span class="kt">uint8_t</span> <span class="n">reserved8</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">ndi_filename_len</span><span class="p">;</span>   <span class="cm">/* Length of filename, in bytes. */</span>
-    <span class="kt">uint16_t</span> <span class="n">ndi_crc16</span><span class="p">;</span>         <span class="cm">/* Covers rest of header and filename. */</span>
-    <span class="cm">/* Followed by filename. */</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** On-disk representation of an inode (file or directory). */
+struct nffs_disk_inode {
+    uint32_t ndi_magic;         /* NFFS_INODE_MAGIC */
+    uint32_t ndi_id;            /* Unique object ID. */
+    uint32_t ndi_seq;           /* Sequence number; greater supersedes
+                                   lesser. */
+    uint32_t ndi_parent_id;     /* Object ID of parent directory inode. */
+    uint8_t reserved8;
+    uint8_t ndi_filename_len;   /* Length of filename, in bytes. */
+    uint16_t ndi_crc16;         /* Covers rest of header and filename. */
+    /* Followed by filename. */
+};
 </pre></div>
 </div>
 <p>An inode filename’s length cannot exceed 256 bytes. The filename is not
 null-terminated. The following ASCII characters are not allowed in a
 filename:</p>
 <ul class="simple">
-<li><p>/ (slash character)</p></li>
-<li><p><a href="#id1"><span class="problematic" id="id2">:raw-latex:`\0`</span></a> (NUL character)</p></li>
+<li>/ (slash character)</li>
+<li><a href="#id1"><span class="problematic" id="id2">:raw-latex:`\0`</span></a> (NUL character)</li>
 </ul>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of a data block. */</span>
-<span class="k">struct</span> <span class="nc">nffs_disk_block</span> <span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">ndb_magic</span><span class="p">;</span>     <span class="cm">/* NFFS_BLOCK_MAGIC */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndb_id</span><span class="p">;</span>        <span class="cm">/* Unique object ID. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndb_seq</span><span class="p">;</span>       <span class="cm">/* Sequence number; greater supersedes lesser. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndb_inode_id</span><span class="p">;</span>  <span class="cm">/* Object ID of owning inode. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ndb_prev_id</span><span class="p">;</span>   <span class="cm">/* Object ID of previous block in file;</span>
-<span class="cm">                               NFFS_ID_NONE if this is the first block. */</span>
-    <span class="kt">uint16_t</span> <span class="n">ndb_data_len</span><span class="p">;</span>  <span class="cm">/* Length of data contents, in bytes. */</span>
-    <span class="kt">uint16_t</span> <span class="n">ndb_crc16</span><span class="p">;</span>     <span class="cm">/* Covers rest of header and data. */</span>
-    <span class="cm">/* Followed by &#39;ndb_data_len&#39; bytes of data. */</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** On-disk representation of a data block. */
+struct nffs_disk_block {
+    uint32_t ndb_magic;     /* NFFS_BLOCK_MAGIC */
+    uint32_t ndb_id;        /* Unique object ID. */
+    uint32_t ndb_seq;       /* Sequence number; greater supersedes lesser. */
+    uint32_t ndb_inode_id;  /* Object ID of owning inode. */
+    uint32_t ndb_prev_id;   /* Object ID of previous block in file;
+                               NFFS_ID_NONE if this is the first block. */
+    uint16_t ndb_data_len;  /* Length of data contents, in bytes. */
+    uint16_t ndb_crc16;     /* Covers rest of header and data. */
+    /* Followed by &#39;ndb_data_len&#39; bytes of data. */
+};
 </pre></div>
 </div>
 <p>Each data block contains the ID of the previous data block in the file.
@@ -319,8 +319,8 @@ Together, the set of blocks in a file form a reverse singly-linked list.</p>
 at initialization-time. The result is the greatest number which
 satisfies all of the following restrictions:</p>
 <ul class="simple">
-<li><p>No more than 2048.</p></li>
-<li><p>At least two maximum-sized blocks can fit in the smallest area.</p></li>
+<li>No more than 2048.</li>
+<li>At least two maximum-sized blocks can fit in the smallest area.</li>
 </ul>
 <p>The 2048 number was chosen somewhat arbitrarily, and may change in the
 future.</p>
@@ -329,28 +329,28 @@ future.</p>
 <h2>ID space<a class="headerlink" href="#id-space" title="Permalink to this headline">¶</a></h2>
 <p>All disk objects have a unique 32-bit ID. The ID space is partitioned as
 follows:</p>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 48%" />
-<col style="width: 52%" />
+<col width="48%" />
+<col width="52%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>ID range</p></th>
-<th class="head"><p>Node type</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">ID range</th>
+<th class="head">Node type</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>0x00000000 - 0x0fffffff</p></td>
-<td><p>Directory inodes</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>0x00000000 - 0x0fffffff</td>
+<td>Directory inodes</td>
 </tr>
-<tr class="row-odd"><td><p>0x10000000 - 0x7fffffff</p></td>
-<td><p>File inodes</p></td>
+<tr class="row-odd"><td>0x10000000 - 0x7fffffff</td>
+<td>File inodes</td>
 </tr>
-<tr class="row-even"><td><p>0x80000000 - 0xfffffffe</p></td>
-<td><p>Data blocks</p></td>
+<tr class="row-even"><td>0x80000000 - 0xfffffffe</td>
+<td>Data blocks</td>
 </tr>
-<tr class="row-odd"><td><p>0xffffffff</p></td>
-<td><p>Reserved (NFFS_ID_NONE)</p></td>
+<tr class="row-odd"><td>0xffffffff</td>
+<td>Reserved (NFFS_ID_NONE)</td>
 </tr>
 </tbody>
 </table>
@@ -368,15 +368,15 @@ than or equal to each of the other areas in flash.</p>
 object’s hash key is derived from its 32-bit ID. Each list in the hash
 table is sorted by time of use; most-recently-used is at the front of
 the list. All objects are represented by the following structure:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
-<span class="cm"> * What gets stored in the hash table.  Each entry represents a data block or</span>
-<span class="cm"> * an inode.</span>
-<span class="cm"> */</span>
-<span class="k">struct</span> <span class="nc">nffs_hash_entry</span> <span class="p">{</span>
-    <span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">nffs_hash_entry</span><span class="p">)</span> <span class="n">nhe_next</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">nhe_id</span><span class="p">;</span>        <span class="cm">/* 0 - 0x7fffffff if inode; else if block. */</span>
-    <span class="kt">uint32_t</span> <span class="n">nhe_flash_loc</span><span class="p">;</span> <span class="cm">/* Upper-byte = area idx; rest = area offset. */</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/**
+ * What gets stored in the hash table.  Each entry represents a data block or
+ * an inode.
+ */
+struct nffs_hash_entry {
+    SLIST_ENTRY(nffs_hash_entry) nhe_next;
+    uint32_t nhe_id;        /* 0 - 0x7fffffff if inode; else if block. */
+    uint32_t nhe_flash_loc; /* Upper-byte = area idx; rest = area offset. */
+};
 </pre></div>
 </div>
 <p>For each data block, the above structure is all that is stored in RAM.
@@ -386,16 +386,16 @@ read from flash.</p>
 the file system. There are two types of inodes: <em>files</em> and
 <em>directories</em>. Each inode hash entry is actually an instance of the
 following structure:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Each inode hash entry is actually one of these. */</span>
-<span class="k">struct</span> <span class="nc">nffs_inode_entry</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">nffs_hash_entry</span> <span class="n">nie_hash_entry</span><span class="p">;</span>
-    <span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">nffs_inode_entry</span><span class="p">)</span> <span class="n">nie_sibling_next</span><span class="p">;</span>
-    <span class="k">union</span> <span class="p">{</span>
-        <span class="k">struct</span> <span class="nc">nffs_inode_list</span> <span class="n">nie_child_list</span><span class="p">;</span>           <span class="cm">/* If directory */</span>
-        <span class="k">struct</span> <span class="nc">nffs_hash_entry</span> <span class="o">*</span><span class="n">nie_last_block_entry</span><span class="p">;</span>    <span class="cm">/* If file */</span>
-    <span class="p">};</span>
-    <span class="kt">uint8_t</span> <span class="n">nie_refcnt</span><span class="p">;</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Each inode hash entry is actually one of these. */
+struct nffs_inode_entry {
+    struct nffs_hash_entry nie_hash_entry;
+    SLIST_ENTRY(nffs_inode_entry) nie_sibling_next;
+    union {
+        struct nffs_inode_list nie_child_list;           /* If directory */
+        struct nffs_hash_entry *nie_last_block_entry;    /* If file */
+    };
+    uint8_t nie_refcnt;
+};
 </pre></div>
 </div>
 <p>A directory inode contains a list of its child files and directories
@@ -406,10 +406,10 @@ ASCII character set.</p>
 block list must be walked backwards. This introduces a number of speed
 inefficiencies:</p>
 <ul class="simple">
-<li><p>All data blocks must be read to determine the length of the file.</p></li>
-<li><p>Data blocks often need to be processed sequentially. The reversed
+<li>All data blocks must be read to determine the length of the file.</li>
+<li>Data blocks often need to be processed sequentially. The reversed
 nature of the block list transforms this from linear time to an
-O(n^2) operation.</p></li>
+O(n^2) operation.</li>
 </ul>
 <p>Furthermore, obtaining information about any constituent data block
 requires a separate flash read.</p>
@@ -428,47 +428,47 @@ caches can be configured with a size of one if RAM usage must be
 minimized.</p>
 <p>The following data structures are used in the inode and data block
 caches.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Full data block representation; not stored permanently in RAM. */</span>
-<span class="k">struct</span> <span class="nc">nffs_block</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">nffs_hash_entry</span> <span class="o">*</span><span class="n">nb_hash_entry</span><span class="p">;</span>   <span class="cm">/* Points to real block entry. */</span>
-    <span class="kt">uint32_t</span> <span class="n">nb_seq</span><span class="p">;</span>                         <span class="cm">/* Sequence number; greater</span>
-<span class="cm">                                                supersedes lesser. */</span>
-    <span class="k">struct</span> <span class="nc">nffs_inode_entry</span> <span class="o">*</span><span class="n">nb_inode_entry</span><span class="p">;</span> <span class="cm">/* Owning inode. */</span>
-    <span class="k">struct</span> <span class="nc">nffs_hash_entry</span> <span class="o">*</span><span class="n">nb_prev</span><span class="p">;</span>         <span class="cm">/* Previous block in file. */</span>
-    <span class="kt">uint16_t</span> <span class="n">nb_data_len</span><span class="p">;</span>                    <span class="cm">/* # of data bytes in block. */</span>
-    <span class="kt">uint16_t</span> <span class="n">reserved16</span><span class="p">;</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Full data block representation; not stored permanently in RAM. */
+struct nffs_block {
+    struct nffs_hash_entry *nb_hash_entry;   /* Points to real block entry. */
+    uint32_t nb_seq;                         /* Sequence number; greater
+                                                supersedes lesser. */
+    struct nffs_inode_entry *nb_inode_entry; /* Owning inode. */
+    struct nffs_hash_entry *nb_prev;         /* Previous block in file. */
+    uint16_t nb_data_len;                    /* # of data bytes in block. */
+    uint16_t reserved16;
+};
 </pre></div>
 </div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Represents a single cached data block. */</span>
-<span class="k">struct</span> <span class="nc">nffs_cache_block</span> <span class="p">{</span>
-    <span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">nffs_cache_block</span><span class="p">)</span> <span class="n">ncb_link</span><span class="p">;</span> <span class="cm">/* Next / prev cached block. */</span>
-    <span class="k">struct</span> <span class="nc">nffs_block</span> <span class="n">ncb_block</span><span class="p">;</span>            <span class="cm">/* Full data block. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ncb_file_offset</span><span class="p">;</span>               <span class="cm">/* File offset of this block. */</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Represents a single cached data block. */
+struct nffs_cache_block {
+    TAILQ_ENTRY(nffs_cache_block) ncb_link; /* Next / prev cached block. */
+    struct nffs_block ncb_block;            /* Full data block. */
+    uint32_t ncb_file_offset;               /* File offset of this block. */
+};
 </pre></div>
 </div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Full inode representation; not stored permanently in RAM. */</span>
-<span class="k">struct</span> <span class="nc">nffs_inode</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">nffs_inode_entry</span> <span class="o">*</span><span class="n">ni_inode_entry</span><span class="p">;</span> <span class="cm">/* Points to real inode entry. */</span>
-    <span class="kt">uint32_t</span> <span class="n">ni_seq</span><span class="p">;</span>                         <span class="cm">/* Sequence number; greater</span>
-<span class="cm">                                                supersedes lesser. */</span>
-    <span class="k">struct</span> <span class="nc">nffs_inode_entry</span> <span class="o">*</span><span class="n">ni_parent</span><span class="p">;</span>      <span class="cm">/* Points to parent directory. */</span>
-    <span class="kt">uint8_t</span> <span class="n">ni_filename_len</span><span class="p">;</span>                 <span class="cm">/* # chars in filename. */</span>
-    <span class="kt">uint8_t</span> <span class="n">ni_filename</span><span class="p">[</span><span class="n">NFFS_SHORT_FILENAME_LEN</span><span class="p">];</span> <span class="cm">/* First 3 bytes. */</span>
-<span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Full inode representation; not stored permanently in RAM. */
+struct nffs_inode {
+    struct nffs_inode_entry *ni_inode_entry; /* Points to real inode entry. */
+    uint32_t ni_seq;                         /* Sequence number; greater
+                                                supersedes lesser. */
+    struct nffs_inode_entry *ni_parent;      /* Points to parent directory. */
+    uint8_t ni_filename_len;                 /* # chars in filename. */
+    uint8_t ni_filename[NFFS_SHORT_FILENAME_LEN]; /* First 3 bytes. */
+};
 </pre></div>
 </div>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
-<span class="n">TAILQ_HEAD</span><span class="p">(</span><span class="n">nffs_block_cache_list</span><span class="p">,</span> <span class="n">nffs_block_cache_entry</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */
+TAILQ_HEAD(nffs_block_cache_list, nffs_block_cache_entry);
 
-<span class="cm">/** Represents a single cached file inode. */</span>
-<span class="k">struct</span> <span class="nc">nffs_cache_inode</span> <span class="p">{</span>
-    <span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">nffs_cache_inode</span><span class="p">)</span> <span class="n">nci_link</span><span class="p">;</span>        <span class="cm">/* Sorted; LRU at tail. */</span>
-    <span class="k">struct</span> <span class="nc">nffs_inode</span> <span class="n">nci_inode</span><span class="p">;</span>                   <span class="cm">/* Full inode. */</span>
-    <span class="k">struct</span> <span class="nc">nffs_cache_block_list</span> <span class="n">nci_block_list</span><span class="p">;</span>   <span class="cm">/* List of cached blocks. */</span>
-    <span class="kt">uint32_t</span> <span class="n">nci_file_size</span><span class="p">;</span>                        <span class="cm">/* Total file size. */</span>
-<span class="p">};</span>
+/** Represents a single cached file inode. */
+struct nffs_cache_inode {
+    TAILQ_ENTRY(nffs_cache_inode) nci_link;        /* Sorted; LRU at tail. */
+    struct nffs_inode nci_inode;                   /* Full inode. */
+    struct nffs_cache_block_list nci_block_list;   /* List of cached blocks. */
+    uint32_t nci_file_size;                        /* Total file size. */
+};
 </pre></div>
 </div>
 <p>Only file inodes are cached; directory inodes are never cached.</p>
@@ -481,35 +481,34 @@ list. If a new inode needs to be cached, but the inode cache is full,
 the least-recently-used entry is freed to make room for the new one. The
 following operations cause an inode to be cached:</p>
 <ul class="simple">
-<li><p>Querying a file’s length.</p></li>
-<li><p>Seeking within a file.</p></li>
-<li><p>Reading from a file.</p></li>
-<li><p>Writing to a file.</p></li>
+<li>Querying a file’s length.</li>
+<li>Seeking within a file.</li>
+<li>Reading from a file.</li>
+<li>Writing to a file.</li>
 </ul>
 <p>The following operations cause a data block to be cached:</p>
 <ul class="simple">
-<li><p>Reading from the block.</p></li>
-<li><p>Writing to the block.</p></li>
+<li>Reading from the block.</li>
+<li>Writing to the block.</li>
 </ul>
 <p>If one of the above operations is applied to a data block that is not
 currently cached, nffs uses the following procedure to cache the
 necessary block:</p>
 <ol class="arabic simple">
-<li><p>If none of the owning inode’s blocks are currently cached, allocate a
+<li>If none of the owning inode’s blocks are currently cached, allocate a
 cached block entry corresponding to the requested block and insert it
-into the inode’s list.</p></li>
-<li><p>Else if the requested file offset is less than that of the first
+into the inode’s list.</li>
+<li>Else if the requested file offset is less than that of the first
 cached block, bridge the gap between the inode’s sequence of cached
 blocks and the block that now needs to be cached. This is
 accomplished by caching each block in the gap, finishing with the
-requested block.</p></li>
-<li><p>Else (the requested offset is beyond the end of the cache),</p>
-<ol class="arabic simple">
-<li><p>If the requested offset belongs to the block that immediately
+requested block.</li>
+<li>Else (the requested offset is beyond the end of the cache),<ol class="arabic">
+<li>If the requested offset belongs to the block that immediately
 follows the end of the cache, cache the block and append it to the
-list.</p></li>
-<li><p>Else, clear the cache, and populate it with the single entry
-corresponding to the requested block.</p></li>
+list.</li>
+<li>Else, clear the cache, and populate it with the single entry
+corresponding to the requested block.</li>
 </ol>
 </li>
 </ol>
@@ -517,12 +516,11 @@ corresponding to the requested block.</p></li>
 during the above procedure, the system frees up other blocks currently
 in the cache. This is accomplished as follows:</p>
 <ul class="simple">
-<li><p>Iterate the inode cache in reverse (i.e., start with the
-least-recently-used entry). For each entry:</p>
-<ol class="arabic simple">
-<li><p>If the entry’s cached block list is empty, advance to the next
-entry.</p></li>
-<li><p>Else, free all the cached blocks in the entry’s list.</p></li>
+<li>Iterate the inode cache in reverse (i.e., start with the
+least-recently-used entry). For each entry:<ol class="arabic">
+<li>If the entry’s cached block list is empty, advance to the next
+entry.</li>
+<li>Else, free all the cached blocks in the entry’s list.</li>
 </ol>
 </li>
 </ul>
@@ -545,34 +543,34 @@ application is unsure where a file system might be located, it can
 initiate detection across the entire flash region.</p>
 <p>A detected file system is valid if:</p>
 <ol class="arabic simple">
-<li><p>At least one non-scratch area is present.</p></li>
-<li><p>At least one scratch area is present (only the first gets used if
-there is more than one).</p></li>
-<li><p>The root directory inode is present.</p></li>
+<li>At least one non-scratch area is present.</li>
+<li>At least one scratch area is present (only the first gets used if
+there is more than one).</li>
+<li>The root directory inode is present.</li>
 </ol>
 <p>During detection, each indicated region of flash is checked for a valid
 area header. The contents of each valid non-scratch area are then
 restored into the nffs RAM representation. The following procedure is
 applied to each object in the area:</p>
 <ol class="arabic simple">
-<li><p>Verify the object’s integrity via a crc16 check. If invalid, the
+<li>Verify the object’s integrity via a crc16 check. If invalid, the
 object is discarded and the procedure restarts on the next object in
-the area.</p></li>
-<li><p>Convert the disk object into its corresponding RAM representation and
+the area.</li>
+<li>Convert the disk object into its corresponding RAM representation and
 insert it into the hash table. If the object is an inode, its
 reference count is initialized to 1, indicating ownership by its
-parent directory.</p></li>
-<li><p>If an object with the same ID is already present, then one supersedes
+parent directory.</li>
+<li>If an object with the same ID is already present, then one supersedes
 the other. Accept the object with the greater sequence number and
-discard the other.</p></li>
-<li><p>If the object references a nonexistent inode (parent directory in the
+discard the other.</li>
+<li>If the object references a nonexistent inode (parent directory in the
 case of an inode; owning file in the case of a data block), insert a
 temporary “dummy” inode into the hash table so that inter-object
 links can be maintained until the absent inode is eventually
-restored. Dummy inodes are identified by a reference count of 0.</p></li>
-<li><p>If a delete record for an inode is encountered, the inode’s parent
+restored. Dummy inodes are identified by a reference count of 0.</li>
+<li>If a delete record for an inode is encountered, the inode’s parent
 pointer is set to null to indicate that it should be removed from
-RAM.</p></li>
+RAM.</li>
 </ol>
 <p>If nffs encounters an object that cannot be identified (i.e., its magic
 number is not valid), it scans the remainder of the flash area for the
@@ -583,19 +581,19 @@ entire RAM representation so that invalid inodes can be deleted from
 memory.</p>
 <p>For each directory inode:</p>
 <ul class="simple">
-<li><p>If its reference count is 0 (i.e., it is a dummy), migrate its
+<li>If its reference count is 0 (i.e., it is a dummy), migrate its
 children to the <em>/lost+found</em> directory, and delete it from the RAM
 representation. This should only happen in the case of file system
-corruption.</p></li>
-<li><p>If its parent reference is null (i.e., it was deleted), delete it and
-all its children from the RAM representation.</p></li>
+corruption.</li>
+<li>If its parent reference is null (i.e., it was deleted), delete it and
+all its children from the RAM representation.</li>
 </ul>
 <p>For each file inode:</p>
 <ul class="simple">
-<li><p>If its reference count is 0 (i.e., it is a dummy), delete it from the
+<li>If its reference count is 0 (i.e., it is a dummy), delete it from the
 RAM representation. This should only happen in the case of file
 system corruption. (We should try to migrate the file to the
-lost+found directory in this case, as mentioned in the todo section).</p></li>
+lost+found directory in this case, as mentioned in the todo section).</li>
 </ul>
 <p>When an object is deleted during this sweep, it is only deleted from the
 RAM representation; nothing is written to disk.</p>
@@ -635,9 +633,9 @@ write operation being sent to the flash hardware.</p>
 <p>Whenever a new object is written to disk, it is assigned the following
 properties:</p>
 <ul class="simple">
-<li><p><em>ID:</em> A unique value is selected from the 32-bit ID space, as
-appropriate for the object’s type.</p></li>
-<li><p><em>Sequence number:</em> 0</p></li>
+<li><em>ID:</em> A unique value is selected from the 32-bit ID space, as
+appropriate for the object’s type.</li>
+<li><em>Sequence number:</em> 0</li>
 </ul>
 <p>When a new file or directory is created, a corresponding inode is
 written to flash. Likewise, a new data block also results in the writing
@@ -648,10 +646,10 @@ of a corresponding disk object.</p>
 <p>When a file or directory is moved or renamed, its corresponding inode is
 rewritten to flash with the following properties:</p>
 <ul class="simple">
-<li><p><em>ID:</em> Unchanged</p></li>
-<li><p><em>Sequence number:</em> Previous value plus one.</p></li>
-<li><p><em>Parent inode:</em> As specified by the move / rename operation.</p></li>
-<li><p><em>Filename:</em> As specified by the move / rename operation.</p></li>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+<li><em>Parent inode:</em> As specified by the move / rename operation.</li>
+<li><em>Filename:</em> As specified by the move / rename operation.</li>
 </ul>
 <p>Because the inode’s ID is unchanged, all dependent objects remain valid.</p>
 </div>
@@ -661,9 +659,9 @@ rewritten to flash with the following properties:</p>
 deletion record for the unlinked inode gets written to flash. The
 deletion record is an inode with the following properties:</p>
 <ul class="simple">
-<li><p><em>ID:</em> Unchanged</p></li>
-<li><p><em>Sequence number:</em> Previous value plus one.</p></li>
-<li><p><em>Parent inode ID:</em> NFFS_ID_NONE</p></li>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
+<li><em>Parent inode ID:</em> NFFS_ID_NONE</li>
 </ul>
 <p>When an inode is unlinked, no deletion records need to be written for
 the inode’s dependent objects (constituent data blocks or child inodes).
@@ -684,28 +682,25 @@ a file. First, if the write operation specifies too much data to fit
 into a single block, the operation is split into several separate write
 operations. Then, for each write operation:</p>
 <ol class="arabic simple">
-<li><p>Determine which existing blocks the write operation overlaps (n =
-number of overwritten blocks).</p></li>
-<li><p>If <em>n = 0</em>, this is an append operation. Write a data block with the
-following properties:</p>
-<ul class="simple">
-<li><p><em>ID:</em> New unique value.</p></li>
-<li><p><em>Sequence number:</em> 0.</p></li>
+<li>Determine which existing blocks the write operation overlaps (n =
+number of overwritten blocks).</li>
+<li>If <em>n = 0</em>, this is an append operation. Write a data block with the
+following properties:<ul>
+<li><em>ID:</em> New unique value.</li>
+<li><em>Sequence number:</em> 0.</li>
 </ul>
 </li>
-<li><p>Else <em>(n &gt; 1)</em>, this write overlaps existing data.</p>
-<ol class="arabic simple">
-<li><p>For each block in <em>[1, 2, … n-1]</em>, write a new block containing
+<li>Else <em>(n &gt; 1)</em>, this write overlaps existing data.<ol class="arabic">
+<li>For each block in <em>[1, 2, … n-1]</em>, write a new block containing
 the updated contents. Each new block supersedes the block it
-overwrites. That is, each block has the following properties:</p>
-<ul class="simple">
-<li><p><em>ID:</em> Unchanged</p></li>
-<li><p><em>Sequence number:</em> Previous value plus one.</p></li>
+overwrites. That is, each block has the following properties:<ul>
+<li><em>ID:</em> Unchanged</li>
+<li><em>Sequence number:</em> Previous value plus one.</li>
 </ul>
 </li>
-<li><p>Write the nth block. The nth block includes all appended data, if
+<li>Write the nth block. The nth block includes all appended data, if
 any. As with the other blocks, its ID is unchanged and its
-sequence number is incremented.</p></li>
+sequence number is incremented.</li>
 </ol>
 </li>
 </ol>
@@ -718,32 +713,31 @@ sequence number is incremented.</p></li>
 system must perform garbage collection to make room. The garbage
 collection procedure is described below:</p>
 <ul class="simple">
-<li><p>The non-scratch area with the lowest garbage collection sequence
+<li>The non-scratch area with the lowest garbage collection sequence
 number is selected as the “source area.” If there are other areas
 with the same sequence number, the one with the smallest flash offset
-is selected.</p></li>
-<li><p>The source area’s ID is written to the scratch area’s header,
+is selected.</li>
+<li>The source area’s ID is written to the scratch area’s header,
 transforming it into a non-scratch ID. This former scratch area is
-now known as the “destination area.”</p></li>
-<li><p>The RAM representation is exhaustively searched for collectible
+now known as the “destination area.”</li>
+<li>The RAM representation is exhaustively searched for collectible
 objects. The following procedure is applied to each inode in the
-system:</p>
-<ul>
-<li><p>If the inode is resident in the source area, copy the inode record
-to the destination area.</p></li>
-<li><p>If the inode is a file inode, walk the inode’s list of data
+system:<ul>
+<li>If the inode is resident in the source area, copy the inode record
+to the destination area.</li>
+<li>If the inode is a file inode, walk the inode’s list of data
 blocks, starting with the last block in the file. Each block that
 is resident in the source area is copied to the destination area.
 If there is a run of two or more blocks that are resident in the
 source area, they are consolidated and copied to the destination
 area as a single new block (subject to the maximum block size
-restriction).</p></li>
+restriction).</li>
 </ul>
 </li>
-<li><p>The source area is reformatted as a scratch sector (i.e., is is fully
+<li>The source area is reformatted as a scratch sector (i.e., is is fully
 erased, and its header is rewritten with an ID of 0xff). The area’s
 garbage collection sequence number is incremented prior to rewriting
-the header. This area is now the new scratch sector.</p></li>
+the header. This area is now the new scratch sector.</li>
 </ul>
 </div>
 </div>
@@ -801,6 +795,7 @@ the header. This area is now the new scratch sector.</p></li>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

@@ -349,244 +349,253 @@ waiting for an event on the queue and puts the task into the
 calls the event callback function to process the event.
 Note:</p>
 <ul class="simple">
-<li><p>Only one task should consume or block waiting for events from an
-event queue.</p></li>
-<li><p>The OS callout subsystem uses events for timer expiration notification.</p></li>
+<li>Only one task should consume or block waiting for events from an
+event queue.</li>
+<li>The OS callout subsystem uses events for timer expiration notification.</li>
 </ul>
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example of using an event from the BLE host:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">void</span> <span class="n">ble_hs_event_tx_notify</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static void ble_hs_event_tx_notify(struct os_event *ev);
 
-<span class="cm">/** OS event - triggers tx of pending notifications and indications. */</span>
-<span class="k">static</span> <span class="k">struct</span> <span class="nc">os_event</span> <span class="n">ble_hs_ev_tx_notifications</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">ev_cb</span> <span class="o">=</span> <span class="n">ble_hs_event_tx_notify</span><span class="p">,</span>
-<span class="p">};</span>
+/** OS event - triggers tx of pending notifications and indications. */
+static struct os_event ble_hs_ev_tx_notifications = {
+    .ev_cb = ble_hs_event_tx_notify,
+};
 </pre></div>
 </div>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<dl class="c type">
+<dl class="typedef">
 <dt id="c.os_event_fn">
-<span class="target" id="group___o_s_event_1ga6e572d40b307b9f40bec72281548b63e"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_event_fn</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a> <span class="pre">*</span><em><span class="pre">ev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_event_fn" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga6e572d40b307b9f40bec72281548b63e"></span><em class="property">typedef </em>void <code class="descname">os_event_fn</code><span class="sig-paren">(</span>struct <a class="reference internal" href="#c.os_event" title="os_event">os_event</a><em>&nbsp;*ev</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_event_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_init">
-<span class="target" id="group___o_s_event_1ga12330bd028b5efdb00b96f8d85ad576b"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_eventq_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_init" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga12330bd028b5efdb00b96f8d85ad576b"></span>void <code class="descname">os_eventq_init</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the event queue. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to initialize </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to initialize </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_inited">
-<span class="target" id="group___o_s_event_1ga21fb29b6ce469a93d87eacc2c64f7bca"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_eventq_inited</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_inited" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga21fb29b6ce469a93d87eacc2c64f7bca"></span>int <code class="descname">os_eventq_inited</code><span class="sig-paren">(</span>const struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a>  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_inited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether the event queue is initialized. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to check </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to check </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_put">
-<span class="target" id="group___o_s_event_1ga00853fd6e0f5bbf39e3930ee70665755"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_eventq_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_put" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga00853fd6e0f5bbf39e3930ee70665755"></span>void <code class="descname">os_eventq_put</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a> <em>&nbsp;*</em>, struct  <a class="reference internal" href="#c.os_event" title="os_event">os_event</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Put an event on the event queue. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to put an event on </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ev</span></code>: The event to put on the queue </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to put an event on </li>
+<li><code class="docutils literal notranslate"><span class="pre">ev</span></code>: The event to put on the queue </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_get_no_wait">
-<span class="target" id="group___o_s_event_1ga5142a879bb51db18fa7ff725a81e13d0"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_eventq_get_no_wait</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_get_no_wait" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga5142a879bb51db18fa7ff725a81e13d0"></span>struct <a class="reference internal" href="#c.os_event" title="os_event">os_event</a>* <code class="descname">os_eventq_get_no_wait</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a>  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_get_no_wait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Poll an event from the event queue and return it immediately. </p>
 <p>If no event is available, don’t block, just return NULL.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Event from the queue, or NULL if none available. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Event from the queue, or NULL if none available. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_get">
-<span class="target" id="group___o_s_event_1ga5d4a42f82a5fd7c2911ad4cb61a78045"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_eventq_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_get" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga5d4a42f82a5fd7c2911ad4cb61a78045"></span>struct <a class="reference internal" href="#c.os_event" title="os_event">os_event</a>* <code class="descname">os_eventq_get</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pull a single item from an event queue. </p>
 <p>This function blocks until there is an item on the event queue to read.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The event from the queue </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to pull an event from</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The event from the queue </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to pull an event from</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_run">
-<span class="target" id="group___o_s_event_1ga5ccd457fe11fddc18f30e9155167948f"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_eventq_run</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_run" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga5ccd457fe11fddc18f30e9155167948f"></span>void <code class="descname">os_eventq_run</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a>  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pull a single item off the event queue and call it’s event callback. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to pull the item off. </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to pull the item off. </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_poll">
-<span class="target" id="group___o_s_event_1ga75902d07b868e820357767c4aae2e175"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_eventq_poll</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a><span class="pre">*</span><span class="pre">*</span>, <span class="pre">int</span>, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_poll" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga75902d07b868e820357767c4aae2e175"></span>struct <a class="reference internal" href="#c.os_event" title="os_event">os_event</a>* <code class="descname">os_eventq_poll</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a> <em>&nbsp;**</em>, int, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t">os_time_t</a><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_poll" title="Permalink to this definition">¶</a></dt>
 <dd><p>Poll the list of event queues specified by the evq parameter (size nevqs), and return the “first” event available on any of the queues. </p>
 <p>Event queues are searched in the order that they are passed in the array.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>An event, or NULL if no events available </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: Array of event queues </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nevqs</span></code>: Number of event queues in evq </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">timo</span></code>: Timeout, forever if OS_WAIT_FOREVER is passed to poll.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>An event, or NULL if no events available </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: Array of event queues </li>
+<li><code class="docutils literal notranslate"><span class="pre">nevqs</span></code>: Number of event queues in evq </li>
+<li><code class="docutils literal notranslate"><span class="pre">timo</span></code>: Timeout, forever if OS_WAIT_FOREVER is passed to poll.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_remove">
-<span class="target" id="group___o_s_event_1ga74c23f0cc51953fa974cfb09e9bb646a"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_eventq_remove</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_remove" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga74c23f0cc51953fa974cfb09e9bb646a"></span>void <code class="descname">os_eventq_remove</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a> <em>&nbsp;*</em>, struct  <a class="reference internal" href="#c.os_event" title="os_event">os_event</a> <em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_remove" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove an event from the queue. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to remove the event from </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ev</span></code>: The event to remove from the queue </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to remove the event from </li>
+<li><code class="docutils literal notranslate"><span class="pre">ev</span></code>: The event to remove from the queue </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_dflt_get">
-<span class="target" id="group___o_s_event_1gacb92d16784e50c39fc62c92748d3a72d"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_eventq_dflt_get</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_dflt_get" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1gacb92d16784e50c39fc62c92748d3a72d"></span>struct <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a>* <code class="descname">os_eventq_dflt_get</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_dflt_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves the default event queue processed by OS main task. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The default event queue. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The default event queue. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_mon_start">
-<span class="target" id="group___o_s_event_1gacdab09ea7340e1564933b2716cd82e15"></span><em class="property"><span class="pre">static</span></em> <em class="property"><span class="pre">inline</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_eventq_mon_start</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em>, <span class="pre">int</span> <em><span class="pre">cnt</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq_mon" title="os_eventq_mon"><span class="pre">os_eventq_mon</span></a> <span class="pre">*</span><em><span class="pre">mon</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_mon_start" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1gacdab09ea7340e1564933b2716cd82e15"></span>static void <code class="descname">os_eventq_mon_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a>  *<em>&nbsp;evq</em>, int<em>&nbsp;cnt</em>, struct  <a class="reference internal" href="#c.os_eventq_mon" title="os_eventq_mon">os_eventq_mon</a>  *<em>&nbsp;mon</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_mon_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instrument OS eventq to monitor time spent handling events. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to start monitoring </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">cnt</span></code>: How many elements can be used in monitoring. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mon</span></code>: Pointer to data where monitoring data is collected. Must hold cnt number of elements. </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to start monitoring </li>
+<li><code class="docutils literal notranslate"><span class="pre">cnt</span></code>: How many elements can be used in monitoring. </li>
+<li><code class="docutils literal notranslate"><span class="pre">mon</span></code>: Pointer to data where monitoring data is collected. Must hold cnt number of elements. </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.os_eventq_mon_stop">
-<span class="target" id="group___o_s_event_1ga7099f01a296e4b79f3952e1c6c28d01d"></span><em class="property"><span class="pre">static</span></em> <em class="property"><span class="pre">inline</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_eventq_mon_stop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_mon_stop" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1ga7099f01a296e4b79f3952e1c6c28d01d"></span>static void <code class="descname">os_eventq_mon_stop</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.os_eventq" title="os_eventq">os_eventq</a>  *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_eventq_mon_stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop OS eventq monitoring. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue this operation applies to </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue this operation applies to </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.OS_EVENT_QUEUED">
-<span class="target" id="group___o_s_event_1gaf8776b7d4a3a3374e89562eefb3f3df2"></span><code class="sig-name descname"><span class="pre">OS_EVENT_QUEUED</span></code><span class="sig-paren">(</span><em><span class="pre">__ev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_EVENT_QUEUED" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_event_1gaf8776b7d4a3a3374e89562eefb3f3df2"></span><code class="descname">OS_EVENT_QUEUED</code><span class="sig-paren">(</span>__ev<span class="sig-paren">)</span><a class="headerlink" href="#c.OS_EVENT_QUEUED" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether or not the given event is queued. </p>
 </dd></dl>
 
-<dl class="c struct">
+<dl class="struct">
 <dt id="c.os_event">
-<span class="target" id="structos__event"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_event</span></code><a class="headerlink" href="#c.os_event" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structos__event"></span><em class="property">struct </em><code class="descname">os_event</code><a class="headerlink" href="#c.os_event" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;os_eventq.h&gt;</em><p>Structure representing an OS event. </p>
 <p>OS events get placed onto the event queues and are consumed by tasks. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="c var">
-<dt id="c.os_event.ev_queued">
-<span class="target" id="structos__event_1a22704177c6946c3bbb9f30dd8dca1b68"></span><span class="pre">uint8_t</span> <code class="sig-name descname"><span class="pre">ev_queued</span></code><a class="headerlink" href="#c.os_event.ev_queued" title="Permalink to this definition">¶</a><br /></dt>
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_event::ev_queued">
+<span class="target" id="structos__event_1a22704177c6946c3bbb9f30dd8dca1b68"></span>uint8_t <code class="descname">ev_queued</code><a class="headerlink" href="#c.os_event::ev_queued" title="Permalink to this definition">¶</a></dt>
 <dd><p>Whether this OS event is queued on an event queue. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.os_event.ev_cb">
-<span class="target" id="structos__event_1adce337a55ab01bf317fcd9048b4fb97d"></span><a class="reference internal" href="#c.os_event_fn" title="os_event_fn"><span class="pre">os_event_fn</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ev_cb</span></code><a class="headerlink" href="#c.os_event.ev_cb" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.os_event::ev_cb">
+<span class="target" id="structos__event_1adce337a55ab01bf317fcd9048b4fb97d"></span><a class="reference internal" href="#c.os_event_fn" title="os_event_fn">os_event_fn</a>* <code class="descname">ev_cb</code><a class="headerlink" href="#c.os_event::ev_cb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Callback to call when the event is taken off of an event queue. </p>
 <p>APIs, except for <a class="reference internal" href="#group___o_s_event_1ga5ccd457fe11fddc18f30e9155167948f"><span class="std std-ref">os_eventq_run()</span></a>, assume this callback will be called by the user. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.os_event.ev_arg">
-<span class="target" id="structos__event_1affb49e14dcf2b9e1b6f10bac3da788f1"></span><span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">ev_arg</span></code><a class="headerlink" href="#c.os_event.ev_arg" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.os_event::ev_arg">
+<span class="target" id="structos__event_1affb49e14dcf2b9e1b6f10bac3da788f1"></span>void* <code class="descname">ev_arg</code><a class="headerlink" href="#c.os_event::ev_arg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument to pass to the event queue callback. </p>
 </dd></dl>
 
 </div>
 </dd></dl>
 
-<dl class="c struct">
+<dl class="struct">
 <dt id="c.os_eventq_mon">
-<span class="target" id="structos__eventq__mon"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_eventq_mon</span></code><a class="headerlink" href="#c.os_eventq_mon" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structos__eventq__mon"></span><em class="property">struct </em><code class="descname">os_eventq_mon</code><a class="headerlink" href="#c.os_eventq_mon" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;os_eventq.h&gt;</em><p>Structure keeping track of time spent inside event callback. </p>
 <p>This is stored per eventq, and is updated inside <a class="reference internal" href="#group___o_s_event_1ga5ccd457fe11fddc18f30e9155167948f"><span class="std std-ref">os_eventq_run()</span></a>. Tick unit is os_cputime. </p>
 </dd></dl>
 
-<dl class="c struct">
+<dl class="struct">
 <dt id="c.os_eventq">
-<span class="target" id="structos__eventq"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_eventq</span></code><a class="headerlink" href="#c.os_eventq" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="structos__eventq"></span><em class="property">struct </em><code class="descname">os_eventq</code><a class="headerlink" href="#c.os_eventq" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;os_eventq.h&gt;</em><div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="c var">
-<dt id="c.os_eventq.evq_owner">
-<span class="target" id="structos__eventq_1a4f44bc0985277390484d7b5cb6b0e35c"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../task/task.html#c.os_task" title="os_task"><span class="pre">os_task</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">evq_owner</span></code><a class="headerlink" href="#c.os_eventq.evq_owner" title="Permalink to this definition">¶</a><br /></dt>
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.os_eventq::evq_owner">
+<span class="target" id="structos__eventq_1a4f44bc0985277390484d7b5cb6b0e35c"></span>struct <a class="reference internal" href="../task/task.html#c.os_task" title="os_task">os_task</a>* <code class="descname">evq_owner</code><a class="headerlink" href="#c.os_eventq::evq_owner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointer to task that “owns” this event queue. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.os_eventq.evq_task">
-<span class="target" id="structos__eventq_1afba1a5b1c24f170c4fe65c186a9257f8"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../task/task.html#c.os_task" title="os_task"><span class="pre">os_task</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">evq_task</span></code><a class="headerlink" href="#c.os_eventq.evq_task" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.os_eventq::evq_task">
+<span class="target" id="structos__eventq_1afba1a5b1c24f170c4fe65c186a9257f8"></span>struct <a class="reference internal" href="../task/task.html#c.os_task" title="os_task">os_task</a>* <code class="descname">evq_task</code><a class="headerlink" href="#c.os_eventq::evq_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointer to the task that is sleeping on this event queue, either NULL, or the owner task. </p>
 </dd></dl>
 
-<dl class="c var">
-<dt id="c.os_eventq.evq_prev">
-<span class="target" id="structos__eventq_1a7ffb0072ea800dfce31f0f2dd64afef0"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_event" title="os_event"><span class="pre">os_event</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">evq_prev</span></code><a class="headerlink" href="#c.os_eventq.evq_prev" title="Permalink to this definition">¶</a><br /></dt>
+<dl class="variable">
+<dt id="c.os_eventq::evq_prev">
+<span class="target" id="structos__eventq_1a7ffb0072ea800dfce31f0f2dd64afef0"></span>struct <a class="reference internal" href="#c.os_event" title="os_event">os_event</a>* <code class="descname">evq_prev</code><a class="headerlink" href="#c.os_eventq::evq_prev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Most recently processed event. </p>
 </dd></dl>
 
@@ -658,6 +667,7 @@ event queue.</p></li>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

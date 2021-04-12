@@ -297,9 +297,9 @@ ga("send", "pageview");
 <h1>GAP Event callbacks<a class="headerlink" href="#gap-event-callbacks" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
-<li><p><a class="reference internal" href="#bleprph-gap-event" id="id2">bleprph_gap_event()</a></p></li>
-<li><p><a class="reference internal" href="#guarantees" id="id3">Guarantees</a></p></li>
+<li><a class="reference internal" href="#overview" id="id1">Overview</a></li>
+<li><a class="reference internal" href="#bleprph-gap-event" id="id2">bleprph_gap_event()</a></li>
+<li><a class="reference internal" href="#guarantees" id="id3">Guarantees</a></li>
 </ul>
 </div>
 <div class="section" id="overview">
@@ -315,16 +315,16 @@ advertising. NimBLE uses this callback to notify the application that a
 central has connected to your peripheral after receiving an
 advertisement. Let’s revisit how <em>bleprph</em> specifies its connection
 callback when advertising:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Begin advertising. */</span>
-<span class="n">memset</span><span class="p">(</span><span class="o">&amp;</span><span class="n">adv_params</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">adv_params</span><span class="p">);</span>
-<span class="n">adv_params</span><span class="p">.</span><span class="n">conn_mode</span> <span class="o">=</span> <span class="n">BLE_GAP_CONN_MODE_UND</span><span class="p">;</span>
-<span class="n">adv_params</span><span class="p">.</span><span class="n">disc_mode</span> <span class="o">=</span> <span class="n">BLE_GAP_DISC_MODE_GEN</span><span class="p">;</span>
-<span class="n">rc</span> <span class="o">=</span> <span class="n">ble_gap_adv_start</span><span class="p">(</span><span class="n">BLE_ADDR_TYPE_PUBLIC</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">BLE_HS_FOREVER</span><span class="p">,</span>
-                       <span class="o">&amp;</span><span class="n">adv_params</span><span class="p">,</span> <span class="n">bleprph_gap_event</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">ERROR</span><span class="p">,</span> <span class="s">&quot;error enabling advertisement; rc=%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">rc</span><span class="p">);</span>
-    <span class="k">return</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/* Begin advertising. */
+memset(&amp;adv_params, 0, sizeof adv_params);
+adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+rc = ble_gap_adv_start(BLE_ADDR_TYPE_PUBLIC, 0, NULL, BLE_HS_FOREVER,
+                       &amp;adv_params, bleprph_gap_event, NULL);
+if (rc != 0) {
+    BLEPRPH_LOG(ERROR, &quot;error enabling advertisement; rc=%d\n&quot;, rc);
+    return;
+}
 </pre></div>
 </div>
 </div>
@@ -338,90 +338,90 @@ events related to this connection are communicated through this
 callback.</p>
 <p>Now let’s look at the function that <em>bleprph</em> uses for all its
 connection callbacks: <code class="docutils literal notranslate"><span class="pre">bleprph_gap_event()</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/**</span>
-<span class="cm"> * The nimble host executes this callback when a GAP event occurs.  The</span>
-<span class="cm"> * application associates a GAP event callback with each connection that forms.</span>
-<span class="cm"> * bleprph uses the same callback for all connections.</span>
-<span class="cm"> *</span>
-<span class="cm"> * @param event                 The type of event being signalled.</span>
-<span class="cm"> * @param ctxt                  Various information pertaining to the event.</span>
-<span class="cm"> * @param arg                   Application-specified argument; unuesd by</span>
-<span class="cm"> *                                  bleprph.</span>
-<span class="cm"> *</span>
-<span class="cm"> * @return                      0 if the application successfully handled the</span>
-<span class="cm"> *                                  event; nonzero on failure.  The semantics</span>
-<span class="cm"> *                                  of the return code is specific to the</span>
-<span class="cm"> *                                  particular GAP event being signalled.</span>
-<span class="cm"> */</span>
-<span class="k">static</span> <span class="kt">int</span>
-<span class="n">bleprph_gap_event</span><span class="p">(</span><span class="k">struct</span> <span class="nc">ble_gap_event</span> <span class="o">*</span><span class="n">event</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">ble_gap_conn_desc</span> <span class="n">desc</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/**
+ * The nimble host executes this callback when a GAP event occurs.  The
+ * application associates a GAP event callback with each connection that forms.
+ * bleprph uses the same callback for all connections.
+ *
+ * @param event                 The type of event being signalled.
+ * @param ctxt                  Various information pertaining to the event.
+ * @param arg                   Application-specified argument; unuesd by
+ *                                  bleprph.
+ *
+ * @return                      0 if the application successfully handled the
+ *                                  event; nonzero on failure.  The semantics
+ *                                  of the return code is specific to the
+ *                                  particular GAP event being signalled.
+ */
+static int
+bleprph_gap_event(struct ble_gap_event *event, void *arg)
+{
+    struct ble_gap_conn_desc desc;
+    int rc;
 
-    <span class="k">switch</span> <span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">case</span> <span class="nl">BLE_GAP_EVENT_CONNECT</span><span class="p">:</span>
-        <span class="cm">/* A new connection was established or a connection attempt failed. */</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;connection %s; status=%d &quot;</span><span class="p">,</span>
-                       <span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="s">&quot;established&quot;</span> <span class="o">:</span> <span class="s">&quot;failed&quot;</span><span class="p">,</span>
-                       <span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">status</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">status</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="n">rc</span> <span class="o">=</span> <span class="n">ble_gap_conn_find</span><span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">conn_handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
-            <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-            <span class="n">bleprph_print_conn_desc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    switch (event-&gt;type) {
+    case BLE_GAP_EVENT_CONNECT:
+        /* A new connection was established or a connection attempt failed. */
+        BLEPRPH_LOG(INFO, &quot;connection %s; status=%d &quot;,
+                       event-&gt;connect.status == 0 ? &quot;established&quot; : &quot;failed&quot;,
+                       event-&gt;connect.status);
+        if (event-&gt;connect.status == 0) {
+            rc = ble_gap_conn_find(event-&gt;connect.conn_handle, &amp;desc);
+            assert(rc == 0);
+            bleprph_print_conn_desc(&amp;desc);
+        }
+        BLEPRPH_LOG(INFO, &quot;\n&quot;);
 
-        <span class="k">if</span> <span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="cm">/* Connection failed; resume advertising. */</span>
-            <span class="n">bleprph_advertise</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        if (event-&gt;connect.status != 0) {
+            /* Connection failed; resume advertising. */
+            bleprph_advertise();
+        }
+        return 0;
 
-    <span class="k">case</span> <span class="nl">BLE_GAP_EVENT_DISCONNECT</span><span class="p">:</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;disconnect; reason=%d &quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">-&gt;</span><span class="n">disconnect</span><span class="p">.</span><span class="n">reason</span><span class="p">);</span>
-        <span class="n">bleprph_print_conn_desc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">disconnect</span><span class="p">.</span><span class="n">conn</span><span class="p">);</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    case BLE_GAP_EVENT_DISCONNECT:
+        BLEPRPH_LOG(INFO, &quot;disconnect; reason=%d &quot;, event-&gt;disconnect.reason);
+        bleprph_print_conn_desc(&amp;event-&gt;disconnect.conn);
+        BLEPRPH_LOG(INFO, &quot;\n&quot;);
 
-        <span class="cm">/* Connection terminated; resume advertising. */</span>
-        <span class="n">bleprph_advertise</span><span class="p">();</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        /* Connection terminated; resume advertising. */
+        bleprph_advertise();
+        return 0;
 
-    <span class="k">case</span> <span class="nl">BLE_GAP_EVENT_CONN_UPDATE</span><span class="p">:</span>
-        <span class="cm">/* The central has updated the connection parameters. */</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;connection updated; status=%d &quot;</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">conn_update</span><span class="p">.</span><span class="n">status</span><span class="p">);</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">ble_gap_conn_find</span><span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">conn_handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
-        <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-        <span class="n">bleprph_print_conn_desc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    case BLE_GAP_EVENT_CONN_UPDATE:
+        /* The central has updated the connection parameters. */
+        BLEPRPH_LOG(INFO, &quot;connection updated; status=%d &quot;,
+                    event-&gt;conn_update.status);
+        rc = ble_gap_conn_find(event-&gt;connect.conn_handle, &amp;desc);
+        assert(rc == 0);
+        bleprph_print_conn_desc(&amp;desc);
+        BLEPRPH_LOG(INFO, &quot;\n&quot;);
+        return 0;
 
-    <span class="k">case</span> <span class="nl">BLE_GAP_EVENT_ENC_CHANGE</span><span class="p">:</span>
-        <span class="cm">/* Encryption has been enabled or disabled for this connection. */</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;encryption change event; status=%d &quot;</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">enc_change</span><span class="p">.</span><span class="n">status</span><span class="p">);</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">ble_gap_conn_find</span><span class="p">(</span><span class="n">event</span><span class="o">-&gt;</span><span class="n">connect</span><span class="p">.</span><span class="n">conn_handle</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
-        <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
-        <span class="n">bleprph_print_conn_desc</span><span class="p">(</span><span class="o">&amp;</span><span class="n">desc</span><span class="p">);</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    case BLE_GAP_EVENT_ENC_CHANGE:
+        /* Encryption has been enabled or disabled for this connection. */
+        BLEPRPH_LOG(INFO, &quot;encryption change event; status=%d &quot;,
+                    event-&gt;enc_change.status);
+        rc = ble_gap_conn_find(event-&gt;connect.conn_handle, &amp;desc);
+        assert(rc == 0);
+        bleprph_print_conn_desc(&amp;desc);
+        BLEPRPH_LOG(INFO, &quot;\n&quot;);
+        return 0;
 
-    <span class="k">case</span> <span class="nl">BLE_GAP_EVENT_SUBSCRIBE</span><span class="p">:</span>
-        <span class="n">BLEPRPH_LOG</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="s">&quot;subscribe event; conn_handle=%d attr_handle=%d &quot;</span>
-                          <span class="s">&quot;reason=%d prevn=%d curn=%d previ=%d curi=%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">conn_handle</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">attr_handle</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">reason</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">prev_notify</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">cur_notify</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">prev_indicate</span><span class="p">,</span>
-                    <span class="n">event</span><span class="o">-&gt;</span><span class="n">subscribe</span><span class="p">.</span><span class="n">cur_indicate</span><span class="p">);</span>
-        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="p">}</span>
+    case BLE_GAP_EVENT_SUBSCRIBE:
+        BLEPRPH_LOG(INFO, &quot;subscribe event; conn_handle=%d attr_handle=%d &quot;
+                          &quot;reason=%d prevn=%d curn=%d previ=%d curi=%d\n&quot;,
+                    event-&gt;subscribe.conn_handle,
+                    event-&gt;subscribe.attr_handle,
+                    event-&gt;subscribe.reason,
+                    event-&gt;subscribe.prev_notify,
+                    event-&gt;subscribe.cur_notify,
+                    event-&gt;subscribe.prev_indicate,
+                    event-&gt;subscribe.cur_indicate);
+        return 0;
+    }
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+    return 0;
+}
 </pre></div>
 </div>
 <p>Connection callbacks are used to communicate a variety of events related
@@ -512,6 +512,7 @@ make a copy.</p>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

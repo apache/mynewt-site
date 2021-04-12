@@ -260,10 +260,10 @@ ga("send", "pageview");
 <div class="section" id="what-you-need">
 <h2>What you need<a class="headerlink" href="#what-you-need" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Discovery kit with STM32F303VC MCU</p></li>
-<li><p>Laptop running Mac OSX.</p></li>
-<li><p>It is assumed you have already installed and run the
-<a class="reference external" href="STM32F303.html">blinky</a> app succesfully.</p></li>
+<li>Discovery kit with STM32F303VC MCU</li>
+<li>Laptop running Mac OSX.</li>
+<li>It is assumed you have already installed and run the
+<a class="reference external" href="STM32F303.html">blinky</a> app succesfully.</li>
 </ul>
 <p>Since you’ve already successfully created your blinky app project,
 you’ll need to modify only one file, main.c, in order to get this app
@@ -272,41 +272,41 @@ working.</p>
 folder so you can edit it with your favorite editor. You’ll make the
 following changes:</p>
 <p>Replace the line:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">g_led_pin</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int g_led_pin;
 </pre></div>
 </div>
 <p>With the line:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">g_led_pins</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">LED_BLINK_PIN_1</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_2</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_3</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_4</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_5</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_6</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_7</span><span class="p">,</span> <span class="n">LED_BLINK_PIN_8</span><span class="p">};</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int g_led_pins[8] = {LED_BLINK_PIN_1, LED_BLINK_PIN_2, LED_BLINK_PIN_3, LED_BLINK_PIN_4, LED_BLINK_PIN_5, LED_BLINK_PIN_6, LED_BLINK_PIN_7, LED_BLINK_PIN_8};
 </pre></div>
 </div>
 <p>So that you now have an array of all 8 LED Pins on the board.</p>
 <p>Delete the line:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>g_led_pin = LED_BLINK_PIN;
 </pre></div>
 </div>
 <p>And in its place, add the following lines to initialize all the
 LED_PINS correctly:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
-<span class="k">for</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">x</span><span class="o">++</span><span class="p">){</span>
-    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pins</span><span class="p">[</span><span class="n">x</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span>
-<span class="kt">int</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int x;
+for(x = 0; x &lt; 8; x++){
+    hal_gpio_init_out(g_led_pins[x], 1);
+}
+int p = 0;
 </pre></div>
 </div>
 <p>We’ll use that ‘p’ later. Next you’ll want to change the line:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">os_time_delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>os_time_delay(1000);
 </pre></div>
 </div>
 <p>to a shorter time in order to make it a little more interesting. A full
 1 second delay doesn’t look great, so try 100 for starters and then you
 can adjust it to your liking.</p>
 <p>Finally, change the line:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">hal_gpio_toggle</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>hal_gpio_toggle(g_led_pin);
 </pre></div>
 </div>
 <p>to look like this:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">hal_gpio_toggle</span><span class="p">(</span><span class="n">g_led_pins</span><span class="p">[</span><span class="n">p</span><span class="o">++</span><span class="p">]);</span>
-<span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">&gt;</span> <span class="mi">7</span><span class="p">)</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">p</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>hal_gpio_toggle(g_led_pins[p++]);
+p = (p &gt; 7) ? 0 : p;
 </pre></div>
 </div>
 </div>
@@ -387,6 +387,7 @@ Page</a>.</p>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>

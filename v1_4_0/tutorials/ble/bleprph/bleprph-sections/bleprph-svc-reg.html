@@ -297,9 +297,9 @@ ga("send", "pageview");
 <h1>Service Registration<a class="headerlink" href="#service-registration" title="Permalink to this headline">¶</a></h1>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#attribute-set" id="id1">Attribute Set</a></p></li>
-<li><p><a class="reference internal" href="#registration-function" id="id2">Registration function</a></p></li>
-<li><p><a class="reference internal" href="#descriptors-and-included-services" id="id3">Descriptors and Included Services</a></p></li>
+<li><a class="reference internal" href="#attribute-set" id="id1">Attribute Set</a></li>
+<li><a class="reference internal" href="#registration-function" id="id2">Registration function</a></li>
+<li><a class="reference internal" href="#descriptors-and-included-services" id="id3">Descriptors and Included Services</a></li>
 </ul>
 </div>
 <div class="section" id="attribute-set">
@@ -313,24 +313,24 @@ attribute set to live in one place in your code.</p>
 <p><em>bleprph</em> uses a single attribute table located in the <em>gatt_svr.c</em>
 file, so let’s take a look at that now. The attribute table is called
 <code class="docutils literal notranslate"><span class="pre">gatt_svr_svcs</span></code>; here are the first several lines from this table:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">{</span>
-        <span class="cm">/*** Service: Security test. */</span>
-        <span class="p">.</span><span class="n">type</span>               <span class="o">=</span> <span class="n">BLE_GATT_SVC_TYPE_PRIMARY</span><span class="p">,</span>
-        <span class="p">.</span><span class="n">uuid</span>               <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_svc_sec_test_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-        <span class="p">.</span><span class="n">characteristics</span>    <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
-            <span class="cm">/*** Characteristic: Random number generator. */</span>
-            <span class="p">.</span><span class="n">uuid</span>               <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_chr_sec_test_rand_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-            <span class="p">.</span><span class="n">access_cb</span>          <span class="o">=</span> <span class="n">gatt_svr_chr_access_sec_test</span><span class="p">,</span>
-            <span class="p">.</span><span class="n">flags</span>              <span class="o">=</span> <span class="n">BLE_GATT_CHR_F_READ</span> <span class="o">|</span> <span class="n">BLE_GATT_CHR_F_READ_ENC</span><span class="p">,</span>
-        <span class="p">},</span> <span class="p">{</span>
-            <span class="cm">/*** Characteristic: Static value. */</span>
-            <span class="p">.</span><span class="n">uuid</span>               <span class="o">=</span> <span class="n">gatt_svr_chr_sec_test_static_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-            <span class="p">.</span><span class="n">access_cb</span>          <span class="o">=</span> <span class="n">gatt_svr_chr_access_sec_test</span><span class="p">,</span>
-            <span class="p">.</span><span class="n">flags</span>              <span class="o">=</span> <span class="n">BLE_GATT_CHR_F_READ</span> <span class="o">|</span>
-                                  <span class="n">BLE_GATT_CHR_F_WRITE</span> <span class="o">|</span> <span class="n">BLE_GATT_CHR_F_WRITE_ENC</span><span class="p">,</span>
-        <span class="p">},</span> <span class="p">{</span>
-    <span class="c1">// [...]</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>static const struct ble_gatt_svc_def gatt_svr_svcs[] = {
+    {
+        /*** Service: Security test. */
+        .type               = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid               = &amp;gatt_svr_svc_sec_test_uuid.u,
+        .characteristics    = (struct ble_gatt_chr_def[]) { {
+            /*** Characteristic: Random number generator. */
+            .uuid               = &amp;gatt_svr_chr_sec_test_rand_uuid.u,
+            .access_cb          = gatt_svr_chr_access_sec_test,
+            .flags              = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_READ_ENC,
+        }, {
+            /*** Characteristic: Static value. */
+            .uuid               = gatt_svr_chr_sec_test_static_uuid.u,
+            .access_cb          = gatt_svr_chr_access_sec_test,
+            .flags              = BLE_GATT_CHR_F_READ |
+                                  BLE_GATT_CHR_F_WRITE | BLE_GATT_CHR_F_WRITE_ENC,
+        }, {
+    // [...]
 </pre></div>
 </div>
 <p>As you can see, the table is an array of service definitions (
@@ -340,27 +340,27 @@ device, such as its name and appearance. Support for the GAP service is
 mandatory for all BLE peripherals. Let’s now consider the contents of
 this table in more detail.</p>
 <p>A service definition consists of the following fields:</p>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 31%" />
-<col style="width: 38%" />
-<col style="width: 31%" />
+<col width="31%" />
+<col width="38%" />
+<col width="31%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><em>Field</em></p></th>
-<th class="head"><p><em>Meaning</em></p></th>
-<th class="head"><p><em>Notes</em></p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>Field</em></th>
+<th class="head"><em>Meaning</em></th>
+<th class="head"><em>Notes</em></th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>type</p></td>
-<td><p>Specifies
+<tbody valign="top">
+<tr class="row-even"><td>type</td>
+<td>Specifies
 whether
 this is a
 primary or
 secondary
-service.</p></td>
-<td><p>Secondar
+service.</td>
+<td>Secondar
 y
 services
 are not
@@ -374,14 +374,14 @@ TT_SVC_TYPE_P
 RIMARY</em>
 for new
 services
-.</p></td>
+.</td>
 </tr>
-<tr class="row-odd"><td><p>uuid128</p></td>
-<td><p>The
+<tr class="row-odd"><td>uuid128</td>
+<td>The
 UUID of
 this
-service.</p></td>
-<td><p>If the
+service.</td>
+<td>If the
 service
 has a
 16-bit
@@ -397,45 +397,45 @@ UUID
 with the
 <code class="docutils literal notranslate"><span class="pre">BLE_UU</span>
 <span class="pre">ID16()</span></code>
-macro.</p></td>
+macro.</td>
 </tr>
-<tr class="row-even"><td><p>characte
-ristics</p></td>
-<td><p>The array
+<tr class="row-even"><td>characte
+ristics</td>
+<td>The array
 of
 characteri
 stics
 that
 belong to
 this
-service.</p></td>
-<td></td>
+service.</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
 <p>A service is little more than a container of characteristics; the
 characteristics themselves are where the real action happens. A
 characteristic definition consists of the following fields:</p>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 31%" />
-<col style="width: 38%" />
-<col style="width: 31%" />
+<col width="31%" />
+<col width="38%" />
+<col width="31%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p><em>Field</em></p></th>
-<th class="head"><p><em>Meaning</em></p></th>
-<th class="head"><p><em>Notes</em></p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><em>Field</em></th>
+<th class="head"><em>Meaning</em></th>
+<th class="head"><em>Notes</em></th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>uuid128</p></td>
-<td><p>The
+<tbody valign="top">
+<tr class="row-even"><td>uuid128</td>
+<td>The
 UUID of
 this
 characteri
-stic.</p></td>
-<td><p>If the
+stic.</td>
+<td>If the
 characte
 ristic
 has a
@@ -452,11 +452,11 @@ UUID
 with the
 <code class="docutils literal notranslate"><span class="pre">BLE_UU</span>
 <span class="pre">ID16()</span></code>
-macro.</p></td>
+macro.</td>
 </tr>
-<tr class="row-odd"><td><p>access_
-cb</p></td>
-<td><p>A callback
+<tr class="row-odd"><td>access_
+cb</td>
+<td>A callback
 function
 that gets
 executed
@@ -466,8 +466,8 @@ device
 accesses
 this
 characteri
-stic.</p></td>
-<td><p><em>For
+stic.</td>
+<td><em>For
 reads:</em>
 this
 function
@@ -491,10 +491,10 @@ written
 value as
 an
 argument
-.</p></td>
+.</td>
 </tr>
-<tr class="row-even"><td><p>flags</p></td>
-<td><p>Indicates
+<tr class="row-even"><td>flags</td>
+<td>Indicates
 which
 operations
 are
@@ -512,8 +512,8 @@ attempts
 an
 unsupporte
 d
-operation.</p></td>
-<td><p>The full
+operation.</td>
+<td>The full
 list of
 flags
 can be
@@ -529,7 +529,7 @@ ble/host
 /host/bl
 e_gatt.
 h</a>
-.</p></td>
+.</td>
 </tr>
 </tbody>
 </table>
@@ -570,8 +570,8 @@ for the characteristic array and service array.</p>
 <h2><a class="toc-backref" href="#id2">Registration function</a><a class="headerlink" href="#registration-function" title="Permalink to this headline">¶</a></h2>
 <p>After you have created your service table, your app needs to register it
 with the NimBLE stack. This is done by calling the following function:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="n">ble_gatts_add_svcs</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">ble_gatt_svc_def</span> <span class="o">*</span><span class="n">svcs</span><span class="p">)</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+ble_gatts_add_svcs(const struct ble_gatt_svc_def *svcs)
 </pre></div>
 </div>
 <p>where <em>svcs</em> is table of services to register.</p>
@@ -581,8 +581,8 @@ with the NimBLE stack. This is done by calling the following function:</p>
 be found in the <span class="xref std std-doc">BLE User Guide</span>
 (TBD).</p>
 <p>The <em>bleprph</em> app registers its services as follows:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">rc</span> <span class="o">=</span> <span class="n">ble_gatts_add_svcs</span><span class="p">(</span><span class="n">gatt_svr_svcs</span><span class="p">);</span>
-<span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>rc = ble_gatts_add_svcs(gatt_svr_svcs);
+assert(rc == 0);
 </pre></div>
 </div>
 <p>which adds services to registration queue. On startup NimBLE host automatically calls <code class="docutils literal notranslate"><span class="pre">ble_gatts_start()</span></code> function which makes all registered serivices available to peers.</p>
@@ -658,6 +658,7 @@ Guide</span>.</p>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

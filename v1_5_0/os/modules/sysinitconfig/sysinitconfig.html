@@ -293,166 +293,162 @@ initialization. It shows you how to tell Mynewt to use default or
 customized values to initialize packages that you develop or use to
 build a target. This guide:</p>
 <ul class="simple">
-<li><p>Assumes you have read the
+<li>Assumes you have read the
 <a class="reference internal" href="../../../concepts.html#concepts"><span class="std std-ref">Concepts</span></a> section that describes
 the Mynewt package hierarchy and its use of the <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> and
-<code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files.</p></li>
-<li><p>Assumes you have read the Mynewt <a class="reference internal" href="../../../newt/newt_operation.html"><span class="doc">Theory of Operations</span></a> and are familiar with how newt
-determines package dependencies for your target build.</p></li>
-<li><p>Covers only the system initialization for hardware independent
+<code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files.</li>
+<li>Assumes you have read the Mynewt <a class="reference internal" href="../../../newt/newt_operation.html"><span class="doc">Theory of Operations</span></a> and are familiar with how newt
+determines package dependencies for your target build.</li>
+<li>Covers only the system initialization for hardware independent
 packages. It does not cover the Board Support Package (BSP) and other
-hardware dependent system initialization.</p></li>
+hardware dependent system initialization.</li>
 </ul>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#system-configuration-setting-definitions-and-values" id="id1">System Configuration Setting Definitions and Values</a></p>
-<ul>
-<li><p><a class="reference internal" href="#examples-of-configuration-settings" id="id2">Examples of Configuration Settings</a></p>
-<ul>
-<li><p><a class="reference internal" href="#example-1" id="id3">Example 1</a></p></li>
-<li><p><a class="reference internal" href="#example-2" id="id4">Example 2</a></p></li>
-<li><p><a class="reference internal" href="#example-3" id="id5">Example 3</a></p></li>
+<li><a class="reference internal" href="#system-configuration-setting-definitions-and-values" id="id1">System Configuration Setting Definitions and Values</a><ul>
+<li><a class="reference internal" href="#examples-of-configuration-settings" id="id2">Examples of Configuration Settings</a><ul>
+<li><a class="reference internal" href="#example-1" id="id3">Example 1</a></li>
+<li><a class="reference internal" href="#example-2" id="id4">Example 2</a></li>
+<li><a class="reference internal" href="#example-3" id="id5">Example 3</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#overriding-system-configuration-setting-values" id="id6">Overriding System Configuration Setting Values</a></p>
-<ul>
-<li><p><a class="reference internal" href="#resolving-override-conflicts" id="id7">Resolving Override Conflicts</a></p></li>
-<li><p><a class="reference internal" href="#examples-of-overrides" id="id8">Examples of Overrides</a></p>
-<ul>
-<li><p><a class="reference internal" href="#example-4" id="id9">Example 4</a></p></li>
-<li><p><a class="reference internal" href="#example-5" id="id10">Example 5</a></p></li>
+<li><a class="reference internal" href="#overriding-system-configuration-setting-values" id="id6">Overriding System Configuration Setting Values</a><ul>
+<li><a class="reference internal" href="#resolving-override-conflicts" id="id7">Resolving Override Conflicts</a></li>
+<li><a class="reference internal" href="#examples-of-overrides" id="id8">Examples of Overrides</a><ul>
+<li><a class="reference internal" href="#example-4" id="id9">Example 4</a></li>
+<li><a class="reference internal" href="#example-5" id="id10">Example 5</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#generated-syscfg-h-and-referencing-system-configuration-settings" id="id11">Generated syscfg.h and Referencing System Configuration Settings</a></p>
-<ul>
-<li><p><a class="reference internal" href="#example-of-syscfg-h-and-how-to-reference-a-setting-name" id="id12">Example of syscfg.h and How to Reference a Setting Name</a></p></li>
+<li><a class="reference internal" href="#generated-syscfg-h-and-referencing-system-configuration-settings" id="id11">Generated syscfg.h and Referencing System Configuration Settings</a><ul>
+<li><a class="reference internal" href="#example-of-syscfg-h-and-how-to-reference-a-setting-name" id="id12">Example of syscfg.h and How to Reference a Setting Name</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#system-initialization" id="id13">System Initialization</a></p>
-<ul>
-<li><p><a class="reference internal" href="#specifying-package-initialization-functions" id="id14">Specifying Package Initialization Functions</a></p></li>
-<li><p><a class="reference internal" href="#generated-sysinit-app-function" id="id15">Generated sysinit_app() Function</a></p></li>
+<li><a class="reference internal" href="#system-initialization" id="id13">System Initialization</a><ul>
+<li><a class="reference internal" href="#specifying-package-initialization-functions" id="id14">Specifying Package Initialization Functions</a></li>
+<li><a class="reference internal" href="#generated-sysinit-app-function" id="id15">Generated sysinit_app() Function</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#conditional-configurations" id="id16">Conditional Configurations</a></p></li>
+<li><a class="reference internal" href="#conditional-configurations" id="id16">Conditional Configurations</a></li>
 </ul>
 </div>
 <p>Mynewt defines several configuration parameters in the <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> and
 <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files. The newt tool uses this information to:</p>
 <ul class="simple">
-<li><p>Generate a system initialization function that calls all the
-package-specific system initialization functions.</p></li>
-<li><p>Generate a system configuration header file that contains all the
-package configuration settings and values.</p></li>
-<li><p>Display the system configuration settings and values in the
-<code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">config</span></code> command.</p></li>
+<li>Generate a system initialization function that calls all the
+package-specific system initialization functions.</li>
+<li>Generate a system configuration header file that contains all the
+package configuration settings and values.</li>
+<li>Display the system configuration settings and values in the
+<code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">config</span></code> command.</li>
 </ul>
 <p>The benefits with this approach include:</p>
 <ul class="simple">
-<li><p>Allows Mynewt developers to reuse other packages and easily change
+<li>Allows Mynewt developers to reuse other packages and easily change
 their configuration settings without updating source or header files
-when implementing new packages.</p></li>
-<li><p>Allows application developers to easily view the system configuration
+when implementing new packages.</li>
+<li>Allows application developers to easily view the system configuration
 settings and values and determine the values to override for a target
-build.</p></li>
+build.</li>
 </ul>
 <div class="section" id="system-configuration-setting-definitions-and-values">
 <h2><a class="toc-backref" href="#id1">System Configuration Setting Definitions and Values</a><a class="headerlink" href="#system-configuration-setting-definitions-and-values" title="Permalink to this headline">¶</a></h2>
 <p>A package can optionally:</p>
 <ul class="simple">
-<li><p>Define and expose the system configuration settings to allow other
-packages to override the default setting values.</p></li>
-<li><p>Override the system configuration setting values defined by the
-packages that it depends on.</p></li>
+<li>Define and expose the system configuration settings to allow other
+packages to override the default setting values.</li>
+<li>Override the system configuration setting values defined by the
+packages that it depends on.</li>
 </ul>
 <p>You use the <code class="docutils literal notranslate"><span class="pre">defs</span></code> parameter in a <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file to define the
 system configuration settings for a package. <code class="docutils literal notranslate"><span class="pre">defs</span></code> is a mapping (or
 associative array) of system configuration setting definitions. It has
 the following syntax:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.defs</span><span class="p">:</span>
-    <span class="nt">PKGA_SYSCFG_NAME1</span><span class="p">:</span>
-       <span class="nt">description</span><span class="p">:</span>
-       <span class="nt">value</span><span class="p">:</span>
-       <span class="nt">type</span><span class="p">:</span>
-       <span class="nt">restrictions</span><span class="p">:</span>
-    <span class="nt">PKGA_SYSCFG_NAME2</span><span class="p">:</span>
-       <span class="nt">description</span><span class="p">:</span>
-       <span class="nt">value</span><span class="p">:</span>
-       <span class="nt">type</span><span class="p">:</span>
-       <span class="nt">restrictions</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.defs</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">PKGA_SYSCFG_NAME1</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">restrictions</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">PKGA_SYSCFG_NAME2</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">restrictions</span><span class="p p-Indicator">:</span>
 </pre></div>
 </div>
 <p>Each setting definition consists of the following key-value mapping:</p>
 <ul>
-<li><p>A setting name for the key, such as <code class="docutils literal notranslate"><span class="pre">PKGA_SYSCFG_NAME1</span></code> in the
+<li><p class="first">A setting name for the key, such as <code class="docutils literal notranslate"><span class="pre">PKGA_SYSCFG_NAME1</span></code> in the
 syntax example above. <strong>Note:</strong> A system configuration setting name
 must be unique. The newt tool aborts the build when multiple packages
-define the same setting.</p></li>
-<li><p>A mapping of fields for the value. Each field itself is a key-value
+define the same setting.</p>
+</li>
+<li><p class="first">A mapping of fields for the value. Each field itself is a key-value
 pair of attributes. The field keys are <code class="docutils literal notranslate"><span class="pre">description</span></code>, <code class="docutils literal notranslate"><span class="pre">value</span></code>,
 <code class="docutils literal notranslate"><span class="pre">type</span></code>, and <code class="docutils literal notranslate"><span class="pre">restrictions</span></code>. They are described in following
 table:</p>
-<table class="docutils align-default">
+<table border="1" class="docutils">
 <colgroup>
-<col style="width: 13%" />
-<col style="width: 87%" />
+<col width="13%" />
+<col width="87%" />
 </colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Field</p></th>
-<th class="head"><p>Description</p></th>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Field</th>
+<th class="head">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr class="row-even"><td><p>description</p></td>
-<td><p>Describes the usage for the setting. This field is optional.</p></td>
+<tbody valign="top">
+<tr class="row-even"><td>description</td>
+<td>Describes the usage for the setting. This field is optional.</td>
 </tr>
-<tr class="row-odd"><td><p>value</p></td>
-<td><p>Specifies the default value for the setting. This field is required. The
-value depends on the type that you specify and can be an empty string.</p></td>
+<tr class="row-odd"><td>value</td>
+<td>Specifies the default value for the setting. This field is required. The
+value depends on the type that you specify and can be an empty string.</td>
 </tr>
-<tr class="row-even"><td><p>type</p></td>
-<td><p>Specifies the data type for the value field. This field is optional. You
+<tr class="row-even"><td>type</td>
+<td><p class="first">Specifies the data type for the value field. This field is optional. You
 can specify one of three types:</p>
-<dl>
-<dt><code class="docutils literal notranslate"><span class="pre">raw</span></code>:</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">value</span></code> data is uninterpreted. This is the default <code class="docutils literal notranslate"><span class="pre">type</span></code>.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">task_priority</span></code>:</dt><dd><p>Specifies a Mynewt task priority number. The task
+<dl class="last docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">raw</span></code>:</dt>
+<dd>The <code class="docutils literal notranslate"><span class="pre">value</span></code> data is uninterpreted. This is the default <code class="docutils literal notranslate"><span class="pre">type</span></code>.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">task_priority</span></code>:</dt>
+<dd><p class="first">Specifies a Mynewt task priority number. The task
 priority number assigned to each setting must be unique and between 0
 and 239. value can be one of the following:</p>
 <p>A number between 0 and 239 - The task priority number to use for the
 setting.</p>
-<p><code class="docutils literal notranslate"><span class="pre">any</span></code> - Specify <code class="docutils literal notranslate"><span class="pre">any</span></code> to have newt automatically assign a priority for the
+<p class="last"><code class="docutils literal notranslate"><span class="pre">any</span></code> - Specify <code class="docutils literal notranslate"><span class="pre">any</span></code> to have newt automatically assign a priority for the
 setting.
 newt alphabetically orders all system configuration settings of this
 type and assigns the next highest available task priority number to each
 setting.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">flash_owner</span></code>:</dt><dd><p>Specifies a flash area. The value should be the name of a
-flash area defined in the BSP flash map for your target board.</p>
-</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">flash_owner</span></code>:</dt>
+<dd>Specifies a flash area. The value should be the name of a
+flash area defined in the BSP flash map for your target board.</dd>
 </dl>
 </td>
 </tr>
-<tr class="row-odd"><td><p>restrictions</p></td>
-<td><p>Specifies a list of restrictions on the setting value. <strong>This field is
+<tr class="row-odd"><td>restrictions</td>
+<td><p class="first">Specifies a list of restrictions on the setting value. <strong>This field is
 optional</strong>. You can specify two formats:</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">$notnull</span></code>:</dt><dd><p>Specifies that the setting cannot have the empty string for a
+<dl class="docutils">
+<dt><code class="docutils literal notranslate"><span class="pre">$notnull</span></code>:</dt>
+<dd>Specifies that the setting cannot have the empty string for a
 value. It essentially means that an empty string is not a sensible value
-and a package must override it with an appropriate value.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">expression</span></code>:</dt><dd><p>Specifies a boolean expression of the form
-<code class="docutils literal notranslate"><span class="pre">[!]&amp;ltrequired-setting&gt;[if</span> <span class="pre">&amp;ltbase-value&gt;]</span></code></p>
-</dd>
+and a package must override it with an appropriate value.</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">expression</span></code>:</dt>
+<dd>Specifies a boolean expression of the form
+<code class="docutils literal notranslate"><span class="pre">[!]&amp;ltrequired-setting&gt;[if</span> <span class="pre">&amp;ltbase-value&gt;]</span></code></dd>
 </dl>
 <p>Examples:</p>
 <p><code class="docutils literal notranslate"><span class="pre">restrictions:</span> <span class="pre">!LOG_FCB</span></code> - When this setting is enabled, <code class="docutils literal notranslate"><span class="pre">LOG_FCB</span></code> must be
 disabled.</p>
-<p><code class="docutils literal notranslate"><span class="pre">restrictions:</span> <span class="pre">LOG_FCB</span> <span class="pre">if</span> <span class="pre">0</span></code> - When this setting is disabled, <code class="docutils literal notranslate"><span class="pre">LOG_FCB</span></code>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">restrictions:</span> <span class="pre">LOG_FCB</span> <span class="pre">if</span> <span class="pre">0</span></code> - When this setting is disabled, <code class="docutils literal notranslate"><span class="pre">LOG_FCB</span></code>
 must be enabled.</p>
 </td>
 </tr>
@@ -469,17 +465,17 @@ must be enabled.</p>
 <code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code> configuration setting to specify the log level and the
 <code class="docutils literal notranslate"><span class="pre">LOG_NEWTMGR</span></code> configuration setting to specify whether to enable or
 disable the newtmgr logging feature.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.defs</span><span class="p">:</span>
-    <span class="nt">LOG_LEVEL</span><span class="p">:</span>
-        <span class="nt">description</span><span class="p">:</span> <span class="s">&#39;Log</span><span class="nv"> </span><span class="s">Level&#39;</span>
-        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">raw</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.defs</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">LOG_LEVEL</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span> <span class="s">&#39;Log</span><span class="nv"> </span><span class="s">Level&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+        <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">raw</span>
 
     <span class=" -Error">   </span><span class="l l-Scalar l-Scalar-Plain">...</span>
 
-    <span class="nt">LOG_NEWTMGR</span><span class="p">:</span>
-        <span class="nt">description</span><span class="p">:</span> <span class="s">&#39;Enables</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">disables</span><span class="nv"> </span><span class="s">newtmgr</span><span class="nv"> </span><span class="s">command</span><span class="nv"> </span><span class="s">tool</span><span class="nv"> </span><span class="s">logging&#39;</span>
-        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="l l-Scalar l-Scalar-Plain">LOG_NEWTMGR</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span> <span class="s">&#39;Enables</span><span class="nv"> </span><span class="s">or</span><span class="nv"> </span><span class="s">disables</span><span class="nv"> </span><span class="s">newtmgr</span><span class="nv"> </span><span class="s">command</span><span class="nv"> </span><span class="s">tool</span><span class="nv"> </span><span class="s">logging&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
 </pre></div>
 </div>
 </div>
@@ -489,11 +485,11 @@ disable the newtmgr logging feature.</p>
 <code class="docutils literal notranslate"><span class="pre">net/nimble/controller</span></code> package <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file. It defines the
 <code class="docutils literal notranslate"><span class="pre">BLE_LL_PRIO</span></code> configuration setting with a <code class="docutils literal notranslate"><span class="pre">task_priority</span></code> type and
 assigns task priority 0 to the BLE link layer task.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.defs</span><span class="p">:</span>
-    <span class="nt">BLE_LL_PRIO</span><span class="p">:</span>
-        <span class="nt">description</span><span class="p">:</span> <span class="s">&#39;BLE</span><span class="nv"> </span><span class="s">link</span><span class="nv"> </span><span class="s">layer</span><span class="nv"> </span><span class="s">task</span><span class="nv"> </span><span class="s">priority&#39;</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;task_priority&#39;</span>
-        <span class="nt">value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.defs</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">BLE_LL_PRIO</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span> <span class="s">&#39;BLE</span><span class="nv"> </span><span class="s">link</span><span class="nv"> </span><span class="s">layer</span><span class="nv"> </span><span class="s">task</span><span class="nv"> </span><span class="s">priority&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="s">&#39;task_priority&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
 </pre></div>
 </div>
 </div>
@@ -501,12 +497,12 @@ assigns task priority 0 to the BLE link layer task.</p>
 <h4><a class="toc-backref" href="#id5">Example 3</a><a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h4>
 <p>The following example is an excerpt from the <code class="docutils literal notranslate"><span class="pre">fs/nffs</span></code>
 package <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.defs</span><span class="p">:</span>
-    <span class="nt">NFFS_FLASH_AREA</span><span class="p">:</span>
-        <span class="nt">description</span><span class="p">:</span> <span class="s">&#39;The</span><span class="nv"> </span><span class="s">flash</span><span class="nv"> </span><span class="s">area</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Newtron</span><span class="nv"> </span><span class="s">Flash</span><span class="nv"> </span><span class="s">File</span><span class="nv"> </span><span class="s">System&#39;</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">flash_owner</span>
-        <span class="nt">value</span><span class="p">:</span>
-        <span class="nt">restrictions</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.defs</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">NFFS_FLASH_AREA</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">description</span><span class="p p-Indicator">:</span> <span class="s">&#39;The</span><span class="nv"> </span><span class="s">flash</span><span class="nv"> </span><span class="s">area</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">use</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">Newtron</span><span class="nv"> </span><span class="s">Flash</span><span class="nv"> </span><span class="s">File</span><span class="nv"> </span><span class="s">System&#39;</span>
+        <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">flash_owner</span>
+        <span class="l l-Scalar l-Scalar-Plain">value</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">restrictions</span><span class="p p-Indicator">:</span>
             <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">$notnull</span>
 </pre></div>
 </div>
@@ -516,21 +512,21 @@ for the Newtron Flash File System. The flash areas are typically defined
 by the BSP in its <code class="docutils literal notranslate"><span class="pre">bsp.yml</span></code> file. For example, the <code class="docutils literal notranslate"><span class="pre">bsp.yml</span></code> for
 nrf52dk board (<code class="docutils literal notranslate"><span class="pre">hw/bsp/nrf52dk/bsp.yml</span></code>) defines an area named
 <code class="docutils literal notranslate"><span class="pre">FLASH_AREA_NFFS</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">FLASH_AREA_NFFS</span><span class="p">:</span>
-    <span class="nt">user_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="nt">device</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-    <span class="nt">offset</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0x0007d000</span>
-    <span class="nt">size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12kB</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">user_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="l l-Scalar l-Scalar-Plain">device</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="l l-Scalar l-Scalar-Plain">offset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0x0007d000</span>
+    <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">12kB</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file for the same board
 (<code class="docutils literal notranslate"><span class="pre">hw/bsp/nrf52dk/syscfg.yml</span></code>) specifies that the above area be used
 for <code class="docutils literal notranslate"><span class="pre">NFFS_FLASH_AREA</span></code>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.vals</span><span class="p">:</span>
-    <span class="nt">CONFIG_FCB_FLASH_AREA</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span>
-    <span class="nt">REBOOT_LOG_FLASH_AREA</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_REBOOT_LOG</span>
-    <span class="nt">NFFS_FLASH_AREA</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span>
-    <span class="nt">COREDUMP_FLASH_AREA</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_IMAGE_1</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.vals</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">CONFIG_FCB_FLASH_AREA</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span>
+    <span class="l l-Scalar l-Scalar-Plain">REBOOT_LOG_FLASH_AREA</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_REBOOT_LOG</span>
+    <span class="l l-Scalar l-Scalar-Plain">NFFS_FLASH_AREA</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span>
+    <span class="l l-Scalar l-Scalar-Plain">COREDUMP_FLASH_AREA</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_IMAGE_1</span>
 </pre></div>
 </div>
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">fs/nffs/syscfg.yml</span></code> file indicates that the
@@ -547,23 +543,23 @@ values, see the next section.</p>
 override the configuration values defined by other packages. This
 mechanism allows:</p>
 <ul class="simple">
-<li><p>Mynewt developers to implement a package and easily override the
+<li>Mynewt developers to implement a package and easily override the
 system configuration setting values that are defined by the packages
-it depends on.</p></li>
-<li><p>Application developers to easily and cleanly override default
+it depends on.</li>
+<li>Application developers to easily and cleanly override default
 configuration settings in a single place and build a customized
 target. You can use the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">config</span> <span class="pre">show</span> <span class="pre">&lt;target-name&gt;</span></code>
 command to check all the system configuration setting definitions and
 values in your target to determine the setting values to override.
-See <a class="reference external" href="/newt/command_list/newt_target.html">newt target</a>.</p></li>
+See <a class="reference external" href="/newt/command_list/newt_target.html">newt target</a>.</li>
 </ul>
 <p><code class="docutils literal notranslate"><span class="pre">vals</span></code> specifies the mappings of system configuration setting
 name-value pairs as follows:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.vals</span><span class="p">:</span>
-    <span class="nt">PKGA_SYSCFG_NAME1</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">VALUE1</span>
-    <span class="nt">PKGA_SYSCFG_NAME2</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">VALUE2</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.vals</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">PKGA_SYSCFG_NAME1</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">VALUE1</span>
+    <span class="l l-Scalar l-Scalar-Plain">PKGA_SYSCFG_NAME2</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">VALUE2</span>
               <span class="l l-Scalar l-Scalar-Plain">...</span>
-    <span class="nt">PKGN_SYSCFG_NAME1</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">VALUEN</span>
+    <span class="l l-Scalar l-Scalar-Plain">PKGN_SYSCFG_NAME1</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">VALUEN</span>
 </pre></div>
 </div>
 <p><strong>Note</strong>: The newt tool ignores overrides of undefined system
@@ -574,25 +570,25 @@ configuration settings.</p>
 override a value and resolve conflicts when multiple packages override
 the same system configuration setting. The following rules apply:</p>
 <ul class="simple">
-<li><p>A package can only override the default values of system
-configuration settings that are defined by lower priority packages.</p></li>
-<li><p>When packages with different priorities override the same system
+<li>A package can only override the default values of system
+configuration settings that are defined by lower priority packages.</li>
+<li>When packages with different priorities override the same system
 configuration setting value, newt uses the value from the highest
-priority package.</p></li>
-<li><p>Packages of equal priority cannot override the same system
+priority package.</li>
+<li>Packages of equal priority cannot override the same system
 configuration setting with different values. newt aborts the build
-unless a higher priority package also overrides the value.</p></li>
+unless a higher priority package also overrides the value.</li>
 </ul>
 <p>The following package types are listed from highest to lowest priority:</p>
 <ul class="simple">
-<li><p>Target</p></li>
-<li><p>App</p></li>
-<li><p>unittest - A target can include either an app or unit test package,
-but not both.</p></li>
-<li><p>BSP</p></li>
-<li><p>Lib - Includes all other system level packages such as os, lib, sdk,
+<li>Target</li>
+<li>App</li>
+<li>unittest - A target can include either an app or unit test package,
+but not both.</li>
+<li>BSP</li>
+<li>Lib - Includes all other system level packages such as os, lib, sdk,
 and compiler. (Note that a Lib package cannot override other Lib
-package settings.)</p></li>
+package settings.)</li>
 </ul>
 <p>It is recommended that you override defaults at the target level instead
 of updating individual package <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files.</p>
@@ -606,15 +602,15 @@ of updating individual package <code class="docutils literal notranslate"><span 
 overrides, in addition to other packages, the <code class="docutils literal notranslate"><span class="pre">sys/log/full</span></code> package
 system configuration settings defined in <a class="reference internal" href="#example-1">Example 1</a>. It changes the
 LOG_NEWTMGR system configuration setting value from <code class="docutils literal notranslate"><span class="pre">0</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.vals</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">syscfg.vals</span><span class="p p-Indicator">:</span>
     <span class="c1"># Enable the shell task.</span>
-    <span class="nt">SHELL_TASK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="l l-Scalar l-Scalar-Plain">SHELL_TASK</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
 
        <span class="l l-Scalar l-Scalar-Plain">...</span>
 
     <span class="c1"># Enable newtmgr commands.</span>
-    <span class="nt">STATS_NEWTMGR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="nt">LOG_NEWTMGR</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="l l-Scalar l-Scalar-Plain">STATS_NEWTMGR</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="l l-Scalar l-Scalar-Plain">LOG_NEWTMGR</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
 </pre></div>
 </div>
 </div>
@@ -625,31 +621,31 @@ LOG_NEWTMGR system configuration setting value from <code class="docutils litera
 package defines the flash areas for the BSP flash map in the <code class="docutils literal notranslate"><span class="pre">bsp.yml</span></code>
 file, and sets the <code class="docutils literal notranslate"><span class="pre">NFFS_FLASH_AREA</span></code> configuration setting value to
 use the flash area named <code class="docutils literal notranslate"><span class="pre">FLASH_AREA_NFFS</span></code> in the <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bsp.flash_map</span><span class="p">:</span>
-    <span class="nt">areas</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">bsp.flash_map</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">areas</span><span class="p p-Indicator">:</span>
         <span class="c1"># System areas.</span>
-        <span class="nt">FLASH_AREA_BOOTLOADER</span><span class="p">:</span>
-            <span class="nt">device</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-            <span class="nt">offset</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0x00000000</span>
-            <span class="nt">size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">16kB</span>
+        <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_BOOTLOADER</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">device</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+            <span class="l l-Scalar l-Scalar-Plain">offset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0x00000000</span>
+            <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">16kB</span>
 
              <span class="l l-Scalar l-Scalar-Plain">...</span>
 
         <span class="c1"># User areas.</span>
-        <span class="nt">FLASH_AREA_REBOOT_LOG</span><span class="p">:</span>
-            <span class="nt">user_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-            <span class="nt">device</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-            <span class="nt">offset</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0x00004000</span>
-            <span class="nt">size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">16kB</span>
-        <span class="nt">FLASH_AREA_NFFS</span><span class="p">:</span>
-            <span class="nt">user_id</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-            <span class="nt">device</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-            <span class="nt">offset</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0x00008000</span>
-            <span class="nt">size</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">32kB</span>
+        <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_REBOOT_LOG</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">user_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+            <span class="l l-Scalar l-Scalar-Plain">device</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+            <span class="l l-Scalar l-Scalar-Plain">offset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0x00004000</span>
+            <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">16kB</span>
+        <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span><span class="p p-Indicator">:</span>
+            <span class="l l-Scalar l-Scalar-Plain">user_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+            <span class="l l-Scalar l-Scalar-Plain">device</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+            <span class="l l-Scalar l-Scalar-Plain">offset</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0x00008000</span>
+            <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">32kB</span>
 
 
-<span class="nt">syscfg.vals</span><span class="p">:</span>
-    <span class="nt">NFFS_FLASH_AREA</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span>
+<span class="l l-Scalar l-Scalar-Plain">syscfg.vals</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">NFFS_FLASH_AREA</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">FLASH_AREA_NFFS</span>
 </pre></div>
 </div>
 </div>
@@ -663,10 +659,10 @@ include file with <code class="docutils literal notranslate"><span class="pre">#
 setting defined. Newt creates a <code class="docutils literal notranslate"><span class="pre">#define</span></code> for a setting name as
 follows:</p>
 <ul class="simple">
-<li><p>Adds the prefix <code class="docutils literal notranslate"><span class="pre">MYNEWT_VAL_</span></code>.</p></li>
-<li><p>Replaces all occurrences of “/”, “-“, and ” ” in the setting name
-with “_”.</p></li>
-<li><p>Converts all characters to upper case.</p></li>
+<li>Adds the prefix <code class="docutils literal notranslate"><span class="pre">MYNEWT_VAL_</span></code>.</li>
+<li>Replaces all occurrences of “/”, “-“, and ” ” in the setting name
+with “_”.</li>
+<li>Converts all characters to upper case.</li>
 </ul>
 <p>For example, the #define for my-config-name setting name is
 MYNEWT_VAL_MY_CONFIG_NAME.</p>
@@ -776,10 +772,10 @@ and stack size values.</p>
 <p>Your application’s <code class="docutils literal notranslate"><span class="pre">main()</span></code> function executes in the context of the
 main task and must perform the following:</p>
 <ul class="simple">
-<li><p>At the start of <code class="docutils literal notranslate"><span class="pre">main()</span></code>, call the Mynewt <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> function to
-initialize the packages before performing any other processing.</p></li>
-<li><p>At the end of <code class="docutils literal notranslate"><span class="pre">main()</span></code>, wait for and dispatch events from the
-default event queue in an infinite loop.</p></li>
+<li>At the start of <code class="docutils literal notranslate"><span class="pre">main()</span></code>, call the Mynewt <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> function to
+initialize the packages before performing any other processing.</li>
+<li>At the end of <code class="docutils literal notranslate"><span class="pre">main()</span></code>, wait for and dispatch events from the
+default event queue in an infinite loop.</li>
 </ul>
 <p><strong>Note:</strong> You must include the <code class="docutils literal notranslate"><span class="pre">sysinit/sysinit.h</span></code> header file to
 access the <code class="docutils literal notranslate"><span class="pre">sysinit()</span></code> function.</p>
@@ -826,13 +822,13 @@ packages with interdependencies to perform initialization in multiple
 stages.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">pkg.init</span></code> parameter has the following syntax in the <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code>
 file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.init</span><span class="p">:</span>
-    <span class="nt">pkg_init_func1_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg_init_func1_stage</span>
-    <span class="nt">pkg_init_func2_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg_init_func2_stage</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">pkg.init</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">pkg_init_func1_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg_init_func1_stage</span>
+    <span class="l l-Scalar l-Scalar-Plain">pkg_init_func2_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg_init_func2_stage</span>
 
               <span class="l l-Scalar l-Scalar-Plain">...</span>
 
-    <span class="nt">pkg_init_funcN_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg_init_funcN_stage</span>
+    <span class="l l-Scalar l-Scalar-Plain">pkg_init_funcN_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg_init_funcN_stage</span>
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">pkg_init_func#_name</span></code> is the C function name of an
@@ -924,7 +920,7 @@ function:</p>
 <p>You can use the system configuration setting values to conditionally
 specify parameter values in <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> files. The
 syntax is:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">parameter_name.PKGA_SYSCFG_NAME</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">parameter_name.PKGA_SYSCFG_NAME</span><span class="p p-Indicator">:</span>
      <span class="l l-Scalar l-Scalar-Plain">parameter_value</span>
 </pre></div>
 </div>
@@ -932,7 +928,7 @@ syntax is:</p>
 <code class="docutils literal notranslate"><span class="pre">parameter_name</span></code> if the <code class="docutils literal notranslate"><span class="pre">PKGA_SYSCFG_NAME</span></code> configuration setting
 value is non-zero. Here is an example from the <code class="docutils literal notranslate"><span class="pre">libs/os</span></code> package
 <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.deps</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">pkg.deps</span><span class="p p-Indicator">:</span>
     <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/sysinit&quot;</span>
     <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/util/mem&quot;</span>
 
@@ -1010,6 +1006,7 @@ dependencies.</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

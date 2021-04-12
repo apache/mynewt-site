@@ -304,17 +304,16 @@ library code should use the <code class="docutils literal notranslate"><span cla
 underlying file system directly.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#description" id="id1">Description</a></p></li>
-<li><p><a class="reference internal" href="#support-for-multiple-filesystems" id="id2">Support for multiple filesystems</a></p>
-<ul>
-<li><p><a class="reference internal" href="#struct-disk-ops" id="id3">struct disk_ops</a></p></li>
+<li><a class="reference internal" href="#description" id="id1">Description</a></li>
+<li><a class="reference internal" href="#support-for-multiple-filesystems" id="id2">Support for multiple filesystems</a><ul>
+<li><a class="reference internal" href="#struct-disk-ops" id="id3">struct disk_ops</a></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#thread-safety" id="id4">Thread Safety</a></p></li>
-<li><p><a class="reference internal" href="#header-files" id="id5">Header Files</a></p></li>
-<li><p><a class="reference internal" href="#data-structures" id="id6">Data Structures</a></p></li>
-<li><p><a class="reference internal" href="#examples" id="id7">Examples</a></p></li>
-<li><p><a class="reference internal" href="#api" id="id8">API</a></p></li>
+<li><a class="reference internal" href="#thread-safety" id="id4">Thread Safety</a></li>
+<li><a class="reference internal" href="#header-files" id="id5">Header Files</a></li>
+<li><a class="reference internal" href="#data-structures" id="id6">Data Structures</a></li>
+<li><a class="reference internal" href="#examples" id="id7">Examples</a></li>
+<li><a class="reference internal" href="#api" id="id8">API</a></li>
 </ul>
 </div>
 <div class="section" id="description">
@@ -375,12 +374,12 @@ simultaneosly, an extra name has to be given to the disk that is being
 used. The abstraction for that was added as the <code class="docutils literal notranslate"><span class="pre">fs/disk</span></code> package
 which is a dependency of <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code>. It adds the following extra user
 function:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">disk_register</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">disk_name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fs_name</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">disk_ops</span> <span class="o">*</span><span class="n">dops</span><span class="p">)</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int disk_register(const char *disk_name, const char *fs_name, struct disk_ops *dops)
 </pre></div>
 </div>
 <p>As an example os usage:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">disk_register</span><span class="p">(</span><span class="s">&quot;mmc0&quot;</span><span class="p">,</span> <span class="s">&quot;fatfs&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">mmc_ops</span><span class="p">);</span>
-<span class="n">disk_register</span><span class="p">(</span><span class="s">&quot;flash0&quot;</span><span class="p">,</span> <span class="s">&quot;nffs&quot;</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>disk_register(&quot;mmc0&quot;, &quot;fatfs&quot;, &amp;mmc_ops);
+disk_register(&quot;flash0&quot;, &quot;nffs&quot;, NULL);
 </pre></div>
 </div>
 <p>This registers the name <code class="docutils literal notranslate"><span class="pre">mmc0</span></code> to use <code class="docutils literal notranslate"><span class="pre">fatfs</span></code> as the filesystem and
@@ -392,12 +391,12 @@ to use <code class="docutils literal notranslate"><span class="pre">nffs</span><
 <p>To support a new low-level disk interface, the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">disk_ops</span></code>
 interface must be implemented by the low-level driver. Currently only
 <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> are effectively used (by <code class="docutils literal notranslate"><span class="pre">fatfs</span></code>).</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">disk_ops</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">);</span>
-    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ioctl</span><span class="p">)(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">);</span>
-    <span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">disk_ops</span><span class="p">)</span> <span class="n">sc_next</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct disk_ops {
+    int (*read)(uint8_t, uint32_t, void *, uint32_t);
+    int (*write)(uint8_t, uint32_t, const void *, uint32_t);
+    int (*ioctl)(uint8_t, uint32_t, void *);
+    SLIST_ENTRY(disk_ops) sc_next;
+}
 </pre></div>
 </div>
 </div>
@@ -410,369 +409,369 @@ interface must be implemented by the low-level driver. Currently only
 <h2><a class="toc-backref" href="#id5">Header Files</a><a class="headerlink" href="#header-files" title="Permalink to this headline">¶</a></h2>
 <p>All code which uses the <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code> package needs to include the following
 header:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;fs/fs.h&quot;</span><span class="cp"></span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#include &quot;fs/fs.h&quot;
 </pre></div>
 </div>
 </div>
 <div class="section" id="data-structures">
 <h2><a class="toc-backref" href="#id6">Data Structures</a><a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <p>All <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code> data structures are opaque to client code.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">fs_file</span><span class="p">;</span>
-<span class="k">struct</span> <span class="nc">fs_dir</span><span class="p">;</span>
-<span class="k">struct</span> <span class="nc">fs_dirent</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct fs_file;
+struct fs_dir;
+struct fs_dirent;
 </pre></div>
 </div>
 </div>
 <div class="section" id="examples">
 <h2><a class="toc-backref" href="#id7">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p>Example 1 below opens the file /settings/config.txt for reading, reads some data, and then closes the file.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">read_config</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">bytes_read</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+read_config(void)
+{
+    struct fs_file *file;
+    uint32_t bytes_read;
+    uint8_t buf[16];
+    int rc;
 
-    <span class="cm">/* Open the file for reading. */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_open</span><span class="p">(</span><span class="s">&quot;/settings/config.txt&quot;</span><span class="p">,</span> <span class="n">FS_ACCESS_READ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">file</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-    <span class="p">}</span>
+    /* Open the file for reading. */
+    rc = fs_open(&quot;/settings/config.txt&quot;, FS_ACCESS_READ, &amp;file);
+    if (rc != 0) {
+        return -1;
+    }
 
-    <span class="cm">/* Read up to 16 bytes from the file. */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_read</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">buf</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">bytes_read</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="cm">/* buf now contains up to 16 bytes of file data. */</span>
-        <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;read %u bytes</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">bytes_read</span><span class="p">)</span>
-    <span class="p">}</span>
+    /* Read up to 16 bytes from the file. */
+    rc = fs_read(file, sizeof buf, buf, &amp;bytes_read);
+    if (rc == 0) {
+        /* buf now contains up to 16 bytes of file data. */
+        console_printf(&quot;read %u bytes\n&quot;, bytes_read)
+    }
 
-    <span class="cm">/* Close the file. */</span>
-    <span class="n">fs_close</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+    /* Close the file. */
+    fs_close(file);
 
-    <span class="k">return</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+    return rc == 0 ? 0 : -1;
+}
 </pre></div>
 </div>
 <p>Example 2 below  iterates through the contents of a directory, printing the name of each child node. When the traversal is complete, the code closes the directory handle.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">traverse_dir</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dirname</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">fs_dirent</span> <span class="o">*</span><span class="n">dirent</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="nc">fs_dir</span> <span class="o">*</span><span class="n">dir</span><span class="p">;</span>
-    <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
-    <span class="kt">uint8_t</span> <span class="n">name_len</span><span class="p">;</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+traverse_dir(const char *dirname)
+{
+    struct fs_dirent *dirent;
+    struct fs_dir *dir;
+    char buf[64];
+    uint8_t name_len;
+    int rc;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_opendir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dir</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-    <span class="p">}</span>
+    rc = fs_opendir(dirname, &amp;dir);
+    if (rc != 0) {
+        return -1;
+    }
 
-    <span class="cm">/* Iterate through the parent directory, printing the name of each child</span>
-<span class="cm">     * entry.  The loop only terminates via a function return.</span>
-<span class="cm">     */</span>
-    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="cm">/* Retrieve the next child node. */</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_readdir</span><span class="p">(</span><span class="n">dir</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dirent</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="n">FS_ENOENT</span><span class="p">)</span> <span class="p">{</span>
-            <span class="cm">/* Traversal complete. */</span>
-            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="cm">/* Unexpected error. */</span>
-            <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-        <span class="p">}</span>
+    /* Iterate through the parent directory, printing the name of each child
+     * entry.  The loop only terminates via a function return.
+     */
+    while (1) {
+        /* Retrieve the next child node. */
+        rc = fs_readdir(dir, &amp;dirent);
+        if (rc == FS_ENOENT) {
+            /* Traversal complete. */
+            return 0;
+        } else if (rc != 0) {
+            /* Unexpected error. */
+            return -1;
+        }
 
-        <span class="cm">/* Read the child node&#39;s name from the file system. */</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_dirent_name</span><span class="p">(</span><span class="n">dirent</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">buf</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">name_len</span><span class="p">);</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-        <span class="p">}</span>
+        /* Read the child node&#39;s name from the file system. */
+        rc = fs_dirent_name(dirent, sizeof buf, buf, &amp;name_len);
+        if (rc != 0) {
+            return -1;
+        }
 
-        <span class="cm">/* Print the child node&#39;s name to the console. */</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">fs_dirent_is_dir</span><span class="p">(</span><span class="n">dirent</span><span class="p">))</span> <span class="p">{</span>
-            <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot; dir: &quot;</span><span class="p">);</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;file: &quot;</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+        /* Print the child node&#39;s name to the console. */
+        if (fs_dirent_is_dir(dirent)) {
+            console_printf(&quot; dir: &quot;);
+        } else {
+            console_printf(&quot;file: &quot;);
+        }
+        console_printf(&quot;%s\n&quot;, buf);
+    }
+}
 </pre></div>
 </div>
 <p>Example 3 below demonstrates creating a series of nested directories.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">create_path</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+create_path(void)
+{
+    int rc;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_mkdir</span><span class="p">(</span><span class="s">&quot;/data&quot;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    rc = fs_mkdir(&quot;/data&quot;);
+    if (rc != 0) goto err;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_mkdir</span><span class="p">(</span><span class="s">&quot;/data/logs&quot;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    rc = fs_mkdir(&quot;/data/logs&quot;);
+    if (rc != 0) goto err;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_mkdir</span><span class="p">(</span><span class="s">&quot;/data/logs/temperature&quot;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    rc = fs_mkdir(&quot;/data/logs/temperature&quot;);
+    if (rc != 0) goto err;
 
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_mkdir</span><span class="p">(</span><span class="s">&quot;/data/logs/temperature/current&quot;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">goto</span> <span class="n">err</span><span class="p">;</span>
+    rc = fs_mkdir(&quot;/data/logs/temperature/current&quot;);
+    if (rc != 0) goto err;
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    return 0;
 
-<span class="nl">err</span><span class="p">:</span>
-    <span class="cm">/* Clean up the incomplete directory tree, if any. */</span>
-    <span class="n">fs_unlink</span><span class="p">(</span><span class="s">&quot;/data&quot;</span><span class="p">);</span>
-    <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-<span class="p">}</span>
+err:
+    /* Clean up the incomplete directory tree, if any. */
+    fs_unlink(&quot;/data&quot;);
+    return -1;
+}
 </pre></div>
 </div>
 <p>Example 4 below demonstrates reading a small text file in its entirety and printing its contents to the console.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">print_status</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">bytes_read</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+print_status(void)
+{
+    uint32_t bytes_read;
+    uint8_t buf[16];
+    int rc;
 
-    <span class="cm">/* Read up to 15 bytes from the start of the file. */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fsutil_read_file</span><span class="p">(</span><span class="s">&quot;/cfg/status.txt&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">buf</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span>
-                          <span class="o">&amp;</span><span class="n">bytes_read</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+    /* Read up to 15 bytes from the start of the file. */
+    rc = fsutil_read_file(&quot;/cfg/status.txt&quot;, 0, sizeof buf - 1, buf,
+                          &amp;bytes_read);
+    if (rc != 0) return -1;
 
-    <span class="cm">/* Null-terminate the string just read. */</span>
-    <span class="n">buf</span><span class="p">[</span><span class="n">bytes_read</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+    /* Null-terminate the string just read. */
+    buf[bytes_read] = &#39;\0&#39;;
 
-    <span class="cm">/* Print the file contents to the console. */</span>
-    <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+    /* Print the file contents to the console. */
+    console_printf(&quot;%s\n&quot;, buf);
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+    return 0;
+}
 </pre></div>
 </div>
 <p>Example 5  creates a 4-byte file.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">write_id</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-<span class="p">{</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
+write_id(void)
+{
+    int rc;
 
-    <span class="cm">/* Create the parent directory. */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_mkdir</span><span class="p">(</span><span class="s">&quot;/cfg&quot;</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">rc</span> <span class="o">!=</span> <span class="n">FS_EALREADY</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-    <span class="p">}</span>
+    /* Create the parent directory. */
+    rc = fs_mkdir(&quot;/cfg&quot;);
+    if (rc != 0 &amp;&amp; rc != FS_EALREADY) {
+        return -1;
+    }
 
-    <span class="cm">/* Create a file and write four bytes to it. */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">fsutil_write_file</span><span class="p">(</span><span class="s">&quot;/cfg/id.txt&quot;</span><span class="p">,</span> <span class="s">&quot;1234&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
-    <span class="p">}</span>
+    /* Create a file and write four bytes to it. */
+    rc = fsutil_write_file(&quot;/cfg/id.txt&quot;, &quot;1234&quot;, 4);
+    if (rc != 0) {
+        return -1;
+    }
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
+    return 0;
+}
 </pre></div>
 </div>
 </div>
 <div class="section" id="api">
 <h2><a class="toc-backref" href="#id8">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
-<dl class="c macro">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="define">
 <dt id="c.FS_ACCESS_READ">
-<span class="target" id="fs_8h_1aa0ef2753ef7fd106b7b811b6256ba276"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_READ</span></code><a class="headerlink" href="#c.FS_ACCESS_READ" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1aa0ef2753ef7fd106b7b811b6256ba276"></span><code class="descname">FS_ACCESS_READ</code><a class="headerlink" href="#c.FS_ACCESS_READ" title="Permalink to this definition">¶</a></dt>
 <dd><p>File access flags. </p>
 </dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_ACCESS_WRITE">
-<span class="target" id="fs_8h_1a5e8333a15d39f0f24572bf04f466141d"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_WRITE</span></code><a class="headerlink" href="#c.FS_ACCESS_WRITE" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a5e8333a15d39f0f24572bf04f466141d"></span><code class="descname">FS_ACCESS_WRITE</code><a class="headerlink" href="#c.FS_ACCESS_WRITE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_ACCESS_APPEND">
-<span class="target" id="fs_8h_1aca516acc31249a18456ae616cb50a589"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_APPEND</span></code><a class="headerlink" href="#c.FS_ACCESS_APPEND" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1aca516acc31249a18456ae616cb50a589"></span><code class="descname">FS_ACCESS_APPEND</code><a class="headerlink" href="#c.FS_ACCESS_APPEND" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_ACCESS_TRUNCATE">
-<span class="target" id="fs_8h_1a17f916b44803478edc7982e90a99eae3"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_TRUNCATE</span></code><a class="headerlink" href="#c.FS_ACCESS_TRUNCATE" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a17f916b44803478edc7982e90a99eae3"></span><code class="descname">FS_ACCESS_TRUNCATE</code><a class="headerlink" href="#c.FS_ACCESS_TRUNCATE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EOK">
-<span class="target" id="fs_8h_1adf14142875cc95bbca59aa2669f972fa"></span><code class="sig-name descname"><span class="pre">FS_EOK</span></code><a class="headerlink" href="#c.FS_EOK" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1adf14142875cc95bbca59aa2669f972fa"></span><code class="descname">FS_EOK</code><a class="headerlink" href="#c.FS_EOK" title="Permalink to this definition">¶</a></dt>
 <dd><p>File access return codes. </p>
 </dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_ECORRUPT">
-<span class="target" id="fs_8h_1a853158b5354036fbce22765c61b0c8b8"></span><code class="sig-name descname"><span class="pre">FS_ECORRUPT</span></code><a class="headerlink" href="#c.FS_ECORRUPT" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a853158b5354036fbce22765c61b0c8b8"></span><code class="descname">FS_ECORRUPT</code><a class="headerlink" href="#c.FS_ECORRUPT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EHW">
-<span class="target" id="fs_8h_1af0dfc5cd2f1b3ec7f81f6c615a0fcaba"></span><code class="sig-name descname"><span class="pre">FS_EHW</span></code><a class="headerlink" href="#c.FS_EHW" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1af0dfc5cd2f1b3ec7f81f6c615a0fcaba"></span><code class="descname">FS_EHW</code><a class="headerlink" href="#c.FS_EHW" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EOFFSET">
-<span class="target" id="fs_8h_1a2558f655018028abaedf7c5eb041d323"></span><code class="sig-name descname"><span class="pre">FS_EOFFSET</span></code><a class="headerlink" href="#c.FS_EOFFSET" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a2558f655018028abaedf7c5eb041d323"></span><code class="descname">FS_EOFFSET</code><a class="headerlink" href="#c.FS_EOFFSET" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EINVAL">
-<span class="target" id="fs_8h_1ae6ceeac1001b72371e51bbff3b98a021"></span><code class="sig-name descname"><span class="pre">FS_EINVAL</span></code><a class="headerlink" href="#c.FS_EINVAL" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ae6ceeac1001b72371e51bbff3b98a021"></span><code class="descname">FS_EINVAL</code><a class="headerlink" href="#c.FS_EINVAL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_ENOMEM">
-<span class="target" id="fs_8h_1ae8fe91cbdd62bb7143b7bb6db5895de9"></span><code class="sig-name descname"><span class="pre">FS_ENOMEM</span></code><a class="headerlink" href="#c.FS_ENOMEM" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ae8fe91cbdd62bb7143b7bb6db5895de9"></span><code class="descname">FS_ENOMEM</code><a class="headerlink" href="#c.FS_ENOMEM" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_ENOENT">
-<span class="target" id="fs_8h_1a7f99c2a53a04583cf0e511ab6a1f9a4e"></span><code class="sig-name descname"><span class="pre">FS_ENOENT</span></code><a class="headerlink" href="#c.FS_ENOENT" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a7f99c2a53a04583cf0e511ab6a1f9a4e"></span><code class="descname">FS_ENOENT</code><a class="headerlink" href="#c.FS_ENOENT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EEMPTY">
-<span class="target" id="fs_8h_1ab754eeae4ae571ca5633928ddd2c47bf"></span><code class="sig-name descname"><span class="pre">FS_EEMPTY</span></code><a class="headerlink" href="#c.FS_EEMPTY" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ab754eeae4ae571ca5633928ddd2c47bf"></span><code class="descname">FS_EEMPTY</code><a class="headerlink" href="#c.FS_EEMPTY" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EFULL">
-<span class="target" id="fs_8h_1ae6b04ba45ab61e1e7833665fb75aebd8"></span><code class="sig-name descname"><span class="pre">FS_EFULL</span></code><a class="headerlink" href="#c.FS_EFULL" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ae6b04ba45ab61e1e7833665fb75aebd8"></span><code class="descname">FS_EFULL</code><a class="headerlink" href="#c.FS_EFULL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EUNEXP">
-<span class="target" id="fs_8h_1ae8f07f91f622f2f522feacacb3645abe"></span><code class="sig-name descname"><span class="pre">FS_EUNEXP</span></code><a class="headerlink" href="#c.FS_EUNEXP" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ae8f07f91f622f2f522feacacb3645abe"></span><code class="descname">FS_EUNEXP</code><a class="headerlink" href="#c.FS_EUNEXP" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EOS">
-<span class="target" id="fs_8h_1a0de0fab65c1565fddcf00c6a4e3b422f"></span><code class="sig-name descname"><span class="pre">FS_EOS</span></code><a class="headerlink" href="#c.FS_EOS" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a0de0fab65c1565fddcf00c6a4e3b422f"></span><code class="descname">FS_EOS</code><a class="headerlink" href="#c.FS_EOS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EEXIST">
-<span class="target" id="fs_8h_1a153b2a6a6097ba226ce55180a36d3113"></span><code class="sig-name descname"><span class="pre">FS_EEXIST</span></code><a class="headerlink" href="#c.FS_EEXIST" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a153b2a6a6097ba226ce55180a36d3113"></span><code class="descname">FS_EEXIST</code><a class="headerlink" href="#c.FS_EEXIST" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EACCESS">
-<span class="target" id="fs_8h_1a13b4cec77a264258baadc1b665f21c5d"></span><code class="sig-name descname"><span class="pre">FS_EACCESS</span></code><a class="headerlink" href="#c.FS_EACCESS" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a13b4cec77a264258baadc1b665f21c5d"></span><code class="descname">FS_EACCESS</code><a class="headerlink" href="#c.FS_EACCESS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_EUNINIT">
-<span class="target" id="fs_8h_1a8f8aa75fbc137ff11eb1bb0f06b105cb"></span><code class="sig-name descname"><span class="pre">FS_EUNINIT</span></code><a class="headerlink" href="#c.FS_EUNINIT" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a8f8aa75fbc137ff11eb1bb0f06b105cb"></span><code class="descname">FS_EUNINIT</code><a class="headerlink" href="#c.FS_EUNINIT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_MGMT_ID_FILE">
-<span class="target" id="fs_8h_1a17b142e59be58d1c83c9ce87f7d84b97"></span><code class="sig-name descname"><span class="pre">FS_MGMT_ID_FILE</span></code><a class="headerlink" href="#c.FS_MGMT_ID_FILE" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a17b142e59be58d1c83c9ce87f7d84b97"></span><code class="descname">FS_MGMT_ID_FILE</code><a class="headerlink" href="#c.FS_MGMT_ID_FILE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.FS_MGMT_MAX_NAME">
-<span class="target" id="fs_8h_1ad3b5cf355bfbb5c9d7cf3f0e6470d740"></span><code class="sig-name descname"><span class="pre">FS_MGMT_MAX_NAME</span></code><a class="headerlink" href="#c.FS_MGMT_MAX_NAME" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ad3b5cf355bfbb5c9d7cf3f0e6470d740"></span><code class="descname">FS_MGMT_MAX_NAME</code><a class="headerlink" href="#c.FS_MGMT_MAX_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
-<dl class="c function">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
 <dt id="c.fs_open">
-<span class="target" id="fs_8h_1a226d00f1643fc1fa0d2cfd4d54672aa1"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_open</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">filename</span></em>, <span class="pre">uint8_t</span> <em><span class="pre">access_flags</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_open" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a226d00f1643fc1fa0d2cfd4d54672aa1"></span>int <code class="descname">fs_open</code><span class="sig-paren">(</span>const char *<em>&nbsp;filename</em>, uint8_t<em>&nbsp;access_flags</em>, struct fs_file<em>&nbsp;**</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_open" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_close">
-<span class="target" id="fs_8h_1a7f236a8087d47838d04363ac35489823"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_close</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_close" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a7f236a8087d47838d04363ac35489823"></span>int <code class="descname">fs_close</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_close" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_read">
-<span class="target" id="fs_8h_1a7c0f019a6ffd1c3e469963fa00b7903d"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_read</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <span class="pre">uint32_t</span> <em><span class="pre">len</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">out_data</span></em>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">out_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_read" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a7c0f019a6ffd1c3e469963fa00b7903d"></span>int <code class="descname">fs_read</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*</em>, uint32_t<em>&nbsp;len</em>, void *<em>&nbsp;out_data</em>, uint32_t *<em>&nbsp;out_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_read" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_write">
-<span class="target" id="fs_8h_1ae092ec5d5dcd5444f9e7e30aa7ca3a0a"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_write</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_write" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ae092ec5d5dcd5444f9e7e30aa7ca3a0a"></span>int <code class="descname">fs_write</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*</em>, const void *<em>&nbsp;data</em>, int<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_write" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_seek">
-<span class="target" id="fs_8h_1aa649b70e539c36cf447b0baaf5844ff5"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_seek</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <span class="pre">uint32_t</span> <em><span class="pre">offset</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_seek" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1aa649b70e539c36cf447b0baaf5844ff5"></span>int <code class="descname">fs_seek</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*</em>, uint32_t<em>&nbsp;offset</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_seek" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_getpos">
-<span class="target" id="fs_8h_1a7cd85ae5b14e0747659f132644313476"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">fs_getpos</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_getpos" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a7cd85ae5b14e0747659f132644313476"></span>uint32_t <code class="descname">fs_getpos</code><span class="sig-paren">(</span>const struct fs_file<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_getpos" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_filelen">
-<span class="target" id="fs_8h_1ae15d3a717e341b81406e15908a2dff98"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_filelen</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">out_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_filelen" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1ae15d3a717e341b81406e15908a2dff98"></span>int <code class="descname">fs_filelen</code><span class="sig-paren">(</span>const struct fs_file<em>&nbsp;*</em>, uint32_t *<em>&nbsp;out_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_filelen" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_unlink">
-<span class="target" id="fs_8h_1abe3d03c172f1df3be26facd42553476e"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_unlink</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_unlink" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1abe3d03c172f1df3be26facd42553476e"></span>int <code class="descname">fs_unlink</code><span class="sig-paren">(</span>const char *<em>&nbsp;filename</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_unlink" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_rename">
-<span class="target" id="fs_8h_1a28bb828c6e59bf7e1f0e3edc56a15575"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_rename</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">from</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">to</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_rename" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a28bb828c6e59bf7e1f0e3edc56a15575"></span>int <code class="descname">fs_rename</code><span class="sig-paren">(</span>const char *<em>&nbsp;from</em>, const char *<em>&nbsp;to</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_rename" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_mkdir">
-<span class="target" id="fs_8h_1a235cef7d5c4df385a40a0f0293574b0c"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_mkdir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_mkdir" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a235cef7d5c4df385a40a0f0293574b0c"></span>int <code class="descname">fs_mkdir</code><span class="sig-paren">(</span>const char *<em>&nbsp;path</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_mkdir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_opendir">
-<span class="target" id="fs_8h_1af9be1f4c99895c3c37caae481a2d1201"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_opendir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dir</span><span class="pre">*</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_opendir" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1af9be1f4c99895c3c37caae481a2d1201"></span>int <code class="descname">fs_opendir</code><span class="sig-paren">(</span>const char *<em>&nbsp;path</em>, struct fs_dir<em>&nbsp;**</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_opendir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_readdir">
-<span class="target" id="fs_8h_1a5b40ba190d300125bbe0747a95affdfb"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_readdir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dir</span><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dirent</span><span class="pre">*</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_readdir" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a5b40ba190d300125bbe0747a95affdfb"></span>int <code class="descname">fs_readdir</code><span class="sig-paren">(</span>struct fs_dir<em>&nbsp;*</em>, struct fs_dirent<em>&nbsp;**</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_readdir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_closedir">
-<span class="target" id="fs_8h_1af2f6af0e462b3f53ef9f296f7314049b"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_closedir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dir</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_closedir" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1af2f6af0e462b3f53ef9f296f7314049b"></span>int <code class="descname">fs_closedir</code><span class="sig-paren">(</span>struct fs_dir<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_closedir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_dirent_name">
-<span class="target" id="fs_8h_1af5d719307b8e0c29a9ca0e79ef9a9647"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_dirent_name</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dirent</span><span class="pre">*</span>, <span class="pre">size_t</span> <em><span class="pre">max_len</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">out_name</span></em>, <span class="pre">uint8_t</span> <span class="pre">*</span><em><span class="pre">out_name_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_name" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1af5d719307b8e0c29a9ca0e79ef9a9647"></span>int <code class="descname">fs_dirent_name</code><span class="sig-paren">(</span>const struct fs_dirent<em>&nbsp;*</em>, size_t<em>&nbsp;max_len</em>, char *<em>&nbsp;out_name</em>, uint8_t *<em>&nbsp;out_name_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_dirent_is_dir">
-<span class="target" id="fs_8h_1aa0e61b1ef0436ea9f01dbe865fac5fd0"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_dirent_is_dir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dirent</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_is_dir" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1aa0e61b1ef0436ea9f01dbe865fac5fd0"></span>int <code class="descname">fs_dirent_is_dir</code><span class="sig-paren">(</span>const struct fs_dirent<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_is_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fs_flush">
-<span class="target" id="fs_8h_1a33babc87740e76586e32ef4d278eab28"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_flush</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_flush" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fs_8h_1a33babc87740e76586e32ef4d278eab28"></span>int <code class="descname">fs_flush</code><span class="sig-paren">(</span>struct fs_file<em>&nbsp;*</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_flush" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
-<dl class="c function">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
 <dt id="c.fsutil_read_file">
-<span class="target" id="fsutil_8h_1a3b28b5fddd70aa388a51469d80b8b0c0"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fsutil_read_file</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">offset</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">len</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dst</span></em>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">out_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_read_file" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fsutil_8h_1a3b28b5fddd70aa388a51469d80b8b0c0"></span>int <code class="descname">fsutil_read_file</code><span class="sig-paren">(</span>const char *<em>&nbsp;path</em>, uint32_t<em>&nbsp;offset</em>, uint32_t<em>&nbsp;len</em>, void *<em>&nbsp;dst</em>, uint32_t *<em>&nbsp;out_len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_read_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.fsutil_write_file">
-<span class="target" id="fsutil_8h_1abdc2d53bf062b337e1e21f2e8fcc1d93"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fsutil_write_file</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_write_file" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="fsutil_8h_1abdc2d53bf062b337e1e21f2e8fcc1d93"></span>int <code class="descname">fsutil_write_file</code><span class="sig-paren">(</span>const char *<em>&nbsp;path</em>, const void *<em>&nbsp;data</em>, uint32_t<em>&nbsp;len</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_write_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -841,6 +840,7 @@ header:</p>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

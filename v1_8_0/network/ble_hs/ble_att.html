@@ -295,110 +295,113 @@ host exposes to the application.</p>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_is_enabled">
-<span class="target" id="group__bt__host_1gadd78035cc0e59911bfe8c7622400b158"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_hs_is_enabled</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_is_enabled" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1gadd78035cc0e59911bfe8c7622400b158"></span>int <code class="descname">ble_hs_is_enabled</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_is_enabled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates whether the host is enabled. </p>
 <p>The host is enabled if it is starting or fully started. It is disabled if it is stopping or stopped.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>1 if the host is enabled; 0 if the host is disabled. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>1 if the host is enabled; 0 if the host is disabled. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_synced">
-<span class="target" id="group__bt__host_1ga766de0eed40adc6e388c4ef5bec03d46"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_hs_synced</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_synced" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1ga766de0eed40adc6e388c4ef5bec03d46"></span>int <code class="descname">ble_hs_synced</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_synced" title="Permalink to this definition">¶</a></dt>
 <dd><p>Indicates whether the host has synchronized with the controller. </p>
 <p>Synchronization must occur before any host procedures can be performed.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>1 if the host and controller are in sync; 0 if the host and controller are out of sync. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>1 if the host and controller are in sync; 0 if the host and controller are out of sync. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_start">
-<span class="target" id="group__bt__host_1ga5591e554fbc48ebb8dd3f761ad37b450"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_hs_start</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_start" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1ga5591e554fbc48ebb8dd3f761ad37b450"></span>int <code class="descname">ble_hs_start</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synchronizes the host with the controller by sending a sequence of HCI commands. </p>
 <p>This function must be called before any other host functionality is used, but it must be called after both the host and controller are initialized. Typically, the host-parent-task calls this function at the top of its task routine. This function must only be called in the host parent task. A safe alternative for starting the stack from any task is to call <code class="docutils literal notranslate"><a class="reference internal" href="#group__bt__host_1ga419cec04ac7a359465ddc13e96c06371"><span class="std std-ref"><span class="pre">ble_hs_sched_start()</span></span></a></code>.</p>
 <p>If the host fails to synchronize with the controller (if the controller is not fully booted, for example), the host will attempt to resynchronize every 100 ms. For this reason, an error return code is not necessarily fatal.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; nonzero on error. </p>
-</dd>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>0 on success; nonzero on error. </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_sched_start">
-<span class="target" id="group__bt__host_1ga419cec04ac7a359465ddc13e96c06371"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">ble_hs_sched_start</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_sched_start" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1ga419cec04ac7a359465ddc13e96c06371"></span>void <code class="descname">ble_hs_sched_start</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_sched_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Enqueues a host start event to the default event queue. </p>
 <p>The actual host startup is performed in the host parent task, but using the default queue here ensures the event won’t run until the end of main() when this is called during system initialization. This allows the application to configure the host package in the meantime.</p>
 <p>If auto-start is disabled, the application should use this function to start the BLE stack. This function can be called at any time as long as the host is stopped. When the host successfully starts, the application is notified via the ble_hs_cfg.sync_cb callback. </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_sched_reset">
-<span class="target" id="group__bt__host_1ga5c71de1e7267549beba5512a9a73cfd5"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">ble_hs_sched_reset</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">reason</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_sched_reset" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1ga5c71de1e7267549beba5512a9a73cfd5"></span>void <code class="descname">ble_hs_sched_reset</code><span class="sig-paren">(</span>int<em>&nbsp;reason</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_sched_reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Causes the host to reset the NimBLE stack as soon as possible. </p>
 <p>The application is notified when the reset occurs via the host reset callback.</p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">reason</span></code>: The host error code that gets passed to the reset callback. </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">reason</span></code>: The host error code that gets passed to the reset callback. </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_evq_set">
-<span class="target" id="group__bt__host_1gab993fe7ec28565ab95db29420fed4df5"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">ble_hs_evq_set</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">ble_npl_eventq</span> <span class="pre">*</span><em><span class="pre">evq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_evq_set" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1gab993fe7ec28565ab95db29420fed4df5"></span>void <code class="descname">ble_hs_evq_set</code><span class="sig-paren">(</span>struct ble_npl_eventq *<em>&nbsp;evq</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_evq_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Designates the specified event queue for NimBLE host work. </p>
 <p>By default, the host uses the default event queue and runs in the main task. This function is useful if you want the host to run in a different task.</p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to use for host work. </p></li>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to use for host work. </li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_init">
-<span class="target" id="group__bt__host_1ga69d7274a6c0897109d07a3e60daf04cd"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">ble_hs_init</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_init" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1ga69d7274a6c0897109d07a3e60daf04cd"></span>void <code class="descname">ble_hs_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the NimBLE host. </p>
 <p>This function must be called before the OS is started. The NimBLE stack requires an application task to function. One application task in particular is designated as the “host parent task”. In addition to application-specific work, the host parent task does work for NimBLE by processing events generated by the host. </p>
 </dd></dl>
 
-<dl class="c function">
+<dl class="function">
 <dt id="c.ble_hs_shutdown">
-<span class="target" id="group__bt__host_1gab97837ef096e47835d9906b1284818ae"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_hs_shutdown</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">reason</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_shutdown" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1gab97837ef096e47835d9906b1284818ae"></span>int <code class="descname">ble_hs_shutdown</code><span class="sig-paren">(</span>int<em>&nbsp;reason</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_hs_shutdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called when the system is shutting down. </p>
 <p>Stops the BLE host.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>SYSDOWN_IN_PROGRESS. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">reason</span></code>: The reason for the shutdown. One of the HAL_RESET_[…] codes or an implementation-defined value.</p></li>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>SYSDOWN_IN_PROGRESS. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal notranslate"><span class="pre">reason</span></code>: The reason for the shutdown. One of the HAL_RESET_[…] codes or an implementation-defined value.</li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.BLE_HS_FOREVER">
-<span class="target" id="group__bt__host_1ga8b7d6a49fee6e11e7a8130cbfc8139f7"></span><code class="sig-name descname"><span class="pre">BLE_HS_FOREVER</span></code><a class="headerlink" href="#c.BLE_HS_FOREVER" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1ga8b7d6a49fee6e11e7a8130cbfc8139f7"></span><code class="descname">BLE_HS_FOREVER</code><a class="headerlink" href="#c.BLE_HS_FOREVER" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="c macro">
+<dl class="define">
 <dt id="c.BLE_HS_CONN_HANDLE_NONE">
-<span class="target" id="group__bt__host_1gaa92ebcd7ec84341e7c760a0f0f1e57d4"></span><code class="sig-name descname"><span class="pre">BLE_HS_CONN_HANDLE_NONE</span></code><a class="headerlink" href="#c.BLE_HS_CONN_HANDLE_NONE" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group__bt__host_1gaa92ebcd7ec84341e7c760a0f0f1e57d4"></span><code class="descname">BLE_HS_CONN_HANDLE_NONE</code><a class="headerlink" href="#c.BLE_HS_CONN_HANDLE_NONE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connection handle not present. </p>
 </dd></dl>
 
@@ -467,6 +470,7 @@ host exposes to the application.</p>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>

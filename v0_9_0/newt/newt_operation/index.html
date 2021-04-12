@@ -391,7 +391,7 @@ ga("send", "pageview");
 <p>Newt has a fairly smart package manager that can read a directory tree, build a dependency tree, and emit the right build artifacts.</p>
 <h3 id="building-dependencies">Building dependencies</h3>
 <p>Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in incubator-mynewt-blinky/develop:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ tree -L 3 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree -L 3 
 .
 ├── DISCLAIMER
 ├── LICENSE
@@ -411,7 +411,7 @@ ga("send", "pageview");
          └── target.yml
 
 6 directories, 10 files
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>When Newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
@@ -419,7 +419,7 @@ ga("send", "pageview");
 <h4 id="apps-package-directory">"apps" Package Directory</h4>
 <p><code>apps</code> is where applications are stored, and applications are where the main() function is contained.  Along with the <code>targets</code> directory, <code>apps</code> represents the top-level of the build tree, and define the dependencies and features for the rest of the system.</p>
 <p>The app definition is contained in a <code>pkg.yml</code> file. An example of blinky's <code>pkg.yml</code> file is:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ more apps/blinky/pkg.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more apps/blinky/pkg.yml
 &lt;snip&gt;
 pkg.name: apps/blinky
 pkg.vers: 0.8.0
@@ -433,7 +433,7 @@ pkg.deps:
      - &quot;@apache-mynewt-core/libs/os&quot;
      - &quot;@apache-mynewt-core/hw/hal&quot;
      - &quot;@apache-mynewt-core/libs/console/full&quot;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>This file says that the name of the package is apps/blinky, and it 
@@ -450,14 +450,14 @@ covered in the "repository" section. </p>
 <li>build_profile: Either debug or optimized.</li>
 </ul>
 <p>The <code>my_blinky_sim</code> target in the example below has the following settings:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ newt target show
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target show
 targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
 $ ls my_blinky_sim/
 pkg.yml     target.yml
-</code></pre></div>
+</pre></div>
 
 <p>In general, the three basic parameters of a target (<code>app</code>, <code>bsp</code>, and <code>build_profile</code>) are stored in the <code>target.yml</code> file in that target's build directory under <code>targets</code>. You will also see a <code>pkg.yml</code> file in the same directory. Since targets are packages, a <code>pkg.yml</code> is expected. It contains typical package descriptors, dependencies, and additional parameters such as the following:</p>
 <ul>
@@ -475,14 +475,14 @@ pkg.yml     target.yml
 source packages</li>
 </ul>
 <p>Newt then looks at the target that the user set, for example, blinky_sim:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ more targets/my_blinky_sim/
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more targets/my_blinky_sim/
 pkg.yml     target.yml
 $ more targets/my_blinky_sim/target.yml
 ### Target: targets/my_blinky_sim
 target.app: &quot;apps/blinky&quot;
 target.bsp: &quot;@apache-mynewt-core/hw/bsp/native&quot;
 target.build_profile: &quot;debug&quot;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>The target specifies two major things:</p>
@@ -496,7 +496,7 @@ along with that application.</li>
 <li>Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
 newt structure must always be prefixed by the package name. For example, libs/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ tree
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree
 .
 ├── README.md
 ├── include
@@ -532,7 +532,7 @@ newt structure must always be prefixed by the package name. For example, libs/os
 └── src
     ├── arch
 &lt;snip&gt;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <ul>
@@ -546,8 +546,8 @@ those APIs (i.e. pkg.req_api: hw-hal-impl).</p>
 they have, or what flags they are using based upon what features are enabled in the system.  As an example, many packages will add additional software, based on whether the shell package is present.  To do this, they can overwrite cflags or deps based upon the shell "feature."</p>
 </li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>pkg.cflags.SHELL: -DSHELL_PRESENT
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.cflags.SHELL: -DSHELL_PRESENT
+</pre></div>
 
 <p><br></p>
 <p>In order to properly resolve all dependencies in the build system, Newt recursively processes the package dependencies until there are no new dependencies or features (because features can add dependencies.)  And it builds a big list of all the packages that need to be build.</p>
@@ -562,7 +562,7 @@ build for a raw image, bootable image or bootloader itself.</p>
 <p>The newt tool places all of it's artifacts into the bin/ directory at 
 the top-level of the project, prefixed by the target name being built, 
 for example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ tree -L 4 bin/
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree -L 4 bin/
 bin/
 └── my_blinky_sim
      ├── apps
@@ -583,7 +583,7 @@ bin/
      │   │   ├── flash_map.d
      │   │   ├── flash_map.o
 &lt;snip&gt;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>As you can see, a number of files are generated:</p>
@@ -604,7 +604,7 @@ that work on the target.  These are:</p>
 </ul>
 <p>Download and debug handles driving GDB and the system debugger.  These 
 commands call out to scripts that are defined by the BSP.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>$ more repos/apache-mynewt-core/hw/bsp/nrf52pdk/nrf52pdk_debug.sh
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more repos/apache-mynewt-core/hw/bsp/nrf52pdk/nrf52pdk_debug.sh
 &lt;snip&gt;
 #
 if [ $# -lt 1 ]; then
@@ -627,7 +627,7 @@ echo &quot;target remote localhost:3333&quot; &gt; $GDB_CMD_FILE
 arm-none-eabi-gdb -x $GDB_CMD_FILE $FILE_NAME
 
 rm $GDB_CMD_FILE
-</code></pre></div>
+</pre></div>
 
 <p>The idea is that every BSP will add support for the debugger environment 
 for that board.  That way common tools can be used across various development boards and kits.</p>
