@@ -502,7 +502,7 @@ ga("send", "pageview");
 <p>If you already completed <a href="../project-slinky/">Sim Slinky</a> you can skip this step.</p>
 <p>We will list only the steps here for brevity.  We will name the project
 <code>slinky</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt new slinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt new slinky
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 ...
 Installing skeleton in slink...
@@ -512,47 +512,53 @@ $newt install -v
 Downloading repository description for apache-mynewt-core... success!
 ...
 Repos successfully installed
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="set-up-your-target-builds">Set up your target builds</h3>
 <p>Create a target for <code>stm32_slinky</code> using the native BSP. The Newt tool output is suppressed below for brevity.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create stm32_slinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target create stm32_slinky
 $ newt target set stm32_slinky bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
 $ newt target set stm32_slinky build_profile=debug
 $ newt target set stm32_slinky app=@apache-mynewt-core/apps/slinky
-</pre></div>
+</code></pre></div>
+
 
 <p>Create a second target for <code>stm32_bootloader</code> to build a bootloader to boot
 the <code>stm32_slinky</code> image.  The tool output is suppressed below for brevity.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create stm32_bootloader
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target create stm32_bootloader
 $ newt target set stm32_bootloader bsp=@apache-mynewt-core/hw/bsp/olimex_stm32-e407_devboard
 $ newt target set stm32_bootloader build_profile=optimized
 $ newt target set stm32_bootloader target.app=@apache-mynewt-core/apps/boot
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="build-targets">Build Targets</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build stm32_slinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt build stm32_slinky
 Compiling main.c
 ...
 Linking slinky.elf
 App successfully built: ~/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.elf
-</pre></div>
+</code></pre></div>
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>newt build stm32_bootloader
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>newt build stm32_bootloader
 Compiling crc16.c
 ...
 Linking boot.elf
 App successfully built: ~/slinky/bin/stm32_bootloader/apps/boot/boot.elf
-</pre></div>
+</code></pre></div>
+
 
 <p>For the main image, you need to create an image using newt create-image.
 Give this image some arbitrary version number "1.2.3".</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt create-image stm32_slinky 1.2.3
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt create-image stm32_slinky 1.2.3
 App image successfully generated: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/slinky.img
 Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/manifest.json
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="using-newtmgr-with-a-remote-target">Using newtmgr with a remote target</h3>
@@ -562,9 +568,10 @@ Build manifest: /Users/paulfdietrich/dev/slinky/bin/stm32_slinky/apps/slinky/man
 <p>Next go the to project directory and download the slinky project image to the flash of the Olimex board. </p>
 </li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load stm32_bootloader
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt load stm32_bootloader
 $ newt load stm32_slinky
-</pre></div>
+</code></pre></div>
+
 
 <p>You can now disconnect the debugging cable from the board. You should see the green LED blinking. If not, try powercycling the board.</p>
 <p><br></p>
@@ -583,15 +590,16 @@ $ newt load stm32_slinky
 <ul>
 <li>Locate the serial connection established in the /dev directory of your computer. It should be of the type <code>tty.usbserial-&lt;some identifier&gt;</code>.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>        $ ls /dev/tty.usbserial-AJ03HAQQ 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>        $ ls /dev/tty.usbserial-AJ03HAQQ 
         /dev/tty.usbserial-AJ03HAQQ
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <ul>
 <li>You now have to define a connection profile using newtmgr. You can give it any name you want. The example below shows the connection profile being named as the very imaginative <code>olimex01</code>.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>        $ pwd
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>        $ pwd
         /Users/&lt;user&gt;/dev/larva/project/slinky
         $ newtmgr conn add olimex01 type=serial connstring=/dev/tty.usbserial-AJ03HAQQ 
         Connection profile olimex01 successfully added
@@ -599,13 +607,14 @@ $ newt load stm32_slinky
         Connection profiles: 
           sim1: type=serial, connstring=&#39;/dev/ttys007&#39;
           olimex01: type=serial, connstring=&#39;/dev/tty.usbserial-AJ03HAQQ&#39;
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <ul>
 <li>Now go ahead and query the Olimex board to get responses back. The simplest command is the <code>echo</code> command to ask it to respond with the text you send it. </li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    $ newtmgr echo -c olimex01 hello
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    $ newtmgr echo -c olimex01 hello
     {&quot;r&quot;: &quot;hello&quot;}
     $ newtmgr image -c olimex01 list
     Images:
@@ -617,7 +626,7 @@ $ newt load stm32_slinky
       task2 (prio=2 tid=4 runtime=0 cswcnt=300 stksize=128 stkusage=31 last_checkin=0 next_checkin=0)
       idle (prio=255 tid=0 runtime=299916 cswcnt=313 stksize=32 stkusage=18 last_checkin=0 next_checkin=0)
       shell (prio=3 tid=1 runtime=1 cswcnt=20 stksize=384 stkusage=60 last_checkin=0 next_checkin=0)
-</pre></div>
+</code></pre></div>
                         
                         <div class="row">
                             

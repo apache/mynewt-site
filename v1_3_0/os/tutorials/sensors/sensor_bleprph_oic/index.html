@@ -650,20 +650,22 @@ ga("send", "pageview");
 <h3 id="step-1-copying-the-bleprph_oic-source">Step 1: Copying the bleprph_oic source</h3>
 <p><br>
 1. Copy the @apache-mynewt-core/apps/bleprph_oic to a new package. We name the new package <strong>apps/bleprph_oic_sensor</strong>.  From your project base directory, run the <code>newt pkg copy</code> command:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt pkg copy @apache-mynewt-core/apps/bleprph_oic @apache-mynewt-core/apps/bleprph_oic_sensor
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt pkg copy @apache-mynewt-core/apps/bleprph_oic @apache-mynewt-core/apps/bleprph_oic_sensor
 Copying package @apache-mynewt-core/apps/bleprph_oic to @apache-mynewt-core/apps/bleprph_oic_sensor
-</pre></div>
+</code></pre></div>
+
 
 <p><br>
 2. The newt tools creates the <code>bleprph_oic_sensor</code> package in the <code>~/dev/myproj/repos/apache-mynewt-core/apps/bleprph_oic_sensor</code> directory. Go to the directory to update the package <code>pkg.yml</code> and source files.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd repos/apache-mynewt-core/apps/bleprph_oic_sensor
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ cd repos/apache-mynewt-core/apps/bleprph_oic_sensor
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="step-2-adding-package-dependencies">Step 2: Adding Package Dependencies</h3>
 <p>Add the <code>hw/sensor/</code> and the <code>hw/sensor/creator</code> packages as dependencies in the  <code>pkg.yml</code> file to include the sensor framework and off-board sensor support.</p>
 <p><strong>Note:</strong>  The <code>hw/sensor</code> package automatically includes the <code>net/oic</code> package when the <code>SENSOR_OIC</code> setting is enabled, so you do not need to include the <code>net/oic</code> package as a dependency in this package.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.deps:
     - kernel/os
     - net/nimble/controller
     - net/nimble/host
@@ -675,7 +677,8 @@ Copying package @apache-mynewt-core/apps/bleprph_oic to @apache-mynewt-core/apps
           ...
 <span style="background-color: #ffffcc">    - hw/sensor
 </span><span style="background-color: #ffffcc">    - hw/sensor/creator
-</span></pre></div>
+</span></code></pre></div>
+
 
 <p><br></p>
 <h3 id="step-3-setting-syscfg-values-to-enable-oic-support">Step 3: Setting Syscfg Values to Enable OIC Support</h3>
@@ -686,7 +689,7 @@ Copying package @apache-mynewt-core/apps/bleprph_oic to @apache-mynewt-core/apps
 <li><code>FLOAT_USER: 1</code>: This setting enables floating pointing support in the encoding/tinycbor package. </li>
 <li><code>ADVERTISE_128BIT_UUID: 1</code> and <code>ADVERTISE_16BIT_UUID: 0</code>: These settings enable BLE 128 bit UUID and disables 16 bit UUID advertisement. The IoTivity library that is used to build the OIC Apps on the iOS and Android devices only sees 128 bit UUID advertisements.   </li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>syscfg.vals:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>syscfg.vals:
        ...
 
 <span style="background-color: #ffffcc">    SENSOR_OIC: 1
@@ -694,7 +697,8 @@ Copying package @apache-mynewt-core/apps/bleprph_oic to @apache-mynewt-core/apps
 </span><span style="background-color: #ffffcc">    FLOAT_USER: 1
 </span><span style="background-color: #ffffcc">    ADVERTISE_128BIT_UUID: 1
 </span><span style="background-color: #ffffcc">    ADVERTISE_16BIT_UUID: 0
-</span></pre></div>
+</span></code></pre></div>
+
 
 <p><br></p>
 <h3 id="step-4-modifying-mainc">Step 4: Modifying main.c</h3>
@@ -708,17 +712,18 @@ Copying package @apache-mynewt-core/apps/bleprph_oic to @apache-mynewt-core/apps
 <p><br></p>
 <h4 id="adding-the-sensor-package-header-file">Adding the Sensor Package Header File:</h4>
 <p>Add the sensor package header file <code>sensor/sensor.h</code> below <code>#include "bleprph.h"</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>#include &quot;bleprph.h&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>#include &quot;bleprph.h&quot;
 
 <span style="background-color: #ffffcc">#include &lt;sensor/sensor.h&gt;
-</span></pre></div>
+</span></code></pre></div>
+
 
 <p><br></p>
 <h4 id="modifying-the-omgr_app_init-function">Modifying the omgr_app_init() Function</h4>
 <p>Make the following modifications to the <code>omgr_app_init()</code> function:</p>
 <p><br>
 1. Delete the code segment that creates the OIC device and resource. The lines to delete are highlighted below:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static void
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>static void
 omgr_app_init(void)
 {   
 <span style="background-color: #ffffcc">    oc_resource_t *res;
@@ -739,11 +744,12 @@ omgr_app_init(void)
 </span><span style="background-color: #ffffcc">    oc_add_resource(res);
 </span>
 }
-</pre></div>
+</code></pre></div>
+
 
 <p><br>
 2. Add the following <code>oc_add_device()</code> function call to create an OIC  resource for the sensor device:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static void
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>static void
 omgr_app_init(void)
 {   
 
@@ -752,11 +758,12 @@ omgr_app_init(void)
 <span style="background-color: #ffffcc">    oc_add_device(&quot;/oic/d&quot;, &quot;oic.d.sensy&quot;, &quot;sensy&quot;, &quot;1.0&quot;, &quot;1.0&quot;, NULL, NULL);
 </span>
 }
-</pre></div>
+</code></pre></div>
+
 
 <p><br>
 3. Add the call to the <code>sensor_oic_init()</code> function to initialize the sensor framework OIC server support:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static void
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>static void
 omgr_app_init(void)
 {  
 
@@ -767,7 +774,8 @@ omgr_app_init(void)
 <span style="background-color: #ffffcc">    sensor_oic_init();
 </span>
 }
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h4 id="deleting-the-app_get_light-and-app_set_light-functions">Deleting the app_get_light() and app_set_light() Functions</h4>
@@ -778,25 +786,28 @@ omgr_app_init(void)
 <p>We use the same syscfg settings from the <a href="/os/tutorials/sensors/sensor_nrf52_bno055_oic.md">Enabling OIC Sensor Data Monitoring in the sensors_test Application Tutorial</a>.</p>
 <p><br>
 1. From your project base directory, run the <code>newt create target</code> command to create a new target named <code>nrf52_bleprph_oic_bno055</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create nrf52_bleprph_oic_bno055
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target create nrf52_bleprph_oic_bno055
 Target targets/nrf52_bleprph_oic_bno055 successfully created
-</pre></div>
+</code></pre></div>
+
 
 <p><br>
 2. Run the <code>newt target set</code> command to set the app, bsp, and build_profile variables for the target. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set nrf52_bleprph_oic_bno055 app=@apache-mynewt-core/apps/bleprph_oic_sensor bsp=@apache-mynewt-core/hw/bsp/nrf52dk build_profile=debug 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target set nrf52_bleprph_oic_bno055 app=@apache-mynewt-core/apps/bleprph_oic_sensor bsp=@apache-mynewt-core/hw/bsp/nrf52dk build_profile=debug 
 Target targets/nrf52_bleprph_oic_bno055 successfully set target.app to @apache-mynewt-core/apps/bleprph_oic_sensor
 Target targets/nrf52_bleprph_oic_bno055 successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
 Target targets/nrf52_bleprph_oic_bno055 successfully set target.build_profile to debug 
 $
-</pre></div>
+</code></pre></div>
+
 
 <p><br>
 3. Run the <code>newt target set</code> command to set <code>I2C_0=1</code>, <code>BNO055_OFB=1</code>, <code>BLE_MAX_CONNECTIONS=4</code>, <code>MSYS_1_BLOCK_COUNT=52</code>, <code>MSYS_1_BLOCK_SIZE=100</code>, and <code>OC_APP_RESOURCES=11</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set nrf52_bleprph_oic_bno055 syscfg=BNO055_OFB=1:I2C_0=1:BLE_MAX_CONNECTIONS=4:MSYS_1_BLOCK_COUNT=52:MSYS_1_BLOCK_SIZE=100:OC_APP_RESOURCES=11
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target set nrf52_bleprph_oic_bno055 syscfg=BNO055_OFB=1:I2C_0=1:BLE_MAX_CONNECTIONS=4:MSYS_1_BLOCK_COUNT=52:MSYS_1_BLOCK_SIZE=100:OC_APP_RESOURCES=11
 Target targets/nrf52_bleprph_oic_bno055 successfully set target.syscfg to BNO055_OFB=1:I2C_0=1:BLE_MAX_CONNECTIONS=4:MSYS_1_BLOCK_COUNT=52:MSYS_1_BLOCK_SIZE=100:OC_APP_RESOURCES=11
 $
-</pre></div>
+</code></pre></div>
+
 
 <p><br>
 4. Run the <code>newt build nrf52_bleprph_oic_bno055</code> and <code>newt create-image nrf52_bleprph_oic_bno055 1.0.0</code> commands to build and create the application image.</p>
@@ -818,14 +829,14 @@ $
 <h3 id="step-7-viewing-sensor-data-from-the-mynewt-smart-device-controller">Step 7: Viewing Sensor Data from the Mynewt Smart Device Controller</h3>
 <p>Start the Mynewt Smart Device Controller app on your iOS or Android device to view the sensor data.  You should already have the app installed from the <a href="/os/tutorials/sensors/sensor_nrf52_bno055_oic.md">Enabling OIC Sensor Data Monitoring in the sensors_test Application Tutorial</a>.</p>
 <p>The Mynewt Smart Device Controller scans for the devices when it starts up and displays the sensors it can view.  The following is an example from the Android App:
-<br></p>
+<br>
 <p>
 <p align="center">
 <img src="../../pics/smart_controller_main.png"></img>
 </p>
-<br>
-
-1. Select `Accelerometer` to see the sensor data samples:
+<br></p>
+<ol>
+<li>Select <code>Accelerometer</code> to see the sensor data samples:
 <br>
 <p>
 <p align="center">
@@ -833,8 +844,9 @@ $
 </p>
 <p>
 <br>
-<br>
-2. Move your BNO055 sensor device around to see the values for the coordinates change.
+<br></li>
+<li>Move your BNO055 sensor device around to see the values for the coordinates change.</li>
+</ol>
                         
                         <div class="row">
                             

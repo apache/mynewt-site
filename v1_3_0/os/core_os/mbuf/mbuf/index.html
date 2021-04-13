@@ -848,7 +848,7 @@ ga("send", "pageview");
 <p>Mbufs are collected into "mbuf pools" much like memory blocks. The mbuf pool itself contains a pointer to a memory pool. The memory blocks in this memory pool are the actual mbufs; both normal and packet header mbufs. Thus, the memory block (and corresponding memory pool) must be sized correctly. In other words, the memory blocks which make up the memory pool used by the mbuf pool must be at least: sizeof(struct os_mbuf) + sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_defined_header) + desired minimum data buffer length. For example, if the developer wants mbufs to contain at least 64 bytes of user data and they have a user header of 12 bytes, the size of the memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes, this is a fair amount of overhead. However, the flexibility provided by the mbuf library usually outweighs overhead concerns.</p>
 <h3 id="create-mbuf-pool">Create mbuf pool</h3>
 <p>Creating an mbuf pool is fairly simple: create a memory pool and then create the mbuf pool using that memory pool. Once the developer has determined the size of the user data needed per mbuf (this is based on the application/networking stack and is outside the scope of this discussion) and the size of the user header (if any), the memory blocks can be sized. In the example shown below, the application requires 64 bytes of user data per mbuf and also allocates a user header (called struct user_hdr). Note that we do not show the user header data structure as there really is no need; all we need to do is to account for it when creating the memory pool. In the example, we use the macro <em>MBUF_PKTHDR_OVERHEAD</em> to denote the amount of packet header overhead per mbuf and <em>MBUF_MEMBLOCK_OVERHEAD</em> to denote the total amount of overhead required per memory block. The macro <em>MBUF_BUF_SIZE</em> is used to denote the amount of payload that the application requires (aligned on a 32-bit boundary in this case). All this leads to the total memory block size required, denoted by the macro <em>MBUF_MEMBLOCK_OVERHEAD</em>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #633820">#define MBUF_PKTHDR_OVERHEAD    sizeof(struct os_mbuf_pkthdr) + sizeof(struct user_hdr)</span>
 <span style="color: #633820">#define MBUF_MEMBLOCK_OVERHEAD  sizeof(struct os_mbuf) + MBUF_PKTHDR_OVERHEAD</span>
 
 <span style="color: #633820">#define MBUF_NUM_MBUFS      (32)</span>
@@ -874,12 +874,13 @@ ga("send", "pageview");
                            <span style="color: #000000">MBUF_NUM_MBUFS</span>);
     <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 }
-</pre></div>
+</code></pre></div>
+
 
 <h3 id="using-mbufs">Using mbufs</h3>
 <p>The following examples illustrate typical mbuf usage. There are two basic mbuf allocation API: <code>os_mbuf_get()</code> and <code>os_mbuf_get_pkthdr()</code>. The first API obtains a normal mbuf whereas the latter obtains a packet header mbuf. Typically, application developers use <code>os_mbuf_get_pkthdr()</code> and rarely, if ever, need to call <code>os_mbuf_get()</code> as the rest of the mbuf API (e.g. <code>os_mbuf_append()</code>, <code>os_mbuf_copyinto()</code>, etc.) typically deal with allocating and chaining mbufs. It is recommended to use the provided API to copy data into/out of mbuf chains and/or manipulate mbufs.</p>
 <p>In <code>example1</code>, the developer creates a packet and then sends the packet to a networking interface. The code sample also provides an example of copying data out of an mbuf as well as use of the "pullup" api (another very common mbuf api).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">void</span>
 <span style="color: #000000">mbuf_usage_example1</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*mydata</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">mydata_length</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
@@ -903,13 +904,14 @@ ga("send", "pageview");
         <span style="color: #000000">send_pkt</span>(<span style="color: #000000">om</span>);
     }
 }
-</pre></div>
+</code></pre></div>
+
 
 <p>In <code>example2</code> we show use of the pullup api as this illustrates some of the typical pitfalls developers encounter when using mbufs. The first pitfall is one of alignment/padding. Depending on the processor and/or compiler, the sizeof() a structure may vary. Thus, the size of <em>my_protocol_header</em> may be different inside the packet data of the mbuf than the size of the structure on the stack or as a global variable, for instance. While some networking protcols may align protocol information on convenient processor boundaries many others try to conserve bytes "on the air" (i.e inside the packet data). Typical methods used to deal with this are "packing" the structure (i.e. force compiler to not pad) or creating protocol headers that do not require padding. <code>example2</code> assumes that one of these methods was used when defining the <em>my_protocol_header</em> structure.</p>
 <p>Another common pitfall occurs around endianness. A network protocol may be little endian or big endian; it all depends on the protocol specification. Processors also have an endianness; this means that the developer has to be careful that the processor endianness and the protocol endianness are handled correctly. In <code>example2</code>, some common networking functions are used: <code>ntohs()</code> and <code>ntohl()</code>. These are shorthand for "network order to host order, short" and "network order to host order, long". Basically, these functions convert data of a certain size (i.e. 16 bits, 32 bits, etc) to the endianness of the host. Network byte order is big-endian (most significant byte first), so these functions convert big-endian byte order to host order (thus, the implementation of these functions is host dependent). Note that the BLE networking stack "on the air" format is least signigicant byte first (i.e. little endian), so a "bletoh" function would have to take little endian format and convert to host format.</p>
 <p>A long story short: the developer must take care when copying structure data to/from mbufs and flat buffers!</p>
 <p>A final note: these examples assume the same mbuf struture and definitions used in the first example. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">void</span>
 <span style="color: #000000">mbuf_usage_example2</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">mbuf</span> <span style="color: #000000">*rxpkt</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
@@ -945,17 +947,19 @@ ga("send", "pageview");
     <span style="color: #177500">/* Free passed in packet (mbuf chain) since we don&#39;t need it anymore */</span>
     <span style="color: #000000">os_mbuf_free_chain</span>(<span style="color: #000000">om</span>);
 }
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="data-structures">Data Structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pool</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pool</span> {
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_databuf_len</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_mbuf_count</span>;
     <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">*omp_pool</span>;
     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_mbuf_pool</span>) <span style="color: #000000">omp_next</span>;
 };
-</pre></div>
+</code></pre></div>
+
 
 <table>
 <thead>
@@ -984,12 +988,13 @@ ga("send", "pageview");
 </tbody>
 </table>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pkthdr</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf_pkthdr</span> {
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_len</span>;
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">omp_flags</span>;
     <span style="color: #000000">STAILQ_ENTRY</span>(<span style="color: #000000">os_mbuf_pkthdr</span>) <span style="color: #000000">omp_next</span>;
 };
-</pre></div>
+</code></pre></div>
+
 
 <table>
 <thead>
@@ -1014,7 +1019,7 @@ ga("send", "pageview");
 </tbody>
 </table>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> {
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">*om_data</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">om_flags</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">om_pkthdr_len</span>;
@@ -1023,7 +1028,8 @@ ga("send", "pageview");
     <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">os_mbuf</span>) <span style="color: #000000">om_next</span>;
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">om_databuf</span>[<span style="color: #1C01CE">0</span>];
 };
-</pre></div>
+</code></pre></div>
+
 
 <table>
 <thead>

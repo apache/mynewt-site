@@ -415,12 +415,12 @@ bsp.linkerscript.BOOT_LOADER.OVERWRITE:
 </ul>
 <p>Our example BSP uses an nRF52 MCU, which implements the <code class="docutils literal notranslate"><span class="pre">cortex_m4</span></code> architecture. We use this information to fill in
 the incomplete fields:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="hll"> <span class="l l-Scalar l-Scalar-Plain">bsp.arch</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">cortex_m4</span>
-</span><span class="hll"> <span class="l l-Scalar l-Scalar-Plain">bsp.compiler</span><span class="p p-Indicator">:</span> <span class="s">&#39;@apache-mynewt-core/compiler/arm-none-eabi-m4&#39;</span>
-</span> <span class="l l-Scalar l-Scalar-Plain">bsp.linkerscript</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="hll"> <span class="nt">bsp.arch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cortex_m4</span>
+</span><span class="hll"> <span class="nt">bsp.compiler</span><span class="p">:</span> <span class="s">&#39;@apache-mynewt-core/compiler/arm-none-eabi-m4&#39;</span>
+</span> <span class="nt">bsp.linkerscript</span><span class="p">:</span>
      <span class="p p-Indicator">-</span> <span class="s">&#39;hw/bsp/myboard/myboard.ld&#39;</span>
 <span class="hll">     <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/hw/mcu/nordic/nrf52xxx/nrf52.ld&#39;</span>
-</span> <span class="l l-Scalar l-Scalar-Plain">bsp.linkerscript.BOOT_LOADER.OVERWRITE</span><span class="p p-Indicator">:</span>
+</span> <span class="nt">bsp.linkerscript.BOOT_LOADER.OVERWRITE</span><span class="p">:</span>
      <span class="p p-Indicator">-</span> <span class="s">&#39;hw/bsp/myboard/boot-myboard.ld&#39;</span>
 <span class="hll">     <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/hw/mcu/nordic/nrf52xxx/nrf52.ld&#39;</span>
 </span></pre></div>
@@ -478,14 +478,14 @@ adjust the area offsets and sizes if your BSP does not have 512kB of internal fl
 <p>A package’s dependencies are listed in its <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file. A BSP package always depends on its corresponding MCU
 package, so let’s add that dependency to our BSP now. The <code class="docutils literal notranslate"><span class="pre">pkg.deps</span></code> section of our <code class="docutils literal notranslate"><span class="pre">hw/bsp/myboard/pkg.yml</span></code> file
 currently looks like this:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">pkg.deps</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.deps</span><span class="p">:</span>
     <span class="c1"># - XXX &lt;MCU-package&gt;</span>
     <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/kernel/os&#39;</span>
     <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/libc/baselibc&#39;</span>
 </pre></div>
 </div>
 <p>Continuing with our example nRF52 BSP, we replace the marked line as follows:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span> <span class="l l-Scalar l-Scalar-Plain">pkg.deps</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span> <span class="nt">pkg.deps</span><span class="p">:</span>
 <span class="hll">     <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/hw/mcu/nordic/nrf52xxx&#39;</span>
 </span>     <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/kernel/os&#39;</span>
      <span class="p p-Indicator">-</span> <span class="s">&#39;@apache-mynewt-core/libc/baselibc&#39;</span>
@@ -656,15 +656,15 @@ Completing this step will likely involve some trial and error as each unmet requ
 <p>Our example nRF52 BSP requires the following changes:</p>
 <ol class="arabic">
 <li><p class="first">Macro indicating MCU type. We add this to our BSP’s <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span> <span class="l l-Scalar l-Scalar-Plain">pkg.cflags</span><span class="p p-Indicator">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span> <span class="nt">pkg.cflags</span><span class="p">:</span>
 <span class="hll">     <span class="p p-Indicator">-</span> <span class="s">&#39;-DNRF52&#39;</span>
 </span></pre></div>
 </div>
 </li>
 <li><p class="first">Enable exactly one low-frequency timer setting in our BSP’s <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file. This is required by the nRF51 and nRF52 MCU packages:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span> <span class="c1"># Settings this BSP overrides.</span>
- <span class="l l-Scalar l-Scalar-Plain">syscfg.vals</span><span class="p p-Indicator">:</span>
-<span class="hll">     <span class="l l-Scalar l-Scalar-Plain">XTAL_32768</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+ <span class="nt">syscfg.vals</span><span class="p">:</span>
+<span class="hll">     <span class="nt">XTAL_32768</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
 </span></pre></div>
 </div>
 </li>

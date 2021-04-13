@@ -522,7 +522,7 @@ whenever a peer device attempts to read or write the characteristic.</p>
 service.  Let's take another look at how <em>bleprph</em> specifies the first few
 characteristics in this service.</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">ble_gatt_svc_def</span> <span style="color: #000000">gatt_svr_svcs</span>[] <span style="color: #000000">=</span> {
     {
         <span style="color: #177500">/*** Service: GAP. */</span>
         .<span style="color: #000000">type</span>               <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_SVC_TYPE_PRIMARY</span>,
@@ -539,14 +539,15 @@ characteristics in this service.</p>
             .<span style="color: #000000">flags</span>              <span style="color: #000000">=</span> <span style="color: #000000">BLE_GATT_CHR_F_READ</span>,
         }, {
     <span style="color: #177500">// [...]</span>
-</pre></div>
+</code></pre></div>
+
 
 <p>As you can see, <em>bleprph</em> uses the same <em>access_cb</em> function for all the GAP
 service characteristics, but the developer could have implemented separate
 functions for each characteristic if they preferred.  Here is the <em>access_cb</em>
 function that the GAP service characteristics use:</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_chr_access_gap</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">op</span>,
                         <span style="color: #A90D91">union</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 {
@@ -596,16 +597,18 @@ function that the GAP service characteristics use:</p>
 
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
-</pre></div>
+</code></pre></div>
+
 
 <p>After you've taken a moment to examine the structure of this function, let's explore some details.</p>
 <p><br></p>
 <h4 id="function-signature">Function signature</h4>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
 <span style="color: #000000">gatt_svr_chr_access_gap</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>, <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">attr_handle</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">op</span>,
                         <span style="color: #A90D91">union</span> <span style="color: #000000">ble_gatt_access_ctxt</span> <span style="color: #000000">*ctxt</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
-</pre></div>
+</code></pre></div>
+
 
 <p>A characteristic access function always takes this same set of parameters and
 always returns an int.  The parameters to this function type are documented
@@ -650,7 +653,7 @@ stack should respond with.  The ATT error codes are defined in
 <p><br></p>
 <h4 id="determine-characteristic-being-accessed">Determine characteristic being accessed</h4>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>{
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>{
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">uuid16</span>;
 
     <span style="color: #000000">uuid16</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_uuid_128_to_16</span>(<span style="color: #000000">ctxt-&gt;chr_access</span>.<span style="color: #000000">chr-&gt;uuid128</span>);
@@ -658,7 +661,8 @@ stack should respond with.  The ATT error codes are defined in
 
     <span style="color: #A90D91">switch</span> (<span style="color: #000000">uuid16</span>) {
         <span style="color: #177500">// [...]</span>
-</pre></div>
+</code></pre></div>
+
 
 <p>This function uses the UUID to determine which characteristic is being
 accessed.  There are two alternative methods <em>bleprph</em> could have used to
@@ -677,12 +681,13 @@ GAP service characteristics have valid 16-bit UUIDs.</p>
 <p><br></p>
 <h4 id="read-access">Read access</h4>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_CHR_UUID16_DEVICE_NAME</span>:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_CHR_UUID16_DEVICE_NAME</span>:
         <span style="color: #000000">assert</span>(<span style="color: #000000">op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_READ_CHR</span>);
         <span style="color: #000000">ctxt-&gt;chr_access</span>.<span style="color: #000000">data</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>)<span style="color: #000000">bleprph_device_name</span>;
         <span style="color: #000000">ctxt-&gt;chr_access</span>.<span style="color: #000000">len</span> <span style="color: #000000">=</span> <span style="color: #000000">strlen</span>(<span style="color: #000000">bleprph_device_name</span>);
         <span style="color: #A90D91">break</span>;
-</pre></div>
+</code></pre></div>
+
 
 <p>This code excerpt handles read accesses to the device name characteristic.  The
 <em>assert()</em> here is another case of making sure the NimBLE stack is doing its
@@ -693,8 +698,9 @@ prevented write accesses.</p>
 and fill the <em>ctxt-&gt;chr_access.len</em> field with the length of the attribute data.
 <em>bleprph</em> stores the device name in read-only memory as follows:</p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*bleprph_device_name</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;nimble-bleprph&quot;</span>;
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">const</span> <span style="color: #A90D91">char</span> <span style="color: #000000">*bleprph_device_name</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;nimble-bleprph&quot;</span>;
+</code></pre></div>
+
 
 <p>The cast to pointer-to-void is a necessary annoyance to remove the <em>const</em>
 qualifier from the device name variable.  You will need to "cast away const"
@@ -713,7 +719,7 @@ the same memory for repeated accesses.</p>
 <p><br></p>
 <h4 id="write-access">Write access</h4>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_CHR_UUID16_RECONNECT_ADDR</span>:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_GAP_CHR_UUID16_RECONNECT_ADDR</span>:
         <span style="color: #000000">assert</span>(<span style="color: #000000">op</span> <span style="color: #000000">==</span> <span style="color: #000000">BLE_GATT_ACCESS_OP_WRITE_CHR</span>);
         <span style="color: #A90D91">if</span> (<span style="color: #000000">ctxt-&gt;chr_access</span>.<span style="color: #000000">len</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">sizeof</span> <span style="color: #000000">bleprph_reconnect_addr</span>) {
             <span style="color: #A90D91">return</span> <span style="color: #000000">BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN</span>;
@@ -721,7 +727,8 @@ the same memory for repeated accesses.</p>
         <span style="color: #000000">memcpy</span>(<span style="color: #000000">bleprph_reconnect_addr</span>, <span style="color: #000000">ctxt-&gt;chr_access</span>.<span style="color: #000000">data</span>,
                <span style="color: #A90D91">sizeof</span> <span style="color: #000000">bleprph_reconnect_addr</span>);
         <span style="color: #A90D91">break</span>;
-</pre></div>
+</code></pre></div>
+
 
 <p>This code excerpt handles writes to the reconnect address characteristic.  This
 characteristic was registered as write-only, so the <em>assert()</em> here is just a
