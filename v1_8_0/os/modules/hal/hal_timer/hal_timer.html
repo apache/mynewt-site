@@ -308,220 +308,210 @@ API. The user must have called hal_timer_set_cb before starting a
 timer.</p>
 <p>NOTE: the user should not have to modify/examine the contents of this
 structure; the hal timer API should be used.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct hal_timer
-{
-    void                *bsp_timer; /* Internal platform specific pointer */
-    hal_timer_cb        cb_func;    /* Callback function */
-    void                *cb_arg;    /* Callback argument */
-    uint32_t            expiry;     /* Tick at which timer should expire */
-    TAILQ_ENTRY(hal_timer) link;    /* Queue linked list structure */
-};
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">hal_timer</span>
+<span class="p">{</span>
+    <span class="kt">void</span>                <span class="o">*</span><span class="n">bsp_timer</span><span class="p">;</span> <span class="cm">/* Internal platform specific pointer */</span>
+    <span class="n">hal_timer_cb</span>        <span class="n">cb_func</span><span class="p">;</span>    <span class="cm">/* Callback function */</span>
+    <span class="kt">void</span>                <span class="o">*</span><span class="n">cb_arg</span><span class="p">;</span>    <span class="cm">/* Callback argument */</span>
+    <span class="kt">uint32_t</span>            <span class="n">expiry</span><span class="p">;</span>     <span class="cm">/* Tick at which timer should expire */</span>
+    <span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">hal_timer</span><span class="p">)</span> <span class="n">link</span><span class="p">;</span>    <span class="cm">/* Queue linked list structure */</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<dl class="typedef">
+<dl class="c type">
 <dt id="c.hal_timer_cb">
-<span class="target" id="group___h_a_l_timer_1gaf6b777c97781df4e860d4eadba407ec4"></span><em class="property">typedef </em>void<code class="descname">(* hal_timer_cb)</code><span class="sig-paren">(</span>void<em>&nbsp;*arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_cb" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1gaf6b777c97781df4e860d4eadba407ec4"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">void</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">hal_timer_cb</span></code><span class="pre">)</span><span class="sig-paren">(</span><span class="pre">void</span> <span class="pre">*</span><span class="pre">arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_cb" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_init">
-<span class="target" id="group___h_a_l_timer_1gae008bd575e17e5c0d6fab7cd20429505"></span>int <code class="descname">hal_timer_init</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em>, void *<em>&nbsp;cfg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_init" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1gae008bd575e17e5c0d6fab7cd20429505"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_init</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">cfg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialize a HW timer. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to initialize </li>
-<li><code class="docutils literal notranslate"><span class="pre">cfg</span></code>: Hardware specific timer configuration. This is passed from BSP directly to the MCU specific driver. </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to initialize </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cfg</span></code>: Hardware specific timer configuration. This is passed from BSP directly to the MCU specific driver. </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_deinit">
-<span class="target" id="group___h_a_l_timer_1gab484bcc8f328f16a467ba74473bc4e67"></span>int <code class="descname">hal_timer_deinit</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_deinit" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1gab484bcc8f328f16a467ba74473bc4e67"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_deinit</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_deinit" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Un-initialize a HW timer. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to un-initialize </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to un-initialize </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_config">
-<span class="target" id="group___h_a_l_timer_1gafc13bd55373f7b105c1f09a319876c86"></span>int <code class="descname">hal_timer_config</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em>, uint32_t<em>&nbsp;freq_hz</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_config" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1gafc13bd55373f7b105c1f09a319876c86"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_config</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">freq_hz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_config" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Config a HW timer at the given frequency and start it. </p>
 <p>If the exact frequency is not obtainable the closest obtainable frequency is set.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, non-zero error code on failure </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to configure </li>
-<li><code class="docutils literal notranslate"><span class="pre">freq_hz</span></code>: The frequency in Hz to configure the timer at</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to configure </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freq_hz</span></code>: The frequency in Hz to configure the timer at</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_get_resolution">
-<span class="target" id="group___h_a_l_timer_1ga09972cb40f65bbf75add4a745bb6f171"></span>uint32_t <code class="descname">hal_timer_get_resolution</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_get_resolution" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga09972cb40f65bbf75add4a745bb6f171"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">hal_timer_get_resolution</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_get_resolution" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns the resolution of the HW timer. </p>
 <p>NOTE: the frequency may not be obtainable so the caller can use this to determine the resolution. Returns resolution in nanoseconds. A return value of 0 indicates an invalid timer was used.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>The resolution of the timer </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to get resolution for</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The resolution of the timer </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to get resolution for</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_read">
-<span class="target" id="group___h_a_l_timer_1ga399c1ad97a20ab9a4edb445ea6253b59"></span>uint32_t <code class="descname">hal_timer_read</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_read" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga399c1ad97a20ab9a4edb445ea6253b59"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">hal_timer_read</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_read" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns the HW timer current tick value. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>The current tick value </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The HW timer to read the tick value from</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The current tick value </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The HW timer to read the tick value from</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_delay">
-<span class="target" id="group___h_a_l_timer_1ga8921d021217ad28b7c399dfac948072d"></span>int <code class="descname">hal_timer_delay</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em>, uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_delay" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga8921d021217ad28b7c399dfac948072d"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_delay</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">ticks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_delay" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Perform a blocking delay for a number of ticks. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, non-zero error code on failure </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The timer number to use for the blocking delay </li>
-<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to delay for</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The timer number to use for the blocking delay </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to delay for</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_set_cb">
-<span class="target" id="group___h_a_l_timer_1ga565e77630c3548207bb1cde8545230fd"></span>int <code class="descname">hal_timer_set_cb</code><span class="sig-paren">(</span>int<em>&nbsp;timer_num</em>, struct  <a class="reference internal" href="#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;tmr</em>, <a class="reference internal" href="#c.hal_timer_cb" title="hal_timer_cb">hal_timer_cb</a><em>&nbsp;cb_func</em>, void *<em>&nbsp;arg</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_set_cb" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga565e77630c3548207bb1cde8545230fd"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_set_cb</span></code><span class="sig-paren">(</span><span class="pre">int</span> <em><span class="pre">timer_num</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.hal_timer" title="hal_timer"><span class="pre">hal_timer</span></a> <span class="pre">*</span><em><span class="pre">tmr</span></em>, <a class="reference internal" href="#c.hal_timer_cb" title="hal_timer_cb"><span class="pre">hal_timer_cb</span></a> <em><span class="pre">cb_func</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_set_cb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the timer structure prior to use. </p>
 <p>Should not be called if the timer is running. Must be called at least once prior to using timer.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, non-zero error code on failure. </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to configure the callback on </li>
-<li><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer structure to use for this timer </li>
-<li><code class="docutils literal notranslate"><span class="pre">cb_func</span></code>: The timer callback to call when the timer fires </li>
-<li><code class="docutils literal notranslate"><span class="pre">arg</span></code>: An opaque argument to provide the timer callback</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">timer_num</span></code>: The number of the HW timer to configure the callback on </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer structure to use for this timer </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb_func</span></code>: The timer callback to call when the timer fires </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arg</span></code>: An opaque argument to provide the timer callback</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_start">
-<span class="target" id="group___h_a_l_timer_1ga108e679ed0440ac830631fc662a04fa6"></span>int <code class="descname">hal_timer_start</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;tmr</em>, uint32_t<em>&nbsp;ticks</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_start" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga108e679ed0440ac830631fc662a04fa6"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_start</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.hal_timer" title="hal_timer"><span class="pre">hal_timer</span></a> <span class="pre">*</span><em><span class="pre">tmr</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">ticks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_start" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Start a timer that will expire in ‘ticks’ ticks. </p>
 <p>Ticks cannot be 0</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, non-zero error code on failure. </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer to start </li>
-<li><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to expire the timer in</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer to start </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ticks</span></code>: The number of ticks to expire the timer in</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_start_at">
-<span class="target" id="group___h_a_l_timer_1ga7cfacab8052286bcb9ebcf09fe4ba842"></span>int <code class="descname">hal_timer_start_at</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;tmr</em>, uint32_t<em>&nbsp;tick</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_start_at" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga7cfacab8052286bcb9ebcf09fe4ba842"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_start_at</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.hal_timer" title="hal_timer"><span class="pre">hal_timer</span></a> <span class="pre">*</span><em><span class="pre">tmr</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">tick</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_start_at" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Start a timer that will expire when the timer reaches ‘tick’. </p>
 <p>If tick has already passed the timer callback will be called “immediately” (at interrupt context).</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>0 on success, non-zero error code on failure. </dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer to start </li>
-<li><code class="docutils literal notranslate"><span class="pre">tick</span></code>: The absolute tick value to fire the timer at</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero error code on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer to start </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tick</span></code>: The absolute tick value to fire the timer at</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="c function">
 <dt id="c.hal_timer_stop">
-<span class="target" id="group___h_a_l_timer_1ga948dc3fdc14f840fe713ffc1f9508dab"></span>int <code class="descname">hal_timer_stop</code><span class="sig-paren">(</span>struct  <a class="reference internal" href="#c.hal_timer" title="hal_timer">hal_timer</a>  *<em>&nbsp;tmr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_stop" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="group___h_a_l_timer_1ga948dc3fdc14f840fe713ffc1f9508dab"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">hal_timer_stop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.hal_timer" title="hal_timer"><span class="pre">hal_timer</span></a> <span class="pre">*</span><em><span class="pre">tmr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.hal_timer_stop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Stop a currently running timer; associated callback will NOT be called. </p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer to stop </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tmr</span></code>: The timer to stop </p></li>
 </ul>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="struct">
+<dl class="c struct">
 <dt id="c.hal_timer">
-<span class="target" id="structhal__timer"></span><em class="property">struct </em><code class="descname">hal_timer</code><a class="headerlink" href="#c.hal_timer" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="structhal__timer"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">hal_timer</span></code><a class="headerlink" href="#c.hal_timer" title="Permalink to this definition">¶</a><br /></dt>
 <dd><em>#include &lt;hal_timer.h&gt;</em><p>The HAL timer structure. </p>
 <p>The user can declare as many of these structures as desired. They are enqueued on a particular HW timer queue when the user calls the :c:func:<code class="docutils literal notranslate"><a class="reference internal" href="#group___h_a_l_timer_1ga108e679ed0440ac830631fc662a04fa6"><span class="std std-ref"><span class="pre">hal_timer_start()</span></span></a></code> or :c:func:<code class="docutils literal notranslate"><a class="reference internal" href="#group___h_a_l_timer_1ga7cfacab8052286bcb9ebcf09fe4ba842"><span class="std std-ref"><span class="pre">hal_timer_start_at()</span></span></a></code> API. The user must have called :c:func:<code class="docutils literal notranslate"><a class="reference internal" href="#group___h_a_l_timer_1ga565e77630c3548207bb1cde8545230fd"><span class="std std-ref"><span class="pre">hal_timer_set_cb()</span></span></a></code> before starting a timer.</p>
 <p>NOTE: the user should not have to modify/examine the contents of this structure; the hal timer API should be used. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="variable">
-<dt id="c.hal_timer::bsp_timer">
-<span class="target" id="structhal__timer_1a6d7bba13d02c0192adb00dee4588216b"></span>void* <code class="descname">bsp_timer</code><a class="headerlink" href="#c.hal_timer::bsp_timer" title="Permalink to this definition">¶</a></dt>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt id="c.hal_timer.bsp_timer">
+<span class="target" id="structhal__timer_1a6d7bba13d02c0192adb00dee4588216b"></span><span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">bsp_timer</span></code><a class="headerlink" href="#c.hal_timer.bsp_timer" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Internal platform specific pointer. </p>
 </dd></dl>
 
-<dl class="variable">
-<dt id="c.hal_timer::cb_func">
-<span class="target" id="structhal__timer_1aa6b82b412ede70f5c580e20e5eb99aee"></span><a class="reference internal" href="#c.hal_timer_cb" title="hal_timer_cb">hal_timer_cb</a> <code class="descname">cb_func</code><a class="headerlink" href="#c.hal_timer::cb_func" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.hal_timer.cb_func">
+<span class="target" id="structhal__timer_1aa6b82b412ede70f5c580e20e5eb99aee"></span><a class="reference internal" href="#c.hal_timer_cb" title="hal_timer_cb"><span class="pre">hal_timer_cb</span></a> <code class="sig-name descname"><span class="pre">cb_func</span></code><a class="headerlink" href="#c.hal_timer.cb_func" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callback function. </p>
 </dd></dl>
 
-<dl class="variable">
-<dt id="c.hal_timer::cb_arg">
-<span class="target" id="structhal__timer_1a315d7a2737f930cb664b21deb0886a3c"></span>void* <code class="descname">cb_arg</code><a class="headerlink" href="#c.hal_timer::cb_arg" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.hal_timer.cb_arg">
+<span class="target" id="structhal__timer_1a315d7a2737f930cb664b21deb0886a3c"></span><span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">cb_arg</span></code><a class="headerlink" href="#c.hal_timer.cb_arg" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Callback argument. </p>
 </dd></dl>
 
-<dl class="variable">
-<dt id="c.hal_timer::expiry">
-<span class="target" id="structhal__timer_1ab4edba6c830706a49097ffe86a8d73d9"></span>uint32_t <code class="descname">expiry</code><a class="headerlink" href="#c.hal_timer::expiry" title="Permalink to this definition">¶</a></dt>
+<dl class="c var">
+<dt id="c.hal_timer.expiry">
+<span class="target" id="structhal__timer_1ab4edba6c830706a49097ffe86a8d73d9"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">expiry</span></code><a class="headerlink" href="#c.hal_timer.expiry" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Tick at which timer should expire. </p>
 </dd></dl>
 
@@ -593,7 +583,6 @@ structure; the hal timer API should be used.</p>
       <script type="text/javascript" src="../../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

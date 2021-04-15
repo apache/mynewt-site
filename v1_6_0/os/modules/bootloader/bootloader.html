@@ -302,24 +302,24 @@ microcontroller.</p>
 a secure bootloader for 32-bit MCUs that has been ported to other Operating Systems as well.</p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#limitations" id="id1">Limitations</a></li>
-<li><a class="reference internal" href="#image-format" id="id2">Image Format</a></li>
-<li><a class="reference internal" href="#flash-map" id="id3">Flash Map</a></li>
-<li><a class="reference internal" href="#image-slots" id="id4">Image Slots</a></li>
-<li><a class="reference internal" href="#boot-states" id="id5">Boot States</a></li>
-<li><a class="reference internal" href="#boot-vector" id="id6">Boot Vector</a></li>
-<li><a class="reference internal" href="#high-level-operation" id="id7">High-level Operation</a></li>
-<li><a class="reference internal" href="#image-swapping" id="id8">Image Swapping</a></li>
-<li><a class="reference internal" href="#swap-status" id="id9">Swap Status</a></li>
-<li><a class="reference internal" href="#reset-recovery" id="id10">Reset Recovery</a></li>
-<li><a class="reference internal" href="#integrity-check" id="id11">Integrity Check</a></li>
-<li><a class="reference internal" href="#image-signing-and-verification" id="id12">Image Signing and Verification</a></li>
+<li><p><a class="reference internal" href="#limitations" id="id1">Limitations</a></p></li>
+<li><p><a class="reference internal" href="#image-format" id="id2">Image Format</a></p></li>
+<li><p><a class="reference internal" href="#flash-map" id="id3">Flash Map</a></p></li>
+<li><p><a class="reference internal" href="#image-slots" id="id4">Image Slots</a></p></li>
+<li><p><a class="reference internal" href="#boot-states" id="id5">Boot States</a></p></li>
+<li><p><a class="reference internal" href="#boot-vector" id="id6">Boot Vector</a></p></li>
+<li><p><a class="reference internal" href="#high-level-operation" id="id7">High-level Operation</a></p></li>
+<li><p><a class="reference internal" href="#image-swapping" id="id8">Image Swapping</a></p></li>
+<li><p><a class="reference internal" href="#swap-status" id="id9">Swap Status</a></p></li>
+<li><p><a class="reference internal" href="#reset-recovery" id="id10">Reset Recovery</a></p></li>
+<li><p><a class="reference internal" href="#integrity-check" id="id11">Integrity Check</a></p></li>
+<li><p><a class="reference internal" href="#image-signing-and-verification" id="id12">Image Signing and Verification</a></p></li>
 </ul>
 </div>
 <p>The Mynewt bootloader comprises two packages:</p>
 <ul class="simple">
-<li>The bootutil library (boot/bootutil)</li>
-<li>The boot application (apps/boot)</li>
+<li><p>The bootutil library (boot/bootutil)</p></li>
+<li><p>The boot application (apps/boot)</p></li>
 </ul>
 <p>The Mynewt code is thus structured so that the generic bootutil library
 performs most of the functions of a boot loader. The final step of
@@ -328,47 +328,47 @@ This last step should instead be implemented in an architecture-specific
 project. Boot loader functionality is separated in this manner for the
 following two reasons:</p>
 <ol class="arabic simple">
-<li>By keeping architecture-dependent code separate, the bootutil library
-can be reused among several boot loaders.</li>
-<li>By excluding the last boot step from the library, the bootloader can
+<li><p>By keeping architecture-dependent code separate, the bootutil library
+can be reused among several boot loaders.</p></li>
+<li><p>By excluding the last boot step from the library, the bootloader can
 be unit tested since a library can be unit tested but an applicant
-can’t.</li>
+can’t.</p></li>
 </ol>
 <div class="section" id="limitations">
 <h2><a class="toc-backref" href="#id1">Limitations</a><a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h2>
 <p>The boot loader currently only supports images with the following
 characteristics:</p>
 <ul class="simple">
-<li>Built to run from flash.</li>
-<li>Build to run from a fixed location (i.e., position-independent).</li>
+<li><p>Built to run from flash.</p></li>
+<li><p>Build to run from a fixed location (i.e., position-independent).</p></li>
 </ul>
 </div>
 <div class="section" id="image-format">
 <h2><a class="toc-backref" href="#id2">Image Format</a><a class="headerlink" href="#image-format" title="Permalink to this headline">¶</a></h2>
 <p>The following definitions describe the image header format.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define IMAGE_MAGIC                 0x96f3b83c
-#define IMAGE_MAGIC_NONE            0xffffffff
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define IMAGE_MAGIC                 0x96f3b83c</span>
+<span class="cp">#define IMAGE_MAGIC_NONE            0xffffffff</span>
 
-struct image_version {
-    uint8_t iv_major;
-    uint8_t iv_minor;
-    uint16_t iv_revision;
-    uint32_t iv_build_num;
-};
+<span class="k">struct</span> <span class="n">image_version</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span> <span class="n">iv_major</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">iv_minor</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">iv_revision</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">iv_build_num</span><span class="p">;</span>
+<span class="p">};</span>
 
-/** Image header.  All fields are in little endian byte order. */
-struct image_header {
-    uint32_t ih_magic;
-    uint16_t ih_tlv_size; /* Trailing TLVs */
-    uint8_t  ih_key_id;
-    uint8_t  _pad1;
-    uint16_t ih_hdr_size;
-    uint16_t _pad2;
-    uint32_t ih_img_size; /* Does not include header. */
-    uint32_t ih_flags;
-    struct image_version ih_ver;
-    uint32_t _pad3;
-};
+<span class="cm">/** Image header.  All fields are in little endian byte order. */</span>
+<span class="k">struct</span> <span class="n">image_header</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">ih_magic</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">ih_tlv_size</span><span class="p">;</span> <span class="cm">/* Trailing TLVs */</span>
+    <span class="kt">uint8_t</span>  <span class="n">ih_key_id</span><span class="p">;</span>
+    <span class="kt">uint8_t</span>  <span class="n">_pad1</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">ih_hdr_size</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">_pad2</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">ih_img_size</span><span class="p">;</span> <span class="cm">/* Does not include header. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ih_flags</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">image_version</span> <span class="n">ih_ver</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">_pad3</span><span class="p">;</span>
+<span class="p">};</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">ih_hdr_size</span></code> field indicates the length of the header, and
@@ -376,30 +376,30 @@ therefore the offset of the image itself. This field provides for
 backwards compatibility in case of changes to the format of the image
 header.</p>
 <p>The following are the image header flags available.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define IMAGE_F_PIC                    0x00000001
-#define IMAGE_F_SHA256                 0x00000002 /* Image contains hash TLV */
-#define IMAGE_F_PKCS15_RSA2048_SHA256  0x00000004 /* PKCS15 w/RSA and SHA */
-#define IMAGE_F_ECDSA224_SHA256        0x00000008 /* ECDSA256 over SHA256 */
-#define IMAGE_F_NON_BOOTABLE           0x00000010
-#define IMAGE_HEADER_SIZE              32
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define IMAGE_F_PIC                    0x00000001</span>
+<span class="cp">#define IMAGE_F_SHA256                 0x00000002 </span><span class="cm">/* Image contains hash TLV */</span><span class="cp"></span>
+<span class="cp">#define IMAGE_F_PKCS15_RSA2048_SHA256  0x00000004 </span><span class="cm">/* PKCS15 w/RSA and SHA */</span><span class="cp"></span>
+<span class="cp">#define IMAGE_F_ECDSA224_SHA256        0x00000008 </span><span class="cm">/* ECDSA256 over SHA256 */</span><span class="cp"></span>
+<span class="cp">#define IMAGE_F_NON_BOOTABLE           0x00000010</span>
+<span class="cp">#define IMAGE_HEADER_SIZE              32</span>
 </pre></div>
 </div>
 <p>Optional type-length-value records (TLVs) containing image metadata are
 placed after the end of the image. For example, security data gets added
 as a footer at the end of the image.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/** Image trailer TLV format. All fields in little endian. */
-struct image_tlv {
-    uint8_t  it_type;   /* IMAGE_TLV_[...]. */
-    uint8_t  _pad;
-    uint16_t it_len     /* Data length (not including TLV header). */
-};
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Image trailer TLV format. All fields in little endian. */</span>
+<span class="k">struct</span> <span class="n">image_tlv</span> <span class="p">{</span>
+    <span class="kt">uint8_t</span>  <span class="n">it_type</span><span class="p">;</span>   <span class="cm">/* IMAGE_TLV_[...]. */</span>
+    <span class="kt">uint8_t</span>  <span class="n">_pad</span><span class="p">;</span>
+    <span class="kt">uint16_t</span> <span class="n">it_len</span>     <span class="cm">/* Data length (not including TLV header). */</span>
+<span class="p">};</span>
 
-/*
- * Image trailer TLV types.
- */
-#define IMAGE_TLV_SHA256            1   /* SHA256 of image hdr and body */
-#define IMAGE_TLV_RSA2048           2   /* RSA2048 of hash output */
-#define IMAGE_TLV_ECDSA224          3   /* ECDSA of hash output */
+<span class="cm">/*</span>
+<span class="cm"> * Image trailer TLV types.</span>
+<span class="cm"> */</span>
+<span class="cp">#define IMAGE_TLV_SHA256            1   </span><span class="cm">/* SHA256 of image hdr and body */</span><span class="cp"></span>
+<span class="cp">#define IMAGE_TLV_RSA2048           2   </span><span class="cm">/* RSA2048 of hash output */</span><span class="cp"></span>
+<span class="cp">#define IMAGE_TLV_ECDSA224          3   </span><span class="cm">/* ECDSA of hash output */</span><span class="cp"></span>
 </pre></div>
 </div>
 </div>
@@ -409,14 +409,14 @@ struct image_tlv {
 a high level, the flash map maps numeric IDs to <em>flash areas</em>. A flash
 area is a region of disk with the following properties:</p>
 <ol class="arabic simple">
-<li>An area can be fully erased without affecting any other areas.</li>
-<li>A write to one area does not restrict writes to other areas.</li>
+<li><p>An area can be fully erased without affecting any other areas.</p></li>
+<li><p>A write to one area does not restrict writes to other areas.</p></li>
 </ol>
 <p>The boot loader uses the following flash areas:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define FLASH_AREA_BOOTLOADER                    0
-#define FLASH_AREA_IMAGE_0                       1
-#define FLASH_AREA_IMAGE_1                       2
-#define FLASH_AREA_IMAGE_SCRATCH                 3
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define FLASH_AREA_BOOTLOADER                    0</span>
+<span class="cp">#define FLASH_AREA_IMAGE_0                       1</span>
+<span class="cp">#define FLASH_AREA_IMAGE_1                       2</span>
+<span class="cp">#define FLASH_AREA_IMAGE_SCRATCH                 3</span>
 </pre></div>
 </div>
 </div>
@@ -438,9 +438,9 @@ slot: pending and confirmed. On startup, the boot loader determines the
 state of the device by inspecting each pair of flags. These flags have
 the following meanings:</p>
 <ul class="simple">
-<li>pending: image gets tested on next reboot; absent subsequent confirm
-command, revert to original image on second reboot.</li>
-<li>confirmed: always use image unless excluded by a test image.</li>
+<li><p>pending: image gets tested on next reboot; absent subsequent confirm
+command, revert to original image on second reboot.</p></li>
+<li><p>confirmed: always use image unless excluded by a test image.</p></li>
 </ul>
 <p>In English, when the user wants to run the secondary image, they set the
 pending flag for the second slot and reboot the device. On startup, the
@@ -515,7 +515,7 @@ then <code class="docutils literal notranslate"><span class="pre">min-write-size
 addresses, then <code class="docutils literal notranslate"><span class="pre">min-write-size</span></code> is 2, and so on.</p>
 <p>The fields are defined as follows:</p>
 <ol class="arabic">
-<li><p class="first">MAGIC: The following 16 bytes, written in host-byte-order:</p>
+<li><p>MAGIC: The following 16 bytes, written in host-byte-order:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>const uint32_t boot_img_magic[4] = {
     0xf395c277,
     0x7fefd260,
@@ -525,20 +525,17 @@ addresses, then <code class="docutils literal notranslate"><span class="pre">min
 </pre></div>
 </div>
 </li>
-<li><p class="first">Swap status: A series of single-byte records. Each record corresponds
+<li><p>Swap status: A series of single-byte records. Each record corresponds
 to a flash sector in an image slot. A swap status byte indicate the
 location of the corresponding sector data. During an image swap,
 image data is moved one sector at a time. The swap status is
 necessary for resuming a swap operation if the device rebooted before
-a swap operation completed.</p>
-</li>
-<li><p class="first">Copy done: A single byte indicating whether the image in this slot is
-complete (<code class="docutils literal notranslate"><span class="pre">0x01=done,</span> <span class="pre">0xff=not</span> <span class="pre">done</span></code>).</p>
-</li>
-<li><p class="first">Image OK: A single byte indicating whether the image in this slot has
+a swap operation completed.</p></li>
+<li><p>Copy done: A single byte indicating whether the image in this slot is
+complete (<code class="docutils literal notranslate"><span class="pre">0x01=done,</span> <span class="pre">0xff=not</span> <span class="pre">done</span></code>).</p></li>
+<li><p>Image OK: A single byte indicating whether the image in this slot has
 been confirmed as good by the user
-(<code class="docutils literal notranslate"><span class="pre">0x01=confirmed;</span> <span class="pre">0xff=not</span> <span class="pre">confirmed</span></code>).</p>
-</li>
+(<code class="docutils literal notranslate"><span class="pre">0x01=confirmed;</span> <span class="pre">0xff=not</span> <span class="pre">confirmed</span></code>).</p></li>
 </ol>
 <p>The boot vector records are structured around the limitations imposed by
 flash hardware. As a consequence, they do not have a very intuitive
@@ -633,10 +630,10 @@ C. Boot into image in slot 0.
 <p>The boot loader swaps the contents of the two image slots for two
 reasons:</p>
 <ul class="simple">
-<li>User has issued an “image test” operation; the image in slot-1 should
-be run once (state II).</li>
-<li>Test image rebooted without being confirmed; the boot loader should
-revert to the original image currently in slot-1 (state III).</li>
+<li><p>User has issued an “image test” operation; the image in slot-1 should
+be run once (state II).</p></li>
+<li><p>Test image rebooted without being confirmed; the boot loader should
+revert to the original image currently in slot-1 (state III).</p></li>
 </ul>
 <p>If the boot vector indicates that the image in the secondary slot should
 be run, the boot loader needs to copy it to the primary slot. The image
@@ -826,11 +823,11 @@ it doesn’t perform an integrity check.</p>
 <p>During the integrity check, the boot loader verifies the following
 aspects of an image:</p>
 <ul class="simple">
-<li>32-bit magic number must be correct (0x96f3b83c).</li>
-<li>Image must contain a SHA256 TLV.</li>
-<li>Calculated SHA256 must matche SHA256 TLV contents.</li>
-<li>Image <em>may</em> contain a signature TLV. If it does, its contents must be
-verifiable using a key embedded in the boot loader.</li>
+<li><p>32-bit magic number must be correct (0x96f3b83c).</p></li>
+<li><p>Image must contain a SHA256 TLV.</p></li>
+<li><p>Calculated SHA256 must matche SHA256 TLV contents.</p></li>
+<li><p>Image <em>may</em> contain a signature TLV. If it does, its contents must be
+verifiable using a key embedded in the boot loader.</p></li>
 </ul>
 </div>
 <div class="section" id="image-signing-and-verification">
@@ -909,7 +906,6 @@ producing signed images, see <a class="reference external" href="https://github.
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

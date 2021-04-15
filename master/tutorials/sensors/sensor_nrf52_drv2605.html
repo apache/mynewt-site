@@ -285,30 +285,30 @@ to quickly to view the status, calibrate and actuate your motor in
 preperation for using it programmatically in your own app.</p>
 <p>This tutorial shows you how to:</p>
 <ul class="simple">
-<li>Create and build the application and bootloader targets.</li>
-<li>Connect a DRV2605 actuator device to an nRF52-DK board.</li>
-<li>Run <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell commands to view the actuator data
-and control the drv2605 device.</li>
+<li><p>Create and build the application and bootloader targets.</p></li>
+<li><p>Connect a DRV2605 actuator device to an nRF52-DK board.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell commands to view the actuator data
+and control the drv2605 device.</p></li>
 </ul>
 <div class="contents local topic" id="contents">
 <ul class="simple">
-<li><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></li>
-<li><a class="reference internal" href="#step-1-creating-the-application-target" id="id2">Step 1: Creating the Application Target</a></li>
-<li><a class="reference internal" href="#step-2-creating-an-application-image-and-loading-it" id="id3">Step 2: Creating an Application Image and loading it</a></li>
-<li><a class="reference internal" href="#step-3-communicating-with-and-calibrating-the-drv2605-device" id="id4">Step 3: Communicating with and Calibrating the DRV2605 device</a></li>
-<li><a class="reference internal" href="#step-4-actually-actuate" id="id5">Step 4: Actually Actuate</a></li>
-<li><a class="reference internal" href="#conclusion" id="id6">Conclusion</a></li>
+<li><p><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#step-1-creating-the-application-target" id="id2">Step 1: Creating the Application Target</a></p></li>
+<li><p><a class="reference internal" href="#step-2-creating-an-application-image-and-loading-it" id="id3">Step 2: Creating an Application Image and loading it</a></p></li>
+<li><p><a class="reference internal" href="#step-3-communicating-with-and-calibrating-the-drv2605-device" id="id4">Step 3: Communicating with and Calibrating the DRV2605 device</a></p></li>
+<li><p><a class="reference internal" href="#step-4-actually-actuate" id="id5">Step 4: Actually Actuate</a></p></li>
+<li><p><a class="reference internal" href="#conclusion" id="id6">Conclusion</a></p></li>
 </ul>
 </div>
 <div class="section" id="prerequisites">
 <h2><a class="toc-backref" href="#id1">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Meet the prerequisites listed in <a class="reference internal" href="sensors.html"><span class="doc">Sensor Tutorials</span></a></li>
-<li>Understand how to <a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">add an offboard sensor</span></a>,
-we wont be covering bootloader and application console connection here.</li>
-<li>Have a Nordic nRF52-DK board.</li>
-<li>Have an <a class="reference external" href="https://learn.adafruit.com/adafruit-drv2605-haptic-controller-breakout/overview">Adafruit DRV2605</a>
-actuator and LRA motor.</li>
+<li><p>Meet the prerequisites listed in <a class="reference internal" href="sensors.html"><span class="doc">Sensor Tutorials</span></a></p></li>
+<li><p>Understand how to <a class="reference internal" href="sensor_nrf52_bno055.html"><span class="doc">add an offboard sensor</span></a>,
+we wont be covering bootloader and application console connection here.</p></li>
+<li><p>Have a Nordic nRF52-DK board.</p></li>
+<li><p>Have an <a class="reference external" href="https://learn.adafruit.com/adafruit-drv2605-haptic-controller-breakout/overview">Adafruit DRV2605</a>
+actuator and LRA motor.</p></li>
 </ul>
 </div>
 <div class="section" id="step-1-creating-the-application-target">
@@ -318,48 +318,42 @@ off-board device.</p>
 <p>To add the DRV2605 device support, you create the application target with
 the following syscfg settings enabled:</p>
 <ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">I2C_0</span></code>: Enables the I2C interface 0 in the nRF52 BSP HAL setting.</p>
-</li>
-<li><div class="first line-block">
+<li><p><code class="docutils literal notranslate"><span class="pre">I2C_0</span></code>: Enables the I2C interface 0 in the nRF52 BSP HAL setting.</p></li>
+<li><div class="line-block">
 <div class="line"><code class="docutils literal notranslate"><span class="pre">DRV2605_OFB</span></code>: Enables support for the DRV2605 actuator in the sensor
 creator package (<code class="docutils literal notranslate"><span class="pre">hw/sensor/creator</span></code>).</div>
 <div class="line">When this setting is enabled, the creator package performs the
 following:</div>
 </div>
 <ul class="simple">
-<li>Includes the DRV2605 driver package (<code class="docutils literal notranslate"><span class="pre">hw/drivers/drv2605</span></code>)
-as a package dependency.</li>
-<li>Creates an os device for the device in the Mynewt kernel.</li>
-<li>Configures the device with default values.</li>
+<li><p>Includes the DRV2605 driver package (<code class="docutils literal notranslate"><span class="pre">hw/drivers/drv2605</span></code>)
+as a package dependency.</p></li>
+<li><p>Creates an os device for the device in the Mynewt kernel.</p></li>
+<li><p>Configures the device with default values.</p></li>
 </ul>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_CLI</span></code>: Enables the <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell command in the DRV2605
+<li><p><code class="docutils literal notranslate"><span class="pre">DRV2605_CLI</span></code>: Enables the <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell command in the DRV2605
 device driver package. The sensors_test application also uses this
 setting to conditionally include the call to the
 <code class="docutils literal notranslate"><span class="pre">drv2605_shell_init()</span></code> function to initialize the shell support in
-the driver.</p>
-</li>
-<li><dl class="first docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">DRV2605_EN_PIN</span></code>: The pin the driver needs to gpio in order to enable</dt>
-<dd><p class="first last">your DRV2605 device.</p>
+the driver.</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">DRV2605_EN_PIN</span></code>: The pin the driver needs to gpio in order to enable</dt><dd><p>your DRV2605 device.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_RATED_VOLTAGE</span></code>: I have no easy default for you here, it is
+<li><p><code class="docutils literal notranslate"><span class="pre">DRV2605_RATED_VOLTAGE</span></code>: I have no easy default for you here, it is
 entirelay based on your purchased LRA motor. See 8.5.2.1 Rated Voltage
-Programming in the TI DRV2605 Datasheet or maybe talk to your motor supplier.</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_OD_CLAMP</span></code>: I have no easy default for you here, it is
+Programming in the TI DRV2605 Datasheet or maybe talk to your motor supplier.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DRV2605_OD_CLAMP</span></code>: I have no easy default for you here, it is
 entirelay based on your purchased LRA motor. See 8.5.2.2 Overdrive
 Voltage-Clamp Programming in the TI DRV2605 Datasheet or maybe talk
 to your motor supplier. NOTE: LRA and ERM (8) and (9) equations are
-swapped in the datasheet revision “SLOS854C REVISED SEPTEMBER 2014”</p>
-</li>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">DRV2605_DRIVE_TIME</span></code>: I have no easy default for you here, it is
+swapped in the datasheet revision “SLOS854C REVISED SEPTEMBER 2014”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DRV2605_DRIVE_TIME</span></code>: I have no easy default for you here, it is
 entirelay based on your purchased LRA motor. See 8.6.21, but generally
 it is computable with the equation
-LRA DRIVE_TIME = (0.5 × (1/fLRA * 1000) - 0.5 ms) /  0.1 ms</p>
-</li>
+LRA DRIVE_TIME = (0.5 × (1/fLRA * 1000) - 0.5 ms) /  0.1 ms</p></li>
 </ul>
 <p>1. Run the <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">target</span> <span class="pre">create</span></code> command, from your project base
 directory, to create the target. We name the target
@@ -407,12 +401,12 @@ taught in <a class="reference internal" href="sensor_nrf52_bno055.html"><span cl
 The DRV2605 device driver implements the <code class="docutils literal notranslate"><span class="pre">drv2605</span></code> shell command
 that allows you to:</p>
 <ul class="simple">
-<li>Query the chip id, content of registers, calibrations.</li>
-<li>Reset the device.</li>
-<li>Change the power mode.</li>
-<li>Change the operation mode.</li>
-<li>Load waveforms to actuate.</li>
-<li>Actuate the device.</li>
+<li><p>Query the chip id, content of registers, calibrations.</p></li>
+<li><p>Reset the device.</p></li>
+<li><p>Change the power mode.</p></li>
+<li><p>Change the operation mode.</p></li>
+<li><p>Load waveforms to actuate.</p></li>
+<li><p>Actuate the device.</p></li>
 </ul>
 <p><strong>Example 1:</strong> Query the device chip id:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">711273 compat&gt; drv2605 chip_id</span>
@@ -546,7 +540,6 @@ setup and actuate your device programmatically within your application.</p>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>

@@ -282,10 +282,10 @@ additional insights.</p>
 <h2>Equipment<a class="headerlink" href="#equipment" title="Permalink to this headline">¶</a></h2>
 <p>You will need the following equipment:</p>
 <ul class="simple">
-<li>Arduino M0 Pro (or legacy Arduino Zero or Zero Pro, but not Arduino
-M0)</li>
-<li>Computer with Mynewt installed</li>
-<li>USB to Micro USB Cable</li>
+<li><p>Arduino M0 Pro (or legacy Arduino Zero or Zero Pro, but not Arduino
+M0)</p></li>
+<li><p>Computer with Mynewt installed</p></li>
+<li><p>USB to Micro USB Cable</p></li>
 </ul>
 </div>
 <div class="section" id="build-your-application">
@@ -311,7 +311,7 @@ one second. ##Create a New Task</p>
 aspects of tasks and how to properly initialize them. First, let’s
 define a second task called <code class="docutils literal notranslate"><span class="pre">work_task</span></code> in main.c (located in
 apps/blinky/src):</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>struct os_task work_task;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">os_task</span> <span class="n">work_task</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>A task is represented by the
@@ -329,7 +329,7 @@ usage. Since we’re not short on memory, our <code class="docutils literal notr
 large for the purpose of this lesson. Notice that the elements in our
 task stack are of type <code class="docutils literal notranslate"><span class="pre">os_stack_t</span></code> which are generally 32 bits,
 making our entire stack 1024 Bytes.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define WORK_STACK_SIZE OS_STACK_ALIGN(256)
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define WORK_STACK_SIZE OS_STACK_ALIGN(256)</span>
 </pre></div>
 </div>
 <p>Note: The <code class="docutils literal notranslate"><span class="pre">OS_STACK_ALIGN</span></code> macro is used to align the stack based on
@@ -341,20 +341,20 @@ the hardware architecture.</p>
 “event” to wake it up. In general, the task function is where the
 majority of work is done by a task. Let’s write a task function for
 <code class="docutils literal notranslate"><span class="pre">work_task</span></code> called <code class="docutils literal notranslate"><span class="pre">work_task_handler()</span></code>:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
-work_task_handler(void *arg)
-{
-    struct os_task *t;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
 
-    g_led_pin = LED_BLINK_PIN;
-    hal_gpio_init_out(g_led_pin, 1);
+    <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
-    while (1) {
-        t = os_sched_get_current_task();
-        assert(t-&gt;t_func == work_task_handler);
-        /* Do work... */
-    }
-}
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">os_sched_get_current_task</span><span class="p">();</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span> <span class="o">==</span> <span class="n">work_task_handler</span><span class="p">);</span>
+        <span class="cm">/* Do work... */</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The task function is called when the task is initially put into the
@@ -371,7 +371,7 @@ the lowest 255. Thus, before initializing our task, we must choose a
 priority defined as a macro variable.</p>
 <p>Let’s set the priority of <code class="docutils literal notranslate"><span class="pre">work_task</span></code> to 0, because everyone knows
 that work is more important than blinking.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>#define WORK_TASK_PRIO (0)
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#define WORK_TASK_PRIO (0)</span>
 </pre></div>
 </div>
 </div>
@@ -383,37 +383,37 @@ which takes a number of arguments including our new task function,
 stack, and priority.</p>
 <p>Add the <code class="docutils literal notranslate"><span class="pre">init_tasks()</span></code> function to initialize <code class="docutils literal notranslate"><span class="pre">work_task</span></code> to keep
 our main function clean.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
-init_tasks(void)
-{
-    /* … */
-    os_stack_t *work_stack;
-    work_stack = malloc(sizeof(os_stack_t)*WORK_STACK_SIZE);
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">init_tasks</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="cm">/* … */</span>
+    <span class="n">os_stack_t</span> <span class="o">*</span><span class="n">work_stack</span><span class="p">;</span>
+    <span class="n">work_stack</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">os_stack_t</span><span class="p">)</span><span class="o">*</span><span class="n">WORK_STACK_SIZE</span><span class="p">);</span>
 
-    assert(work_stack);
-    os_task_init(&amp;work_task, &quot;work&quot;, work_task_handler, NULL,
-            WORK_TASK_PRIO, OS_WAIT_FOREVER, work_stack,
-            WORK_STACK_SIZE);
+    <span class="n">assert</span><span class="p">(</span><span class="n">work_stack</span><span class="p">);</span>
+    <span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">work_task</span><span class="p">,</span> <span class="s">&quot;work&quot;</span><span class="p">,</span> <span class="n">work_task_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+            <span class="n">WORK_TASK_PRIO</span><span class="p">,</span> <span class="n">OS_WAIT_FOREVER</span><span class="p">,</span> <span class="n">work_stack</span><span class="p">,</span>
+            <span class="n">WORK_STACK_SIZE</span><span class="p">);</span>
 
-    return 0;
-}
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Add the call to <code class="docutils literal notranslate"><span class="pre">init_tasks()</span></code> in <code class="docutils literal notranslate"><span class="pre">main()</span></code> before the <code class="docutils literal notranslate"><span class="pre">while</span></code>
 loop:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>int
-main(int argc, char **argv)
-{
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
 
-        ...
+        <span class="p">...</span>
 
-    /* Initialize the work task */
-    init_tasks();
+    <span class="cm">/* Initialize the work task */</span>
+    <span class="n">init_tasks</span><span class="p">();</span>
 
-    while (1) {
-         ...
-    }
-}
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+         <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>And that’s it! Now run your application using the newt run command.</p>
@@ -428,29 +428,29 @@ doesn’t our LED blink anymore?</em></p>
 order to create a task. This is a general case for a new task called
 mytask:</p>
 <p><strong>1)</strong> Define a new task, task stack, and priority:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>/* My Task */
-struct os_task mytask
-/* My Task Stack */
-#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)
-os_stack_t mytask_stack[MYTASK_STACK_SIZE];
-/* My Task Priority */
-#define MYTASK_PRIO (0)
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* My Task */</span>
+<span class="k">struct</span> <span class="n">os_task</span> <span class="n">mytask</span>
+<span class="cm">/* My Task Stack */</span>
+<span class="cp">#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)</span>
+<span class="n">os_stack_t</span> <span class="n">mytask_stack</span><span class="p">[</span><span class="n">MYTASK_STACK_SIZE</span><span class="p">];</span>
+<span class="cm">/* My Task Priority */</span>
+<span class="cp">#define MYTASK_PRIO (0)</span>
 </pre></div>
 </div>
 <p><strong>2)</strong> Define task function:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
-mytask_handler(void *arg)
-{
-  while (1) {
-      /* ... */
-  }
-}
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">mytask_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="cm">/* ... */</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>3)</strong> Initialize the task:</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>os_task_init(&amp;mytask, &quot;mytask&quot;, mytask_handler, NULL,
-            MYTASK_PRIO, OS_WAIT_FOREVER, mytask_stack,
-            MYTASK_STACK_SIZE);
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mytask</span><span class="p">,</span> <span class="s">&quot;mytask&quot;</span><span class="p">,</span> <span class="n">mytask_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+            <span class="n">MYTASK_PRIO</span><span class="p">,</span> <span class="n">OS_WAIT_FOREVER</span><span class="p">,</span> <span class="n">mytask_stack</span><span class="p">,</span>
+            <span class="n">MYTASK_STACK_SIZE</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -470,31 +470,31 @@ a <em>sleep</em> state, it holds the processor focus on its context.</p>
 busy. The delay is measured in os ticks and the actual number of ticks
 per second is dependent on the board. We multiply <code class="docutils literal notranslate"><span class="pre">OS_TICKS_PER_SEC</span></code>,
 which is defined in the MCU, by the number of seconds we wish to delay.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>void
-work_task_handler(void *arg)
-{
-    struct os_task *t;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
+<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
 
-    g_led_pin = LED_BLINK_PIN;
-    hal_gpio_init_out(g_led_pin, 1);
+    <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
 
-    while (1) {
-        t = os_sched_get_current_t:ask();
-        assert(t-&gt;t_func == work_task_handler);
-        /* Do work... */
-        int i;
-        for(i = 0; i &lt; 1000000; ++i) {
-            /* Simulate doing a noticeable amount of work */
-            hal_gpio_write(g_led_pin, 1);
-        }
-        os_time_delay(3 * OS_TICKS_PER_SEC);
-    }
-}
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nl">os_sched_get_current_t</span><span class="p">:</span><span class="n">ask</span><span class="p">();</span>
+        <span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span> <span class="o">==</span> <span class="n">work_task_handler</span><span class="p">);</span>
+        <span class="cm">/* Do work... */</span>
+        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="cm">/* Simulate doing a noticeable amount of work */</span>
+            <span class="n">hal_gpio_write</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">os_time_delay</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">OS_TICKS_PER_SEC</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>In order to notice the LED changing, modify the time delay in
 <code class="docutils literal notranslate"><span class="pre">main()</span></code> to blink at a higher frequency.</p>
-<div class="code c highlight-none notranslate"><div class="highlight"><pre><span></span>os_time_delay(OS_TICKS_PER_SEC/10);
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">os_time_delay</span><span class="p">(</span><span class="n">OS_TICKS_PER_SEC</span><span class="o">/</span><span class="mi">10</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Before we run the app, let’s predict the behavior. With the newest
@@ -520,9 +520,9 @@ not hog the CPU.</p>
 <p>The diagram below shows the different scheduling patterns we would
 expect when we set the <code class="docutils literal notranslate"><span class="pre">work_task</span></code> priority higher and lower than the
 <code class="docutils literal notranslate"><span class="pre">main</span></code> task priority.</p>
-<div class="figure" id="id1">
+<div class="figure align-default" id="id1">
 <img alt="Task Scheduling" src="os/tutorials/pics/task_lesson.png" />
-<p class="caption"><span class="caption-text">Task Scheduling</span></p>
+<p class="caption"><span class="caption-text">Task Scheduling</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>In the second case where the <code class="docutils literal notranslate"><span class="pre">main</span></code> task has a higher priority,
 <code class="docutils literal notranslate"><span class="pre">work_task</span></code> runs and executes “work” when the <code class="docutils literal notranslate"><span class="pre">main</span></code> task sleeps,
@@ -587,7 +587,6 @@ task, 255 for idle task.</p>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="../../_static/language_data.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>
