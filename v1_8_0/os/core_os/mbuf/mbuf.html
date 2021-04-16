@@ -439,8 +439,8 @@ block size required, denoted by the macro <em>MBUF_MEMBLOCK_OVERHEAD</em>.</p>
 <span class="cp">#define MBUF_MEMBLOCK_SIZE  (MBUF_BUF_SIZE + MBUF_MEMBLOCK_OVERHEAD)</span>
 <span class="cp">#define MBUF_MEMPOOL_SIZE   OS_MEMPOOL_SIZE(MBUF_NUM_MBUFS, MBUF_MEMBLOCK_SIZE)</span>
 
-<span class="k">struct</span> <span class="n">os_mbuf_pool</span> <span class="n">g_mbuf_pool</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">os_mempool</span> <span class="n">g_mbuf_mempool</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">os_mbuf_pool</span> <span class="n">g_mbuf_pool</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">os_mempool</span> <span class="n">g_mbuf_mempool</span><span class="p">;</span>
 <span class="n">os_membuf_t</span> <span class="n">g_mbuf_buffer</span><span class="p">[</span><span class="n">MBUF_MEMPOOL_SIZE</span><span class="p">];</span>
 
 <span class="kt">void</span>
@@ -509,10 +509,10 @@ api (another very common mbuf api).</p>
 <span class="nf">mbuf_usage_example1</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">mydata</span><span class="p">,</span> <span class="kt">int</span> <span class="n">mydata_length</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
 
     <span class="cm">/* get a packet header mbuf */</span>
-    <span class="n">om</span> <span class="o">=</span> <span class="n">os_mbuf_get_pkthdr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">user_hdr</span><span class="p">));</span>
+    <span class="n">om</span> <span class="o">=</span> <span class="n">os_mbuf_get_pkthdr</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">user_hdr</span><span class="p">));</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">om</span><span class="p">)</span> <span class="p">{</span>
         <span class="cm">/*</span>
 <span class="cm">         * Copy user data into mbuf. NOTE: if mydata_length is greater than the</span>
@@ -522,7 +522,7 @@ api (another very common mbuf api).</p>
         <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mbuf_copyinto</span><span class="p">(</span><span class="n">om</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mydata</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
             <span class="cm">/* Error! Could not allocate enough mbufs for total packet length */</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
         <span class="p">}</span>
 
         <span class="cm">/* Send packet to networking interface */</span>
@@ -564,18 +564,18 @@ data to/from mbufs and flat buffers!</p>
 <p>A final note: these examples assume the same mbuf struture and
 definitions used in the first example.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">mbuf_usage_example2</span><span class="p">(</span><span class="k">struct</span> <span class="n">mbuf</span> <span class="o">*</span><span class="n">rxpkt</span><span class="p">)</span>
+<span class="nf">mbuf_usage_example2</span><span class="p">(</span><span class="k">struct</span> <span class="nc">mbuf</span> <span class="o">*</span><span class="n">rxpkt</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
     <span class="kt">uint8_t</span> <span class="n">packet_data</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
-    <span class="k">struct</span> <span class="n">mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">my_protocol_header</span> <span class="o">*</span><span class="n">phdr</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">my_protocol_header</span> <span class="o">*</span><span class="n">phdr</span><span class="p">;</span>
 
     <span class="cm">/* Make sure that &quot;my_protocol_header&quot; bytes are contiguous in mbuf */</span>
-    <span class="n">om</span> <span class="o">=</span> <span class="n">os_mbuf_pullup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">my_protocol_header</span><span class="p">));</span>
+    <span class="n">om</span> <span class="o">=</span> <span class="n">os_mbuf_pullup</span><span class="p">(</span><span class="o">&amp;</span><span class="n">g_mbuf_pool</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">my_protocol_header</span><span class="p">));</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">om</span><span class="p">)</span> <span class="p">{</span>
         <span class="cm">/* Not able to pull up data into contiguous area */</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="cm">/*</span>
@@ -583,13 +583,13 @@ definitions used in the first example.</p>
 <span class="cm">     * are interested in protocol types that are equal to MY_PROTOCOL_TYPE, are not zero</span>
 <span class="cm">     * length, and have had some time in flight.</span>
 <span class="cm">     */</span>
-    <span class="n">phdr</span> <span class="o">=</span> <span class="n">OS_MBUF_DATA</span><span class="p">(</span><span class="n">om</span><span class="p">,</span> <span class="k">struct</span> <span class="n">my_protocol_header</span> <span class="o">*</span><span class="p">);</span>
+    <span class="n">phdr</span> <span class="o">=</span> <span class="n">OS_MBUF_DATA</span><span class="p">(</span><span class="n">om</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">my_protocol_header</span> <span class="o">*</span><span class="p">);</span>
     <span class="n">type</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">phdr</span><span class="o">-&gt;</span><span class="n">prot_type</span><span class="p">);</span>
     <span class="n">length</span> <span class="o">=</span> <span class="n">ntohs</span><span class="p">(</span><span class="n">phdr</span><span class="o">-&gt;</span><span class="n">prot_length</span><span class="p">);</span>
     <span class="n">time_in_flight</span> <span class="o">=</span> <span class="n">ntohl</span><span class="p">(</span><span class="n">phdr</span><span class="o">-&gt;</span><span class="n">prot_tif</span><span class="p">);</span>
 
     <span class="k">if</span> <span class="p">((</span><span class="n">type</span> <span class="o">==</span> <span class="n">MY_PROTOCOL_TYPE</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">time_in_flight</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="p">{</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mbuf_copydata</span><span class="p">(</span><span class="n">rxpkt</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">my_protocol_header</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="n">packet_data</span><span class="p">);</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mbuf_copydata</span><span class="p">(</span><span class="n">rxpkt</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="nc">my_protocol_header</span><span class="p">),</span> <span class="mi">16</span><span class="p">,</span> <span class="n">packet_data</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
             <span class="cm">/* Success! Perform operations on packet data */</span>
             <span class="o">&lt;</span><span class="p">...</span> <span class="n">user</span> <span class="n">code</span> <span class="n">here</span> <span class="p">...</span><span class="o">&gt;</span>
@@ -622,8 +622,8 @@ counter)</p></li>
 <p>Not shown in the code example is a call <code class="docutils literal notranslate"><span class="pre">my_task_rx_data_func</span></code>.
 Presumably, some other code will call this API.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span> <span class="n">pkts_rxd</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">os_mqueue</span> <span class="n">rxpkt_q</span><span class="p">;</span>
-<span class="k">struct</span> <span class="n">os_eventq</span> <span class="n">my_task_evq</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">os_mqueue</span> <span class="n">rxpkt_q</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">os_eventq</span> <span class="n">my_task_evq</span><span class="p">;</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Removes each packet from the receive queue and processes it.</span>
@@ -631,7 +631,7 @@ Presumably, some other code will call this API.</p>
 <span class="kt">void</span>
 <span class="nf">process_rx_data_queue</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">;</span>
 
     <span class="k">while</span> <span class="p">((</span><span class="n">om</span> <span class="o">=</span> <span class="n">os_mqueue_get</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rxpkt_q</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
         <span class="o">++</span><span class="n">pkts_rxd</span><span class="p">;</span>
@@ -643,14 +643,14 @@ Presumably, some other code will call this API.</p>
 <span class="cm"> * Called when a packet is received.</span>
 <span class="cm"> */</span>
 <span class="kt">int</span>
-<span class="nf">my_task_rx_data_func</span><span class="p">(</span><span class="k">struct</span> <span class="n">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">)</span>
+<span class="nf">my_task_rx_data_func</span><span class="p">(</span><span class="k">struct</span> <span class="nc">os_mbuf</span> <span class="o">*</span><span class="n">om</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
     <span class="cm">/* Enqueue the received packet and wake up the listening task. */</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">os_mqueue_put</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rxpkt_q</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_task_evq</span><span class="p">,</span> <span class="n">om</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
@@ -659,8 +659,8 @@ Presumably, some other code will call this API.</p>
 <span class="kt">void</span>
 <span class="nf">my_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">os_callout_func</span> <span class="o">*</span><span class="n">cf</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">os_event</span> <span class="o">*</span><span class="n">ev</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">os_callout_func</span> <span class="o">*</span><span class="n">cf</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
     <span class="cm">/* Initialize eventq */</span>

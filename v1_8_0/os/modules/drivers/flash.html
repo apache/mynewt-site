@@ -305,9 +305,9 @@ supports the <code class="docutils literal notranslate"><span class="pre">hal_fl
 <p>To be compatible with the standard <code class="docutils literal notranslate"><span class="pre">hal_flash</span></code> interface, the
 <code class="docutils literal notranslate"><span class="pre">at45db</span></code> driver embeds a <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">hal_flash</span></code> to its own
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">at45db_dev</span></code>. The whole <code class="docutils literal notranslate"><span class="pre">at45db_dev</span></code> struct is shown below.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">at45db_dev</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">hal_flash</span> <span class="n">hal</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">hal_spi_settings</span> <span class="o">*</span><span class="n">settings</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">at45db_dev</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="n">hal</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">hal_spi_settings</span> <span class="o">*</span><span class="n">settings</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">spi_num</span><span class="p">;</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">spi_cfg</span><span class="p">;</span>                  <span class="cm">/** Low-level MCU SPI config */</span>
     <span class="kt">int</span> <span class="n">ss_pin</span><span class="p">;</span>
@@ -322,16 +322,16 @@ was added. It returns an already initialized <code class="docutils literal notra
 leaving the user with just having to provide the SPI related config.</p>
 <p>To initialize the device, pass the <code class="docutils literal notranslate"><span class="pre">at45db_dev</span></code> struct to
 <code class="docutils literal notranslate"><span class="pre">at45db_init</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">at45db_init</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">at45db_init</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>For low-level access to the device the following functions are provided:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">at45db_read</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">at45db_read</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span>
                 <span class="kt">uint32_t</span> <span class="n">len</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">at45db_write</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span>
+<span class="kt">int</span> <span class="nf">at45db_write</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">addr</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span>
                  <span class="kt">uint32_t</span> <span class="n">len</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">at45db_erase_sector</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">sector_address</span><span class="p">);</span>
-<span class="kt">int</span> <span class="nf">at45db_sector_info</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">int</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">address</span><span class="p">,</span>
+<span class="kt">int</span> <span class="nf">at45db_erase_sector</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">sector_address</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">at45db_sector_info</span><span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span><span class="n">dev</span><span class="p">,</span> <span class="kt">int</span> <span class="n">idx</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">address</span><span class="p">,</span>
                        <span class="kt">uint32_t</span> <span class="o">*</span><span class="n">sz</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -366,7 +366,7 @@ STM32F4 MCU.</p>
 <span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">SPI_MISO_PIN</span> <span class="o">=</span> <span class="n">MCU_GPIO_PORTA</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
 <span class="k">static</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">SPI_MOSI_PIN</span> <span class="o">=</span> <span class="n">MCU_GPIO_PORTA</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
 
-<span class="k">struct</span> <span class="n">stm32f4_hal_spi_cfg</span> <span class="n">spi_cfg</span> <span class="o">=</span> <span class="p">{</span>
+<span class="k">struct</span> <span class="nc">stm32f4_hal_spi_cfg</span> <span class="n">spi_cfg</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">.</span><span class="n">ss_pin</span>   <span class="o">=</span> <span class="n">SPI_SS_PIN</span><span class="p">,</span>
     <span class="p">.</span><span class="n">sck_pin</span>  <span class="o">=</span> <span class="n">SPI_SCK_PIN</span><span class="p">,</span>
     <span class="p">.</span><span class="n">miso_pin</span> <span class="o">=</span> <span class="n">SPI_MISO_PIN</span><span class="p">,</span>
@@ -374,14 +374,14 @@ STM32F4 MCU.</p>
     <span class="p">.</span><span class="n">irq_prio</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="p">};</span>
 
-<span class="k">struct</span> <span class="n">at45db_dev</span> <span class="o">*</span><span class="n">my_at45db_dev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="k">struct</span> <span class="nc">at45db_dev</span> <span class="o">*</span><span class="n">my_at45db_dev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
 <span class="n">my_at45db_dev</span> <span class="o">=</span> <span class="n">at45db_default_config</span><span class="p">();</span>
 <span class="n">my_at45db_dev</span><span class="o">-&gt;</span><span class="n">spi_num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="n">my_at45db_dev</span><span class="o">-&gt;</span><span class="n">spi_cfg</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">spi_cfg</span><span class="p">;</span>
 <span class="n">my_at45db_dev</span><span class="o">-&gt;</span><span class="n">ss_pin</span> <span class="o">=</span> <span class="n">spi_cfg</span><span class="p">.</span><span class="n">ss_pin</span><span class="p">;</span>
 
-<span class="n">rc</span> <span class="o">=</span> <span class="n">at45db_init</span><span class="p">((</span><span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_at45db_dev</span><span class="p">);</span>
+<span class="n">rc</span> <span class="o">=</span> <span class="n">at45db_init</span><span class="p">((</span><span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_at45db_dev</span><span class="p">);</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">rc</span><span class="p">)</span> <span class="p">{</span>
     <span class="cm">/* XXX: error handling */</span>
 <span class="p">}</span>
@@ -389,8 +389,8 @@ STM32F4 MCU.</p>
 </div>
 <p>The enable <code class="docutils literal notranslate"><span class="pre">nffs</span></code> to run on the <code class="docutils literal notranslate"><span class="pre">at45db</span></code>, the <code class="docutils literal notranslate"><span class="pre">flash_id</span></code> 0 needs
 to map to provide a mapping from 0 to this struct.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="k">struct</span> <span class="n">hal_flash</span> <span class="o">*</span>
-<span class="nf">hal_bsp_flash_dev</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">id</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="k">struct</span> <span class="nc">hal_flash</span> <span class="o">*</span>
+<span class="n">hal_bsp_flash_dev</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">id</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">id</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>

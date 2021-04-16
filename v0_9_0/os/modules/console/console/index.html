@@ -556,7 +556,7 @@ ga("send", "pageview");
 </ul>
 <p>Both of these have <code>pkg.yml</code> file which states that they provide the <code>console</code> API. If a pkg uses this API, it should list <code>console</code> as a requirement.
 For example, the shell pkg is defined by the following pkg.yml file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    pkg.name: libs/shell 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>    pkg.name: libs/shell 
     pkg.vers: 0.1
     pkg.deps:
         - libs/os
@@ -567,11 +567,10 @@ For example, the shell pkg is defined by the following pkg.yml file:</p>
         - SHELL 
 </code></pre></div>
 
-
 <p>The project .yml file decides which version of the console pkg should be included. 
 If project requires the full console capability it lists dependency <code>libs/console/full</code> in its pkg.yml file. On the other hand, a project may not have a physical console (e.g. a UART port to connect a terminal to) but may have a dependency on a pkg that has console capability. In that case you would use a console stub. </p>
 <p>Another example would be the bootloader project where we want to keep the size of the image small. It includes the <code>libs/os</code> pkg that can print out messages on a console (e.g. if there is a hard fault) and the <code>libs/util</code> pkg that uses full console (but only if SHELL is present to provide a CLI). However, we do not want to use any console I/O capability in this particular bootloader project to keep the size small. We simply use the console stub instead, and the pkg.yml file for the project boot pkg looks like the following:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    project.name: boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>    project.name: boot
     project.identities: bootloader
     project.pkgs:
         - libs/os
@@ -580,7 +579,6 @@ If project requires the full console capability it lists dependency <code>libs/c
         - libs/console/stub
         - libs/util 
 </code></pre></div>
-
 
 <p>Console has 2 modes for transmit; <em>blocking mode</em> and <em>non-blocking mode</em>. Usually the <em>non-blocking mode</em> is the active one; the output buffer is drained by getting TX completion interrupts from hardware, and more data is added based on these interrupts.
 <em>Blocking mode</em> is used when we don't want TX completion interrupts. It is used when system crashes, and we still want to output info related to that crash.</p>
