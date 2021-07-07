@@ -64,9 +64,9 @@ https://launchpad.net/~team-gcc-arm-embedded/+archive/ubuntu/ppa.
 Installing the ARM Toolchain for Windows
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#.  Download and run the `installer <https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2018q4/gcc-arm-none-eabi-8-2018-q4-major-win32.exe>`__
+#.  Download and run the `installer <https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-win32.exec>`__
     to install arm-none-eabi-gcc and arm-none-eabi-gdb. Select the default
-    destination folder: **C:\\Program Files (x86)\\GNU Tools ARM Embedded\\8 2018-q4-major**.
+    destination folder: **C:\\Program Files (x86)\\GNU Arm Embedded Toolchain\\10 2020-q4-major**.
 
     **Notes:**
 
@@ -84,9 +84,9 @@ Installing the ARM Toolchain for Windows
     .. code-block:: console
 
         $ which arm-none-eabi-gcc
-        /c/Program Files (x86)/GNU Tools ARM Embedded/8 2018-q4-major/bin/arm-none-eabi-gcc
-        $which arm-none-eabi-gdb
-        /c/Program Files (x86)/GNU Tools ARM Embedded/8 2018-q4-major/bin/arm-none-eabi-gdb
+        /c/Program Files (x86)/GNU Arm Embedded Toolchain/10 2020-q4-major/bin/arm-none-eabi-gcc
+        $ which arm-none-eabi-gdb
+        /c/Program Files (x86)/GNU Arm Embedded Toolchain/10 2020-q4-major/bin/arm-none-eabi-gdb
 
 Installing the Debuggers
 ------------------------

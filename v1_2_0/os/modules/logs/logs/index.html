@@ -616,14 +616,14 @@ ga("send", "pageview");
 </li>
 </ul>
 <p>Both packages export the <code>log</code> API, and any package that uses the log API must list <code>log</code> as a requirement  in its <code>pkg.yml</code> file as follows: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>pkg.req_apis:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.req_apis:
     - log
 </code></pre></div>
 
 <p><br>
 The application's <code>pkg.yml</code> file specifies the version of the log package to use.
 A project that requires the full logging capability must list the <code>sys/log/full</code> package as a dependency in its <code>pkg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.deps:
     - sys/log/full
 </code></pre></div>
 
@@ -632,7 +632,7 @@ You can use the <code>sys/log/stub</code> package if you want to build your appl
 <p><br></p>
 <h4 id="syscfg-settings">Syscfg Settings</h4>
 <p>The <code>LOG_LEVEL</code> syscfg setting allows you to specify the level of logs to enable in your application. Only logs for levels higher or equal to the value of <code>LOG_LEVEL</code> are enabled. The amount of logs you include affects your application code size. <code>LOG_LEVEL: 0</code> specifies LOG_LEVEL_DEBUG and includes all logs. You set <code>LOG_LEVEL: 255</code> to disable all logging. The <code>#defines</code> for the log levels are specified in the <code>sys/log/full/include/log/log.h</code> file.  For example the following setting corresponds to LOG_LEVEL_ERROR:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code>syscfg.vals:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>syscfg.vals:
     LOG_LEVEL: 3   
 </code></pre></div>
 
@@ -659,7 +659,7 @@ Examples may include</p>
 </ul>
 <p>To use logging, you typically do not need to create your own log handler.  You can use one of the pre-built ones.</p>
 <p>A package or an application must define a variable of type <code>struct log</code> and register a log handler for it with the log package. It must call the <code>log_register()</code> function to specify the log handler to use:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #000000">log_register</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>, <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">log</span> <span style="color: #000000">*log</span>, <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">log_handler</span> <span style="color: #000000">*lh</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">level</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #000000">log_register</span>(<span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>, <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">log</span> <span style="color: #000000">*log</span>, <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">log_handler</span> <span style="color: #000000">*lh</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">level</span>)
 </code></pre></div>
 
 <p>The parameters are:</p>
@@ -687,7 +687,7 @@ Examples may include</p>
 <h3 id="configuring-logging-for-packages-that-an-application-uses">Configuring Logging for Packages that an Application Uses</h3>
 <p>Here is an example of how an application can set the log handlers for the logs of the packages that the application includes.  </p>
 <p>In this example, the <code>package1</code> package defines the variable  <code>package1_log</code> of type <code>struct log</code> and externs the variable. Similarly, the <code>package2</code> package defines the variable <code>package2_log</code> and externs the variable.  The application sets logs for <code>package1</code> to use console and sets logs  for <code>package2</code> to use a circular buffer.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&lt;package1/package1.h&gt;</span><span style="color: #633820"></span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&lt;package1/package1.h&gt;</span><span style="color: #633820"></span>
 <span style="color: #633820">#include</span> <span style="color: #177500">&lt;package2/package2.h&gt;</span><span style="color: #633820"></span>
 <span style="color: #633820">#include</span> <span style="color: #177500">&lt;util/cbmem.h&gt;</span><span style="color: #633820"></span>
 
@@ -714,7 +714,7 @@ Examples may include</p>
 <h3 id="implementing-a-package-that-uses-logging">Implementing a Package that Uses Logging</h3>
 <p>This example shows how a package logs to console.  The package registers default logging properties to use the console, but allows an application to override the values. It defines the <code>my_package_log</code> variable and makes it external so an application can override log handler.</p>
 <p>Make the <code>my_package_log</code> variable external:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/* my_package.h*/</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/* my_package.h*/</span>
 
 <span style="color: #177500">/* pick a unique name here */</span>
 <span style="color: #A90D91">extern</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">log</span> <span style="color: #000000">my_package_log</span>;
@@ -722,7 +722,7 @@ Examples may include</p>
 
 <p><br></p>
 <p>Define the <code>my_package_log</code> variable and register the console log handler: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%; margin: 0;"><span></span><code><span style="color: #177500">/* my_package.c */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/* my_package.c */</span>
 
 <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">log</span> <span style="color: #000000">my_package_log</span>;
 
