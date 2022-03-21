@@ -31,9 +31,9 @@ Peripheral
 
     $ newt target create myperiph
     Target targets/myperiph successfully created
-    $ newt target set myperiph bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    Target targets/myperiph successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
-    $ newt target set myperiph app=@apache-mynewt-core/apps/bleprph
+    $ newt target set myperiph bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
+    Target targets/myperiph successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040
+    $ newt target set myperiph app=@apache-mynewt-nimble/apps/bleprph
     Target targets/myperiph successfully set target.app to @apache-mynewt-nimble/apps/bleprph
     $ newt target set myperiph build_profile=optimized
     Target targets/myperiph successfully set target.build_profile to optimized
