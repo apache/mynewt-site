@@ -1,0 +1,683 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>Charge control on PineTime &mdash; Apache Mynewt latest documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../genindex.html"/>
+          <link rel="search" title="Search" href="../../search.html"/>
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../index.html"/>
+          <link rel="up" title="Other" href="other.html"/>
+          <link rel="next" title="Rust Blinky application" href="rust.html"/>
+          <link rel="prev" title="Enable Wi-Fi on Arduino MKR1000" href="wi-fi_on_arduino.html"/> 
+
+    
+    <script src="../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/quick-start/">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+      <a href="../tutorials.html">Tutorials</a> /
+    
+      <a href="other.html">Other</a> /
+    
+    Charge control on PineTime
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-documentation/edit/master/docs/tutorials/other/chg_ctrl_on_pinetime.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    <!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest" selected>
+    Version: latest
+  </option>
+  <option value="/v1_10_0" selected="selected" >
+    Version: 1.10.0
+  </option>
+  <option value="/v1_9_0" >
+    Version: 1.9.0
+  </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
+  </option>
+  <option value="/v1_7_0" >
+    Version: 1.7.0
+  </option>
+  <option value="/v1_6_0" >
+    Version: 1.6.0
+  </option>
+  <option value="/v1_5_0" >
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0" >
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../concepts.html">Concepts</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../blinky/blinky.html">Project Blinky</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../repo/add_repos.html">Working with repositories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../slinky/project-slinky.html">Project Slinky for Remote Comms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ble/ble.html">Bluetooth Low Energy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lora/lorawanapp.html">LoRa</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../os_fundamentals/os_fundamentals.html">OS Fundamentals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/devmgmt.html">Remote Device Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sensors/sensors.html">Sensors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tooling/tooling.html">Tooling</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="other.html">Other</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="codesize.html">How to reduce Application Code Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unit_test.html">Write a Test Suite for a Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wi-fi_on_arduino.html">Enable Wi-Fi on Arduino MKR1000</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Charge control on PineTime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rust.html">Rust Blinky application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../external_links.html">Third-party Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../os/os_user_guide.html">OS User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../network/index.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mynewt_faq/index.html">Mynewt FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              
+                <div class="alert alert-warning">
+                  <p>
+                    Version 1.10.0 is not the most recent version of the
+                    Apache Mynewt documentation. Click <a href="/latest">here</a> to
+                    read the latest version.
+                  </p>
+                </div>
+              
+
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="charge-control-on-pinetime">
+<h1>Charge control on PineTime<a class="headerlink" href="#charge-control-on-pinetime" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial shows you how to get the charge control status on PineTime smartwatch.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></p></li>
+<li><p><a class="reference internal" href="#charger-hardware" id="id2">Charger hardware</a></p></li>
+<li><p><a class="reference internal" href="#sgm4056-driver" id="id3">SGM4056 Driver</a></p></li>
+<li><p><a class="reference internal" href="#charge-control" id="id4">Charge control</a></p></li>
+<li><p><a class="reference internal" href="#charger-interrupt" id="id5">Charger interrupt</a></p></li>
+<li><p><a class="reference internal" href="#conclusion" id="id6">Conclusion</a></p></li>
+</ul>
+</div>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id1">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Ensure that you meet the following prerequisites before continuing with
+this tutorial:</p>
+<ul class="simple">
+<li><p>Follow <a class="reference internal" href="../blinky/pinetime.html"><span class="doc">Blinky on PineTime tutorial</span></a> to create a
+project with a basic application. You will extend that application in this
+tutorial.</p></li>
+<li><p>Make sure you have the charger input available. This can either be a fully
+assembled PineTime (but this prevent you from accessing the SWD pins) or by
+mounting a wire to the 5V charger pad.</p></li>
+</ul>
+</div>
+<div class="section" id="charger-hardware">
+<h2><a class="toc-backref" href="#id2">Charger hardware</a><a class="headerlink" href="#charger-hardware" title="Permalink to this headline">¶</a></h2>
+<p>First a few words about the PineTime hardware. The PineTime smartwatch uses a
+SGM4056 charger chip. The chip gets it’s power from the USB port via the
+charging pads at the back of the watch. The charger takes care of battery
+maintenance by providing the correct voltage and current during the charging
+process.</p>
+<p>The charger is connected to the main processor via two GPIO pins. This way the
+charger can report it’s current charging state:</p>
+<ul class="simple">
+<li><p>no source connected,</p></li>
+<li><p>charging or</p></li>
+<li><p>source connected but not charging.</p></li>
+</ul>
+<p>This tutorial will show you how to obtain this status.</p>
+</div>
+<div class="section" id="sgm4056-driver">
+<h2><a class="toc-backref" href="#id3">SGM4056 Driver</a><a class="headerlink" href="#sgm4056-driver" title="Permalink to this headline">¶</a></h2>
+<p>Communication with the charger is done by the <a class="reference internal" href="../../os/modules/drivers/chg_ctrl/sgm4056.html"><span class="doc">SGM4056 Driver</span></a>.
+This abstracts the hardware and provides a simple interface to the charger. The <a class="reference internal" href="../../os/bsp/pinetime.html"><span class="doc">PineTime BSP</span></a>
+already initializes the driver, so we can use it directly in our the application.
+Let’s extend the application with the following code:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="cp">#include</span> <span class="cpf">&quot;sgm4056/sgm4056.h&quot;</span><span class="cp"></span>
+</span><span class="hll"><span class="cp">#include</span> <span class="cpf">&quot;console/console.h&quot;</span><span class="cp"></span>
+</span>
+<span class="p">...</span>
+
+<span class="kt">int</span>
+<span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<span class="hll">    <span class="k">struct</span> <span class="nc">sgm4056_dev</span> <span class="o">*</span><span class="n">charger</span><span class="p">;</span>
+</span><span class="hll">    <span class="n">charge_control_status_t</span> <span class="n">charger_status</span><span class="p">;</span>
+</span>
+    <span class="p">...</span>
+
+    <span class="n">sysinit</span><span class="p">();</span>
+
+    <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="hll">    <span class="cm">/* Open charger device */</span>
+</span><span class="hll">    <span class="n">charger</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sgm4056_dev</span> <span class="o">*</span><span class="p">)</span> <span class="n">os_dev_open</span><span class="p">(</span><span class="s">&quot;charger&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class="hll">    <span class="n">assert</span><span class="p">(</span><span class="n">charger</span><span class="p">);</span>
+</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="o">++</span><span class="n">g_task1_loops</span><span class="p">;</span>
+
+        <span class="cm">/* Wait one second */</span>
+        <span class="n">os_time_delay</span><span class="p">(</span><span class="n">OS_TICKS_PER_SEC</span><span class="p">);</span>
+
+        <span class="cm">/* Toggle the LED */</span>
+        <span class="n">hal_gpio_toggle</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">);</span>
+
+<span class="hll">        <span class="cm">/* Get charger state */</span>
+</span><span class="hll">        <span class="n">rc</span> <span class="o">=</span> <span class="n">sgm4056_get_charger_status</span><span class="p">(</span><span class="n">charger</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">charger_status</span><span class="p">);</span>
+</span><span class="hll">        <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span>
+<span class="hll">        <span class="cm">/* Print charger state */</span>
+</span><span class="hll">        <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Charger state = %i</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">charger_status</span><span class="p">);</span>
+</span><span class="hll">        <span class="n">console_flush</span><span class="p">();</span>
+</span>    <span class="p">}</span>
+    <span class="n">assert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>First we added a include file for the <code class="docutils literal notranslate"><span class="pre">sgm4056</span></code> driver and the console
+interface for output.</p>
+<p>We define a pointer to a <code class="docutils literal notranslate"><span class="pre">sgm4056_dev</span></code> charger device and a variable for
+the actual charger status.</p>
+<p>Then we open the charger device using <code class="docutils literal notranslate"><span class="pre">os_dev_open</span></code>. This will get the driver
+instance that was initialized by the BSP.</p>
+<p>In the while loop we ask the driver to get the charger state and print it to
+the console as an number.</p>
+<p>Let’s run this code on the device and watch the output of the console:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>newt run blinky-pinetime <span class="m">0</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Charger state = 2
+Charger state = 2
+Charger state = 2
+...
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Currently the PineTime BSP doesn’t support the serial console properly.
+Therefore you need to setup ARM semihosting manually in the application to
+make these instructions work. These step are beyond the scope of this tutorial.</p>
+</div>
+<p>If you connect or disconnect the charger input, you will see the number changes.
+However it is not yet clear what the number actually means. Let’s make that
+output more useful:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+
+<span class="hll"><span class="kt">char</span> <span class="o">*</span> <span class="n">get_charger_status_string</span><span class="p">(</span><span class="n">charge_control_status_t</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="hll">    <span class="k">static</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">no_source_string</span> <span class="o">=</span> <span class="s">&quot;no source detected&quot;</span><span class="p">;</span>
+</span><span class="hll">    <span class="k">static</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">charging_string</span> <span class="o">=</span> <span class="s">&quot;charging&quot;</span><span class="p">;</span>
+</span><span class="hll">    <span class="k">static</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">complete_string</span> <span class="o">=</span> <span class="s">&quot;charge completed&quot;</span><span class="p">;</span>
+</span><span class="hll">    <span class="k">switch</span> <span class="p">(</span><span class="n">status</span><span class="p">)</span>
+</span><span class="hll">    <span class="p">{</span>
+</span><span class="hll">    <span class="k">case</span> <span class="nl">CHARGE_CONTROL_STATUS_NO_SOURCE</span><span class="p">:</span>
+</span><span class="hll">        <span class="k">return</span> <span class="n">no_source_string</span><span class="p">;</span>
+</span><span class="hll">
+</span><span class="hll">    <span class="k">case</span> <span class="nl">CHARGE_CONTROL_STATUS_CHARGING</span><span class="p">:</span>
+</span><span class="hll">        <span class="k">return</span> <span class="n">charging_string</span><span class="p">;</span>
+</span><span class="hll">
+</span><span class="hll">    <span class="k">case</span> <span class="nl">CHARGE_CONTROL_STATUS_CHARGE_COMPLETE</span><span class="p">:</span>
+</span><span class="hll">        <span class="k">return</span> <span class="n">complete_string</span><span class="p">;</span>
+</span><span class="hll">
+</span><span class="hll">    <span class="k">default</span><span class="o">:</span>
+</span><span class="hll">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span><span class="hll">    <span class="p">}</span>
+</span><span class="hll"><span class="p">}</span>
+</span>
+<span class="p">...</span>
+
+<span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">...</span>
+
+    <span class="cm">/* Print charger state */</span>
+<span class="hll">    <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Charger state = %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">get_charger_status_string</span><span class="p">(</span><span class="n">charger_status</span><span class="p">));</span>
+</span>    <span class="n">console_flush</span><span class="p">();</span>
+
+<span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This adds a function for converting the status enum to a text and then it uses
+that to output a text representation of the state.</p>
+<p>Let’s run this improved code and connect the charger:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>newt run blinky-pinetime <span class="m">0</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Charger state = no source detected
+Charger state = no source detected
+Charger state = no source detected
+Charger state = charging
+Charger state = charging
+Charger state = charging
+</pre></div>
+</div>
+<p>Great, that is more like it. This code can be used to make a great smartwatch
+application. However I think we can do better.</p>
+</div>
+<div class="section" id="charge-control">
+<h2><a class="toc-backref" href="#id4">Charge control</a><a class="headerlink" href="#charge-control" title="Permalink to this headline">¶</a></h2>
+<p>The code of the last section works great, however it is very specific to the
+SGM4056 driver. Luckily we can fix that using the <a class="reference internal" href="../../os/modules/drivers/chg_ctrl/chg_ctrl.html"><span class="doc">Charge Control interface</span></a>.
+This is enabled by default for the SGM4056 driver, so we don’t need to do any
+configuration for using this new interface.</p>
+<p>Charge control works with callbacks for reporting the status. Let’s start with
+adding our callback to the application.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="cp">#include</span> <span class="cpf">&quot;charge-control/charge_control.h&quot;</span><span class="cp"></span>
+</span>
+<span class="p">...</span>
+
+<span class="hll"><span class="k">static</span> <span class="kt">int</span>
+</span><span class="hll"><span class="n">charger_data_callback</span><span class="p">(</span><span class="k">struct</span> <span class="nc">charge_control</span> <span class="o">*</span><span class="n">chg_ctrl</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span>
+</span><span class="hll">        <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="n">charge_control_type_t</span> <span class="n">type</span><span class="p">)</span>
+</span><span class="hll"><span class="p">{</span>
+</span><span class="hll">    <span class="k">if</span> <span class="p">(</span><span class="n">type</span> <span class="o">==</span> <span class="n">CHARGE_CONTROL_TYPE_STATUS</span><span class="p">)</span> <span class="p">{</span>
+</span><span class="hll">        <span class="n">charge_control_status_t</span> <span class="n">charger_status</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">charge_control_status_t</span><span class="o">*</span><span class="p">)(</span><span class="n">data</span><span class="p">);</span>
+</span><span class="hll">
+</span><span class="hll">        <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Charger state = %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">get_charger_status_string</span><span class="p">(</span><span class="n">charger_status</span><span class="p">));</span>
+</span><span class="hll">        <span class="n">console_flush</span><span class="p">();</span>
+</span><span class="hll">    <span class="p">}</span>
+</span><span class="hll">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class="hll"><span class="p">}</span>
+</span><span class="p">...</span>
+</pre></div>
+</div>
+<p>First we include the <code class="docutils literal notranslate"><span class="pre">charge_control.h</span></code> header for the correct types. Then we
+define the callback, which is of the type <code class="docutils literal notranslate"><span class="pre">charge_control_data_func_t</span></code>.</p>
+<p>The first argument is the a pointer to <code class="docutils literal notranslate"><span class="pre">charge_control</span></code>. This is a
+representation of the charger. The second argument is a arg pointer. We will
+find out later where these two come from.</p>
+<p>The third and fourth argument are a pointer to the actual data and a indication
+of the type of data. This callback can only handle status data of type
+<code class="docutils literal notranslate"><span class="pre">CHARGE_CONTROL_TYPE_STATUS</span></code>. After checking that, we convert the data to the
+correct type and print it like in the previous section.</p>
+<p>Now we need to change the <code class="docutils literal notranslate"><span class="pre">main</span></code> function to actually call the callback:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<span class="hll">    <span class="k">struct</span> <span class="nc">charge_control</span> <span class="o">*</span><span class="n">charger</span><span class="p">;</span>
+</span>
+    <span class="p">...</span>
+
+<span class="hll">    <span class="cm">/* Open charger device */</span>
+</span><span class="hll">    <span class="n">charger</span> <span class="o">=</span> <span class="n">charge_control_mgr_find_next_bytype</span><span class="p">(</span><span class="n">CHARGE_CONTROL_TYPE_STATUS</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+</span><span class="hll">    <span class="n">assert</span><span class="p">(</span><span class="n">charger</span><span class="p">);</span>
+</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="p">...</span>
+
+<span class="hll">        <span class="cm">/* Get charger state */</span>
+</span><span class="hll">        <span class="n">rc</span> <span class="o">=</span> <span class="n">charge_control_read</span><span class="p">(</span><span class="n">charger</span><span class="p">,</span> <span class="n">CHARGE_CONTROL_TYPE_STATUS</span><span class="p">,</span>
+</span><span class="hll">            <span class="n">charger_data_callback</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">OS_TIMEOUT_NEVER</span><span class="p">);</span>
+</span><span class="hll">        <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class="hll">    <span class="p">}</span>
+</span>    <span class="n">assert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>There are a few important changes:</p>
+<ul class="simple">
+<li><p>The type of <code class="docutils literal notranslate"><span class="pre">charger</span></code> has changed. We now use the generic type
+<code class="docutils literal notranslate"><span class="pre">charge_control</span></code>, which will work for all charger drivers. Notice that
+this is the same type as the first argument as the callback.</p></li>
+<li><p>We don’t open a OS device anymore, instead we call the Charge Control Manager
+and ask for the first charger that supports <code class="docutils literal notranslate"><span class="pre">CHARGE_CONTROL_TYPE_STATUS</span></code>.
+Notice that this is the same type as in the callback function.</p></li>
+<li><p>Then we execute a read on the <code class="docutils literal notranslate"><span class="pre">charger</span></code>, for data of type
+<code class="docutils literal notranslate"><span class="pre">CHARGE_CONTROL_TYPE_STATUS</span></code>. When finished we want to it to call our callback
+with the argument <code class="docutils literal notranslate"><span class="pre">NULL</span></code> and we disable the timeout.</p></li>
+</ul>
+<p>When you run this code, you will get the same results as the previous run,
+however this code will work with any charger.</p>
+</div>
+<div class="section" id="charger-interrupt">
+<h2><a class="toc-backref" href="#id5">Charger interrupt</a><a class="headerlink" href="#charger-interrupt" title="Permalink to this headline">¶</a></h2>
+<p>One of the advantages of charge control is that it supports interrupt-driven
+notifications. This reduces polling and therefore reduces power usage. This
+requires a few small changes to our application:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">...</span>
+<span class="hll"><span class="k">struct</span> <span class="nc">charge_control_listener</span> <span class="n">charger_listener</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class="hll">    <span class="p">.</span><span class="n">ccl_type</span> <span class="o">=</span> <span class="n">CHARGE_CONTROL_TYPE_STATUS</span><span class="p">,</span>
+</span><span class="hll">    <span class="p">.</span><span class="n">ccl_func</span> <span class="o">=</span> <span class="n">charger_data_callback</span><span class="p">,</span>
+</span><span class="hll"><span class="p">};</span>
+</span>
+<span class="p">...</span>
+
+<span class="kt">int</span>
+<span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="nc">charge_control</span> <span class="o">*</span><span class="n">charger</span><span class="p">;</span>
+
+    <span class="p">...</span>
+
+    <span class="cm">/* Open charger device */</span>
+    <span class="n">charger</span> <span class="o">=</span> <span class="n">charge_control_mgr_find_next_bytype</span><span class="p">(</span><span class="n">CHARGE_CONTROL_TYPE_STATUS</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">charger</span><span class="p">);</span>
+
+<span class="hll">    <span class="cm">/* Set polling rate */</span>
+</span><span class="hll">    <span class="n">rc</span> <span class="o">=</span> <span class="n">charge_control_set_poll_rate_ms</span><span class="p">(</span><span class="s">&quot;charger&quot;</span><span class="p">,</span> <span class="mi">10000</span><span class="p">);</span>
+</span><span class="hll">    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span>
+<span class="hll">    <span class="cm">/* Register charger callback */</span>
+</span><span class="hll">    <span class="n">rc</span> <span class="o">=</span> <span class="n">charge_control_register_listener</span><span class="p">(</span><span class="n">charger</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">charger_listener</span><span class="p">);</span>
+</span><span class="hll">    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+<span class="hll">        <span class="cm">/* No charger code needed here */</span>
+</span><span class="hll">        <span class="n">os_eventq_run</span><span class="p">(</span><span class="n">os_eventq_dflt_get</span><span class="p">());</span>
+</span>    <span class="p">}</span>
+    <span class="n">assert</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">rc</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>First we need to define a <code class="docutils literal notranslate"><span class="pre">charge_control_listener</span></code> structure, this points to
+the callback function and indicates the type of data we are interested in. It
+could also define the argument, but in this example we are not interested in that.</p>
+<p>Then we need to set a polling rate, which we can set high as most changes are
+reported by interrupt. Lastly we register the listener to actually receive the
+callbacks.</p>
+<p>There is no charger code needed in the while loop. However we need the event queue
+to be handled as charge control will use events to do the polling and interrupt
+handling. Note that you need to remove the <code class="docutils literal notranslate"><span class="pre">os_time_delay</span></code> to make the events
+work properly.</p>
+<p>Run this code and you see that the charger state is only show every ten seconds.
+But when you connect the charger you see the output directly. This shows the
+combination of polling and interrupt-based data acquisition.</p>
+</div>
+<div class="section" id="conclusion">
+<h2><a class="toc-backref" href="#id6">Conclusion</a><a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>You now have an efficient charger status reading application. It will work with
+any charger driver, not just the one in the PineTime. It uses interrupts to be
+notified of changes quickly. The next step is to integrate this into your own
+project.</p>
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="rust.html" class="btn btn-neutral float-right" title="Rust Blinky application" accesskey="n">Next: Rust Blinky application <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="wi-fi_on_arduino.html" class="btn btn-neutral" title="Enable Wi-Fi on Arduino MKR1000" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Enable Wi-Fi on Arduino MKR1000</a>
+      
+    </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="">
+                <img src="../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'latest',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt',
+            LINK_SUFFIX: '.html'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>
