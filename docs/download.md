@@ -18,9 +18,9 @@ these [KEYS](https://downloads.apache.org/mynewt/KEYS).
     - Mynewt build and package management tool (newt): [apache-mynewt-newt-1.10.0.tgz](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.10.0/apache-mynewt-newt-1.10.0.tgz)
       [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.10.0/apache-mynewt-newt-1.10.0.tgz.asc)
       [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.10.0/apache-mynewt-newt-1.10.0.tgz.sha512)
-    - Mynewt Manager tool (newtmgr): [apache-mynewt-newmgr-1.10.0.tgz](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.10.0/apache-mynewt-newmgr-1.10.0.tgz)
-      [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.10.0/apache-mynewt-newmgr-1.10.0.tgz.asc)
-      [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.10.0/apache-mynewt-newmgr-1.10.0.tgz.sha512) [Note typo in tarball filename!]
+    - Mynewt Manager tool (newtmgr): [apache-mynewt-newtmgr-1.10.0.tgz](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.10.0/apache-mynewt-newtmgr-1.10.0.tgz)
+      [[PGP]](https://www.apache.org/dist/mynewt/apache-mynewt-1.10.0/apache-mynewt-newtmgr-1.10.0.tgz.asc)
+      [[SHA512]](https://www.apache.org/dist/mynewt/apache-mynewt-1.10.0/apache-mynewt-newtmgr-1.10.0.tgz.sha512) [Note typo in tarball filename!]
 *   Binary downloads:
     - Mynewt build and package management tool (newt):
         - Linux 64bit: [apache-mynewt-newt-bin-linux-1.10.0.tgz](https://www.apache.org/dyn/closer.lua/mynewt/apache-mynewt-1.10.0/apache-mynewt-newt-bin-linux-1.10.0.tgz)
