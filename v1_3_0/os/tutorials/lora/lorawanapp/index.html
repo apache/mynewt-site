@@ -557,31 +557,33 @@ ga("send", "pageview");
 <p>Create a new project to hold your work.  For a deeper understanding, you can read about project creation in 
 <a href="../get_started/project_create.md">Get Started -- Creating Your First Project</a>
 or just follow the commands below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    $ mkdir ~/dev
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    $ mkdir ~/dev
     $ cd ~/dev
     $ newt new mylora
     Downloading project skeleton from apache/mynewt-blinky...
     Installing skeleton in mylora...
     Project mylora successfully created.
     $ cd mylora
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="install-everything">Install Everything</h3>
 <p>Now that you have defined the needed repositories, it's time to install everything so
 that you can get started.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    $ newt install -v 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    $ newt install -v 
     apache-mynewt-core
     Downloading repository description for apache-mynewt-core... success!
     ...
     apache-mynewt-core successfully installed version 1.2.0-none
     ...
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="create-the-targets">Create the targets</h3>
 <p>Create two targets - one for the bootloader and one for the lora app shell application.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create telee02_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target create telee02_boot
 $ newt target set telee02_boot bsp=@apache-mynewt-core/hw/bsp/telee02
 $ newt target set telee02_boot app=@apache-mynewt-core/apps/boot
 $ newt target set telee02_boot build_profile=optimized
@@ -590,21 +592,23 @@ $ newt target create lora_app_shell_telee02
 $ newt target set lora_app_shell_telee02 bsp=@apache-mynewt-core/hw/bsp/telee02
 $ newt target set lora_app_shell_telee02 app=@apache-mynewt-core/apps/lora_app_shell
 $ newt target set lora_app_shell_telee02 build_profile=optimized
-</pre></div>
+</code></pre></div>
+
 
 <p>The lora app shell application requires a few additional system configuration variables. 
 Create and edit a file called syscfg.yml in dev/mylora/targets/lora_app_shell. The file
 contents should be the following:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>### Package: targets/lora_app_shell_telee02
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>### Package: targets/lora_app_shell_telee02
 
 syscfg.vals:
     SHELL_CMD_ARGC_MAX: &quot;20&quot;
     LORA_MAC_TIMER_NUM: &quot;4&quot;
     TIMER_4: &quot;1&quot;
-</pre></div>
+</code></pre></div>
+
 
 <p>You can now "display" the targets you created to make sure they are correct:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target show telee02_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target show telee02_boot
 targets/telee02_boot
     app=@apache-mynewt-core/apps/boot
     bsp=@apache-mynewt-core/hw/bsp/telee02
@@ -616,14 +620,15 @@ targets/lora_app_shell_telee02
     bsp=@apache-mynewt-core/hw/bsp/telee02
     build_profile=optimized
     syscfg=LORA_MAC_TIMER_NUM=4:SHELL_CMD_ARGC_MAX=20:TIMER_4=1
-</pre></div>
+</code></pre></div>
+
 
 <p><font color="#F2853F">
 Note: If you've already built and installed a bootloader for your ee02 module then you do
 not need to create a target for it here, or build and load it as below. </font>
 <br></p>
 <h3 id="build-the-target-executables">Build the target executables</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt clean telee02_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt clean telee02_boot
 $ newt build telee02_boot
 Building target targets/telee02_boot
 Compiling repos/apache-mynewt-core/boot/bootutil/src/image_rsa.c
@@ -650,7 +655,8 @@ Archiving util_mem.a
 Archiving util_parse.a
 Linking /Users/wes/dev/wes/bin/targets/lora_app_shell_telee02/app/apps/lora_app_shell/lora_app_shell.elf
 Target successfully built: targets/lora_app_shell_telee0
-</pre></div>
+</code></pre></div>
+
 
 <p><font color="#F2853F">
 Note: The newt clean step is not necessary but shown here for good measure. </font>
@@ -659,9 +665,10 @@ Note: The newt clean step is not necessary but shown here for good measure. </fo
 <p>You must sign and version your application image to download it using newt to the board. 
 Use the newt create-image command to perform this action. You may assign an arbitrary 
 version (e.g. 1.0.0) to the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt create-image lora_app_shell_telee02 0.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt create-image lora_app_shell_telee02 0.0.0
 App image succesfully generated: /Users/wes/dev/wes/bin/targets/lora_app_shell_telee02/app/apps/lora_app_shell/lora_app_shell.img
-</pre></div>
+</code></pre></div>
+
 
 <p><font color="#F2853F">
 Note: Only the application image requires this step; the bootloader does not </font>
@@ -673,7 +680,7 @@ SWD connector. Connect the UART pins (RX, TX and GND) to the board. Terminal set
 <h3 id="download-bootloader-and-application">Download bootloader and application</h3>
 <p><br></p>
 <p><strong>Note:</strong> If you want to erase the flash and load the image again, you can use JLinkExe to issue an <code>erase</code> command.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ JLinkExe -device nRF52 -speed 4000 -if SWD
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ JLinkExe -device nRF52 -speed 4000 -if SWD
 SEGGER J-Link Commander V5.12c (Compiled Apr 21 2016 16:05:51)
 DLL version V5.12c, compiled Apr 21 2016 16:05:45
 
@@ -695,22 +702,25 @@ J-Link: Flash download: Total time needed: 0.363s (Prepare: 0.093s, Compare: 0.0
 Erasing done.
 J-Link&gt;exit
 $
-</pre></div>
+</code></pre></div>
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load telee02_boot
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt load telee02_boot
 Loading bootloader
 $ newt load lora_app_shell_telee02
 Loading app image into slot 1
-</pre></div>
+</code></pre></div>
+
 
 <p>Assuming you attached the serial port and have a terminal up you should set the following output on the terminal:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>000002 lora_app_shell
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>000002 lora_app_shell
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="shell-commands">Shell Commands</h3>
 <p>There are a number of shell commands that will allow you to join and send both unconfirmed and confirmed data. If you type 'help' in your terminal you will see the various commands displayed. Here is a screen shot of the output of help</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>000002 lora_app_shell
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>000002 lora_app_shell
 help
 
 032766 help
@@ -731,7 +741,8 @@ help
 032780 las_join                      
 032781 las_link_chk                  
 032782 compat&gt; 
-</pre></div>
+</code></pre></div>
+
 
 <p>The following table lists the commands and gives a brief description of the commands. The lora commands are described in more detail later in the tutorial as well as their syntax (syntax not shown in the table).</p>
 <table>
@@ -814,7 +825,7 @@ help
 </table>
 <h3 id="ota-join">OTA Join</h3>
 <p>Before sending any application data a lora end device must be joined to its lora network. To perform a lora OTA (over-the-air) join there are some commands that must be issued prior to attempting to join. The reason for these commands is that a lora end device must be configured with a device EUI, application EUI and application key prior to performing an OTA join.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>598763 compat&gt; las_wr_app_eui 0x00:0x11:0x22:0x01:0x01:0x00:0x10:10
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>598763 compat&gt; las_wr_app_eui 0x00:0x11:0x22:0x01:0x01:0x00:0x10:10
 
 623106 compat&gt; las_wr_app_key 03:03:03:03:03:03:03:03:03:03:03:03:03:03:03:03
 
@@ -824,7 +835,8 @@ help
 
 630634 Attempting to join...
 019802 compat&gt; Join cb. status=0 attempts=1
-</pre></div>
+</code></pre></div>
+
 
 <p>If the join is successful the status returned should be 0. If it fails the status will be a non-zero lora status code (lora status error codes are described later in this tutorial).</p>
 <p>A note about "endianness" in the device EUI commands. The first three bytes of the EUI are the OUI and the last 5 bytes are unique (for that OUI). The above example assumes an OUI of 001122. This is not the same order as the address over the air as device addresses are sent "least significant byte" first (little endian). The same convention also applies to keys: they are in big-endian order in the command but sent little endian over the air.
@@ -833,13 +845,14 @@ help
 <p>Another step that must be performed prior to sending application data is to open an application port. All data frames containing application data are sent to a specific port. Port numbers are in the range 1 - 223 as port 0 is reserved for MLME-related activities. Ports 224-255 are reserved for future standardized application extensions.</p>
 <p>The lora app shell does not open any application ports by default.</p>
 <p>To open and/or close an application port the following commands are used. Note that the application port which you are using to send data must be open if you want to send data (or receive it).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>115647 compat&gt; las_app_port open 1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>115647 compat&gt; las_app_port open 1
 
 150958 Opened app port 1
 150958 compat&gt; las_app_port close 1
 
 151882 Closed app port 1
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <h3 id="sending-data">Sending data</h3>
@@ -851,7 +864,7 @@ help
     type = 0 for unconfirmed, 1 for confirmed</p>
 <p>To send a confirmed data transmission of size 5 bytes on port 10 the command would be: las_app_tx 10 20 1</p>
 <p>Once the end device has sent the frame requested there should be a message which contains some additional information. Here is a screen shot using the above example. Note that there will be some delay between seeing the "Packet sent on port 10" message and the additional information as the additional information is the "confirmation" that the lora stack provides and the confirmation will not be returned until the lora stack is finished transmitting the frame and has received an acknowledgement or has finished waiting for all the receive windows.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>449751 compat&gt; las_app_tx 10 5 1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>449751 compat&gt; las_app_tx 10 5 1
 
 452144 Packet sent on port 10
 452144 compat&gt; Txd on port 10 type=conf status=0 len=5
@@ -862,7 +875,8 @@ help
 452326  tx_time_on_air:330
 452327  uplink_cntr:0
 452327  uplink_freq:903500000
-</pre></div>
+</code></pre></div>
+
 
 <p>The information contained in the confirmation is the following:</p>
 <p>dr: The data rate on which the frame was sent.<br />

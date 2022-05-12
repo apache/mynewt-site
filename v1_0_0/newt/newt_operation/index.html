@@ -398,7 +398,7 @@ ga("send", "pageview");
 <p>Newt has a fairly smart package manager that can read a directory tree, build a dependency tree, and emit the right build artifacts.</p>
 <h3 id="building-dependencies">Building dependencies</h3>
 <p>Newt can read a directory tree, build a dependency tree, and emit the right build artifacts.  An example newt source tree is in incubator-mynewt-blinky/develop:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree -L 3 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ tree -L 3 
 .
 ├── DISCLAIMER
 ├── LICENSE
@@ -418,23 +418,25 @@ ga("send", "pageview");
          └── target.yml
 
 6 directories, 10 files
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <p>When newt sees a directory tree that contains a "project.yml" file it knows that it is in the base directory of a project, and automatically builds a package tree. You can see that there are two essential package directories, "apps" and "targets." </p>
 <p><br></p>
 <h4 id="apps-package-directory">"apps" Package Directory</h4>
 <p><code>apps</code> is where applications are stored, and applications are where the main() function is contained.  The base project directory comes with one simple app called <code>blinky</code> in the <code>apps</code> directory. The core repository <code>@apache-mynewt-core</code> comes with many additional sample apps in its <code>apps</code> directory. At the time of this writing, there are several example BLE apps, the boot app, slinky app for using newt manager protocol, and more in that directory.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>@~/dev/myproj$ ls repos/apache-mynewt-core/apps/
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>@~/dev/myproj$ ls repos/apache-mynewt-core/apps/
 blecent     blesplit    boot        sensors_test    splitty
 blehci      bletest     fat2native  slinky      test
 bleprph     bletiny     ffs2native  slinky_oic  testbench
 bleprph_oic bleuart     ocf_sample  spitest     timtest
-</pre></div>
+</code></pre></div>
+
 
 <p>Along with the <code>targets</code> directory, <code>apps</code> represents the top-level of the build tree for the particular project, and define the dependencies for the rest of the system. Mynewt users and developers can add their own apps to the project's <code>apps</code> directory.   </p>
 <p>The app definition is contained in a <code>pkg.yml</code> file. For example, blinky's <code>pkg.yml</code> file is:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more apps/blinky/pkg.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ more apps/blinky/pkg.yml
 &lt;snip&gt;
 pkg.name: apps/blinky
 pkg.type: app
@@ -447,7 +449,8 @@ pkg.deps:
     - &quot;@apache-mynewt-core/kernel/os&quot;
     - &quot;@apache-mynewt-core/hw/hal&quot;
     - &quot;@apache-mynewt-core/sys/console/full&quot;
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <p>This file says that the name of the package is apps/blinky, and it depends on the <code>kernel/os,</code>hw/hal<code>and</code>sys/console/full` packages.</p>
@@ -463,14 +466,15 @@ covered in the "repository" section. </p>
 <li>build_profile: Either debug or optimized.</li>
 </ul>
 <p>The <code>my_blinky_sim</code> target that is included by default has the following settings:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target show
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target show
 targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
     build_profile=debug
 $ ls targets/my_blinky_sim/
 pkg.yml     target.yml
-</pre></div>
+</code></pre></div>
+
 
 <p>There are helper functions to aid the developer specify parameters for a target. </p>
 <ul>
@@ -494,14 +498,15 @@ pkg.yml     target.yml
 source packages</li>
 </ul>
 <p>Newt then looks at the target that the user set, for example, blinky_sim:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more targets/my_blinky_sim/
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ more targets/my_blinky_sim/
 pkg.yml     target.yml
 $ more targets/my_blinky_sim/target.yml
 ### Target: targets/my_blinky_sim
 target.app: &quot;apps/blinky&quot;
 target.bsp: &quot;@apache-mynewt-core/hw/bsp/native&quot;
 target.build_profile: &quot;debug&quot;
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <p>The target specifies two major things:</p>
@@ -515,7 +520,7 @@ along with that application.</li>
 <li>Sets up the include paths for each package. Any package that depends on another package, automatically gets the include directories from the package it includes.  Include directories in the
 newt structure must always be prefixed by the package name. For example, kernel/os has the following include tree and its include directory files contains the package name "os" before any header files.  This is so in order to avoid any header file conflicts.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$tree kernel/os/include
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$tree kernel/os/include
 kernel/os/include
 └── os
     ├── arch
@@ -556,7 +561,8 @@ kernel/os/include
     └── queue.h
 
 &lt;snip&gt;
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <ul>
@@ -579,7 +585,7 @@ an archive file.</p>
 <h3 id="producing-artifacts">Producing artifacts</h3>
 <p>Once newt has built all the archive files, it then links the archive files together.  The linkerscript to use is specified by the board support package (BSP.)</p>
 <p>The newt tool creates a bin directory under the base project directory, and places a target's build artifacts into the bin/targets/&lt;target-name&gt;/app/apps/&lt;app-name&gt; directory, where <code>target-name</code> is the name of the target and <code>app-name</code> is the name of the application. As an example, the <code>blinky.elf</code> executable for the <code>blinky</code> application defined by the <code>my_blinky_sim</code> target is stored in the bin/targets/my_blinky_sim/app/apps/blinky directory as shown in the following source tree:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$tree -L 9 bin/ bin/
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$tree -L 9 bin/ bin/
 └── targets
     ├── my_blinky_sim
     │   ├── app
@@ -612,7 +618,8 @@ an archive file.</p>
     │   │   │   │               └── hw
 
 &lt;snip&gt;
-</pre></div>
+</code></pre></div>
+
 
 <p><br></p>
 <p>As you can see, a number of files are generated:</p>
@@ -635,7 +642,7 @@ that work on the target.  These are:</p>
 </ul>
 <p><code>load</code> and <code>debug</code> handles driving GDB and the system debugger.  These 
 commands call out to scripts that are defined by the BSP.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ more repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh
 &lt;snip&gt;
 . $CORE_PATH/hw/scripts/jlink.sh
 
@@ -652,7 +659,8 @@ fi
 JLINK_DEV=&quot;nRF52&quot;
 
 jlink_debug
-</pre></div>
+</code></pre></div>
+
 
 <p>The idea is that every BSP will add support for the debugger environment 
 for that board.  That way common tools can be used across various development boards and kits.</p>
