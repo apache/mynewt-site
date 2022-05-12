@@ -288,7 +288,7 @@ ga("send", "pageview");
 <li>If you have not already done so, install Newt as shown in the <a href="../../../newt/install/newt_mac/">Newt install tutorial</a>.</li>
 <li>If you installed Newt previously but need to update it, go to the newt git repo directory, pull the latest code from <code>develop</code> branch, and install the updated code.</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>   user@~/dev$ cd $GOPATH/src/mynewt.apache.org/newt
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>   user@~/dev$ cd $GOPATH/src/mynewt.apache.org/newt
    user@~/dev/go/src/mynewt.apache.org/newt$ git remote -v
    origin   https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git (fetch)
    origin   https://git-wip-us.apache.org/repos/asf/incubator-mynewt-newt.git (push)
@@ -298,7 +298,7 @@ ga("send", "pageview");
    user@~/dev/go/src/mynewt.apache.org/newt$ cd newt
    user@~/dev/go/src/mynewt.apache.org/newt/newt$ go install
    user@~/dev$ cd ~/dev
-</code></pre></div>
+</pre></div>
 
 <ul>
 <li>If you have not already done so, create a project as shown in the Quick Start guide on how to <a href="../../get_started/project_create/">Create Your First Project</a>. Skip the testing and building the project steps in that tutorial since you will be defining a target for your Arduino board in this tutorial.</li>
@@ -310,14 +310,14 @@ ga("send", "pageview");
 low level operations. Sometimes this code is licensed only for the specific manufacturer of the chipset and cannot live in the Apache Mynewt repository. That happens to be the case for the Arduino Zero board which uses Atmel SAMD21. Runtime's github repository hosts such external third-party packages and the Newt tool can fetch them.</p>
 <p>To fetch the package with MCU support for Atmel SAMD21 for Arduino Zero from the Runtime git repository, you need to add
 the repository to the <code>project.yml</code> file in your base project directory (<code>arduinowifi</code>).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>user@~/dev/arduinowifi$ vi project.yml
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>user@~/dev/arduinowifi$ vi project.yml
+</pre></div>
 
 <p>Here is an example <code>project.yml</code> file with the Arduino Zero repository
 added. The sections with <code>mynewt_arduino_zero</code> that need to be added to
 your project file are highlighted.</p>
 <p>Also highlighted is the <code>0-dev</code> version for both the repositories to ensure code is downloaded from the <code>develop</code> branch.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ more project.yml
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ more project.yml
 project.name: &quot;my_project&quot;
 
 project.repositories:
@@ -336,42 +336,42 @@ repository.apache-mynewt-core:
 </span><span style="background-color: #ffffcc">    user: runtimeinc
 </span><span style="background-color: #ffffcc">    repo: mynewt_arduino_zero
 </span>$
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>Once you've edited your <code>project.yml</code> file, the next step is to install the
 project dependencies, this can be done with the <code>newt install</code> command
 (to see more output, provide the <code>-v</code> verbose option.):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt install
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt install
 apache-mynewt-core
 mynewt_arduino_zero
 $
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="create-your-bootloader-target">Create your bootloader target</h3>
 <p>Next, you need to tell Newt what to build.  For the Arduino Zero, we are going to
 generate both a bootloader, and an image target.</p>
 <p>To generate the bootloader target, you need to specify the following options. The output of the commands (indicating success) have been suppressed for easier readability.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create arduino_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create arduino_boot
 $ newt target set arduino_boot bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_boot app=@apache-mynewt-core/apps/boot
 $ newt target set arduino_boot build_profile=optimized
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>If you have an Arduino Zero Pro or M0 Pro, you have to set the following next:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target set arduino_boot features=arduino_zero_pro
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set arduino_boot features=arduino_zero_pro
+</pre></div>
 
 <p>If you have an Arduino Zero, you have to set the following instead:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target set arduino_boot features=arduino_zero
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set arduino_boot features=arduino_zero
+</pre></div>
 
 <p><br></p>
 <h3 id="build-your-bootloader">Build your bootloader</h3>
 <p>Once you've configured the bootloader target, the next step is to build the bootloader for your Arduino. You can do this by using the <code>newt build</code> command:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt build arduino_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build arduino_boot
 Compiling boot.c
 Archiving boot.a
 Compiling fs_cli.c
@@ -380,7 +380,7 @@ Compiling fs_file.c
 Compiling fs_mkdir.c
 &lt;snip&gt;
 App successfully built: ~/dev/arduinowifi/bin/arduino_boot/apps/boot/boot.elf
-</code></pre></div>
+</pre></div>
 
 <p>If this command finishes successfully, you have successfully built the Arduino
 bootloader, and the next step is to build your application for the Arduino
@@ -389,16 +389,16 @@ board.</p>
 <h3 id="build-your-blinky-app">Build your blinky app</h3>
 <p>To create and download your application, you create another target, this one pointing to the application you want to download to the Arduino board.  In this tutorial,  we will use the Wi-Fi application that comes in the arduino repository, <code>apps/winc1500_wifi</code>:</p>
 <p><strong>Note</strong>: Remember to set features to <code>arduino_zero</code> if your board is Arduino Zero and not a Pro!</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create arduino_wifi
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create arduino_wifi
 $ newt target set arduino_wifi app=@mynewt_arduino_zero/apps/winc1500_wifi
 $ newt target set arduino_wifi bsp=@mynewt_arduino_zero/hw/bsp/arduino_zero
 $ newt target set arduino_wifi build_profile=debug
 <span style="background-color: #ffffcc">$ newt target set arduino_wifi features=arduino_zero_pro
-</span></code></pre></div>
+</span></pre></div>
 
 <p><br></p>
 <p>You can now build the target, with <code>newt build</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt build arduino_wifi
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build arduino_wifi
 Building target targets/arduino_wifi
 Compiling main.c
 Archiving winc1500_wifi.a
@@ -409,7 +409,7 @@ Compiling fs_mkdir.c
 &lt;snip&gt;
 Linking winc1500_wifi.elf
 App successfully built: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/winc1500_wifi.elf
-</code></pre></div>
+</pre></div>
 
 <p><font color="#FF0000"> Congratulations! </font> You have successfully built your Wi-Fi application. Now it's time to load both the bootloader and application onto the target.</p>
 <p><br></p>
@@ -421,8 +421,8 @@ App successfully built: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/wi
 <p><br></p>
 <h3 id="download-the-bootloader">Download the Bootloader</h3>
 <p>Execute the command to download the bootloader.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>    <span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">load</span> <span style="color: #000000">arduino_boot</span>
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #000000">$</span> <span style="color: #000000">newt</span> <span style="color: #000000">load</span> <span style="color: #000000">arduino_boot</span>
+</pre></div>
 
 <p>If the newt tool finishes without error, that means the bootloader has been
 successfully loaded onto the target.</p>
@@ -431,18 +431,18 @@ successfully loaded onto the target.</p>
 <p><br></p>
 <h3 id="load-the-application-image">Load the Application Image</h3>
 <p>Now that the bootloader is downloaded to the target, the next steps are to create an image and load it onto the target device.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt create-image arduino_wifi 1.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt create-image arduino_wifi 1.0.0
 App image succesfully generated: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/winc1500_wifi.img
 Build manifest: ~/dev/arduinowifi/bin/arduino_wifi/apps/winc1500_wifi/manifest.json
 $ newt load arduino_wifi
 Loading image
 $
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="start-wi-fi-via-console">Start Wi-Fi via console</h3>
 <p>Use a terminal emulation program to communicate with the board over the serial port. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your computer/laptop (<code>ls /dev</code>) and specify it as the -D flag value. Type <code>wifi start</code> to start Wi-Fi.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ minicom -D /dev/tty.usbmodem141122 -b 115200
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ minicom -D /dev/tty.usbmodem141122 -b 115200
 
 
 Welcome to minicom 2.7
@@ -459,10 +459,10 @@ Press Meta-Z for help on special keys
 (APP)(INFO)Min driver ver : 19.3.0
 (APP)(INFO)Curr driver ver: 19.3.0                                              
 wifi_init : 0                        
-</code></pre></div>
+</pre></div>
 
 <p>Connect to the local Wi-Fi network. Then start network services. The commands to be issued are highlighted below. In the example below, the network interface on the Arduino board gets an IP address of <code>192.168.0.117</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc">wifi connect &lt;Wi-Fi network name&gt; &lt;password&gt;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">wifi connect &lt;Wi-Fi network name&gt; &lt;password&gt;
 </span>16906:wifi_request_scan : 0
 17805:scan_results 16: 0
 17816:wifi_connect : 0
@@ -470,11 +470,11 @@ wifi_init : 0
 18821:dhcp done 192.168.0.117
 18932:get sys time response 2016.8.2-18.4.43
 <span style="background-color: #ffffcc">net service
-</span></code></pre></div>
+</span></pre></div>
 
 <h3 id="establish-tcp-connection-and-talk">Establish TCP connection and talk!</h3>
 <p>From a terminal on your computer/laptop, try telneting to ports 7, 9, or 19 using the IP address your board has been assigned. Type something on this terminal and see the console output (on minicom). Can you see the difference in the behaviors?</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet 192.168.0.117 7
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ telnet 192.168.0.117 7
 Trying 192.168.0.117...
 Connected to 192.168.0.117.
 Escape character is &#39;^]&#39;.
@@ -483,7 +483,7 @@ hello
 ^]
 telnet&gt; q
 $
-</code></pre></div>
+</pre></div>
 
 <p>One port echoes whatever is typed, one discards everything it gets, and the third spews out bits constantly. Type <code>wifi stop</code> to disable WiFi on the Arduino board.</p>
 <p>Hope you had fun!</p>

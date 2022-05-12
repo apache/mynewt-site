@@ -23,10 +23,6 @@
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
     
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-    
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-    
       <link rel="stylesheet" href="../../../_static/css/sphinx_theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
@@ -332,7 +328,7 @@ packages should only depend on <code class="docutils literal notranslate"><span 
 necessary packages in their applications pkg.yml file. In the following
 example, the <a class="reference internal" href="nffs.html"><span class="doc">Newtron Flash File System</span></a> is
 used.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>repos/apache-mynewt-core/apps/slinky/pkg.yml
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> repos/apache-mynewt-core/apps/slinky/pkg.yml
 
 <span class="go">pkg.name: repos/apache-mynewt-core/apps/slinky</span>
 <span class="go">pkg.deps:</span>
@@ -359,12 +355,12 @@ is a library which provides firmware upload and download functionality
 via the use of a file system. This library is only used after the system
 has been initialized, and therefore only depends on the <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code>
 package.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>repos/apache-mynewt-core/libs/imgmgr/pkg.yml
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> repos/apache-mynewt-core/libs/imgmgr/pkg.yml
 <span class="go">pkg.name: libs/imgmgr</span>
 <span class="go">pkg.deps:</span>
 <span class="go">    - &quot;@apache-mynewt-core/fs/fs&quot;</span>
 
-<span class="gp"># </span><span class="o">[</span>...<span class="o">]</span>
+<span class="gp">#</span> <span class="o">[</span>...<span class="o">]</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">libs/imgmgr</span></code> package uses the <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code> API for all file system
@@ -379,7 +375,7 @@ simultaneosly, an extra name has to be given to the disk that is being
 used. The abstraction for that was added as the <code class="docutils literal notranslate"><span class="pre">fs/disk</span></code> package
 which is a dependency of <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code>. It adds the following extra user
 function:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">disk_register</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">disk_name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fs_name</span><span class="p">,</span> <span class="k">struct</span> <span class="nc">disk_ops</span> <span class="o">*</span><span class="n">dops</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">disk_register</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">disk_name</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">fs_name</span><span class="p">,</span> <span class="k">struct</span> <span class="n">disk_ops</span> <span class="o">*</span><span class="n">dops</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>As an example os usage:</p>
@@ -396,7 +392,7 @@ to use <code class="docutils literal notranslate"><span class="pre">nffs</span><
 <p>To support a new low-level disk interface, the <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">disk_ops</span></code>
 interface must be implemented by the low-level driver. Currently only
 <code class="docutils literal notranslate"><span class="pre">read</span></code> and <code class="docutils literal notranslate"><span class="pre">write</span></code> are effectively used (by <code class="docutils literal notranslate"><span class="pre">fatfs</span></code>).</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">disk_ops</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">disk_ops</span> <span class="p">{</span>
     <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">read</span><span class="p">)(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">);</span>
     <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">write</span><span class="p">)(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">);</span>
     <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ioctl</span><span class="p">)(</span><span class="kt">uint8_t</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="p">);</span>
@@ -421,9 +417,9 @@ header:</p>
 <div class="section" id="data-structures">
 <h2><a class="toc-backref" href="#id6">Data Structures</a><a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
 <p>All <code class="docutils literal notranslate"><span class="pre">fs/fs</span></code> data structures are opaque to client code.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">fs_file</span><span class="p">;</span>
-<span class="k">struct</span> <span class="nc">fs_dir</span><span class="p">;</span>
-<span class="k">struct</span> <span class="nc">fs_dirent</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">fs_file</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">fs_dir</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">fs_dirent</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -433,7 +429,7 @@ header:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
 <span class="nf">read_config</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">fs_file</span> <span class="o">*</span><span class="n">file</span><span class="p">;</span>
     <span class="kt">uint32_t</span> <span class="n">bytes_read</span><span class="p">;</span>
     <span class="kt">uint8_t</span> <span class="n">buf</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
     <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
@@ -441,7 +437,7 @@ header:</p>
     <span class="cm">/* Open the file for reading. */</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_open</span><span class="p">(</span><span class="s">&quot;/settings/config.txt&quot;</span><span class="p">,</span> <span class="n">FS_ACCESS_READ</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">file</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="cm">/* Read up to 16 bytes from the file. */</span>
@@ -454,7 +450,7 @@ header:</p>
     <span class="cm">/* Close the file. */</span>
     <span class="n">fs_close</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
 
-    <span class="k">return</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="mi">-1</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -462,15 +458,15 @@ header:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
 <span class="nf">traverse_dir</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">dirname</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="nc">fs_dirent</span> <span class="o">*</span><span class="n">dirent</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="nc">fs_dir</span> <span class="o">*</span><span class="n">dir</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">fs_dirent</span> <span class="o">*</span><span class="n">dirent</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">fs_dir</span> <span class="o">*</span><span class="n">dir</span><span class="p">;</span>
     <span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">64</span><span class="p">];</span>
     <span class="kt">uint8_t</span> <span class="n">name_len</span><span class="p">;</span>
     <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
 
     <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_opendir</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">dir</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="cm">/* Iterate through the parent directory, printing the name of each child</span>
@@ -484,13 +480,13 @@ header:</p>
             <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
         <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
             <span class="cm">/* Unexpected error. */</span>
-            <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
         <span class="p">}</span>
 
         <span class="cm">/* Read the child node&#39;s name from the file system. */</span>
         <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_dirent_name</span><span class="p">(</span><span class="n">dirent</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">buf</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">name_len</span><span class="p">);</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
         <span class="p">}</span>
 
         <span class="cm">/* Print the child node&#39;s name to the console. */</span>
@@ -527,7 +523,7 @@ header:</p>
 <span class="nl">err</span><span class="p">:</span>
     <span class="cm">/* Clean up the incomplete directory tree, if any. */</span>
     <span class="n">fs_unlink</span><span class="p">(</span><span class="s">&quot;/data&quot;</span><span class="p">);</span>
-    <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -542,7 +538,7 @@ header:</p>
     <span class="cm">/* Read up to 15 bytes from the start of the file. */</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">fsutil_read_file</span><span class="p">(</span><span class="s">&quot;/cfg/status.txt&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">buf</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span>
                           <span class="o">&amp;</span><span class="n">bytes_read</span><span class="p">);</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
 
     <span class="cm">/* Null-terminate the string just read. */</span>
     <span class="n">buf</span><span class="p">[</span><span class="n">bytes_read</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
@@ -563,13 +559,13 @@ header:</p>
     <span class="cm">/* Create the parent directory. */</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">fs_mkdir</span><span class="p">(</span><span class="s">&quot;/cfg&quot;</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">rc</span> <span class="o">!=</span> <span class="n">FS_EALREADY</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="cm">/* Create a file and write four bytes to it. */</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">fsutil_write_file</span><span class="p">(</span><span class="s">&quot;/cfg/id.txt&quot;</span><span class="p">,</span> <span class="s">&quot;1234&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">-1</span><span class="p">;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
@@ -582,201 +578,201 @@ header:</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ACCESS_READ">
-<span class="target" id="fs_8h_1aa0ef2753ef7fd106b7b811b6256ba276"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ACCESS_READ</span></span></span><a class="headerlink" href="#c.FS_ACCESS_READ" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ACCESS_READ">
+<span class="target" id="fs_8h_1aa0ef2753ef7fd106b7b811b6256ba276"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_READ</span></code><a class="headerlink" href="#c.FS_ACCESS_READ" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>File access flags. </p>
 </dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ACCESS_WRITE">
-<span class="target" id="fs_8h_1a5e8333a15d39f0f24572bf04f466141d"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ACCESS_WRITE</span></span></span><a class="headerlink" href="#c.FS_ACCESS_WRITE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ACCESS_WRITE">
+<span class="target" id="fs_8h_1a5e8333a15d39f0f24572bf04f466141d"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_WRITE</span></code><a class="headerlink" href="#c.FS_ACCESS_WRITE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ACCESS_APPEND">
-<span class="target" id="fs_8h_1aca516acc31249a18456ae616cb50a589"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ACCESS_APPEND</span></span></span><a class="headerlink" href="#c.FS_ACCESS_APPEND" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ACCESS_APPEND">
+<span class="target" id="fs_8h_1aca516acc31249a18456ae616cb50a589"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_APPEND</span></code><a class="headerlink" href="#c.FS_ACCESS_APPEND" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ACCESS_TRUNCATE">
-<span class="target" id="fs_8h_1a17f916b44803478edc7982e90a99eae3"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ACCESS_TRUNCATE</span></span></span><a class="headerlink" href="#c.FS_ACCESS_TRUNCATE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ACCESS_TRUNCATE">
+<span class="target" id="fs_8h_1a17f916b44803478edc7982e90a99eae3"></span><code class="sig-name descname"><span class="pre">FS_ACCESS_TRUNCATE</span></code><a class="headerlink" href="#c.FS_ACCESS_TRUNCATE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EOK">
-<span class="target" id="fs_8h_1adf14142875cc95bbca59aa2669f972fa"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EOK</span></span></span><a class="headerlink" href="#c.FS_EOK" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EOK">
+<span class="target" id="fs_8h_1adf14142875cc95bbca59aa2669f972fa"></span><code class="sig-name descname"><span class="pre">FS_EOK</span></code><a class="headerlink" href="#c.FS_EOK" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>File access return codes. </p>
 </dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ECORRUPT">
-<span class="target" id="fs_8h_1a853158b5354036fbce22765c61b0c8b8"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ECORRUPT</span></span></span><a class="headerlink" href="#c.FS_ECORRUPT" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ECORRUPT">
+<span class="target" id="fs_8h_1a853158b5354036fbce22765c61b0c8b8"></span><code class="sig-name descname"><span class="pre">FS_ECORRUPT</span></code><a class="headerlink" href="#c.FS_ECORRUPT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EHW">
-<span class="target" id="fs_8h_1af0dfc5cd2f1b3ec7f81f6c615a0fcaba"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EHW</span></span></span><a class="headerlink" href="#c.FS_EHW" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EHW">
+<span class="target" id="fs_8h_1af0dfc5cd2f1b3ec7f81f6c615a0fcaba"></span><code class="sig-name descname"><span class="pre">FS_EHW</span></code><a class="headerlink" href="#c.FS_EHW" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EOFFSET">
-<span class="target" id="fs_8h_1a2558f655018028abaedf7c5eb041d323"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EOFFSET</span></span></span><a class="headerlink" href="#c.FS_EOFFSET" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EOFFSET">
+<span class="target" id="fs_8h_1a2558f655018028abaedf7c5eb041d323"></span><code class="sig-name descname"><span class="pre">FS_EOFFSET</span></code><a class="headerlink" href="#c.FS_EOFFSET" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EINVAL">
-<span class="target" id="fs_8h_1ae6ceeac1001b72371e51bbff3b98a021"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EINVAL</span></span></span><a class="headerlink" href="#c.FS_EINVAL" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EINVAL">
+<span class="target" id="fs_8h_1ae6ceeac1001b72371e51bbff3b98a021"></span><code class="sig-name descname"><span class="pre">FS_EINVAL</span></code><a class="headerlink" href="#c.FS_EINVAL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ENOMEM">
-<span class="target" id="fs_8h_1ae8fe91cbdd62bb7143b7bb6db5895de9"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ENOMEM</span></span></span><a class="headerlink" href="#c.FS_ENOMEM" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ENOMEM">
+<span class="target" id="fs_8h_1ae8fe91cbdd62bb7143b7bb6db5895de9"></span><code class="sig-name descname"><span class="pre">FS_ENOMEM</span></code><a class="headerlink" href="#c.FS_ENOMEM" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_ENOENT">
-<span class="target" id="fs_8h_1a7f99c2a53a04583cf0e511ab6a1f9a4e"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_ENOENT</span></span></span><a class="headerlink" href="#c.FS_ENOENT" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_ENOENT">
+<span class="target" id="fs_8h_1a7f99c2a53a04583cf0e511ab6a1f9a4e"></span><code class="sig-name descname"><span class="pre">FS_ENOENT</span></code><a class="headerlink" href="#c.FS_ENOENT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EEMPTY">
-<span class="target" id="fs_8h_1ab754eeae4ae571ca5633928ddd2c47bf"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EEMPTY</span></span></span><a class="headerlink" href="#c.FS_EEMPTY" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EEMPTY">
+<span class="target" id="fs_8h_1ab754eeae4ae571ca5633928ddd2c47bf"></span><code class="sig-name descname"><span class="pre">FS_EEMPTY</span></code><a class="headerlink" href="#c.FS_EEMPTY" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EFULL">
-<span class="target" id="fs_8h_1ae6b04ba45ab61e1e7833665fb75aebd8"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EFULL</span></span></span><a class="headerlink" href="#c.FS_EFULL" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EFULL">
+<span class="target" id="fs_8h_1ae6b04ba45ab61e1e7833665fb75aebd8"></span><code class="sig-name descname"><span class="pre">FS_EFULL</span></code><a class="headerlink" href="#c.FS_EFULL" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EUNEXP">
-<span class="target" id="fs_8h_1ae8f07f91f622f2f522feacacb3645abe"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EUNEXP</span></span></span><a class="headerlink" href="#c.FS_EUNEXP" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EUNEXP">
+<span class="target" id="fs_8h_1ae8f07f91f622f2f522feacacb3645abe"></span><code class="sig-name descname"><span class="pre">FS_EUNEXP</span></code><a class="headerlink" href="#c.FS_EUNEXP" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EOS">
-<span class="target" id="fs_8h_1a0de0fab65c1565fddcf00c6a4e3b422f"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EOS</span></span></span><a class="headerlink" href="#c.FS_EOS" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EOS">
+<span class="target" id="fs_8h_1a0de0fab65c1565fddcf00c6a4e3b422f"></span><code class="sig-name descname"><span class="pre">FS_EOS</span></code><a class="headerlink" href="#c.FS_EOS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EEXIST">
-<span class="target" id="fs_8h_1a153b2a6a6097ba226ce55180a36d3113"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EEXIST</span></span></span><a class="headerlink" href="#c.FS_EEXIST" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EEXIST">
+<span class="target" id="fs_8h_1a153b2a6a6097ba226ce55180a36d3113"></span><code class="sig-name descname"><span class="pre">FS_EEXIST</span></code><a class="headerlink" href="#c.FS_EEXIST" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EACCESS">
-<span class="target" id="fs_8h_1a13b4cec77a264258baadc1b665f21c5d"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EACCESS</span></span></span><a class="headerlink" href="#c.FS_EACCESS" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EACCESS">
+<span class="target" id="fs_8h_1a13b4cec77a264258baadc1b665f21c5d"></span><code class="sig-name descname"><span class="pre">FS_EACCESS</span></code><a class="headerlink" href="#c.FS_EACCESS" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_EUNINIT">
-<span class="target" id="fs_8h_1a8f8aa75fbc137ff11eb1bb0f06b105cb"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_EUNINIT</span></span></span><a class="headerlink" href="#c.FS_EUNINIT" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_EUNINIT">
+<span class="target" id="fs_8h_1a8f8aa75fbc137ff11eb1bb0f06b105cb"></span><code class="sig-name descname"><span class="pre">FS_EUNINIT</span></code><a class="headerlink" href="#c.FS_EUNINIT" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_MGMT_ID_FILE">
-<span class="target" id="fs_8h_1a17b142e59be58d1c83c9ce87f7d84b97"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_MGMT_ID_FILE</span></span></span><a class="headerlink" href="#c.FS_MGMT_ID_FILE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_MGMT_ID_FILE">
+<span class="target" id="fs_8h_1a17b142e59be58d1c83c9ce87f7d84b97"></span><code class="sig-name descname"><span class="pre">FS_MGMT_ID_FILE</span></code><a class="headerlink" href="#c.FS_MGMT_ID_FILE" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c macro">
-<dt class="sig sig-object c" id="c.FS_MGMT_MAX_NAME">
-<span class="target" id="fs_8h_1ad3b5cf355bfbb5c9d7cf3f0e6470d740"></span><span class="sig-name descname"><span class="n"><span class="pre">FS_MGMT_MAX_NAME</span></span></span><a class="headerlink" href="#c.FS_MGMT_MAX_NAME" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.FS_MGMT_MAX_NAME">
+<span class="target" id="fs_8h_1ad3b5cf355bfbb5c9d7cf3f0e6470d740"></span><code class="sig-name descname"><span class="pre">FS_MGMT_MAX_NAME</span></code><a class="headerlink" href="#c.FS_MGMT_MAX_NAME" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_open">
-<span class="target" id="fs_8h_1a226d00f1643fc1fa0d2cfd4d54672aa1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filename</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">access_flags</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_open" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_open">
+<span class="target" id="fs_8h_1a226d00f1643fc1fa0d2cfd4d54672aa1"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_open</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">filename</span></em>, <span class="pre">uint8_t</span> <em><span class="pre">access_flags</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_open" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_close">
-<span class="target" id="fs_8h_1a7f236a8087d47838d04363ac35489823"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_close</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_close" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_close">
+<span class="target" id="fs_8h_1a7f236a8087d47838d04363ac35489823"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_close</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_close" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_read">
-<span class="target" id="fs_8h_1a7c0f019a6ffd1c3e469963fa00b7903d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_read</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_data</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_read" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_read">
+<span class="target" id="fs_8h_1a7c0f019a6ffd1c3e469963fa00b7903d"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_read</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <span class="pre">uint32_t</span> <em><span class="pre">len</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">out_data</span></em>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">out_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_read" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_write">
-<span class="target" id="fs_8h_1ae092ec5d5dcd5444f9e7e30aa7ca3a0a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_write</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_write" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_write">
+<span class="target" id="fs_8h_1ae092ec5d5dcd5444f9e7e30aa7ca3a0a"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_write</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_write" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_seek">
-<span class="target" id="fs_8h_1aa649b70e539c36cf447b0baaf5844ff5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_seek</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_seek" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_seek">
+<span class="target" id="fs_8h_1aa649b70e539c36cf447b0baaf5844ff5"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_seek</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <span class="pre">uint32_t</span> <em><span class="pre">offset</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_seek" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_getpos">
-<span class="target" id="fs_8h_1a7cd85ae5b14e0747659f132644313476"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_getpos</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_getpos" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_getpos">
+<span class="target" id="fs_8h_1a7cd85ae5b14e0747659f132644313476"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">fs_getpos</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_getpos" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_filelen">
-<span class="target" id="fs_8h_1ae15d3a717e341b81406e15908a2dff98"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_filelen</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_filelen" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_filelen">
+<span class="target" id="fs_8h_1ae15d3a717e341b81406e15908a2dff98"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_filelen</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">out_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_filelen" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_unlink">
-<span class="target" id="fs_8h_1abe3d03c172f1df3be26facd42553476e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_unlink</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">filename</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_unlink" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_unlink">
+<span class="target" id="fs_8h_1abe3d03c172f1df3be26facd42553476e"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_unlink</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_unlink" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_rename">
-<span class="target" id="fs_8h_1a28bb828c6e59bf7e1f0e3edc56a15575"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_rename</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">from</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">to</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_rename" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_rename">
+<span class="target" id="fs_8h_1a28bb828c6e59bf7e1f0e3edc56a15575"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_rename</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">from</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">to</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_rename" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_mkdir">
-<span class="target" id="fs_8h_1a235cef7d5c4df385a40a0f0293574b0c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_mkdir</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">path</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_mkdir" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_mkdir">
+<span class="target" id="fs_8h_1a235cef7d5c4df385a40a0f0293574b0c"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_mkdir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_mkdir" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_opendir">
-<span class="target" id="fs_8h_1af9be1f4c99895c3c37caae481a2d1201"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_opendir</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">path</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_dir</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_opendir" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_opendir">
+<span class="target" id="fs_8h_1af9be1f4c99895c3c37caae481a2d1201"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_opendir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dir</span><span class="pre">*</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_opendir" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_readdir">
-<span class="target" id="fs_8h_1a5b40ba190d300125bbe0747a95affdfb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_readdir</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_dir</span></span><span class="p"><span class="pre">*</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_dirent</span></span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_readdir" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_readdir">
+<span class="target" id="fs_8h_1a5b40ba190d300125bbe0747a95affdfb"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_readdir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dir</span><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dirent</span><span class="pre">*</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_readdir" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_closedir">
-<span class="target" id="fs_8h_1af2f6af0e462b3f53ef9f296f7314049b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_closedir</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_dir</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_closedir" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_closedir">
+<span class="target" id="fs_8h_1af2f6af0e462b3f53ef9f296f7314049b"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_closedir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dir</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_closedir" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_dirent_name">
-<span class="target" id="fs_8h_1af5d719307b8e0c29a9ca0e79ef9a9647"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_dirent_name</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_dirent</span></span><span class="p"><span class="pre">*</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">max_len</span></span>, <span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_name</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_name_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_name" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_dirent_name">
+<span class="target" id="fs_8h_1af5d719307b8e0c29a9ca0e79ef9a9647"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_dirent_name</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dirent</span><span class="pre">*</span>, <span class="pre">size_t</span> <em><span class="pre">max_len</span></em>, <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">out_name</span></em>, <span class="pre">uint8_t</span> <span class="pre">*</span><em><span class="pre">out_name_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_name" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_dirent_is_dir">
-<span class="target" id="fs_8h_1aa0e61b1ef0436ea9f01dbe865fac5fd0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_dirent_is_dir</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_dirent</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_is_dir" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_dirent_is_dir">
+<span class="target" id="fs_8h_1aa0e61b1ef0436ea9f01dbe865fac5fd0"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_dirent_is_dir</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <span class="pre">fs_dirent</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_dirent_is_dir" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fs_flush">
-<span class="target" id="fs_8h_1a33babc87740e76586e32ef4d278eab28"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fs_flush</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">fs_file</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_flush" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fs_flush">
+<span class="target" id="fs_8h_1a33babc87740e76586e32ef4d278eab28"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fs_flush</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <span class="pre">fs_file</span><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fs_flush" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fsutil_read_file">
-<span class="target" id="fsutil_8h_1a3b28b5fddd70aa388a51469d80b8b0c0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fsutil_read_file</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">path</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dst</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_read_file" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fsutil_read_file">
+<span class="target" id="fsutil_8h_1a3b28b5fddd70aa388a51469d80b8b0c0"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fsutil_read_file</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">offset</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">len</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dst</span></em>, <span class="pre">uint32_t</span> <span class="pre">*</span><em><span class="pre">out_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_read_file" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="c function">
-<dt class="sig sig-object c" id="c.fsutil_write_file">
-<span class="target" id="fsutil_8h_1abdc2d53bf062b337e1e21f2e8fcc1d93"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fsutil_write_file</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">path</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_write_file" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.fsutil_write_file">
+<span class="target" id="fsutil_8h_1abdc2d53bf062b337e1e21f2e8fcc1d93"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fsutil_write_file</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <span class="pre">char</span> <span class="pre">*</span><em><span class="pre">path</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsutil_write_file" title="Permalink to this definition">¶</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -843,7 +839,6 @@ header:</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>

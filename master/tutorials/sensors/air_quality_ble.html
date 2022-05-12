@@ -23,10 +23,6 @@
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
     
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    
       <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
@@ -315,19 +311,19 @@ ga("send", "pageview");
 <p>Next we’ll add those services to <code class="docutils literal notranslate"><span class="pre">apps/air_quality/src/gatt_svr.c</span></code>.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
-    <span class="k">struct</span> <span class="nc">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
+    <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
     <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">);</span>
 
 <span class="k">static</span> <span class="kt">uint16_t</span> <span class="n">gatt_co2_val_len</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Make sure it is added as <em>primary</em> service.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="nc">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">ble_gatt_svc_def</span> <span class="n">gatt_svr_svcs</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="p">{</span>
         <span class="cm">/*** Service: Security test. */</span>
         <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BLE_GATT_SVC_TYPE_PRIMARY</span><span class="p">,</span>
         <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_svc_sec_test_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-        <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
             <span class="cm">/*** Characteristic: Random number generator. */</span>
             <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_chr_sec_test_rand_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
             <span class="p">.</span><span class="n">access_cb</span> <span class="o">=</span> <span class="n">gatt_svr_chr_access_sec_test</span><span class="p">,</span>
@@ -346,7 +342,7 @@ ga("send", "pageview");
             <span class="cm">/*** CO2 Level Notification Service. */</span>
             <span class="p">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">BLE_GATT_SVC_TYPE_PRIMARY</span><span class="p">,</span>
             <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">gatt_svr_svc_co2_uuid</span><span class="p">.</span><span class="n">u</span><span class="p">,</span>
-            <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
+            <span class="p">.</span><span class="n">characteristics</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">ble_gatt_chr_def</span><span class="p">[])</span> <span class="p">{</span> <span class="p">{</span>
                 <span class="p">.</span><span class="n">uuid</span> <span class="o">=</span> <span class="n">BLE_UUID16_DECLARE</span><span class="p">(</span><span class="n">CO2_SNS_TYPE</span><span class="p">),</span>
                 <span class="p">.</span><span class="n">access_cb</span> <span class="o">=</span> <span class="n">gatt_svr_sns_access</span><span class="p">,</span>
                 <span class="p">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">BLE_GATT_CHR_F_READ</span><span class="p">,</span>
@@ -368,7 +364,7 @@ ga("send", "pageview");
 <p>Next we need to tell the GATT Server how to handle requests for CO2 readings :</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">int</span>
 <span class="nf">gatt_svr_sns_access</span><span class="p">(</span><span class="kt">uint16_t</span> <span class="n">conn_handle</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">attr_handle</span><span class="p">,</span>
-                          <span class="k">struct</span> <span class="nc">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
+                          <span class="k">struct</span> <span class="n">ble_gatt_access_ctxt</span> <span class="o">*</span><span class="n">ctxt</span><span class="p">,</span>
                           <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">uint16_t</span> <span class="n">uuid16</span><span class="p">;</span>
@@ -408,8 +404,8 @@ ga("send", "pageview");
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* CO2 Task settings */</span>
 <span class="cp">#define CO2_TASK_PRIO           128</span>
 <span class="cp">#define CO2_STACK_SIZE          (OS_STACK_ALIGN(336))</span>
-<span class="k">struct</span> <span class="nc">os_eventq</span> <span class="n">co2_evq</span><span class="p">;</span>
-<span class="k">struct</span> <span class="nc">os_task</span> <span class="n">co2_task</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">os_eventq</span> <span class="n">co2_evq</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">os_task</span> <span class="n">co2_task</span><span class="p">;</span>
 <span class="n">bssnz_t</span> <span class="n">os_stack_t</span> <span class="n">co2_stack</span><span class="p">[</span><span class="n">CO2_STACK_SIZE</span><span class="p">];</span>
 </pre></div>
 </div>
@@ -537,7 +533,6 @@ ga("send", "pageview");
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
