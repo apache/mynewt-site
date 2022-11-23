@@ -555,15 +555,14 @@ stack.  This tutorial assumes that you have already installed the newt tool and 
 <h3 id="create-a-mynewt-project">Create a Mynewt project</h3>
 <p>We start by creating a project space for your own application work using the
 Newt tool.  We will call our project <code>my_proj</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev$ newt new my_proj1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev$ newt new my_proj1
 Downloading project skeleton from apache/mynewt-blinky...
 Installing skeleton in my_proj1...
 Project my_proj1 successfully created.
-</code></pre></div>
-
+</pre></div>
 
 <p>The above command created the following directory tree:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev$ tree my_proj1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev$ tree my_proj1
 my_proj1
 ├── DISCLAIMER
 ├── LICENSE
@@ -584,8 +583,7 @@ my_proj1
         └── target.yml
 
 6 directories, 11 files
-</code></pre></div>
-
+</pre></div>
 
 <p>Next, we need to retrieve the Mynewt repositories that our app will depend on.
 When you retrieve a repository, your project gains access to the libraries and
@@ -595,19 +593,17 @@ applications that the repo contains.</p>
 system, NimBLE stack, and other system libraries.  Later, our app may need
 packages from additional repos, but for now the core repo suits our needs.</p>
 <p>We download the dependent repos using the <code>newt install</code> command:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev$ cd my_proj1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev$ cd my_proj1
 ~/dev/my_proj1$ newt install
 apache-mynewt-core
-</code></pre></div>
-
+</pre></div>
 
 <p>Now it's time to create your own app.</p>
 <h3 id="create-an-application-package">Create an application package</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt pkg new apps/ble_app -t app
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev/my_proj1$ newt pkg new apps/ble_app -t app
 Download package template for package type app.
 Package successfully installed into /home/me/dev/my_proj1/apps/ble_app.
-</code></pre></div>
-
+</pre></div>
 
 <p>You now have an application called <code>apps/ble_app</code>.  It isn't terribly
 interesting as far as applications go, but it does all the configuration and
@@ -616,18 +612,16 @@ BLE application.</p>
 <h3 id="create-the-target">Create the target</h3>
 <p>Now you have to create the target that ties your application to a BSP.  We will
 call this target "ble_tgt".</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt target create ble_tgt
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev/my_proj1$ newt target create ble_tgt
 Target targets/ble_tgt successfully created
-</code></pre></div>
-
+</pre></div>
 
 <p>We now have a new target:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1]$ tree targets/ble_tgt
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev/my_proj1]$ tree targets/ble_tgt
 targets/ble_tgt
 ├── pkg.yml
 └── target.yml
-</code></pre></div>
-
+</pre></div>
 
 <p>We need to fill out a few details in our target before it is usable.  At a
 minimum, a target must specify three bits of information:</p>
@@ -644,15 +638,14 @@ BSP package in the command below.</p>
 <p>Finally, the build profile specifies the set of compiler and linker options to
 use during the build.  Apache Mynewt supports two build profiles: <code>debug</code> and
 <code>optimized</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt target set ble_tgt     \
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev/my_proj1$ newt target set ble_tgt     \
     app=apps/ble_app                        \
     bsp=@apache-mynewt-core/hw/bsp/nrf52dk  \
     build_profile=optimized
 Target targets/ble_tgt successfully set target.app to apps/ble_app
 Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
 Target targets/ble_tgt successfully set target.build_profile to optimized
-</code></pre></div>
-
+</pre></div>
 
 <h3 id="enter-ble">Enter BLE</h3>
 <p>Since our application will support BLE functionality, we need to give it access
@@ -660,7 +653,7 @@ to a BLE stack.  We do this by adding the necessary NimBLE packages to the
 app's dependency list.  To enable a combined host-controller in the app, add
 dependencies for the NimBLE controller, host, and in-RAM transport to
 <code>apps/ble_app/pkg.yml</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
     - &quot;@apache-mynewt-core/kernel/os&quot;
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/log/full&quot;
@@ -668,33 +661,30 @@ dependencies for the NimBLE controller, host, and in-RAM transport to
 <span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/net/nimble/controller&quot;
 </span><span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/net/nimble/host&quot;
 </span><span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;
-</span></code></pre></div>
-
+</span></pre></div>
 
 <p><strong>Important note:</strong> The controller package affects system configuration, see
 <a href="../../../network/ble/ble_setup/ble_lp_clock/">this page</a> for details.</p>
 <h3 id="build-the-target">Build the target</h3>
 <p>Now would be a good time for a basic sanity check.  Let's make sure the target builds.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt build ble_tgt
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev/my_proj1$ newt build ble_tgt
 Building target targets/ble_tgt
 Compiling repos/apache-mynewt-core/hw/hal/src/hal_common.c
 Compiling repos/apache-mynewt-core/hw/drivers/uart/src/uart.c
 &lt;...snip...&gt;
 Linking /home/me/dev/my_proj1/bin/targets/ble_tgt/app/apps/ble_app/ble_app.elf
 Target successfully built: targets/ble_tgt
-</code></pre></div>
-
+</pre></div>
 
 <p>Now let's try running our minimal application on actual hardware.  Attach the target device to your computer and run the application with <code>newt run</code>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt run ble_tgt 0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>~/dev/my_proj1$ newt run ble_tgt 0
 App image succesfully generated: /home/me/dev/my_proj1/bin/targets/ble_tgt/app/apps/ble_app/ble_app.img
 &lt;...snip...&gt;
 Resetting target
 [Switching to Thread 57005]
 0x000000dc in ?? ()
 (gdb)
-</code></pre></div>
-
+</pre></div>
 
 <p>You can start the application by pressing <code>c &lt;enter&gt;</code> at the gdb prompt.  When the excitement of watching the idle loop run wears off, quit gdb with <code>&lt;ctrl-c&gt; q &lt;enter&gt;</code>.</p>
 <p>If your target fails to build or run, you might want to revisit the <a href="../../../os/tutorials/blinky/">project

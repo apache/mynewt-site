@@ -652,14 +652,13 @@ properties:</p>
 <h3 id="download-the-bsp-package-template">Download the BSP package template</h3>
 <p>We start by downloading a BSP package template.  This template will serve as a good starting point for our new BSP.</p>
 <p>Execute the <code>newt pkg new</code> command, as below:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt pkg new -t bsp hw/bsp/myboard
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt pkg new -t bsp hw/bsp/myboard
 Download package template for package type bsp.
 Package successfuly installed into /home/me/myproj/hw/bsp/myboard.
-</code></pre></div>
-
+</pre></div>
 
 <p>Our new package has the following file structure:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ tree hw/bsp/myboard
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ tree hw/bsp/myboard
 hw/bsp/myboard
 ├── README.md
 ├── boot-myboard.ld
@@ -677,8 +676,7 @@ hw/bsp/myboard
 └── syscfg.yml
 
 3 directories, 11 files
-</code></pre></div>
-
+</pre></div>
 
 <p>We will be adding to this package throughout the remainder of this document.
 See <a href="#appendix-a-bsp-files">Appendix A</a> for a full list of files typically
@@ -694,7 +692,7 @@ our BSP as we go:</p>
 up and running.  A good app for our purposes is
 <a href="../../tutorials/blinky">blinky</a>.</p>
 <p>We create our targets with the following set of newt commands:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>newt target create boot-myboard &amp;&amp;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>newt target create boot-myboard &amp;&amp;
 newt target set boot-myboard app=@apache-mynewt-core/apps/boot  \
                              bsp=hw/bsp/myboard                 \
                              build_profile=optimized
@@ -703,11 +701,10 @@ newt target create blinky-myboard &amp;&amp;
 newt target set blinky-myboard app=apps/blinky      \
                                bsp=hw/bsp/myboard   \
                                build_profile=debug
-</code></pre></div>
-
+</pre></div>
 
 <p>Which generates the following output:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>Target targets/boot-myboard successfully created
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>Target targets/boot-myboard successfully created
 Target targets/boot-myboard successfully set target.app to @apache-mynewt-core/apps/boot
 Target targets/boot-myboard successfully set target.bsp to hw/bsp/myboard
 Target targets/boot-myboard successfully set target.build_profile to debug
@@ -715,8 +712,7 @@ Target targets/blinky-myboard successfully created
 Target targets/blinky-myboard successfully set target.app to apps/blinky
 Target targets/blinky-myboard successfully set target.bsp to hw/bsp/myboard
 Target targets/blinky-myboard successfully set target.build_profile to debug
-</code></pre></div>
-
+</pre></div>
 
 <h3 id="fill-in-the-bspyml-file">Fill in the <code>bsp.yml</code> file</h3>
 <p>The template <code>hw/bsp/myboard/bsp.yml</code> file is missing some values that need to
@@ -725,7 +721,7 @@ your BSP.  We need to get this file into a usable state.</p>
 <p>Missing fields are indicated by the presence of <code>XXX</code> markers.  Here are the
 first several lines of our <code>bsp.yml</code> file where all the incomplete fields are
 located:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>bsp.arch: # XXX &lt;MCU-architecture&gt;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>bsp.arch: # XXX &lt;MCU-architecture&gt;
 bsp.compiler: # XXX &lt;compiler-package&gt;
 bsp.linkerscript:
     - &#39;hw/bsp/myboard/myboard.ld&#39;
@@ -733,8 +729,7 @@ bsp.linkerscript:
 bsp.linkerscript.BOOT_LOADER.OVERWRITE:
     - &#39;hw/bsp/myboard/myboard/boot-myboard.ld&#39;
     # - XXX mcu-linker-script
-</code></pre></div>
-
+</pre></div>
 
 <p>So we need to specify the following:</p>
 <ul>
@@ -744,7 +739,7 @@ bsp.linkerscript.BOOT_LOADER.OVERWRITE:
 </ul>
 <p>Our example BSP uses an nRF52 MCU, which implements the <code>cortex_m4</code>
 architecture.  We use this information to fill in the incomplete fields:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="background-color: #ffffcc">bsp.arch: cortex_m4
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">bsp.arch: cortex_m4
 </span><span style="background-color: #ffffcc">bsp.compiler: &#39;@apache-mynewt-core/compiler/arm-none-eabi-m4&#39;
 </span>bsp.linkerscript:
     - &#39;hw/bsp/myboard/myboard.ld&#39;
@@ -752,8 +747,7 @@ architecture.  We use this information to fill in the incomplete fields:</p>
 </span>bsp.linkerscript.BOOT_LOADER.OVERWRITE:
     - &#39;hw/bsp/myboard/boot-myboard.ld&#39;
 <span style="background-color: #ffffcc">    - &#39;@apache-mynewt-core/hw/mcu/nordic/nrf52xxx/nrf52.ld&#39;
-</span></code></pre></div>
-
+</span></pre></div>
 
 <p>Naturally, these values must be adjusted accordingly for other MCU types.</p>
 <h3 id="flash-map">Flash map</h3>
@@ -808,20 +802,18 @@ BSP does not have 512kB of internal flash.</p>
 always depends on its corresponding MCU package, so let's add that dependency
 to our BSP now.  The <code>pkg.deps</code> section of our <code>hw/bsp/myboard/pkg.yml</code> file
 currently looks like this:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
     # - XXX &lt;MCU-package&gt;
     - &#39;@apache-mynewt-core/kernel/os&#39;
     - &#39;@apache-mynewt-core/libc/baselibc&#39;
-</code></pre></div>
-
+</pre></div>
 
 <p>Continuing with our example nRF52 BSP, we replace the marked line as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
 <span style="background-color: #ffffcc">    - &#39;@apache-mynewt-core/hw/mcu/nordic/nrf52xxx&#39;
 </span>    - &#39;@apache-mynewt-core/kernel/os&#39;
     - &#39;@apache-mynewt-core/libc/baselibc&#39;
-</code></pre></div>
-
+</pre></div>
 
 <p>Again, the particulars depend on the MCU that your BSP uses.</p>
 <h3 id="check-the-bsp-linker-scripts">Check the BSP linker scripts</h3>
@@ -858,7 +850,7 @@ Typically, all the complexity is isolated to the MCU linker script, while the
 BSP linker script just contains minimal size and offset information.  This
 makes the job of creating a BSP package much simpler.</p>
 <p>Our <code>myboard.ld</code> file has the following contents:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>MEMORY
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>MEMORY
 {
   FLASH (rx) : ORIGIN = 0x00008000, LENGTH = 0x3a000
   RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x10000
@@ -866,8 +858,7 @@ makes the job of creating a BSP package much simpler.</p>
 
 /* This linker script is used for images and thus contains an image header */
 _imghdr_size = 0x20;
-</code></pre></div>
-
+</pre></div>
 
 <p>Our task is to ensure the offset (<code>ORIGIN</code>) and size (<code>LENGTH</code>) values are
 correct for the <code>FLASH</code> and <code>RAM</code> regions.  Note that the <code>FLASH</code> region does
@@ -896,7 +887,7 @@ you can likely get away with just copying them from another BSP.  The template
 6
 7
 8
-9</pre></div></td><td class="code"><div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #177500">#!/bin/sh</span>
+9</pre></div></td><td class="code"><div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">#!/bin/sh</span>
 
 <span style="color: #177500"># This script attaches a gdb session to a Mynewt image running on your BSP.</span>
 
@@ -905,14 +896,12 @@ you can likely get away with just copying them from another BSP.  The template
 <span style="color: #177500">#</span>
 <span style="color: #177500"># If your BSP uses OpenOCD, a good example script to copy is:</span>
 <span style="color: #177500">#     repos/apache-mynewt-core/hw/bsp/rb-nano2/rb-nano2_debug.sh</span>
-</code></pre></div>
+</pre></div>
 </td></tr></table>
-
 <p>Our example nRF52 BSP uses JLink, so we will copy the nRF52dk BSP's scripts:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh hw/bsp/myboard/myboard_debug.sh
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_debug.sh hw/bsp/myboard/myboard_debug.sh
 cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_download.sh hw/bsp/myboard/myboard_download.sh
-</code></pre></div>
-
+</pre></div>
 
 <h3 id="fill-in-bsp-functions-and-defines">Fill in BSP functions and defines</h3>
 <p>There are a few particulars missing from the BSP's C code.  These areas are marked with <code>XXX</code> comments to make them easier to spot.  The missing pieces are summarized in the table below:</p>
@@ -939,11 +928,10 @@ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/nrf52dk_download.sh hw/bsp/myboard/my
 </table>
 <p>For our nRF52 BSP, we modify these files as follows:</p>
 <p><strong>src/hal_bsp.c:</strong></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="background-color: #ffffcc">#include &quot;mcu/nrf52_hal.h&quot;
-</span></code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">#include &quot;mcu/nrf52_hal.h&quot;
+</span></pre></div>
 
-
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>const struct hal_flash *
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>const struct hal_flash *
 hal_bsp_flash_dev(uint8_t id)
 {
     switch (id) {
@@ -956,17 +944,15 @@ hal_bsp_flash_dev(uint8_t id)
         return NULL;
     }
 }
-</code></pre></div>
-
+</pre></div>
 
 <p><strong>include/bsp/bsp.h:</strong></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>#define RAM_SIZE        0x10000
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>#define RAM_SIZE        0x10000
 
 /* Put additional BSP definitions here. */
 
 <span style="background-color: #ffffcc">#define LED_BLINK_PIN   17
-</span></code></pre></div>
-
+</span></pre></div>
 
 <h3 id="add-startup-code">Add startup code</h3>
 <p>Now we need to add the BSP's assembly startup code.  Among other things, this
@@ -988,10 +974,9 @@ running.  This code must perform a few basic tasks:</p>
 is another BSP that uses the same MCU, you might be able to use most or all of
 its startup file.</p>
 <p>For our example BSP, we'll just copy the nRF52dk BSP's startup code:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ mkdir -p hw/bsp/myboard/src/arch/cortex_m4
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ mkdir -p hw/bsp/myboard/src/arch/cortex_m4
 $ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/src/arch/cortex_m4/gcc_startup_nrf52.s hw/bsp/myboard/src/arch/cortex_m4/
-</code></pre></div>
-
+</pre></div>
 
 <h3 id="satisfy-mcu-requirements">Satisfy MCU requirements</h3>
 <p>The MCU package probably requires some build-time configuration.  Typically, it
@@ -1002,31 +987,27 @@ trial and error as each unmet requirement gets reported as a build error.</p>
 <p>Our example nRF52 BSP requires the following changes:</p>
 <p><em>1)</em> The nRF52 MCU package uses <code>cmsis-core</code>, so for our example we will copy
 the nRF52dk BSP's <code>cmsis_nvic.h</code> file to our BSP:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/include/bsp/cmsis_nvic.h hw/bsp/myboard/include/bsp/
-</code></pre></div>
-
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cp repos/apache-mynewt-core/hw/bsp/nrf52dk/include/bsp/cmsis_nvic.h hw/bsp/myboard/include/bsp/
+</pre></div>
 
 <p><em>2)</em> Macro indicating MCU type.  We add this to our BSP's <code>pkg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.cflags:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.cflags:
 <span style="background-color: #ffffcc">    - &#39;-DNRF52&#39;
-</span></code></pre></div>
-
+</span></pre></div>
 
 <p><em>3)</em> Enable exactly one low-frequency timer setting in our BSP's <code>syscfg.yml</code>
 file.  This is required by the nRF51 and nRF52 MCU packages:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code># Settings this BSP overrides.
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># Settings this BSP overrides.
 syscfg.vals:
 <span style="background-color: #ffffcc">    XTAL_32768: 1
-</span></code></pre></div>
-
+</span></pre></div>
 
 <h3 id="test-it">Test it</h3>
 <p>Now it's finally time to test the BSP package.  Build and load your boot and blinky targets as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt build boot-myboard
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build boot-myboard
 $ newt load boot-myboard
 $ newt run blinky-myboard 0
-</code></pre></div>
-
+</pre></div>
 
 <p>If everything is correct, the blinky app should successfully build, and you should be presented with a gdb prompt.  Type <code>c &lt;enter&gt;</code> (continue) to see your board's LED blink.</p>
 <h3 id="appendix-a-bsp-files">Appendix A: BSP files</h3>
