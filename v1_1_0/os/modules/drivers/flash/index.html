@@ -663,7 +663,7 @@ supports the <code>hal_flash</code> interface.</p>
 <p>To be compatible with the standard <code>hal_flash</code> interface, the <code>at45db</code> driver
 embeds a <code>struct hal_flash</code> to its own <code>struct at45db_dev</code>. The whole <code>at45db_dev</code>
 struct is shown below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">at45db_dev</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #000000">at45db_dev</span> {
     <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">hal</span>;
     <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_spi_settings</span> <span style="color: #000000">*settings</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">spi_num</span>;
@@ -673,24 +673,27 @@ struct is shown below.</p>
     <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">page_size</span>;             <span style="color: #177500">/** Page size to be used, valid: 512 and 528 */</span>
     <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">disable_auto_erase</span>;     <span style="color: #177500">/** Reads and writes auto-erase by default */</span>
 };
-</pre></div>
+</code></pre></div>
+
 
 <p>To ease with initialization a helper function <code>at45db_default_config</code> was added.
 It returns an already initialized <code>struct at45db_dev</code> leaving the user with just
 having to provide the SPI related config.</p>
 <p>To initialize the device, pass the <code>at45db_dev</code> struct to <code>at45db_init</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span> <span style="color: #000000">at45db_init</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>);
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">int</span> <span style="color: #000000">at45db_init</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>);
+</code></pre></div>
+
 
 <p>For low-level access to the device the following functions are provided:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span> <span style="color: #000000">at45db_read</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">addr</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*buf</span>,
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">int</span> <span style="color: #000000">at45db_read</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">addr</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*buf</span>,
                 <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">len</span>);
 <span style="color: #A90D91">int</span> <span style="color: #000000">at45db_write</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">addr</span>, <span style="color: #A90D91">const</span> <span style="color: #A90D91">void</span> <span style="color: #000000">*buf</span>,
                  <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">len</span>);
 <span style="color: #A90D91">int</span> <span style="color: #000000">at45db_erase_sector</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">sector_address</span>);
 <span style="color: #A90D91">int</span> <span style="color: #000000">at45db_sector_info</span>(<span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*dev</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">idx</span>, <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">*address</span>,
                        <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">*sz</span>);
-</pre></div>
+</code></pre></div>
+
 
 <p>Also, <code>nffs</code> is able to run on the device due to the fact that standard <code>hal_flash</code>
 interface compatibility is provided. Due to current limitations of <code>nffs</code>, it can
@@ -698,19 +701,21 @@ only run on <code>at45db</code> if the internal flash of the MCU is not being us
 <h4 id="dependencies">Dependencies</h4>
 <p>To include the <code>at45db</code> driver on a project, just include it as a dependency in your
 pkg.yml:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.deps:
     - hw/drivers/flash/at45db
-</pre></div>
+</code></pre></div>
+
 
 <h4 id="header-file">Header file</h4>
 <p>The <code>at45db</code> SPI flash follows the standard <code>hal_flash</code> interface but requires
 that a special struct </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&lt;at45db/at45db.h&gt;</span><span style="color: #633820"></span>
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&lt;at45db/at45db.h&gt;</span><span style="color: #633820"></span>
+</code></pre></div>
+
 
 <h4 id="example">Example</h4>
 <p>This following examples assume that the <code>at45db</code> is being used on a STM32F4 MCU.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">int</span> <span style="color: #000000">SPI_SS_PIN</span>   <span style="color: #000000">=</span> <span style="color: #000000">MCU_GPIO_PORTA</span>(<span style="color: #1C01CE">4</span>);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">int</span> <span style="color: #000000">SPI_SS_PIN</span>   <span style="color: #000000">=</span> <span style="color: #000000">MCU_GPIO_PORTA</span>(<span style="color: #1C01CE">4</span>);
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">int</span> <span style="color: #000000">SPI_SCK_PIN</span>  <span style="color: #000000">=</span> <span style="color: #000000">MCU_GPIO_PORTA</span>(<span style="color: #1C01CE">5</span>);
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">int</span> <span style="color: #000000">SPI_MISO_PIN</span> <span style="color: #000000">=</span> <span style="color: #000000">MCU_GPIO_PORTA</span>(<span style="color: #1C01CE">6</span>);
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">int</span> <span style="color: #000000">SPI_MOSI_PIN</span> <span style="color: #000000">=</span> <span style="color: #000000">MCU_GPIO_PORTA</span>(<span style="color: #1C01CE">7</span>);
@@ -734,11 +739,12 @@ that a special struct </p>
 <span style="color: #A90D91">if</span> (<span style="color: #000000">rc</span>) {
     <span style="color: #177500">/* XXX: error handling */</span>
 }
-</pre></div>
+</code></pre></div>
+
 
 <p>The enable <code>nffs</code> to run on the <code>at45db</code>, the <code>flash_id</code> 0 needs to map to
 provide a mapping from 0 to this struct.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">hal_flash</span> <span style="color: #000000">*</span>
 <span style="color: #000000">hal_bsp_flash_dev</span>(<span style="color: #A90D91">uint8_t</span> <span style="color: #000000">id</span>)
 {
     <span style="color: #A90D91">if</span> (<span style="color: #000000">id</span> <span style="color: #000000">!=</span> <span style="color: #1C01CE">0</span>) {
@@ -746,7 +752,7 @@ provide a mapping from 0 to this struct.</p>
     }
     <span style="color: #A90D91">return</span> <span style="color: #000000">&amp;my_at45db_dev</span>;
 }
-</pre></div>
+</code></pre></div>
                         
                         <div class="row">
                             
