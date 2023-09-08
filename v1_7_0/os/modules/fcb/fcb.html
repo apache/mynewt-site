@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released September 7, 2023)
             </div>
         </div>
     </div>
@@ -183,6 +183,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_11_0" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0" >
     Version: 1.10.0
@@ -345,11 +348,11 @@ to get the next one. And so on.</p>
 would use it figure out what parameters to pass to flash_area_read()
 to read element contents. Or to flash_area_write() when adding a new
 element.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">fcb_entry</span> <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">flash_area</span> <span class="o">*</span><span class="n">fe_area</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">fe_elem_off</span><span class="p">;</span>
-    <span class="kt">uint32_t</span> <span class="n">fe_data_off</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">fe_data_len</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">fcb_entry</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_area</span><span class="w"> </span><span class="o">*</span><span class="n">fe_area</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fe_elem_off</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fe_data_off</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">fe_data_len</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -405,20 +408,20 @@ element.</p></td>
 <p>The following data structure describes the FCB itself. First part should
 be filled in by the user before calling fcb_init(). The second part is
 used by FCB for its internal bookkeeping.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">fcb</span> <span class="p">{</span>
-    <span class="cm">/* Caller of fcb_init fills this in */</span>
-    <span class="kt">uint32_t</span> <span class="n">f_magic</span><span class="p">;</span>           <span class="cm">/* As placed on the disk */</span>
-    <span class="kt">uint8_t</span> <span class="n">f_version</span><span class="p">;</span>          <span class="cm">/* Current version number of the data */</span>
-    <span class="kt">uint8_t</span> <span class="n">f_sector_cnt</span><span class="p">;</span>       <span class="cm">/* Number of elements in sector array */</span>
-    <span class="kt">uint8_t</span> <span class="n">f_scratch_cnt</span><span class="p">;</span>      <span class="cm">/* How many sectors should be kept empty */</span>
-    <span class="k">struct</span> <span class="n">flash_area</span> <span class="o">*</span><span class="n">f_sectors</span><span class="p">;</span> <span class="cm">/* Array of sectors, must be contiguous */</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">fcb</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* Caller of fcb_init fills this in */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">f_magic</span><span class="p">;</span><span class="w">           </span><span class="cm">/* As placed on the disk */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_version</span><span class="p">;</span><span class="w">          </span><span class="cm">/* Current version number of the data */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_sector_cnt</span><span class="p">;</span><span class="w">       </span><span class="cm">/* Number of elements in sector array */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_scratch_cnt</span><span class="p">;</span><span class="w">      </span><span class="cm">/* How many sectors should be kept empty */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_area</span><span class="w"> </span><span class="o">*</span><span class="n">f_sectors</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Array of sectors, must be contiguous */</span>
 
-    <span class="cm">/* Flash circular buffer internal state */</span>
-    <span class="k">struct</span> <span class="n">os_mutex</span> <span class="n">f_mtx</span><span class="p">;</span>      <span class="cm">/* Locking for accessing the FCB data */</span>
-    <span class="k">struct</span> <span class="n">flash_area</span> <span class="o">*</span><span class="n">f_oldest</span><span class="p">;</span>
-    <span class="k">struct</span> <span class="n">fcb_entry</span> <span class="n">f_active</span><span class="p">;</span>
-    <span class="kt">uint16_t</span> <span class="n">f_active_id</span><span class="p">;</span>
-    <span class="kt">uint8_t</span> <span class="n">f_align</span><span class="p">;</span>            <span class="cm">/* writes to flash have to aligned to this */</span>
+<span class="w">    </span><span class="cm">/* Flash circular buffer internal state */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">os_mutex</span><span class="w"> </span><span class="n">f_mtx</span><span class="p">;</span><span class="w">      </span><span class="cm">/* Locking for accessing the FCB data */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_area</span><span class="w"> </span><span class="o">*</span><span class="n">f_oldest</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">fcb_entry</span><span class="w"> </span><span class="n">f_active</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">f_active_id</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_align</span><span class="p">;</span><span class="w">            </span><span class="cm">/* writes to flash have to aligned to this */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -814,7 +817,8 @@ flash here.</p></td>
 <dd><p>Bookmarks are an optimization to speed up lookups in FCB-backed logs. </p>
 <p>The concept is simple: maintain a set of flash area+offset pairs corresponding to recently found log entries. When we perform a log lookup, the walk starts from the bookmark closest to our desired entry rather than from the beginning of the log.</p>
 <p>Bookmarks are stored in a circular buffer in the <a class="reference internal" href="#structfcb__log"><span class="std std-ref">fcb_log</span></a> object. Each time the log is walked, the starting point of the walk is added to the set of bookmarks.</p>
-<p>FCB rotation invalidates all bookmarks. It is up to the client code to clear a log’s bookmarks whenever rotation occurs. Configures an <a class="reference internal" href="#structfcb__log"><span class="std std-ref">fcb_log</span></a> to use the specified buffer for bookmarks.</p>
+<p>FCB rotation invalidates all bookmarks. It is up to the client code to clear a log’s bookmarks whenever rotation occurs.</p>
+<p>Configures an <a class="reference internal" href="#structfcb__log"><span class="std std-ref">fcb_log</span></a> to use the specified buffer for bookmarks.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><a class="reference internal" href="#structfcb__log"><span class="std std-ref"><span class="pre">fcb_log</span></span></a></code>: The log to configure. </p></li>

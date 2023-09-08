@@ -62,7 +62,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released (September 7, 2023)
             </div>
         </div>
     </div>
@@ -158,6 +158,9 @@ ga("send", "pageview");
       <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest">
     Version: master
+  </option>
+  <option value="/v1_11_0/" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0/" >
     Version: 1.10.0
@@ -513,21 +516,20 @@ example.</p>
 <li>Handle <em>OS_EVENT_T_TIMER</em> events within its task loop.</li>
 </ul>
 <p>The <code>ble_hs_start()</code> function is declared as follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">int</span> <span style="color: #000000">ble_hs_start</span>(<span style="color: #A90D91">void</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">int</span> <span style="color: #000000">ble_hs_start</span>(<span style="color: #A90D91">void</span>)
 </code></pre></div>
-
 
 <p>The <code>ble_hs_start()</code> function causes the host to send a sequence of HCI
 commands to the controller.  This sequence of commands is necessary for the
 host and controller to remain in sync.</p>
 <p>We add an application task to our example below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="background-color: #ffffcc"><span style="color: #633820">#include</span> <span style="color: #177500">&quot;os/os.h&quot;</span><span style="color: #633820"></span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc"><span style="color: #633820">#include</span> <span style="color: #177500">&quot;os/os.h&quot;</span>
 </span>
 <span style="background-color: #ffffcc"><span style="color: #177500">/** Application task. */</span>
-</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">app_task</span>;
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000000">app_task</span>;
 </span>
 <span style="background-color: #ffffcc"><span style="color: #177500">/** Application task event queue. */</span>
-</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">app_evq</span>;
+</span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_eventq</span> <span style="color: #000000">app_evq</span>;
 </span>
 <span style="background-color: #ffffcc"><span style="color: #177500">/** Application task stack. */</span>
 </span><span style="background-color: #ffffcc"><span style="color: #633820">#define APP_STACK_SIZE          (OS_STACK_ALIGN(300))</span>
@@ -539,8 +541,8 @@ host and controller to remain in sync.</p>
 </span><span style="background-color: #ffffcc"><span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
 </span><span style="background-color: #ffffcc"><span style="color: #000000">app_task_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
 </span><span style="background-color: #ffffcc">{
-</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout_func</span> <span style="color: #000000">*cf</span>;
-</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>;
+</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_callout_func</span> <span style="color: #000000">*cf</span>;
+</span><span style="background-color: #ffffcc">    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000000">*ev</span>;
 </span><span style="background-color: #ffffcc">    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
 </span>
 <span style="background-color: #ffffcc">    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">ble_hs_start</span>();
@@ -550,7 +552,7 @@ host and controller to remain in sync.</p>
 </span><span style="background-color: #ffffcc">        <span style="color: #000000">ev</span> <span style="color: #000000">=</span> <span style="color: #000000">os_eventq_get</span>(<span style="color: #000000">&amp;app_evq</span>);
 </span><span style="background-color: #ffffcc">        <span style="color: #A90D91">switch</span> (<span style="color: #000000">ev-&gt;ev_type</span>) {
 </span><span style="background-color: #ffffcc">        <span style="color: #A90D91">case</span> <span style="color: #000000">OS_EVENT_T_TIMER</span>:
-</span><span style="background-color: #ffffcc">            <span style="color: #000000">cf</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout_func</span> <span style="color: #000000">*</span>)<span style="color: #000000">ev</span>;
+</span><span style="background-color: #ffffcc">            <span style="color: #000000">cf</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_callout_func</span> <span style="color: #000000">*</span>)<span style="color: #000000">ev</span>;
 </span><span style="background-color: #ffffcc">            <span style="color: #000000">assert</span>(<span style="color: #000000">cf-&gt;cf_func</span>);
 </span><span style="background-color: #ffffcc">            <span style="color: #000000">cf-&gt;cf_func</span>(<span style="color: #000000">cf-&gt;cf_arg</span>);
 </span><span style="background-color: #ffffcc">            <span style="color: #A90D91">break</span>;

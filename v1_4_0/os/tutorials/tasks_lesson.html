@@ -80,7 +80,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released September 7, 2023)
             </div>
         </div>
     </div>
@@ -178,6 +178,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_11_0" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0" >
     Version: 1.10.0
@@ -314,7 +317,7 @@ one second. ##Create a New Task</p>
 aspects of tasks and how to properly initialize them. First, let’s
 define a second task called <code class="docutils literal notranslate"><span class="pre">work_task</span></code> in main.c (located in
 apps/blinky/src):</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">os_task</span> <span class="n">work_task</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">os_task</span><span class="w"> </span><span class="n">work_task</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>A task is represented by the
@@ -345,18 +348,18 @@ the hardware architecture.</p>
 majority of work is done by a task. Let’s write a task function for
 <code class="docutils literal notranslate"><span class="pre">work_task</span></code> called <code class="docutils literal notranslate"><span class="pre">work_task_handler()</span></code>:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">os_task</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="p">;</span>
 
-    <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
-    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">g_led_pin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 
-    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">os_sched_get_current_task</span><span class="p">();</span>
-        <span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span> <span class="o">==</span> <span class="n">work_task_handler</span><span class="p">);</span>
-        <span class="cm">/* Do work... */</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">os_sched_get_current_task</span><span class="p">();</span>
+<span class="w">        </span><span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">work_task_handler</span><span class="p">);</span>
+<span class="w">        </span><span class="cm">/* Do work... */</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -389,33 +392,33 @@ our main function clean.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
 <span class="nf">init_tasks</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="cm">/* … */</span>
-    <span class="n">os_stack_t</span> <span class="o">*</span><span class="n">work_stack</span><span class="p">;</span>
-    <span class="n">work_stack</span> <span class="o">=</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">os_stack_t</span><span class="p">)</span><span class="o">*</span><span class="n">WORK_STACK_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="cm">/* … */</span>
+<span class="w">    </span><span class="n">os_stack_t</span><span class="w"> </span><span class="o">*</span><span class="n">work_stack</span><span class="p">;</span>
+<span class="w">    </span><span class="n">work_stack</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">os_stack_t</span><span class="p">)</span><span class="o">*</span><span class="n">WORK_STACK_SIZE</span><span class="p">);</span>
 
-    <span class="n">assert</span><span class="p">(</span><span class="n">work_stack</span><span class="p">);</span>
-    <span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">work_task</span><span class="p">,</span> <span class="s">&quot;work&quot;</span><span class="p">,</span> <span class="n">work_task_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-            <span class="n">WORK_TASK_PRIO</span><span class="p">,</span> <span class="n">OS_WAIT_FOREVER</span><span class="p">,</span> <span class="n">work_stack</span><span class="p">,</span>
-            <span class="n">WORK_STACK_SIZE</span><span class="p">);</span>
+<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">work_stack</span><span class="p">);</span>
+<span class="w">    </span><span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">work_task</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;work&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">work_task_handler</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">            </span><span class="n">WORK_TASK_PRIO</span><span class="p">,</span><span class="w"> </span><span class="n">OS_WAIT_FOREVER</span><span class="p">,</span><span class="w"> </span><span class="n">work_stack</span><span class="p">,</span>
+<span class="w">            </span><span class="n">WORK_STACK_SIZE</span><span class="p">);</span>
 
-    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>Add the call to <code class="docutils literal notranslate"><span class="pre">init_tasks()</span></code> in <code class="docutils literal notranslate"><span class="pre">main()</span></code> before the <code class="docutils literal notranslate"><span class="pre">while</span></code>
 loop:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
 
-        <span class="p">...</span>
+<span class="w">        </span><span class="p">...</span>
 
-    <span class="cm">/* Initialize the work task */</span>
-    <span class="n">init_tasks</span><span class="p">();</span>
+<span class="w">    </span><span class="cm">/* Initialize the work task */</span>
+<span class="w">    </span><span class="n">init_tasks</span><span class="p">();</span>
 
-    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-         <span class="p">...</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="p">...</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -432,28 +435,28 @@ order to create a task. This is a general case for a new task called
 mytask:</p>
 <p><strong>1)</strong> Define a new task, task stack, and priority:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* My Task */</span>
-<span class="k">struct</span> <span class="n">os_task</span> <span class="n">mytask</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">os_task</span><span class="w"> </span><span class="n">mytask</span>
 <span class="cm">/* My Task Stack */</span>
 <span class="cp">#define MYTASK_STACK_SIZE OS_STACK_ALIGN(256)</span>
-<span class="n">os_stack_t</span> <span class="n">mytask_stack</span><span class="p">[</span><span class="n">MYTASK_STACK_SIZE</span><span class="p">];</span>
+<span class="n">os_stack_t</span><span class="w"> </span><span class="n">mytask_stack</span><span class="p">[</span><span class="n">MYTASK_STACK_SIZE</span><span class="p">];</span>
 <span class="cm">/* My Task Priority */</span>
 <span class="cp">#define MYTASK_PRIO (0)</span>
 </pre></div>
 </div>
 <p><strong>2)</strong> Define task function:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">mytask_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="nf">mytask_handler</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-      <span class="cm">/* ... */</span>
-  <span class="p">}</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="cm">/* ... */</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>3)</strong> Initialize the task:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mytask</span><span class="p">,</span> <span class="s">&quot;mytask&quot;</span><span class="p">,</span> <span class="n">mytask_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
-            <span class="n">MYTASK_PRIO</span><span class="p">,</span> <span class="n">OS_WAIT_FOREVER</span><span class="p">,</span> <span class="n">mytask_stack</span><span class="p">,</span>
-            <span class="n">MYTASK_STACK_SIZE</span><span class="p">);</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">os_task_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mytask</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mytask&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">mytask_handler</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span>
+<span class="w">            </span><span class="n">MYTASK_PRIO</span><span class="p">,</span><span class="w"> </span><span class="n">OS_WAIT_FOREVER</span><span class="p">,</span><span class="w"> </span><span class="n">mytask_stack</span><span class="p">,</span>
+<span class="w">            </span><span class="n">MYTASK_STACK_SIZE</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -474,24 +477,24 @@ busy. The delay is measured in os ticks and the actual number of ticks
 per second is dependent on the board. We multiply <code class="docutils literal notranslate"><span class="pre">OS_TICKS_PER_SEC</span></code>,
 which is defined in the MCU, by the number of seconds we wish to delay.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span>
-<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+<span class="nf">work_task_handler</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">os_task</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">os_task</span><span class="w"> </span><span class="o">*</span><span class="n">t</span><span class="p">;</span>
 
-    <span class="n">g_led_pin</span> <span class="o">=</span> <span class="n">LED_BLINK_PIN</span><span class="p">;</span>
-    <span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="n">g_led_pin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LED_BLINK_PIN</span><span class="p">;</span>
+<span class="w">    </span><span class="n">hal_gpio_init_out</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
 
-    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="nl">os_sched_get_current_t</span><span class="p">:</span><span class="n">ask</span><span class="p">();</span>
-        <span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span> <span class="o">==</span> <span class="n">work_task_handler</span><span class="p">);</span>
-        <span class="cm">/* Do work... */</span>
-        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-        <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
-            <span class="cm">/* Simulate doing a noticeable amount of work */</span>
-            <span class="n">hal_gpio_write</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="n">os_time_delay</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">OS_TICKS_PER_SEC</span><span class="p">);</span>
-    <span class="p">}</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">os_sched_get_current_t</span><span class="o">:</span><span class="n">ask</span><span class="p">();</span>
+<span class="w">        </span><span class="n">assert</span><span class="p">(</span><span class="n">t</span><span class="o">-&gt;</span><span class="n">t_func</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">work_task_handler</span><span class="p">);</span>
+<span class="w">        </span><span class="cm">/* Do work... */</span>
+<span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000000</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="cm">/* Simulate doing a noticeable amount of work */</span>
+<span class="w">            </span><span class="n">hal_gpio_write</span><span class="p">(</span><span class="n">g_led_pin</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">os_time_delay</span><span class="p">(</span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">OS_TICKS_PER_SEC</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

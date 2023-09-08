@@ -62,7 +62,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released (September 7, 2023)
             </div>
         </div>
     </div>
@@ -158,6 +158,9 @@ ga("send", "pageview");
       <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest">
     Version: master
+  </option>
+  <option value="/v1_11_0/" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0/" >
     Version: 1.10.0
@@ -435,7 +438,7 @@ ga("send", "pageview");
 <p>This tutorial assumes that you have already installed the newt tool and are familiar with its concepts.</p>
 <h3 id="create-the-application-directory">Create the application directory</h3>
 <p>You start by creating a project space for your own application work using the Newt tool (<code>my_proj1</code> in this example) and installing all the additional apps and libraries available by adding the repo <code>apache-mynewt-core</code>. See the tutorial on <a href="../../../os/tutorials/repo/add_repos/">adding a repo</a> for more on working with repos.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev$ newt new my_proj1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev$ newt new my_proj1
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in my_proj1...
 Project my_proj1 successfully created.
@@ -507,25 +510,22 @@ apache-mynewt-core
 232 directories, 846 files
 </code></pre></div>
 
-
 <p><br></p>
 <p>It's time to build your own app using one or more of the example apps available in the repo <code>apache-mynewt-core</code>. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ ls repos/apache-mynewt-core/apps
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev/my_proj1$ ls repos/apache-mynewt-core/apps
 bleprph     bletiny     boot        luatest     test
 bletest     blinky      ffs2native  slinky
 </code></pre></div>
 
-
 <p><br></p>
 <p>At the very least your app must contain a <code>main()</code> function and a <code>pkg.yml</code> file.  Use the following steps to create minimal ...</p>
 <p><em>1. Create the app directory structure.</em></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ mkdir -p apps/ble_app/src
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev/my_proj1$ mkdir -p apps/ble_app/src
 </code></pre></div>
-
 
 <p><br>
 <em>2. Paste the following contents into <code>apps/ble_app/pkg.yml</code>.</em></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.name: apps/ble_app
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.name: apps/ble_app
 pkg.type: app
 
 pkg.deps:
@@ -539,11 +539,10 @@ pkg.deps:
     - &quot;@apache-mynewt-core/net/nimble/host&quot;
 </code></pre></div>
 
-
 <p><br>
 <em>3. Paste the following contents into <code>apps/ble_app/src/main.c</code>.</em></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&lt;assert.h&gt;</span><span style="color: #633820"></span>
-<span style="color: #633820">#include</span> <span style="color: #177500">&quot;os/os.h&quot;</span><span style="color: #633820"></span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&lt;assert.h&gt;</span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&quot;os/os.h&quot;</span>
 
 <span style="color: #A90D91">int</span>
 <span style="color: #000000">main</span>(<span style="color: #A90D91">void</span>)
@@ -559,20 +558,18 @@ pkg.deps:
 }
 </code></pre></div>
 
-
 <p>In this <em>main()</em> all we are doing is initializing the Mynewt OS and starting it.</p>
 <p><br></p>
 <h3 id="create-the-target">Create the target</h3>
 <p>Now you have to create the target that you will use to build your application. We will call this target "ble_tgt". Type the <code>newt target create ble_tgt</code> command. You should get this:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt target create ble_tgt
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev/my_proj1$ newt target create ble_tgt
 Target targets/ble_tgt successfully created
 </code></pre></div>
-
 
 <p>What this command just did was to create a directory called <code>ble_tgt</code> in the targets directory of your project. Two files are created in that directory: pkg.yml and target.yml.</p>
 <p>The target is not yet complete though! We need to set some target variables for this project. Currently, the nimble stack has been ported to the Nordic nrf5x chipsets; specifically the nrf51 and nrf52. This application will use the nrf52 but we will also show the setup for the nrf51 in case your project uses that chip.</p>
 <p>Here is the command you will need to set up your target for the nrf52:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt target set ble_tgt     \
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev/my_proj1$ newt target set ble_tgt     \
     app=apps/ble_app                        \
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk \
     build_profile=optimized
@@ -581,9 +578,8 @@ Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp
 Target targets/ble_tgt successfully set target.build_profile to optimized
 </code></pre></div>
 
-
 <p>Here is the command you will need to set up your target for the nrf51:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt target set ble_tgt     \
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev/my_proj1$ newt target set ble_tgt     \
     app=apps/ble_app                        \
     bsp=@apache-mynewt-core/hw/bsp/nrf51dk  \
     build_profile=optimized
@@ -592,7 +588,6 @@ Target targets/ble_tgt successfully set target.bsp to @apache-mynewt-core/hw/bsp
 Target targets/ble_tgt successfully set target.build_profile to optimized
 </code></pre></div>
 
-
 <p><br></p>
 <h3 id="nimble-stack-initialization">Nimble stack initialization</h3>
 <p>There are certain stack initialization steps that are required for a BLE application to be up and running. If you are running a canned example (e.g. bletiny), these steps are already done for you. When you are writing your own app, you may want to assign different initial values or initialize additional packages that you may have added to your project or written yourself. </p>
@@ -600,7 +595,7 @@ Target targets/ble_tgt successfully set target.build_profile to optimized
 <p><br></p>
 <h3 id="building-the-application">Building the application</h3>
 <p>Now that we have created the application and the target we can build it and test it out. The command you need to run is the <code>newt build</code> command with the target we created (<em>ble_tgt</em>). The output will show the files being compiled and linked. You should see this when all is done (except for the <em>...</em> of course):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>~/dev/my_proj1$ newt build ble_tgt
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>~/dev/my_proj1$ newt build ble_tgt
 ...
 Archiving os.a
 Compiling cons_fmt.c
@@ -609,7 +604,6 @@ Archiving full.a
 Linking ble_app.elf
 App successfully built: /Users/wes/dev/my_proj1/bin/ble_tgt/apps/ble_app/ble_app.elf
 </code></pre></div>
-
 
 <h3 id="conclusion">Conclusion</h3>
 <p>You now have a fully functional BLE app (never mind the fact that it doesn't

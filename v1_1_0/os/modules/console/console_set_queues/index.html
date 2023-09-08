@@ -62,7 +62,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released (September 7, 2023)
             </div>
         </div>
     </div>
@@ -158,6 +158,9 @@ ga("send", "pageview");
       <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest">
     Version: master
+  </option>
+  <option value="/v1_11_0/" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0/" >
     Version: 1.10.0
@@ -683,9 +686,8 @@ ga("send", "pageview");
                         
                         
                             <h2 id="console_set_queues"><font color="#F2853F" style="font-size:24pt"> console_set_queues </font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">void</span> <span style="color: #000000">console_set_queues</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*avail</span>, <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">*lines</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">void</span> <span style="color: #000000">console_set_queues</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_eventq</span> <span style="color: #000000">*avail</span>, <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_eventq</span> <span style="color: #000000">*lines</span>)
 </code></pre></div>
-
 
 <p>Sets the event queues that the console uses to manage input data buffering and to send notification when a full line of data is received. </p>
 <p>The caller must initialize the <code>avail</code> queue and add at least one event to the queue. The event <code>ev_cb</code> field should point to the callback function to call when a full line of data is received, and the event <code>ev_arg</code> should point to a <code>console_input</code> structure. </p>
@@ -712,18 +714,18 @@ ga("send", "pageview");
 <h4 id="returned-values">Returned values</h4>
 <p>None</p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #633820">#define MAX_CONSOLE_LINES 2</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#define MAX_CONSOLE_LINES 2</span>
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000000">*ev</span>);
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_eventq</span> <span style="color: #000000">avail_queue</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_eventq</span> <span style="color: #000000">avail_queue</span>;
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>);
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">myapp_process_input</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000000">*ev</span>);
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> <span style="color: #000000">myapp_console_buf</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">console_input</span> <span style="color: #000000">myapp_console_buf</span>;
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">console_input</span> <span style="color: #000000">myapp_console_buf</span>[<span style="color: #000000">MAX_CONSOLE_LINES</span>];
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">myapp_console_event</span>[<span style="color: #000000">MAX_CONSOLE_LINES</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">console_input</span> <span style="color: #000000">myapp_console_buf</span>[<span style="color: #000000">MAX_CONSOLE_LINES</span>];
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000000">myapp_console_event</span>[<span style="color: #000000">MAX_CONSOLE_LINES</span>];
 
 
 <span style="color: #A90D91">int</span>

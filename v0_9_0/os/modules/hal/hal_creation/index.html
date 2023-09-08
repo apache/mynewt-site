@@ -62,7 +62,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released (September 7, 2023)
             </div>
         </div>
     </div>
@@ -158,6 +158,9 @@ ga("send", "pageview");
       <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest">
     Version: master
+  </option>
+  <option value="/v1_11_0/" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0/" >
     Version: 1.10.0
@@ -582,9 +585,8 @@ The first argument of all functions in the interface include the virtual
 device_id of the device you are controlling.  </p>
 <p>For example, in <a href="https://github.com/apache/incubator-mynewt-larva/blob/master/hw/hal/include/hal/hal_gpio.h"><code>hal_gpio.h</code></a> 
 the device enumeration is the first argument to all methods and called <code>pin</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    void hal_gpio_set(int pin);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>    void hal_gpio_set(int pin);
 </code></pre></div>
-
 
 <p>The device_id (in this case called <code>pin</code>) is not a physical device 
 (actual hardware pin), but a virtual pin which is defined by the 
@@ -608,7 +610,7 @@ to use both these devices from the HAL API at the same time.</p>
 <thead>
 <tr>
 <th><strong>Hal Name</strong></th>
-<th><strong> Interface File </strong></th>
+<th>** Interface File **</th>
 </tr>
 </thead>
 <tbody>
@@ -647,7 +649,7 @@ what it might look like for an indirect HAL.  </p>
 <p>In the indirect HAL there is an additional header file <code>hal_gpio_int.h</code>
  which describes the driver interface for underlying implementations.  It 
 looks similar to the HAL API except is driven by function pointers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>struct hal_gpio_funcs {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>struct hal_gpio_funcs {
     void (*hgpio_set)(void);
     . . .
 };
@@ -659,7 +661,6 @@ struct hal_gpio_int {
 const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin);
 </code></pre></div>
 
-
 <p>The BSP specific function is what will map the specific pin (device_id) 
 to its implementation.</p>
 <p>This is different than the <strong>direct HAL</strong> which maps this virtual/physical 
@@ -668,7 +669,7 @@ mapping has to be done in the BSP since that is the place where multiple
 disparate devices can be enumerated into a single <code>device_id</code> space.</p>
 <p>An interface file <code>hal/hal_gpio.c</code> would perform the mapping as 
 follows:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    void hal_gpio_set(int pin) {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>    void hal_gpio_set(int pin) {
         const struct hal_gpio_int *pgpio;
         pgpio = bsp_get_gpio_device(pin);
         if(pgpio) {
@@ -677,10 +678,9 @@ follows:</p>
     }
 </code></pre></div>
 
-
 <p>The implementer of GPIO functionality (say in <code>mcu/xxx/hal_gpio.c</code>) would 
 implement the structure and provide the function pointers.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>void xxx_hal_gpio_set(void) {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>void xxx_hal_gpio_set(void) {
     /* implementation for this particular gpio device */
     . . .
 }
@@ -690,9 +690,8 @@ struct hal_gpio_int xxx_hal_gpio = {
 }
 </code></pre></div>
 
-
 <p>This leaves the BSP implementation to complete the function </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>const struct hal_gpio_int *bsp_gpio_dev(uint8_t pin) {
     switch(pin) {
         case 0:
             return &amp;xxx_hal_gpio;
@@ -702,7 +701,6 @@ struct hal_gpio_int xxx_hal_gpio = {
     return NULL;
 }
 </code></pre></div>
-
 
 <p><strong>NOTE</strong>: In this example there could be 10s of GPIO. It may be memory inefficient
 to have that many <code>hal_gpio_int</code> structures around to basically call the 
@@ -714,7 +712,7 @@ the flexibility of the <strong>indirect HAL</strong> with the memory efficiency 
 <thead>
 <tr>
 <th><strong>Hal Name</strong></th>
-<th><strong> Interface File </strong></th>
+<th>** Interface File **</th>
 </tr>
 </thead>
 <tbody>

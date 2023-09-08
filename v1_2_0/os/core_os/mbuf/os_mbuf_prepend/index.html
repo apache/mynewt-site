@@ -62,7 +62,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released (September 7, 2023)
             </div>
         </div>
     </div>
@@ -158,6 +158,9 @@ ga("send", "pageview");
       <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest">
     Version: master
+  </option>
+  <option value="/v1_11_0/" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0/" >
     Version: 1.10.0
@@ -1014,9 +1017,8 @@ ga("send", "pageview");
                         
                         
                             <h2 id="os_mbuf_prepend"><font color="#F2853F" style="font-size:24pt">os_mbuf_prepend</font></h2>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*os_mbuf_prepend</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">len</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mbuf</span> <span style="color: #000000">*os_mbuf_prepend</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mbuf</span> <span style="color: #000000">*om</span>, <span style="color: #A90D91">int</span> <span style="color: #000000">len</span>)
 </code></pre></div>
-
 
 <p>Increases the length of an mbuf chain by adding data to the front.  If there is insufficient room in the leading mbuf, additional mbufs are allocated and prepended as necessary.  If this function fails to allocate an mbuf, the entire chain is freed.</p>
 <p><br></p>
@@ -1047,9 +1049,9 @@ ga("send", "pageview");
 <p>If <em>om</em> is a packet header mbuf, the total length of the packet is adjusted by <em>len</em>. Note that the returned mbuf may not point to <em>om</em> if insufficient leading space was available in <em>om</em>.</p>
 <p><br></p>
 <h4 id="example">Example</h4>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">pktlen</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*om</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_mbuf</span> <span style="color: #000000">*tmp</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">pktlen</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mbuf</span> <span style="color: #000000">*om</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mbuf</span> <span style="color: #000000">*tmp</span>;
 
     <span style="color: #177500">/* Get initial packet length before prepend */</span>
     <span style="color: #000000">pktlen</span> <span style="color: #000000">=</span> <span style="color: #000000">OS_MBUF_PKTLEN</span>(<span style="color: #000000">om</span>);
@@ -1057,7 +1059,7 @@ ga("send", "pageview");
     <span style="color: #000000">tmp</span> <span style="color: #000000">=</span> <span style="color: #000000">os_mbuf_prepend</span>(<span style="color: #000000">om</span>, <span style="color: #1C01CE">32</span>);
     <span style="color: #A90D91">if</span> (<span style="color: #000000">!tmp</span>) {
         <span style="color: #177500">/* Not able to prepend. The chain pointed to by *om has been freed */</span>
-        <span style="color: #A90D91">return</span> <span style="color: #000000">-</span><span style="color: #1C01CE">1</span>;
+        <span style="color: #A90D91">return</span> <span style="color: #1C01CE">-1</span>;
     }
 
     <span style="color: #177500">/* The packet length should equal the original length plus what we prepended */</span>

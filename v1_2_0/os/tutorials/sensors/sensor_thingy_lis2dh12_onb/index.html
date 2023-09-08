@@ -62,7 +62,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.10.0, Apache NimBLE 1.5.0 </a> released (May 6, 2022)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released (September 7, 2023)
             </div>
         </div>
     </div>
@@ -158,6 +158,9 @@ ga("send", "pageview");
       <li class="doc-version"><select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest">
     Version: master
+  </option>
+  <option value="/v1_11_0/" >
+    Version: 1.11.0
   </option>
   <option value="/v1_10_0/" >
     Version: 1.10.0
@@ -620,24 +623,22 @@ This tutorial shows you how to:</p>
 <p><br></p>
 <h4 id="step-1-creating-a-new-app-package">Step 1: Creating a New App Package</h4>
 <p>We name the new app package <code>my_sensor_app</code>. From your project base directory, run the <code>newt pkg new</code> command to create a new app package.  This tutorial uses ~/dev/myproj for the project.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ cd ~/dev/myproj
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ cd ~/dev/myproj
 $ newt pkg new -t app apps/my_sensor_app
 Download package template for package type app.
 Package successfuly installed into ~/dev/myproj/apps/my_sensor_app
 </code></pre></div>
 
-
 <p><br>
 The newt tool creates a skeleton <code>my_sensor_app</code> package directory in the <code>~/dev/myproj/apps/</code> directory. Go to the <code>my_sensor_app</code> directory to update the package <code>pkg.yml</code> and source files. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ cd apps/my_sensor_app
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ cd apps/my_sensor_app
 </code></pre></div>
-
 
 <p><br></p>
 <h4 id="step-2-adding-the-package-dependencies">Step 2: Adding the Package Dependencies</h4>
 <p>The my_sensor_app package requires the sensor framework, <code>hw/sensor</code>, package as a package dependency.  Note that the BSP creates the sensor devices for the onboard sensors, so the <code>hw/sensor/creator</code> package that creates off-board sensor is not needed. </p>
 <p>Add the highlighted line to the <code>pkg.yml</code> file to add the <code>hw/sensor</code> package as package dependency:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.deps:
     - &quot;@apache-mynewt-core/kernel/os&quot;
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/log/full&quot;
@@ -645,11 +646,10 @@ The newt tool creates a skeleton <code>my_sensor_app</code> package directory in
 <span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/hw/sensor&quot;
 </span></code></pre></div>
 
-
 <p><br></p>
 <h4 id="step-3-using-the-skeleton-mainc-file">Step 3: Using the Skeleton main.c File</h4>
 <p>The newt tool creates a skeleton main.c file in the <code>my_sensor_app/src</code> directory.  The skeleton <code>main()</code> code shown is all you need to build an application that only uses the <code>sensor</code> shell command to read sensor data. You do not need to make any changes to the file. The sensor framework implements the <code>sensor</code> shell command and the shell package processes shell command events from the OS default event queue. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">int</span>
 <span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
     <span style="color: #177500">/* Perform some extra setup if we&#39;re running in the simulator. */</span>
@@ -668,7 +668,6 @@ The newt tool creates a skeleton <code>my_sensor_app</code> package directory in
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
 </code></pre></div>
-
 
 <p><br></p>
 <h4 id="step-4-creating-the-target-for-the-my_sensor_app-application">Step 4: Creating the Target for the my_sensor_app Application</h4>
@@ -690,7 +689,7 @@ The newt tool creates a skeleton <code>my_sensor_app</code> package directory in
 <p><strong>Note:</strong> The lis2dh12 sensor device driver package, <code>/hw/driver/sensors/lis2dh12</code>, currently does not support a shell command to view information on the device.</p>
 <p><br>
 1. Run the following newt commands to create the target and set the application and BSP.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target create thingy_my_sensor
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create thingy_my_sensor
 Target targets/thingy_my_sensor successfully created
 $ newt target set thingy_my_sensor bsp=@apache-mynewt-core/hw/bsp/nrf52-thingy
 Target targets/thingy_my_sensor successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52-thingy
@@ -700,20 +699,18 @@ $ newt target set thingy_my_sensor build_profile=debug
 Target targets/thingy_my_sensor successfully set target.build_profile to debug
 </code></pre></div>
 
-
 <p><br>
 2. Run the following <code>newt target set</code> command to set the syscfg settings:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target set thingy_my_sensor syscfg=I2C_0=1:LIS2DH12_ONB=1:SHELL_TASK=1:CONSOLE_RTT=1:CONSOLE_UART=0:SENSOR_OIC=0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target set thingy_my_sensor syscfg=I2C_0=1:LIS2DH12_ONB=1:SHELL_TASK=1:CONSOLE_RTT=1:CONSOLE_UART=0:SENSOR_OIC=0
 Target targets/thingy_my_sensor successfully set target.syscfg to I2C_0=1:LIS2DH12_ONB=1:SHELL_TASK=1:CONSOLE_RTT=1:CONSOLE_UART=0:SENSOR_OIC=0
 </code></pre></div>
-
 
 <p><br></p>
 <h4 id="step-5-creating-and-building-the-bootloader-target">Step 5: Creating and Building the Bootloader Target</h4>
 <p>Create a target for the bootloader for the nRF52 Thingy. We name the target <code>thingy_boot</code>.</p>
 <p><br>
 1.  Run the following <code>newt target</code> commands to create the target:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt target create thingy_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create thingy_boot
 Target targets/thingy_boot successfully created
 $ newt target set thingy_boot bsp=@apache-mynewt-core/hw/bsp/nrf52-thingy
 Target targets/thingy_boot successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52-thingy
@@ -723,10 +720,9 @@ $ newt target set thingy_boot build_profile=optimized
 Target targets/thingy_boot successfully set target.build_profile to optimized
 </code></pre></div>
 
-
 <p><br>
 2. Run the <code>newt build</code> command to build the bootloader target:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt build thingy_boot 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt build thingy_boot 
 Building target targets/thingy_boot
 
        ...
@@ -736,7 +732,6 @@ Archiving util_mem.a
 Linking ~/dev/myproj/bin/targets/thingy_boot/app/apps/boot/boot.elf
 Target successfully built: targets/thingy_boot
 </code></pre></div>
-
 
 <p><br></p>
 <h4 id="step-6-connecting-the-thingy-to-your-computer">Step 6: Connecting the Thingy to your Computer</h4>
@@ -750,22 +745,29 @@ Target successfully built: targets/thingy_boot
 2. Connect the debug probe to the JTAG port on the board using the Jlink 9-pin adapter and cable, and connect the probe to your computer.</p>
 <p><br>
 <img alt="J-Link debug probe to Thingy" src="/os/tutorials/pics/thingy_jlink.jpg" title="Connecting J-Link debug probe to Thingy" />
-<br>
-<p>
 <br></p>
-<p><br></p>
-<h4 id="step-7-loading-the-image-and-connecting-to-the-console-via-rtt">Step 7: Loading the Image and Connecting to the Console via RTT</h4>
-<p>To run the application, you need to load the bootloader on to the device, load the application image, and start a GDB debug process for RTT to attach to.</p>
-<p><br>
-1. Run the <code>newt load</code> command to load the bootloader:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt load thingy_boot
+<p>
+<br>
+
+<br>
+#### Step 7: Loading the Image and Connecting to the Console via RTT 
+
+To run the application, you need to load the bootloader on to the device, load the application image, and start a GDB debug process for RTT to attach to.
+
+<br>
+1. Run the `newt load` command to load the bootloader:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt load thingy_boot
 Loading bootloader
 </code></pre></div>
 
 
-<p><br>
-2. Run the <code>newt run</code> command to build and create an image for the my_sensor_app, load the image,  and start a GDB process to debug the application:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt run thingy_my_sensor 1.0.0
+<br>
+2. Run the `newt run` command to build and create an image for the my_sensor_app, load the image,  and start a GDB process to debug the application:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt run thingy_my_sensor 1.0.0
 Assembling repos/apache-mynewt-core/hw/bsp/nrf52-thingy/src/arch/cortex_m4/gcc_startup_nrf52_split.s
 Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
 Assembling repos/apache-mynewt-core/hw/bsp/nrf52-thingy/src/arch/cortex_m4/gcc_startup_nrf52.s
@@ -809,11 +811,15 @@ Resetting target
 </code></pre></div>
 
 
-<p><br>
-3. Enter <code>c &lt;return&gt;</code> in the (gdb) prompt to continue.</p>
-<p><br>
-4.  Run the following telnet command to connect to the Mynewt console via RTT and enter &lt;return&gt; to get the shell prompt after you are connected.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ telnet localhost 19021
+
+<br>
+3. Enter `c <return>` in the (gdb) prompt to continue.
+
+<br>
+4.  Run the following telnet command to connect to the Mynewt console via RTT and enter &lt;return&gt; to get the shell prompt after you are connected.
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet localhost 19021
 Trying ::1...
 telnet: connect to address ::1: Connection refused
 Trying 127.0.0.1...
@@ -827,20 +833,28 @@ Process: JLinkGDBServer
 </code></pre></div>
 
 
-<p><br></p>
-<h4 id="step-8-viewing-the-list-of-sensors-and-sensor-data">Step 8: Viewing the list of Sensors and Sensor Data</h4>
-<p><br>
-1. Enter <code>sensor list</code> to see the sensors that are registered with the sensor manager. You should see the <code>lis2dh12_0</code> sensor.  This sensor is only configured for the accelerometer (0x1).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>011468 compat&gt; sensor list
+
+<br>
+#### Step 8: Viewing the list of Sensors and Sensor Data
+
+<br>
+1. Enter `sensor list` to see the sensors that are registered with the sensor manager. You should see the `lis2dh12_0` sensor.  This sensor is only configured for the accelerometer (0x1).
+
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>011468 compat&gt; sensor list
 sensor list
 029706 sensor dev = lis2dh12_0, configured type = 0x1 
 029707 compat&gt; 
 </code></pre></div>
 
 
-<p><br>
-2. Enter the <code>sensor read</code> command to read some data samples from the accelerometer:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>029707 compat&gt; sensor read lis2dh12_0 0x1 -n 5
+
+<br>
+2. Enter the `sensor read` command to read some data samples from the accelerometer:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>029707 compat&gt; sensor read lis2dh12_0 0x1 -n 5
 sensor read lis2dh12_0 0x1 -n 5
 042537 ts: [ secs: 331 usecs: 102682 cputime: 331436945 ]
 042537 x = 9.806650176 y = 58.839900992 z = -9894.910156
@@ -856,26 +870,33 @@ sensor read lis2dh12_0 0x1 -n 5
 </code></pre></div>
 
 
-<p><br></p>
-<h3 id="extending-the-application-to-use-the-sensor-api-to-read-sensor-data">Extending the Application to Use the Sensor API to Read Sensor Data</h3>
-<p>As this tutorial demonstrates so far, the Mynewt sensor framework enables you to easily and quickly develop an application with a sensor and view the sensor data from the <code>sensor</code> shell command.  We now extend the application to use the sensor API to read the sensor data. </p>
-<p>There are two sensor functions that you can use to read data from a sensor device:</p>
-<ul>
-<li>
-<p><code>sensor_register_listener()</code>: This function allows you to register a listener for a sensor device. You specify a bit mask of the types of sensor data to listen for and a callback to call when data is read from the sensor device. The listener callback is called whenever the <code>sensor_read()</code> function reads data for a sensor type from a sensor device that the listener is listening for. </p>
-<p>The sensor framework supports polling of sensor devices. For a sensor device that has a polling rate configured, the sensor framework poller reads sensor data for all the configured sensor types from the sensor device at each polling interval and calls the registered listener callbacks with the sensor data.</p>
-</li>
-<li>
-<p><code>sensor_read()</code>:  This function reads sensor data from a sensor device and calls the specified user callback to receive the sensor data.  You specify a bit mask of the types of sensor data to read from a sensor device and a callback. This callback is called for each sensor type you specify to read.  </p>
-</li>
-</ul>
-<p>We first extend the application to a register a sensor listener to demonstrate how to use the sensor framework polling support.  We then extend the application to use the <code>sensor_read()</code> function instead of a listener.  An application may not need to poll sensors. For example, an application that processes remote requests for sensor data might only read the sensor data when it receives a request.  </p>
-<p><br></p>
-<h4 id="step-1-modifying-mainc-to-add-a-sensor-listener">Step 1: Modifying main.c to Add a Sensor Listener</h4>
-<p>Add the following code to the <code>my_sensor_app/src/main.c</code> file:</p>
-<p><br>
-1. Add the highlighted include files:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>#include &quot;sysinit/sysinit.h&quot;
+
+<br>
+### Extending the Application to Use the Sensor API to Read Sensor Data
+
+As this tutorial demonstrates so far, the Mynewt sensor framework enables you to easily and quickly develop an application with a sensor and view the sensor data from the `sensor` shell command.  We now extend the application to use the sensor API to read the sensor data. 
+
+There are two sensor functions that you can use to read data from a sensor device:
+
+* `sensor_register_listener()`: This function allows you to register a listener for a sensor device. You specify a bit mask of the types of sensor data to listen for and a callback to call when data is read from the sensor device. The listener callback is called whenever the `sensor_read()` function reads data for a sensor type from a sensor device that the listener is listening for. 
+
+    The sensor framework supports polling of sensor devices. For a sensor device that has a polling rate configured, the sensor framework poller reads sensor data for all the configured sensor types from the sensor device at each polling interval and calls the registered listener callbacks with the sensor data.
+
+* `sensor_read()`:  This function reads sensor data from a sensor device and calls the specified user callback to receive the sensor data.  You specify a bit mask of the types of sensor data to read from a sensor device and a callback. This callback is called for each sensor type you specify to read.  
+
+
+We first extend the application to a register a sensor listener to demonstrate how to use the sensor framework polling support.  We then extend the application to use the `sensor_read()` function instead of a listener.  An application may not need to poll sensors. For example, an application that processes remote requests for sensor data might only read the sensor data when it receives a request.  
+
+<br>
+#### Step 1: Modifying main.c to Add a Sensor Listener
+
+Add the following code to the `my_sensor_app/src/main.c` file:
+
+<br>
+1. Add the highlighted include files:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>#include &quot;sysinit/sysinit.h&quot;
 #include &quot;os/os.h&quot;
 
 <span style="background-color: #ffffcc">#include &lt;defs/error.h&gt;
@@ -885,21 +906,27 @@ sensor read lis2dh12_0 0x1 -n 5
 </span></code></pre></div>
 
 
-<p><br>
-2. Add the <code>struct sensor * my_sensor</code>. This is the handle for the sensor that the sensor API uses to perform operations on the sensor. We set this variable when we lookup the sensor.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor</span> <span style="color: #000000">*my_sensor</span>;
+
+<br>
+2. Add the `struct sensor * my_sensor`. This is the handle for the sensor that the sensor API uses to perform operations on the sensor. We set this variable when we lookup the sensor.  
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor</span> <span style="color: #000000">*my_sensor</span>;
 </code></pre></div>
 
 
-<p><br>
-3. Declare and initialize a sensor listener. You specify a bit mask for the sensor types to listen for, the callback function, and an opaque argument to pass to the callback. You initialize the type to SENSOR_TYPE_ACCELEROMETER,  the listener callback to the <code>read_accelerometer()</code> function, and the callback opaque argument to the LISTENER_CB value.</p>
-<p><strong>Note</strong>: We define LISTENER_CB and READ_CB values because we also use the <code>read_accelerometer()</code> function as the callback for the <code>sensor_read()</code> function later in the tutorial.  The LISTENER_CB or the READ_CB value is passed to the <code>read_accelerometer()</code> function to indicate whether it is invoked as a listener or a <code>sensor_read()</code> callback. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #633820">#define LISTENER_CB 1</span>
+<br>
+3. Declare and initialize a sensor listener. You specify a bit mask for the sensor types to listen for, the callback function, and an opaque argument to pass to the callback. You initialize the type to SENSOR_TYPE_ACCELEROMETER,  the listener callback to the `read_accelerometer()` function, and the callback opaque argument to the LISTENER_CB value.
+
+**Note**: We define LISTENER_CB and READ_CB values because we also use the `read_accelerometer()` function as the callback for the `sensor_read()` function later in the tutorial.  The LISTENER_CB or the READ_CB value is passed to the `read_accelerometer()` function to indicate whether it is invoked as a listener or a `sensor_read()` callback. 
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#define LISTENER_CB 1</span>
 <span style="color: #633820">#define READ_CB 2</span>
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span> <span style="color: #000000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">sensor*</span> <span style="color: #000000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*databuf</span>, <span style="color: #000000">sensor_type_t</span> <span style="color: #000000">type</span>);
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span> <span style="color: #000000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor</span><span style="color: #000000">*</span> <span style="color: #000000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*databuf</span>, <span style="color: #000000">sensor_type_t</span> <span style="color: #000000">type</span>);
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_listener</span> <span style="color: #000000">listener</span> <span style="color: #000000">=</span> {
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_listener</span> <span style="color: #000000">listener</span> <span style="color: #000000">=</span> {
    .<span style="color: #000000">sl_sensor_type</span> <span style="color: #000000">=</span> <span style="color: #000000">SENSOR_TYPE_ACCELEROMETER</span>,
    .<span style="color: #000000">sl_func</span> <span style="color: #000000">=</span> <span style="color: #000000">read_accelerometer</span>,
    .<span style="color: #000000">sl_arg</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>)<span style="color: #000000">LISTENER_CB</span>,
@@ -907,20 +934,23 @@ sensor read lis2dh12_0 0x1 -n 5
 </code></pre></div>
 
 
-<p><br>
-4. Add the code for the <code>read_accelerometer()</code> function.  The sensor data is stored in the <code>databuf</code> and <code>type</code> specifies the type of sensor data.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">sensor*</span> <span style="color: #000000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*databuf</span>, <span style="color: #000000">sensor_type_t</span> <span style="color: #000000">type</span>)
+
+<br>
+4. Add the code for the `read_accelerometer()` function.  The sensor data is stored in the `databuf` and `type` specifies the type of sensor data.
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor</span><span style="color: #000000">*</span> <span style="color: #000000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*databuf</span>, <span style="color: #000000">sensor_type_t</span> <span style="color: #000000">type</span>)
 {
 
     <span style="color: #A90D91">char</span> <span style="color: #000000">tmpstr</span>[<span style="color: #1C01CE">13</span>];
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_accel_data</span> <span style="color: #000000">*sad</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_accel_data</span> <span style="color: #000000">*sad</span>;
 
     <span style="color: #A90D91">if</span> (<span style="color: #000000">!databuf</span>) {
         <span style="color: #A90D91">return</span> <span style="color: #000000">SYS_EINVAL</span>;
 
     }
-    <span style="color: #000000">sad</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_accel_data</span> <span style="color: #000000">*</span>)<span style="color: #000000">databuf</span>;
+    <span style="color: #000000">sad</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_accel_data</span> <span style="color: #000000">*</span>)<span style="color: #000000">databuf</span>;
 
     <span style="color: #A90D91">if</span> (<span style="color: #000000">!sad-&gt;sad_x_is_valid</span> <span style="color: #000000">||</span>
         <span style="color: #000000">!sad-&gt;sad_y_is_valid</span> <span style="color: #000000">||</span>
@@ -943,10 +973,14 @@ sensor read lis2dh12_0 0x1 -n 5
 </code></pre></div>
 
 
-<p><br>
-5. Set the poll rate for the sensor to two seconds. The <code>sensor_set_poll_rate_ms()</code> function sets the poll rate for a named sensor. </p>
-<p><strong>Note:</strong> You set the poll rate for a sensor programmatically and must set the poll rate to a non zero value in order for the sensor manager to poll the sensor. You may set a different poll rate for each sensor.  The sensor framework also defines a <code>SENSOR_MGR_WAKEUP_RATE</code> syscfg setting that specifies the default rate that the sensor manager polls. The sensor manager uses the poll rate for a sesnor if a sensor is configured to poll more frequently than the <code>SENSOR_MGR_WAKEUP_RATE</code> setting value.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="background-color: #ffffcc">#define MY_SENSOR_DEVICE  &quot;lis2dh12_0&quot;
+
+<br>
+5. Set the poll rate for the sensor to two seconds. The `sensor_set_poll_rate_ms()` function sets the poll rate for a named sensor. 
+
+**Note:** You set the poll rate for a sensor programmatically and must set the poll rate to a non zero value in order for the sensor manager to poll the sensor. You may set a different poll rate for each sensor.  The sensor framework also defines a `SENSOR_MGR_WAKEUP_RATE` syscfg setting that specifies the default rate that the sensor manager polls. The sensor manager uses the poll rate for a sesnor if a sensor is configured to poll more frequently than the `SENSOR_MGR_WAKEUP_RATE` setting value.
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc">#define MY_SENSOR_DEVICE  &quot;lis2dh12_0&quot;
 </span><span style="background-color: #ffffcc">#define MY_SENSOR_POLL_TIME 2000
 </span>
 int
@@ -972,9 +1006,12 @@ main(int argc, char **argv)
 </code></pre></div>
 
 
-<p><br>
-6. Look up the sensor by name to get the handle for the sensor and register a listener for the sensor.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>int
+
+<br>
+6. Look up the sensor by name to get the handle for the sensor and register a listener for the sensor.
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>int
 main(int argc, char **argv)
 {
     ...
@@ -997,11 +1034,15 @@ main(int argc, char **argv)
 </code></pre></div>
 
 
-<p><br></p>
-<h4 id="step-2-rebuilding-the-application-and-connecting-to-console">Step 2: Rebuilding the Application and Connecting to Console</h4>
-<p><br>
-1. Run the <code>newt run</code> command to rebuild the application, create a new image, load the image, and start a GDB process:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt run thingy_my_sensor 2.0.0
+
+<br>
+#### Step 2: Rebuilding the Application and Connecting to Console
+
+<br>
+1. Run the `newt run` command to rebuild the application, create a new image, load the image, and start a GDB process:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt run thingy_my_sensor 2.0.0
 Compiling apps/my_sensor_app/src/main.c
 Archiving apps_my_sensor_app.a
 Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
@@ -1024,9 +1065,11 @@ Continuing.
 </code></pre></div>
 
 
-<p><br>
-2. Connect to the console via RTT:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ telnet localhost 19021
+<br>
+2. Connect to the console via RTT:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet localhost 19021
 
 Connected to localhost.
 Escape character is &#39;^]&#39;.
@@ -1053,22 +1096,28 @@ Process: JLinkGDBServer
 </code></pre></div>
 
 
-<p>You should see the accelerometer sensor data output from the listener callback.</p>
-<p><br></p>
-<h4 id="step-3-modifying-mainc-to-use-sensor_read-instead-of-a-listener">Step 3: Modifying main.c to Use  sensor_read() Instead of a Listener</h4>
-<p>Lets extend the application to use the <code>sensor_read()</code> function instead of a listener. We setup an OS callout to call the <code>sensor_read()</code> function for illustration purposes.  A real application will most likely read the sensor data when it gets a request or some other event.</p>
-<p><br>
-1. Add an OS callout and initialize an OS timer to fire every 5 seconds. The timer callback calls the <code>sensor_read()</code> function to read the sensor data. The <code>read_accelerometer()</code> callback is called when the sensor data is read. The READ_CB value is passed to the <code>read_accelerometer()</code> function and indicates that the callback is from the <code>sensor_read()</code> function and not from the listener.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code><span style="color: #177500">/*</span>
+
+You should see the accelerometer sensor data output from the listener callback.
+
+<br>
+#### Step 3: Modifying main.c to Use  sensor_read() Instead of a Listener 
+
+Lets extend the application to use the `sensor_read()` function instead of a listener. We setup an OS callout to call the `sensor_read()` function for illustration purposes.  A real application will most likely read the sensor data when it gets a request or some other event.
+
+<br>
+1. Add an OS callout and initialize an OS timer to fire every 5 seconds. The timer callback calls the `sensor_read()` function to read the sensor data. The `read_accelerometer()` callback is called when the sensor data is read. The READ_CB value is passed to the `read_accelerometer()` function and indicates that the callback is from the `sensor_read()` function and not from the listener.
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/*</span>
 <span style="color: #177500"> * Event callback function for timer events. The callback reads the sensor data</span>
 <span style="color: #177500"> */</span>
 
 <span style="color: #633820">#define READ_SENSOR_INTERVAL (5 * OS_TICKS_PER_SEC)</span>
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">sensor_callout</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_callout</span> <span style="color: #000000">sensor_callout</span>;
 
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
+<span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000000">*ev</span>)
 {
 
 
@@ -1101,9 +1150,13 @@ Process: JLinkGDBServer
 </code></pre></div>
 
 
-<p><br>
-2. Remove the listener registration and call the <code>init_timer()</code> function in <code>main()</code>. You can delete the <code>sensor_register_listener()</code> function call, but we call the <code>sensor_unregister_listener()</code> function to illustrate how to use this function.  </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>int
+
+<br>
+2. Remove the listener registration and call the `init_timer()` function in `main()`. You can delete the `sensor_register_listener()` function call, but we call the `sensor_unregister_listener()` function to illustrate how to use this function.  
+
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>int
 main(int argc, char **argv)
 {   
     ...
@@ -1127,11 +1180,14 @@ main(int argc, char **argv)
 </code></pre></div>
 
 
-<p><br></p>
-<h4 id="step-4-rebuilding-the-application-and-connecting-to-console">Step 4: Rebuilding the Application and Connecting to Console</h4>
-<p><br>
-1. Run the <code>newt run</code> command to rebuild the application, create an new image, and start a GDB process:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ newt run thingy_my_sensor 3.0.0
+
+<br>
+#### Step 4: Rebuilding the Application and Connecting to Console
+<br>
+1. Run the `newt run` command to rebuild the application, create an new image, and start a GDB process:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt run thingy_my_sensor 3.0.0
 Compiling apps/my_sensor_app/src/main.c
 Archiving apps_my_sensor_app.a
 Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
@@ -1154,9 +1210,12 @@ Continuing.
 </code></pre></div>
 
 
-<p><br>
-3. Connect to the console via RTT:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><code>$ telnet localhost 19021
+
+<br>
+3. Connect to the console via RTT:
+
+
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet localhost 19021
 Trying ::1...
 telnet: connect to address ::1: Connection refused
 Trying 127.0.0.1...
@@ -1181,7 +1240,8 @@ Process: JLinkGDBServer
 </code></pre></div>
 
 
-<p>You should see the accelerometer sensor data output from the sensor read data callback.</p>
+
+You should see the accelerometer sensor data output from the sensor read data callback.
                         
                         <div class="row">
                             

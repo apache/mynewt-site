@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+
+    
+    <title>Flash Circular Buffer (FCB) &mdash; Apache Mynewt latest documentation</title>
+    
+
+    
+    
+      <link rel="shortcut icon" href="../../../_static/mynewt-logo-only-newt32x32.png"/>
+    
+
+    
+
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+
+    
+      <link rel="stylesheet" href="../../../_static/css/sphinx_theme.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/bootstrap-3.0.3.min.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/v2.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/restructuredtext.css" type="text/css" />
+    
+
+    
+
+    <link rel="stylesheet" href="../../../_static/css/overrides.css" type="text/css" />
+          <link rel="index" title="Index"
+                href="../../../genindex.html"/>
+          <link rel="search" title="Search" href="../../../search.html"/>
+      <link rel="top" title="Apache Mynewt latest documentation" href="../../../index.html"/>
+          <link rel="up" title="OS User Guide" href="../../os_user_guide.html"/>
+          <link rel="next" title="fcb_append" href="fcb_append.html"/>
+          <link rel="prev" title="Adding a new file system" href="../fs/fs_add.html"/> 
+
+    
+    <script src="../../../_static/js/modernizr.min.js"></script>
+
+    
+    <script>
+    (function(i, s, o, g, r, a, m) {
+	i["GoogleAnalyticsObject"] = r;
+	(i[r] =
+		i[r] ||
+		function() {
+			(i[r].q = i[r].q || []).push(arguments);
+		}),
+		(i[r].l = 1 * new Date());
+	(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+	a.async = 1;
+	a.src = g;
+	m.parentNode.insertBefore(a, m);
+})(window, document, "script", "//www.google-analytics.com/analytics.js", "ga");
+
+ga("create", "UA-72162311-1", "auto");
+ga("send", "pageview");
+</script>
+    
+
+  </head>
+
+  <body class="not-front page-documentation" role="document" >
+    <div id="wrapper">
+      <div class="container">
+    <div id="banner" class="row v2-main-banner">
+        <a class="logo-cell" href="/">
+            <img class="logo" src="../../../_static/img/logo.png">
+        </a>
+        <div class="tagline-cell">
+            <h4 class="tagline">An OS to build, deploy and securely manage billions of devices</h4>
+        </div>
+        <div class="news-cell">
+            <div class="well">
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released September 7, 2023)
+            </div>
+        </div>
+    </div>
+</div>
+      
+<header>
+    <nav id="navbar" class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <!-- Collapsed navigation -->
+            <div class="navbar-header">
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+
+            <!-- Expanded navigation -->
+            <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/"><i class="fa fa-home" style="font-size: larger;"></i></a>
+                    </li>
+                    <li class="important">
+                        <a href="/quick-start/">Quick Start</a>
+                    </li>
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    <li>
+                        <a href="/talks/">Talks</a>
+                    </li>
+                    <li class="active">
+                        <a href="/documentation/">Documentation</a>
+                    </li>
+                    <li>
+                        <a href="/download/">Download</a>
+                    </li>
+                    <li>
+                        <a href="/community/">Community</a>
+                    </li>
+                    <li>
+                        <a href="/events/">Events</a>
+                    </li>
+                </ul>
+
+                <!-- Search, Navigation and Repo links -->
+                <ul class="nav navbar-nav navbar-right">
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+      <!-- STARTS MAIN CONTENT -->
+      <div id="main-content">
+        
+
+
+
+
+
+<div id="breadcrumb">
+  <div class="container">
+    <a href="/documentation/">Docs</a> /
+    
+      <a href="../../os_user_guide.html">OS User Guide</a> /
+    
+    Flash Circular Buffer (FCB)
+    
+  <div class="sourcelink">
+    <a href="https://github.com/apache/mynewt-core/edit/master/docs/os/modules/fcb/fcb.rst" class="icon icon-github"
+           rel="nofollow"> Edit on GitHub</a>
+</div>
+  </div>
+</div>
+        <!-- STARTS CONTAINER -->
+        <div class="container">
+          <!-- STARTS .content -->
+          <div id="content" class="row">
+            
+            <!-- STARTS .container-sidebar -->
+<div class="container-sidebar col-xs-12 col-sm-3">
+  <div id="docSidebar" class="sticky-container">
+    <div role="search" class="sphinx-search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search documentation" class="search-documentation" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+    <!-- Note: only works when deployed -->
+<select class="form-control" onchange="if (this.value) window.location.href=this.value">
+  <option value="/latest" selected>
+    Version: latest
+  </option>
+  <option value="/v1_11_0" selected="selected" >
+    Version: 1.11.0
+  </option>
+  <option value="/v1_10_0" >
+    Version: 1.10.0
+  </option>
+  <option value="/v1_9_0" >
+    Version: 1.9.0
+  </option>
+  <option value="/v1_8_0" >
+    Version: 1.8.0
+  </option>
+  <option value="/v1_7_0" >
+    Version: 1.7.0
+  </option>
+  <option value="/v1_6_0" >
+    Version: 1.6.0
+  </option>
+  <option value="/v1_5_0" >
+    Version: 1.5.0
+  </option>
+  <option value="/v1_4_0" >
+    Version: 1.4.0
+  </option>
+  <option value="/v1_3_0/os/introduction" >
+    Version: 1.3.0
+  </option>
+  <option value="/v1_2_0/os/introduction" >
+    Version: 1.2.0
+  </option>
+  <option value="/v1_1_0/os/introduction" >
+    Version: 1.1.0
+  </option>
+  <option value="/v1_0_0/os/introduction" >
+    Version: 1.0.0
+  </option>
+  <option value="/v0_9_0/os/introduction" >
+    Version: 0.9.0
+  </option>
+</select>
+    <div class="region region-sidebar">
+      <div class="docs-menu">
+      
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../get_started/index.html">Setup &amp; Get Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../concepts.html">Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../external_links.html">Third-party Resources</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../os_user_guide.html">OS User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/mynewt_os.html">Kernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../system_modules.html">System</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../hal/hal.html">Hardware Abstraction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bootloader/bootloader.html">Secure Bootloader</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../split/split.html">Split Images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_os/porting/port_os.html">Porting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../baselibc.html">Baselibc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../drivers/driver.html">Drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../devmgmt/newtmgr.html">Device Management with Newt Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mcumgr/mcumgr.html">Device Management with MCUmgr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../imgmgr/imgmgr.html">Image Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitconfig/sysinitconfig.html">Compile-Time Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sysinitdown/sysinitdown.html">System Initialization and Shutdown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../extcmd/extcmd.html">Build-Time Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fs/fs.html">File System</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Flash Circular Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="fcb_append.html">fcb_append</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_append_finish.html">fcb_append_finish</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_append_to_scratch.html">fcb_append_to_scratch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_clear.html">fcb_clear</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_getnext.html">fcb_getnext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_init.html">fcb_init</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_is_empty.html">fcb_is_empty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_offset_last_n.html">fcb_offset_last_n</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_rotate.html">fcb_rotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fcb_walk.html">fcb_walk</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sensor_framework/sensor_framework.html">Sensor Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../testutil/testutil.html">Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../json/json.html">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mfg/mfg.html">Manufacturing support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../bsp/index.html">Board support</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../network/index.html">BLE User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../newt/index.html">Newt Tool Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../newtmgr/index.html">Newt Manager Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mynewt_faq/index.html">Mynewt FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../misc/index.html">Appendix</a></li>
+</ul>
+
+        
+      
+      </div>
+    </div>
+  </div>
+  <!-- ENDS STICKY CONTAINER -->
+</div>
+<!-- ENDS .container-sidebar -->
+
+            <div class="col-xs-12 col-sm-9">
+              
+                <div class="alert alert-warning">
+                  <p>
+                    Version 1.11.0 is not the most recent version of the
+                    Apache Mynewt documentation. Click <a href="/latest">here</a> to
+                    read the latest version.
+                  </p>
+                </div>
+              
+
+              
+              <div class="">
+                <div class="rst-content">
+                  <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                   <div itemprop="articleBody">
+                    
+  <div class="section" id="flash-circular-buffer-fcb">
+<h1>Flash Circular Buffer (FCB)<a class="headerlink" href="#flash-circular-buffer-fcb" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>Flash circular buffer provides an abstration through which you can treat
+flash like a FIFO. You append entries to the end, and read data from the
+beginning.</p>
+<div class="contents local topic" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#description" id="id1">Description</a></p></li>
+<li><p><a class="reference internal" href="#usage" id="id2">Usage</a></p></li>
+<li><p><a class="reference internal" href="#data-structures" id="id3">Data structures</a></p></li>
+<li><p><a class="reference internal" href="#api" id="id4">API</a></p></li>
+</ul>
+</div>
+<div class="section" id="description">
+<h2><a class="toc-backref" href="#id1">Description</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>Elements in the flash contain the length of the element, the data within
+the element, and checksum over the element contents.</p>
+<p>Storage of elements in flash is done in a FIFO fashion. When user
+requests space for the next element, space is located at the end of the
+used area. When user starts reading, the first element served is the
+oldest element in flash.</p>
+<p>Elements can be appended to the end of the area until storage space is
+exhausted. User has control over what happens next; either erase oldest
+block of data, thereby freeing up some space, or stop writing new data
+until existing data has been collected. FCB treats underlying storage as
+an array of flash sectors; when it erases old data, it does this a
+sector at a time.</p>
+<p>Elements in the flash are checksummed. That is how FCB detects whether
+writing element to flash completed ok. It will skip over entries which
+don’t have a valid checksum.</p>
+</div>
+<div class="section" id="usage">
+<h2><a class="toc-backref" href="#id2">Usage</a><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>To add an element to circular buffer:</p>
+<ul class="simple">
+<li><p>Call fcb_append() to get the location where data can be written. If
+this fails due to lack of space, you can call fcb_rotate() to make
+some. And then call fcb_append() again.</p></li>
+<li><p>Use flash_area_write() to write element contents.</p></li>
+<li><p>Call fcb_append_finish() when done. This completes the entry by
+calculating the checksum.</p></li>
+</ul>
+<p>To read contents of the circular buffer: * Call fcb_walk() with a
+pointer to your callback function. * Within callback function copy in
+data from the element using flash_area_read(). You can tell when all
+data from within a sector has been read by monitoring returned element’s
+area pointer. Then you can call fcb_rotate(), if you’re done with that
+data.</p>
+<p>Alternatively: * Call fcb_getnext() with 0 in element offset to get
+the pointer to oldest element. * Use flash_area_read() to read
+element contents. * Call fcb_getnext() with pointer to current element
+to get the next one. And so on.</p>
+</div>
+<div class="section" id="data-structures">
+<h2><a class="toc-backref" href="#id3">Data structures</a><a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
+<p>This data structure describes the element location in the flash. You
+would use it figure out what parameters to pass to flash_area_read()
+to read element contents. Or to flash_area_write() when adding a new
+element.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">fcb_entry</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_area</span><span class="w"> </span><span class="o">*</span><span class="n">fe_area</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fe_elem_off</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">fe_data_off</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">fe_data_len</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fe_area</p></td>
+<td><p>Pointer to
+info about the
+flash sector.
+Pass this to
+flash_area_x
+x()
+routines.</p></td>
+</tr>
+<tr class="row-odd"><td><p>fe_elem_
+off</p></td>
+<td><p>Byte offset
+from the start
+of the sector
+to beginning
+of element.</p></td>
+</tr>
+<tr class="row-even"><td><p>fe_data_
+off</p></td>
+<td><p>Byte offset
+from start of
+the sector to
+beginning of
+element data.
+Pass this to
+to
+flash_area_x
+x()
+routines.</p></td>
+</tr>
+<tr class="row-odd"><td><p>fe_data_
+len</p></td>
+<td><p>Number of
+bytes in the
+element.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The following data structure describes the FCB itself. First part should
+be filled in by the user before calling fcb_init(). The second part is
+used by FCB for its internal bookkeeping.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">fcb</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* Caller of fcb_init fills this in */</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">f_magic</span><span class="p">;</span><span class="w">           </span><span class="cm">/* As placed on the disk */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_version</span><span class="p">;</span><span class="w">          </span><span class="cm">/* Current version number of the data */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_sector_cnt</span><span class="p">;</span><span class="w">       </span><span class="cm">/* Number of elements in sector array */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_scratch_cnt</span><span class="p">;</span><span class="w">      </span><span class="cm">/* How many sectors should be kept empty */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_area</span><span class="w"> </span><span class="o">*</span><span class="n">f_sectors</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Array of sectors, must be contiguous */</span>
+
+<span class="w">    </span><span class="cm">/* Flash circular buffer internal state */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">os_mutex</span><span class="w"> </span><span class="n">f_mtx</span><span class="p">;</span><span class="w">      </span><span class="cm">/* Locking for accessing the FCB data */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">flash_area</span><span class="w"> </span><span class="o">*</span><span class="n">f_oldest</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">fcb_entry</span><span class="w"> </span><span class="n">f_active</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">f_active_id</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">f_align</span><span class="p">;</span><span class="w">            </span><span class="cm">/* writes to flash have to aligned to this */</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 57%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Element</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>f_magic</p></td>
+<td><p>Magic number
+in the
+beginning of
+FCB flash
+sector. FCB
+uses this when
+determining
+whether sector
+contains valid
+data or not.</p></td>
+</tr>
+<tr class="row-odd"><td><p>f_version</p></td>
+<td><p>Current
+version number
+of the data.
+Also stored in
+flash sector
+header.</p></td>
+</tr>
+<tr class="row-even"><td><p>f_sector_cnt</p></td>
+<td><p>Number of
+elements in
+the f_sectors
+array.</p></td>
+</tr>
+<tr class="row-odd"><td><p>f_scratch
+_cnt</p></td>
+<td><p>Number of
+sectors to
+keep empty.
+This can be
+used if you
+need to have
+scratch space
+for garbage
+collecting
+when FCB fills
+up.</p></td>
+</tr>
+<tr class="row-even"><td><p>f_sectors</p></td>
+<td><p>Array of
+entries
+describing
+flash sectors
+to use.</p></td>
+</tr>
+<tr class="row-odd"><td><p>f_mtx</p></td>
+<td><p>Lock
+protecting
+access to FCBs
+internal data.</p></td>
+</tr>
+<tr class="row-even"><td><p>f_oldest</p></td>
+<td><p>Pointer to
+flash sector
+containing the
+oldest data.
+This is where
+data is served
+when read is
+started.</p></td>
+</tr>
+<tr class="row-odd"><td><p>f_active</p></td>
+<td><p>Flash location
+where the
+newest data
+is. This is
+used by
+fcb_append()
+to figure out
+where the data
+should go to.</p></td>
+</tr>
+<tr class="row-even"><td><p>f_active_id</p></td>
+<td><p>Flash sectors
+are assigned
+ever-increasin
+g
+serial
+numbers. This
+is how FCB
+figures out
+where oldest
+data is on
+system
+restart.</p></td>
+</tr>
+<tr class="row-odd"><td><p>f_align</p></td>
+<td><p>Some flashes
+have
+restrictions
+on alignment
+for writes.
+FCB keeps a
+copy of this
+number for the
+flash here.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="api">
+<h2><a class="toc-backref" href="#id4">API</a><a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<dl class="c type">
+<dt id="c.fcb_walk_cb">
+<span class="target" id="group___f_c_b_1gaa5b10380f15d7cd339ef4bab1ee8869b"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">int</span> <span class="pre">(</span><span class="pre">*</span><code class="sig-name descname"><span class="pre">fcb_walk_cb</span></code><span class="pre">)</span><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_entry" title="fcb_entry"><span class="pre">fcb_entry</span></a> <span class="pre">*</span><span class="pre">loc</span>, <span class="pre">void</span> <span class="pre">*</span><span class="pre">arg</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_walk_cb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Walk over all entries in FCB. </p>
+<p>cb gets called for every entry. If cb wants to stop the walk, it should return non-zero value.</p>
+<p>Entry data can be read using flash_area_read(), using loc-&gt;fe_area, loc-&gt;fe_data_off, and loc-&gt;fe_data_len as arguments. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_init">
+<span class="target" id="group___f_c_b_1gaca464dc27ceff4033505b08273e86165"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_init" title="fcb"><span class="pre">fcb</span></a> <span class="pre">*</span><em><span class="pre">fcb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_init" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_append">
+<span class="target" id="group___f_c_b_1ga50cf034bf22db571855664d0043b6bed"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_append</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb" title="fcb"><span class="pre">fcb</span></a><span class="pre">*</span>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_entry" title="fcb_entry"><span class="pre">fcb_entry</span></a> <span class="pre">*</span><em><span class="pre">loc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_append" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="#group___f_c_b_1ga50cf034bf22db571855664d0043b6bed"><span class="std std-ref">fcb_append()</span></a> appends an entry to circular buffer. </p>
+<p>When writing the contents for the entry, use loc-&gt;fl_area and loc-&gt;fl_data_off with flash_area_write(). When you’re finished, call <a class="reference internal" href="#group___f_c_b_1ga305609965a81896243492751f0a2bcf9"><span class="std std-ref">fcb_append_finish()</span></a> with loc as argument. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_append_finish">
+<span class="target" id="group___f_c_b_1ga305609965a81896243492751f0a2bcf9"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_append_finish</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb" title="fcb"><span class="pre">fcb</span></a><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_entry" title="fcb_entry"><span class="pre">fcb_entry</span></a> <span class="pre">*</span><em><span class="pre">append_loc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_append_finish" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_walk">
+<span class="target" id="group___f_c_b_1gaec1b7a8b950dbfec1b0fec62b31592a3"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_walk</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb" title="fcb"><span class="pre">fcb</span></a><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <span class="pre">flash_area</span><span class="pre">*</span>, <a class="reference internal" href="#c.fcb_walk_cb" title="fcb_walk_cb"><span class="pre">fcb_walk_cb</span></a> <em><span class="pre">cb</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">cb_arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_walk" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_getnext">
+<span class="target" id="group___f_c_b_1ga98129247e1f0a26313345067dc3776d0"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_getnext</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb" title="fcb"><span class="pre">fcb</span></a><span class="pre">*</span>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_entry" title="fcb_entry"><span class="pre">fcb_entry</span></a> <span class="pre">*</span><em><span class="pre">loc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_getnext" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_rotate">
+<span class="target" id="group___f_c_b_1ga47d0b2d120f101a82dc2eb9e712006c5"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_rotate</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb" title="fcb"><span class="pre">fcb</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_rotate" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Erases the data from oldest sector. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_append_to_scratch">
+<span class="target" id="group___f_c_b_1ga150beafa3be414576a236fbfbdf25356"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_append_to_scratch</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb" title="fcb"><span class="pre">fcb</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_append_to_scratch" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Start using the scratch block. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_free_sector_cnt">
+<span class="target" id="group___f_c_b_1ga2dec5f90b687466997eb25be43448daa"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_free_sector_cnt</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_free_sector_cnt" title="fcb"><span class="pre">fcb</span></a> <span class="pre">*</span><em><span class="pre">fcb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_free_sector_cnt" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>How many sectors are unused. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_is_empty">
+<span class="target" id="group___f_c_b_1ga76d29d337d5e457f065ed897297ba6cb"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_is_empty</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_is_empty" title="fcb"><span class="pre">fcb</span></a> <span class="pre">*</span><em><span class="pre">fcb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_is_empty" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Whether FCB has any data. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_offset_last_n">
+<span class="target" id="group___f_c_b_1gacf4b86d660b7f3a3b73477defd86590c"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_offset_last_n</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_offset_last_n" title="fcb"><span class="pre">fcb</span></a> <span class="pre">*</span><em><span class="pre">fcb</span></em>, <span class="pre">uint8_t</span> <em><span class="pre">entries</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_entry" title="fcb_entry"><span class="pre">fcb_entry</span></a> <span class="pre">*</span><em><span class="pre">last_n_entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_offset_last_n" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Element at offset <em>entries</em> from last position (backwards). </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_clear">
+<span class="target" id="group___f_c_b_1gab3d5c09980af72f0de1692682c8dfef1"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_clear</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_clear" title="fcb"><span class="pre">fcb</span></a> <span class="pre">*</span><em><span class="pre">fcb</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_clear" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clears FCB passed to it. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.fcb_area_info">
+<span class="target" id="group___f_c_b_1ga537ad86e219488d94427a661df947a38"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">fcb_area_info</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.fcb_area_info" title="fcb"><span class="pre">fcb</span></a> <span class="pre">*</span><em><span class="pre">fcb</span></em>, <em class="property"><span class="pre">struct</span></em> <span class="pre">flash_area</span> <span class="pre">*</span><em><span class="pre">fa</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">elemsp</span></em>, <span class="pre">int</span> <span class="pre">*</span><em><span class="pre">bytesp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.fcb_area_info" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Usage report for a given FCB area. </p>
+<p>Returns number of elements and the number of bytes stored in them. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_MAX_LEN">
+<span class="target" id="group___f_c_b_1gaccabb1cb7f83c0d8919571cf3de7ee47"></span><code class="sig-name descname"><span class="pre">FCB_MAX_LEN</span></code><a class="headerlink" href="#c.FCB_MAX_LEN" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_OK">
+<span class="target" id="group___f_c_b_1ga739a2dd44516b9d25d2bd36a3e9a1ced"></span><code class="sig-name descname"><span class="pre">FCB_OK</span></code><a class="headerlink" href="#c.FCB_OK" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Error codes. </p>
+</dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_ARGS">
+<span class="target" id="group___f_c_b_1ga3ade25493981aedb4cb47364e142506a"></span><code class="sig-name descname"><span class="pre">FCB_ERR_ARGS</span></code><a class="headerlink" href="#c.FCB_ERR_ARGS" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_FLASH">
+<span class="target" id="group___f_c_b_1gaab70b4f6510d4e25795342340ebaaf1a"></span><code class="sig-name descname"><span class="pre">FCB_ERR_FLASH</span></code><a class="headerlink" href="#c.FCB_ERR_FLASH" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_NOVAR">
+<span class="target" id="group___f_c_b_1ga8ef0ddd5218f7d3d266a1a522f5f118a"></span><code class="sig-name descname"><span class="pre">FCB_ERR_NOVAR</span></code><a class="headerlink" href="#c.FCB_ERR_NOVAR" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_NOSPACE">
+<span class="target" id="group___f_c_b_1gaeda9a197227518600f3c559738f90f0b"></span><code class="sig-name descname"><span class="pre">FCB_ERR_NOSPACE</span></code><a class="headerlink" href="#c.FCB_ERR_NOSPACE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_NOMEM">
+<span class="target" id="group___f_c_b_1gad5ac56f5f9a67b46c65f2fade0c21b97"></span><code class="sig-name descname"><span class="pre">FCB_ERR_NOMEM</span></code><a class="headerlink" href="#c.FCB_ERR_NOMEM" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_CRC">
+<span class="target" id="group___f_c_b_1ga16da332cd464586e9193face6bc3227e"></span><code class="sig-name descname"><span class="pre">FCB_ERR_CRC</span></code><a class="headerlink" href="#c.FCB_ERR_CRC" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_MAGIC">
+<span class="target" id="group___f_c_b_1ga46efb14fbda927e4b400c35255111b1c"></span><code class="sig-name descname"><span class="pre">FCB_ERR_MAGIC</span></code><a class="headerlink" href="#c.FCB_ERR_MAGIC" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_VERSION">
+<span class="target" id="group___f_c_b_1gab57024b8ae61f7b69c7a52c07591395c"></span><code class="sig-name descname"><span class="pre">FCB_ERR_VERSION</span></code><a class="headerlink" href="#c.FCB_ERR_VERSION" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c macro">
+<dt id="c.FCB_ERR_NEXT_SECT">
+<span class="target" id="group___f_c_b_1gad08d237c1777f4922d717bbde5244402"></span><code class="sig-name descname"><span class="pre">FCB_ERR_NEXT_SECT</span></code><a class="headerlink" href="#c.FCB_ERR_NEXT_SECT" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="c struct">
+<dt id="c.fcb_entry">
+<span class="target" id="structfcb__entry"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">fcb_entry</span></code><a class="headerlink" href="#c.fcb_entry" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;fcb.h&gt;</em><p>Entry location is pointer to area (within fcb-&gt;f_sectors), and offset within that area. </p>
+</dd></dl>
+
+<dl class="c struct">
+<dt id="c.fcb">
+<span class="target" id="structfcb"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">fcb</span></code><a class="headerlink" href="#c.fcb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;fcb.h&gt;</em></dd></dl>
+
+</div>
+</div>
+
+
+                   </div>
+                  </div>
+                  
+    <div class="rst-footer-buttons row" role="navigation" aria-label="footer navigation">
+      
+        <a href="fcb_append.html" class="btn btn-neutral float-right" title="fcb_append" accesskey="n">Next: fcb_append <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../fs/fs_add.html" class="btn btn-neutral" title="Adding a new file system" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous: Adding a new file system</a>
+      
+    </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- ENDS CONTENT SECTION -->
+          </div>
+          <!-- ENDS .content -->
+        </div>
+      </div>
+      <footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+          
+              <p class="copyright">Apache Mynewt is available under Apache License, version 2.0.</p>
+          
+      </div>
+      <div class="col-xs-12">
+          <div class="logos">
+              <img src="../../../_static/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+              <small class="footnote">
+                Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt project logo are either
+                registered trademarks or trademarks of the Apache Software Foundation in the United States and other countries.
+              </small>
+              <a href="">
+                <img src="../../../_static/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+              </a>
+          </div>
+      </div>
+    </div>
+  </div>
+</footer>
+    </div>
+    <!-- ENDS #wrapper -->
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'latest',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt',
+            LINK_SUFFIX: '.html'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
+      <script type="text/javascript" src="../../../_static/js/affix.js"></script>
+      <script type="text/javascript" src="../../../_static/js/main.js"></script>
+
+   
+
+  </body>
+</html>
