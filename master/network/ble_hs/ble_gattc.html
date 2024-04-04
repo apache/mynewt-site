@@ -83,7 +83,7 @@ ga("send", "pageview");
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.11.0, Apache NimBLE 1.6.0 </a> released September 7, 2023)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.12.0, Apache NimBLE 1.7.0 </a> released April 4, 2024)
             </div>
         </div>
     </div>
@@ -185,6 +185,9 @@ ga("send", "pageview");
 <select class="form-control" onchange="if (this.value) window.location.href=this.value">
   <option value="/latest" selected>
     Version: latest
+  </option>
+  <option value="/v1_12_0" >
+    Version: 1.12.0
   </option>
   <option value="/v1_11_0" >
     Version: 1.11.0
@@ -562,7 +565,21 @@ client half of the GATT API initiates GATT procedures.</p>
 <dl class="c function">
 <dt id="c.ble_gattc_read_mult_var">
 <span class="target" id="group__bt__gatt_1ga2185917de585c65317a86492834679fc"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gattc_read_mult_var</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">uint16_t</span> <span class="pre">*</span><em><span class="pre">handles</span></em>, <span class="pre">uint8_t</span> <em><span class="pre">num_handles</span></em>, <a class="reference internal" href="#c.ble_gatt_attr_mult_fn" title="ble_gatt_attr_mult_fn"><span class="pre">ble_gatt_attr_mult_fn</span></a> <span class="pre">*</span><em><span class="pre">cb</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">cb_arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gattc_read_mult_var" title="Permalink to this definition">¶</a><br /></dt>
-<dd></dd></dl>
+<dd><p>Initiates GATT procedure: Read Multiple Variable Length Characteristic Values. </p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success; nonzero on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">conn_handle</span></code>: The connection over which to execute the procedure. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">handles</span></code>: An array of 16-bit attribute handles to read. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_handles</span></code>: The number of entries in the “handles” array. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb</span></code>: The function to call to report procedure status updates; null for no callback. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cb_arg</span></code>: The optional argument to pass to the callback function.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
 
 <dl class="c function">
 <dt id="c.ble_gattc_write_no_rsp">
@@ -699,6 +716,26 @@ client half of the GATT API initiates GATT procedures.</p>
 </dd></dl>
 
 <dl class="c function">
+<dt id="c.ble_gatts_notify_multiple_custom">
+<span class="target" id="group__bt__gatt_1gacd7b910e9c139d00f77808513a29903b"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gatts_notify_multiple_custom</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <span class="pre">size_t</span> <em><span class="pre">chr_count</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.ble_gatt_notif" title="ble_gatt_notif"><span class="pre">ble_gatt_notif</span></a> <span class="pre">*</span><em><span class="pre">tuples</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gatts_notify_multiple_custom" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sends a “free-form” multiple handle variable length characteristic notification. </p>
+<p>This function consumes supplied mbufs regardless of the outcome. Notifications are sent in order of supplied entries. Function tries to send minimum amount of PDUs. If PDU can’t contain all of the characteristic values, multiple notifications are sent. If only one handle-value pair fits into PDU, or only one characteristic remains in the list, regular characteristic notification is sent.</p>
+<p>If GATT client doesn’t support receiving multiple handle notifications, this will use GATT notification for each characteristic, separately.</p>
+<p>If value of characteristic is not specified it will be read from local GATT database.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success; nonzero on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">conn_handle</span></code>: The connection over which to execute the procedure. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chr_count</span></code>: Number of characteristics to notify about. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tuples</span></code>: Handle-value pairs in form of <code class="docutils literal notranslate"><a class="reference internal" href="ble_gatts.html#structble__gatt__notif"><span class="std std-ref"><span class="pre">ble_gatt_notif</span></span></a></code> structures.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="c function">
 <dt id="c.ble_gattc_notify_custom">
 <span class="target" id="group__bt__gatt_1gaf0f2e0bb27743682937e355269b837c8"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gattc_notify_custom</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">att_handle</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../os/core_os/mbuf/mbuf.html#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gattc_notify_custom" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Deprecated. </p>
@@ -727,6 +764,25 @@ client half of the GATT API initiates GATT procedures.</p>
 <span class="target" id="group__bt__gatt_1gab89b4b772ab1a571d0b58ecc5f0aa8cb"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gattc_notify</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">chr_val_handle</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gattc_notify" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Deprecated. </p>
 <p>Should not be used. Use ble_gatts_notify instead. </p>
+</dd></dl>
+
+<dl class="c function">
+<dt id="c.ble_gatts_notify_multiple">
+<span class="target" id="group__bt__gatt_1ga66d0ebdf72a4120e2c9314f2697c0243"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gatts_notify_multiple</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <span class="pre">size_t</span> <em><span class="pre">num_handles</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">uint16_t</span> <span class="pre">*</span><em><span class="pre">chr_val_handles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gatts_notify_multiple" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Sends a multiple handle variable length characteristic notification. </p>
+<p>The content of the message is read from the specified characteristics. Notifications are sent in order of supplied handles. Function tries to send minimum amount of PDUs. If PDU can’t contain all of the characteristic values, multiple notifications are sent. If only one handle-value pair fits into PDU, or only one characteristic remains in the list, regular characteristic notification is sent.</p>
+<p>If GATT client doesn’t support receiving multiple handle notifications, this will use GATT notification for each characteristic, separately.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>0 on success; nonzero on failure. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">conn_handle</span></code>: The connection over which to execute the procedure. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_handles</span></code>: The number of entries in the “chr_val_handles” array. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chr_val_handles</span></code>: Array of attribute handles of the characteristics to include in the outgoing notification.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
 </dd></dl>
 
 <dl class="c function">
@@ -930,15 +986,16 @@ client half of the GATT API initiates GATT procedures.</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.ble_gatts_peer_cl_sup_feat_update">
-<span class="target" id="group__bt__gatt_1ga89bd4caaa8e8b0997351e6e2cb3af70c"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gatts_peer_cl_sup_feat_update</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../os/core_os/mbuf/mbuf.html#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gatts_peer_cl_sup_feat_update" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Saves Client Supported Features for specified connection. </p>
+<dt id="c.ble_gatts_peer_cl_sup_feat_get">
+<span class="target" id="group__bt__gatt_1ga582d67efcba83cea0f308b3ee01ac359"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">ble_gatts_peer_cl_sup_feat_get</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">conn_handle</span></em>, <span class="pre">uint8_t</span> <span class="pre">*</span><em><span class="pre">out_supported_feat</span></em>, <span class="pre">uint8_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.ble_gatts_peer_cl_sup_feat_get" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Gets Client Supported Features for specified connection. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>0 on success; BLE_HS_ENOTCONN if no matching connection was found BLE_HS_EINVAL if supplied buffer is empty or if any Client Supported Feature was attempted to be disabled. A BLE host core return code on unexpected error. </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">conn_handle</span></code>: Connection handle identifying connection for which Client Supported Features should be saved </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to set value from.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">conn_handle</span></code>: Connection handle identifying the connection for which Client Supported Features should be saved </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">out_supported_feat</span></code>: Client supported features to be returned. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The size of the Client Supported Features characteristic in octets.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1069,6 +1126,27 @@ client half of the GATT API initiates GATT procedures.</p>
 <dt id="c.ble_gatt_dsc.uuid">
 <span class="target" id="structble__gatt__dsc_1addabfb7705a30f6d2069579a49de5707"></span><span class="pre">ble_uuid_any_t</span> <code class="sig-name descname"><span class="pre">uuid</span></code><a class="headerlink" href="#c.ble_gatt_dsc.uuid" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The UUID of the GATT descriptor. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="c struct">
+<dt id="c.ble_gatt_notif">
+<span class="target" id="structble__gatt__notif"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">ble_gatt_notif</span></code><a class="headerlink" href="#c.ble_gatt_notif" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;ble_gatt.h&gt;</em><p>Represents a handle-value tuple for multiple handle notifications. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="c var">
+<dt id="c.ble_gatt_notif.handle">
+<span class="target" id="structble__gatt__notif_1aaab35f7840b7b8192a3523cf788b75de"></span><span class="pre">uint16_t</span> <code class="sig-name descname"><span class="pre">handle</span></code><a class="headerlink" href="#c.ble_gatt_notif.handle" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The handle of the GATT characteristic. </p>
+</dd></dl>
+
+<dl class="c var">
+<dt id="c.ble_gatt_notif.value">
+<span class="target" id="structble__gatt__notif_1a33d1c02ad7ff16c3f183199e077878c1"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../../os/core_os/mbuf/mbuf.html#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">value</span></code><a class="headerlink" href="#c.ble_gatt_notif.value" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The buffer with GATT characteristic value. </p>
 </dd></dl>
 
 </div>
@@ -1221,8 +1299,8 @@ client half of the GATT API initiates GATT procedures.</p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.ble_gatt_access_ctxt.&#64;63">
-<span class="target" id="structble__gatt__access__ctxt_1aabdfe934f7689f29213554b85a39b7f1"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.ble_gatt_access_ctxt" title="ble_gatt_access_ctxt"><span class="pre">ble_gatt_access_ctxt</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.ble_gatt_access_ctxt.@63" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ble_gatt_access_ctxt.&#64;65">
+<span class="target" id="structble__gatt__access__ctxt_1ae09b5727b30625c6fb48c1d606b17b69"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.ble_gatt_access_ctxt" title="ble_gatt_access_ctxt"><span class="pre">ble_gatt_access_ctxt</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.ble_gatt_access_ctxt.@65" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The GATT operation being performed dictates which field in this union is valid. </p>
 <p>If a characteristic is being accessed, the chr field is valid. Otherwise a descriptor is being accessed, in which case the dsc field is valid. </p>
 </dd></dl>
@@ -1244,8 +1322,8 @@ client half of the GATT API initiates GATT procedures.</p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.ble_gatt_register_ctxt.&#64;65">
-<span class="target" id="structble__gatt__register__ctxt_1a143f9251f9811c311a3becba6e57752e"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.ble_gatt_register_ctxt" title="ble_gatt_register_ctxt"><span class="pre">ble_gatt_register_ctxt</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.ble_gatt_register_ctxt.@65" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="c.ble_gatt_register_ctxt.&#64;67">
+<span class="target" id="structble__gatt__register__ctxt_1a82ea92111b7bead40a0a716e805ed0f7"></span><em class="property"><span class="pre">union</span></em> <a class="reference internal" href="#c.ble_gatt_register_ctxt" title="ble_gatt_register_ctxt"><span class="pre">ble_gatt_register_ctxt</span></a><span class="pre">.</span><strong><span class="pre">[anonymous]</span></strong> <strong><span class="pre">[anonymous]</span></strong><a class="headerlink" href="#c.ble_gatt_register_ctxt.@67" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The value of the op field determines which field in this union is valid. </p>
 </dd></dl>
 
