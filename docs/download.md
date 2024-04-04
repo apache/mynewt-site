@@ -51,7 +51,7 @@ Mynewt's Bluetooth stack is now a separate release with a porting layer that all
 *   Release Date: April 4, 2024
 *   [Release Notes](https://cwiki.apache.org/confluence/display/MYNEWT/RN-NimBLE-1.7.0)
 *   Source downloads:
-    - [apache-mynewt-nimble-1.6.0.tgz](https://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.7.0/apache-mynewt-nimble-1.7.0.tgz)
+    - [apache-mynewt-nimble-1.7.0.tgz](https://www.apache.org/dyn/closer.lua/mynewt/apache-nimble-1.7.0/apache-mynewt-nimble-1.7.0.tgz)
       [[PGP]](https://www.apache.org/dist/mynewt/apache-nimble-1.7.0/apache-mynewt-nimble-1.7.0.tgz.asc)
       [[SHA512]](https://www.apache.org/dist/mynewt/apache-nimble-1.7.0/apache-mynewt-nimble-1.7.0.tgz.sha512)
 
