@@ -66,8 +66,10 @@ def find_BSPs():
     for bsp in listdir(bsp_dir):
         with open(path.join(bsp_dir, bsp, "bsp.yml"), 'r') as f:
             data = yaml.full_load(f)
+            if data.get('bsp.exclude_site') == 1:
+                print("{} has 'exclude_site' set, skipping".format(bsp))
+                continue
             for k in ['bsp.name', 'bsp.url', 'bsp.maker', 'bsp.arch']:
-                # XXX might also skip bsp.arch that starts with 'sim'?
                 if k not in data:
                     print("{} is missing metadata".format(bsp))
                     break
@@ -75,7 +77,8 @@ def find_BSPs():
                 bsp = BSP(name=data['bsp.name'], url=data['bsp.url'],
                           maker=data['bsp.maker'], arch=data['bsp.arch'])
                 bsps.append(bsp)
-    return bsps
+    bsps_sorted = sorted(bsps, key=lambda bsp: bsp.name.lower())
+    return bsps_sorted
 
 
 def build(cwd, site_dir):
