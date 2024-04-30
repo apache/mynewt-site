@@ -18,7 +18,7 @@ Start a new project as explained under [Create Your First Project](/latest/get_s
 
 *   When you [Create Your First Project](/latest/get_started/project_create.html) you define a simulated target and run Project Blinky, the Hello World equivalent in the embedded world.
 
-*   If you have one of the supported [boards](/), you can make real LEDs blink in [Project Blinky](/latest/tutorials/blinky/blinky.html). Simply choose the appropriate tutorial for the board and proceed.
+*   If you have one of the supported [boards](/#supported_boards), you can make real LEDs blink in [Project Blinky](/latest/tutorials/blinky/blinky.html). Simply choose the appropriate tutorial for the board and proceed.
 
 <br>
 
