@@ -114,7 +114,7 @@ ga("send", "pageview");
                     <a href="/talks/">Talks</a>
                 </li>
                 <li 
-  class="active"
+  class="active  "
 >
                     <a href="/documentation/">Documentation</a>
                 </li>
@@ -131,7 +131,7 @@ ga("send", "pageview");
                 <li 
   class=""
 >
-                    <a href="/events/">Events</a>
+                    <a href="/cve/">CVE</a>
                 </li>
             </ul>
 
@@ -609,22 +609,22 @@ the shell and console connectivity. You can use blinky on a different board.</p>
 <p><br></p>
 <h3 id="modify-the-dependencies-and-configuration">Modify the Dependencies and Configuration</h3>
 <p>Add the following dependencies to your application target's <code>pkg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/shell&quot;
     - &quot;@apache-mynewt-core/sys/sysinit&quot;
-</code></pre></div>
+</pre></div>
 
 <p>This lets the newt system know that it needs to pull in the code for the console and the shell.</p>
 <p>Modify the system configuration settings to enable Shell and Console ticks and prompt.  Add the following to your application target's <code>syscfg.yml</code> file:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>syscfg.vals:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>syscfg.vals:
     # Enable the shell task.
     SHELL_TASK: 1
     # Enable Console OS Ticks
     CONSOLE_TICKS: 1
     # Enable Console Prompt
     CONSOLE_PROMPT: 1 
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="use-the-os-default-event-queue-to-process-blinky-timer-and-shell-events">Use the OS Default Event Queue to Process Blinky Timer and Shell Events</h3>
@@ -638,13 +638,13 @@ the shell and console connectivity. You can use blinky on a different board.</p>
 <p><br></p>
 <h3 id="modify-mainc">Modify main.c</h3>
 <p>Initialize a os_callout timer and move the toggle code from the while loop in <code>main()</code> to the event callback function. Add the following code above the <code>main()</code> function:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/* The timer callout */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_callout</span> <span style="color: #000000">blinky_callout</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/* The timer callout */</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">blinky_callout</span>;
 
 <span style="color: #177500">/*</span>
 <span style="color: #177500"> * Event callback function for timer events. It toggles the led pin.</span>
 <span style="color: #177500"> */</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000000">*ev</span>)
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span> <span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
 {
     <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
 
@@ -665,10 +665,10 @@ the shell and console connectivity. You can use blinky on a different board.</p>
     <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;blinky_callout</span>, <span style="color: #000000">OS_TICKS_PER_SEC</span>);
 
 }
-</code></pre></div>
+</pre></div>
 
 <p>In <code>main()</code>, add the call to the <code>init_timer()</code> function before the while loop and modify the while loop to process events from the OS default event queue:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
 {
 
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
@@ -688,36 +688,36 @@ the shell and console connectivity. You can use blinky on a different board.</p>
     <span style="color: #000000">assert</span>(<span style="color: #1C01CE">0</span>)
     <span style="color: #A90D91">return</span> <span style="color: #000000">rc</span>;
 }
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="build-the-blinky-application-target">Build the Blinky Application Target</h3>
 <p>We're not going to build the bootloader here since we are assuming that you have already
 built and loaded it during previous tutorials.</p>
 <p>Run the <code>newt build nrf52_blinky</code> command to build the Blinky application:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt build nrf52_blinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build nrf52_blinky
 
    ...
 
 Archiving util_mem.a
 Linking ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.elf
 Target successfully built: targets/nrf52_blinky
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="sign-and-create-the-blinky-application-image">Sign and Create the Blinky Application Image</h3>
 <p>Run the <code>newt create-image nrf52_blinky 1.0.0</code> command to create and sign the application image. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt create-image nrf52_blinky 1.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt create-image nrf52_blinky 1.0.0
 App image succesfully generated: ~/dev/myproj/bin/targets/nrf52_blinky/app/apps/blinky/blinky.img
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="load-the-image">Load the Image</h3>
 <p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
 <p>Run the <code>newt load nrf52_blinky</code> command to load the Blinky application image onto the board.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt load nrf52_blinky
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load nrf52_blinky
 Loading app image into slot 1
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="set-up-a-serial-connection">Set Up a Serial Connection</h3>
@@ -737,11 +737,11 @@ Loading app image into slot 1
 </ul>
 <p><br>
 To test and make sure that the Shell is running, first just hit <return>:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>3534: &gt;
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>3534: &gt;
+</pre></div>
 
 <p>You can try some commands:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>3609: &gt; ?
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>3609: &gt; ?
 Commands:
 8841:     echo         ?    prompt     ticks     tasks  mempools
 8843:     date         b
@@ -756,7 +756,7 @@ ticks on
 prompt on
 39108: Prompt now on.
 39108: &gt;
-</code></pre></div>
+</pre></div>
                         
                         <div class="row">
                             
@@ -784,7 +784,7 @@ prompt on
                 <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             </a>
             <p>
-                Copyright © 2015-2021 The Apache Software Foundation.<br>
+                Copyright © 2015-2024 The Apache Software Foundation.<br>
                 <small class="footnote">
                     Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
                     project logo are either registered trademarks or trademarks of the Apache

@@ -130,7 +130,7 @@ ga("send", "pageview");
                         <a href="/community/">Community</a>
                     </li>
                     <li>
-                        <a href="/events/">Events</a>
+                        <a href="/cve/">CVE</a>
                     </li>
                 </ul>
 
@@ -296,6 +296,14 @@ ga("send", "pageview");
 
             <div class="col-xs-12 col-sm-9">
               
+                <div class="alert alert-warning">
+                  <p>
+                    Version master is not the most recent version of the
+                    Apache Mynewt documentation. Click <a href="/latest">here</a> to
+                    read the latest version.
+                  </p>
+                </div>
+              
 
               
               <div class="">
@@ -310,19 +318,11 @@ ga("send", "pageview");
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>Callout is a way of setting up an OS timer. When the timer fires, it is
 delivered as an event to task’s event queue.</p>
-<p>User would initialize their callout structure using
-<a class="reference internal" href="#c.os_callout_init" title="os_callout_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_init()</span></code></a>, or <code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_func_init()</span></code> and
-then arm it with <a class="reference internal" href="#c.os_callout_reset" title="os_callout_reset"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_reset()</span></code></a>.</p>
+<p>User would initialize their callout structure <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">os_callout</span></code> using
+<a class="reference internal" href="#c.os_callout_init" title="os_callout_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_init()</span></code></a> and then arm it with <a class="reference internal" href="#c.os_callout_reset" title="os_callout_reset"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_reset()</span></code></a>.</p>
 <p>If user wants to cancel the timer before it expires, they can either use
 <a class="reference internal" href="#c.os_callout_reset" title="os_callout_reset"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_reset()</span></code></a> to arm it for later expiry, or stop it altogether
 by calling <a class="reference internal" href="#c.os_callout_stop" title="os_callout_stop"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_stop()</span></code></a>.</p>
-<p>There are 2 different options for data structure to use. First is
-<code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">os_callout</span></code>, which is a bare-bones version. You would
-initialize this with <a class="reference internal" href="#c.os_callout_init" title="os_callout_init"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_callout_init()</span></code></a>.</p>
-<p>Second option is <code class="xref c c-type docutils literal notranslate"><span class="pre">struct</span> <span class="pre">os_callout_func</span></code>. This you can use if you
-expect to have multiple different types of timers in your task, running
-concurrently. The structure contains a function pointer, and you would
-call that function from your task’s event processing loop.</p>
 <p>Time unit when arming the timer is OS ticks. This rate of this ticker
 depends on the platform this is running on. You should use OS define
 <code class="docutils literal notranslate"><span class="pre">OS_TICKS_PER_SEC</span></code> to convert wallclock time to OS ticks.</p>
@@ -332,14 +332,14 @@ you need to rearm it once it fires.</p>
 <h3>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h3>
 <dl class="c function">
 <dt id="c.os_callout_init">
-<span class="target" id="group___o_s_callouts_1gac1a34a023c7a9eb52e46c5155855debd"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_callout_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a> <span class="pre">*</span><em><span class="pre">cf</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../event_queue/event_queue.html#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em>, <a class="reference internal" href="../event_queue/event_queue.html#c.os_event_fn" title="os_event_fn"><span class="pre">os_event_fn</span></a> <span class="pre">*</span><em><span class="pre">ev_cb</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">ev_arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_init" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_callouts_1gae247d15857efa8c160b334fa572f3418"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_callout_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a> <span class="pre">*</span><em><span class="pre">c</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../event_queue/event_queue.html#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em>, <a class="reference internal" href="../event_queue/event_queue.html#c.os_event_fn" title="os_event_fn"><span class="pre">os_event_fn</span></a> <span class="pre">*</span><em><span class="pre">ev_cb</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">ev_arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_init" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Initialize a callout. </p>
-<p>Callouts are used to schedule events in the future onto a task’s event queue. Callout timers are scheduled using the <a class="reference internal" href="#group___o_s_callouts_1gaa1f671cead691f97ae6b7db62666f01a"><span class="std std-ref">os_callout_reset()</span></a> function. When the timer expires, an event is posted to the event queue specified in <a class="reference internal" href="#group___o_s_callouts_1gac1a34a023c7a9eb52e46c5155855debd"><span class="std std-ref">os_callout_init()</span></a>. The event argument given here is posted in the ev_arg field of that event.</p>
+<p>Callouts are used to schedule events in the future onto a task’s event queue. Callout timers are scheduled using the <a class="reference internal" href="#group___o_s_callouts_1gaf496ce810cd08c21c1786287b49be051"><span class="std std-ref">os_callout_reset()</span></a> function. When the timer expires, an event is posted to the event queue specified in <a class="reference internal" href="#group___o_s_callouts_1gae247d15857efa8c160b334fa572f3418"><span class="std std-ref">os_callout_init()</span></a>. The event argument given here is posted in the ev_arg field of that event.</p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">c</span></code>: The callout to initialize </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to post an OS_EVENT_T_TIMER event to </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">timo_func</span></code>: The function to call on this callout for the host task used to provide multiple timer events to a task (this can be NULL.) </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ev_cb</span></code>: The function to call on this callout for the host task used to provide multiple timer events to a task (this can be NULL). </p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ev_arg</span></code>: The argument to provide to the event when posting the timer. </p></li>
 </ul>
 </dd>
@@ -349,7 +349,7 @@ you need to rearm it once it fires.</p>
 
 <dl class="c function">
 <dt id="c.os_callout_stop">
-<span class="target" id="group___o_s_callouts_1ga661bbf1a84775044ac93d9464688e4bb"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_callout_stop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a><span class="pre">*</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_stop" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_callouts_1ga053548298fc3617056b42d3409163054"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_callout_stop</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_stop" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Stop the callout from firing off, any pending events will be cleared. </p>
 <p><dl class="simple">
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
@@ -362,10 +362,10 @@ you need to rearm it once it fires.</p>
 
 <dl class="c function">
 <dt id="c.os_callout_reset">
-<span class="target" id="group___o_s_callouts_1gaa1f671cead691f97ae6b7db62666f01a"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_callout_reset</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a><span class="pre">*</span>, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_reset" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_callouts_1gaf496ce810cd08c21c1786287b49be051"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_callout_reset</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a> <span class="pre">*</span><em><span class="pre">c</span></em>, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a> <em><span class="pre">ticks</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_reset" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Reset the callout to fire off in ‘ticks’ ticks. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure </p>
+<dt><strong>Return</strong></dt><dd><p>0 on success; non-zero on failure </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">c</span></code>: The callout to reset </p></li>
@@ -378,7 +378,7 @@ you need to rearm it once it fires.</p>
 
 <dl class="c function">
 <dt id="c.os_callout_remaining_ticks">
-<span class="target" id="group___o_s_callouts_1gab0809de1868462fe0a066f67645342be"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a> <code class="sig-name descname"><span class="pre">os_callout_remaining_ticks</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a><span class="pre">*</span>, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_remaining_ticks" title="Permalink to this definition">¶</a><br /></dt>
+<span class="target" id="group___o_s_callouts_1ga79ebf33d6a9563917ea761a2ab027622"></span><a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a> <code class="sig-name descname"><span class="pre">os_callout_remaining_ticks</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a> <span class="pre">*</span><em><span class="pre">c</span></em>, <a class="reference internal" href="../time/os_time.html#c.os_time_t" title="os_time_t"><span class="pre">os_time_t</span></a> <em><span class="pre">now</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_remaining_ticks" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns the number of ticks which remains to callout. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Number of ticks to first pending callout </p>
@@ -397,7 +397,7 @@ you need to rearm it once it fires.</p>
 <span class="target" id="group___o_s_callouts_1ga9f0d8c6cb4cd1a10a269fe004cf12e45"></span><em class="property"><span class="pre">static</span></em> <em class="property"><span class="pre">inline</span></em> <span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_callout_queued</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_callout" title="os_callout"><span class="pre">os_callout</span></a> <span class="pre">*</span><em><span class="pre">c</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_callout_queued" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Returns whether the callout is pending or not. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>1 if queued, 0 if not queued. </p>
+<dt><strong>Return</strong></dt><dd><p>1 if queued; 0 if not queued. </p>
 </dd>
 <dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">c</span></code>: The callout to check</p></li>
@@ -410,7 +410,16 @@ you need to rearm it once it fires.</p>
 <dl class="c struct">
 <dt id="c.os_callout">
 <span class="target" id="structos__callout"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_callout</span></code><a class="headerlink" href="#c.os_callout" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;os_callout.h&gt;</em><p>Structure containing the definition of a callout, initialized by <a class="reference internal" href="#group___o_s_callouts_1gac1a34a023c7a9eb52e46c5155855debd"><span class="std std-ref">os_callout_init()</span></a> and passed to callout functions. </p>
+<dd><em>#include &lt;os_callout.h&gt;</em><p>Structure containing the definition of a callout, initialized by <a class="reference internal" href="#group___o_s_callouts_1gae247d15857efa8c160b334fa572f3418"><span class="std std-ref">os_callout_init()</span></a> and passed to callout functions. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="c function">
+<dt>
+<span class="target" id="structos__callout_1acf06eb1db53448d920ef837eb986f108"></span><code class="sig-name descname"><span class="pre">TAILQ_ENTRY</span> <span class="pre">(os_callout)</span> <span class="pre">c_next</span></code></dt>
+<dd><p>Next callout in the list. </p>
+</dd></dl>
+
+</div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">

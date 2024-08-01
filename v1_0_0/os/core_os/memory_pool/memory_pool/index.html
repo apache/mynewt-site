@@ -114,7 +114,7 @@ ga("send", "pageview");
                     <a href="/talks/">Talks</a>
                 </li>
                 <li 
-  class="active"
+  class="active  "
 >
                     <a href="/documentation/">Documentation</a>
                 </li>
@@ -131,7 +131,7 @@ ga("send", "pageview");
                 <li 
   class=""
 >
-                    <a href="/events/">Events</a>
+                    <a href="/cve/">CVE</a>
                 </li>
             </ul>
 
@@ -766,30 +766,30 @@ ga("send", "pageview");
 <p>A memory pool is a collection of fixed sized elements called memory blocks. Generally, memory pools are used when the developer wants to allocate a certain amount of memory to a given feature. Unlike the heap, where a code module is at the mercy of other code modules to insure there is sufficient memory, memory pools can insure sufficient memory allocation.</p>
 <h3 id="description">Description</h3>
 <p>In order to create a memory pool the developer needs to do a few things. The first task is to define the memory pool itself. This is a data structure which contains information about the pool itself (i.e. number of blocks, size of the blocks, etc).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mempool</span> <span style="color: #000000">my_pool</span>;
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> <span style="color: #000000">my_pool</span>;
+</pre></div>
 
 <p><br>
 The next order of business is to allocate the memory used by the memory pool. This memory can either be statically allocated (i.e. a global variable) or dynamically allocated (i.e. from the heap). When determining the amount of memory required for the memory pool, simply multiplying the number of blocks by the size of each block is not sufficient as the OS may have alignment requirements. The alignment size definition is named <code>OS_ALIGNMENT</code> and can be found in os_arch.h as it is architecture specific. The memory block alignment is usually for efficiency but may be due to other reasons. Generally, blocks are aligned on 32-bit boundaries. Note that memory blocks must also be of sufficient size to hold a list pointer as this is needed to chain memory blocks on the free list.</p>
 <p>In order to simplify this for the user two macros have been provided: <code>OS_MEMPOOL_BYTES(n, blksize)</code> and <code>OS_MEMPOOL_SIZE(n, blksize)</code>. The first macro returns the number of bytes needed for the memory pool while the second returns the number of <code>os_membuf_t</code> elements required by the memory pool. The <code>os_membuf_t</code> type is used to guarantee that the memory buffer used by the memory pool is aligned on the correct boundary. </p>
 <p>Here are some examples. Note that if a custom malloc implementation is used it must guarantee that the memory buffer used by the pool is allocated on the correct boundary (i.e. <code>OS_ALIGNMENT</code>).</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">void</span> <span style="color: #000000">*my_memory_buffer</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span> <span style="color: #000000">*my_memory_buffer</span>;
 <span style="color: #000000">my_memory_buffer</span> <span style="color: #000000">=</span> <span style="color: #000000">malloc</span>(<span style="color: #000000">OS_MEMPOOL_BYTES</span>(<span style="color: #000000">NUM_BLOCKS</span>, <span style="color: #000000">BLOCK_SIZE</span>));
-</code></pre></div>
+</pre></div>
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #000000">os_membuf_t</span> <span style="color: #000000">my_memory_buffer</span>[<span style="color: #000000">OS_MEMPOOL_SIZE</span>(<span style="color: #000000">NUM_BLOCKS</span>, <span style="color: #000000">BLOCK_SIZE</span>)];
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">os_membuf_t</span> <span style="color: #000000">my_memory_buffer</span>[<span style="color: #000000">OS_MEMPOOL_SIZE</span>(<span style="color: #000000">NUM_BLOCKS</span>, <span style="color: #000000">BLOCK_SIZE</span>)];
+</pre></div>
 
 <p><br>
 Now that the memory pool has been defined as well as the memory required for the memory blocks which make up the pool the user needs to initialize the memory pool by calling <code>os_mempool_init</code>.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #000000">os_mempool_init</span>(<span style="color: #000000">&amp;my_pool</span>, <span style="color: #000000">NUM_BLOCKS</span>, <span style="color: #000000">BLOCK_SIZE</span>, <span style="color: #000000">my_memory_buffer</span>,
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #000000">os_mempool_init</span>(<span style="color: #000000">&amp;my_pool</span>, <span style="color: #000000">NUM_BLOCKS</span>, <span style="color: #000000">BLOCK_SIZE</span>, <span style="color: #000000">my_memory_buffer</span>,
                          <span style="color: #C41A16">&quot;MyPool&quot;</span>);
-</code></pre></div>
+</pre></div>
 
 <p><br>
 Once the memory pool has been initialized the developer can allocate memory blocks from the pool by calling <code>os_memblock_get</code>. When the memory block is no longer needed the memory can be freed by calling <code>os_memblock_put</code>. </p>
 <h3 id="data-structures">Data structures</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mempool</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool</span> {
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_block_size</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_num_blocks</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">mp_num_free</span>;
@@ -800,14 +800,14 @@ Once the memory pool has been initialized the developer can allocate memory bloc
     <span style="color: #A90D91">char</span> <span style="color: #000000">*name</span>;
 };
 
-<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_mempool_info</span> {
+<span style="color: #A90D91">struct</span> <span style="color: #000000">os_mempool_info</span> {
     <span style="color: #A90D91">int</span> <span style="color: #000000">omi_block_size</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">omi_num_blocks</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">omi_num_free</span>;
     <span style="color: #A90D91">int</span> <span style="color: #000000">omi_min_free</span>;
     <span style="color: #A90D91">char</span> <span style="color: #000000">omi_name</span>[<span style="color: #000000">OS_MEMPOOL_INFO_NAME_LEN</span>];
 };
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <table>
@@ -915,7 +915,7 @@ Once the memory pool has been initialized the developer can allocate memory bloc
                 <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             </a>
             <p>
-                Copyright © 2015-2021 The Apache Software Foundation.<br>
+                Copyright © 2015-2024 The Apache Software Foundation.<br>
                 <small class="footnote">
                     Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
                     project logo are either registered trademarks or trademarks of the Apache
