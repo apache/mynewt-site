@@ -114,7 +114,7 @@ ga("send", "pageview");
                     <a href="/talks/">Talks</a>
                 </li>
                 <li 
-  class="active"
+  class="active  "
 >
                     <a href="/documentation/">Documentation</a>
                 </li>
@@ -131,7 +131,7 @@ ga("send", "pageview");
                 <li 
   class=""
 >
-                    <a href="/events/">Events</a>
+                    <a href="/cve/">CVE</a>
                 </li>
             </ul>
 
@@ -447,60 +447,60 @@ ga("send", "pageview");
 <p><br></p>
 <h3 id="install-gcclibc">Install gcc/libc</h3>
 <p>OS X ships with a C compiler called Clang.  To build applications for the Mynewt simulator with, a different compiler is used as default: gcc.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ brew install gcc
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ brew install gcc
 ...
 ...
 ==&gt; Summary
 🍺  /usr/local/Cellar/gcc/5.2.0: 1353 files, 248M
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>Check the gcc version you have installed (either using brew or previously installed). The brew-installed version can be checked using <code>brew list gcc</code>. The default compiler.yml configuration file in Mynewt expects version 5.x for Mac users, so if the installed version is 6.x and you wish to continue with this newer version, modify the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file to change the default <code>gcc-5</code> defined there to <code>gcc-6</code>. In other words, replace the lines shown highlighted below:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code># OS X.
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># OS X.
 <span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
 </span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
 </span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
 compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
 compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
-</code></pre></div>
+</pre></div>
 
 <p>with the following:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6&quot;
 compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-6 -x assembler-with-cpp”
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>In case you wish to use Clang, you can change your <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> to use Clang. Delete the gcc-5 DARWIN.OVERWRITE lines highlighted below.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code># OS X.
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># OS X.
 <span style="background-color: #ffffcc">compiler.path.cc.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5&quot;
 </span><span style="background-color: #ffffcc">compiler.path.as.DARWIN.OVERWRITE: &quot;/usr/local/bin/gcc-5 -x assembler-with-cpp&quot;
 </span>compiler.path.objdump.DARWIN.OVERWRITE: &quot;gobjdump&quot;
 compiler.path.objsize.DARWIN.OVERWRITE: &quot;objsize&quot;
 compiler.path.objcopy.DARWIN.OVERWRITE: &quot;gobjcopy&quot;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p><strong>NOTE:</strong> Both the newer gcc 6.x and Clang report a few warnings but they can be ignored.</p>
 <p><br></p>
 <p><strong>FURTHER NOTE:</strong> Mynewt developers mostly use gcc 5.x for sim builds; so it may take a little while to fix issues reported by the newer compiler. One option is to <strong>disable warnings</strong>. To do that, remove the <code>-Werror</code> flag as an option for the compiler in the  <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file as shown below. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>compiler.flags.base: &gt;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>compiler.flags.base: &gt;
 <span style="background-color: #ffffcc">    -m32 -Wall -ggdb
-</span></code></pre></div>
+</span></pre></div>
 
 <p>You may alternatively choose to <strong>specify the precise warnings to ignore</strong> depending on the error thrown by the compiler. For example, if you see a <code>[-Werror=misleading-indentation]</code> error while building the sim image, add <code>-Wno-misleading-indentation]</code> as a compiler flag in the same line from the <code>&lt;mynewt-src-directory&gt;/repos/apache-mynewt-core/compiler/sim/compiler.yml</code> file.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>compiler.flags.base: &gt;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>compiler.flags.base: &gt;
 <span style="background-color: #ffffcc">    -m32 -Wall -Werror -ggdb -Wno-misleading-indentation
-</span></code></pre></div>
+</span></pre></div>
 
 <p>A third option is to simply <strong>downgrade to gcc 5.x</strong>.</p>
 <p><br></p>
 <h3 id="install-gdb">Install gdb</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ brew install gdb
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ brew install gdb
 ...
 ...
 ==&gt; Summary
 🍺  /usr/local/Cellar/gdb/7.10.1: XXX files,YYM
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p><strong>NOTE:</strong> When running a program with gdb, you may need to sign your gdb
@@ -515,12 +515,12 @@ substitute invocations of <em>apt-get</em> in the below steps with the package m
 that your distro uses.</p>
 <p><br></p>
 <h3 id="install-gcclibc-that-will-produce-32-bit-executables">Install gcc/libc that will produce 32-bit executables:</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ sudo apt-get install gcc-multilib libc6-i386
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ sudo apt-get install gcc-multilib libc6-i386
+</pre></div>
 
 <p><br></p>
 <h3 id="install-gdb_1">Install gdb</h3>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ sudo apt-get install gdb
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ sudo apt-get install gdb
 
 Reading package lists... Done
 Building dependency tree       
@@ -532,7 +532,7 @@ The following NEW packages will be installed:
 ...
 Processing triggers for man-db (2.6.7.1-1ubuntu1) ...
 Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>At this point you have installed all the necessary software to build and test code on a simluator running on your Mac or Linux. Proceed to the <a href="../project_create/">Create Your First Project</a> section.</p>
@@ -563,7 +563,7 @@ Setting up gdb (7.7.1-0ubuntu5~14.04.2) ...
                 <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             </a>
             <p>
-                Copyright © 2015-2021 The Apache Software Foundation.<br>
+                Copyright © 2015-2024 The Apache Software Foundation.<br>
                 <small class="footnote">
                     Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
                     project logo are either registered trademarks or trademarks of the Apache

@@ -114,7 +114,7 @@ ga("send", "pageview");
                     <a href="/talks/">Talks</a>
                 </li>
                 <li 
-  class="active"
+  class="active  "
 >
                     <a href="/documentation/">Documentation</a>
                 </li>
@@ -131,7 +131,7 @@ ga("send", "pageview");
                 <li 
   class=""
 >
-                    <a href="/events/">Events</a>
+                    <a href="/cve/">CVE</a>
                 </li>
             </ul>
 
@@ -494,7 +494,7 @@ support native compiling to build the project this tutorial creates.  </li>
 <p><br></p>
 <h3 id="create-a-project">Create a project</h3>
 <p>Use the Newt tool to create a new project directory containing a skeletal Mynewt framework. Change into the newly created directory.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt new myapp1
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt new myapp1
 Downloading project skeleton from apache/incubator-mynewt-blinky...
 Installing skeleton in myapp1...
 Project myapp1 successfully created.
@@ -505,12 +505,12 @@ apache-mynewt-core
 Downloading repository description for apache-mynewt-core... success!
 ...
 apache-mynewt-core successfully installed version 0.7.9-none
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="create-targets">Create targets</h3>
 <p>You will create two targets - one for the bootloader, the other for the application.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create myble
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create myble
 Target targets/myble successfully created
 $ newt target create nrf52_boot
 Target targets/myble successfully created
@@ -521,11 +521,11 @@ targets/my_blinky_sim
     build_profile=debug
 targets/myble
 targets/nrf52_boot
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>Define the targets further. Note that you are using the example app <code>bletiny</code> for the application target. Set the bsp correctly (nrf52pdk or nrf52dk depending on whether the board is the preview kit or the dev kit, respectively. Look on the top of your board, if you see PCA100040, use the nrf52dk version, otherwide use the nrf52pdk version). </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set myble bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
 Target targets/myble successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52pdk
 $ newt target set myble app=@apache-mynewt-core/apps/bletiny
 Target targets/myble successfully set target.app to @apache-mynewt-core/apps/bletiny
@@ -533,17 +533,17 @@ $ newt target set myble build_profile=optimized
 Target targets/myble successfully set target.build_profile to optimized
 $ newt target set myble cflags=-DSTATS_NAME_ENABLE
 Target targets/myble successfully set pkg.cflags to DSTATS_NAME_ENABLE
-</code></pre></div>
+</pre></div>
 
 <p>Use the same <code>newt target set</code> command to set the following definition for the bootloader target -- again, make sure you use the correct value for the bsp based on which version of the board you have..</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>targets/nrf52_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
-</code></pre></div>
+</pre></div>
 
 <p>You should have the following targets by the end of this step.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target show
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target show
 targets/my_blinky_sim
     app=apps/blinky
     bsp=@apache-mynewt-core/hw/bsp/native
@@ -557,11 +557,11 @@ targets/nrf52_boot
     app=@apache-mynewt-core/apps/boot
     bsp=@apache-mynewt-core/hw/bsp/nrf52pdk
     build_profile=optimized
-</code></pre></div>
+</pre></div>
 
 <h3 id="build-targets">Build targets</h3>
 <p>Then build the two targets.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt build nrf52_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build nrf52_boot
 &lt;snip&gt;
 App successfully built: ./bin/nrf52_boot/apps/boot/boot.elf
 $ newt build myble
@@ -570,22 +570,22 @@ Compiling util.c
 Archiving nimble.a
 Compiling os.c
 &lt;snip&gt;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="create-the-app-image">Create the app image</h3>
 <p>Generate a signed application image for the <code>myble</code> target. The version number is arbitrary.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt create-image myble 1.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt create-image myble 1.0.0
 App image succesfully generated: ./bin/makerbeacon/apps/bletiny/bletiny.img
 Build manifest: ./bin/makerbeacon/apps/bletiny/manifest.json
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="load-the-image">Load the image</h3>
 <p>Make sure the USB connector is in place and the power LED on the board is lit. Use the Power ON/OFF switch to reset the board after loading the image.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt load nrf52_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load nrf52_boot
 $ newt load myble
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="establish-serial-connection">Establish serial connection</h3>
@@ -593,12 +593,12 @@ $ newt load myble
 <p><img alt="nRF52" src="../pics/nrf52.JPG" title="nRF52 Dev Board with a Serial Connection set up" /></p>
 <p><br></p>
 <p>You may use any terminal emulation program to communicate with the board. This tutorial shows a Minicom set up. You will have to find out what the usbserial port number is on your laptop, of course.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ minicom -D /dev/tty.usbserial-AJ03HAQQ
-</code></pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ minicom -D /dev/tty.usbserial-AJ03HAQQ
+</pre></div>
 
 <p><br></p>
 <p>When the Minicom screen comes up, type in <code>?</code></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>Welcome to minicom 2.7
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>Welcome to minicom 2.7
 
 OPTIONS: 
 Compiled on Nov 24 2015, 16:14:21.
@@ -609,11 +609,11 @@ Press Meta-Z for help on special keys
 <span style="background-color: #ffffcc">?
 </span>4828455:log     echo    ?       tasks   mempools        date 
 4828457:stat    b 
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>Try the <code>stat</code> command. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc">stat
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">stat
 </span>4973017:Must specify a statistic name to dump, possible names are:
 4973021:        stat
 4973022:        ble_l2cap
@@ -624,11 +624,11 @@ Press Meta-Z for help on special keys
 4973031:        ble_hs
 4973032:        ble_ll_conn
 4973034:        ble_ll
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>Try specifying a BLE related stat, for example <code>ble_ll</code>. You should see some HCI (Host Controller Interface) command counts. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc">stat ble_ll
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">stat ble_ll
 </span>4986297:hci_cmds: 5
 4986297:hci_cmd_errs: 0
 4986299:hci_events_sent: 5
@@ -642,11 +642,11 @@ Press Meta-Z for help on special keys
 4986319:rx_data_pdu_crc_err: 0
 4986322:rx_data_bytes_crc_ok: 0
 &lt;snip&gt;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>For a more exciting output, try scanning your surroundings for BLE adverstisements. The HCI command shown below specifies a scan duration in ms, sets discovery mode to general (as opposed to limited), the filter to no-whitelist, and type of scan to passive. You should see some scan data flying by!</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc">b scan dur=10000 disc=gen filt=no_wl type=passive
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">b scan dur=10000 disc=gen filt=no_wl type=passive
 </span>
 5301227:[ts=5301227ssb, mod=4 level=1] host_hci_cmd_send: ogf=0x08 ocf=0x0b len=7
 5301233:[ts=5301233ssb, mod=4 level=1] Command Complete: cmd_pkts=1 ogf=0x8 ocf=0xb status=0
@@ -662,12 +662,12 @@ GAP procedure initiated: discovery; disc_mode=2 filter_policyLE advertising repo
 5301321:[ts=5301321ssb, mod=64 level=2]     uuids16(complete)=0xfeaa 
 5301327:[ts=5301327ssb, mod=64 level=2]     svc_data_uuid16=
 &lt;snip&gt;
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>If you're still not seeing any output from the device, try running the debugger and see if you are seeing the program execute properly. </p>
 <p><br></p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt debug myble
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt debug myble
 Debugging ./bin/myble/apps/bletiny/bletiny.elf
 GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20140731-cvs
 Copyright (C) 2013 Free Software Foundation, Inc.
@@ -701,7 +701,7 @@ os_tick_idle (ticks=1000) at hal_os_tick.c:117
 $2 = 51888
 (gdb) c
 Continuing.
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <p>You should see the g_os_time advancing as above, as each os time tick is 1ms. If the system ticks aren't advancing, then nothing's actually running.</p>
@@ -732,7 +732,7 @@ Continuing.
                 <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             </a>
             <p>
-                Copyright © 2015-2021 The Apache Software Foundation.<br>
+                Copyright © 2015-2024 The Apache Software Foundation.<br>
                 <small class="footnote">
                     Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
                     project logo are either registered trademarks or trademarks of the Apache

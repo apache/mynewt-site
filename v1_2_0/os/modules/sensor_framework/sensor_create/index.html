@@ -114,7 +114,7 @@ ga("send", "pageview");
                     <a href="/talks/">Talks</a>
                 </li>
                 <li 
-  class="active"
+  class="active  "
 >
                     <a href="/documentation/">Documentation</a>
                 </li>
@@ -131,7 +131,7 @@ ga("send", "pageview");
                 <li 
   class=""
 >
-                    <a href="/events/">Events</a>
+                    <a href="/cve/">CVE</a>
                 </li>
             </ul>
 
@@ -660,31 +660,31 @@ To create and initialize a sensor device named <code>SENSORNAME</code>, the BSP 
 <p><strong>Note</strong>: All example excerpts are from the code that creates the LIS2DH12 onboard sensor in the nrf52_thingy BSP. </p>
 <p><br>
 1. Define a <code>&lt;SENSORNAME&gt;_ONB</code> syscfg setting to specify whether the onboard sensor named <code>SENSORNAME</code> is enabled. The setting is disabled by default. The setting is used to conditionally include the code to create a sensor device for <code>SENSORNAME</code> when it is enabled by the application. For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>syscfg.defs:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>syscfg.defs:
     LIS2DH12_ONB:
         description: &#39;NRF52 Thingy onboard lis2dh12 sensor&#39;
         value:  0
-</code></pre></div>
+</pre></div>
 
 <p><br>
 2. Include the "&lt;sensorname&gt;/&lt;sensorname&gt;.h" header file.  The BSP uses the functions and data structures that a device driver package exports. See the <a href="/os/modules/sensor_framework/sensor_driver.md">Sensor Device Driver</a> page for details.</p>
 <p><br>
 3. Declare a variable named <code>sensorname</code> of type <code>struct sensorname</code>. For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
-<span style="color: #633820">#include</span> <span style="color: #177500">&lt;lis2dh12/lis2dh12.h&gt;</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">lis2dh12</span> <span style="color: #000000">lis2dh12</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
+<span style="color: #633820">#include</span> <span style="color: #177500">&lt;lis2dh12/lis2dh12.h&gt;</span><span style="color: #633820"></span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">lis2dh12</span> <span style="color: #000000">lis2dh12</span>;
 <span style="color: #633820">#endif</span>
-</code></pre></div>
+</pre></div>
 
 <p><br>
 4. Declare and specify the values for a variable of type <code>struct sensor_itf</code> that the sensor device driver uses to communicate with the sensor device. For example: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_itf</span> <span style="color: #000000">i2c_0_itf_lis</span> <span style="color: #000000">=</span> {
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_itf</span> <span style="color: #000000">i2c_0_itf_lis</span> <span style="color: #000000">=</span> {
     .<span style="color: #000000">si_type</span> <span style="color: #000000">=</span> <span style="color: #000000">SENSOR_ITF_I2C</span>,
     .<span style="color: #000000">si_num</span>  <span style="color: #000000">=</span> <span style="color: #1C01CE">0</span>,
     .<span style="color: #000000">si_addr</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">0x19</span>
 <span style="color: #000000">&lt;br&gt;</span>
-</code></pre></div>
+</pre></div>
 
 <p><br>
 5. In the <code>hal_bsp_init()</code> function,  create an OS device for the sensor device.  Call the <code>os_dev_create()</code> function and pass the following to the function: </p>
@@ -694,7 +694,7 @@ To create and initialize a sensor device named <code>SENSORNAME</code>, the BSP 
 <li>A pointer to the <code>struct sensor_itf</code> variable from step 4. </li>
 </ul>
 <p>For example: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>static void
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>static void
 sensor_dev_create(void)
 {
     int rc;
@@ -719,19 +719,19 @@ hal_bsp_init(void)
     sensor_dev_create();
 
 }
-</code></pre></div>
+</pre></div>
 
 <p><br>
 6. Define a <code>config_&lt;sensorname&gt;_sensor()</code> function to set the default configuration for the sensor. This function opens the OS device for the sensor device, initializes the a <code>cfg</code> variable of type <code>struct &lt;sensorname&gt;_cfg</code> with the default settings, calls the <code>&lt;sensorname&gt;_config()</code> driver function to configure the device, and closes the device.  This function is called when the BSP is initialized during sysinit(). For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">int</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
 <span style="color: #000000">config_lis2dh12_sensor</span>(<span style="color: #A90D91">void</span>)
 {
 <span style="color: #633820">#if MYNEWT_VAL(LIS2DH12_ONB)</span>
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_dev</span> <span style="color: #000000">*dev</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">lis2dh12_cfg</span> <span style="color: #000000">cfg</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_dev</span> <span style="color: #000000">*dev</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #000000">lis2dh12_cfg</span> <span style="color: #000000">cfg</span>;
 
-    <span style="color: #000000">dev</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_dev</span> <span style="color: #000000">*</span>) <span style="color: #000000">os_dev_open</span>(<span style="color: #C41A16">&quot;lis2dh12_0&quot;</span>, <span style="color: #000000">OS_TIMEOUT_NEVER</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000000">dev</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">os_dev</span> <span style="color: #000000">*</span>) <span style="color: #000000">os_dev_open</span>(<span style="color: #C41A16">&quot;lis2dh12_0&quot;</span>, <span style="color: #000000">OS_TIMEOUT_NEVER</span>, <span style="color: #A90D91">NULL</span>);
     <span style="color: #000000">assert</span>(<span style="color: #000000">dev</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
 
     <span style="color: #000000">memset</span>(<span style="color: #000000">&amp;cfg</span>, <span style="color: #1C01CE">0</span>, <span style="color: #A90D91">sizeof</span>(<span style="color: #000000">cfg</span>));
@@ -741,14 +741,14 @@ hal_bsp_init(void)
     <span style="color: #000000">cfg</span>.<span style="color: #000000">lc_fs</span> <span style="color: #000000">=</span> <span style="color: #000000">LIS2DH12_FS_2G</span>;
     <span style="color: #000000">cfg</span>.<span style="color: #000000">lc_pull_up_disc</span> <span style="color: #000000">=</span> <span style="color: #1C01CE">1</span>;
 
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">lis2dh12_config</span>((<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">lis2dh12</span> <span style="color: #000000">*</span>)<span style="color: #000000">dev</span>, <span style="color: #000000">&amp;cfg</span>);
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">lis2dh12_config</span>((<span style="color: #A90D91">struct</span> <span style="color: #000000">lis2dh12</span> <span style="color: #000000">*</span>)<span style="color: #000000">dev</span>, <span style="color: #000000">&amp;cfg</span>);
     <span style="color: #000000">SYSINIT_PANIC_ASSERT</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
     <span style="color: #000000">os_dev_close</span>(<span style="color: #000000">dev</span>);
 <span style="color: #633820">#endif</span>
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
-</code></pre></div>
+</pre></div>
 
 <p><br>
 7. Add the following in the BSP <code>pkg.yml</code> file: </p>
@@ -761,12 +761,12 @@ hal_bsp_init(void)
 </li>
 </ul>
 <p>For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.deps.LIS2DH12_ONB:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps.LIS2DH12_ONB:
     - hw/drivers/sensors/lis2dh12
 
 pkg.init:
     config_lis2dh12_sensor: 400
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="creating-an-off-board-sensor">Creating an Off-Board Sensor</h3>
@@ -774,7 +774,7 @@ pkg.init:
 <p><strong>Note</strong>: All example excerpts are from the code that creates the BNO055 off-board sensor in <code>hw/sensor/creator</code> package.</p>
 <p><br>
 1. Define a <code>&lt;SENSORNAME&gt;_OFB</code> syscfg setting to specify whether the off-board sensor named <code>SENSORNAME</code> is enabled. This setting is disabled by default. The <code>hw/sensor/creator</code> package uses the setting to conditionally include the code to create the sensor device when it is enabled by the application.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code># Package: hw/sensor/creator
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span># Package: hw/sensor/creator
 
 syscfg.defs:
       ...
@@ -784,12 +784,12 @@ syscfg.defs:
         value : 0
 
        ...
-</code></pre></div>
+</pre></div>
 
 <p><br>
 2. Add the calls to the <code>os_dev_create()</code> and the <code>config_&lt;sensorname&gt;_sensor()</code> functions in the <code>sensor_dev_create()</code> function defined in the <code>sensor_creator.c</code> file . The <code>sensor_dev_create()</code> function is the <code>hw/sensor/creator</code> package initialization function that <code>sysinit()</code> calls. </p>
 <p>For example: </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">void</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
 <span style="color: #000000">sensor_dev_create</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
@@ -797,7 +797,7 @@ syscfg.defs:
      ...
 
 <span style="color: #633820">#if MYNEWT_VAL(BNO055_OFB)</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_dev_create</span>((<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_dev</span> <span style="color: #000000">*</span>) <span style="color: #000000">&amp;bno055</span>, <span style="color: #C41A16">&quot;bno055_0&quot;</span>,
+    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">os_dev_create</span>((<span style="color: #A90D91">struct</span> <span style="color: #000000">os_dev</span> <span style="color: #000000">*</span>) <span style="color: #000000">&amp;bno055</span>, <span style="color: #C41A16">&quot;bno055_0&quot;</span>,
       <span style="color: #000000">OS_DEV_INIT_PRIMARY</span>, <span style="color: #1C01CE">0</span>, <span style="color: #000000">bno055_init</span>, (<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>)<span style="color: #000000">&amp;i2c_0_itf_bno</span>);
     <span style="color: #000000">assert</span>(<span style="color: #000000">rc</span> <span style="color: #000000">==</span> <span style="color: #1C01CE">0</span>);
 
@@ -808,13 +808,13 @@ syscfg.defs:
      ....
 
 }
-</code></pre></div>
+</pre></div>
 
 <p><br>
 3.  Add a conditional package dependency for the <code>hw/drivers/sensors/&lt;sensorname&gt;</code> package when the <code>&lt;SENSORNAME&gt;_OFB</code> setting is enabled. For example:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.deps.BNO055_OFB:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps.BNO055_OFB:
     - hw/drivers/sensors/bno055
-</code></pre></div>
+</pre></div>
 
 <p><br></p>
 <h3 id="reconfiguring-a-sensor-device-by-an-application">Reconfiguring A Sensor Device by an Application</h3>
@@ -848,7 +848,7 @@ syscfg.defs:
                 <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
             </a>
             <p>
-                Copyright © 2015-2021 The Apache Software Foundation.<br>
+                Copyright © 2015-2024 The Apache Software Foundation.<br>
                 <small class="footnote">
                     Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
                     project logo are either registered trademarks or trademarks of the Apache

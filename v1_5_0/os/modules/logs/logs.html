@@ -130,7 +130,7 @@ ga("send", "pageview");
                         <a href="/community/">Community</a>
                     </li>
                     <li>
-                        <a href="/events/">Events</a>
+                        <a href="/cve/">CVE</a>
                     </li>
                 </ul>
 
@@ -392,7 +392,7 @@ handler. You can use one of the pre-built ones.</p>
 <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">log</span></code> and register a log handler for it with the log package.
 It must call the <code class="docutils literal notranslate"><span class="pre">log_register()</span></code> function to specify the log handler
 to use:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">log_register</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">log</span><span class="w"> </span><span class="o">*</span><span class="n">log</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">log_handler</span><span class="w"> </span><span class="o">*</span><span class="n">lh</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">arg</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">level</span><span class="p">)</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">log_register</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">,</span> <span class="k">struct</span> <span class="n">log</span> <span class="o">*</span><span class="n">log</span><span class="p">,</span> <span class="k">const</span> <span class="k">struct</span> <span class="n">log_handler</span> <span class="o">*</span><span class="n">lh</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">arg</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">level</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The parameters are:</p>
@@ -443,25 +443,25 @@ Similarly, the <code class="docutils literal notranslate"><span class="pre">pack
 <code class="docutils literal notranslate"><span class="pre">package2_log</span></code> and externs the variable. The application sets logs for
 <code class="docutils literal notranslate"><span class="pre">package1</span></code> to use console and sets logs for <code class="docutils literal notranslate"><span class="pre">package2</span></code> to use a
 circular buffer.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;package1/package1.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;package2/package2.h&gt;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;util/cbmem.h&gt;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;package1/package1.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;package2/package2.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;util/cbmem.h&gt;</span><span class="cp"></span>
 
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;log/log.h&gt;</span>
+<span class="cp">#include</span> <span class="cpf">&lt;log/log.h&gt;</span><span class="cp"></span>
 
-<span class="k">static</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cbmem_buf</span><span class="p">[</span><span class="n">MAX_CBMEM_BUF</span><span class="p">];</span>
-<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cbmem</span><span class="w"> </span><span class="n">cbmem</span><span class="p">;</span>
+<span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">cbmem_buf</span><span class="p">[</span><span class="n">MAX_CBMEM_BUF</span><span class="p">];</span>
+<span class="k">static</span> <span class="k">struct</span> <span class="n">cbmem</span> <span class="n">cbmem</span><span class="p">;</span>
 
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">app_log_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="kt">void</span> <span class="nf">app_log_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
 
 
 
-<span class="w">    </span><span class="n">log_register</span><span class="p">(</span><span class="s">&quot;package1_log&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">package1_log</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">log_console_handler</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">LOG_SYSLEVEL</span><span class="p">);</span>
+    <span class="n">log_register</span><span class="p">(</span><span class="s">&quot;package1_log&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">package1_log</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">log_console_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">LOG_SYSLEVEL</span><span class="p">);</span>
 
-<span class="w">    </span><span class="n">cbmem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cbmem</span><span class="p">,</span><span class="w"> </span><span class="n">cbmem_buf</span><span class="p">,</span><span class="w"> </span><span class="n">MAX_CBMEM_BUF</span><span class="p">);</span>
-<span class="w">    </span><span class="n">log_register</span><span class="p">(</span><span class="s">&quot;package2_log&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">package2_log</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">log_cbmem_handler</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">cbmem</span><span class="p">,</span><span class="w"> </span><span class="n">LOG_SYSLEVEL</span><span class="p">);</span>
+    <span class="n">cbmem_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">cbmem</span><span class="p">,</span> <span class="n">cbmem_buf</span><span class="p">,</span> <span class="n">MAX_CBMEM_BUF</span><span class="p">);</span>
+    <span class="n">log_register</span><span class="p">(</span><span class="s">&quot;package2_log&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">package2_log</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">log_cbmem_handler</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">cbmem</span><span class="p">,</span> <span class="n">LOG_SYSLEVEL</span><span class="p">);</span>
 
 <span class="p">}</span>
 </pre></div>
@@ -477,23 +477,23 @@ makes it external so an application can override log handler.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* my_package.h*/</span>
 
 <span class="cm">/* pick a unique name here */</span>
-<span class="k">extern</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">log</span><span class="w"> </span><span class="n">my_package_log</span><span class="p">;</span>
+<span class="k">extern</span> <span class="k">struct</span> <span class="n">log</span> <span class="n">my_package_log</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>Define the <code class="docutils literal notranslate"><span class="pre">my_package_log</span></code> variable and register the console log
 handler:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* my_package.c */</span>
 
-<span class="k">struct</span><span class="w"> </span><span class="nc">log</span><span class="w"> </span><span class="n">my_package_log</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">log</span> <span class="n">my_package_log</span><span class="p">;</span>
 
 <span class="p">{</span>
-<span class="w">    </span><span class="p">...</span>
+    <span class="p">...</span>
 
-<span class="w">    </span><span class="cm">/* register my log with a name to the system */</span>
-<span class="w">    </span><span class="n">log_register</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">my_package_log</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">log_console_handler</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="n">LOG_LEVEL_DEBUG</span><span class="p">);</span>
+    <span class="cm">/* register my log with a name to the system */</span>
+    <span class="n">log_register</span><span class="p">(</span><span class="s">&quot;log&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">my_package_log</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">log_console_handler</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">LOG_LEVEL_DEBUG</span><span class="p">);</span>
 
-<span class="w">    </span><span class="n">LOG_DEBUG</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_package_log</span><span class="p">,</span><span class="w"> </span><span class="n">LOG_MODULE_DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bla&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">LOG_DEBUG</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_package_log</span><span class="p">,</span><span class="w"> </span><span class="n">LOG_MODULE_DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;bab&quot;</span><span class="p">);</span>
+    <span class="n">LOG_DEBUG</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_package_log</span><span class="p">,</span> <span class="n">LOG_MODULE_DEFAULT</span><span class="p">,</span> <span class="s">&quot;bla&quot;</span><span class="p">);</span>
+    <span class="n">LOG_DEBUG</span><span class="p">(</span><span class="o">&amp;</span><span class="n">my_package_log</span><span class="p">,</span> <span class="n">LOG_MODULE_DEFAULT</span><span class="p">,</span> <span class="s">&quot;bab&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>

@@ -130,7 +130,7 @@ ga("send", "pageview");
                         <a href="/community/">Community</a>
                     </li>
                     <li>
-                        <a href="/events/">Events</a>
+                        <a href="/cve/">CVE</a>
                     </li>
                 </ul>
 
@@ -297,7 +297,7 @@ occurs in under a second after the application starts. An application
 learns when sync is achieved by configuring the host’s <em>sync callback</em>:
 <code class="docutils literal notranslate"><span class="pre">ble_hs_cfg.sync_cb</span></code>. The host calls the sync callback whenever sync
 is acquired. The sync callback has the following form:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ble_hs_sync_fn</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="kt">void</span> <span class="nf">ble_hs_sync_fn</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Because the NimBLE stack begins in the unsynced state, the application
@@ -314,7 +314,7 @@ again signaled via the sync callback.</p>
 <p>An application learns of a host reset by configuring the host’s <em>reset
 callback</em>: <code class="docutils literal notranslate"><span class="pre">ble_hs_cfg.reset_cb</span></code>. This callback has the following
 form:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">ble_hs_reset_fn</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">reason</span><span class="p">);</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="kt">void</span> <span class="nf">ble_hs_reset_fn</span><span class="p">(</span><span class="kt">int</span> <span class="n">reason</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">reason</span></code> parameter is a <a class="reference internal" href="../ble_hs/ble_hs_return_codes.html"><span class="doc">NimBLE host return
@@ -324,35 +324,35 @@ code</span></a>.</p>
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <p>The following example demonstrates the configuration of the sync and
 reset callbacks.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;sysinit/sysinit.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;console/console.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;host/ble_hs.h&quot;</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;sysinit/sysinit.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;console/console.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;host/ble_hs.h&quot;</span><span class="cp"></span>
 
-<span class="k">static</span><span class="w"> </span><span class="kt">void</span>
+<span class="k">static</span> <span class="kt">void</span>
 <span class="nf">on_sync</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="cm">/* Begin advertising, scanning for peripherals, etc. */</span>
+    <span class="cm">/* Begin advertising, scanning for peripherals, etc. */</span>
 <span class="p">}</span>
 
-<span class="k">static</span><span class="w"> </span><span class="kt">void</span>
-<span class="nf">on_reset</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">reason</span><span class="p">)</span>
+<span class="k">static</span> <span class="kt">void</span>
+<span class="nf">on_reset</span><span class="p">(</span><span class="kt">int</span> <span class="n">reason</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Resetting state; reason=%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">reason</span><span class="p">);</span>
+    <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Resetting state; reason=%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">reason</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="kt">int</span>
 <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="cm">/* Initialize all packages. */</span>
-<span class="w">    </span><span class="n">sysinit</span><span class="p">();</span>
+    <span class="cm">/* Initialize all packages. */</span>
+    <span class="n">sysinit</span><span class="p">();</span>
 
-<span class="w">    </span><span class="n">ble_hs_cfg</span><span class="p">.</span><span class="n">sync_cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">on_sync</span><span class="p">;</span>
-<span class="w">    </span><span class="n">ble_hs_cfg</span><span class="p">.</span><span class="n">reset_cb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">on_reset</span><span class="p">;</span>
+    <span class="n">ble_hs_cfg</span><span class="p">.</span><span class="n">sync_cb</span> <span class="o">=</span> <span class="n">on_sync</span><span class="p">;</span>
+    <span class="n">ble_hs_cfg</span><span class="p">.</span><span class="n">reset_cb</span> <span class="o">=</span> <span class="n">on_reset</span><span class="p">;</span>
 
-<span class="w">    </span><span class="cm">/* As the last thing, process events from default event queue. */</span>
-<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">os_eventq_run</span><span class="p">(</span><span class="n">os_eventq_dflt_get</span><span class="p">());</span>
-<span class="w">    </span><span class="p">}</span>
+    <span class="cm">/* As the last thing, process events from default event queue. */</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">os_eventq_run</span><span class="p">(</span><span class="n">os_eventq_dflt_get</span><span class="p">());</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>

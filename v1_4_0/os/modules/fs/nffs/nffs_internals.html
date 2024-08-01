@@ -127,7 +127,7 @@ ga("send", "pageview");
                         <a href="/community/">Community</a>
                     </li>
                     <li>
-                        <a href="/events/">Events</a>
+                        <a href="/cve/">CVE</a>
                     </li>
                 </ul>
 
@@ -273,13 +273,13 @@ ga("send", "pageview");
 <h2>Disk structure<a class="headerlink" href="#disk-structure" title="Permalink to this headline">¶</a></h2>
 <p>On disk, each area is prefixed with the following header:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of an area header. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_disk_area</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nda_magic</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span><span class="w">  </span><span class="cm">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nda_length</span><span class="p">;</span><span class="w">    </span><span class="cm">/* Total size of area, in bytes. */</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nda_ver</span><span class="p">;</span><span class="w">        </span><span class="cm">/* Current nffs version: 0 */</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nda_gc_seq</span><span class="p">;</span><span class="w">     </span><span class="cm">/* Garbage collection count. */</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">reserved8</span><span class="p">;</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nda_id</span><span class="p">;</span><span class="w">         </span><span class="cm">/* 0xff if scratch area. */</span>
+<span class="k">struct</span> <span class="n">nffs_disk_area</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">nda_magic</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>  <span class="cm">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
+    <span class="kt">uint32_t</span> <span class="n">nda_length</span><span class="p">;</span>    <span class="cm">/* Total size of area, in bytes. */</span>
+    <span class="kt">uint8_t</span> <span class="n">nda_ver</span><span class="p">;</span>        <span class="cm">/* Current nffs version: 0 */</span>
+    <span class="kt">uint8_t</span> <span class="n">nda_gc_seq</span><span class="p">;</span>     <span class="cm">/* Garbage collection count. */</span>
+    <span class="kt">uint8_t</span> <span class="n">reserved8</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">nda_id</span><span class="p">;</span>         <span class="cm">/* 0xff if scratch area. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -288,16 +288,16 @@ representing the contents of the file system. There are two types of
 objects: <em>inodes</em> and <em>data blocks</em>. An inode represents a file or
 directory; a data block represents part of a file’s contents.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of an inode (file or directory). */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_disk_inode</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndi_magic</span><span class="p">;</span><span class="w">         </span><span class="cm">/* NFFS_INODE_MAGIC */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndi_id</span><span class="p">;</span><span class="w">            </span><span class="cm">/* Unique object ID. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndi_seq</span><span class="p">;</span><span class="w">           </span><span class="cm">/* Sequence number; greater supersedes</span>
+<span class="k">struct</span> <span class="n">nffs_disk_inode</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">ndi_magic</span><span class="p">;</span>         <span class="cm">/* NFFS_INODE_MAGIC */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndi_id</span><span class="p">;</span>            <span class="cm">/* Unique object ID. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndi_seq</span><span class="p">;</span>           <span class="cm">/* Sequence number; greater supersedes</span>
 <span class="cm">                                   lesser. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndi_parent_id</span><span class="p">;</span><span class="w">     </span><span class="cm">/* Object ID of parent directory inode. */</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">reserved8</span><span class="p">;</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ndi_filename_len</span><span class="p">;</span><span class="w">   </span><span class="cm">/* Length of filename, in bytes. */</span>
-<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">ndi_crc16</span><span class="p">;</span><span class="w">         </span><span class="cm">/* Covers rest of header and filename. */</span>
-<span class="w">    </span><span class="cm">/* Followed by filename. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndi_parent_id</span><span class="p">;</span>     <span class="cm">/* Object ID of parent directory inode. */</span>
+    <span class="kt">uint8_t</span> <span class="n">reserved8</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">ndi_filename_len</span><span class="p">;</span>   <span class="cm">/* Length of filename, in bytes. */</span>
+    <span class="kt">uint16_t</span> <span class="n">ndi_crc16</span><span class="p">;</span>         <span class="cm">/* Covers rest of header and filename. */</span>
+    <span class="cm">/* Followed by filename. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -309,16 +309,16 @@ filename:</p>
 <li><p><a href="#id1"><span class="problematic" id="id2">:raw-latex:`\0`</span></a> (NUL character)</p></li>
 </ul>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of a data block. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_disk_block</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndb_magic</span><span class="p">;</span><span class="w">     </span><span class="cm">/* NFFS_BLOCK_MAGIC */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndb_id</span><span class="p">;</span><span class="w">        </span><span class="cm">/* Unique object ID. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndb_seq</span><span class="p">;</span><span class="w">       </span><span class="cm">/* Sequence number; greater supersedes lesser. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndb_inode_id</span><span class="p">;</span><span class="w">  </span><span class="cm">/* Object ID of owning inode. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ndb_prev_id</span><span class="p">;</span><span class="w">   </span><span class="cm">/* Object ID of previous block in file;</span>
+<span class="k">struct</span> <span class="n">nffs_disk_block</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">ndb_magic</span><span class="p">;</span>     <span class="cm">/* NFFS_BLOCK_MAGIC */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndb_id</span><span class="p">;</span>        <span class="cm">/* Unique object ID. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndb_seq</span><span class="p">;</span>       <span class="cm">/* Sequence number; greater supersedes lesser. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndb_inode_id</span><span class="p">;</span>  <span class="cm">/* Object ID of owning inode. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ndb_prev_id</span><span class="p">;</span>   <span class="cm">/* Object ID of previous block in file;</span>
 <span class="cm">                               NFFS_ID_NONE if this is the first block. */</span>
-<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">ndb_data_len</span><span class="p">;</span><span class="w">  </span><span class="cm">/* Length of data contents, in bytes. */</span>
-<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">ndb_crc16</span><span class="p">;</span><span class="w">     </span><span class="cm">/* Covers rest of header and data. */</span>
-<span class="w">    </span><span class="cm">/* Followed by &#39;ndb_data_len&#39; bytes of data. */</span>
+    <span class="kt">uint16_t</span> <span class="n">ndb_data_len</span><span class="p">;</span>  <span class="cm">/* Length of data contents, in bytes. */</span>
+    <span class="kt">uint16_t</span> <span class="n">ndb_crc16</span><span class="p">;</span>     <span class="cm">/* Covers rest of header and data. */</span>
+    <span class="cm">/* Followed by &#39;ndb_data_len&#39; bytes of data. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -381,10 +381,10 @@ the list. All objects are represented by the following structure:</p>
 <span class="cm"> * What gets stored in the hash table.  Each entry represents a data block or</span>
 <span class="cm"> * an inode.</span>
 <span class="cm"> */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_hash_entry</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">nffs_hash_entry</span><span class="p">)</span><span class="w"> </span><span class="n">nhe_next</span><span class="p">;</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nhe_id</span><span class="p">;</span><span class="w">        </span><span class="cm">/* 0 - 0x7fffffff if inode; else if block. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nhe_flash_loc</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Upper-byte = area idx; rest = area offset. */</span>
+<span class="k">struct</span> <span class="n">nffs_hash_entry</span> <span class="p">{</span>
+    <span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">nffs_hash_entry</span><span class="p">)</span> <span class="n">nhe_next</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">nhe_id</span><span class="p">;</span>        <span class="cm">/* 0 - 0x7fffffff if inode; else if block. */</span>
+    <span class="kt">uint32_t</span> <span class="n">nhe_flash_loc</span><span class="p">;</span> <span class="cm">/* Upper-byte = area idx; rest = area offset. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -396,14 +396,14 @@ the file system. There are two types of inodes: <em>files</em> and
 <em>directories</em>. Each inode hash entry is actually an instance of the
 following structure:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Each inode hash entry is actually one of these. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode_entry</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_hash_entry</span><span class="w"> </span><span class="n">nie_hash_entry</span><span class="p">;</span>
-<span class="w">    </span><span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">nffs_inode_entry</span><span class="p">)</span><span class="w"> </span><span class="n">nie_sibling_next</span><span class="p">;</span>
-<span class="w">    </span><span class="k">union</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode_list</span><span class="w"> </span><span class="n">nie_child_list</span><span class="p">;</span><span class="w">           </span><span class="cm">/* If directory */</span>
-<span class="w">        </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_hash_entry</span><span class="w"> </span><span class="o">*</span><span class="n">nie_last_block_entry</span><span class="p">;</span><span class="w">    </span><span class="cm">/* If file */</span>
-<span class="w">    </span><span class="p">};</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">nie_refcnt</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">nffs_inode_entry</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">nffs_hash_entry</span> <span class="n">nie_hash_entry</span><span class="p">;</span>
+    <span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">nffs_inode_entry</span><span class="p">)</span> <span class="n">nie_sibling_next</span><span class="p">;</span>
+    <span class="k">union</span> <span class="p">{</span>
+        <span class="k">struct</span> <span class="n">nffs_inode_list</span> <span class="n">nie_child_list</span><span class="p">;</span>           <span class="cm">/* If directory */</span>
+        <span class="k">struct</span> <span class="n">nffs_hash_entry</span> <span class="o">*</span><span class="n">nie_last_block_entry</span><span class="p">;</span>    <span class="cm">/* If file */</span>
+    <span class="p">};</span>
+    <span class="kt">uint8_t</span> <span class="n">nie_refcnt</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -438,45 +438,45 @@ minimized.</p>
 <p>The following data structures are used in the inode and data block
 caches.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Full data block representation; not stored permanently in RAM. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_block</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_hash_entry</span><span class="w"> </span><span class="o">*</span><span class="n">nb_hash_entry</span><span class="p">;</span><span class="w">   </span><span class="cm">/* Points to real block entry. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nb_seq</span><span class="p">;</span><span class="w">                         </span><span class="cm">/* Sequence number; greater</span>
+<span class="k">struct</span> <span class="n">nffs_block</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">nffs_hash_entry</span> <span class="o">*</span><span class="n">nb_hash_entry</span><span class="p">;</span>   <span class="cm">/* Points to real block entry. */</span>
+    <span class="kt">uint32_t</span> <span class="n">nb_seq</span><span class="p">;</span>                         <span class="cm">/* Sequence number; greater</span>
 <span class="cm">                                                supersedes lesser. */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode_entry</span><span class="w"> </span><span class="o">*</span><span class="n">nb_inode_entry</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Owning inode. */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_hash_entry</span><span class="w"> </span><span class="o">*</span><span class="n">nb_prev</span><span class="p">;</span><span class="w">         </span><span class="cm">/* Previous block in file. */</span>
-<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">nb_data_len</span><span class="p">;</span><span class="w">                    </span><span class="cm">/* # of data bytes in block. */</span>
-<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">reserved16</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">nffs_inode_entry</span> <span class="o">*</span><span class="n">nb_inode_entry</span><span class="p">;</span> <span class="cm">/* Owning inode. */</span>
+    <span class="k">struct</span> <span class="n">nffs_hash_entry</span> <span class="o">*</span><span class="n">nb_prev</span><span class="p">;</span>         <span class="cm">/* Previous block in file. */</span>
+    <span class="kt">uint16_t</span> <span class="n">nb_data_len</span><span class="p">;</span>                    <span class="cm">/* # of data bytes in block. */</span>
+    <span class="kt">uint16_t</span> <span class="n">reserved16</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Represents a single cached data block. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_cache_block</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">nffs_cache_block</span><span class="p">)</span><span class="w"> </span><span class="n">ncb_link</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Next / prev cached block. */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_block</span><span class="w"> </span><span class="n">ncb_block</span><span class="p">;</span><span class="w">            </span><span class="cm">/* Full data block. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ncb_file_offset</span><span class="p">;</span><span class="w">               </span><span class="cm">/* File offset of this block. */</span>
+<span class="k">struct</span> <span class="n">nffs_cache_block</span> <span class="p">{</span>
+    <span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">nffs_cache_block</span><span class="p">)</span> <span class="n">ncb_link</span><span class="p">;</span> <span class="cm">/* Next / prev cached block. */</span>
+    <span class="k">struct</span> <span class="n">nffs_block</span> <span class="n">ncb_block</span><span class="p">;</span>            <span class="cm">/* Full data block. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ncb_file_offset</span><span class="p">;</span>               <span class="cm">/* File offset of this block. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Full inode representation; not stored permanently in RAM. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode_entry</span><span class="w"> </span><span class="o">*</span><span class="n">ni_inode_entry</span><span class="p">;</span><span class="w"> </span><span class="cm">/* Points to real inode entry. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ni_seq</span><span class="p">;</span><span class="w">                         </span><span class="cm">/* Sequence number; greater</span>
+<span class="k">struct</span> <span class="n">nffs_inode</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">nffs_inode_entry</span> <span class="o">*</span><span class="n">ni_inode_entry</span><span class="p">;</span> <span class="cm">/* Points to real inode entry. */</span>
+    <span class="kt">uint32_t</span> <span class="n">ni_seq</span><span class="p">;</span>                         <span class="cm">/* Sequence number; greater</span>
 <span class="cm">                                                supersedes lesser. */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode_entry</span><span class="w"> </span><span class="o">*</span><span class="n">ni_parent</span><span class="p">;</span><span class="w">      </span><span class="cm">/* Points to parent directory. */</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ni_filename_len</span><span class="p">;</span><span class="w">                 </span><span class="cm">/* # chars in filename. */</span>
-<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">ni_filename</span><span class="p">[</span><span class="n">NFFS_SHORT_FILENAME_LEN</span><span class="p">];</span><span class="w"> </span><span class="cm">/* First 3 bytes. */</span>
+    <span class="k">struct</span> <span class="n">nffs_inode_entry</span> <span class="o">*</span><span class="n">ni_parent</span><span class="p">;</span>      <span class="cm">/* Points to parent directory. */</span>
+    <span class="kt">uint8_t</span> <span class="n">ni_filename_len</span><span class="p">;</span>                 <span class="cm">/* # chars in filename. */</span>
+    <span class="kt">uint8_t</span> <span class="n">ni_filename</span><span class="p">[</span><span class="n">NFFS_SHORT_FILENAME_LEN</span><span class="p">];</span> <span class="cm">/* First 3 bytes. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
-<span class="n">TAILQ_HEAD</span><span class="p">(</span><span class="n">nffs_block_cache_list</span><span class="p">,</span><span class="w"> </span><span class="n">nffs_block_cache_entry</span><span class="p">);</span>
+<span class="n">TAILQ_HEAD</span><span class="p">(</span><span class="n">nffs_block_cache_list</span><span class="p">,</span> <span class="n">nffs_block_cache_entry</span><span class="p">);</span>
 
 <span class="cm">/** Represents a single cached file inode. */</span>
-<span class="k">struct</span><span class="w"> </span><span class="nc">nffs_cache_inode</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">nffs_cache_inode</span><span class="p">)</span><span class="w"> </span><span class="n">nci_link</span><span class="p">;</span><span class="w">        </span><span class="cm">/* Sorted; LRU at tail. */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_inode</span><span class="w"> </span><span class="n">nci_inode</span><span class="p">;</span><span class="w">                   </span><span class="cm">/* Full inode. */</span>
-<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">nffs_cache_block_list</span><span class="w"> </span><span class="n">nci_block_list</span><span class="p">;</span><span class="w">   </span><span class="cm">/* List of cached blocks. */</span>
-<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">nci_file_size</span><span class="p">;</span><span class="w">                        </span><span class="cm">/* Total file size. */</span>
+<span class="k">struct</span> <span class="n">nffs_cache_inode</span> <span class="p">{</span>
+    <span class="n">TAILQ_ENTRY</span><span class="p">(</span><span class="n">nffs_cache_inode</span><span class="p">)</span> <span class="n">nci_link</span><span class="p">;</span>        <span class="cm">/* Sorted; LRU at tail. */</span>
+    <span class="k">struct</span> <span class="n">nffs_inode</span> <span class="n">nci_inode</span><span class="p">;</span>                   <span class="cm">/* Full inode. */</span>
+    <span class="k">struct</span> <span class="n">nffs_cache_block_list</span> <span class="n">nci_block_list</span><span class="p">;</span>   <span class="cm">/* List of cached blocks. */</span>
+    <span class="kt">uint32_t</span> <span class="n">nci_file_size</span><span class="p">;</span>                        <span class="cm">/* Total file size. */</span>
 <span class="p">};</span>
 </pre></div>
 </div>
