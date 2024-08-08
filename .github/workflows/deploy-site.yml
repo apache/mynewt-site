@@ -32,8 +32,27 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: master
+          fetch-depth: 2
+
+      - name: Check For Content Changes
+        id: check_changes
+        run: |
+          latest_commit=$(git rev-parse HEAD)
+          previous_commit=$(git rev-parse HEAD~1)
+          files_changed=$(git diff --name-only $previous_commit $latest_commit |
+          grep -E '\.(html|css|js|png|md|rst)$') || true
+          
+          if [ -z "$files_changed" ]; then
+            echo "No relevant changes detected."
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "Content changes detected:"
+            echo "$files_changed"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Install Dependencies
+        if: steps.check_changes.outputs.changed == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y doxygen tzdata
@@ -41,6 +60,7 @@ jobs:
           pip install -r requirements.txt 
 
       - name: Setup Project
+        if: steps.check_changes.outputs.changed == 'true'
         run: |
           cd ..
           git clone https://github.com/apache/mynewt-documentation
@@ -50,15 +70,19 @@ jobs:
           git clone https://github.com/apache/mynewt-newtmgr
 
       - name: Build Site
+        if: steps.check_changes.outputs.changed == 'true'
         run: ./build.py
 
       - name: Fetch Deployment Branch
+        if: steps.check_changes.outputs.changed == 'true'
         run: git fetch origin asf-site:asf-site
 
       - name: Deploy Site
+        if: steps.check_changes.outputs.changed == 'true'
         run: ./deploy.sh build
 
       - name: Create Pull Request
+        if: steps.check_changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
