@@ -169,7 +169,10 @@
   <option value="/latest" selected>
     Version: latest
   </option>
-  <option value="/v1_12_0" >
+  <option value="/master" selected="selected" >
+    Version: master
+  </option>
+ <option value="/v1_12_0" >
     Version: 1.12.0
   </option>
   <option value="/v1_11_0" >
@@ -263,14 +266,16 @@
 <!-- ENDS .container-sidebar -->
 
             <div class="col-xs-12 col-sm-9">
+
               
                 <div class="alert alert-warning">
                   <p>
-                    Version master is not the most recent version of the
+                    Version master is the development version of the
                     Apache Mynewt documentation. Click <a href="/latest">here</a> to
-                    read the latest version.
+                    read the latest released version.
                   </p>
                 </div>
+
               
 
               
@@ -306,52 +311,54 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> mkdir <span class="nv">$HOME</span>/src
 <span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/src
 <span class="gp">$</span> newt new air_quality
+<span class="gp">$</span> <span class="nb">cd</span> air_quality
 </pre></div>
 </div>
-<p>If you are using a different development board, you will need to know the board support package for that hardware. You can look up its location, add it your project, and fetch that along with the core OS components. Since the nRF52DK is supported in the Mynewt Core, we don’t need to do much here.</p>
-<p>Your project.yml file should look like this:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span>[user@IsMyLaptop:~/src/air_quality]$ emacs project.yml &amp;
-[user@IsMyLaptop:~/src/air_quality]$ cat project.yml
-project.name: &quot;air_quality&quot;
-
-project.repositories:
-    - apache-mynewt-core
-
-# Use github&#39;s distribution mechanism for core ASF libraries.
-# This provides mirroring automatically for us.
-#
-repository.apache-mynewt-core:
-    type: github
-    vers: 0-latest
-    user: apache
-    repo: mynewt-core
-
-[user@IsMyLaptop:~/src/air_quality]$ newt upgrade
-Downloading repository mynewt-core (commit: master) ...
-Downloading repository mynewt-nimble (commit: master) ...
-apache-mynewt-core successfully upgraded to version 0.0.0
-apache-mynewt-nimble successfully upgraded to version 0.0.0
-[user@IsMyLaptop:~/src/air_quality]$ ls repos/
-apache-mynewt-core
+<p>If you are using a different development board, you will need to know the board support package
+for that hardware. You can look up its location, add it to your project, and fetch that along with
+the core OS components. Since the nRF52DK is supported in the Mynewt Core, we don’t need to do much here.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cat project.yml
 </pre></div>
 </div>
+<p>Your <code class="docutils literal notranslate"><span class="pre">project.yml</span></code> file should look like this:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">project.name</span><span class="p">:</span> <span class="s">&quot;air_quality&quot;</span>
+
+<span class="nt">project.repositories</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">apache-mynewt-core</span>
+
+<span class="c1"># Use github&#39;s distribution mechanism for core ASF libraries.</span>
+<span class="c1"># This provides mirroring automatically for us.</span>
+<span class="c1">#</span>
+<span class="nt">repository.apache-mynewt-core</span><span class="p">:</span>
+    <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">github</span>
+    <span class="nt">vers</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1.12.0</span>
+    <span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apache</span>
+    <span class="nt">repo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mynewt-core</span>
+</pre></div>
+</div>
+<p>After updating <code class="docutils literal notranslate"><span class="pre">vers</span></code> to the latest release of Mynewt (see <em>Latest News</em> at the top of the page),
+it’s time to fetch needed repositories:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt upgrade
+<span class="go">Downloading repository mynewt-core (commit: master) ...</span>
+<span class="go">Downloading repository mynewt-nimble (commit: master) ...</span>
+</pre></div>
+</div>
+<p>Once the command finishes (which may take a while), there should be <em>repos</em> folder in your
+project’s root directory. You can find there Mynewt Core components, NimBLE stack and other
+dependencies.</p>
 <p>Next, create a target for the nRF52DK bootloader:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target create boot_nrf52dk
 <span class="go">Target targets/boot_nrf52dk successfully created</span>
-<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> boot_nrf52dk <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nrf52dk
-<span class="go">Target targets/boot_nrf52dk successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> boot_nrf52dk <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nordic_pca10040
+<span class="go">Target targets/boot_nrf52dk successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040</span>
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> boot_nrf52dk <span class="nv">app</span><span class="o">=</span>@mcuboot/boot/mynewt
 <span class="go">Target targets/boot_nrf52dk successfully set target.app to @mcuboot/boot/mynewt</span>
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> boot_nrf52dk <span class="nv">build_profile</span><span class="o">=</span>optimized
 <span class="go">Target targets/boot_nrf52dk successfully set target.build_profile to optimized</span>
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target show
-<span class="go">@apache-mynewt-core/targets/unittest</span>
-<span class="go">    bsp=hw/bsp/native</span>
-<span class="go">    build_profile=debug</span>
-<span class="go">    compiler=compiler/sim</span>
 <span class="go">targets/boot_nrf52dk</span>
 <span class="go">    app=@mcuboot/boot/mynewt</span>
-<span class="go">    bsp=@apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="go">    bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040</span>
 <span class="go">    build_profile=optimized</span>
 <span class="go">targets/my_blinky_sim</span>
 <span class="go">    app=apps/blinky</span>
@@ -360,12 +367,14 @@ apache-mynewt-core
 </pre></div>
 </div>
 <p>Build the bootloader target and load it onto the board:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">newt build boot_nrf52dk</span>
-<span class="go">....</span>
-<span class="go">Linking boot.elf</span>
-<span class="go">App successfully built: /Users/user/src/air_quality/bin/boot_nrf52dk/boot/mynewt/mynewt.elf</span>
-<span class="go">[user@IsMyLaptop:~/src/air_quality]</span>
-<span class="gp">$</span> newt load boot_nrf52dk
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt build boot_nrf52dk
+<span class="go">Building target targets/boot_nrf52dk</span>
+<span class="go">...</span>
+<span class="go">Linking /home/user/src/air_quality/bin/targets/boot_nrf52dk/app/@mcuboot/boot/mynewt/mynewt.elf</span>
+<span class="go">Target successfully built: targets/boot_nrf52dk</span>
+
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt load boot_nrf52dk
+<span class="go">Loading bootloader ...</span>
 </pre></div>
 </div>
 </div>
@@ -373,53 +382,58 @@ apache-mynewt-core
 <h2><a class="toc-backref" href="#id5">Create a Test Project</a><a class="headerlink" href="#create-a-test-project" title="Permalink to this headline">¶</a></h2>
 <p>Now that you have your system setup, you can start building the application. First you want to create a project for yourself - since we’re eventually going to want to be able to access the data via Bluetooth, let’s use the <code class="docutils literal notranslate"><span class="pre">bleprph</span></code> Bluetooth Peripheral project as the project template.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> mkdir apps/air_quality
-<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cp repos/apache-mynewt-core/apps/bleprph/pkg.yml apps/air_quality/
-<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cp -Rp repos/apache-mynewt-core/apps/bleprph/src apps/air_quality/
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cp repos/apache-mynewt-nimble/apps/bleprph/pkg.yml apps/air_quality/
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cp -Rp repos/apache-mynewt-nimble/apps/bleprph/src apps/air_quality/
 </pre></div>
 </div>
-<p>Modify the apps/air_quality/pkg.yml for air_quality in order to change the <em>pkg.name</em> to be <em>apps/air_quality</em>. You’ll need to add the <code class="docutils literal notranslate"><span class="pre">&#64;apache-mynewt-core/</span></code> path to all the package dependencies, since the app no longer resides within the apache-mynewt-core repository.</p>
+<p>Modify the apps/air_quality/pkg.yml for air_quality in order to change the <em>pkg.name</em> to be
+<em>apps/air_quality</em>. You’ll need to add the <code class="docutils literal notranslate"><span class="pre">&#64;apache-mynewt-nimble/</span></code> path to all the package
+dependencies, since the app no longer resides within the apache-mynewt-nimble repository.
+Remember to add double quotes to the paths, as in the example below:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cat apps/air_quality/pkg.yml
-<span class="go">pkg.name: apps/air_quality</span>
-<span class="go">pkg.type: app</span>
-<span class="go">pkg.description: BLE Air Quality application.</span>
-<span class="go">pkg.author: &quot;Apache Mynewt &lt;dev@mynewt.apache.org&gt;&quot;</span>
-<span class="go">pkg.homepage: &quot;http://mynewt.apache.org/&quot;</span>
-<span class="go">pkg.keywords:</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apps/air_quality</span>
+<span class="nt">pkg.type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="nt">pkg.description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLE Air Quality application.</span>
+<span class="nt">pkg.author</span><span class="p">:</span> <span class="s">&quot;Apache</span><span class="nv"> </span><span class="s">Mynewt</span><span class="nv"> </span><span class="s">&lt;dev@mynewt.apache.org&gt;&quot;</span>
+<span class="nt">pkg.homepage</span><span class="p">:</span> <span class="s">&quot;http://mynewt.apache.org/&quot;</span>
+<span class="nt">pkg.keywords</span><span class="p">:</span>
 
-<span class="go">pkg.deps:</span>
-<span class="go">    - &quot;@apache-mynewt-core/boot/split&quot;</span>
-<span class="go">    - &quot;@mcuboot/boot/bootutil&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/kernel/os&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/mgmt/imgmgr&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/mgmt/newtmgr&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/mgmt/newtmgr/transport/ble&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/controller&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/host&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/host/services/ans&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/host/services/gap&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/host/services/gatt&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/host/store/config&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/console/full&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/log/full&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/stats/full&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/sysinit&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/id&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/shell&quot;</span>
+<span class="nt">pkg.deps</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/boot/split&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@mcuboot/boot/bootutil&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/kernel/os&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/mgmt/imgmgr&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/mgmt/smp&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/mgmt/smp/transport/ble&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/console&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/log&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/log/modlog&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/stats&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/sysinit&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/id&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/services/ans&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/services/dis&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/services/gap&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/services/gatt&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/store/config&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/util&quot;</span>
 </pre></div>
 </div>
 <p>Next create a target for it:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target create air_q
 <span class="go">Target targets/air_q successfully created</span>
-<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> air_q <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nrf52dk
-<span class="go">Target targets/air_q successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk</span>
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> air_q <span class="nv">bsp</span><span class="o">=</span>@apache-mynewt-core/hw/bsp/nordic_pca10040
+<span class="go">Target targets/air_q successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040</span>
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> air_q <span class="nv">app</span><span class="o">=</span>apps/air_quality
 <span class="go">Target targets/air_q successfully set target.app to apps/air_quality</span>
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt target <span class="nb">set</span> air_q <span class="nv">build_profile</span><span class="o">=</span>debug
 <span class="go">Target targets/air_q successfully set target.build_profile to debug</span>
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt build air_q
-<span class="go"> ....</span>
-<span class="go">Linking /Users/users/dev/myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf</span>
+<span class="go">...</span>
+<span class="go">Linking /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.elf</span>
 <span class="go">Target successfully built: targets/air_q</span>
 </pre></div>
 </div>
@@ -525,31 +539,50 @@ driver:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>And add a dependency to this package in your project.yml file.</p>
-<p>Here’s the listing from apps/air_quality/pkg.yml:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pkg.name: apps/air_quality</span>
-<span class="go">pkg.type: app</span>
-<span class="go">pkg.description: Air quality sensor test</span>
-<span class="go">pkg.keywords:</span>
-
-<span class="go">pkg.deps:</span>
-<span class="go">    - &quot;@apache-mynewt-core/boot/split&quot;</span>
-<span class="go">    - &quot;@mcuboot/boot/bootutil&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/kernel/os&quot;</span>
-<span class="go">    ....</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/id&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/net/nimble/transport/ram&quot;</span>
-<span class="go">    - &quot;@apache-mynewt-core/sys/shell&quot;</span>
-<span class="go">    - libs/my_drivers/senseair</span>
+<p>And add a dependency to this package in your <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code> file.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cat apps/air_quality/pkg.yml
 </pre></div>
 </div>
-<p>Add a call to your <code class="docutils literal notranslate"><span class="pre">main()</span></code> to initialize this driver:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> diff project/blinky/src/main.c project/air_quality/src/main.c
-<span class="go">28a29</span>
-<span class="gp">&gt;</span> <span class="c1">#include &lt;senseair/senseair.h&gt;</span>
-<span class="go">190a192</span>
-<span class="gp">&gt;</span> senseair_init<span class="o">()</span><span class="p">;</span>
-<span class="go">[user@IsMyLaptop:~/src/air_quality</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apps/air_quality</span>
+<span class="nt">pkg.type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
+<span class="nt">pkg.description</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">BLE Air Quality application.</span>
+<span class="nt">pkg.author</span><span class="p">:</span> <span class="s">&quot;Apache</span><span class="nv"> </span><span class="s">Mynewt</span><span class="nv"> </span><span class="s">&lt;dev@mynewt.apache.org&gt;&quot;</span>
+<span class="nt">pkg.homepage</span><span class="p">:</span> <span class="s">&quot;http://mynewt.apache.org/&quot;</span>
+<span class="nt">pkg.keywords</span><span class="p">:</span>
+
+<span class="nt">pkg.deps</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/boot/split&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@mcuboot/boot/bootutil&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/kernel/os&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/mgmt/imgmgr&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">...</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/store/config&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-nimble/nimble/host/util&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">libs/my_drivers/senseair</span>
+</pre></div>
+</div>
+<p>Include driver’s header and add a call to <code class="docutils literal notranslate"><span class="pre">senseair_init()</span></code> in your main function to initialize
+this driver:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> cat apps/air_quality/src/main.c
+</pre></div>
+</div>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;senseair/senseair.h&gt;</span><span class="cp"></span>
+<span class="p">...</span>
+
+<span class="kt">int</span>
+<span class="n">mynewt_main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">...</span>
+    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+
+    <span class="cm">/* Initialize OS */</span>
+    <span class="n">sysinit</span><span class="p">();</span>
+
+    <span class="cm">/* Initialize sensor driver */</span>
+    <span class="n">senseair_init</span><span class="p">();</span>
+<span class="p">...</span>
+<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -557,12 +590,19 @@ driver:</p>
 <h2><a class="toc-backref" href="#id7">Add CLI Commands For Testing Drivers</a><a class="headerlink" href="#add-cli-commands-for-testing-drivers" title="Permalink to this headline">¶</a></h2>
 <p>While developing the driver, it would be helpful to issue operations from the console to verify the driver is responding correctly. Since the nRF52DK only has one UART, which will be used to connect to the CO2 sensor, the console we’ll use instead is the <a class="reference internal" href="../tooling/segger_rtt.html"><span class="doc">Segger RTT Console</span></a>. To configure this, make the following changes in your project’s <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> cat targets/air_q/syscfg.yml
-<span class="go">syscfg.vals:</span>
-<span class="gp">    #</span> Enable the shell task.
-<span class="go">    SHELL_TASK: 1</span>
-<span class="gp">    #</span> Use the RTT Console
-<span class="go">    CONSOLE_UART: 0</span>
-<span class="go">    CONSOLE_RTT: 1</span>
+</pre></div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.vals</span><span class="p">:</span>
+    <span class="c1"># Enable the shell task.</span>
+    <span class="nt">SHELL_TASK</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="c1"># Use the RTT Console</span>
+    <span class="nt">CONSOLE_UART</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+    <span class="nt">CONSOLE_RTT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+<p>Also, add a shell dependency in your app’s <code class="docutils literal notranslate"><span class="pre">pkg.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pkg.deps</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;@apache-mynewt-core/sys/shell&quot;</span>
 </pre></div>
 </div>
 <p>Then register your senseair command with the shell by adding the following to <code class="docutils literal notranslate"><span class="pre">libs/my_drivers/senseair/src/senseair.c</span></code></p>
@@ -596,7 +636,16 @@ driver:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Build the target, create an image, and load it onto your board. Then run <code class="docutils literal notranslate"><span class="pre">telnet</span> <span class="pre">localhost</span> <span class="pre">19021</span></code> to start the RTT Console.</p>
+<p>Build the target, create an image, and load it onto your board.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt create-image air_q <span class="m">1</span>.0
+<span class="go">Compiling ...</span>
+<span class="go">Linking /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.elf</span>
+<span class="go">App image successfully generated: /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.img</span>
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt load air_q
+<span class="go">Loading app image into slot 1 ...</span>
+</pre></div>
+</div>
+<p>Then run <code class="docutils literal notranslate"><span class="pre">telnet</span> <span class="pre">localhost</span> <span class="pre">19021</span></code> to start the RTT Console.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~]$</span> telnet localhost <span class="m">19021</span>
 <span class="go">Trying 127.0.0.1...</span>
 <span class="go">Connected to localhost.</span>
@@ -898,14 +947,14 @@ developing code for the driver itself.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>And your modified main() for senseair driver init.</p>
+<p>And your modified <code class="docutils literal notranslate"><span class="pre">mynewt_main()</span></code> for senseair driver init.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span>
-<span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="nf">mynewt_main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="p">....</span>
     <span class="n">senseair_init</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
     <span class="p">....</span>
-    <span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>You can see from the code that you are using the HAL interface to open a UART port, and using OS semaphore as a way of blocking the task when waiting for read response to come back from the sensor.</p>
@@ -922,16 +971,16 @@ developing code for the driver itself.</p>
 <p class="caption"><span class="caption-text">SenseAir and nRF52DK Wiring</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Everything is wired and you’re ready to go! Build and load your new app:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> newt build air_q
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt build air_q
 <span class="go">Building target targets/air_q</span>
 <span class="go">Compiling apps/air_quality/src/main.c</span>
 <span class="go">Archiving apps_air_quality.a</span>
-<span class="go">Linking myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf</span>
+<span class="go">Linking /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.elf</span>
 <span class="go">Target successfully built: targets/air_q</span>
-<span class="gp">$</span> newt create-image air_q <span class="m">1</span>.0.0
-<span class="go">App image succesfully generated: myproj/bin/targets/air_q/app/apps/air_quality/air_quality.img</span>
-<span class="gp">$</span> newt load air_q
-<span class="go">Loading app image into slot 1</span>
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt create-image air_q <span class="m">1</span>.0.0
+<span class="go">App image succesfully generated: /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.img</span>
+<span class="gp">[user@IsMyLaptop:~/src/air_quality]$</span> newt load air_q
+<span class="go">Loading app image into slot 1 ...</span>
 </pre></div>
 </div>
 <p>Now, you should be able to connect to your serial port and read values:</p>

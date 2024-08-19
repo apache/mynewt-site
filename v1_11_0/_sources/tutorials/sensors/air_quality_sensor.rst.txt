@@ -22,15 +22,20 @@ To start, create a new project under which you will do development for this appl
         $ mkdir $HOME/src
         $ cd $HOME/src
         $ newt new air_quality
+        $ cd air_quality
 
-If you are using a different development board, you will need to know the board support package for that hardware. You can look up its location, add it your project, and fetch that along with the core OS components. Since the nRF52DK is supported in the Mynewt Core, we don't need to do much here.
-
-Your project.yml file should look like this:
+If you are using a different development board, you will need to know the board support package
+for that hardware. You can look up its location, add it to your project, and fetch that along with
+the core OS components. Since the nRF52DK is supported in the Mynewt Core, we don't need to do much here.
 
 .. code-block:: console
 
-        [user@IsMyLaptop:~/src/air_quality]$ emacs project.yml &
         [user@IsMyLaptop:~/src/air_quality]$ cat project.yml
+
+Your ``project.yml`` file should look like this:
+
+.. code-block:: yaml
+
         project.name: "air_quality"
 
         project.repositories:
@@ -41,17 +46,22 @@ Your project.yml file should look like this:
         #
         repository.apache-mynewt-core:
             type: github
-            vers: 0-latest
+            vers: 1.12.0
             user: apache
             repo: mynewt-core
+
+After updating ``vers`` to the latest release of Mynewt (see *Latest News* at the top of the page),
+it's time to fetch needed repositories:
+
+.. code-block:: console
 
         [user@IsMyLaptop:~/src/air_quality]$ newt upgrade
         Downloading repository mynewt-core (commit: master) ...
         Downloading repository mynewt-nimble (commit: master) ...
-        apache-mynewt-core successfully upgraded to version 0.0.0
-        apache-mynewt-nimble successfully upgraded to version 0.0.0
-        [user@IsMyLaptop:~/src/air_quality]$ ls repos/
-        apache-mynewt-core
+
+Once the command finishes (which may take a while), there should be *repos* folder in your
+project's root directory. You can find there Mynewt Core components, NimBLE stack and other
+dependencies.
 
 Next, create a target for the nRF52DK bootloader: 
 
@@ -59,20 +69,16 @@ Next, create a target for the nRF52DK bootloader:
 
     [user@IsMyLaptop:~/src/air_quality]$ newt target create boot_nrf52dk
     Target targets/boot_nrf52dk successfully created
-    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    Target targets/boot_nrf52dk successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
+    Target targets/boot_nrf52dk successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040
     [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk app=@mcuboot/boot/mynewt
     Target targets/boot_nrf52dk successfully set target.app to @mcuboot/boot/mynewt
     [user@IsMyLaptop:~/src/air_quality]$ newt target set boot_nrf52dk build_profile=optimized
     Target targets/boot_nrf52dk successfully set target.build_profile to optimized
     [user@IsMyLaptop:~/src/air_quality]$ newt target show
-    @apache-mynewt-core/targets/unittest
-        bsp=hw/bsp/native
-        build_profile=debug
-        compiler=compiler/sim
     targets/boot_nrf52dk
         app=@mcuboot/boot/mynewt
-        bsp=@apache-mynewt-core/hw/bsp/nrf52dk
+        bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
         build_profile=optimized
     targets/my_blinky_sim
         app=apps/blinky
@@ -83,12 +89,14 @@ Build the bootloader target and load it onto the board:
 
 .. code-block:: console
 
-    newt build boot_nrf52dk
-    ....
-    Linking boot.elf
-    App successfully built: /Users/user/src/air_quality/bin/boot_nrf52dk/boot/mynewt/mynewt.elf
-    [user@IsMyLaptop:~/src/air_quality]
-    $ newt load boot_nrf52dk
+    [user@IsMyLaptop:~/src/air_quality]$ newt build boot_nrf52dk
+    Building target targets/boot_nrf52dk
+    ...
+    Linking /home/user/src/air_quality/bin/targets/boot_nrf52dk/app/@mcuboot/boot/mynewt/mynewt.elf
+    Target successfully built: targets/boot_nrf52dk
+
+    [user@IsMyLaptop:~/src/air_quality]$ newt load boot_nrf52dk
+    Loading bootloader ...
 
 Create a Test Project
 ~~~~~~~~~~~~~~~~~~~~~
@@ -98,14 +106,20 @@ Now that you have your system setup, you can start building the application. Fir
 .. code-block:: console
 
         [user@IsMyLaptop:~/src/air_quality]$ mkdir apps/air_quality
-        [user@IsMyLaptop:~/src/air_quality]$ cp repos/apache-mynewt-core/apps/bleprph/pkg.yml apps/air_quality/
-        [user@IsMyLaptop:~/src/air_quality]$ cp -Rp repos/apache-mynewt-core/apps/bleprph/src apps/air_quality/
+        [user@IsMyLaptop:~/src/air_quality]$ cp repos/apache-mynewt-nimble/apps/bleprph/pkg.yml apps/air_quality/
+        [user@IsMyLaptop:~/src/air_quality]$ cp -Rp repos/apache-mynewt-nimble/apps/bleprph/src apps/air_quality/
 
-Modify the apps/air\_quality/pkg.yml for air_quality in order to change the *pkg.name* to be *apps/air\_quality*. You'll need to add the ``@apache-mynewt-core/`` path to all the package dependencies, since the app no longer resides within the apache-mynewt-core repository.
+Modify the apps/air\_quality/pkg.yml for air_quality in order to change the *pkg.name* to be
+*apps/air\_quality*. You'll need to add the ``@apache-mynewt-nimble/`` path to all the package
+dependencies, since the app no longer resides within the apache-mynewt-nimble repository.
+Remember to add double quotes to the paths, as in the example below:
 
 .. code-block:: console
 
     [user@IsMyLaptop:~/src/air_quality]$ cat apps/air_quality/pkg.yml
+
+.. code-block:: yaml
+
     pkg.name: apps/air_quality
     pkg.type: app
     pkg.description: BLE Air Quality application.
@@ -118,21 +132,23 @@ Modify the apps/air\_quality/pkg.yml for air_quality in order to change the *pkg
         - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
         - "@apache-mynewt-core/mgmt/imgmgr"
-        - "@apache-mynewt-core/mgmt/newtmgr"
-        - "@apache-mynewt-core/mgmt/newtmgr/transport/ble"
-        - "@apache-mynewt-core/net/nimble/controller"
-        - "@apache-mynewt-core/net/nimble/host"
-        - "@apache-mynewt-core/net/nimble/host/services/ans"
-        - "@apache-mynewt-core/net/nimble/host/services/gap"
-        - "@apache-mynewt-core/net/nimble/host/services/gatt"
-        - "@apache-mynewt-core/net/nimble/host/store/config"
-        - "@apache-mynewt-core/sys/console/full"
-        - "@apache-mynewt-core/sys/log/full"
-        - "@apache-mynewt-core/sys/stats/full"
+        - "@apache-mynewt-core/mgmt/smp"
+        - "@apache-mynewt-core/mgmt/smp/transport/ble"
+        - "@apache-mynewt-core/sys/console"
+        - "@apache-mynewt-core/sys/log"
+        - "@apache-mynewt-core/sys/log/modlog"
+        - "@apache-mynewt-core/sys/stats"
         - "@apache-mynewt-core/sys/sysinit"
         - "@apache-mynewt-core/sys/id"
-        - "@apache-mynewt-core/net/nimble/transport/ram"
-        - "@apache-mynewt-core/sys/shell"
+        - "@apache-mynewt-nimble/nimble/host"
+        - "@apache-mynewt-nimble/nimble/host/services/ans"
+        - "@apache-mynewt-nimble/nimble/host/services/dis"
+        - "@apache-mynewt-nimble/nimble/host/services/gap"
+        - "@apache-mynewt-nimble/nimble/host/services/gatt"
+        - "@apache-mynewt-nimble/nimble/host/store/config"
+        - "@apache-mynewt-nimble/nimble/host/util"
+
+
 
 Next create a target for it:
 
@@ -140,15 +156,15 @@ Next create a target for it:
 
     [user@IsMyLaptop:~/src/air_quality]$ newt target create air_q
     Target targets/air_q successfully created
-    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=@apache-mynewt-core/hw/bsp/nrf52dk
-    Target targets/air_q successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52dk
+    [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q bsp=@apache-mynewt-core/hw/bsp/nordic_pca10040
+    Target targets/air_q successfully set target.bsp to @apache-mynewt-core/hw/bsp/nordic_pca10040
     [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q app=apps/air_quality 
     Target targets/air_q successfully set target.app to apps/air_quality
     [user@IsMyLaptop:~/src/air_quality]$ newt target set air_q build_profile=debug
     Target targets/air_q successfully set target.build_profile to debug
     [user@IsMyLaptop:~/src/air_quality]$ newt build air_q
-     ....
-    Linking /Users/users/dev/myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf
+    ...
+    Linking /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.elf
     Target successfully built: targets/air_q
 
 Create Packages For Drivers
@@ -263,37 +279,58 @@ Now you can add the files you need. You'll need a ``pkg.yml`` to describe the dr
     {
     }
 
-And add a dependency to this package in your project.yml file.
-
-Here's the listing from apps/air\_quality/pkg.yml:
+And add a dependency to this package in your ``pkg.yml`` file.
 
 .. code-block:: console
 
+    [user@IsMyLaptop:~/src/air_quality]$ cat apps/air_quality/pkg.yml
+
+.. code-block:: yaml
+
     pkg.name: apps/air_quality
     pkg.type: app
-    pkg.description: Air quality sensor test
+    pkg.description: BLE Air Quality application.
+    pkg.author: "Apache Mynewt <dev@mynewt.apache.org>"
+    pkg.homepage: "http://mynewt.apache.org/"
     pkg.keywords:
 
     pkg.deps:
         - "@apache-mynewt-core/boot/split"
         - "@mcuboot/boot/bootutil"
         - "@apache-mynewt-core/kernel/os"
-        ....
-        - "@apache-mynewt-core/sys/id"
-        - "@apache-mynewt-core/net/nimble/transport/ram"
-        - "@apache-mynewt-core/sys/shell"
+        - "@apache-mynewt-core/mgmt/imgmgr"
+        ...
+        - "@apache-mynewt-nimble/nimble/host/store/config"
+        - "@apache-mynewt-nimble/nimble/host/util"
         - libs/my_drivers/senseair
 
-Add a call to your ``main()`` to initialize this driver:
+
+Include driver's header and add a call to ``senseair_init()`` in your main function to initialize
+this driver:
 
 .. code-block:: console
 
-        [user@IsMyLaptop:~/src/air_quality]$ diff project/blinky/src/main.c project/air_quality/src/main.c
-        28a29
-        > #include <senseair/senseair.h>
-        190a192
-        > senseair_init();
-        [user@IsMyLaptop:~/src/air_quality
+    $ cat apps/air_quality/src/main.c
+
+.. code-block:: c
+
+    #include <senseair/senseair.h>
+    ...
+
+    int
+    mynewt_main(int argc, char **argv)
+    {
+    ...
+        int rc;
+
+        /* Initialize OS */
+        sysinit();
+
+        /* Initialize sensor driver */
+        senseair_init();
+    ...
+    return 0;
+    }
 
 Add CLI Commands For Testing Drivers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -303,12 +340,22 @@ While developing the driver, it would be helpful to issue operations from the co
 .. code-block:: console
 
     [user@IsMyLaptop:~/src/air_quality]$ cat targets/air_q/syscfg.yml
+
+.. code-block:: yaml
+
     syscfg.vals:
         # Enable the shell task.
         SHELL_TASK: 1
         # Use the RTT Console
         CONSOLE_UART: 0
         CONSOLE_RTT: 1
+
+Also, add a shell dependency in your app's ``pkg.yml``:
+
+.. code-block:: yaml
+
+    pkg.deps:
+        - "@apache-mynewt-core/sys/shell"
 
 Then register your senseair command with the shell by adding the following to ``libs/my_drivers/senseair/src/senseair.c``
 
@@ -343,7 +390,18 @@ Then register your senseair command with the shell by adding the following to ``
 
     }
 
-Build the target, create an image, and load it onto your board. Then run ``telnet localhost 19021`` to start the RTT Console. 
+Build the target, create an image, and load it onto your board.
+
+.. code-block:: console
+
+    [user@IsMyLaptop:~/src/air_quality]$ newt create-image air_q 1.0
+    Compiling ...
+    Linking /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.elf
+    App image successfully generated: /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.img
+    [user@IsMyLaptop:~/src/air_quality]$ newt load air_q
+    Loading app image into slot 1 ...
+
+Then run ``telnet localhost 19021`` to start the RTT Console.
 
 .. code-block:: console
 
@@ -654,17 +712,17 @@ And here is the source for the driver:
         return 0;
     }
 
-And your modified main() for senseair driver init.
+And your modified ``mynewt_main()`` for senseair driver init.
 
 .. code-block:: c
 
     int
-    main(int argc, char **argv)
+    mynewt_main(int argc, char **argv)
     {
         ....
         senseair_init(0);
         ....
-        }
+    }
 
 You can see from the code that you are using the HAL interface to open a UART port, and using OS semaphore as a way of blocking the task when waiting for read response to come back from the sensor.
 
@@ -690,16 +748,16 @@ Everything is wired and you're ready to go! Build and load your new app:
 
 .. code-block:: console
 
-    $ newt build air_q
+    [user@IsMyLaptop:~/src/air_quality]$ newt build air_q
     Building target targets/air_q
     Compiling apps/air_quality/src/main.c
     Archiving apps_air_quality.a
-    Linking myproj/bin/targets/air_q/app/apps/air_quality/air_quality.elf
+    Linking /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.elf
     Target successfully built: targets/air_q
-    $ newt create-image air_q 1.0.0
-    App image succesfully generated: myproj/bin/targets/air_q/app/apps/air_quality/air_quality.img
-    $ newt load air_q
-    Loading app image into slot 1
+    [user@IsMyLaptop:~/src/air_quality]$ newt create-image air_q 1.0.0
+    App image succesfully generated: /home/user/src/air_quality/bin/targets/air_q/app/apps/air_quality/air_quality.img
+    [user@IsMyLaptop:~/src/air_quality]$ newt load air_q
+    Loading app image into slot 1 ...
 
 Now, you should be able to connect to your serial port and read values:
 
