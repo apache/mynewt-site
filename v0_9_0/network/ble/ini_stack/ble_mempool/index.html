@@ -51,8 +51,8 @@ ga("send", "pageview");
 
     <body class="Create mem pool">
 
-
-        <div class="container">
+        <div id="wrapper">
+            <div class="container">
     <div class="row v2-main-banner">
         <a class="logo-cell" href="/">
             <img class="logo" src="/img/logo.png">
@@ -68,7 +68,7 @@ ga("send", "pageview");
     </div>
 </div>
 
-        
+            
 
 
 
@@ -139,12 +139,12 @@ ga("send", "pageview");
     </div>
 </nav>
 
-        
-
-        <div class="container">
             
-                <div class="row">
-                    <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
+            <div id="main-content">
+                <div class="container">
+                    
+                        <div class="row">
+                            <div class="col-md-3 v2-sidebar sidebar-container"><div id="docSidebar" class="hidden-print" role="complementary">
     <div class="top">
         <div role="search">
             <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -456,9 +456,9 @@ ga("send", "pageview");
     </ul>
 </div></div>
 
-                    <div class="col-md-9" role="main">
-                        <div class="doc-header">
-                            <div role="navigation" aria-label="breadcrumbs navigation">
+                            <div class="col-md-9" role="main">
+                                <div class="doc-header">
+                                    <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="/documentation/">Docs</a></li>
     
@@ -482,24 +482,24 @@ ga("send", "pageview");
     
   </ul>
 </div>
-                        </div>
-                        
-                          
-                        
-                          
-                            <div class="alert alert-warning">
-                                <p>
-                                    Version 0.9.0 is not the most recent version of the Apache Mynewt
-                                    documentation. Click <a href="/latest">here</a> to read the latest
-                                    version.
-                                </p>
-                            </div>
-                          
-                        
-                          
-                        
-                        
-                            <h2 id="create-the-system-memory-buffer-pool">Create the System Memory Buffer Pool</h2>
+                                </div>
+                                
+                                  
+                                
+                                  
+                                    <div class="alert alert-warning">
+                                        <p>
+                                            Version 0.9.0 is not the most recent version of the Apache Mynewt
+                                            documentation. Click <a href="/latest">here</a> to read the latest
+                                            version.
+                                        </p>
+                                    </div>
+                                  
+                                
+                                  
+                                
+                                
+                                    <h2 id="create-the-system-memory-buffer-pool">Create the System Memory Buffer Pool</h2>
 <p>The Nimble stack allocates packet buffers (called mbufs) from the system memory buffer pool (msys). The system memory buffer pool and mbufs are described in the OS manual; we suggest reading that section in order to become familiar with mbufs if you are not already familiar with them. Note that the application itself (the unique application code that you are writing) does not need to use mbufs and none of the BLE host API exposed to the application developer uses them. However, the Nimble stack does require the existence of the system memory pool.</p>
 <p>Creating the memory pool and registering it with the system memory buffer pool can be a bit tricky the first time. However, using the template provided below it should be much easier. The header file /net/nimble/include/nimble/ble.h, which should be included in main.c, contains some MBUF macros that you will need to create the memory pool used by msys. The macro <code>BLE_MBUF_PAYLOAD_SIZE</code> defines the maximum amount of user payload, plus overhead, that a link layer BLE PDU can contain. The macro <code>BLE_MBUF_MEMBLOCK_OVERHEAD</code> is the amount of overhead required by the Nimble stack in each memory block used by the mbuf pool. The macro <code>MBUF_NUM_MBUFS</code> defines the number of mbufs in the mbuf pool and is defined locally. The user must determine, based on application requirements and platform memory size, how many mbufs are required. For example, if your application expects to have many simultaneous connections you may want to increase the size of the mbuf pool. In the example below, we assume you are only using a small number of active connections (2 to 3).</p>
 <p>A note about the size of the mbufs and <code>BLE_MBUF_PAYLOAD_SIZE</code>. Msys allows for multiple mbuf pools of various size. Currently, the Nimble stack requires that msys has an mbuf pool registered that can accommodate the maximum size BLE LL PDU. Thus, we only show the creation of one mbuf pool of maximum size mbufs which gets registered to the system mbuf memory pool. We plan on modifying the Nimble stack so that smaller mbufs can be used (to conserve memory) but at this point in time you cannot modify <code>BLE_MBUF_PAYLOAD_SIZE</code>. Furthermore, you cannot add a mbuf pool of smaller size elements to the msys pool as the msys code might then allocate a mbuf that is too small for the nimble stack.</p>
@@ -546,9 +546,9 @@ ga("send", "pageview");
 </pre></div>
 
 <p><br></p>
-                        
-                        <div class="row">
-                            
+                                
+                                <div class="row">
+                                    
 
 
 
@@ -560,29 +560,38 @@ ga("send", "pageview");
     
     </li>
 </ul>
+                                </div>
+                            </div>
                         </div>
-                        <footer class="row">
-    <div class="col-xs-12">
-        
-            <p class="copyright">Apache Mynewt (incubating) is available under Apache License, version 2.0.</p>
-        
-    </div>
-    <div class="col-xs-12">
-        <div class="logos">
-            <a href="https://www.apache.org/">
-                <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
-            </a>
-            <p>
-                Copyright © 2015-2024 The Apache Software Foundation.<br>
-                <small class="footnote">
-                    Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
-                    project logo are either registered trademarks or trademarks of the Apache
-                    Software Foundation in the United States and other countries.
-                </small>
-            </p>
-            <a href="">
-                <img src="https://www.countit.com/images/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
-            </a>
+                    
+                </div>
+            </div>
+            <footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                
+                    <p class="copyright">Apache Mynewt (incubating) is available under Apache License, version 2.0.</p>
+                
+            </div>
+        <div class="col-xs-12">
+                <div class="logos">
+                    <a href="https://www.apache.org/">
+                        <img src="/img/asf_logo_wide_small.png" alt="Apache" title="Apache">
+                    </a>
+                    <p>
+                        Copyright © 2015-2024 The Apache Software Foundation.<br>
+                        <small class="footnote">
+                            Apache Mynewt, Mynewt, Apache, the Apache feather logo, and the Apache Mynewt
+                            project logo are either registered trademarks or trademarks of the Apache
+                            Software Foundation in the United States and other countries.
+                        </small>
+                    </p>
+                    <a href="">
+                        <img src="/img/add_to_slack.png" alt="Slack Icon" title="Join our Slack Community" />
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
     <a href="https://www.apache.org/licenses/">
@@ -611,10 +620,6 @@ ga("send", "pageview");
         </button>
     </a>
 </footer>
-                    </div>
-                </div>
-            
-            
         </div>
 
         <script src="../../../../js/jquery-1.10.2.min.js"></script>
