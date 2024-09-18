@@ -3,6 +3,7 @@
 -   Latest version:
     -   [1.12.0](/latest/)
     -   [master (development)](/master/)
+    -   [master - PDF](Mynewt.pdf)
 -   Earlier versions:
     -   [1.11.0](/v1_11_0/)
     -   [1.10.0](/v1_10_0/)
