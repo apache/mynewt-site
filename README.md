@@ -37,6 +37,12 @@ Install the requirements:
 
 NOTE: These instructions assume that your workspace has all the mynewt repos cloned under the same parent directory.
 
+    git clone https://github.com/apache/mynewt-documentation
+    git clone https://github.com/apache/mynewt-core
+    git clone https://github.com/apache/mynewt-nimble
+    git clone https://github.com/apache/mynewt-newt
+    git clone https://github.com/apache/mynewt-newtmgr
+
 ### First follow the steps at mynewt-documentation
 
 Most steps for releasing docs happen at the
@@ -78,8 +84,8 @@ NOTE: Skip these steps if you are just refreshing the current documentation or s
 1. This will leave you on the `asf-site` branch.
 1. Commit & push the changes.
 
-The runtime-bot github user does a build every ~15 minutes and opens a Pull
-Request against the asf-site branch if there are any changes. It is recommended
+The _GitHub Actions_ workflow performs a build whenever the master branch updates. 
+It opens a Pull Request against the `asf-site` branch if there are any changes. It is recommended
 that the runtime-bot PRs are used to deploy changes to the site instead of PRs
 from individual contributors. The runtime-bot PRs give us repeatable builds
 using known versions of the build tools.
