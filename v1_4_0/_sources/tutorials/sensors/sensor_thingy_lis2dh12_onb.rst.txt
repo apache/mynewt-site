@@ -774,4 +774,7 @@ You should see the accelerometer sensor data output from the sensor read
 data callback.
 
 .. |Thingy| image:: ../pics/thingy.jpg
+   :width: 320
+
 .. |J-Link debug probe to Thingy| image:: ../pics/thingy_jlink.jpg
+   :width: 320

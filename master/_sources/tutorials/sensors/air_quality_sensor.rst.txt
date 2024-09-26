@@ -734,13 +734,15 @@ Here's what your SenseAir board should look like once it's wired up:
 
 .. figure:: ../pics/K30labeled.JPG
    :alt: SenseAir Wiring
+   :width: 500
 
    SenseAir Wiring
 
-Now that you have that wired up, let's connect it to the nRF52DK board. Since we will be using the built-in UART, we can simply connect it to the pre-configured pins for TX (P.06) and RX (P.08). Here's what your board should look like once everything is connected: 
+Now that you have that wired up, let's connect it to the nRF52DK board. Since we will be using the built-in UART, we can simply connect it to the pre-configured pins for TX (P.06) and RX (P.08). Here's what your board should look like once everything is connected:
 
 .. figure:: ../pics/nrf52labeled.JPG
    :alt: SenseAir and nRF52DK Wiring
+   :width: 500
 
    SenseAir and nRF52DK Wiring
 

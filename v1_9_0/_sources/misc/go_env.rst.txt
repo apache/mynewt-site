@@ -26,7 +26,7 @@ This guide shows you how to perform the following:
   :depth: 2
 
 **Note:** You will also need to read and follow the instructions from
-the :doc:`faq` to set up your git repos to submit changes.
+the :doc:`../mynewt_faq/index` to set up your git repos to submit changes.
 
 Step 1: Installing Go
 ~~~~~~~~~~~~~~~~~~~~~
@@ -57,7 +57,7 @@ Use brew to install Go:
     ...
     ...
     ==> Summary
-    🍺  /usr/local/Cellar/go/1.8.3: 7,035 files, 282.0MB
+        /usr/local/Cellar/go/1.8.3: 7,035 files, 282.0MB
 
 You can also download the Go package directly from
 (https://golang.org/dl/) and install it in /usr/local/bin instead of
@@ -219,7 +219,7 @@ tools.
    is installed.
 2. Pull the latest changes from the master branch. If you made changes
    you will need to rebase with **origin master** (See
-   :doc:`faq`).
+   :doc:`../mynewt_faq/index`).
 3. Build and install the tool.
 
 Change to the directory where the source for the tool is installed.

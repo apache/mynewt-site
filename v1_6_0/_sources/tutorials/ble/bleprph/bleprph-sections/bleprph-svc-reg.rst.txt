@@ -233,8 +233,7 @@ The ``ble_gatts_add_svcs()`` function returns 0 on success, or a
 *BLE_HS_E[...]* error code on failure.
 
 More detailed information about the registration callback function can
-be found in the :doc:`BLE User Guide <../../../network/ble/ble_intro>`
-(TBD).
+be found in the :doc:`BLE User Guide <../../../../network/index>`.
 
 The *bleprph* app registers its services as follows:
 
@@ -251,4 +250,4 @@ Descriptors and Included Services
 Your peripheral can also expose descriptors and included services. These
 are less common, so they are not covered in this tutorial. For more
 information, see the :doc:`BLE User
-Guide <../../../network/ble/ble_intro>`.
+Guide <../../../../network/index>`.

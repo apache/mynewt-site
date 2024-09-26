@@ -72,7 +72,7 @@ The application handles events from three sources on two event queues:
 Create the Project 
 ~~~~~~~~~~~~~~~~~~
 
-Follow the instructions in the :doc:`nRF52 tutorial for Blinky </tutorials/blinky/nrf52>` to create a project. 
+Follow the instructions in the :doc:`nRF52 tutorial for Blinky <../blinky/nRF52>` to create a project.
 
 Create the Application 
 ~~~~~~~~~~~~~~~~~~~~~~

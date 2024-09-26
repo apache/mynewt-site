@@ -85,8 +85,7 @@ Enable Trace in Mynewt
     pkg.type: "target"
     pkg.description: 
     pkg.author: 
-    pkg.homepage: 
-    ​
+    pkg.homepage:
     pkg.cflags:
       - -DENABLE_TRACE
 

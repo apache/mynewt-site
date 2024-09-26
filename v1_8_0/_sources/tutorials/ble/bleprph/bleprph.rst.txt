@@ -38,7 +38,7 @@ pages:
 
 -  :doc:`Create Your First Mynewt Project <../../../get_started/project_create>`
 -  :doc:`BLE Bare Bones Application Tutorial <../ble_bare_bones>`
--  :doc:`NimBLE Stack Initialization <../../../network/ble/ini_stack/ble_ini_intro>`
+-  :doc:`NimBLE Stack Initialization <../../../network/ble_setup/ble_setup_intro>`
 
 Services, Characteristics, Descriptors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

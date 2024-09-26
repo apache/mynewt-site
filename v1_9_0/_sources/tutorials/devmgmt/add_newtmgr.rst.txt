@@ -18,7 +18,7 @@ This tutorial shows you how to configure your application to:
 -  Use serial transport to communicate with the newtmgr tool.
 -  Support all Newt Manager commands.
 
-See :doc:`Other Configuration Options <#other-configuration-options>` on
+See `Other Configuration Options`_ on
 how to customize your application.
 
 .. contents::
@@ -36,7 +36,7 @@ with this tutorial:
    and the laptop.
 -  Install the newt tool and toolchains (See :doc:`Basic
    Setup <../../get_started/index>`).
--  Install the :doc:`newtmgr tool <../../newtmgr/docs/install/index>`.
+-  Install the :doc:`newtmgr tool <../../newtmgr/install/index>`.
 
 Use an Existing Project
 ~~~~~~~~~~~~~~~~~~~~~~~

@@ -8,7 +8,7 @@ So let's get started making this thing Bluetooth enabled!
 Add Bluetooth GATT Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since we already built the previous demo on the :doc:`bluetooth peripheral <../ble/bleprph/bleprph-app>` basic app most of the Bluetooth plumbing has already been taken care of for us. What's left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.
+Since we already built the previous demo on the :doc:`bluetooth peripheral <../ble/bleprph/bleprph-sections/bleprph-app>` basic app most of the Bluetooth plumbing has already been taken care of for us. What's left is for us to add the required GATT services for advertising the Carbon Dioxide sensor so that other devices can get those values.
 
 First, we'll define the GATT Services in ``apps/air_quality/src/bleprph.h``. Be sure to include the header files as well. 
 
@@ -207,6 +207,7 @@ This one simply reads and updates the CO2 value and sends that over BLE to any c
 We can now build, create-image and load the app onto our nRF52DK board, and then connect and see the updated values! To view the results over Bluetooth, you can use LightBlue or any other application that can connect to, and read, Bluetooth data. By default, the device will show up as nimble-bleprph, since we used the ``bleprph`` app as our template. I've changed mine to something a bit more applicable: BLE CO2 Sensor.
 
 .. figure:: ../pics/airquality_lightblue.png
+   :width: 180
 
    LightBlue app connected to BLE CO2 Sensor
 

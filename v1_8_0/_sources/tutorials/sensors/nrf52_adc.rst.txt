@@ -90,7 +90,7 @@ that you can get started.
 
 Create the App and Targets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
-For the sensor app we will be building and modifying on top of the :doc:`bleprph <../ble/bleprph/bleprph-app>` app so that we get the Bluetooth communications built in. The first thing we'll need to do is copy that app into our own app directory:
+For the sensor app we will be building and modifying on top of the :doc:`bleprph <../ble/bleprph/bleprph-sections/bleprph-app>` app so that we get the Bluetooth communications built in. The first thing we'll need to do is copy that app into our own app directory:
 
 .. code-block:: console
 
@@ -623,7 +623,7 @@ will allow you to read the value of the eTape Water Level Sensor via
 Bluetooth we'll need to actually define those Services and
 Characteristics.
 
-As with the :doc:`ble peripheral <../ble/bleprph/bleprph-app>` app, we will
+As with the :doc:`ble peripheral <../ble/bleprph/bleprph-sections/bleprph-app>` app, we will
 advertise a couple of values from our app. The first is not strictly
 necessary, but it will help us build an iOS app later. We've defined a
 service and the characteristics in that service in ``bleprph.h`` in the
@@ -704,7 +704,7 @@ service and characteristic offering that we set up:
     };
 
 You should recognize the first services from the :doc:`BLE
-Peripheral <../ble/bleprph/bleprph-intro>` tutorial earlier. We're just
+Peripheral <../ble/bleprph/bleprph>` tutorial earlier. We're just
 adding another Service, with 2 new Characteristics, to that application.
 
 We'll need to fill in the function that will be called for this service,
@@ -776,6 +776,7 @@ breadboard. At this point, your breadboard should look like this:
 
 .. figure:: ../pics/breadboard.png
    :alt: Bread Board Setup
+   :width: 430
 
    Bread Board Setup
 
@@ -785,6 +786,7 @@ Your breadboard should now look like this:
 
 .. figure:: ../pics/adc-demo-1.png
    :alt: Bread Board Final
+   :width: 430
 
    Bread Board Final
 
@@ -793,6 +795,7 @@ mounted in a graduated cylinder as I do).
 
 .. figure:: ../pics/adc-demo-2.png
    :alt: eTape Sensor Setup
+   :width: 430
 
    eTape Sensor Setup
 
@@ -807,7 +810,8 @@ To view these sensor readings via Bluetooth, you can use LightBlue or a similar 
 
 .. figure:: ../pics/lightblue-adc.png
    :alt: LightBlue connected to the ADC app
-   
+   :width: 360
+
    LightBlue connected to the ADC app
 
 Conclusion
@@ -819,8 +823,7 @@ to read data from that sensor and send it via Bluetooth to a connected
 device. That's no small feat!
 
 If you see anything missing or want to send us feedback, please do so by
-signing up for appropriate mailing lists on our :doc:`Community
-Page <community>`.
+signing up for appropriate mailing lists on our `Community Page </community>`_.
 
 Keep on hacking and sensing!
 

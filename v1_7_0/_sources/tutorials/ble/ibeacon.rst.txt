@@ -22,7 +22,7 @@ Create an Empty BLE Application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This tutorial picks up where the :doc:`BLE bare bones application
-tutorial <../ble_bare_bones>` document concludes.
+tutorial <../ble/ble_bare_bones>` document concludes.
 The first step in creating a beaconing device is to create an empty BLE
 app, as explained in that tutorial. Before proceeding, you should have:
 
