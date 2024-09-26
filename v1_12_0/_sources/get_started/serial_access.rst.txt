@@ -76,6 +76,7 @@ It should look like this:
 
 .. figure:: pics/ft232h.png
    :alt: FT232H Wiring
+   :width: 180
 
    FT232H Wiring
 
@@ -93,6 +94,7 @@ you're done, your wiring should look like this:
 
 .. figure:: pics/nrf52dk.png
    :alt: NRF52DK Wiring
+   :width: 180
 
    NRF52DK Wiring
 
@@ -107,6 +109,7 @@ Your Arduino M0 Pro should look like this:
 
 .. figure:: pics/m0pro.png
    :alt: Arduino M0 Pro Wiring
+   :width: 180
 
    Arduino M0 Pro Wiring
 

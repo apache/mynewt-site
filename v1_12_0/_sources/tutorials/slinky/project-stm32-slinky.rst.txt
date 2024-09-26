@@ -191,6 +191,7 @@ for reference.
 
 .. figure:: ../pics/serial_conn.png
    :alt: Alt Layout - Serial Connection
+   :width: 400
 
    Alt Layout - Serial Connection
 

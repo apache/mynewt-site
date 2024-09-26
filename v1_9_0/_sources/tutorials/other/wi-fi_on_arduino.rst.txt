@@ -32,7 +32,7 @@ with this tutorial:
    the core code repository (apache-mynewt-core) or know how to as
    explained in :doc:`Creating Your First
    Project <../../get_started/project_create>`.
--  Read the Mynewt OS :doc:`Concepts <../../get_started/vocabulary>`
+-  Read the Mynewt OS :doc:`Concepts <../../concepts>`
    section.
 
 .. contents::
@@ -43,7 +43,7 @@ Create a Project
 ~~~~~~~~~~~~~~~~
 
 Create a new project if you do not have an existing one. You can skip
-this step and proceed to `fetch external packages <#%20fetchexternal>`__
+this step and proceed to `Fetch External Packages`_
 if you already created a project.
 
 Run the following commands to create a new project:

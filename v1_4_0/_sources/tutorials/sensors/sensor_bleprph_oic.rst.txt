@@ -325,11 +325,13 @@ from the Android App:
 
 .. image:: ../pics/smart_controller_main.png
    :align: center
+   :width: 270
 
 1. Select ``Accelerometer`` to see the sensor data samples:
 
 .. image:: ../pics/smart_controller_accelerometer.png
    :align: center
+   :width: 270
 
 2. Move your BNO055 sensor device around to see the values for the
 coordinates change.

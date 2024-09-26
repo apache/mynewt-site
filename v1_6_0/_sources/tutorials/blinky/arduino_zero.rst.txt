@@ -1,8 +1,6 @@
 Blinky, your "Hello World!", on Arduino Zero
 --------------------------------------------
 
-.. include common.rst
-
 This tutorial shows you how to create, build and run the Blinky
 application on an Arduino Zero board.
 
@@ -24,19 +22,7 @@ This tutorial uses the Arduino Zero Pro board. The tutorial has been
 tested on the following three Arduino Zero boards - Zero, M0 Pro, and
 Zero-Pro.
 
-  .. figure:: ../../images/Zero_Usb_Ports.jpg
-     :alt:  Arduino Zero
-     :width: 200
-     :align: left
-
-  .. figure:: ../../images/Arduino-M0Pro-flat.jpg
-     :alt:  Arduino M0 Pro
-     :width: 160
-     :align: left
-
-  .. figure:: ../../images/ArduinoZeroPro-flat-org.jpg
-     :alt:  Arduino Zero Pro
-     :width: 160
+|arduino_zero| |arduino_m0_pro| |arduino_zero_pro|
 
 Mynewt has not been tested on Arduino M0 which has no internal debugger
 support.
@@ -252,14 +238,7 @@ internal debugger that can be accessed by Mynewt.
 
 The images below show the Arduino Zero Programming Port.
 
-    .. figure:: ../../images/Zero_Usb_Ports.jpg
-       :alt:  Arduino Zero
-       :width: 280
-       :align: left
-
-    .. figure:: ../../images/ArduinoZeroPro-flat-org.jpg
-       :alt:  Arduino Zero Pro
-       :width: 240
+|arduino_zero| |arduino_zero_pro|
 
 
 Load the Bootloader onto the Board
@@ -429,3 +408,15 @@ the debugger and restart the board. The image you programmed will come
 and run on the Arduino on next boot!
 
 You should see the LED blink!
+
+  .. |arduino_zero| image:: ../../images/Zero_Usb_Ports.jpg
+     :alt:  Arduino Zero
+     :width: 30%
+
+  .. |arduino_m0_pro| image:: ../../images/Arduino-M0Pro-flat.jpg
+     :alt:  Arduino M0 Pro
+     :width: 30%
+
+  .. |arduino_zero_pro| image:: ../../images/ArduinoZeroPro-flat-org.jpg
+     :alt:  Arduino Zero Pro
+     :width: 30%

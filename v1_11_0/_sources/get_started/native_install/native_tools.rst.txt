@@ -33,7 +33,7 @@ install the other compiler. However, one can install gcc compiler with brew:
     ...
     ...
     ==> Pouring gcc-10.2.0_2.big_sur.bottle.tar.gz
-    🍺  /usr/local/Cellar/gcc/10.2.0_2: 1,455 files, 338.1MB
+        /usr/local/Cellar/gcc/10.2.0_2: 1,455 files, 338.1MB
 
 
 Check the GCC version you have installed (either using ``brew`` or
@@ -68,7 +68,7 @@ Installing GDB
     ...
     ...
     ==> Summary
-    🍺  /usr/local/Cellar/gdb/7.10.1: XXX files,YYM
+        /usr/local/Cellar/gdb/7.10.1: XXX files,YYM
 
 **NOTE:** When running a program with GDB, you may need to sign your ``gdb``
 executable. `This

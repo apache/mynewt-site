@@ -138,8 +138,7 @@ Connection callbacks are used to communicate a variety of events related
 to a connection. An application determines the type of event that
 occurred by inspecting the value of the *event->type* parameter. The
 full list of event codes can be found on the :doc:`GAP
-events <../../../../network/ble/ble_hs/ble_gap/definitions/ble_gap_defs/>`
-page.
+page <../../../../network/ble_hs/ble_gap>`.
 
 Guarantees
 ^^^^^^^^^^

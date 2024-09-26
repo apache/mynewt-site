@@ -8,10 +8,10 @@ communication.
 To support over-the-air image upgrade over BLE, a device must be running
 a Mynewt application that has newtmgr image management over BLE
 transport enabled. For this tutorial, we use the
-:doc:`bleprph </os/tutorials/bleprph/bleprph-app/>` application, which
+:doc:`bleprph <../ble/bleprph//bleprph-sections/bleprph-app>` application, which
 includes image management over BLE functionality, on an nRF52-DK board.
 If you prefer to use a different BLE application, see :doc:`Enable Newt
-Manager in any app </os/tutorials/add_newtmgr/>` to enable newtmgr
+Manager in any app <add_newtmgr>` to enable newtmgr
 image management over BLE transport support in your application.
 
 **Note:** Over-the-air upgrade via newtmgr BLE transport is supported on
@@ -31,8 +31,8 @@ Ensure that you meet the following prerequisites:
    and to build a Mynewt application.
 -  Have a Micro-USB cable to connect the board and the computer.
 -  Have a Nordic nRF52-DK Development Kit - PCA 10040
--  Install the :doc:`Segger JLINK software and documentation
-   pack <https://www.segger.com/jlink-software.html>`.
+-  Install the `Segger JLINK software and documentation
+   pack <https://www.segger.com/jlink-software.html>`_.
 -  Install the newt tool and toolchains (See :doc:`Setup & Get Started <../../get_started/index>`).
 -  Read the Mynewt OS :doc:`Concepts <../../concepts>`
    section.

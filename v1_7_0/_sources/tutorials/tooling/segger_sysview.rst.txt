@@ -80,12 +80,15 @@ Launch the app
 Launch the app and press **OK** in the System Information dialog box.
 
 .. figure:: ../pics/segger_sysview1.png
+   :width: 350
 
 Select **Target > Start Recording** and press **OK** in the
 Configuration dialog box.
 
 .. figure:: ../pics/segger_sysview_start_record.png
+   :width: 350
 
 You should see the recording for your Mynewt application.
 
 .. figure:: ../pics/segger_sysview_recording.png
+   :width: 320

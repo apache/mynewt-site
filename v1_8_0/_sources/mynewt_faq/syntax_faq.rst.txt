@@ -43,7 +43,7 @@ Setting ``serial`` and ``mfghash``
 
 **A**: ``mfghash`` is computed if you’re using ``newt mfg`` to construct your flash image, and it identifies the build of 
 your bootloader. ``newt mfg`` bundles togetherthe bootloader, target image, and other data you’d want to bundle when creating 
-an image to burn to flash. See the ``newt mfg`` :doc:`documentation <../../../../command_list/newt_mfg>` for the construction 
+an image to burn to flash. See the ``newt mfg`` :doc:`documentation <../newt/command_list/newt_mfg>` for the construction
 side of things and ``apache-mynewt-core/sys/mfg/src/mfg.c`` for the firmware side. ``serial`` was intended to be used if you 
 want to have your own naming scheme per device when building products; i.e. you want something other than the mcu serial 
 number, or if you don’t have serial number available.

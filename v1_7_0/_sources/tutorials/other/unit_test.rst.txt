@@ -8,7 +8,7 @@ Introduction
 ------------
 
 Writing a test suite involves using the
-:doc:`test/testutil <../../os/modules/testutil>` package. The
+:doc:`test/testutil <../../os/modules/testutil/testutil>` package. The
 testutil library provides the functionality needed to define test suites
 and test cases.
 
