@@ -119,6 +119,7 @@ def build(cwd, site_dir):
     generate_supported_boards("custom-theme/supported-boards.html", bsps)
 
     sh.mkdocs('build', '--clean', '--site-dir', site_dir)
+    sh.cp(cwd + '/.htaccess', site_dir)
 
     for version in cfg['extra']['versions']:
         print("Building doc pages for: {}".format(version['label']))
