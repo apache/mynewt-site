@@ -22,6 +22,8 @@ ls | grep -v site | xargs rm -rf
 
 echo Copy contents of site to serving directory
 cp -a site/* .
+cp site/.htaccess .
+git add -f .htaccess
 
 echo ---
 echo --- You are now on the asf-site branch
