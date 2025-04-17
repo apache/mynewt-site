@@ -619,51 +619,51 @@ This tutorial shows you how to:</p>
 <p><br></p>
 <h4 id="step-1-creating-a-new-app-package">Step 1: Creating a New App Package</h4>
 <p>We name the new app package <code>my_sensor_app</code>. From your project base directory, run the <code>newt pkg new</code> command to create a new app package.  This tutorial uses ~/dev/myproj for the project.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd ~/dev/myproj
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ cd ~/dev/myproj
 $ newt pkg new -t app apps/my_sensor_app
 Download package template for package type app.
 Package successfuly installed into ~/dev/myproj/apps/my_sensor_app
-</pre></div>
+</code></pre></div>
 
 <p><br>
 The newt tool creates a skeleton <code>my_sensor_app</code> package directory in the <code>~/dev/myproj/apps/</code> directory. Go to the <code>my_sensor_app</code> directory to update the package <code>pkg.yml</code> and source files. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ cd apps/my_sensor_app
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ cd apps/my_sensor_app
+</code></pre></div>
 
 <p><br></p>
 <h4 id="step-2-adding-the-package-dependencies">Step 2: Adding the Package Dependencies</h4>
 <p>The my_sensor_app package requires the sensor framework, <code>hw/sensor</code>, package as a package dependency.  Note that the BSP creates the sensor devices for the onboard sensors, so the <code>hw/sensor/creator</code> package that creates off-board sensor is not needed. </p>
 <p>Add the highlighted line to the <code>pkg.yml</code> file to add the <code>hw/sensor</code> package as package dependency:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.deps:
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.deps:
     - &quot;@apache-mynewt-core/kernel/os&quot;
     - &quot;@apache-mynewt-core/sys/console/full&quot;
     - &quot;@apache-mynewt-core/sys/log/full&quot;
     - &quot;@apache-mynewt-core/sys/stats/full&quot;
 <span style="background-color: #ffffcc">    - &quot;@apache-mynewt-core/hw/sensor&quot;
-</span></pre></div>
+</span></code></pre></div>
 
 <p><br></p>
 <h4 id="step-3-using-the-skeleton-mainc-file">Step 3: Using the Skeleton main.c File</h4>
 <p>The newt tool creates a skeleton main.c file in the <code>my_sensor_app/src</code> directory.  The skeleton <code>main()</code> code shown is all you need to build an application that only uses the <code>sensor</code> shell command to read sensor data. You do not need to make any changes to the file. The sensor framework implements the <code>sensor</code> shell command and the shell package processes shell command events from the OS default event queue. </p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">int</span>
-<span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**argv</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">int</span>
+<span style="color: #000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000">**argv</span>)
 {
     <span style="color: #177500">/* Perform some extra setup if we&#39;re running in the simulator. */</span>
 <span style="color: #633820">#ifdef ARCH_sim</span>
-    <span style="color: #000000">mcu_sim_parse_args</span>(<span style="color: #000000">argc</span>, <span style="color: #000000">argv</span>);
+    <span style="color: #000">mcu_sim_parse_args</span>(<span style="color: #000">argc</span>, <span style="color: #000">argv</span>);
 <span style="color: #633820">#endif</span>
 
     <span style="color: #177500">/* Initialize all packages. */</span>
-    <span style="color: #000000">sysinit</span>();
+    <span style="color: #000">sysinit</span>();
 
     <span style="color: #177500">/* As the last thing, process events from default event queue. */</span>
     <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-        <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+        <span style="color: #000">os_eventq_run</span>(<span style="color: #000">os_eventq_dflt_get</span>());
     }
 
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
-</pre></div>
+</code></pre></div>
 
 <p><br></p>
 <h4 id="step-4-creating-the-target-for-the-my_sensor_app-application">Step 4: Creating the Target for the my_sensor_app Application</h4>
@@ -685,7 +685,7 @@ The newt tool creates a skeleton <code>my_sensor_app</code> package directory in
 <p><strong>Note:</strong> The lis2dh12 sensor device driver package, <code>/hw/driver/sensors/lis2dh12</code>, currently does not support a shell command to view information on the device.</p>
 <p><br>
 1. Run the following newt commands to create the target and set the application and BSP.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create thingy_my_sensor
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create thingy_my_sensor
 Target targets/thingy_my_sensor successfully created
 $ newt target set thingy_my_sensor bsp=@apache-mynewt-core/hw/bsp/nrf52-thingy
 Target targets/thingy_my_sensor successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52-thingy
@@ -693,20 +693,20 @@ $ newt target set thingy_my_sensor app=apps/my_sensor_app
 Target targets/thingy_my_sensor successfully set target.app to apps/my_sensor_app
 $ newt target set thingy_my_sensor build_profile=debug
 Target targets/thingy_my_sensor successfully set target.build_profile to debug
-</pre></div>
+</code></pre></div>
 
 <p><br>
 2. Run the following <code>newt target set</code> command to set the syscfg settings:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target set thingy_my_sensor syscfg=I2C_0=1:LIS2DH12_ONB=1:SHELL_TASK=1:CONSOLE_RTT=1:CONSOLE_UART=0:SENSOR_OIC=0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target set thingy_my_sensor syscfg=I2C_0=1:LIS2DH12_ONB=1:SHELL_TASK=1:CONSOLE_RTT=1:CONSOLE_UART=0:SENSOR_OIC=0
 Target targets/thingy_my_sensor successfully set target.syscfg to I2C_0=1:LIS2DH12_ONB=1:SHELL_TASK=1:CONSOLE_RTT=1:CONSOLE_UART=0:SENSOR_OIC=0
-</pre></div>
+</code></pre></div>
 
 <p><br></p>
 <h4 id="step-5-creating-and-building-the-bootloader-target">Step 5: Creating and Building the Bootloader Target</h4>
 <p>Create a target for the bootloader for the nRF52 Thingy. We name the target <code>thingy_boot</code>.</p>
 <p><br>
 1.  Run the following <code>newt target</code> commands to create the target:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt target create thingy_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt target create thingy_boot
 Target targets/thingy_boot successfully created
 $ newt target set thingy_boot bsp=@apache-mynewt-core/hw/bsp/nrf52-thingy
 Target targets/thingy_boot successfully set target.bsp to @apache-mynewt-core/hw/bsp/nrf52-thingy
@@ -714,11 +714,11 @@ $ newt target set thingy_boot app=@apache-mynewt-core/apps/boot
 Target targets/thingy_boot successfully set target.app to @apache-mynewt-core/apps/boot
 $ newt target set thingy_boot build_profile=optimized
 Target targets/thingy_boot successfully set target.build_profile to optimized
-</pre></div>
+</code></pre></div>
 
 <p><br>
 2. Run the <code>newt build</code> command to build the bootloader target:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt build thingy_boot 
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt build thingy_boot 
 Building target targets/thingy_boot
 
        ...
@@ -727,7 +727,7 @@ Archiving thingy_boot-sysinit-app.a
 Archiving util_mem.a
 Linking ~/dev/myproj/bin/targets/thingy_boot/app/apps/boot/boot.elf
 Target successfully built: targets/thingy_boot
-</pre></div>
+</code></pre></div>
 
 <p><br></p>
 <h4 id="step-6-connecting-the-thingy-to-your-computer">Step 6: Connecting the Thingy to your Computer</h4>
@@ -754,16 +754,16 @@ To run the application, you need to load the bootloader on to the device, load t
 1. Run the `newt load` command to load the bootloader:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt load thingy_boot
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt load thingy_boot
 Loading bootloader
-</pre></div>
+</code></pre></div>
 
 
 <br>
 2. Run the `newt run` command to build and create an image for the my_sensor_app, load the image,  and start a GDB process to debug the application:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt run thingy_my_sensor 1.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt run thingy_my_sensor 1.0.0
 Assembling repos/apache-mynewt-core/hw/bsp/nrf52-thingy/src/arch/cortex_m4/gcc_startup_nrf52_split.s
 Compiling repos/apache-mynewt-core/hw/cmsis-core/src/cmsis_nvic.c
 Assembling repos/apache-mynewt-core/hw/bsp/nrf52-thingy/src/arch/cortex_m4/gcc_startup_nrf52.s
@@ -804,7 +804,7 @@ os_tick_idle (ticks=24)
 Resetting target
 0x000000dc in ?? ()
 (gdb) 
-</pre></div>
+</code></pre></div>
 
 
 
@@ -815,7 +815,7 @@ Resetting target
 4.  Run the following telnet command to connect to the Mynewt console via RTT and enter &lt;return&gt; to get the shell prompt after you are connected.
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ telnet localhost 19021
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet localhost 19021
 Trying ::1...
 telnet: connect to address ::1: Connection refused
 Trying 127.0.0.1...
@@ -826,7 +826,7 @@ SEGGER J-Link ARM V10.0, SN=600000268
 Process: JLinkGDBServer
 
 011468 compat&gt;
-</pre></div>
+</code></pre></div>
 
 
 
@@ -838,11 +838,11 @@ Process: JLinkGDBServer
 
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>011468 compat&gt; sensor list
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>011468 compat&gt; sensor list
 sensor list
 029706 sensor dev = lis2dh12_0, configured type = 0x1 
 029707 compat&gt; 
-</pre></div>
+</code></pre></div>
 
 
 
@@ -850,7 +850,7 @@ sensor list
 2. Enter the `sensor read` command to read some data samples from the accelerometer:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>029707 compat&gt; sensor read lis2dh12_0 0x1 -n 5
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>029707 compat&gt; sensor read lis2dh12_0 0x1 -n 5
 sensor read lis2dh12_0 0x1 -n 5
 042537 ts: [ secs: 331 usecs: 102682 cputime: 331436945 ]
 042537 x = 9.806650176 y = 58.839900992 z = -9894.910156
@@ -863,7 +863,7 @@ sensor read lis2dh12_0 0x1 -n 5
 042538 ts: [ secs: 331 usecs: 111288 cputime: 331445551 ]
 042538 x = 58.839900992 y = 0.000000000 z = -9816.457031
 042538 compat&gt; 
-</pre></div>
+</code></pre></div>
 
 
 
@@ -892,14 +892,14 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 1. Add the highlighted include files:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>#include &quot;sysinit/sysinit.h&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>#include &quot;sysinit/sysinit.h&quot;
 #include &quot;os/os.h&quot;
 
 <span style="background-color: #ffffcc">#include &lt;defs/error.h&gt;
 </span><span style="background-color: #ffffcc">#include &lt;sensor/sensor.h&gt;
 </span><span style="background-color: #ffffcc">#include &lt;sensor/accel.h&gt;
 </span><span style="background-color: #ffffcc">#include &lt;console/console.h&gt;
-</span></pre></div>
+</span></code></pre></div>
 
 
 
@@ -907,8 +907,8 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 2. Add the `struct sensor * my_sensor`. This is the handle for the sensor that the sensor API uses to perform operations on the sensor. We set this variable when we lookup the sensor.  
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor</span> <span style="color: #000000">*my_sensor</span>;
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor</span> <span style="color: #000">*my_sensor</span>;
+</code></pre></div>
 
 
 <br>
@@ -917,17 +917,17 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 **Note**: We define LISTENER_CB and READ_CB values because we also use the `read_accelerometer()` function as the callback for the `sensor_read()` function later in the tutorial.  The LISTENER_CB or the READ_CB value is passed to the `read_accelerometer()` function to indicate whether it is invoked as a listener or a `sensor_read()` callback. 
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#define LISTENER_CB 1</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#define LISTENER_CB 1</span>
 <span style="color: #633820">#define READ_CB 2</span>
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span> <span style="color: #000000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">sensor*</span> <span style="color: #000000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*databuf</span>, <span style="color: #000000">sensor_type_t</span> <span style="color: #000000">type</span>);
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span> <span style="color: #000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor</span><span style="color: #000">*</span> <span style="color: #000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000">*databuf</span>, <span style="color: #000">sensor_type_t</span> <span style="color: #000">type</span>);
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_listener</span> <span style="color: #000000">listener</span> <span style="color: #000000">=</span> {
-   .<span style="color: #000000">sl_sensor_type</span> <span style="color: #000000">=</span> <span style="color: #000000">SENSOR_TYPE_ACCELEROMETER</span>,
-   .<span style="color: #000000">sl_func</span> <span style="color: #000000">=</span> <span style="color: #000000">read_accelerometer</span>,
-   .<span style="color: #000000">sl_arg</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>)<span style="color: #000000">LISTENER_CB</span>,
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_listener</span> <span style="color: #000">listener</span> <span style="color: #000">=</span> {
+   .<span style="color: #000">sl_sensor_type</span> <span style="color: #000">=</span> <span style="color: #000">SENSOR_TYPE_ACCELEROMETER</span>,
+   .<span style="color: #000">sl_func</span> <span style="color: #000">=</span> <span style="color: #000">read_accelerometer</span>,
+   .<span style="color: #000">sl_arg</span> <span style="color: #000">=</span> (<span style="color: #A90D91">void</span> <span style="color: #000">*</span>)<span style="color: #000">LISTENER_CB</span>,
 };
-</pre></div>
+</code></pre></div>
 
 
 
@@ -935,38 +935,38 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 4. Add the code for the `read_accelerometer()` function.  The sensor data is stored in the `databuf` and `type` specifies the type of sensor data.
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-<span style="color: #000000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">sensor*</span> <span style="color: #000000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000000">*databuf</span>, <span style="color: #000000">sensor_type_t</span> <span style="color: #000000">type</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
+<span style="color: #000">read_accelerometer</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor</span><span style="color: #000">*</span> <span style="color: #000">sensor</span>, <span style="color: #A90D91">void</span> <span style="color: #000">*arg</span>, <span style="color: #A90D91">void</span> <span style="color: #000">*databuf</span>, <span style="color: #000">sensor_type_t</span> <span style="color: #000">type</span>)
 {
 
-    <span style="color: #A90D91">char</span> <span style="color: #000000">tmpstr</span>[<span style="color: #1C01CE">13</span>];
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_accel_data</span> <span style="color: #000000">*sad</span>;
+    <span style="color: #A90D91">char</span> <span style="color: #000">tmpstr</span>[<span style="color: #1C01CE">13</span>];
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_accel_data</span> <span style="color: #000">*sad</span>;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">!databuf</span>) {
-        <span style="color: #A90D91">return</span> <span style="color: #000000">SYS_EINVAL</span>;
+    <span style="color: #A90D91">if</span> (<span style="color: #000">!databuf</span>) {
+        <span style="color: #A90D91">return</span> <span style="color: #000">SYS_EINVAL</span>;
 
     }
-    <span style="color: #000000">sad</span> <span style="color: #000000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #000000">sensor_accel_data</span> <span style="color: #000000">*</span>)<span style="color: #000000">databuf</span>;
+    <span style="color: #000">sad</span> <span style="color: #000">=</span> (<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">sensor_accel_data</span> <span style="color: #000">*</span>)<span style="color: #000">databuf</span>;
 
-    <span style="color: #A90D91">if</span> (<span style="color: #000000">!sad-&gt;sad_x_is_valid</span> <span style="color: #000000">||</span>
-        <span style="color: #000000">!sad-&gt;sad_y_is_valid</span> <span style="color: #000000">||</span>
-        <span style="color: #000000">!sad-&gt;sad_z_is_valid</span>) {
+    <span style="color: #A90D91">if</span> (<span style="color: #000">!sad-&gt;sad_x_is_valid</span> <span style="color: #000">||</span>
+        <span style="color: #000">!sad-&gt;sad_y_is_valid</span> <span style="color: #000">||</span>
+        <span style="color: #000">!sad-&gt;sad_z_is_valid</span>) {
 
-        <span style="color: #A90D91">return</span> <span style="color: #000000">SYS_EINVAL</span>;
+        <span style="color: #A90D91">return</span> <span style="color: #000">SYS_EINVAL</span>;
     }
 
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;%s: [ secs: %ld usecs: %d cputime: %u ]\n&quot;</span>,
-                   ((<span style="color: #A90D91">int</span>)<span style="color: #000000">arg</span> <span style="color: #000000">==</span> <span style="color: #000000">LISTENER_CB</span>) <span style="color: #000000">?</span> <span style="color: #C41A16">&quot;LISTENER_CB&quot;</span> <span style="color: #000000">:</span> <span style="color: #C41A16">&quot;READ_CB&quot;</span>,
-                   (<span style="color: #A90D91">long</span> <span style="color: #A90D91">int</span>)<span style="color: #000000">sensor-&gt;s_sts</span>.<span style="color: #000000">st_ostv</span>.<span style="color: #000000">tv_sec</span>,
-                   (<span style="color: #A90D91">int</span>)<span style="color: #000000">sensor-&gt;s_sts</span>.<span style="color: #000000">st_ostv</span>.<span style="color: #000000">tv_usec</span>,
-                   (<span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">int</span>)<span style="color: #000000">sensor-&gt;s_sts</span>.<span style="color: #000000">st_cputime</span>);
+    <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;%s: [ secs: %ld usecs: %d cputime: %u ]\n&quot;</span>,
+                   ((<span style="color: #A90D91">int</span>)<span style="color: #000">arg</span> <span style="color: #000">==</span> <span style="color: #000">LISTENER_CB</span>) <span style="color: #000">?</span> <span style="color: #C41A16">&quot;LISTENER_CB&quot;</span> <span style="color: #000">:</span> <span style="color: #C41A16">&quot;READ_CB&quot;</span>,
+                   (<span style="color: #A90D91">long</span> <span style="color: #A90D91">int</span>)<span style="color: #000">sensor-&gt;s_sts</span>.<span style="color: #000">st_ostv</span>.<span style="color: #000">tv_sec</span>,
+                   (<span style="color: #A90D91">int</span>)<span style="color: #000">sensor-&gt;s_sts</span>.<span style="color: #000">st_ostv</span>.<span style="color: #000">tv_usec</span>,
+                   (<span style="color: #A90D91">unsigned</span> <span style="color: #A90D91">int</span>)<span style="color: #000">sensor-&gt;s_sts</span>.<span style="color: #000">st_cputime</span>);
 
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;x = %s &quot;</span>, <span style="color: #000000">sensor_ftostr</span>(<span style="color: #000000">sad-&gt;sad_x</span>, <span style="color: #000000">tmpstr</span>, <span style="color: #1C01CE">13</span>));
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;y = %s &quot;</span>, <span style="color: #000000">sensor_ftostr</span>(<span style="color: #000000">sad-&gt;sad_y</span>, <span style="color: #000000">tmpstr</span>, <span style="color: #1C01CE">13</span>));
-    <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;z = %s\n\n&quot;</span>, <span style="color: #000000">sensor_ftostr</span>(<span style="color: #000000">sad-&gt;sad_z</span>, <span style="color: #000000">tmpstr</span>, <span style="color: #1C01CE">13</span>));
+    <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;x = %s &quot;</span>, <span style="color: #000">sensor_ftostr</span>(<span style="color: #000">sad-&gt;sad_x</span>, <span style="color: #000">tmpstr</span>, <span style="color: #1C01CE">13</span>));
+    <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;y = %s &quot;</span>, <span style="color: #000">sensor_ftostr</span>(<span style="color: #000">sad-&gt;sad_y</span>, <span style="color: #000">tmpstr</span>, <span style="color: #1C01CE">13</span>));
+    <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;z = %s\n\n&quot;</span>, <span style="color: #000">sensor_ftostr</span>(<span style="color: #000">sad-&gt;sad_z</span>, <span style="color: #000">tmpstr</span>, <span style="color: #1C01CE">13</span>));
     <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
 }
-</pre></div>
+</code></pre></div>
 
 
 
@@ -976,7 +976,7 @@ Add the following code to the `my_sensor_app/src/main.c` file:
 **Note:** You set the poll rate for a sensor programmatically and must set the poll rate to a non zero value in order for the sensor manager to poll the sensor. You may set a different poll rate for each sensor.  The sensor framework also defines a `SENSOR_MGR_WAKEUP_RATE` syscfg setting that specifies the default rate that the sensor manager polls. The sensor manager uses the poll rate for a sesnor if a sensor is configured to poll more frequently than the `SENSOR_MGR_WAKEUP_RATE` setting value.
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="background-color: #ffffcc">#define MY_SENSOR_DEVICE  &quot;lis2dh12_0&quot;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="background-color: #ffffcc">#define MY_SENSOR_DEVICE  &quot;lis2dh12_0&quot;
 </span><span style="background-color: #ffffcc">#define MY_SENSOR_POLL_TIME 2000
 </span>
 int
@@ -999,7 +999,7 @@ main(int argc, char **argv)
 
     return 0;
 }
-</pre></div>
+</code></pre></div>
 
 
 
@@ -1007,7 +1007,7 @@ main(int argc, char **argv)
 6. Look up the sensor by name to get the handle for the sensor and register a listener for the sensor.
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>int
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>int
 main(int argc, char **argv)
 {
     ...
@@ -1027,7 +1027,7 @@ main(int argc, char **argv)
 
     return 0;
 }
-</pre></div>
+</code></pre></div>
 
 
 
@@ -1038,7 +1038,7 @@ main(int argc, char **argv)
 1. Run the `newt run` command to rebuild the application, create a new image, load the image, and start a GDB process:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt run thingy_my_sensor 2.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt run thingy_my_sensor 2.0.0
 Compiling apps/my_sensor_app/src/main.c
 Archiving apps_my_sensor_app.a
 Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
@@ -1058,14 +1058,14 @@ Resetting target
 0x000000dc in ?? ()
 (gdb) c 
 Continuing.
-</pre></div>
+</code></pre></div>
 
 
 <br>
 2. Connect to the console via RTT:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ telnet localhost 19021
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet localhost 19021
 
 Connected to localhost.
 Escape character is &#39;^]&#39;.
@@ -1089,7 +1089,7 @@ Process: JLinkGDBServer
 
 001283 LISTENER_CB: [ secs: 10 usecs: 4964 cputime: 10311419 ]
 001283 x = 58.839900992 y = -9.806650176 z = -9885.103515
-</pre></div>
+</code></pre></div>
 
 
 
@@ -1104,46 +1104,46 @@ Lets extend the application to use the `sensor_read()` function instead of a lis
 1. Add an OS callout and initialize an OS timer to fire every 5 seconds. The timer callback calls the `sensor_read()` function to read the sensor data. The `read_accelerometer()` callback is called when the sensor data is read. The READ_CB value is passed to the `read_accelerometer()` function and indicates that the callback is from the `sensor_read()` function and not from the listener.
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/*</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/*</span>
 <span style="color: #177500"> * Event callback function for timer events. The callback reads the sensor data</span>
 <span style="color: #177500"> */</span>
 
 <span style="color: #633820">#define READ_SENSOR_INTERVAL (5 * OS_TICKS_PER_SEC)</span>
 
-<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">os_callout</span> <span style="color: #000000">sensor_callout</span>;
+<span style="color: #A90D91">static</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_callout</span> <span style="color: #000">sensor_callout</span>;
 
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #000000">os_event</span> <span style="color: #000000">*ev</span>)
+<span style="color: #000">timer_ev_cb</span>(<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_event</span> <span style="color: #000">*ev</span>)
 {
 
 
-    <span style="color: #000000">assert</span>(<span style="color: #000000">ev</span> <span style="color: #000000">!=</span> <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000">assert</span>(<span style="color: #000">ev</span> <span style="color: #000">!=</span> <span style="color: #A90D91">NULL</span>);
 
     <span style="color: #177500">/*</span>
 <span style="color: #177500">     * Read the accelerometer sensor.  Pass the READ_CB value for the callback opaque</span>
 <span style="color: #177500">     * arg to indicate that it is the sensor_read() callback.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #000000">sensor_read</span>(<span style="color: #000000">my_sensor</span>, <span style="color: #000000">SENSOR_TYPE_ACCELEROMETER</span>, <span style="color: #000000">read_accelerometer</span>,
-                 (<span style="color: #A90D91">void</span> <span style="color: #000000">*</span>)<span style="color: #000000">READ_CB</span>, <span style="color: #000000">OS_TIMEOUT_NEVER</span>);
-    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;sensor_callout</span>, <span style="color: #000000">READ_SENSOR_INTERVAL</span>);
+    <span style="color: #000">sensor_read</span>(<span style="color: #000">my_sensor</span>, <span style="color: #000">SENSOR_TYPE_ACCELEROMETER</span>, <span style="color: #000">read_accelerometer</span>,
+                 (<span style="color: #A90D91">void</span> <span style="color: #000">*</span>)<span style="color: #000">READ_CB</span>, <span style="color: #000">OS_TIMEOUT_NEVER</span>);
+    <span style="color: #000">os_callout_reset</span>(<span style="color: #000">&amp;sensor_callout</span>, <span style="color: #000">READ_SENSOR_INTERVAL</span>);
     <span style="color: #A90D91">return</span>;
 }
 
 
 <span style="color: #A90D91">static</span> <span style="color: #A90D91">void</span>
-<span style="color: #000000">init_timer</span>(<span style="color: #A90D91">void</span>)
+<span style="color: #000">init_timer</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #177500">/*</span>
 <span style="color: #177500">     * Initialize the callout for a timer event.</span>
 <span style="color: #177500">     */</span>
-    <span style="color: #000000">os_callout_init</span>(<span style="color: #000000">&amp;sensor_callout</span>, <span style="color: #000000">os_eventq_dflt_get</span>(),
-                    <span style="color: #000000">timer_ev_cb</span>, <span style="color: #A90D91">NULL</span>);
+    <span style="color: #000">os_callout_init</span>(<span style="color: #000">&amp;sensor_callout</span>, <span style="color: #000">os_eventq_dflt_get</span>(),
+                    <span style="color: #000">timer_ev_cb</span>, <span style="color: #A90D91">NULL</span>);
 
-    <span style="color: #000000">os_callout_reset</span>(<span style="color: #000000">&amp;sensor_callout</span>, <span style="color: #000000">READ_SENSOR_INTERVAL</span>);
+    <span style="color: #000">os_callout_reset</span>(<span style="color: #000">&amp;sensor_callout</span>, <span style="color: #000">READ_SENSOR_INTERVAL</span>);
     <span style="color: #A90D91">return</span>;
 
 }
-</pre></div>
+</code></pre></div>
 
 
 
@@ -1152,7 +1152,7 @@ Lets extend the application to use the `sensor_read()` function instead of a lis
 
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>int
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>int
 main(int argc, char **argv)
 {   
     ...
@@ -1173,7 +1173,7 @@ main(int argc, char **argv)
 
     return 0;
 }
-</pre></div>
+</code></pre></div>
 
 
 
@@ -1183,7 +1183,7 @@ main(int argc, char **argv)
 1. Run the `newt run` command to rebuild the application, create an new image, and start a GDB process:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ newt run thingy_my_sensor 3.0.0
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ newt run thingy_my_sensor 3.0.0
 Compiling apps/my_sensor_app/src/main.c
 Archiving apps_my_sensor_app.a
 Linking ~/dev/myproj/bin/targets/thingy_my_sensor/app/apps/my_sensor_app/my_sensor_app.elf
@@ -1203,7 +1203,7 @@ Resetting target
 0x000000dc in ?? ()
 (gdb) c
 Continuing.
-</pre></div>
+</code></pre></div>
 
 
 
@@ -1211,7 +1211,7 @@ Continuing.
 3. Connect to the console via RTT:
 
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>$ telnet localhost 19021
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>$ telnet localhost 19021
 Trying ::1...
 telnet: connect to address ::1: Connection refused
 Trying 127.0.0.1...
@@ -1233,7 +1233,7 @@ Process: JLinkGDBServer
 
 002562 READ_CB: [ secs: 19 usecs: 970088 cputime: 20261643 ]
 002562 x = 107.87315366 y = -29.41995049 z = -9885.103515
-</pre></div>
+</code></pre></div>
 
 
 

@@ -785,52 +785,52 @@ queue in an infinite loop. (See <a href="/os/modules//sysinitconfig/sysinitconfi
 initialize the objects that are accessed by multiple tasks before it initializes the tasks with the OS.</p>
 <p>The code example shown below illustrates this concept. The application initializes system and  packages,  calls an application specific "task initialization" function, and dispatches events from the default event queue. The application task initialization function is responsible for initializing all the data objects that each task exposes to the other tasks. The tasks themselves are also initialized at this time (by calling <code>os_task_init()</code>). </p>
 <p>In the example, each task works in a ping-pong like fashion: task 1 wakes up, adds a token to semaphore 1 and then waits for a token from semaphore 2. Task 2 waits for a token on semaphore 1 and once it gets it, adds a token to semaphore 2. Notice that the semaphores are initialized by the application specific task initialization functions and not inside the task handler functions. If task 2 (being lower in priority than task 1) had called os_sem_init() for task2_sem inside task2_handler(), task 1 would have called os_sem_pend() using task2_sem before task2_sem was initialized.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">task1_sem</span>;
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">os_sem</span> <span style="color: #000000">task2_sem</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_sem</span> <span style="color: #000">task1_sem</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_sem</span> <span style="color: #000">task2_sem</span>;
 
     <span style="color: #177500">/* Task 1 handler function */</span>
     <span style="color: #A90D91">void</span>
-    <span style="color: #000000">task1_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+    <span style="color: #000">task1_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000">*arg</span>)
     {
         <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
             <span style="color: #177500">/* Release semaphore to task 2 */</span>
-            <span style="color: #000000">os_sem_release</span>(<span style="color: #000000">&amp;task1_sem</span>);
+            <span style="color: #000">os_sem_release</span>(<span style="color: #000">&amp;task1_sem</span>);
 
             <span style="color: #177500">/* Wait for semaphore from task 2 */</span>
-            <span style="color: #000000">os_sem_pend</span>(<span style="color: #000000">&amp;task2_sem</span>, <span style="color: #000000">OS_TIMEOUT_NEVER</span>);
+            <span style="color: #000">os_sem_pend</span>(<span style="color: #000">&amp;task2_sem</span>, <span style="color: #000">OS_TIMEOUT_NEVER</span>);
         }
     }
 
     <span style="color: #177500">/* Task 2 handler function */</span>
     <span style="color: #A90D91">void</span>
-    <span style="color: #000000">task2_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000000">*arg</span>)
+    <span style="color: #000">task2_handler</span>(<span style="color: #A90D91">void</span> <span style="color: #000">*arg</span>)
     {
-        <span style="color: #A90D91">struct</span> <span style="color: #000000">os_task</span> <span style="color: #000000">*t</span>;
+        <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">os_task</span> <span style="color: #000">*t</span>;
 
         <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
             <span style="color: #177500">/* Wait for semaphore from task1 */</span>
-            <span style="color: #000000">os_sem_pend</span>(<span style="color: #000000">&amp;task1_sem</span>, <span style="color: #000000">OS_TIMEOUT_NEVER</span>);
+            <span style="color: #000">os_sem_pend</span>(<span style="color: #000">&amp;task1_sem</span>, <span style="color: #000">OS_TIMEOUT_NEVER</span>);
 
             <span style="color: #177500">/* Release task2 semaphore */</span>
-            <span style="color: #000000">os_sem_release</span>(<span style="color: #000000">&amp;task2_sem</span>);
+            <span style="color: #000">os_sem_release</span>(<span style="color: #000">&amp;task2_sem</span>);
         }
     }
 
 
     <span style="color: #177500">/* Initialize task 1 exposed data objects */</span>
     <span style="color: #A90D91">void</span>
-    <span style="color: #000000">task1_init</span>(<span style="color: #A90D91">void</span>)
+    <span style="color: #000">task1_init</span>(<span style="color: #A90D91">void</span>)
     {
         <span style="color: #177500">/* Initialize task1 semaphore */</span>
-        <span style="color: #000000">os_sem_init</span>(<span style="color: #000000">&amp;task1_sem</span>, <span style="color: #1C01CE">0</span>);
+        <span style="color: #000">os_sem_init</span>(<span style="color: #000">&amp;task1_sem</span>, <span style="color: #1C01CE">0</span>);
     }
 
     <span style="color: #177500">/* Initialize task 2 exposed data objects */</span>
     <span style="color: #A90D91">void</span>
-    <span style="color: #000000">task2_init</span>(<span style="color: #A90D91">void</span>)
+    <span style="color: #000">task2_init</span>(<span style="color: #A90D91">void</span>)
     {
         <span style="color: #177500">/* Initialize task1 semaphore */</span>
-        <span style="color: #000000">os_sem_init</span>(<span style="color: #000000">&amp;task2_sem</span>, <span style="color: #1C01CE">0</span>);
+        <span style="color: #000">os_sem_init</span>(<span style="color: #000">&amp;task2_sem</span>, <span style="color: #1C01CE">0</span>);
     }
 
     <span style="color: #177500">/**</span>
@@ -841,23 +841,23 @@ initialize the objects that are accessed by multiple tasks before it initializes
 <span style="color: #177500">     * @return int 0 success; error otherwise.</span>
 <span style="color: #177500">     */</span>
     <span style="color: #A90D91">static</span> <span style="color: #A90D91">int</span>
-    <span style="color: #000000">init_app_tasks</span>(<span style="color: #A90D91">void</span>)
+    <span style="color: #000">init_app_tasks</span>(<span style="color: #A90D91">void</span>)
     {
         <span style="color: #177500">/* </span>
 <span style="color: #177500">         * Call task specific initialization functions to initialize any shared objects </span>
 <span style="color: #177500">         * before initializing the tasks with the OS.</span>
 <span style="color: #177500">         */</span>
-        <span style="color: #000000">task1_init</span>();
-        <span style="color: #000000">task2_init</span>();
+        <span style="color: #000">task1_init</span>();
+        <span style="color: #000">task2_init</span>();
 
         <span style="color: #177500">/*</span>
 <span style="color: #177500">         * Initialize tasks 1 and 2 with the OS. </span>
 <span style="color: #177500">         */</span>
-        <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;task1</span>, <span style="color: #C41A16">&quot;task1&quot;</span>, <span style="color: #000000">task1_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">TASK1_PRIO</span>, 
-                     <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">task1_stack</span>, <span style="color: #000000">TASK1_STACK_SIZE</span>);
+        <span style="color: #000">os_task_init</span>(<span style="color: #000">&amp;task1</span>, <span style="color: #C41A16">&quot;task1&quot;</span>, <span style="color: #000">task1_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000">TASK1_PRIO</span>, 
+                     <span style="color: #000">OS_WAIT_FOREVER</span>, <span style="color: #000">task1_stack</span>, <span style="color: #000">TASK1_STACK_SIZE</span>);
 
-        <span style="color: #000000">os_task_init</span>(<span style="color: #000000">&amp;task2</span>, <span style="color: #C41A16">&quot;task2&quot;</span>, <span style="color: #000000">task2_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000000">TASK2_PRIO</span>, 
-                     <span style="color: #000000">OS_WAIT_FOREVER</span>, <span style="color: #000000">task2_stack</span>, <span style="color: #000000">TASK2_STACK_SIZE</span>);
+        <span style="color: #000">os_task_init</span>(<span style="color: #000">&amp;task2</span>, <span style="color: #C41A16">&quot;task2&quot;</span>, <span style="color: #000">task2_handler</span>, <span style="color: #A90D91">NULL</span>, <span style="color: #000">TASK2_PRIO</span>, 
+                     <span style="color: #000">OS_WAIT_FOREVER</span>, <span style="color: #000">task2_stack</span>, <span style="color: #000">TASK2_STACK_SIZE</span>);
 
         <span style="color: #A90D91">return</span> <span style="color: #1C01CE">0</span>;
     }
@@ -870,21 +870,21 @@ initialize the objects that are accessed by multiple tasks before it initializes
 <span style="color: #177500">     * events from the OS default event queue in an infinite loop. </span>
 <span style="color: #177500">     */</span>
     <span style="color: #A90D91">int</span>
-    <span style="color: #000000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000000">**arg</span>)
+    <span style="color: #000">main</span>(<span style="color: #A90D91">int</span> <span style="color: #000">argc</span>, <span style="color: #A90D91">char</span> <span style="color: #000">**arg</span>)
     {
 
         <span style="color: #177500">/* Perform system and package initialization */</span>
-        <span style="color: #000000">sysinit</span>();
+        <span style="color: #000">sysinit</span>();
 
         <span style="color: #177500">/* Initialize application specific tasks */</span>
-        <span style="color: #000000">init_app_tasks</span>();
+        <span style="color: #000">init_app_tasks</span>();
 
         <span style="color: #A90D91">while</span> (<span style="color: #1C01CE">1</span>) {
-           <span style="color: #000000">os_eventq_run</span>(<span style="color: #000000">os_eventq_dflt_get</span>());
+           <span style="color: #000">os_eventq_run</span>(<span style="color: #000">os_eventq_dflt_get</span>());
         }
         <span style="color: #177500">/* main never returns */</span> 
 }
-</pre></div>
+</code></pre></div>
 
 <h3 id="os-functions">OS Functions</h3>
 <p>The functions available at the OS level are:</p>

@@ -638,54 +638,54 @@
 <p>Libraries use Mynewt's file system abstraction layer (<code>fs/fs</code>) for all file operations.  Because clients use an abstraction layer, the underlying file system can be swapped out without affecting client code.  This page documents the procedure for plugging a custom file system into the Mynewt file system abstraction layer.</p>
 <h3 id="1-specify-fsfs-as-a-dependency-of-your-file-system-package">1. Specify <code>fs/fs</code> as a dependency of your file system package.</h3>
 <p>The file system package must register itself with the <code>fs/fs</code> package, so it must specify <code>fs/fs</code> as a dependency.  As an example, part of the Newtron Flash File System (nffs) <code>pkg.yml</code> is reproduced below.   Notice the first item in the <code>pkg.deps</code> list.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span>pkg.name: fs/nffs
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code>pkg.name: fs/nffs
 pkg.deps:
     - fs/fs
     - hw/hal
     - libs/os
     - libs/testutil
     - sys/log
-</pre></div>
+</code></pre></div>
 
 <h3 id="2-register-your-packages-api-with-the-fsfs-interface">2. Register your package's API with the <code>fs/fs</code> interface.</h3>
 <p>The <code>fs/fs</code> package calls into the underlying file system via a collection of function pointers.  To plug your file system into the <code>fs/fs</code> API, you must assign these function pointers to the corresponding routines in your file system package.</p>
 <p>For example, <code>nffs</code> registers itself with <code>fs/fs</code> as follows (from <code>fs/nffs/src/nffs.c</code>):</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #000000">fs_ops</span> <span style="color: #000000">nffs_ops</span> <span style="color: #000000">=</span> {
-    .<span style="color: #000000">f_open</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_open</span>,
-    .<span style="color: #000000">f_close</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_close</span>,
-    .<span style="color: #000000">f_read</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_read</span>,
-    .<span style="color: #000000">f_write</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_write</span>,
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">static</span> <span style="color: #A90D91">const</span> <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">fs_ops</span> <span style="color: #000">nffs_ops</span> <span style="color: #000">=</span> {
+    .<span style="color: #000">f_open</span> <span style="color: #000">=</span> <span style="color: #000">nffs_open</span>,
+    .<span style="color: #000">f_close</span> <span style="color: #000">=</span> <span style="color: #000">nffs_close</span>,
+    .<span style="color: #000">f_read</span> <span style="color: #000">=</span> <span style="color: #000">nffs_read</span>,
+    .<span style="color: #000">f_write</span> <span style="color: #000">=</span> <span style="color: #000">nffs_write</span>,
 
-    .<span style="color: #000000">f_seek</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_seek</span>,
-    .<span style="color: #000000">f_getpos</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_getpos</span>,
-    .<span style="color: #000000">f_filelen</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_file_len</span>,
+    .<span style="color: #000">f_seek</span> <span style="color: #000">=</span> <span style="color: #000">nffs_seek</span>,
+    .<span style="color: #000">f_getpos</span> <span style="color: #000">=</span> <span style="color: #000">nffs_getpos</span>,
+    .<span style="color: #000">f_filelen</span> <span style="color: #000">=</span> <span style="color: #000">nffs_file_len</span>,
 
-    .<span style="color: #000000">f_unlink</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_unlink</span>,
-    .<span style="color: #000000">f_rename</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_rename</span>,
-    .<span style="color: #000000">f_mkdir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_mkdir</span>,
+    .<span style="color: #000">f_unlink</span> <span style="color: #000">=</span> <span style="color: #000">nffs_unlink</span>,
+    .<span style="color: #000">f_rename</span> <span style="color: #000">=</span> <span style="color: #000">nffs_rename</span>,
+    .<span style="color: #000">f_mkdir</span> <span style="color: #000">=</span> <span style="color: #000">nffs_mkdir</span>,
 
-    .<span style="color: #000000">f_opendir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_opendir</span>,
-    .<span style="color: #000000">f_readdir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_readdir</span>,
-    .<span style="color: #000000">f_closedir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_closedir</span>,
+    .<span style="color: #000">f_opendir</span> <span style="color: #000">=</span> <span style="color: #000">nffs_opendir</span>,
+    .<span style="color: #000">f_readdir</span> <span style="color: #000">=</span> <span style="color: #000">nffs_readdir</span>,
+    .<span style="color: #000">f_closedir</span> <span style="color: #000">=</span> <span style="color: #000">nffs_closedir</span>,
 
-    .<span style="color: #000000">f_dirent_name</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_dirent_name</span>,
-    .<span style="color: #000000">f_dirent_is_dir</span> <span style="color: #000000">=</span> <span style="color: #000000">nffs_dirent_is_dir</span>,
+    .<span style="color: #000">f_dirent_name</span> <span style="color: #000">=</span> <span style="color: #000">nffs_dirent_name</span>,
+    .<span style="color: #000">f_dirent_is_dir</span> <span style="color: #000">=</span> <span style="color: #000">nffs_dirent_is_dir</span>,
 
-    .<span style="color: #000000">f_name</span> <span style="color: #000000">=</span> <span style="color: #C41A16">&quot;nffs&quot;</span>
+    .<span style="color: #000">f_name</span> <span style="color: #000">=</span> <span style="color: #C41A16">&quot;nffs&quot;</span>
 };
 
 <span style="color: #A90D91">int</span>
-<span style="color: #000000">nffs_init</span>(<span style="color: #A90D91">void</span>)
+<span style="color: #000">nffs_init</span>(<span style="color: #A90D91">void</span>)
 {
     <span style="color: #177500">/* [...] */</span>
-    <span style="color: #000000">fs_register</span>(<span style="color: #000000">&amp;nffs_ops</span>);
+    <span style="color: #000">fs_register</span>(<span style="color: #000">&amp;nffs_ops</span>);
 }
-</pre></div>
+</code></pre></div>
 
 <h3 id="header-files">Header Files</h3>
 <p>To gain access to <code>fs/fs</code>'s registration interface, include the following header:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&quot;fs/fs_if.h&quot;</span><span style="color: #633820"></span>
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&quot;fs/fs_if.h&quot;</span>
+</code></pre></div>
                                 
                                 <div class="row">
                                     
