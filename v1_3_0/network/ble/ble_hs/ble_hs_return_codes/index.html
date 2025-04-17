@@ -623,45 +623,45 @@
 </table>
 <h4 id="example">Example</h4>
 <p>The following example demonstrates how an application might determine which error is being reported by the host.  In this example, the application performs the GAP encryption procedure and checks the return code.  To simplify the example, the application uses a hypothetical <em>my_blocking_enc_proc()</em> function, which blocks until the pairing operation has completed.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #A90D91">void</span>
-<span style="color: #000000">encrypt_connection</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000000">conn_handle</span>)
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #A90D91">void</span>
+<span style="color: #000">encrypt_connection</span>(<span style="color: #A90D91">uint16_t</span> <span style="color: #000">conn_handle</span>)
 {
-    <span style="color: #A90D91">int</span> <span style="color: #000000">rc</span>;
+    <span style="color: #A90D91">int</span> <span style="color: #000">rc</span>;
 
     <span style="color: #177500">/* Perform a blocking GAP encryption procedure. */</span>
-    <span style="color: #000000">rc</span> <span style="color: #000000">=</span> <span style="color: #000000">my_blocking_enc_proc</span>(<span style="color: #000000">conn_handle</span>);
-    <span style="color: #A90D91">switch</span> (<span style="color: #000000">rc</span>) {
-    <span style="color: #A90D91">case</span> <span style="color: #1C01CE">0</span><span style="color: #000000">:</span>
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;success - link successfully encrypted\n&quot;</span>);
+    <span style="color: #000">rc</span> <span style="color: #000">=</span> <span style="color: #000">my_blocking_enc_proc</span>(<span style="color: #000">conn_handle</span>);
+    <span style="color: #A90D91">switch</span> (<span style="color: #000">rc</span>) {
+    <span style="color: #A90D91">case</span> <span style="color: #1C01CE">0</span>:
+        <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;success - link successfully encrypted\n&quot;</span>);
         <span style="color: #A90D91">break</span>;
 
-    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_HS_ENOTCONN</span>:
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;failure - no connection with handle %d\n&quot;</span>,
-                       <span style="color: #000000">conn_handle</span>);
+    <span style="color: #A90D91">case</span> <span style="color: #000">BLE_HS_ENOTCONN</span>:
+        <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;failure - no connection with handle %d\n&quot;</span>,
+                       <span style="color: #000">conn_handle</span>);
         <span style="color: #A90D91">break</span>;
 
-    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_HS_ERR_SM_US_BASE</span>(<span style="color: #000000">BLE_SM_ERR_CONFIRM_MISMATCH</span>)<span style="color: #000000">:</span>
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;failure - mismatch in peer&#39;s confirm and random &quot;</span>
+    <span style="color: #A90D91">case</span> <span style="color: #000">BLE_HS_ERR_SM_US_BASE</span>(<span style="color: #000">BLE_SM_ERR_CONFIRM_MISMATCH</span>):
+        <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;failure - mismatch in peer&#39;s confirm and random &quot;</span>
                        <span style="color: #C41A16">&quot;commands.\n&quot;</span>);
         <span style="color: #A90D91">break</span>;
 
-    <span style="color: #A90D91">case</span> <span style="color: #000000">BLE_HS_ERR_SM_PEER_BASE</span>(<span style="color: #000000">BLE_SM_ERR_CONFIRM_MISMATCH</span>)<span style="color: #000000">:</span>
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;failure - peer reports mismatch in our confirm and &quot;</span>
+    <span style="color: #A90D91">case</span> <span style="color: #000">BLE_HS_ERR_SM_PEER_BASE</span>(<span style="color: #000">BLE_SM_ERR_CONFIRM_MISMATCH</span>):
+        <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;failure - peer reports mismatch in our confirm and &quot;</span>
                        <span style="color: #C41A16">&quot;random commands.\n&quot;</span>);
         <span style="color: #A90D91">break</span>;
 
-    <span style="color: #A90D91">default</span><span style="color: #000000">:</span>
-        <span style="color: #000000">console_printf</span>(<span style="color: #C41A16">&quot;failure - other error: 0x%04x\n&quot;</span>, <span style="color: #000000">rc</span>);
+    <span style="color: #A90D91">default</span><span style="color: #000">:</span>
+        <span style="color: #000">console_printf</span>(<span style="color: #C41A16">&quot;failure - other error: 0x%04x\n&quot;</span>, <span style="color: #000">rc</span>);
         <span style="color: #A90D91">break</span>;
     }
 }
-</pre></div>
+</code></pre></div>
 
 <h3 id="return-code-reference">Return Code Reference</h3>
 <h4 id="header">Header</h4>
 <p>All NimBLE host return codes are made accessible by including the following header:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #633820">#include</span> <span style="color: #177500">&quot;host/ble_hs.h&quot;</span><span style="color: #633820"></span>
-</pre></div>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #633820">#include</span> <span style="color: #177500">&quot;host/ble_hs.h&quot;</span>
+</code></pre></div>
 
 <h4 id="return-codes-core">Return codes - Core</h4>
 <p>The precise meaning of each of these error codes depends on the function that returns it.  The API reference for a particular function indicates the conditions under which each of these codes are returned.</p>

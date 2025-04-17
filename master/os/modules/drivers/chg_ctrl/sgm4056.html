@@ -305,28 +305,28 @@ derive the charger status.</p>
 <h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
 <p>Initialization of the <code class="docutils literal notranslate"><span class="pre">sgm4056</span></code> driver is normally done in the BSP. This is
 done by creating a OS device using <code class="docutils literal notranslate"><span class="pre">os_dev_create</span></code>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;sgm4056/sgm4056.h&quot;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;sgm4056/sgm4056.h&quot;</span>
 
 <span class="p">...</span>
 
-<span class="k">static</span> <span class="k">struct</span> <span class="n">sgm4056_dev</span> <span class="n">os_bsp_charger</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">struct</span> <span class="n">sgm4056_dev_config</span> <span class="n">os_bsp_charger_config</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">.</span><span class="n">power_presence_pin</span> <span class="o">=</span> <span class="n">CHARGER_POWER_PRESENCE_PIN</span><span class="p">,</span>
-    <span class="p">.</span><span class="n">charge_indicator_pin</span> <span class="o">=</span> <span class="n">CHARGER_CHARGE_PIN</span><span class="p">,</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sgm4056_dev</span><span class="w"> </span><span class="n">os_bsp_charger</span><span class="p">;</span>
+<span class="k">static</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">sgm4056_dev_config</span><span class="w"> </span><span class="n">os_bsp_charger_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">.</span><span class="n">power_presence_pin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CHARGER_POWER_PRESENCE_PIN</span><span class="p">,</span>
+<span class="w">    </span><span class="p">.</span><span class="n">charge_indicator_pin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CHARGER_CHARGE_PIN</span><span class="p">,</span>
 <span class="p">};</span>
 
 <span class="kt">void</span>
 <span class="nf">hal_bsp_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">rc</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rc</span><span class="p">;</span>
 
-    <span class="p">...</span>
+<span class="w">    </span><span class="p">...</span>
 
-    <span class="cm">/* Create charge controller */</span>
-    <span class="n">rc</span> <span class="o">=</span> <span class="n">os_dev_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">os_bsp_charger</span><span class="p">.</span><span class="n">dev</span><span class="p">,</span> <span class="s">&quot;charger&quot;</span><span class="p">,</span>
-                    <span class="n">OS_DEV_INIT_KERNEL</span><span class="p">,</span> <span class="n">OS_DEV_INIT_PRIO_DEFAULT</span><span class="p">,</span>
-                    <span class="n">sgm4056_dev_init</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">os_bsp_charger_config</span><span class="p">);</span>
-    <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="cm">/* Create charge controller */</span>
+<span class="w">    </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">os_dev_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">os_bsp_charger</span><span class="p">.</span><span class="n">dev</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;charger&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">OS_DEV_INIT_KERNEL</span><span class="p">,</span><span class="w"> </span><span class="n">OS_DEV_INIT_PRIO_DEFAULT</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">sgm4056_dev_init</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">os_bsp_charger_config</span><span class="p">);</span>
+<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -340,33 +340,33 @@ initializor and a pointer to config.</p>
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>There a two ways to use the driver: directly or via <a class="reference internal" href="chg_ctrl.html"><span class="doc">charge-control</span></a>.</p>
 <p>When using the driver directly, you need to open the OS device and then use the driver functions.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;sgm4056/sgm4056.h&quot;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;sgm4056/sgm4056.h&quot;</span>
 
 <span class="p">...</span>
 
 <span class="kt">int</span>
-<span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="n">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="k">struct</span> <span class="n">sgm4056_dev</span> <span class="o">*</span><span class="n">charger</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sgm4056_dev</span><span class="w"> </span><span class="o">*</span><span class="n">charger</span><span class="p">;</span>
 
-    <span class="n">charger</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sgm4056_dev</span> <span class="o">*</span><span class="p">)</span> <span class="n">os_dev_open</span><span class="p">(</span><span class="s">&quot;charger&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-    <span class="n">assert</span><span class="p">(</span><span class="n">charger</span><span class="p">);</span>
+<span class="w">    </span><span class="n">charger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">sgm4056_dev</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">os_dev_open</span><span class="p">(</span><span class="s">&quot;charger&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">assert</span><span class="p">(</span><span class="n">charger</span><span class="p">);</span>
 
-    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">rc</span> <span class="o">=</span> <span class="n">sgm4056_get_charger_status</span><span class="p">(</span><span class="n">charger</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">charger_status</span><span class="p">);</span>
-        <span class="n">assert</span><span class="p">(</span><span class="n">rc</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">rc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sgm4056_get_charger_status</span><span class="p">(</span><span class="n">charger</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">charger_status</span><span class="p">);</span>
+<span class="w">        </span><span class="n">assert</span><span class="p">(</span><span class="n">rc</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
 
-        <span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Charger state = %i</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">charger_status</span><span class="p">);</span>
-        <span class="n">console_flush</span><span class="p">();</span>
-    <span class="p">}</span>
+<span class="w">        </span><span class="n">console_printf</span><span class="p">(</span><span class="s">&quot;Charger state = %i</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">charger_status</span><span class="p">);</span>
+<span class="w">        </span><span class="n">console_flush</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>When using <code class="docutils literal notranslate"><span class="pre">charge-control</span></code> interface, you need to enable it in syscfg and
 then follow the general instructions at <a class="reference internal" href="chg_ctrl.html"><span class="doc">Charge control drivers</span></a>.</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">syscfg.vals</span><span class="p">:</span>
-    <span class="c1"># Enable charge control integration</span>
-    <span class="nt">SGM4056_USE_CHARGE_CONTROL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">    </span><span class="c1"># Enable charge control integration</span>
+<span class="w">    </span><span class="nt">SGM4056_USE_CHARGE_CONTROL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 </pre></div>
 </div>
 </div>

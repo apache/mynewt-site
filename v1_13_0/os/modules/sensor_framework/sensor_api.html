@@ -388,49 +388,49 @@ API</span></a>, and the <a class="reference internal" href="sensor_listener_api.
 listener API</span></a>
 all operate on the <code class="docutils literal notranslate"><span class="pre">sensor</span></code> object abstraction. A sensor is maintained
 in the sensor manager global sensors list.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">sensor</span> <span class="p">{</span>
-    <span class="cm">/* The OS device this sensor inherits from, this is typically a sensor</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* The OS device this sensor inherits from, this is typically a sensor</span>
 <span class="cm">     * specific driver.</span>
 <span class="cm">     */</span>
-    <span class="k">struct</span> <span class="n">os_dev</span> <span class="o">*</span><span class="n">s_dev</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">os_dev</span><span class="w"> </span><span class="o">*</span><span class="n">s_dev</span><span class="p">;</span>
 
-    <span class="cm">/* The lock for this sensor object */</span>
-    <span class="k">struct</span> <span class="n">os_mutex</span> <span class="n">s_lock</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* The lock for this sensor object */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">os_mutex</span><span class="w"> </span><span class="n">s_lock</span><span class="p">;</span>
 
 
-    <span class="cm">/* A bit mask describing the types of sensor objects available from this</span>
+<span class="w">    </span><span class="cm">/* A bit mask describing the types of sensor objects available from this</span>
 <span class="cm">     * sensor. If the bit corresponding to the sensor_type_t is set, then this</span>
 <span class="cm">     * sensor supports that variable.</span>
 <span class="cm">     */</span>
-    <span class="n">sensor_type_t</span> <span class="n">s_types</span><span class="p">;</span>
+<span class="w">    </span><span class="n">sensor_type_t</span><span class="w"> </span><span class="n">s_types</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor mask of the configured sensor type s*/</span>
-    <span class="n">sensor_type_t</span> <span class="n">s_mask</span><span class="p">;</span>
-    <span class="cm">/**</span>
+<span class="w">    </span><span class="cm">/* Sensor mask of the configured sensor type s*/</span>
+<span class="w">    </span><span class="n">sensor_type_t</span><span class="w"> </span><span class="n">s_mask</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/**</span>
 <span class="cm">     * Poll rate in MS for this sensor.</span>
 <span class="cm">     */</span>
-    <span class="kt">uint32_t</span> <span class="n">s_poll_rate</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">s_poll_rate</span><span class="p">;</span>
 
-    <span class="cm">/* The next time at which we want to poll data from this sensor */</span>
-    <span class="n">os_time_t</span> <span class="n">s_next_run</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* The next time at which we want to poll data from this sensor */</span>
+<span class="w">    </span><span class="n">os_time_t</span><span class="w"> </span><span class="n">s_next_run</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor driver specific functions, created by the device registering the</span>
+<span class="w">    </span><span class="cm">/* Sensor driver specific functions, created by the device registering the</span>
 <span class="cm">     * sensor.</span>
 <span class="cm">     */</span>
-    <span class="k">struct</span> <span class="n">sensor_driver</span> <span class="o">*</span><span class="n">s_funcs</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_driver</span><span class="w"> </span><span class="o">*</span><span class="n">s_funcs</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor last reading timestamp */</span>
-    <span class="k">struct</span> <span class="n">sensor_timestamp</span> <span class="n">s_sts</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sensor last reading timestamp */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_timestamp</span><span class="w"> </span><span class="n">s_sts</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor interface structure */</span>
-    <span class="k">struct</span> <span class="n">sensor_itf</span> <span class="n">s_itf</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sensor interface structure */</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_itf</span><span class="w"> </span><span class="n">s_itf</span><span class="p">;</span>
 
-    <span class="cm">/* A list of listeners that are registered to receive data off of this</span>
+<span class="w">    </span><span class="cm">/* A list of listeners that are registered to receive data off of this</span>
 <span class="cm">     * sensor</span>
 <span class="cm">     */</span>
-    <span class="n">SLIST_HEAD</span><span class="p">(,</span> <span class="n">sensor_listener</span><span class="p">)</span> <span class="n">s_listener_list</span><span class="p">;</span>
-    <span class="cm">/* The next sensor in the global sensor list. */</span>
-    <span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">sensor</span><span class="p">)</span> <span class="n">s_next</span><span class="p">;</span>
+<span class="w">    </span><span class="n">SLIST_HEAD</span><span class="p">(,</span><span class="w"> </span><span class="n">sensor_listener</span><span class="p">)</span><span class="w"> </span><span class="n">s_listener_list</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* The next sensor in the global sensor list. */</span>
+<span class="w">    </span><span class="n">SLIST_ENTRY</span><span class="p">(</span><span class="n">sensor</span><span class="p">)</span><span class="w"> </span><span class="n">s_next</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -448,27 +448,27 @@ types, with each bit representing one sensor type. Here is an excerpt of
 the enumeration values. See the
 <a class="reference external" href="https://github.com/apache/mynewt-core/blob/master/hw/sensor/include/sensor/sensor.h">sensor.h</a>
 for details:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span>
- <span class="cm">/* No sensor type, used for queries */</span>
-    <span class="n">SENSOR_TYPE_NONE</span>                 <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="cm">/* Accelerometer functionality supported */</span>
-    <span class="n">SENSOR_TYPE_ACCELEROMETER</span>        <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="cm">/* Magnetic field supported */</span>
-    <span class="n">SENSOR_TYPE_MAGNETIC_FIELD</span>       <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">),</span>
-    <span class="cm">/* Gyroscope supported */</span>
-    <span class="n">SENSOR_TYPE_GYROSCOPE</span>            <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">),</span>
-    <span class="cm">/* Light supported */</span>
-    <span class="n">SENSOR_TYPE_LIGHT</span>                <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">),</span>
-    <span class="cm">/* Temperature supported */</span>
-    <span class="n">SENSOR_TYPE_TEMPERATURE</span>          <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">),</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w"> </span><span class="cm">/* No sensor type, used for queries */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_NONE</span><span class="w">                 </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="cm">/* Accelerometer functionality supported */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_ACCELEROMETER</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="cm">/* Magnetic field supported */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_MAGNETIC_FIELD</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="cm">/* Gyroscope supported */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_GYROSCOPE</span><span class="w">            </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="w">    </span><span class="cm">/* Light supported */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_LIGHT</span><span class="w">                </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">3</span><span class="p">),</span>
+<span class="w">    </span><span class="cm">/* Temperature supported */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_TEMPERATURE</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span>
 
-                <span class="p">....</span>
+<span class="w">                </span><span class="p">....</span>
 
-     <span class="n">SENSOR_TYPE_USER_DEFINED_6</span>       <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">),</span>
-    <span class="cm">/* A selector, describes all sensors */</span>
-    <span class="n">SENSOR_TYPE_ALL</span>                  <span class="o">=</span> <span class="mh">0xFFFFFFFF</span>
+<span class="w">     </span><span class="n">SENSOR_TYPE_USER_DEFINED_6</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="mi">31</span><span class="p">),</span>
+<span class="w">    </span><span class="cm">/* A selector, describes all sensors */</span>
+<span class="w">    </span><span class="n">SENSOR_TYPE_ALL</span><span class="w">                  </span><span class="o">=</span><span class="w"> </span><span class="mh">0xFFFFFFFF</span>
 
-<span class="p">}</span> <span class="n">sensor_type_t</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">sensor_type_t</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -476,19 +476,19 @@ for details:</p>
 <h3>Sensor Interface<a class="headerlink" href="#sensor-interface" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">sensor_itf</span></code> data structure represents the interface the
 sensor device driver uses to communicate with the sensor device.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">sensor_itf</span> <span class="p">{</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">sensor_itf</span><span class="w"> </span><span class="p">{</span>
 
-    <span class="cm">/* Sensor interface type */</span>
-    <span class="kt">uint8_t</span> <span class="n">si_type</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sensor interface type */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">si_type</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor interface number */</span>
-    <span class="kt">uint8_t</span> <span class="n">si_num</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sensor interface number */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">si_num</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor CS pin */</span>
-    <span class="kt">uint8_t</span> <span class="n">si_cs_pin</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sensor CS pin */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">si_cs_pin</span><span class="p">;</span>
 
-    <span class="cm">/* Sensor address */</span>
-    <span class="kt">uint16_t</span> <span class="n">si_addr</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Sensor address */</span>
+<span class="w">    </span><span class="kt">uint16_t</span><span class="w"> </span><span class="n">si_addr</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
@@ -508,14 +508,14 @@ sensor type:</p>
 <span class="cm"> * Configuration structure, describing a specific sensor type off of</span>
 <span class="cm"> * an existing sensor.</span>
 <span class="cm"> */</span>
-<span class="k">struct</span> <span class="n">sensor_cfg</span> <span class="p">{</span>
-    <span class="cm">/* The value type for this sensor (e.g. SENSOR_VALUE_TYPE_INT32).</span>
+<span class="k">struct</span><span class="w"> </span><span class="nc">sensor_cfg</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="cm">/* The value type for this sensor (e.g. SENSOR_VALUE_TYPE_INT32).</span>
 <span class="cm">     * Used to describe the result format for the value corresponding</span>
 <span class="cm">     * to a specific sensor type.</span>
 <span class="cm">     */</span>
-    <span class="kt">uint8_t</span> <span class="n">sc_valtype</span><span class="p">;</span>
-    <span class="cm">/* Reserved for future usage */</span>
-    <span class="kt">uint8_t</span> <span class="n">_reserved</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">sc_valtype</span><span class="p">;</span>
+<span class="w">    </span><span class="cm">/* Reserved for future usage */</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">_reserved</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
 <span class="p">};</span>
 </pre></div>
 </div>

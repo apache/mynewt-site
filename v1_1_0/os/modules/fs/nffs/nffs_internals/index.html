@@ -681,50 +681,50 @@
                                     <h1 id="internals-of-nffs">Internals of nffs</h1>
 <h3 id="disk-structure">Disk structure</h3>
 <p>On disk, each area is prefixed with the following header:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** On-disk representation of an area header. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_area</span> {
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nda_magic</span>[<span style="color: #1C01CE">4</span>];  <span style="color: #177500">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nda_length</span>;    <span style="color: #177500">/* Total size of area, in bytes. */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nda_ver</span>;        <span style="color: #177500">/* Current nffs version: 0 */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nda_gc_seq</span>;     <span style="color: #177500">/* Garbage collection count. */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">reserved8</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nda_id</span>;         <span style="color: #177500">/* 0xff if scratch area. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** On-disk representation of an area header. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_disk_area</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">nda_magic</span>[<span style="color: #1C01CE">4</span>];  <span style="color: #177500">/* NFFS_AREA_MAGIC{0,1,2,3} */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">nda_length</span>;    <span style="color: #177500">/* Total size of area, in bytes. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">nda_ver</span>;        <span style="color: #177500">/* Current nffs version: 0 */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">nda_gc_seq</span>;     <span style="color: #177500">/* Garbage collection count. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">reserved8</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">nda_id</span>;         <span style="color: #177500">/* 0xff if scratch area. */</span>
 };
-</pre></div>
+</code></pre></div>
 
 <p>Beyond its header, an area contains a sequence of disk objects, representing the contents of the file system.  There are two types of objects: <em>inodes</em> and <em>data blocks</em>.  An inode represents a file or directory; a data block represents part of a file's contents.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** On-disk representation of an inode (file or directory). */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_inode</span> {
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_magic</span>;         <span style="color: #177500">/* NFFS_INODE_MAGIC */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_id</span>;            <span style="color: #177500">/* Unique object ID. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_seq</span>;           <span style="color: #177500">/* Sequence number; greater supersedes</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** On-disk representation of an inode (file or directory). */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_disk_inode</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndi_magic</span>;         <span style="color: #177500">/* NFFS_INODE_MAGIC */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndi_id</span>;            <span style="color: #177500">/* Unique object ID. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndi_seq</span>;           <span style="color: #177500">/* Sequence number; greater supersedes</span>
 <span style="color: #177500">                                   lesser. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndi_parent_id</span>;     <span style="color: #177500">/* Object ID of parent directory inode. */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">reserved8</span>;
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ndi_filename_len</span>;   <span style="color: #177500">/* Length of filename, in bytes. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ndi_crc16</span>;         <span style="color: #177500">/* Covers rest of header and filename. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndi_parent_id</span>;     <span style="color: #177500">/* Object ID of parent directory inode. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">reserved8</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">ndi_filename_len</span>;   <span style="color: #177500">/* Length of filename, in bytes. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000">ndi_crc16</span>;         <span style="color: #177500">/* Covers rest of header and filename. */</span>
     <span style="color: #177500">/* Followed by filename. */</span>
 };
-</pre></div>
+</code></pre></div>
 
 <p>An inode filename's length cannot exceed 256 bytes.  The filename is not null-terminated.  The following ASCII characters are not allowed in a filename:</p>
 <ul>
 <li>/  (slash character)</li>
 <li>\0 (NUL character)</li>
 </ul>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** On-disk representation of a data block. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_disk_block</span> {
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_magic</span>;     <span style="color: #177500">/* NFFS_BLOCK_MAGIC */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_id</span>;        <span style="color: #177500">/* Unique object ID. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_seq</span>;       <span style="color: #177500">/* Sequence number; greater supersedes lesser. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_inode_id</span>;  <span style="color: #177500">/* Object ID of owning inode. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ndb_prev_id</span>;   <span style="color: #177500">/* Object ID of previous block in file;</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** On-disk representation of a data block. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_disk_block</span> {
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndb_magic</span>;     <span style="color: #177500">/* NFFS_BLOCK_MAGIC */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndb_id</span>;        <span style="color: #177500">/* Unique object ID. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndb_seq</span>;       <span style="color: #177500">/* Sequence number; greater supersedes lesser. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndb_inode_id</span>;  <span style="color: #177500">/* Object ID of owning inode. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ndb_prev_id</span>;   <span style="color: #177500">/* Object ID of previous block in file;</span>
 <span style="color: #177500">                               NFFS_ID_NONE if this is the first block. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ndb_data_len</span>;  <span style="color: #177500">/* Length of data contents, in bytes. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">ndb_crc16</span>;     <span style="color: #177500">/* Covers rest of header and data. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000">ndb_data_len</span>;  <span style="color: #177500">/* Length of data contents, in bytes. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000">ndb_crc16</span>;     <span style="color: #177500">/* Covers rest of header and data. */</span>
     <span style="color: #177500">/* Followed by &#39;ndb_data_len&#39; bytes of data. */</span>
 };
-</pre></div>
+</code></pre></div>
 
 <p>Each data block contains the ID of the previous data block in the file.  Together, the set of blocks in a file form a reverse singly-linked list.</p>
 <p>The maximum number of data bytes that a block can contain is determined at initialization-time.  The result is the greatest number which satisfies all of the following restrictions:</p>
@@ -766,30 +766,30 @@ follows:</p>
 <p>A valid nffs file system must contain a single "scratch area."  The scratch area does not contain any objects of its own, and is only used during garbage collection.  The scratch area must have a size greater than or equal to each of the other areas in flash.</p>
 <h3 id="ram-representation">RAM representation</h3>
 <p>Every object in the file system is stored in a 256-entry hash table.  An object's hash key is derived from its 32-bit ID.  Each list in the hash table is sorted by time of use; most-recently-used is at the front of the list. All objects are represented by the following structure:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/**</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/**</span>
 <span style="color: #177500"> * What gets stored in the hash table.  Each entry represents a data block or</span>
 <span style="color: #177500"> * an inode.</span>
 <span style="color: #177500"> */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> {
-    <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">nffs_hash_entry</span>) <span style="color: #000000">nhe_next</span>;
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nhe_id</span>;        <span style="color: #177500">/* 0 - 0x7fffffff if inode; else if block. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nhe_flash_loc</span>; <span style="color: #177500">/* Upper-byte = area idx; rest = area offset. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_hash_entry</span> {
+    <span style="color: #000">SLIST_ENTRY</span>(<span style="color: #000">nffs_hash_entry</span>) <span style="color: #000">nhe_next</span>;
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">nhe_id</span>;        <span style="color: #177500">/* 0 - 0x7fffffff if inode; else if block. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">nhe_flash_loc</span>; <span style="color: #177500">/* Upper-byte = area idx; rest = area offset. */</span>
 };
-</pre></div>
+</code></pre></div>
 
 <p>For each data block, the above structure is all that is stored in RAM.  To acquire more information about a data block, the block header must be read from flash.</p>
 <p>Inodes require a fuller RAM representation to capture the structure of the file system.  There are two types of inodes: <em>files</em> and <em>directories</em>.  Each inode hash entry is actually an instance of the following structure:</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Each inode hash entry is actually one of these. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">nie_hash_entry</span>;
-    <span style="color: #000000">SLIST_ENTRY</span>(<span style="color: #000000">nffs_inode_entry</span>) <span style="color: #000000">nie_sibling_next</span>;
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** Each inode hash entry is actually one of these. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode_entry</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_hash_entry</span> <span style="color: #000">nie_hash_entry</span>;
+    <span style="color: #000">SLIST_ENTRY</span>(<span style="color: #000">nffs_inode_entry</span>) <span style="color: #000">nie_sibling_next</span>;
     <span style="color: #A90D91">union</span> {
-        <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_list</span> <span style="color: #000000">nie_child_list</span>;           <span style="color: #177500">/* If directory */</span>
-        <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nie_last_block_entry</span>;    <span style="color: #177500">/* If file */</span>
+        <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode_list</span> <span style="color: #000">nie_child_list</span>;           <span style="color: #177500">/* If directory */</span>
+        <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_hash_entry</span> <span style="color: #000">*nie_last_block_entry</span>;    <span style="color: #177500">/* If file */</span>
     };
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">nie_refcnt</span>;
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">nie_refcnt</span>;
 };
-</pre></div>
+</code></pre></div>
 
 <p>A directory inode contains a list of its child files and directories (<em>fie_child_list</em>).  These entries are sorted alphabetically using the ASCII character set.</p>
 <p>A file inode contains a pointer to the last data block in the file (<em>nie_last_block_entry</em>).  For most file operations, the reversed block list must be walked backwards.  This introduces a number of speed inefficiencies:</p>
@@ -802,48 +802,48 @@ follows:</p>
 <p>The speed issues are addressed by a pair of caches.  Cached inodes entries contain the file length and a much more convenient doubly-linked list of cached data blocks.  The benefit of using caches is that the size of the caches need not be proportional to the size of the file system.  In other words, caches can address speed efficiency concerns without negatively impacting the file system's scalability.</p>
 <p>nffs requires both caches during normal operation, so it is not possible to disable them.  However, the cache sizes are configurable, and both caches can be configured with a size of one if RAM usage must be minimized.</p>
 <p>The following data structures are used in the inode and data block caches.</p>
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Full data block representation; not stored permanently in RAM. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_block</span> {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nb_hash_entry</span>;   <span style="color: #177500">/* Points to real block entry. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nb_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** Full data block representation; not stored permanently in RAM. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_block</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_hash_entry</span> <span style="color: #000">*nb_hash_entry</span>;   <span style="color: #177500">/* Points to real block entry. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">nb_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
 <span style="color: #177500">                                                supersedes lesser. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*nb_inode_entry</span>; <span style="color: #177500">/* Owning inode. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_hash_entry</span> <span style="color: #000000">*nb_prev</span>;         <span style="color: #177500">/* Previous block in file. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">nb_data_len</span>;                    <span style="color: #177500">/* # of data bytes in block. */</span>
-    <span style="color: #A90D91">uint16_t</span> <span style="color: #000000">reserved16</span>;
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode_entry</span> <span style="color: #000">*nb_inode_entry</span>; <span style="color: #177500">/* Owning inode. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_hash_entry</span> <span style="color: #000">*nb_prev</span>;         <span style="color: #177500">/* Previous block in file. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000">nb_data_len</span>;                    <span style="color: #177500">/* # of data bytes in block. */</span>
+    <span style="color: #A90D91">uint16_t</span> <span style="color: #000">reserved16</span>;
 };
-</pre></div>
+</code></pre></div>
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Represents a single cached data block. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_block</span> {
-    <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">nffs_cache_block</span>) <span style="color: #000000">ncb_link</span>; <span style="color: #177500">/* Next / prev cached block. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_block</span> <span style="color: #000000">ncb_block</span>;            <span style="color: #177500">/* Full data block. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ncb_file_offset</span>;               <span style="color: #177500">/* File offset of this block. */</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** Represents a single cached data block. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_cache_block</span> {
+    <span style="color: #000">TAILQ_ENTRY</span>(<span style="color: #000">nffs_cache_block</span>) <span style="color: #000">ncb_link</span>; <span style="color: #177500">/* Next / prev cached block. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_block</span> <span style="color: #000">ncb_block</span>;            <span style="color: #177500">/* Full data block. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ncb_file_offset</span>;               <span style="color: #177500">/* File offset of this block. */</span>
 };
-</pre></div>
+</code></pre></div>
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Full inode representation; not stored permanently in RAM. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode</span> {
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*ni_inode_entry</span>; <span style="color: #177500">/* Points to real inode entry. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">ni_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** Full inode representation; not stored permanently in RAM. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode</span> {
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode_entry</span> <span style="color: #000">*ni_inode_entry</span>; <span style="color: #177500">/* Points to real inode entry. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">ni_seq</span>;                         <span style="color: #177500">/* Sequence number; greater</span>
 <span style="color: #177500">                                                supersedes lesser. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode_entry</span> <span style="color: #000000">*ni_parent</span>;      <span style="color: #177500">/* Points to parent directory. */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ni_filename_len</span>;                 <span style="color: #177500">/* # chars in filename. */</span>
-    <span style="color: #A90D91">uint8_t</span> <span style="color: #000000">ni_filename</span>[<span style="color: #000000">NFFS_SHORT_FILENAME_LEN</span>]; <span style="color: #177500">/* First 3 bytes. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode_entry</span> <span style="color: #000">*ni_parent</span>;      <span style="color: #177500">/* Points to parent directory. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">ni_filename_len</span>;                 <span style="color: #177500">/* # chars in filename. */</span>
+    <span style="color: #A90D91">uint8_t</span> <span style="color: #000">ni_filename</span>[<span style="color: #000">NFFS_SHORT_FILENAME_LEN</span>]; <span style="color: #177500">/* First 3 bytes. */</span>
 };
-</pre></div>
+</code></pre></div>
 
-<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%"><span></span><span style="color: #177500">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
-<span style="color: #000000">TAILQ_HEAD</span>(<span style="color: #000000">nffs_block_cache_list</span>, <span style="color: #000000">nffs_block_cache_entry</span>);
+<div class="codehilite" style="background: #ffffff"><pre style="line-height: 125%;"><span></span><code><span style="color: #177500">/** Doubly-linked tail queue of cached blocks; contained in cached inodes. */</span>
+<span style="color: #000">TAILQ_HEAD</span>(<span style="color: #000">nffs_block_cache_list</span>, <span style="color: #000">nffs_block_cache_entry</span>);
 
 <span style="color: #177500">/** Represents a single cached file inode. */</span>
-<span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_inode</span> {
-    <span style="color: #000000">TAILQ_ENTRY</span>(<span style="color: #000000">nffs_cache_inode</span>) <span style="color: #000000">nci_link</span>;        <span style="color: #177500">/* Sorted; LRU at tail. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_inode</span> <span style="color: #000000">nci_inode</span>;                   <span style="color: #177500">/* Full inode. */</span>
-    <span style="color: #A90D91">struct</span> <span style="color: #000000">nffs_cache_block_list</span> <span style="color: #000000">nci_block_list</span>;   <span style="color: #177500">/* List of cached blocks. */</span>
-    <span style="color: #A90D91">uint32_t</span> <span style="color: #000000">nci_file_size</span>;                        <span style="color: #177500">/* Total file size. */</span>
+<span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_cache_inode</span> {
+    <span style="color: #000">TAILQ_ENTRY</span>(<span style="color: #000">nffs_cache_inode</span>) <span style="color: #000">nci_link</span>;        <span style="color: #177500">/* Sorted; LRU at tail. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_inode</span> <span style="color: #000">nci_inode</span>;                   <span style="color: #177500">/* Full inode. */</span>
+    <span style="color: #A90D91">struct</span> <span style="color: #3F6E75">nffs_cache_block_list</span> <span style="color: #000">nci_block_list</span>;   <span style="color: #177500">/* List of cached blocks. */</span>
+    <span style="color: #A90D91">uint32_t</span> <span style="color: #000">nci_file_size</span>;                        <span style="color: #177500">/* Total file size. */</span>
 };
-</pre></div>
+</code></pre></div>
 
 <p>Only file inodes are cached; directory inodes are never cached.</p>
 <p>Within a cached inode, all cached data blocks are contiguous.  E.g., if the start and end of a file are cached, then the middle must also be cached.  A data block is only cached if its owning file is also cached.</p>
