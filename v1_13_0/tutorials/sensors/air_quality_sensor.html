@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Air Quality Sensor Project &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -278,10 +281,10 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="air-quality-sensor-project">
-<h1>Air Quality Sensor Project<a class="headerlink" href="#air-quality-sensor-project" title="Permalink to this headline">¶</a></h1>
+  <section id="air-quality-sensor-project">
+<h1>Air Quality Sensor Project<a class="headerlink" href="#air-quality-sensor-project" title="Link to this heading">¶</a></h1>
 <p>This tutorial will show you how to set up and use the Senseair K30 air quality sensor with the nRF52 Development Kit. Afterwards, you can set it up via Bluetooth so you can read values remotely.</p>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#prerequisites" id="id3">Prerequisites</a></p></li>
 <li><p><a class="reference internal" href="#setting-up-the-source-tree" id="id4">Setting Up the Source Tree</a></p></li>
@@ -290,17 +293,17 @@
 <li><p><a class="reference internal" href="#add-cli-commands-for-testing-drivers" id="id7">Add CLI Commands For Testing Drivers</a></p></li>
 <li><p><a class="reference internal" href="#using-hal-for-drivers" id="id8">Using HAL for Drivers</a></p></li>
 </ul>
-</div>
-<div class="section" id="prerequisites">
-<h2><a class="toc-backref" href="#id3">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+</nav>
+<section id="prerequisites">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Complete one of the other tutorials (e.g. <a class="reference internal" href="../blinky/blinky.html"><span class="doc">Project Blinky</span></a>) to famliarize yourself with Mynewt</p></li>
 <li><p>Nordic nRF52 Development - PCA 10040</p></li>
 <li><p>Senseair K30 CO2 Sensor</p></li>
 </ul>
-</div>
-<div class="section" id="setting-up-the-source-tree">
-<h2><a class="toc-backref" href="#id4">Setting Up the Source Tree</a><a class="headerlink" href="#setting-up-the-source-tree" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="setting-up-the-source-tree">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Setting Up the Source Tree</a><a class="headerlink" href="#setting-up-the-source-tree" title="Link to this heading">¶</a></h2>
 <p>To start, create a new project under which you will do development for this application:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span><span class="nv">$HOME</span>/src
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span><span class="nv">$HOME</span>/src
@@ -371,9 +374,9 @@ dependencies.</p>
 <span class="go">Loading bootloader ...</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="create-a-test-project">
-<h2><a class="toc-backref" href="#id5">Create a Test Project</a><a class="headerlink" href="#create-a-test-project" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="create-a-test-project">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Create a Test Project</a><a class="headerlink" href="#create-a-test-project" title="Link to this heading">¶</a></h2>
 <p>Now that you have your system setup, you can start building the application. First you want to create a project for yourself - since we’re eventually going to want to be able to access the data via Bluetooth, let’s use the <code class="docutils literal notranslate"><span class="pre">bleprph</span></code> Bluetooth Peripheral project as the project template.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$ </span>mkdir<span class="w"> </span>apps/air_quality
 <span class="gp">[user@IsMyLaptop:~/src/air_quality]$ </span>cp<span class="w"> </span>repos/apache-mynewt-nimble/apps/bleprph/pkg.yml<span class="w"> </span>apps/air_quality/
@@ -431,9 +434,9 @@ Remember to add double quotes to the paths, as in the example below:</p>
 <span class="go">Target successfully built: targets/air_q</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="create-packages-for-drivers">
-<h2><a class="toc-backref" href="#id6">Create Packages For Drivers</a><a class="headerlink" href="#create-packages-for-drivers" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="create-packages-for-drivers">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Create Packages For Drivers</a><a class="headerlink" href="#create-packages-for-drivers" title="Link to this heading">¶</a></h2>
 <p>We need to enable the SenseAir K30 CO2 sensor, which will connect to the board over a serial port. To start development of the
 driver, you first need to create a package description for it, and add stubs for sources.</p>
 <p>The first thing to do is to create the directory structure for your
@@ -579,9 +582,9 @@ this driver:</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="add-cli-commands-for-testing-drivers">
-<h2><a class="toc-backref" href="#id7">Add CLI Commands For Testing Drivers</a><a class="headerlink" href="#add-cli-commands-for-testing-drivers" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="add-cli-commands-for-testing-drivers">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Add CLI Commands For Testing Drivers</a><a class="headerlink" href="#add-cli-commands-for-testing-drivers" title="Link to this heading">¶</a></h2>
 <p>While developing the driver, it would be helpful to issue operations from the console to verify the driver is responding correctly. Since the nRF52DK only has one UART, which will be used to connect to the CO2 sensor, the console we’ll use instead is the <a class="reference internal" href="../tooling/segger_rtt.html"><span class="doc">Segger RTT Console</span></a>. To configure this, make the following changes in your project’s <code class="docutils literal notranslate"><span class="pre">syscfg.yml</span></code> file:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$ </span>cat<span class="w"> </span>targets/air_q/syscfg.yml
 </pre></div>
@@ -675,9 +678,9 @@ this driver:</p>
 </div>
 <p>If you can see the <code class="docutils literal notranslate"><span class="pre">senseair</span></code> command, and get the proper response, you can connect the hardware to your board and start
 developing code for the driver itself.</p>
-</div>
-<div class="section" id="using-hal-for-drivers">
-<h2><a class="toc-backref" href="#id8">Using HAL for Drivers</a><a class="headerlink" href="#using-hal-for-drivers" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="using-hal-for-drivers">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Using HAL for Drivers</a><a class="headerlink" href="#using-hal-for-drivers" title="Link to this heading">¶</a></h2>
 <p>We will connect the CO2 sensor using a serial port connection to the UART. We’ll also use the HAL UART abstraction to do the UART port setup and data transfer. That way you don’t need to have any platform dependent pieces within your little driver. Moreover, this also gives you the option to connect this sensor to another board, like Olimex or the Arduino Primo.</p>
 <p>You will now see what the driver code ends up looking like. Here’s the header file, filled in from the stub you created earlier:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/*</span>
@@ -955,15 +958,21 @@ developing code for the driver itself.</p>
 <p>Now comes the fun part: Hooking up the sensor! It’s fun because a) hooking up a sensor is always fun and b) the SenseAir sensor’s PCB is entirely unlabeled, so you’ll have to trust us on how to hook it up.</p>
 <p>You’ll have to do a little soldering. I soldered some header pins to the SenseAir K30 board to make connecting wires easier using standard jumper wires, but you can also just solder wires straight to the board if you prefer.</p>
 <p>Here’s what your SenseAir board should look like once it’s wired up:</p>
-<div class="figure align-default" id="id1">
-<a class="reference internal image-reference" href="../../_images/K30labeled.JPG"><img alt="SenseAir Wiring" src="../../_images/K30labeled.JPG" style="width: 500px;" /></a>
-<p class="caption"><span class="caption-text">SenseAir Wiring</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../../_images/K30labeled.JPG"><img alt="SenseAir Wiring" src="../../_images/K30labeled.JPG" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">SenseAir Wiring</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>Now that you have that wired up, let’s connect it to the nRF52DK board. Since we will be using the built-in UART, we can simply connect it to the pre-configured pins for TX (P.06) and RX (P.08). Here’s what your board should look like once everything is connected:</p>
-<div class="figure align-default" id="id2">
-<a class="reference internal image-reference" href="../../_images/nrf52labeled.JPG"><img alt="SenseAir and nRF52DK Wiring" src="../../_images/nrf52labeled.JPG" style="width: 500px;" /></a>
-<p class="caption"><span class="caption-text">SenseAir and nRF52DK Wiring</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</div>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../../_images/nrf52labeled.JPG"><img alt="SenseAir and nRF52DK Wiring" src="../../_images/nrf52labeled.JPG" style="width: 500px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">SenseAir and nRF52DK Wiring</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>Everything is wired and you’re ready to go! Build and load your new app:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[user@IsMyLaptop:~/src/air_quality]$ </span>newt<span class="w"> </span>build<span class="w"> </span>air_q
 <span class="go">Building target targets/air_q</span>
@@ -1020,8 +1029,8 @@ developing code for the driver itself.</p>
 <p>And you’re getting valid readings! Congratulations!</p>
 <p>Next we’ll hook this all up via Bluetooth so that you can read those
 values remotely.</p>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -1113,9 +1122,9 @@ values remotely.</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>

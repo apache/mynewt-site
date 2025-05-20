@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Internals of nffs &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -255,10 +258,10 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="internals-of-nffs">
-<h1>Internals of nffs<a class="headerlink" href="#internals-of-nffs" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="disk-structure">
-<h2>Disk structure<a class="headerlink" href="#disk-structure" title="Permalink to this headline">¶</a></h2>
+  <section id="internals-of-nffs">
+<h1>Internals of nffs<a class="headerlink" href="#internals-of-nffs" title="Link to this heading">¶</a></h1>
+<section id="disk-structure">
+<h2>Disk structure<a class="headerlink" href="#disk-structure" title="Link to this heading">¶</a></h2>
 <p>On disk, each area is prefixed with the following header:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/** On-disk representation of an area header. */</span>
 <span class="k">struct</span><span class="w"> </span><span class="nc">nffs_disk_area</span><span class="w"> </span><span class="p">{</span>
@@ -321,16 +324,12 @@ satisfies all of the following restrictions:</p>
 </ul>
 <p>The 2048 number was chosen somewhat arbitrarily, and may change in the
 future.</p>
-</div>
-<div class="section" id="id-space">
-<h2>ID space<a class="headerlink" href="#id-space" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="id-space">
+<h2>ID space<a class="headerlink" href="#id-space" title="Link to this heading">¶</a></h2>
 <p>All disk objects have a unique 32-bit ID. The ID space is partitioned as
 follows:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 48%" />
-<col style="width: 52%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>ID range</p></th>
 <th class="head"><p>Node type</p></th>
@@ -351,16 +350,16 @@ follows:</p>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="scratch-area">
-<h2>Scratch area<a class="headerlink" href="#scratch-area" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="scratch-area">
+<h2>Scratch area<a class="headerlink" href="#scratch-area" title="Link to this heading">¶</a></h2>
 <p>A valid nffs file system must contain a single “scratch area.” The
 scratch area does not contain any objects of its own, and is only used
 during garbage collection. The scratch area must have a size greater
 than or equal to each of the other areas in flash.</p>
-</div>
-<div class="section" id="ram-representation">
-<h2>RAM representation<a class="headerlink" href="#ram-representation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ram-representation">
+<h2>RAM representation<a class="headerlink" href="#ram-representation" title="Link to this heading">¶</a></h2>
 <p>Every object in the file system is stored in a 256-entry hash table. An
 object’s hash key is derived from its 32-bit ID. Each list in the hash
 table is sorted by time of use; most-recently-used is at the front of
@@ -410,9 +409,9 @@ O(n^2) operation.</p></li>
 </ul>
 <p>Furthermore, obtaining information about any constituent data block
 requires a separate flash read.</p>
-</div>
-<div class="section" id="inode-cache-and-data-block-cache">
-<h2>Inode cache and Data Block cache<a class="headerlink" href="#inode-cache-and-data-block-cache" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="inode-cache-and-data-block-cache">
+<h2>Inode cache and Data Block cache<a class="headerlink" href="#inode-cache-and-data-block-cache" title="Link to this heading">¶</a></h2>
 <p>The speed issues are addressed by a pair of caches. Cached inodes
 entries contain the file length and a much more convenient doubly-linked
 list of cached data blocks. The benefit of using caches is that the size
@@ -528,9 +527,9 @@ procedure will always reclaim at least one cache block entry. The above
 procedure may result in the freeing of the block list that belongs to
 the very inode being operated on. This is OK, as the final block to get
 cached is always the block being requested.</p>
-</div>
-<div class="section" id="detection">
-<h2>Detection<a class="headerlink" href="#detection" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="detection">
+<h2>Detection<a class="headerlink" href="#detection" title="Link to this heading">¶</a></h2>
 <p>The file system detection process consists of scanning a specified set
 of flash regions for valid nffs areas, and then populating the RAM
 representation of the file system with the detected objects. Detection
@@ -605,17 +604,17 @@ found, the cause could be that the system was restarted while a garbage
 collection cycle was in progress. Such a condition is identified by the
 presence of two areas with the same ID. In such a case, the shorter of
 the two areas is erased and designated as the scratch area.</p>
-</div>
-<div class="section" id="formatting">
-<h2>Formatting<a class="headerlink" href="#formatting" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="formatting">
+<h2>Formatting<a class="headerlink" href="#formatting" title="Link to this heading">¶</a></h2>
 <p>A new nffs file system is created via formatting. Formatting is achieved
 via the <a class="reference external" href="nffs_format.html">nffs_format()</a> function.</p>
 <p>During a successful format, an area header is written to each of the
 specified locations. One of the areas in the set is designated as the
 initial scratch area.</p>
-</div>
-<div class="section" id="flash-writes">
-<h2>Flash writes<a class="headerlink" href="#flash-writes" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="flash-writes">
+<h2>Flash writes<a class="headerlink" href="#flash-writes" title="Link to this heading">¶</a></h2>
 <p>The nffs implementation always writes in a strictly sequential fashion
 within an area. For each area, the system keeps track of the current
 offset. Whenever an object gets written to an area, it gets written to
@@ -626,9 +625,9 @@ appropriate destination area by iterating though each area until one
 with sufficient free space is encountered.</p>
 <p>There is no write buffering. Each call to a write function results in a
 write operation being sent to the flash hardware.</p>
-</div>
-<div class="section" id="new-objects">
-<h2>New objects<a class="headerlink" href="#new-objects" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="new-objects">
+<h2>New objects<a class="headerlink" href="#new-objects" title="Link to this heading">¶</a></h2>
 <p>Whenever a new object is written to disk, it is assigned the following
 properties:</p>
 <ul class="simple">
@@ -639,9 +638,9 @@ appropriate for the object’s type.</p></li>
 <p>When a new file or directory is created, a corresponding inode is
 written to flash. Likewise, a new data block also results in the writing
 of a corresponding disk object.</p>
-</div>
-<div class="section" id="moving-renaming-files-and-directories">
-<h2>Moving/Renaming files and directories<a class="headerlink" href="#moving-renaming-files-and-directories" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="moving-renaming-files-and-directories">
+<h2>Moving/Renaming files and directories<a class="headerlink" href="#moving-renaming-files-and-directories" title="Link to this heading">¶</a></h2>
 <p>When a file or directory is moved or renamed, its corresponding inode is
 rewritten to flash with the following properties:</p>
 <ul class="simple">
@@ -651,9 +650,9 @@ rewritten to flash with the following properties:</p>
 <li><p><em>Filename:</em> As specified by the move / rename operation.</p></li>
 </ul>
 <p>Because the inode’s ID is unchanged, all dependent objects remain valid.</p>
-</div>
-<div class="section" id="unlinking-files-and-directories">
-<h2>Unlinking files and directories<a class="headerlink" href="#unlinking-files-and-directories" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="unlinking-files-and-directories">
+<h2>Unlinking files and directories<a class="headerlink" href="#unlinking-files-and-directories" title="Link to this heading">¶</a></h2>
 <p>When a file or directory is unlinked from its parent directory, a
 deletion record for the unlinked inode gets written to flash. The
 deletion record is an inode with the following properties:</p>
@@ -673,9 +672,9 @@ files retain a reference count, and a file isn’t deleted from the RAM
 representation until its reference code drops to 0. Any attempt to open
 an unlinked file fails, even if the file is referenced by other file
 handles.</p>
-</div>
-<div class="section" id="writing-to-a-file">
-<h2>Writing to a file<a class="headerlink" href="#writing-to-a-file" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="writing-to-a-file">
+<h2>Writing to a file<a class="headerlink" href="#writing-to-a-file" title="Link to this heading">¶</a></h2>
 <p>The following procedure is used whenever the application code writes to
 a file. First, if the write operation specifies too much data to fit
 into a single block, the operation is split into several separate write
@@ -708,9 +707,9 @@ sequence number is incremented.</p></li>
 </ol>
 <p>Appended data can only be written to the end of the file. That is,
 “holes” are not supported.</p>
-</div>
-<div class="section" id="garbage-collection">
-<h2>Garbage collection<a class="headerlink" href="#garbage-collection" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="garbage-collection">
+<h2>Garbage collection<a class="headerlink" href="#garbage-collection" title="Link to this heading">¶</a></h2>
 <p>When the file system is too full to accommodate a write operation, the
 system must perform garbage collection to make room. The garbage
 collection procedure is described below:</p>
@@ -742,8 +741,8 @@ erased, and its header is rewritten with an ID of 0xff). The area’s
 garbage collection sequence number is incremented prior to rewriting
 the header. This area is now the new scratch sector.</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -826,9 +825,9 @@ the header. This area is now the new scratch sector.</p></li>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../../_static/js/main.js"></script>

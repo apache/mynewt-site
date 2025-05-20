@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Rust Blinky application &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -282,11 +285,11 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="rust-blinky-application">
-<h1>Rust Blinky application<a class="headerlink" href="#rust-blinky-application" title="Permalink to this headline">¶</a></h1>
+  <section id="rust-blinky-application">
+<h1>Rust Blinky application<a class="headerlink" href="#rust-blinky-application" title="Link to this heading">¶</a></h1>
 <p>This tutorial shows you how to convert the Blinky application to Rust. This includes
 integrating Cargo into newt builder.</p>
-<div class="contents local topic" id="contents">
+<nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#prerequisites" id="id1">Prerequisites</a></p></li>
 <li><p><a class="reference internal" href="#initialize-rust" id="id2">Initialize Rust</a></p></li>
@@ -297,9 +300,9 @@ integrating Cargo into newt builder.</p>
 <li><p><a class="reference internal" href="#newt-integration" id="id7">Newt integration</a></p></li>
 <li><p><a class="reference internal" href="#conclusion" id="id8">Conclusion</a></p></li>
 </ul>
-</div>
-<div class="section" id="prerequisites">
-<h2><a class="toc-backref" href="#id1">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+</nav>
+<section id="prerequisites">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Prerequisites</a><a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
 <p>Ensure that you meet the following prerequisites before continuing with
 this tutorial:</p>
 <ul class="simple">
@@ -310,9 +313,9 @@ this tutorial:</p>
 project with a basic application. You will extend that application in this
 tutorial.</p></li>
 </ul>
-</div>
-<div class="section" id="initialize-rust">
-<h2><a class="toc-backref" href="#id2">Initialize Rust</a><a class="headerlink" href="#initialize-rust" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="initialize-rust">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Initialize Rust</a><a class="headerlink" href="#initialize-rust" title="Link to this heading">¶</a></h2>
 <p>The first step is to initialize a crate for developing your application in. You
 can do this in the existing <cite>blinky</cite> directory.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>cargo<span class="w"> </span>init<span class="w"> </span>--lib<span class="w"> </span>apps/blinky
@@ -332,9 +335,9 @@ can do this in the existing <cite>blinky</cite> directory.</p>
 files to place our application in. You may notice that the Rust application is
 not configured as an app, but as an lib. This is needed later to allow linking
 to the rest of mynewt.</p>
-</div>
-<div class="section" id="setup-the-basics">
-<h2><a class="toc-backref" href="#id3">Setup the basics</a><a class="headerlink" href="#setup-the-basics" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="setup-the-basics">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Setup the basics</a><a class="headerlink" href="#setup-the-basics" title="Link to this heading">¶</a></h2>
 <p>Now we want to actually convert the application code to Rust. Let’s open <cite>src/lib.rs</cite>
 and remove the contents. Then start with some basic setup:</p>
 <div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="cp">#![no_std]</span>
@@ -360,9 +363,9 @@ for alternatives.</p>
 <p>Then we have the <code class="docutils literal notranslate"><span class="pre">main</span></code> function. It contains a endless loop as it should never
 return, but doesn’t do anything useful yet. It is marked <code class="docutils literal notranslate"><span class="pre">no_mangle</span></code> and <code class="docutils literal notranslate"><span class="pre">extern</span> <span class="pre">&quot;C&quot;</span></code>
 to make sure it can be called from the mynewt C code.</p>
-</div>
-<div class="section" id="converting-sysinit">
-<h2><a class="toc-backref" href="#id4">Converting sysinit</a><a class="headerlink" href="#converting-sysinit" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="converting-sysinit">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Converting sysinit</a><a class="headerlink" href="#converting-sysinit" title="Link to this heading">¶</a></h2>
 <p>The next step is to do the sysinit. This is implemented as a C macro, which is
 incompatible with Rust. This could be solved by using a C library, but for this
 tutorial we will simply execute the macro manually.</p>
@@ -393,9 +396,9 @@ C header file. Then we execute the sysinit as the macro would do.</p>
 <p>We need the <code class="docutils literal notranslate"><span class="pre">unsafe</span></code> indication because the C code doesn’t have the same memory
 guarantees as Rust. Normally we need to build a safe Rust wrapper, but that is
 out of scope for this tutorial.</p>
-</div>
-<div class="section" id="doing-gpio-and-delays">
-<h2><a class="toc-backref" href="#id5">Doing GPIO and delays</a><a class="headerlink" href="#doing-gpio-and-delays" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="doing-gpio-and-delays">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Doing GPIO and delays</a><a class="headerlink" href="#doing-gpio-and-delays" title="Link to this heading">¶</a></h2>
 <p>Now it is time to do some GPIO and add a delay. Again we define the functions
 and then use them in and around the loop. We need some constants that are
 normally defined by the BSP or MCU. These constants need to move to a better
@@ -436,9 +439,9 @@ place later.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="cargo-build">
-<h2><a class="toc-backref" href="#id6">Cargo build</a><a class="headerlink" href="#cargo-build" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="cargo-build">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Cargo build</a><a class="headerlink" href="#cargo-build" title="Link to this heading">¶</a></h2>
 <p>Now that the application is converted we need to build it and link it the rest of mynewt. We start with Cargo.toml:</p>
 <div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[package]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;rust-klok&quot;</span>
@@ -499,9 +502,9 @@ generated library to the correct path.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>chmod<span class="w"> </span>+x<span class="w"> </span>apps/blinky/cargo_build.sh
 </pre></div>
 </div>
-</div>
-<div class="section" id="newt-integration">
-<h2><a class="toc-backref" href="#id7">Newt integration</a><a class="headerlink" href="#newt-integration" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="newt-integration">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Newt integration</a><a class="headerlink" href="#newt-integration" title="Link to this heading">¶</a></h2>
 <p>To automatically run <code class="docutils literal notranslate"><span class="pre">cargo</span></code> we need to add the following to pkg.yml:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nn">...</span>
 
@@ -527,15 +530,15 @@ variable:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>rustup<span class="w"> </span>target<span class="w"> </span>add<span class="w"> </span>&lt;your-target&gt;
 </pre></div>
 </div>
-</div>
-<div class="section" id="conclusion">
-<h2><a class="toc-backref" href="#id8">Conclusion</a><a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="conclusion">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Conclusion</a><a class="headerlink" href="#conclusion" title="Link to this heading">¶</a></h2>
 <p>You now have a firmware where the application is written in Rust. It is nicely
 integrated into newt builder. However it still needs some work: it misses safe
 Rust wrappers for the mynewt libraries and there are some magic constants that
 need to be moved to a better location.</p>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -627,9 +630,9 @@ need to be moved to a better location.</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>

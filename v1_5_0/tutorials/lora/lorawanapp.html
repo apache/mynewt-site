@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>LoRaWAN App &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -272,15 +275,15 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="lorawan-app">
-<h1>LoRaWAN App<a class="headerlink" href="#lorawan-app" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="objective">
-<h2>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h2>
+  <section id="lorawan-app">
+<h1>LoRaWAN App<a class="headerlink" href="#lorawan-app" title="Link to this heading">¶</a></h1>
+<section id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Link to this heading">¶</a></h2>
 <p>The purpose of this tutorial is to demonstrate how to build the lora app shell application for either a class A or class C lora device and to perform basic functions such as joining and sending data packets to a lora gateway/server.</p>
 <p>NOTE: This tutorial presumes that you have a running lora gateway and lora network server. No description of the gateway/server is provided. It is expected that the user understands how to configure and operate the gateway/server so that it can communicate with a class A or class C device.</p>
-</div>
-<div class="section" id="hardware-needed">
-<h2>Hardware needed<a class="headerlink" href="#hardware-needed" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="hardware-needed">
+<h2>Hardware needed<a class="headerlink" href="#hardware-needed" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Telenor EE02 module</p></li>
 <li><p>Segger J-Link or similar debugger</p></li>
@@ -291,9 +294,9 @@
 <li><p>3-wire serial cable to connect telenor module to your laptop</p></li>
 <li><p>Some form of terminal emulation application running on your laptop.</p></li>
 </ul>
-</div>
-<div class="section" id="create-a-project">
-<h2>Create a project.<a class="headerlink" href="#create-a-project" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="create-a-project">
+<h2>Create a project.<a class="headerlink" href="#create-a-project" title="Link to this heading">¶</a></h2>
 <p>Create a new project to hold your work. For a deeper understanding, you can read about project creation in <a class="reference internal" href="../../get_started/project_create.html"><span class="doc">Get Started – Creating Your First Project</span></a> or just follow the commands below.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ mkdir ~/dev
 $ cd ~/dev
@@ -304,9 +307,9 @@ Project mylora successfully created.
 $ cd mylora
 </pre></div>
 </div>
-</div>
-<div class="section" id="install-everything">
-<h2>Install Everything<a class="headerlink" href="#install-everything" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="install-everything">
+<h2>Install Everything<a class="headerlink" href="#install-everything" title="Link to this heading">¶</a></h2>
 <p>Now that you have defined the needed repositories, it’s time to install everything so that you can get started.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ newt upgrade -v
 Downloading repository mynewt-core (commit: master) ...
@@ -315,9 +318,9 @@ apache-mynewt-core successfully upgraded to version 1.7.0
 ...
 </pre></div>
 </div>
-</div>
-<div class="section" id="create-the-targets">
-<h2>Create the targets<a class="headerlink" href="#create-the-targets" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="create-the-targets">
+<h2>Create the targets<a class="headerlink" href="#create-the-targets" title="Link to this heading">¶</a></h2>
 <p>Create two targets - one for the bootloader and one for the lora app shell application.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ newt target create telee02_boot
 $ newt target set telee02_boot bsp=@apache-mynewt-core/hw/bsp/telee02
@@ -355,9 +358,9 @@ targets/lora_app_shell_telee02
 </pre></div>
 </div>
 <p>Note: If you’ve already built and installed a bootloader for your ee02 module then you do not need to create a target for it here, or build and load it as below.</p>
-</div>
-<div class="section" id="build-the-target-executables">
-<h2>Build the target executables<a class="headerlink" href="#build-the-target-executables" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="build-the-target-executables">
+<h2>Build the target executables<a class="headerlink" href="#build-the-target-executables" title="Link to this heading">¶</a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ newt clean telee02_boot
 $ newt build telee02_boot
 Building target targets/telee02_boot
@@ -388,22 +391,22 @@ Target successfully built: targets/lora_app_shell_telee0
 </pre></div>
 </div>
 <p>Note: The newt clean step is not necessary but shown here for good measure.</p>
-</div>
-<div class="section" id="sign-and-create-the-application-image">
-<h2>Sign and create the application image<a class="headerlink" href="#sign-and-create-the-application-image" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="sign-and-create-the-application-image">
+<h2>Sign and create the application image<a class="headerlink" href="#sign-and-create-the-application-image" title="Link to this heading">¶</a></h2>
 <p>You must sign and version your application image to download it using newt to the board. Use the newt create-image command to perform this action. You may assign an arbitrary version (e.g. 1.0.0) to the image.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ newt create-image lora_app_shell_telee02 0.0.0
 App image succesfully generated: /Users/wes/dev/wes/bin/targets/lora_app_shell_telee02/app/apps/lora_app_shell/lora_app_shell.img
 </pre></div>
 </div>
 <p>Note: Only the application image requires this step; the bootloader does not</p>
-</div>
-<div class="section" id="connect-the-board">
-<h2>Connect the board<a class="headerlink" href="#connect-the-board" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="connect-the-board">
+<h2>Connect the board<a class="headerlink" href="#connect-the-board" title="Link to this heading">¶</a></h2>
 <p>Connect the evaluation board via micro-USB to your PC via USB cable. Connect the Segger J-link debugger to the 9-pin SWD connector. Connect the UART pins (RX, TX and GND) to the board. Terminal settings 115200, N, 8, 1.</p>
-</div>
-<div class="section" id="download-bootloader-and-application">
-<h2>Download bootloader and application<a class="headerlink" href="#download-bootloader-and-application" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="download-bootloader-and-application">
+<h2>Download bootloader and application<a class="headerlink" href="#download-bootloader-and-application" title="Link to this heading">¶</a></h2>
 <p><strong>Note:</strong> If you want to erase the flash and load the image again, you can use JLinkExe to issue an <code class="docutils literal notranslate"><span class="pre">erase</span></code> command.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$ JLinkExe -device nRF52 -speed 4000 -if SWD
 SEGGER J-Link Commander V5.12c (Compiled Apr 21 2016 16:05:51)
@@ -467,10 +470,6 @@ help
 </div>
 <p>The following table lists the commands and gives a brief description of the commands. The lora commands are described in more detail later in the tutorial as well as their syntax (syntax not shown in the table).</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 17%" />
-<col style="width: 83%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Command</p></th>
 <th class="head"><p>Description</p></th>
@@ -530,9 +529,9 @@ help
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="ota-join">
-<h2>OTA Join<a class="headerlink" href="#ota-join" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ota-join">
+<h2>OTA Join<a class="headerlink" href="#ota-join" title="Link to this heading">¶</a></h2>
 <p>Before sending any application data a lora end device must be joined to its lora network. To perform a lora OTA (over-the-air) join there are some commands that must be issued prior to attempting to join. The reason for these commands is that a lora end device must be configured with a device EUI, application EUI and application key prior to performing an OTA join.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>598763 compat&gt; las_wr_app_eui 0x00:0x11:0x22:0x01:0x01:0x00:0x10:10
 
@@ -548,9 +547,9 @@ help
 </div>
 <p>If the join is successful the status returned should be 0. If it fails the status will be a non-zero lora status code (lora status error codes are described later in this tutorial).</p>
 <p>A note about “endianness” in the device EUI commands. The first three bytes of the EUI are the OUI and the last 5 bytes are unique (for that OUI). The above example assumes an OUI of 001122. This is not the same order as the address over the air as device addresses are sent “least significant byte” first (little endian). The same convention also applies to keys: they are in big-endian order in the command but sent little endian over the air.</p>
-</div>
-<div class="section" id="opening-closing-an-application-port">
-<h2>Opening/closing an application port<a class="headerlink" href="#opening-closing-an-application-port" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="opening-closing-an-application-port">
+<h2>Opening/closing an application port<a class="headerlink" href="#opening-closing-an-application-port" title="Link to this heading">¶</a></h2>
 <p>Another step that must be performed prior to sending application data is to open an application port. All data frames containing application data are sent to a specific port. Port numbers are in the range 1 - 223 as port 0 is reserved for MLME-related activities. Ports 224-255 are reserved for future standardized application extensions.</p>
 <p>The lora app shell does not open any application ports by default.</p>
 <p>To open and/or close an application port the following commands are used. Note that the application port which you are using to send data must be open if you want to send data (or receive it).</p>
@@ -562,9 +561,9 @@ help
 151882 Closed app port 1
 </pre></div>
 </div>
-</div>
-<div class="section" id="sending-data">
-<h2>Sending data<a class="headerlink" href="#sending-data" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="sending-data">
+<h2>Sending data<a class="headerlink" href="#sending-data" title="Link to this heading">¶</a></h2>
 <p>The lora app shell allows the user to send both unconfirmed and confirmed data. The command to send data is <em>las_app_tx &lt;port&gt; &lt;len&gt; &lt;type&gt;</em></p>
 <p>NOTE: the current usage for this command shows an optional data rate and retries for this command. That feature has not been implemented and the command will not be accepted if they are separated.</p>
 <p>Where: port = port number on which to send len = size n bytes of app data type = 0 for unconfirmed, 1 for confirmed</p>
@@ -593,8 +592,8 @@ help
 <div class="line">uplink_cntr: The frame uplink counter that this frame used.</div>
 <div class="line">uplink_freq: The frequency (logical) on which the frame was sent (in Hz).</div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -686,9 +685,9 @@ help
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>

@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Mbufs &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -300,8 +303,8 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="mbufs">
-<h1>Mbufs<a class="headerlink" href="#mbufs" title="Permalink to this headline">¶</a></h1>
+  <section id="mbufs">
+<h1>Mbufs<a class="headerlink" href="#mbufs" title="Link to this heading">¶</a></h1>
 <p>The mbuf (short for memory buffer) is a common concept in networking
 stacks. The mbuf is used to hold packet data as it traverses the stack.
 The mbuf also generally stores header information or other networking
@@ -314,8 +317,8 @@ for internal information and a pointer which is used to “chain” memory
 blocks together in order to create a “packet”. This is a very important
 aspect of the mbuf: the ability to chain mbufs together to create larger
 “packets” (chains of mbufs).</p>
-<div class="section" id="why-use-mbufs">
-<h2>Why use mbufs?<a class="headerlink" href="#why-use-mbufs" title="Permalink to this headline">¶</a></h2>
+<section id="why-use-mbufs">
+<h2>Why use mbufs?<a class="headerlink" href="#why-use-mbufs" title="Link to this heading">¶</a></h2>
 <p>The main reason is to conserve memory. Consider a networking protocol
 that generally sends small packets but occasionally sends large ones.
 The Bluetooth Low Energy (BLE) protocol is one such example. A flat
@@ -324,9 +327,9 @@ contained by the buffer. With the mbuf, a number of mbufs can be chained
 together so that the occasional large packet can be handled while
 leaving more packet buffers available to the networking stack for
 smaller packets.</p>
-</div>
-<div class="section" id="packet-header-mbuf">
-<h2>Packet Header mbuf<a class="headerlink" href="#packet-header-mbuf" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="packet-header-mbuf">
+<h2>Packet Header mbuf<a class="headerlink" href="#packet-header-mbuf" title="Link to this heading">¶</a></h2>
 <p>Not all mbufs are created equal. The first mbuf in a chain of mbufs is a
 special mbuf called a “packet header mbuf”. The reason that this mbuf is
 special is that it contains the length of all the data contained by the
@@ -341,13 +344,15 @@ mbuf header (<code class="xref c c-type docutils literal notranslate"><span clas
 of mbufs. Note that the numbers/text in parentheses denote the size of
 the structures/elements (in bytes) and that MBLEN is the memory block
 length of the memory pool used by the mbuf pool.</p>
-<div class="figure align-default" id="id1">
+<figure class="align-default" id="id1">
 <img alt="Packet header mbuf" src="../../../_images/mbuf_fig1.png" />
-<p class="caption"><span class="caption-text">Packet header mbuf</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
-</div>
-<div class="section" id="normal-mbuf">
-<h2>Normal mbuf<a class="headerlink" href="#normal-mbuf" title="Permalink to this headline">¶</a></h2>
+<figcaption>
+<p><span class="caption-text">Packet header mbuf</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="normal-mbuf">
+<h2>Normal mbuf<a class="headerlink" href="#normal-mbuf" title="Link to this heading">¶</a></h2>
 <p>Now let’s take a deeper dive into the mbuf structure. Figure 2
 illustrates a normal mbuf and breaks out the various fields in the
 c:type:<cite>os_mbuf</cite> structure.</p>
@@ -381,10 +386,12 @@ length. In this example, the user has copied 33 bytes into the data
 buffer starting at address 0x1010 (this is where <code class="xref c c-member docutils literal notranslate"><span class="pre">om_data</span></code> points). Note
 that the packet header length in this mbuf is 0 as it is not a packet
 header mbuf.</p>
-<div class="figure align-default" id="id2">
+<figure class="align-default" id="id2">
 <img alt="OS mbuf structure" src="../../../_images/mbuf_fig2.png" />
-<p class="caption"><span class="caption-text">OS mbuf structure</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</div>
+<figcaption>
+<p><span class="caption-text">OS mbuf structure</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 <p>Figure 3 illustrates the packet header mbuf along with some chained
 mbufs (i.e a “packet”). In this example, the user header structure is
 defined to be 8 bytes. Note that in figure 3 we show a number of
@@ -392,13 +399,15 @@ different mbufs with varying <code class="xref c c-member docutils literal notra
 want to show various examples of valid mbufs. For all the mbufs (both
 packet header and normal ones) the total length of the memory block is
 128 bytes.</p>
-<div class="figure align-default" id="id3">
+<figure class="align-default" id="id3">
 <img alt="Packet" src="../../../_images/mbuf_fig3.png" />
-<p class="caption"><span class="caption-text">Packet</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
-</div>
-<div class="section" id="mbuf-pools">
-<h2>Mbuf pools<a class="headerlink" href="#mbuf-pools" title="Permalink to this headline">¶</a></h2>
+<figcaption>
+<p><span class="caption-text">Packet</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="mbuf-pools">
+<h2>Mbuf pools<a class="headerlink" href="#mbuf-pools" title="Link to this heading">¶</a></h2>
 <p>Mbufs are collected into “mbuf pools” much like memory blocks. The mbuf
 pool itself contains a pointer to a memory pool. The memory blocks in
 this memory pool are the actual mbufs; both normal and packet header
@@ -412,9 +421,9 @@ user data and they have a user header of 12 bytes, the size of the
 memory block would be (at least): 64 + 12 + 16 + 8, or 100 bytes. Yes,
 this is a fair amount of overhead. However, the flexibility provided by
 the mbuf library usually outweighs overhead concerns.</p>
-</div>
-<div class="section" id="create-mbuf-pool">
-<h2>Create mbuf pool<a class="headerlink" href="#create-mbuf-pool" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="create-mbuf-pool">
+<h2>Create mbuf pool<a class="headerlink" href="#create-mbuf-pool" title="Link to this heading">¶</a></h2>
 <p>Creating an mbuf pool is fairly simple: create a memory pool and then
 create the mbuf pool using that memory pool. Once the developer has
 determined the size of the user data needed per mbuf (this is based on
@@ -459,9 +468,9 @@ block size required, denoted by the macro <em>MBUF_MEMBLOCK_OVERHEAD</em>.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="msys">
-<h2>Msys<a class="headerlink" href="#msys" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="msys">
+<h2>Msys<a class="headerlink" href="#msys" title="Link to this heading">¶</a></h2>
 <p>Msys stands for “system mbufs” and is a set of API built on top of the
 mbuf code. The basic idea behind msys is the following. The developer
 can create different size mbuf pools and register them with msys. The
@@ -490,9 +499,9 @@ not empty.</p>
 here (other than in the API descriptions themselves) as the msys API is
 used in exactly the same manner as the mbuf API. The only difference is
 that mbuf pools are added to msys by calling <code class="docutils literal notranslate"><span class="pre">os_msys_register().</span></code></p>
-</div>
-<div class="section" id="using-mbufs">
-<h2>Using mbufs<a class="headerlink" href="#using-mbufs" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="using-mbufs">
+<h2>Using mbufs<a class="headerlink" href="#using-mbufs" title="Link to this heading">¶</a></h2>
 <p>The following examples illustrate typical mbuf usage. There are two
 basic mbuf allocation API: c:func:<cite>os_mbuf_get()</cite> and
 <a class="reference internal" href="#c.os_mbuf_get_pkthdr" title="os_mbuf_get_pkthdr"><code class="xref c c-func docutils literal notranslate"><span class="pre">os_mbuf_get_pkthdr()</span></code></a>. The first API obtains a normal mbuf whereas
@@ -602,17 +611,17 @@ definitions used in the first example.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="mqueue">
-<h2>Mqueue<a class="headerlink" href="#mqueue" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="mqueue">
+<h2>Mqueue<a class="headerlink" href="#mqueue" title="Link to this heading">¶</a></h2>
 <p>The mqueue construct allows a task to wake up when it receives data.
 Typically, this data is in the form of packets received over a network.
 A common networking stack operation is to put a packet on a queue and
 post an event to the task monitoring that queue. When the task handles
 the event, it processes each packet on the packet queue.</p>
-</div>
-<div class="section" id="using-mqueue">
-<h2>Using Mqueue<a class="headerlink" href="#using-mqueue" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="using-mqueue">
+<h2>Using Mqueue<a class="headerlink" href="#using-mqueue" title="Link to this heading">¶</a></h2>
 <p>The following code sample demonstrates how to use an mqueue. In this
 example:</p>
 <ul class="simple">
@@ -679,661 +688,692 @@ Presumably, some other code will call this API.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="api">
-<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="api">
+<h2>API<a class="headerlink" href="#api" title="Link to this heading">¶</a></h2>
 <dl class="c function">
-<dt id="c.os_mqueue_init">
-<span class="target" id="group___o_s_mbuf_1ga9763522ccbaeb6844dab335f6ee91342"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mqueue_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mqueue" title="os_mqueue"><span class="pre">os_mqueue</span></a> <span class="pre">*</span><em><span class="pre">mq</span></em>, <a class="reference internal" href="../event_queue/event_queue.html#c.os_event_fn" title="os_event_fn"><span class="pre">os_event_fn</span></a> <span class="pre">*</span><em><span class="pre">ev_cb</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">arg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mqueue_init">
+<span class="target" id="group___o_s_mbuf_1ga9763522ccbaeb6844dab335f6ee91342"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mqueue_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mqueue" title="os_mqueue"><span class="n"><span class="pre">os_mqueue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mq</span></span>, <a class="reference internal" href="../event_queue/event_queue.html#c.os_event_fn" title="os_event_fn"><span class="n"><span class="pre">os_event_fn</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ev_cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">arg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_init" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Initializes an mqueue. </p>
 <p>An mqueue is a queue of mbufs that ties to a particular task’s event queue. Mqueues form a helper API around a common paradigm: wait on an event queue until at least one packet is available, then process a queue of packets.</p>
 <p>When mbufs are available on the queue, an event OS_EVENT_T_MQUEUE_DATA will be posted to the task’s mbuf queue.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">mq</span></code>: The mqueue to initialize </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ev_cb</span></code>: The callback to associate with the mqeueue event. Typically, this callback pulls each packet off the mqueue and processes them. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">arg</span></code>: The argument to associate with the mqueue event.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mq</strong> – The mqueue to initialize </p></li>
+<li><p><strong>ev_cb</strong> – The callback to associate with the mqeueue event. Typically, this callback pulls each packet off the mqueue and processes them. </p></li>
+<li><p><strong>arg</strong> – The argument to associate with the mqueue event.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mqueue_get">
-<span class="target" id="group___o_s_mbuf_1ga591927d5acaa98a8ab8c08c34c8585a7"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mqueue_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mqueue" title="os_mqueue"><span class="pre">os_mqueue</span></a> <span class="pre">*</span><em><span class="pre">mq</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mqueue_get">
+<span class="target" id="group___o_s_mbuf_1ga591927d5acaa98a8ab8c08c34c8585a7"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mqueue_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mqueue" title="os_mqueue"><span class="n"><span class="pre">os_mqueue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mq</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_get" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Remove and return a single mbuf from the mbuf queue. </p>
 <p>Does not block.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The next mbuf in the queue; NULL if queue has no mbufs. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">mq</span></code>: The mbuf queue to pull an element off of.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mq</strong> – The mbuf queue to pull an element off of.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The next mbuf in the queue; NULL if queue has no mbufs. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mqueue_put">
-<span class="target" id="group___o_s_mbuf_1gaabd66efbe137aa873ef3c651e0c57e32"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mqueue_put</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mqueue" title="os_mqueue"><span class="pre">os_mqueue</span></a> <span class="pre">*</span><em><span class="pre">mq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../event_queue/event_queue.html#c.os_eventq" title="os_eventq"><span class="pre">os_eventq</span></a> <span class="pre">*</span><em><span class="pre">evq</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_put" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mqueue_put">
+<span class="target" id="group___o_s_mbuf_1gaabd66efbe137aa873ef3c651e0c57e32"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mqueue_put</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mqueue" title="os_mqueue"><span class="n"><span class="pre">os_mqueue</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../event_queue/event_queue.html#c.os_eventq" title="os_eventq"><span class="n"><span class="pre">os_eventq</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">evq</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mqueue_put" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Adds a packet (i.e. </p>
 <p>packet header mbuf) to an mqueue. The event associated with the mqueue gets posted to the specified eventq.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success, non-zero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">mq</span></code>: The mbuf queue to append the mbuf to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">evq</span></code>: The event queue to post an event to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to append to the mbuf queue.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mq</strong> – The mbuf queue to append the mbuf to. </p></li>
+<li><p><strong>evq</strong> – The event queue to post an event to. </p></li>
+<li><p><strong>om</strong> – The mbuf to append to the mbuf queue.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_msys_register">
-<span class="target" id="group___o_s_mbuf_1ga7dc5f66105af5137ddb870e333c15af8"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_msys_register</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="pre">os_mbuf_pool</span></a> <span class="pre">*</span><em><span class="pre">new_pool</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_register" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_msys_register">
+<span class="target" id="group___o_s_mbuf_1ga7dc5f66105af5137ddb870e333c15af8"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_msys_register</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="n"><span class="pre">os_mbuf_pool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">new_pool</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_register" title="Link to this definition">¶</a><br /></dt>
 <dd><p>MSYS is a system level mbuf registry. </p>
 <p>Allows the system to share packet buffers amongst the various networking stacks that can be running simultaeneously.</p>
 <p>Mbuf pools are created in the system initialization code, and then when a mbuf is allocated out of msys, it will try and find the best fit based upon estimated mbuf size.</p>
 <p><a class="reference internal" href="#group___o_s_mbuf_1ga7dc5f66105af5137ddb870e333c15af8"><span class="std std-ref">os_msys_register()</span></a> registers a mbuf pool with MSYS, and allows MSYS to allocate mbufs out of it.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; non-zero on failure </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">new_pool</span></code>: The pool to register with MSYS</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_pool</strong> – The pool to register with MSYS</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; non-zero on failure </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_msys_get">
-<span class="target" id="group___o_s_mbuf_1ga0e887615518be2d1fc721815dfd157c5"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_msys_get</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">dsize</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">leadingspace</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_msys_get">
+<span class="target" id="group___o_s_mbuf_1ga0e887615518be2d1fc721815dfd157c5"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_msys_get</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">dsize</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">leadingspace</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Allocate a mbuf from msys. </p>
 <p>Based upon the data size requested, <a class="reference internal" href="#group___o_s_mbuf_1ga0e887615518be2d1fc721815dfd157c5"><span class="std std-ref">os_msys_get()</span></a> will choose the mbuf pool that has the best fit.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>A freshly allocated mbuf on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dsize</span></code>: The estimated size of the data being stored in the mbuf </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">leadingspace</span></code>: The amount of leadingspace to allocate in the mbuf</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsize</strong> – The estimated size of the data being stored in the mbuf </p></li>
+<li><p><strong>leadingspace</strong> – The amount of leadingspace to allocate in the mbuf</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A freshly allocated mbuf on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_msys_reset">
-<span class="target" id="group___o_s_mbuf_1gaa984a74000da6f436912a99821baeb9a"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_msys_reset</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_reset" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_msys_reset">
+<span class="target" id="group___o_s_mbuf_1gaa984a74000da6f436912a99821baeb9a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_msys_reset</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_reset" title="Link to this definition">¶</a><br /></dt>
 <dd><p>De-registers all mbuf pools from msys. </p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_msys_get_pkthdr">
-<span class="target" id="group___o_s_mbuf_1ga841e0b4f77115ec9df4b5becc252f03e"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_msys_get_pkthdr</span></code><span class="sig-paren">(</span><span class="pre">uint16_t</span> <em><span class="pre">dsize</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">user_hdr_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get_pkthdr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_msys_get_pkthdr">
+<span class="target" id="group___o_s_mbuf_1ga841e0b4f77115ec9df4b5becc252f03e"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_msys_get_pkthdr</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">dsize</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">user_hdr_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_get_pkthdr" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Allocate a packet header structure from the MSYS pool. </p>
 <p>See <a class="reference internal" href="#group___o_s_mbuf_1ga7dc5f66105af5137ddb870e333c15af8"><span class="std std-ref">os_msys_register()</span></a> for a description of MSYS.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>A freshly allocated mbuf on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dsize</span></code>: The estimated size of the data being stored in the mbuf </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">user_hdr_len</span></code>: The length to allocate for the packet header structure</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dsize</strong> – The estimated size of the data being stored in the mbuf </p></li>
+<li><p><strong>user_hdr_len</strong> – The length to allocate for the packet header structure</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A freshly allocated mbuf on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_msys_count">
-<span class="target" id="group___o_s_mbuf_1ga82ba13b28a45ee54405dd7c4d6ea013b"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_msys_count</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_count" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_msys_count">
+<span class="target" id="group___o_s_mbuf_1ga82ba13b28a45ee54405dd7c4d6ea013b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_msys_count</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_count" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Count the number of blocks in all the mbuf pools that are allocated. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>total number of blocks allocated in Msys </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>total number of blocks allocated in Msys </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_msys_num_free">
-<span class="target" id="group___o_s_mbuf_1gadf2b97336a5ab02260a304188374d345"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_msys_num_free</span></code><span class="sig-paren">(</span><span class="pre">void</span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_num_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_msys_num_free">
+<span class="target" id="group___o_s_mbuf_1gadf2b97336a5ab02260a304188374d345"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_msys_num_free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_msys_num_free" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Return the number of free blocks in Msys. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Number of free blocks available in Msys </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of free blocks available in Msys </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_pool_init">
-<span class="target" id="group___o_s_mbuf_1gaf9b98d7358eaf82a9a842c667e588609"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_pool_init</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="pre">os_mbuf_pool</span></a> <span class="pre">*</span><em><span class="pre">omp</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../memory_pool/memory_pool.html#c.os_mempool" title="os_mempool"><span class="pre">os_mempool</span></a> <span class="pre">*</span><em><span class="pre">mp</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">buf_len</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">nbufs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pool_init" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pool_init">
+<span class="target" id="group___o_s_mbuf_1gaf9b98d7358eaf82a9a842c667e588609"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_pool_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="n"><span class="pre">os_mbuf_pool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">omp</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../memory_pool/memory_pool.html#c.os_mempool" title="os_mempool"><span class="n"><span class="pre">os_mempool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">mp</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">buf_len</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">nbufs</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pool_init" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Initialize a pool of mbufs. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; error code on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">omp</span></code>: The mbuf pool to initialize </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mp</span></code>: The memory pool that will hold this mbuf pool </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">buf_len</span></code>: The length of the buffer itself. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nbufs</span></code>: The number of buffers in the pool</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>omp</strong> – The mbuf pool to initialize </p></li>
+<li><p><strong>mp</strong> – The memory pool that will hold this mbuf pool </p></li>
+<li><p><strong>buf_len</strong> – The length of the buffer itself. </p></li>
+<li><p><strong>nbufs</strong> – The number of buffers in the pool</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; error code on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_get">
-<span class="target" id="group___o_s_mbuf_1gae29f194bcb179147ab67901d8548e830"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_get</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="pre">os_mbuf_pool</span></a> <span class="pre">*</span><em><span class="pre">omp</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">leadingspace</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_get">
+<span class="target" id="group___o_s_mbuf_1gae29f194bcb179147ab67901d8548e830"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="n"><span class="pre">os_mbuf_pool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">omp</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">leadingspace</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Get an mbuf from the mbuf pool. </p>
 <p>The mbuf is allocated, and initialized prior to being returned.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>An initialized mbuf on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">omp</span></code>: The mbuf pool to return the packet from </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">leadingspace</span></code>: The amount of leadingspace to put before the data section by default.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>omp</strong> – The mbuf pool to return the packet from </p></li>
+<li><p><strong>leadingspace</strong> – The amount of leadingspace to put before the data section by default.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An initialized mbuf on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_get_pkthdr">
-<span class="target" id="group___o_s_mbuf_1ga6b6380071820bcbedb82843e5626f22e"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_get_pkthdr</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="pre">os_mbuf_pool</span></a> <span class="pre">*</span><em><span class="pre">omp</span></em>, <span class="pre">uint8_t</span> <em><span class="pre">user_pkthdr_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get_pkthdr" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_get_pkthdr">
+<span class="target" id="group___o_s_mbuf_1ga6b6380071820bcbedb82843e5626f22e"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_get_pkthdr</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="n"><span class="pre">os_mbuf_pool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">omp</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n"><span class="pre">user_pkthdr_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_get_pkthdr" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Allocate a new packet header mbuf out of the <a class="reference internal" href="#structos__mbuf__pool"><span class="std std-ref">os_mbuf_pool</span></a>. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>A freshly allocated mbuf on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">omp</span></code>: The mbuf pool to allocate out of </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">user_pkthdr_len</span></code>: The packet header length to reserve for the caller.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>omp</strong> – The mbuf pool to allocate out of </p></li>
+<li><p><strong>user_pkthdr_len</strong> – The packet header length to reserve for the caller.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A freshly allocated mbuf on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_dup">
-<span class="target" id="group___o_s_mbuf_1ga69786be92f29171a54597afdb682ef2d"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_dup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_dup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_dup">
+<span class="target" id="group___o_s_mbuf_1ga69786be92f29171a54597afdb682ef2d"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_dup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_dup" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Duplicate a chain of mbufs. </p>
 <p>Return the start of the duplicated chain.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>A pointer to the new chain of mbufs </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to duplicate</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to duplicate</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pointer to the new chain of mbufs </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_off">
-<span class="target" id="group___o_s_mbuf_1gabbd3dd2b8880a323c70478f8988902af"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_off</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">int</span> <em><span class="pre">off</span></em>, <span class="pre">uint16_t</span> <span class="pre">*</span><em><span class="pre">out_off</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_off" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_off">
+<span class="target" id="group___o_s_mbuf_1gabbd3dd2b8880a323c70478f8988902af"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_off</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">off</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">out_off</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_off" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Locates the specified absolute offset within an mbuf chain. </p>
 <p>The offset can be one past than the total length of the chain, but no greater.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The mbuf containing the specified offset on success. NULL if the specified offset is out of bounds. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The start of the mbuf chain to seek within. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: The absolute address to find. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">out_off</span></code>: On success, this points to the relative offset within the returned mbuf.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The start of the mbuf chain to seek within. </p></li>
+<li><p><strong>off</strong> – The absolute address to find. </p></li>
+<li><p><strong>out_off</strong> – On success, this points to the relative offset within the returned mbuf.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The mbuf containing the specified offset on success. NULL if the specified offset is out of bounds. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_copydata">
-<span class="target" id="group___o_s_mbuf_1gaa0e939f3b8b694299d32c50a3c01409d"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_copydata</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">int</span> <em><span class="pre">off</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em>, <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">dst</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copydata" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_copydata">
+<span class="target" id="group___o_s_mbuf_1gaa0e939f3b8b694299d32c50a3c01409d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_copydata</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">off</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dst</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copydata" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Copy data from an mbuf chain starting “off” bytes from the beginning, continuing for “len” bytes, into the indicated buffer. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; -1 if the mbuf does not contain enough data. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to copy from </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset into the mbuf chain to begin copying from </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The length of the data to copy </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dst</span></code>: The destination buffer to copy into</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to copy from </p></li>
+<li><p><strong>off</strong> – The offset into the mbuf chain to begin copying from </p></li>
+<li><p><strong>len</strong> – The length of the data to copy </p></li>
+<li><p><strong>dst</strong> – The destination buffer to copy into</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; -1 if the mbuf does not contain enough data. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_len">
-<span class="target" id="group___o_s_mbuf_1ga71a365a381016fb89b7b5d4acef5ddb3"></span><span class="pre">uint16_t</span> <code class="sig-name descname"><span class="pre">os_mbuf_len</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_len" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_len">
+<span class="target" id="group___o_s_mbuf_1ga71a365a381016fb89b7b5d4acef5ddb3"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_len</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_len" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Calculates the length of an mbuf chain. </p>
 <p>Calculates the length of an mbuf chain. If the mbuf contains a packet header, you should use <code class="docutils literal notranslate"><a class="reference internal" href="#group___o_s_mbuf_1gae286e94341ed58ac3be7b7a3cd0f1c25"><span class="std std-ref"><span class="pre">OS_MBUF_PKTLEN()</span></span></a></code> as a more efficient alternative to this function.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The length, in bytes, of the provided mbuf chain. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to measure.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf to measure.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The length, in bytes, of the provided mbuf chain. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_append">
-<span class="target" id="group___o_s_mbuf_1gac1fae5a381d10a3697979e3952125223"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_append</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_append" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_append">
+<span class="target" id="group___o_s_mbuf_1gac1fae5a381d10a3697979e3952125223"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_append</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_append" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Append data onto a mbuf. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; an error code on failure </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf to append the data onto </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: The data to append onto the mbuf </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The length of the data to append</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf to append the data onto </p></li>
+<li><p><strong>data</strong> – The data to append onto the mbuf </p></li>
+<li><p><strong>len</strong> – The length of the data to append</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; an error code on failure </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_appendfrom">
-<span class="target" id="group___o_s_mbuf_1ga66da7f4e54d6dbf4dc2d7531b68d7db0"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_appendfrom</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">dst</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">src_off</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_appendfrom" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_appendfrom">
+<span class="target" id="group___o_s_mbuf_1ga66da7f4e54d6dbf4dc2d7531b68d7db0"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_appendfrom</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">dst</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">src_off</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_appendfrom" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Reads data from one mbuf and appends it to another. </p>
 <p>On error, the specified data range may be partially appended. Neither mbuf is required to contain an mbuf packet header.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; OS_EINVAL if the specified range extends beyond the end of the source mbuf chain. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">dst</span></code>: The mbuf to append to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">src</span></code>: The mbuf to copy data from. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">src_off</span></code>: The absolute offset within the source mbuf chain to read from. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to append.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dst</strong> – The mbuf to append to. </p></li>
+<li><p><strong>src</strong> – The mbuf to copy data from. </p></li>
+<li><p><strong>src_off</strong> – The absolute offset within the source mbuf chain to read from. </p></li>
+<li><p><strong>len</strong> – The number of bytes to append.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; OS_EINVAL if the specified range extends beyond the end of the source mbuf chain. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_free">
-<span class="target" id="group___o_s_mbuf_1ga473f3f7a975c22725b35bf39f6ac633c"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_free</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_free">
+<span class="target" id="group___o_s_mbuf_1ga473f3f7a975c22725b35bf39f6ac633c"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_free</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Release a mbuf back to the pool. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; -1 on failure </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The Mbuf to release back to the pool</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The Mbuf to release back to the pool</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; -1 on failure </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_free_chain">
-<span class="target" id="group___o_s_mbuf_1ga66de6a0a042c35435547a1df9534cc3f"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_free_chain</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free_chain" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_free_chain">
+<span class="target" id="group___o_s_mbuf_1ga66de6a0a042c35435547a1df9534cc3f"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_free_chain</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_free_chain" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Free a chain of mbufs. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; -1 on failure </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The starting mbuf of the chain to free back into the pool</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The starting mbuf of the chain to free back into the pool</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; -1 on failure </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_adj">
-<span class="target" id="group___o_s_mbuf_1ga21e49d314775aaadd7466c0a93664e95"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_mbuf_adj</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">int</span> <em><span class="pre">req_len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_adj" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_adj">
+<span class="target" id="group___o_s_mbuf_1ga21e49d314775aaadd7466c0a93664e95"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_adj</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">req_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_adj" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Adjust the length of a mbuf, trimming either from the head or the tail of the mbuf. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to adjust </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">req_len</span></code>: The length to trim from the mbuf. If positive, trims from the head of the mbuf, if negative, trims from the tail of the mbuf. </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to adjust </p></li>
+<li><p><strong>req_len</strong> – The length to trim from the mbuf. If positive, trims from the head of the mbuf, if negative, trims from the tail of the mbuf. </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_cmpf">
-<span class="target" id="group___o_s_mbuf_1gac5d238e8abd1a459c2daf8fe814e13d4"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_cmpf</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">int</span> <em><span class="pre">off</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">data</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_cmpf">
+<span class="target" id="group___o_s_mbuf_1gac5d238e8abd1a459c2daf8fe814e13d4"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_cmpf</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">off</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpf" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Performs a memory compare of the specified region of an mbuf chain against a flat buffer. </p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 if both memory regions are identical; A memcmp return code if there is a mismatch; INT_MAX if the mbuf is too short. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The start of the mbuf chain to compare. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset within the mbuf chain to start the comparison. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: The flat buffer to compare. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The length of the flat buffer.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The start of the mbuf chain to compare. </p></li>
+<li><p><strong>off</strong> – The offset within the mbuf chain to start the comparison. </p></li>
+<li><p><strong>data</strong> – The flat buffer to compare. </p></li>
+<li><p><strong>len</strong> – The length of the flat buffer.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 if both memory regions are identical; A memcmp return code if there is a mismatch; INT_MAX if the mbuf is too short. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_cmpm">
-<span class="target" id="group___o_s_mbuf_1ga11d6f4ce57b2c5c7b619831689f519f1"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_cmpm</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om1</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">offset1</span></em>, <em class="property"><span class="pre">const</span></em> <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om2</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">offset2</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpm" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_cmpm">
+<span class="target" id="group___o_s_mbuf_1ga11d6f4ce57b2c5c7b619831689f519f1"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_cmpm</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om1</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset1</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om2</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">offset2</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_cmpm" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Compares the contents of two mbuf chains. </p>
 <p>The ranges of the two chains to be compared are specified via the two offset parameters and the len parameter. Neither mbuf chain is required to contain a packet header.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 if both mbuf segments are identical; A memcmp() return code if the segment contents differ; INT_MAX if a specified range extends beyond the end of its corresponding mbuf chain. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om1</span></code>: The first mbuf chain to compare. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">offset1</span></code>: The absolute offset within om1 at which to start the comparison. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">om2</span></code>: The second mbuf chain to compare. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">offset2</span></code>: The absolute offset within om2 at which to start the comparison. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to compare.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om1</strong> – The first mbuf chain to compare. </p></li>
+<li><p><strong>offset1</strong> – The absolute offset within om1 at which to start the comparison. </p></li>
+<li><p><strong>om2</strong> – The second mbuf chain to compare. </p></li>
+<li><p><strong>offset2</strong> – The absolute offset within om2 at which to start the comparison. </p></li>
+<li><p><strong>len</strong> – The number of bytes to compare.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 if both mbuf segments are identical; A memcmp() return code if the segment contents differ; INT_MAX if a specified range extends beyond the end of its corresponding mbuf chain. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_prepend">
-<span class="target" id="group___o_s_mbuf_1gac16c27c68f35e4647823ae020411763f"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_prepend</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_prepend">
+<span class="target" id="group___o_s_mbuf_1gac16c27c68f35e4647823ae020411763f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_prepend</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Increases the length of an mbuf chain by adding data to the front. </p>
 <p>If there is insufficient room in the leading mbuf, additional mbufs are allocated and prepended as necessary. If this function fails to allocate an mbuf, the entire chain is freed.</p>
 <p>The specified mbuf chain does not need to contain a packet header.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The new head of the chain on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The head of the mbuf chain. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to prepend.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The head of the mbuf chain. </p></li>
+<li><p><strong>len</strong> – The number of bytes to prepend.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The new head of the chain on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_prepend_pullup">
-<span class="target" id="group___o_s_mbuf_1gac6e76dec13d44abd6032eb293aa1b63a"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_prepend_pullup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend_pullup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_prepend_pullup">
+<span class="target" id="group___o_s_mbuf_1gac6e76dec13d44abd6032eb293aa1b63a"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_prepend_pullup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_prepend_pullup" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Prepends a chunk of empty data to the specified mbuf chain and ensures the chunk is contiguous. </p>
 <p>If either operation fails, the specified mbuf chain is freed and NULL is returned.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The modified mbuf on success; NULL on failure (and the mbuf chain is freed). </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to prepend to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to prepend and pullup.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to prepend to. </p></li>
+<li><p><strong>len</strong> – The number of bytes to prepend and pullup.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The modified mbuf on success; NULL on failure (and the mbuf chain is freed). </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_copyinto">
-<span class="target" id="group___o_s_mbuf_1ga5e87037857c05e8a9379bb2889947854"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_copyinto</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">int</span> <em><span class="pre">off</span></em>, <em class="property"><span class="pre">const</span></em> <span class="pre">void</span> <span class="pre">*</span><em><span class="pre">src</span></em>, <span class="pre">int</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copyinto" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_copyinto">
+<span class="target" id="group___o_s_mbuf_1ga5e87037857c05e8a9379bb2889947854"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_copyinto</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">off</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">src</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_copyinto" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Copies the contents of a flat buffer into an mbuf chain, starting at the specified destination offset. </p>
 <p>If the mbuf is too small for the source data, it is extended as necessary. If the destination mbuf contains a packet header, the header length is updated.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; nonzero on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to copy into. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset within the chain to copy to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">src</span></code>: The source buffer to copy from. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to copy.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to copy into. </p></li>
+<li><p><strong>off</strong> – The offset within the chain to copy to. </p></li>
+<li><p><strong>src</strong> – The source buffer to copy from. </p></li>
+<li><p><strong>len</strong> – The number of bytes to copy.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; nonzero on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_concat">
-<span class="target" id="group___o_s_mbuf_1ga65ab8ccc2730629ca0dd8c5190575213"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">os_mbuf_concat</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">first</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">second</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_concat" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_concat">
+<span class="target" id="group___o_s_mbuf_1ga65ab8ccc2730629ca0dd8c5190575213"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_concat</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">first</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">second</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_concat" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Attaches a second mbuf chain onto the end of the first. </p>
 <p>If the first chain contains a packet header, the header’s length is updated. If the second chain has a packet header, its header is cleared.</p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">first</span></code>: The mbuf chain being attached to. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">second</span></code>: The mbuf chain that gets attached. </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first</strong> – The mbuf chain being attached to. </p></li>
+<li><p><strong>second</strong> – The mbuf chain that gets attached. </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_extend">
-<span class="target" id="group___o_s_mbuf_1ga67d81c50479c67444fd1a9449d4241ed"></span><span class="pre">void</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_extend</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_extend" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_extend">
+<span class="target" id="group___o_s_mbuf_1ga67d81c50479c67444fd1a9449d4241ed"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_extend</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_extend" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Increases the length of an mbuf chain by the specified amount. </p>
 <p>If there is not sufficient room in the last buffer, a new buffer is allocated and appended to the chain. It is an error to request more data than can fit in a single buffer.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>A pointer to the new data on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The head of the chain to extend. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes to extend by.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The head of the chain to extend. </p></li>
+<li><p><strong>len</strong> – The number of bytes to extend by.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A pointer to the new data on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_pullup">
-<span class="target" id="group___o_s_mbuf_1ga3afad6750be6e7647ff0a19112ea36f7"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_pullup</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pullup" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pullup">
+<span class="target" id="group___o_s_mbuf_1ga3afad6750be6e7647ff0a19112ea36f7"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_pullup</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pullup" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Rearrange a mbuf chain so that len bytes are contiguous, and in the data area of an mbuf (so that <a class="reference internal" href="#group___o_s_mbuf_1ga4bf84d7b323b20131da17c8bfed65674"><span class="std std-ref">OS_MBUF_DATA()</span></a> will work on a structure of size len.) Returns the resulting mbuf chain on success, free’s it and returns NULL on failure. </p>
 <p>If there is room, it will add up to “max_protohdr - len” extra bytes to the contiguous region, in an attempt to avoid being called next time.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The contiguous mbuf chain on success; NULL on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to make contiguous </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The number of bytes in the chain to make contiguous</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to make contiguous </p></li>
+<li><p><strong>len</strong> – The number of bytes in the chain to make contiguous</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The contiguous mbuf chain on success; NULL on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_trim_front">
-<span class="target" id="group___o_s_mbuf_1ga76d87394f85361c8a72d7ec0f0416bd6"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_trim_front</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_trim_front" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_trim_front">
+<span class="target" id="group___o_s_mbuf_1ga76d87394f85361c8a72d7ec0f0416bd6"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_trim_front</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_trim_front" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Removes and frees empty mbufs from the front of a chain. </p>
 <p>If the chain contains a packet header, it is preserved.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The head of the trimmed mbuf chain. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to trim.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to trim.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The head of the trimmed mbuf chain. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_widen">
-<span class="target" id="group___o_s_mbuf_1gaa5e6acfb8702f5333567f758f620e1f3"></span><span class="pre">int</span> <code class="sig-name descname"><span class="pre">os_mbuf_widen</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">om</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">off</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">len</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_widen" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_widen">
+<span class="target" id="group___o_s_mbuf_1gaa5e6acfb8702f5333567f758f620e1f3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_widen</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">om</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">off</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n"><span class="pre">len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_widen" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Increases the length of an mbuf chain by inserting a gap at the specified offset. </p>
 <p>The contents of the gap are indeterminate. If the mbuf chain contains a packet header, its total length is increased accordingly.</p>
 <p>This function never frees the provided mbuf chain.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>0 on success; SYS_[…] error code on failure. </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: The mbuf chain to widen. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">off</span></code>: The offset at which to insert the gap. </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The size of the gap to insert.</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – The mbuf chain to widen. </p></li>
+<li><p><strong>off</strong> – The offset at which to insert the gap. </p></li>
+<li><p><strong>len</strong> – The size of the gap to insert.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success; SYS_[…] error code on failure. </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c function">
-<dt id="c.os_mbuf_pack_chains">
-<span class="target" id="group___o_s_mbuf_1ga39a4b31cdf2faeaedf1e31413fc27eb9"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">os_mbuf_pack_chains</span></code><span class="sig-paren">(</span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">m1</span></em>, <em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="pre">os_mbuf</span></a> <span class="pre">*</span><em><span class="pre">m2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pack_chains" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pack_chains">
+<span class="target" id="group___o_s_mbuf_1ga39a4b31cdf2faeaedf1e31413fc27eb9"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_pack_chains</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">m1</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf" title="os_mbuf"><span class="n"><span class="pre">os_mbuf</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">m2</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.os_mbuf_pack_chains" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Creates a single chained mbuf from m1 and m2 utilizing all the available buffer space in all mbufs in the resulting chain. </p>
 <p>In other words, ensures there is no leading space in any mbuf in the resulting chain and trailing space only in the last mbuf in the chain. Mbufs from either chain may be freed if not needed. No mbufs are allocated. Note that mbufs from m2 are added to the end of m1. If m1 has a packet header, it is retained and length updated. If m2 has a packet header it is discarded. If m1 is NULL, NULL is returned and m2 is left untouched.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Pointer to resulting mbuf chain </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">m1</span></code>: Pointer to first mbuf chain to pack </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">m2</span></code>: Pointer to second mbuf chain to pack</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>m1</strong> – Pointer to first mbuf chain to pack </p></li>
+<li><p><strong>m2</strong> – Pointer to second mbuf chain to pack</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to resulting mbuf chain </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_F_MASK">
-<span class="target" id="group___o_s_mbuf_1gafc8811efeca97f3c412416bb01ed746e"></span><code class="sig-name descname"><span class="pre">OS_MBUF_F_MASK</span></code><span class="sig-paren">(</span><em><span class="pre">__n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_F_MASK" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_F_MASK">
+<span class="target" id="group___o_s_mbuf_1gafc8811efeca97f3c412416bb01ed746e"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_F_MASK</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__n</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_F_MASK" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Given a flag number, provide the mask for it. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">__n</span></code>: The number of the flag in the mask </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__n</strong> – The number of the flag in the mask </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_IS_PKTHDR">
-<span class="target" id="group___o_s_mbuf_1ga44478552b659f6780f750528b8345577"></span><code class="sig-name descname"><span class="pre">OS_MBUF_IS_PKTHDR</span></code><span class="sig-paren">(</span><em><span class="pre">__om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_IS_PKTHDR" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_IS_PKTHDR">
+<span class="target" id="group___o_s_mbuf_1ga44478552b659f6780f750528b8345577"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_IS_PKTHDR</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_IS_PKTHDR" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Checks whether a given mbuf is a packet header mbuf. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">__om</span></code>: The mbuf to check </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__om</strong> – The mbuf to check </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_PKTHDR">
-<span class="target" id="group___o_s_mbuf_1ga6cac59130516e8c8bc98f27bb1d18a9e"></span><code class="sig-name descname"><span class="pre">OS_MBUF_PKTHDR</span></code><span class="sig-paren">(</span><em><span class="pre">__om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_PKTHDR" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_PKTHDR">
+<span class="target" id="group___o_s_mbuf_1ga6cac59130516e8c8bc98f27bb1d18a9e"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_PKTHDR</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_PKTHDR" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Get a packet header pointer given an mbuf pointer. </p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_PKTHDR_TO_MBUF">
-<span class="target" id="group___o_s_mbuf_1ga753a06f73d0b8dc916969e9ae490c0ce"></span><code class="sig-name descname"><span class="pre">OS_MBUF_PKTHDR_TO_MBUF</span></code><span class="sig-paren">(</span><em><span class="pre">__hdr</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_PKTHDR_TO_MBUF" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_PKTHDR_TO_MBUF">
+<span class="target" id="group___o_s_mbuf_1ga753a06f73d0b8dc916969e9ae490c0ce"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_PKTHDR_TO_MBUF</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__hdr</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_PKTHDR_TO_MBUF" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Given a mbuf packet header pointer, return a pointer to the mbuf. </p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_PKTLEN">
-<span class="target" id="group___o_s_mbuf_1gae286e94341ed58ac3be7b7a3cd0f1c25"></span><code class="sig-name descname"><span class="pre">OS_MBUF_PKTLEN</span></code><span class="sig-paren">(</span><em><span class="pre">__om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_PKTLEN" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_PKTLEN">
+<span class="target" id="group___o_s_mbuf_1gae286e94341ed58ac3be7b7a3cd0f1c25"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_PKTLEN</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_PKTLEN" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Gets the length of an entire mbuf chain. </p>
 <p>The specified mbuf must have a packet header. </p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_DATA">
-<span class="target" id="group___o_s_mbuf_1ga4bf84d7b323b20131da17c8bfed65674"></span><code class="sig-name descname"><span class="pre">OS_MBUF_DATA</span></code><span class="sig-paren">(</span><em><span class="pre">__om</span></em>, <em><span class="pre">__type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_DATA" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_DATA">
+<span class="target" id="group___o_s_mbuf_1ga4bf84d7b323b20131da17c8bfed65674"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_DATA</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__om</span></span>, <span class="n"><span class="pre">__type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_DATA" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Access the data of a mbuf, and cast it to type. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">__om</span></code>: The mbuf to access, and cast </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">__type</span></code>: The type to cast it to </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__om</strong> – The mbuf to access, and cast </p></li>
+<li><p><strong>__type</strong> – The type to cast it to </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_USRHDR">
-<span class="target" id="group___o_s_mbuf_1ga6a70c33b992b2c96ddbbea7a8e13ac4c"></span><code class="sig-name descname"><span class="pre">OS_MBUF_USRHDR</span></code><span class="sig-paren">(</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_USRHDR" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_USRHDR">
+<span class="target" id="group___o_s_mbuf_1ga6a70c33b992b2c96ddbbea7a8e13ac4c"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_USRHDR</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_USRHDR" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Access the “user header” in the head of an mbuf chain. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: Pointer to the head of an mbuf chain. </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – Pointer to the head of an mbuf chain. </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_USRHDR_LEN">
-<span class="target" id="group___o_s_mbuf_1gab603a13e3de7d579605bce345e3c5101"></span><code class="sig-name descname"><span class="pre">OS_MBUF_USRHDR_LEN</span></code><span class="sig-paren">(</span><em><span class="pre">om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_USRHDR_LEN" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_USRHDR_LEN">
+<span class="target" id="group___o_s_mbuf_1gab603a13e3de7d579605bce345e3c5101"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_USRHDR_LEN</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_USRHDR_LEN" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Retrieves the length of the user header in an mbuf. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">om</span></code>: Pointer to the mbuf to query. </p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>om</strong> – Pointer to the mbuf to query. </p></li>
 </ul>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_LEADINGSPACE">
-<span class="target" id="group___o_s_mbuf_1gafa645aa091541bcc590e1f7091a35a7d"></span><code class="sig-name descname"><span class="pre">OS_MBUF_LEADINGSPACE</span></code><span class="sig-paren">(</span><em><span class="pre">__om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_LEADINGSPACE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_LEADINGSPACE">
+<span class="target" id="group___o_s_mbuf_1gafa645aa091541bcc590e1f7091a35a7d"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_LEADINGSPACE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_LEADINGSPACE" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Returns the leading space (space at the beginning) of the mbuf. </p>
 <p>Works on both packet header, and regular mbufs, as it accounts for the additional space allocated to the packet header.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Amount of leading space available in the mbuf </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">__om</span></code>: The mbuf in that pool to get the leading space for</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__om</strong> – The mbuf in that pool to get the leading space for</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Amount of leading space available in the mbuf </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c macro">
-<dt id="c.OS_MBUF_TRAILINGSPACE">
-<span class="target" id="group___o_s_mbuf_1ga6bed008283a020a38886e68997b99239"></span><code class="sig-name descname"><span class="pre">OS_MBUF_TRAILINGSPACE</span></code><span class="sig-paren">(</span><em><span class="pre">__om</span></em><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_TRAILINGSPACE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.OS_MBUF_TRAILINGSPACE">
+<span class="target" id="group___o_s_mbuf_1ga6bed008283a020a38886e68997b99239"></span><span class="sig-name descname"><span class="n"><span class="pre">OS_MBUF_TRAILINGSPACE</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">__om</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.OS_MBUF_TRAILINGSPACE" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Returns the trailing space (space at the end) of the mbuf. </p>
 <p>Works on both packet header and regular mbufs.</p>
-<p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Amount of trailing space available in the mbuf </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">__om</span></code>: The mbuf in that pool to get the trailing space for</p></li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>__om</strong> – The mbuf in that pool to get the trailing space for</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Amount of trailing space available in the mbuf </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="c struct">
-<dt id="c.os_mbuf_pool">
-<span class="target" id="structos__mbuf__pool"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_mbuf_pool</span></code><a class="headerlink" href="#c.os_mbuf_pool" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;os_mbuf.h&gt;</em><p>A mbuf pool from which to allocate mbufs. </p>
+<dt class="sig sig-object c" id="c.os_mbuf_pool">
+<span class="target" id="structos__mbuf__pool"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_pool</span></span></span><a class="headerlink" href="#c.os_mbuf_pool" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;os_mbuf.h&gt;</em></div>
+<p>A mbuf pool from which to allocate mbufs. </p>
 <p>This contains a pointer to the os mempool to allocate mbufs out of, the total number of elements in the pool, and the amount of “user” data in a non-packet header mbuf. The total pool size, in bytes, should be: os_mbuf_count * (omp_databuf_len + sizeof(struct os_mbuf)) </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="c function">
-<dt>
-<span class="target" id="structos__mbuf__pool_1a01c839c6bbd0fa8b8c3b909283273f22"></span><code class="sig-name descname"><span class="pre">STAILQ_ENTRY</span> <span class="pre">(os_mbuf_pool)</span> <span class="pre">omp_next</span></code></dt>
+<dt class="sig sig-object c">
+<span class="target" id="structos__mbuf__pool_1a01c839c6bbd0fa8b8c3b909283273f22"></span><span class="sig-name descname"><span class="pre">STAILQ_ENTRY</span> <span class="pre">(os_mbuf_pool)</span> <span class="pre">omp_next</span></span></dt>
 <dd><p>Next mbuf pool in the list. </p>
 </dd></dl>
 
@@ -1341,15 +1381,15 @@ Presumably, some other code will call this API.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt id="c.os_mbuf_pool.omp_databuf_len">
-<span class="target" id="structos__mbuf__pool_1a4ec5eeea1727efc7765dd95d60f5c1df"></span><span class="pre">uint16_t</span> <code class="sig-name descname"><span class="pre">omp_databuf_len</span></code><a class="headerlink" href="#c.os_mbuf_pool.omp_databuf_len" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pool.omp_databuf_len">
+<span class="target" id="structos__mbuf__pool_1a4ec5eeea1727efc7765dd95d60f5c1df"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">omp_databuf_len</span></span></span><a class="headerlink" href="#c.os_mbuf_pool.omp_databuf_len" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Total length of the databuf in each mbuf. </p>
 <p>This is the size of the mempool block, minus the mbuf header </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf_pool.omp_pool">
-<span class="target" id="structos__mbuf__pool_1a883d0c3aa305284ebd19bd3c62037430"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../memory_pool/memory_pool.html#c.os_mempool" title="os_mempool"><span class="pre">os_mempool</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">omp_pool</span></code><a class="headerlink" href="#c.os_mbuf_pool.omp_pool" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pool.omp_pool">
+<span class="target" id="structos__mbuf__pool_1a883d0c3aa305284ebd19bd3c62037430"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../memory_pool/memory_pool.html#c.os_mempool" title="os_mempool"><span class="n"><span class="pre">os_mempool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">omp_pool</span></span></span><a class="headerlink" href="#c.os_mbuf_pool.omp_pool" title="Link to this definition">¶</a><br /></dt>
 <dd><p>The memory pool which to allocate mbufs out of. </p>
 </dd></dl>
 
@@ -1357,14 +1397,16 @@ Presumably, some other code will call this API.</p>
 </dd></dl>
 
 <dl class="c struct">
-<dt id="c.os_mbuf_pkthdr">
-<span class="target" id="structos__mbuf__pkthdr"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_mbuf_pkthdr</span></code><a class="headerlink" href="#c.os_mbuf_pkthdr" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;os_mbuf.h&gt;</em><p>A packet header structure that preceeds the mbuf packet headers. </p>
+<dt class="sig sig-object c" id="c.os_mbuf_pkthdr">
+<span class="target" id="structos__mbuf__pkthdr"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf_pkthdr</span></span></span><a class="headerlink" href="#c.os_mbuf_pkthdr" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;os_mbuf.h&gt;</em></div>
+<p>A packet header structure that preceeds the mbuf packet headers. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="c function">
-<dt>
-<span class="target" id="structos__mbuf__pkthdr_1a4eec20d10eb4f86d2f9a045daf7d6725"></span><code class="sig-name descname"><span class="pre">STAILQ_ENTRY</span> <span class="pre">(os_mbuf_pkthdr)</span> <span class="pre">omp_next</span></code></dt>
+<dt class="sig sig-object c">
+<span class="target" id="structos__mbuf__pkthdr_1a4eec20d10eb4f86d2f9a045daf7d6725"></span><span class="sig-name descname"><span class="pre">STAILQ_ENTRY</span> <span class="pre">(os_mbuf_pkthdr)</span> <span class="pre">omp_next</span></span></dt>
 <dd><p>Next mbuf packet header in the list. </p>
 </dd></dl>
 
@@ -1372,14 +1414,14 @@ Presumably, some other code will call this API.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt id="c.os_mbuf_pkthdr.omp_len">
-<span class="target" id="structos__mbuf__pkthdr_1aeb48e54eaea9964c2cd4e856722def7f"></span><span class="pre">uint16_t</span> <code class="sig-name descname"><span class="pre">omp_len</span></code><a class="headerlink" href="#c.os_mbuf_pkthdr.omp_len" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pkthdr.omp_len">
+<span class="target" id="structos__mbuf__pkthdr_1aeb48e54eaea9964c2cd4e856722def7f"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">omp_len</span></span></span><a class="headerlink" href="#c.os_mbuf_pkthdr.omp_len" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Overall length of the packet. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf_pkthdr.omp_flags">
-<span class="target" id="structos__mbuf__pkthdr_1aee78ee1e9d30477e0253d9ed5245c36b"></span><span class="pre">uint16_t</span> <code class="sig-name descname"><span class="pre">omp_flags</span></code><a class="headerlink" href="#c.os_mbuf_pkthdr.omp_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf_pkthdr.omp_flags">
+<span class="target" id="structos__mbuf__pkthdr_1aee78ee1e9d30477e0253d9ed5245c36b"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">omp_flags</span></span></span><a class="headerlink" href="#c.os_mbuf_pkthdr.omp_flags" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Flags. </p>
 </dd></dl>
 
@@ -1387,14 +1429,16 @@ Presumably, some other code will call this API.</p>
 </dd></dl>
 
 <dl class="c struct">
-<dt id="c.os_mbuf">
-<span class="target" id="structos__mbuf"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_mbuf</span></code><a class="headerlink" href="#c.os_mbuf" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;os_mbuf.h&gt;</em><p>Chained memory buffer. </p>
+<dt class="sig sig-object c" id="c.os_mbuf">
+<span class="target" id="structos__mbuf"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mbuf</span></span></span><a class="headerlink" href="#c.os_mbuf" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;os_mbuf.h&gt;</em></div>
+<p>Chained memory buffer. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="c function">
-<dt>
-<span class="target" id="structos__mbuf_1a94c978ec661f02e8f7d5dd9883e21826"></span><code class="sig-name descname"><span class="pre">SLIST_ENTRY</span> <span class="pre">(os_mbuf)</span> <span class="pre">om_next</span></code></dt>
+<dt class="sig sig-object c">
+<span class="target" id="structos__mbuf_1a94c978ec661f02e8f7d5dd9883e21826"></span><span class="sig-name descname"><span class="pre">SLIST_ENTRY</span> <span class="pre">(os_mbuf)</span> <span class="pre">om_next</span></span></dt>
 <dd><p>Next mbuf in the list. </p>
 </dd></dl>
 
@@ -1402,38 +1446,38 @@ Presumably, some other code will call this API.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt id="c.os_mbuf.om_data">
-<span class="target" id="structos__mbuf_1a26c2267833d75b8af52f511c431e07de"></span><span class="pre">uint8_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">om_data</span></code><a class="headerlink" href="#c.os_mbuf.om_data" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf.om_data">
+<span class="target" id="structos__mbuf_1a26c2267833d75b8af52f511c431e07de"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">om_data</span></span></span><a class="headerlink" href="#c.os_mbuf.om_data" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Current pointer to data in the structure. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf.om_flags">
-<span class="target" id="structos__mbuf_1a534559bde8149d283cf8571164a5fcfc"></span><span class="pre">uint8_t</span> <code class="sig-name descname"><span class="pre">om_flags</span></code><a class="headerlink" href="#c.os_mbuf.om_flags" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf.om_flags">
+<span class="target" id="structos__mbuf_1a534559bde8149d283cf8571164a5fcfc"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">om_flags</span></span></span><a class="headerlink" href="#c.os_mbuf.om_flags" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Flags associated with this buffer, see OS_MBUF_F_* defintions. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf.om_pkthdr_len">
-<span class="target" id="structos__mbuf_1a809d8377b268edeb774cdc37be654130"></span><span class="pre">uint8_t</span> <code class="sig-name descname"><span class="pre">om_pkthdr_len</span></code><a class="headerlink" href="#c.os_mbuf.om_pkthdr_len" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf.om_pkthdr_len">
+<span class="target" id="structos__mbuf_1a809d8377b268edeb774cdc37be654130"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">om_pkthdr_len</span></span></span><a class="headerlink" href="#c.os_mbuf.om_pkthdr_len" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Length of packet header. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf.om_len">
-<span class="target" id="structos__mbuf_1a685a98624cf0d8ad353967e18eb3506a"></span><span class="pre">uint16_t</span> <code class="sig-name descname"><span class="pre">om_len</span></code><a class="headerlink" href="#c.os_mbuf.om_len" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf.om_len">
+<span class="target" id="structos__mbuf_1a685a98624cf0d8ad353967e18eb3506a"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">om_len</span></span></span><a class="headerlink" href="#c.os_mbuf.om_len" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Length of data in this buffer. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf.om_omp">
-<span class="target" id="structos__mbuf_1a06b4de9c818acdf09241b0cbe3d6a207"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="pre">os_mbuf_pool</span></a> <span class="pre">*</span><code class="sig-name descname"><span class="pre">om_omp</span></code><a class="headerlink" href="#c.os_mbuf.om_omp" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf.om_omp">
+<span class="target" id="structos__mbuf_1a06b4de9c818acdf09241b0cbe3d6a207"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#c.os_mbuf_pool" title="os_mbuf_pool"><span class="n"><span class="pre">os_mbuf_pool</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">om_omp</span></span></span><a class="headerlink" href="#c.os_mbuf.om_omp" title="Link to this definition">¶</a><br /></dt>
 <dd><p>The mbuf pool this mbuf was allocated out of. </p>
 </dd></dl>
 
 <dl class="c var">
-<dt id="c.os_mbuf.om_databuf">
-<span class="target" id="structos__mbuf_1a3928b4bdc7b67b9bbb6ef8f1f3133b01"></span><span class="pre">uint8_t</span> <code class="sig-name descname"><span class="pre">om_databuf</span></code><span class="pre">[</span><span class="pre">0</span><span class="pre">]</span><a class="headerlink" href="#c.os_mbuf.om_databuf" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mbuf.om_databuf">
+<span class="target" id="structos__mbuf_1a3928b4bdc7b67b9bbb6ef8f1f3133b01"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">om_databuf</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">0</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#c.os_mbuf.om_databuf" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Pointer to the beginning of the data, after this buffer. </p>
 </dd></dl>
 
@@ -1441,14 +1485,16 @@ Presumably, some other code will call this API.</p>
 </dd></dl>
 
 <dl class="c struct">
-<dt id="c.os_mqueue">
-<span class="target" id="structos__mqueue"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">os_mqueue</span></code><a class="headerlink" href="#c.os_mqueue" title="Permalink to this definition">¶</a><br /></dt>
-<dd><em>#include &lt;os_mbuf.h&gt;</em><p>Structure representing a queue of mbufs. </p>
+<dt class="sig sig-object c" id="c.os_mqueue">
+<span class="target" id="structos__mqueue"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">os_mqueue</span></span></span><a class="headerlink" href="#c.os_mqueue" title="Link to this definition">¶</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;os_mbuf.h&gt;</em></div>
+<p>Structure representing a queue of mbufs. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="c function">
-<dt>
-<span class="target" id="structos__mqueue_1adb40d18df415b821bd734d0fe063dd2d"></span><code class="sig-name descname"><span class="pre">STAILQ_HEAD</span> <span class="pre">(,</span> <span class="pre">os_mbuf_pkthdr)</span> <span class="pre">mq_head</span></code></dt>
+<dt class="sig sig-object c">
+<span class="target" id="structos__mqueue_1adb40d18df415b821bd734d0fe063dd2d"></span><span class="sig-name descname"><span class="pre">STAILQ_HEAD</span> <span class="pre">(,</span> <span class="pre">os_mbuf_pkthdr)</span> <span class="pre">mq_head</span></span></dt>
 <dd><p>A queue of mbuf packet headers. </p>
 </dd></dl>
 
@@ -1456,16 +1502,16 @@ Presumably, some other code will call this API.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="c var">
-<dt id="c.os_mqueue.mq_ev">
-<span class="target" id="structos__mqueue_1a30ed7b555fcb87d7829dd6a1f34540db"></span><em class="property"><span class="pre">struct</span></em> <a class="reference internal" href="../event_queue/event_queue.html#c.os_event" title="os_event"><span class="pre">os_event</span></a> <code class="sig-name descname"><span class="pre">mq_ev</span></code><a class="headerlink" href="#c.os_mqueue.mq_ev" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object c" id="c.os_mqueue.mq_ev">
+<span class="target" id="structos__mqueue_1a30ed7b555fcb87d7829dd6a1f34540db"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="../event_queue/event_queue.html#c.os_event" title="os_event"><span class="n"><span class="pre">os_event</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mq_ev</span></span></span><a class="headerlink" href="#c.os_mqueue.mq_ev" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Event to post when new buffers are available on the queue. </p>
 </dd></dl>
 
 </div>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -1557,9 +1603,9 @@ Presumably, some other code will call this API.</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>
