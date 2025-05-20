@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Mynewt FAQ - Syntax, Semantics, Configuration &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -266,9 +269,9 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="mynewt-faq-syntax-semantics-configuration">
-<h1>Mynewt FAQ - Syntax, Semantics, Configuration<a class="headerlink" href="#mynewt-faq-syntax-semantics-configuration" title="Permalink to this headline">¶</a></h1>
-<div class="contents local topic" id="contents">
+  <section id="mynewt-faq-syntax-semantics-configuration">
+<h1>Mynewt FAQ - Syntax, Semantics, Configuration<a class="headerlink" href="#mynewt-faq-syntax-semantics-configuration" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#floating-point-in-mynewt" id="id1">Floating Point in Mynewt</a></p></li>
 <li><p><a class="reference internal" href="#ending-the-delay-of-a-task-blocking-a-call-early" id="id2">Ending the Delay of a Task Blocking a Call Early</a></p></li>
@@ -278,9 +281,9 @@
 <li><p><a class="reference internal" href="#mynewt-equivalent-of-unix-sleep-3" id="id6">Mynewt Equivalent of UNIX <code class="docutils literal notranslate"><span class="pre">sleep(3)</span></code></a></p></li>
 <li><p><a class="reference internal" href="#alternatives-to-cmsis-nvic-c" id="id7">Alternatives to <code class="docutils literal notranslate"><span class="pre">cmsis_nvic.c</span></code></a></p></li>
 </ul>
-</div>
-<div class="section" id="floating-point-in-mynewt">
-<h2><a class="toc-backref" href="#id1">Floating Point in Mynewt</a><a class="headerlink" href="#floating-point-in-mynewt" title="Permalink to this headline">¶</a></h2>
+</nav>
+<section id="floating-point-in-mynewt">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Floating Point in Mynewt</a><a class="headerlink" href="#floating-point-in-mynewt" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: I am trying to print floating point in Mynewt using <code class="docutils literal notranslate"><span class="pre">console_printf(&quot;%f&quot;,</span> <span class="pre">floating_var)</span></code> but I am unable to do so.
 How do I resolve the issue? I’m aware Mynewt uses baselibc - does it even support floating point?</p>
 <p><strong>A</strong>: Baselibc does support floating point formatting, but it is not enabled
@@ -289,22 +292,22 @@ target: <code class="docutils literal notranslate"><span class="pre">FLOAT_USER<
 <p>However, baselibc’s float printf support is a bit limited.  In particular, it
 ignores precision specifiers and always prints three digits after the
 decimal point.</p>
-</div>
-<div class="section" id="ending-the-delay-of-a-task-blocking-a-call-early">
-<h2><a class="toc-backref" href="#id2">Ending the Delay of a Task Blocking a Call Early</a><a class="headerlink" href="#ending-the-delay-of-a-task-blocking-a-call-early" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="ending-the-delay-of-a-task-blocking-a-call-early">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Ending the Delay of a Task Blocking a Call Early</a><a class="headerlink" href="#ending-the-delay-of-a-task-blocking-a-call-early" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: I have a task which is blocking on a call to <code class="docutils literal notranslate"><span class="pre">os_time_delay()</span></code>. What is the recommended way to end the delay
 early in an ISR (e.g. button press)?</p>
 <p><strong>A</strong>: The best way would be to use a semaphore. Initialize the semaphore with a count of 0 (<code class="docutils literal notranslate"><span class="pre">os_sem_init()</span></code>), then
 block on the semaphore with the maximum delay you want to wait for (<code class="docutils literal notranslate"><span class="pre">os_sem_pend()</span></code>).  The button press event would
 wake the first task up early by calling <code class="docutils literal notranslate"><span class="pre">os_sem_release()</span></code>.</p>
-</div>
-<div class="section" id="random-function-device">
-<h2><a class="toc-backref" href="#id3">Random Function / Device</a><a class="headerlink" href="#random-function-device" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="random-function-device">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Random Function / Device</a><a class="headerlink" href="#random-function-device" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: Does Mynewt have a random function or random device?</p>
 <p><strong>A</strong>: <code class="docutils literal notranslate"><span class="pre">baselibc</span></code> has <code class="docutils literal notranslate"><span class="pre">rand()</span></code>, and <code class="docutils literal notranslate"><span class="pre">crypto/tinycrypt</span></code> has <code class="docutils literal notranslate"><span class="pre">hmac-prng</span></code>.</p>
-</div>
-<div class="section" id="setting-serial-and-mfghash">
-<h2><a class="toc-backref" href="#id4">Setting <code class="docutils literal notranslate"><span class="pre">serial</span></code> and <code class="docutils literal notranslate"><span class="pre">mfghash</span></code></a><a class="headerlink" href="#setting-serial-and-mfghash" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="setting-serial-and-mfghash">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Setting <code class="docutils literal notranslate"><span class="pre">serial</span></code> and <code class="docutils literal notranslate"><span class="pre">mfghash</span></code></a><a class="headerlink" href="#setting-serial-and-mfghash" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: What is <code class="docutils literal notranslate"><span class="pre">mfghash</span></code>? How do I set <code class="docutils literal notranslate"><span class="pre">serial</span></code> and <code class="docutils literal notranslate"><span class="pre">mfghash</span></code> (currently blank in my app)?</p>
 <p><strong>A</strong>: <code class="docutils literal notranslate"><span class="pre">mfghash</span></code> is computed if you’re using <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">mfg</span></code> to construct your flash image, and it identifies the build of
 your bootloader. <code class="docutils literal notranslate"><span class="pre">newt</span> <span class="pre">mfg</span></code> bundles togetherthe bootloader, target image, and other data you’d want to bundle when creating
@@ -312,25 +315,25 @@ an image to burn to flash. See the <code class="docutils literal notranslate"><s
 side of things and <code class="docutils literal notranslate"><span class="pre">apache-mynewt-core/sys/mfg/src/mfg.c</span></code> for the firmware side. <code class="docutils literal notranslate"><span class="pre">serial</span></code> was intended to be used if you
 want to have your own naming scheme per device when building products; i.e. you want something other than the mcu serial
 number, or if you don’t have serial number available.</p>
-</div>
-<div class="section" id="leading-zeros-format-in-printf">
-<h2><a class="toc-backref" href="#id5">Leading Zeros Format in <code class="docutils literal notranslate"><span class="pre">printf</span></code></a><a class="headerlink" href="#leading-zeros-format-in-printf" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="leading-zeros-format-in-printf">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Leading Zeros Format in <code class="docutils literal notranslate"><span class="pre">printf</span></code></a><a class="headerlink" href="#leading-zeros-format-in-printf" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: Is there a way to make printf and console_printf honor the leading zeros format? As in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">console_printf(&quot;%.2d&quot;,</span> <span class="pre">5);</span></code></p>
 <p>outputting “05” instead of as for me now: “2d” ?</p>
 <p><strong>A</strong>: <code class="docutils literal notranslate"><span class="pre">console_printf(&quot;%02d&quot;,</span> <span class="pre">5);</span></code></p>
-</div>
-<div class="section" id="mynewt-equivalent-of-unix-sleep-3">
-<h2><a class="toc-backref" href="#id6">Mynewt Equivalent of UNIX <code class="docutils literal notranslate"><span class="pre">sleep(3)</span></code></a><a class="headerlink" href="#mynewt-equivalent-of-unix-sleep-3" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="mynewt-equivalent-of-unix-sleep-3">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Mynewt Equivalent of UNIX <code class="docutils literal notranslate"><span class="pre">sleep(3)</span></code></a><a class="headerlink" href="#mynewt-equivalent-of-unix-sleep-3" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: Is there an equivalent to the UNIX sleep(3)?</p>
 <p><strong>A</strong>: <code class="docutils literal notranslate"><span class="pre">os_time_delay(OS_TICKS_PER_SEC</span> <span class="pre">*</span> <span class="pre">secs)</span></code></p>
-</div>
-<div class="section" id="alternatives-to-cmsis-nvic-c">
-<h2><a class="toc-backref" href="#id7">Alternatives to <code class="docutils literal notranslate"><span class="pre">cmsis_nvic.c</span></code></a><a class="headerlink" href="#alternatives-to-cmsis-nvic-c" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="alternatives-to-cmsis-nvic-c">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Alternatives to <code class="docutils literal notranslate"><span class="pre">cmsis_nvic.c</span></code></a><a class="headerlink" href="#alternatives-to-cmsis-nvic-c" title="Link to this heading">¶</a></h2>
 <p><strong>Q</strong>: What do I use instead of the full version of <code class="docutils literal notranslate"><span class="pre">cmsis_nvic.c</span></code> (i.e. for setting and getting IRQ priorities)?</p>
 <p><strong>A</strong>: Those functions are in the <code class="docutils literal notranslate"><span class="pre">core_cmx.h</span></code> files in <code class="docutils literal notranslate"><span class="pre">hw/cmsis-core</span></code>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -422,9 +425,9 @@ number, or if you don’t have serial number available.</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../_static/js/affix.js"></script>
       <script type="text/javascript" src="../_static/js/main.js"></script>

@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Mynewt FAQ - Hardware-Specific Questions &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -266,9 +269,9 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="mynewt-faq-hardware-specific-questions">
-<h1>Mynewt FAQ - Hardware-Specific Questions<a class="headerlink" href="#mynewt-faq-hardware-specific-questions" title="Permalink to this headline">¶</a></h1>
-<div class="contents local topic" id="contents">
+  <section id="mynewt-faq-hardware-specific-questions">
+<h1>Mynewt FAQ - Hardware-Specific Questions<a class="headerlink" href="#mynewt-faq-hardware-specific-questions" title="Link to this heading">¶</a></h1>
+<nav class="contents local" id="contents">
 <ul class="simple">
 <li><p><a class="reference internal" href="#nordic-nrf52-dk" id="id1">Nordic nRF52-DK</a></p>
 <ul>
@@ -283,41 +286,41 @@
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="nordic-nrf52-dk">
-<h2><a class="toc-backref" href="#id1">Nordic nRF52-DK</a><a class="headerlink" href="#nordic-nrf52-dk" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="inverted-pin-value-on-nrf52-dk">
-<h3><a class="toc-backref" href="#id2">Inverted Pin Value on nRF52-DK</a><a class="headerlink" href="#inverted-pin-value-on-nrf52-dk" title="Permalink to this headline">¶</a></h3>
+</nav>
+<section id="nordic-nrf52-dk">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Nordic nRF52-DK</a><a class="headerlink" href="#nordic-nrf52-dk" title="Link to this heading">¶</a></h2>
+<section id="inverted-pin-value-on-nrf52-dk">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Inverted Pin Value on nRF52-DK</a><a class="headerlink" href="#inverted-pin-value-on-nrf52-dk" title="Link to this heading">¶</a></h3>
 <p><strong>Q</strong>: I’ve been experiencing what seems to be some oddities with <code class="docutils literal notranslate"><span class="pre">hal_gpio_write</span></code>. It appears as though the LED
 pin value on the nRF52-DK is inverted (0 sets the pin high, 1 sets it low). I am checking the GPIO state by turning
 an LED on and off. Why is this the case?</p>
 <p><strong>A</strong>: LEDs on the nRF52-DK are connected to VDD and GPIO so you need to set GPIO to a low state in order to make it turn on.</p>
-</div>
-<div class="section" id="time-precision-on-nrf52">
-<h3><a class="toc-backref" href="#id3">Time Precision on nRF52</a><a class="headerlink" href="#time-precision-on-nrf52" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="time-precision-on-nrf52">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Time Precision on nRF52</a><a class="headerlink" href="#time-precision-on-nrf52" title="Link to this heading">¶</a></h3>
 <p><strong>Q</strong>: Can <code class="docutils literal notranslate"><span class="pre">OS_TICKS_PER_SEC</span></code> be changed per app? I’m on the nRF52 and I need better time precision than 128Hz.</p>
 <p><strong>A</strong>: No, it isn’t possible to change the ticks per second for a single app.  That constant is defined to be most efficient
 for the particular MCU.</p>
 <p>If you need precision, the OS tick timer is probably not the right thing to use.  Take a look at <a class="reference internal" href="../os/core_os/cputime/os_cputime.html"><span class="doc">OS CPU Time</span></a> for timer documentation. <code class="docutils literal notranslate"><span class="pre">os_cputime</span></code> has 1MHz frequency by default, and is enabled by default.
 It is recommended to use this for higher precision applications.</p>
-</div>
-<div class="section" id="size-limit-on-transaction-length-for-nrf52">
-<h3><a class="toc-backref" href="#id4">Size Limit on Transaction Length for nRF52</a><a class="headerlink" href="#size-limit-on-transaction-length-for-nrf52" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="size-limit-on-transaction-length-for-nrf52">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Size Limit on Transaction Length for nRF52</a><a class="headerlink" href="#size-limit-on-transaction-length-for-nrf52" title="Link to this heading">¶</a></h3>
 <p><strong>Q</strong>: There appears to be a 256-byte size limit on the maximum transaction length that the nRF52xxx <code class="docutils literal notranslate"><span class="pre">hal_i2c</span></code> driver can support. When I try send transactions larger than this the transactions fail (even after playing with a larger timeout etc). Does anyone know if this limit is due to the way the driver is written or the nRF52’s i2c peripheral itself?</p>
 <p><strong>A</strong>: There shouldn’t be any limit here since TWI works basically by transferring data byte after byte. Check your slave device to see if it has some limit.</p>
-</div>
-</div>
-<div class="section" id="redbear-ble-nano-2">
-<h2><a class="toc-backref" href="#id5">Redbear BLE Nano 2</a><a class="headerlink" href="#redbear-ble-nano-2" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="view-logs-on-the-redbear-ble-nano2">
-<h3><a class="toc-backref" href="#id6">View Logs on the Redbear BLE Nano2</a><a class="headerlink" href="#view-logs-on-the-redbear-ble-nano2" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="redbear-ble-nano-2">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Redbear BLE Nano 2</a><a class="headerlink" href="#redbear-ble-nano-2" title="Link to this heading">¶</a></h2>
+<section id="view-logs-on-the-redbear-ble-nano2">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">View Logs on the Redbear BLE Nano2</a><a class="headerlink" href="#view-logs-on-the-redbear-ble-nano2" title="Link to this heading">¶</a></h3>
 <p><strong>Q</strong>: Is it possible to see debug statements / logs while using Mynewt on the Redbear BLE Nano2. If so, can someone please
 tell me how to do so?</p>
 <p><strong>A</strong>: The RedBear daplink board presents multiple USB devices, one is a serial port which you can connect to. The
 <a class="reference internal" href="../tutorials/blinky/rbnano2.html"><span class="doc">Blinky example project</span></a> has debug log statements which you can look at for how to log.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
                    </div>
@@ -409,9 +412,9 @@ tell me how to do so?</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../_static/js/affix.js"></script>
       <script type="text/javascript" src="../_static/js/main.js"></script>

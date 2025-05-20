@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Split Images &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -275,24 +278,20 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="split-images">
-<h1>Split Images<a class="headerlink" href="#split-images" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="description">
-<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+  <section id="split-images">
+<h1>Split Images<a class="headerlink" href="#split-images" title="Link to this heading">¶</a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">¶</a></h2>
 <p>The split image mechanism divides a target into two separate images: one
 capable of image upgrade; the other containing application code. By
 isolating upgrade functionality to a separate image, the application can
 support over-the-air upgrade without dedicating flash space to network
 stack and management code.</p>
-</div>
-<div class="section" id="concept">
-<h2>Concept<a class="headerlink" href="#concept" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="concept">
+<h2>Concept<a class="headerlink" href="#concept" title="Link to this heading">¶</a></h2>
 <p>Mynewt supports three image setups:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 20%" />
-<col style="width: 80%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Setup</p></th>
 <th class="head"><p>Description</p></th>
@@ -319,22 +318,22 @@ between these two options.</p>
 <p>Before exploring the split setup in more detail, it might be helpful to
 get a basic understanding of the Mynewt boot sequence. The boot process
 is summarized below.</p>
-<div class="section" id="boot-sequence-single">
-<h3>Boot Sequence - Single<a class="headerlink" href="#boot-sequence-single" title="Permalink to this headline">¶</a></h3>
+<section id="boot-sequence-single">
+<h3>Boot Sequence - Single<a class="headerlink" href="#boot-sequence-single" title="Link to this heading">¶</a></h3>
 <p>In the Single setup, there is no boot loader. Instead, the image is
 placed at address 0. The hardware boots directly into the image code.
 Upgrade is not possible because there is no boot loader to move an
 alternate image into place.</p>
-</div>
-<div class="section" id="boot-sequence-unified">
-<h3>Boot Sequence - Unified<a class="headerlink" href="#boot-sequence-unified" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="boot-sequence-unified">
+<h3>Boot Sequence - Unified<a class="headerlink" href="#boot-sequence-unified" title="Link to this heading">¶</a></h3>
 <p>In the Unified setup, the boot loader is placed at address 0. At
 startup, the boot loader arranges for the correct image to be in image
 slot 0, which may entail swapping the contents of the two image slots.
 Finally, the boot loader jumps to the image in slot 0.</p>
-</div>
-<div class="section" id="boot-sequence-split">
-<h3>Boot Sequence - Split<a class="headerlink" href="#boot-sequence-split" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="boot-sequence-split">
+<h3>Boot Sequence - Split<a class="headerlink" href="#boot-sequence-split" title="Link to this heading">¶</a></h3>
 <p>The Split setup differs from the other setups mainly in that a target is
 not fully contained in a single image. Rather, the target is partitioned
 among two separate images: the <em>loader</em>, and the <em>application</em>.
@@ -368,19 +367,14 @@ all the code present in the loader image</p></li>
 a plain unified image. What makes a loader image different is a change
 to its start up sequence: rather than starting the Mynewt OS, it jumps
 to the application image in slot 1 if one is present.</p>
-</div>
-</div>
-<div class="section" id="tutorial">
-<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="tutorial">
+<h2>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">¶</a></h2>
 <p>We will be referring to the nRF51dk for examples in this document. Let’s
 take a look at this board’s flash map (defined in
 <code class="docutils literal notranslate"><span class="pre">hw/bsp/nrf51dk/bsp.yml</span></code>):</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 44%" />
-<col style="width: 29%" />
-<col style="width: 27%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>Offset</p></th>
@@ -570,8 +564,8 @@ Loading app image into slot 2
 Loading loader image into slot 1
 </pre></div>
 </div>
-<div class="section" id="retrieve-current-state-image-list">
-<h3>Retrieve Current State (image list)<a class="headerlink" href="#retrieve-current-state-image-list" title="Permalink to this headline">¶</a></h3>
+<section id="retrieve-current-state-image-list">
+<h3>Retrieve Current State (image list)<a class="headerlink" href="#retrieve-current-state-image-list" title="Link to this heading">¶</a></h3>
 <p>Image management in the split setup is a bit more complicated than in
 the unified setup. You can determine a device’s image management state
 with the <code class="docutils literal notranslate"><span class="pre">newtmgr</span> <span class="pre">image</span> <span class="pre">list</span></code> command. Here is how a device responds
@@ -611,8 +605,8 @@ compatible only if both images were built at the same time with
 <code class="docutils literal notranslate"><span class="pre">newt</span></code>. If the loader and application are not compatible, the
 loader will not boot into the application.</p></li>
 </ol>
-<div class="section" id="enabling-a-split-application">
-<h4>Enabling a Split Application<a class="headerlink" href="#enabling-a-split-application" title="Permalink to this headline">¶</a></h4>
+<section id="enabling-a-split-application">
+<h4>Enabling a Split Application<a class="headerlink" href="#enabling-a-split-application" title="Link to this heading">¶</a></h4>
 <p>By default, the application image in slot 1 is disabled. This is
 indicated in the <code class="docutils literal notranslate"><span class="pre">image</span> <span class="pre">list</span></code> response above. When you deploy a loader
 / application combo to your device, the application image won’t actually
@@ -647,15 +641,15 @@ Split status: matching
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">confirmed</span></code> flags value on both slots indicates that both
 images are permanently running.</p>
-</div>
-<div class="section" id="image-upgrade">
-<h4>Image Upgrade<a class="headerlink" href="#image-upgrade" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="image-upgrade">
+<h4>Image Upgrade<a class="headerlink" href="#image-upgrade" title="Link to this heading">¶</a></h4>
 <p>First, let’s review of the image upgrade process for the Unified setup.
 The user upgrades to a new image in this setup with the following steps:</p>
-</div>
-</div>
-<div class="section" id="image-upgrade-unified">
-<h3>Image Upgrade - Unified<a class="headerlink" href="#image-upgrade-unified" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="image-upgrade-unified">
+<h3>Image Upgrade - Unified<a class="headerlink" href="#image-upgrade-unified" title="Link to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Upload new image to slot 1 (<code class="docutils literal notranslate"><span class="pre">newtmgr</span> <span class="pre">image</span> <span class="pre">upload</span> <span class="pre">&lt;filename&gt;</span></code>).</p></li>
 <li><p>Tell device to “test out” the new image on next boot
@@ -663,9 +657,9 @@ The user upgrades to a new image in this setup with the following steps:</p>
 <li><p>Reboot device (<code class="docutils literal notranslate"><span class="pre">newtmgr</span> <span class="pre">reset</span></code>).</p></li>
 <li><p>Make new image permanent (<code class="docutils literal notranslate"><span class="pre">newtmgr</span> <span class="pre">image</span> <span class="pre">confirm</span></code>).</p></li>
 </ol>
-</div>
-<div class="section" id="image-upgrade-split">
-<h3>Image Upgrade - Split<a class="headerlink" href="#image-upgrade-split" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="image-upgrade-split">
+<h3>Image Upgrade - Split<a class="headerlink" href="#image-upgrade-split" title="Link to this heading">¶</a></h3>
 <p>The image upgrade process is a bit more complicated in the Split setup.
 It is more complicated because two images need to be upgraded (loader
 and application) rather than just one. The split upgrade process is
@@ -690,27 +684,27 @@ image in slot 1 (<code class="docutils literal notranslate"><span class="pre">ne
 </ol>
 <p>When performing this process manually, it may be helpful to use
 <code class="docutils literal notranslate"><span class="pre">image</span> <span class="pre">list</span></code> to check the image management state as you go.</p>
-</div>
-</div>
-<div class="section" id="syscfg">
-<h2>Syscfg<a class="headerlink" href="#syscfg" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="syscfg">
+<h2>Syscfg<a class="headerlink" href="#syscfg" title="Link to this heading">¶</a></h2>
 <p>Syscfg is Mynewt’s system-wide configuration mechanism. In a split
 setup, there is a single umbrella syscfg configuration that applies to
 both the loader and the application. Consequently, overriding a value in
 an application-only package potentially affects the loader (and
 vice-versa).</p>
-</div>
-<div class="section" id="loaders">
-<h2>Loaders<a class="headerlink" href="#loaders" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="loaders">
+<h2>Loaders<a class="headerlink" href="#loaders" title="Link to this heading">¶</a></h2>
 <p>The following applications have been enabled as loaders. You may choose
 to build your own loader application, and these can serve as samples.</p>
 <ul class="simple">
 <li><p>&#64;apache-mynewt-core/apps/slinky</p></li>
 <li><p>&#64;apache-mynewt-core/apps/bleprph</p></li>
 </ul>
-</div>
-<div class="section" id="split-apps">
-<h2>Split Apps<a class="headerlink" href="#split-apps" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="split-apps">
+<h2>Split Apps<a class="headerlink" href="#split-apps" title="Link to this heading">¶</a></h2>
 <p>The following applications have been enabled as split applications. If
 you choose to build your own split application these can serve as
 samples. Note that slinky can be either a loader image or an application
@@ -719,9 +713,9 @@ image.</p>
 <li><p>&#64;apache-mynewt-core/apps/slinky</p></li>
 <li><p>&#64;apache-mynewt-core/apps/splitty</p></li>
 </ul>
-</div>
-<div class="section" id="theory-of-operation">
-<h2>Theory of Operation<a class="headerlink" href="#theory-of-operation" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="theory-of-operation">
+<h2>Theory of Operation<a class="headerlink" href="#theory-of-operation" title="Link to this heading">¶</a></h2>
 <p>A split image is built as follows:</p>
 <p>First newt builds the application and loader images separately to ensure
 they are consistent (no errors) and to generate elf files which can
@@ -744,8 +738,8 @@ the loader application (by forcing the linker to include them in the
 (and the handful of symbols discussed in the linking section above).</p>
 <p>Finally, newt links the application, replacing the common .a libraries
 with the special loader.elf image during the link.</p>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -837,9 +831,9 @@ with the special loader.elf image during the link.</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../../_static/js/main.js"></script>

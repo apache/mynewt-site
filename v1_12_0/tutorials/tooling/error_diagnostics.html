@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 
     
     <title>Diagnosing Errors &mdash; Apache Mynewt latest documentation</title>
@@ -15,13 +16,15 @@
 
     
     
-      <link rel="shortcut icon" href="../../_static/mynewt-logo-only-newt32x32.png"/>
-    
 
     
 
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
+    
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     
       <link rel="stylesheet" href="../../_static/css/sphinx_theme.css" type="text/css" />
     
@@ -279,15 +282,15 @@
                   <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
                    <div itemprop="articleBody">
                     
-  <div class="section" id="diagnosing-errors">
-<h1>Diagnosing Errors<a class="headerlink" href="#diagnosing-errors" title="Permalink to this headline">¶</a></h1>
+  <section id="diagnosing-errors">
+<h1>Diagnosing Errors<a class="headerlink" href="#diagnosing-errors" title="Link to this heading">¶</a></h1>
 <p>Here we list some of the tools Mynewt has available. This is by no means
 comprehensive. It does give an overview of some facilities more commonly
 used.</p>
 <p>To create output for this demo, I’m including the ‘test/crash_test’ package
 while building the ‘slinky’ app.</p>
-<div class="section" id="crash-with-console">
-<h2>Crash with Console<a class="headerlink" href="#crash-with-console" title="Permalink to this headline">¶</a></h2>
+<section id="crash-with-console">
+<h2>Crash with Console<a class="headerlink" href="#crash-with-console" title="Link to this heading">¶</a></h2>
 <p>When system restarts due to an error, we always attempt to do it
 in a way which allows us to dump the current system state. Calls to
 assert(), error interrupts (regular faults, memory faults) both take
@@ -329,8 +332,8 @@ you’re running on the target.</p>
 </pre></div>
 </div>
 <p>You can see that the system crashed due to divide-by-zero.</p>
-<div class="section" id="crash-with-verbose-location">
-<h3>Crash with Verbose Location<a class="headerlink" href="#crash-with-verbose-location" title="Permalink to this headline">¶</a></h3>
+<section id="crash-with-verbose-location">
+<h3>Crash with Verbose Location<a class="headerlink" href="#crash-with-verbose-location" title="Link to this heading">¶</a></h3>
 <p>We often call assert(), testing specific conditions which should be met
 for program execution to continue. If the condition fails, we reset with a
 message listing the instruction where assert() was called from.</p>
@@ -351,9 +354,9 @@ like so:</p>
 </div>
 <p>Note that this will increase the program text size, as we now need to
 store the names for the files which call assert().</p>
-</div>
-<div class="section" id="crash-with-console-with-stacktrace">
-<h3>Crash with Console with Stacktrace<a class="headerlink" href="#crash-with-console-with-stacktrace" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="crash-with-console-with-stacktrace">
+<h3>Crash with Console with Stacktrace<a class="headerlink" href="#crash-with-console-with-stacktrace" title="Link to this heading">¶</a></h3>
 <p>Quite often you need a deeper view of the call chain to figure out
 how the program got to place where it crashed. Especially if the routine
 can be reached via multiple call chain routes.</p>
@@ -498,18 +501,18 @@ show what to do with the output above.</p>
 </pre></div>
 </div>
 <p>I was sending a newtmgr command which crashed the system. As you can see from this this example, little less than 50% of the addresses were part of the call chain. So read this output with care.</p>
-</div>
-</div>
-<div class="section" id="coredump">
-<h2>Coredump<a class="headerlink" href="#coredump" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="coredump">
+<h2>Coredump<a class="headerlink" href="#coredump" title="Link to this heading">¶</a></h2>
 <p>Coredump contains a full dump of system memory, and CPU registers. You can inspect the system state, including stack of the failing task, or any of the global state.</p>
 <p>You can enable coredumps by setting syscfg variable OS_COREDUMP to 1. When crash happens, dumper will write the contents to flash_map region COREDUMP_FLASH_AREA.
 After the crash, you can use imgmgr to download the coredump for offline analysis. To enable download/erase commands, you need to set syscfg variable IMGMGR_COREDUMP to 1.</p>
 <p>Coredump package does not overwrite a previous coredump, if it exists in the flash. To get a new one, you first need to erase the area.</p>
 <p>You can either use a dedicated area of flash, or use image slot 1 as the target.
 If image slot1 and coredump areas are co-located, coredump will overwrite the image, unless image upgrade is in progress (slot1 marked as pending, or slot0 is not confirmed).</p>
-<div class="section" id="fetching-coredump-with-newtmgr">
-<h3>Fetching Coredump with newtmgr<a class="headerlink" href="#fetching-coredump-with-newtmgr" title="Permalink to this headline">¶</a></h3>
+<section id="fetching-coredump-with-newtmgr">
+<h3>Fetching Coredump with newtmgr<a class="headerlink" href="#fetching-coredump-with-newtmgr" title="Link to this heading">¶</a></h3>
 <p>newtmgr coredump management commands are handled by imgmgr. You can query whether corefile is present, download one if it exists, and then erase the area afterwards.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">[marko@IsMyLaptop:~/src2/incubator-mynewt-blinky]$ </span>newtmgr<span class="w"> </span>-c<span class="w"> </span>ttys005<span class="w"> </span>image<span class="w"> </span>corelist
 <span class="go">Corefile present</span>
@@ -526,9 +529,9 @@ If image slot1 and coredump areas are co-located, coredump will overwrite the im
 </pre></div>
 </div>
 <p>I specified option ‘-e’ to coredownload command. This converts the internal data representation to ELF file; a format that gdb understands.</p>
-</div>
-<div class="section" id="coredump-analysis-offline">
-<h3>Coredump Analysis Offline<a class="headerlink" href="#coredump-analysis-offline" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="coredump-analysis-offline">
+<h3>Coredump Analysis Offline<a class="headerlink" href="#coredump-analysis-offline" title="Link to this heading">¶</a></h3>
 <p>Not all GDB configurations support corefiles. Specifically for the
 architecture we’re showing here, ‘arm-none-eabi-gdb’ does not have it
 built in. However, ‘arm-elf-linux-gdb’ does.</p>
@@ -600,10 +603,10 @@ them on the device and building gdb is certainly more work, but you’ll
 have much more data available when you start analyzing problems.
 I don’t think I can emphasize too much how valuable having all this data
 is, when you’re stuck with a difficult-to-solve crash.</p>
-</div>
-</div>
-<div class="section" id="task-stack-use">
-<h2>Task Stack Use<a class="headerlink" href="#task-stack-use" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="task-stack-use">
+<h2>Task Stack Use<a class="headerlink" href="#task-stack-use" title="Link to this heading">¶</a></h2>
 <p>One of the common problems is stack overflow within a task. Mynewt OS fills
 the stack of a task with a pattern at the time task gets created. If you’re
 suspecting that stack might be blown, check the start of the stack (and
@@ -644,18 +647,18 @@ find the stacks.</p>
 <span class="go">    9   0x2 0x20003bc0     64 0x20000d0c task2</span>
 </pre></div>
 </div>
-<div class="section" id="stack-check-during-context-switch">
-<h3>Stack Check during Context Switch<a class="headerlink" href="#stack-check-during-context-switch" title="Permalink to this headline">¶</a></h3>
+<section id="stack-check-during-context-switch">
+<h3>Stack Check during Context Switch<a class="headerlink" href="#stack-check-during-context-switch" title="Link to this heading">¶</a></h3>
 <p>You can ask OS to check the top of the stack on every context switch.
 It’ll walk over X number of os_stack_t elements, checking if our pattern
 is still there for the task which is about to be switched out.</p>
 <p>You can enable this by setting syscfg variable OS_CTX_SW_STACK_CHECK to 1.
 Another syscfg variable, OS_CTX_SW_STACK_GUARD, controls how far into
 the stack we peek.</p>
-</div>
-</div>
-<div class="section" id="memory-corruption">
-<h2>Memory Corruption<a class="headerlink" href="#memory-corruption" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="memory-corruption">
+<h2>Memory Corruption<a class="headerlink" href="#memory-corruption" title="Link to this heading">¶</a></h2>
 <p>The recommended way of allocating blocks of memory is by using the
 OS memory pools. As with all dynamically allocated memory, there can
 issues with using after it gets freed, or it does not get freed at
@@ -663,16 +666,16 @@ all, code tries to free the same element multiple times, or you end up
 overwriting the data within the next element.</p>
 <p>There are syscfg variables you can set to get OS to do some of
 sanity checks for you.</p>
-<div class="section" id="sanity-check-on-free">
-<h3>Sanity Check on Free<a class="headerlink" href="#sanity-check-on-free" title="Permalink to this headline">¶</a></h3>
+<section id="sanity-check-on-free">
+<h3>Sanity Check on Free<a class="headerlink" href="#sanity-check-on-free" title="Link to this heading">¶</a></h3>
 <p>By setting syscfg variable OS_MEMPOOL_CHECK to 1, OS will act when
 an element is freed. It will walk through the list of already freed
 entries, and check that the entry being freed does not already appear
 in the free list. It will also check that the pool entry the code is
 trying to free is within the memory range belonging to that pool.</p>
-</div>
-<div class="section" id="poisoning-pool">
-<h3>Poisoning Pool<a class="headerlink" href="#poisoning-pool" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="poisoning-pool">
+<h3>Poisoning Pool<a class="headerlink" href="#poisoning-pool" title="Link to this heading">¶</a></h3>
 <p>If you set syscfg variable OS_MEMPOOL_POISON, the OS fills pool
 entry memory with a data pattern whenever that entry is being freed.
 It then checks that this pattern has not been disturbed when that
@@ -680,9 +683,9 @@ pool entry is allocated again. This would help to detect the scenarios
 when code is still using a freed pool entry. Of course, the detection
 will only be triggered if the code tries to modify the data belonging
 tot that entry.</p>
-</div>
-<div class="section" id="pool-guard-areas">
-<h3>Pool Guard Areas<a class="headerlink" href="#pool-guard-areas" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="pool-guard-areas">
+<h3>Pool Guard Areas<a class="headerlink" href="#pool-guard-areas" title="Link to this heading">¶</a></h3>
 <p>Normally OS takes the memory region allocated for pool use and
 splits it into chunks which are exactly the size of the pool entry (taking
 into account the alignment restriction). By setting syscfg variable
@@ -691,9 +694,9 @@ and writes a specific data pattern to it. This is then checked whenever
 the pool entry is freed, or allocated. If code writes past the data area
 belonging to pool entry, the pattern would likely be disturbed, and would
 cause an assert.</p>
-</div>
-<div class="section" id="exhausting-memory">
-<h3>Exhausting Memory<a class="headerlink" href="#exhausting-memory" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="exhausting-memory">
+<h3>Exhausting Memory<a class="headerlink" href="#exhausting-memory" title="Link to this heading">¶</a></h3>
 <p>Memory pool usage can be monitored through the mempool API. The data
 collected there can be seen via the console CLI and/or using newtmgr.</p>
 <p>Here is that data as seen from console:</p>
@@ -735,10 +738,10 @@ the default networking memory pool, msys_1.</p>
 <span class="go">Mbuf addr: 0x20002b7c</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="crash-in-log">
-<h2>Crash in Log<a class="headerlink" href="#crash-in-log" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="crash-in-log">
+<h2>Crash in Log<a class="headerlink" href="#crash-in-log" title="Link to this heading">¶</a></h2>
 <p>System restarts can also be recorded in reboot log. Assuming reboot log
 has been set up, it’ll write a record either when system is asked
 to reset (managed reset), or when system is coming back after an
@@ -762,8 +765,8 @@ via the dumper. So these kind of reboots will show up as ‘SOFT’ reset.</p>
 <p>Restarts due to hardware watchdog will show up here, however. You can also
 add a printout to beginning of main(), outputting what hal_reset_cause_str()
 returns. That will generate a report on the console.</p>
-</div>
-</div>
+</section>
+</section>
 
 
                    </div>
@@ -855,9 +858,9 @@ returns. That will generate a report on the console.</p>
             LINK_SUFFIX: '.html'
         };
     </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/sphinx_highlight.js"></script>
       <script type="text/javascript" src="../../_static/js/bootstrap-3.0.3.min.js"></script>
       <script type="text/javascript" src="../../_static/js/affix.js"></script>
       <script type="text/javascript" src="../../_static/js/main.js"></script>
