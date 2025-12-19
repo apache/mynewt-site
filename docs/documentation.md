@@ -1,10 +1,11 @@
 # Apache Mynewt Documentation
 
 -   Latest version:
-    -   [1.13.0](/latest/)
+    -   [1.14.0](/latest/)
     -   [master (development)](/master/)
     -   [master - PDF](Mynewt.pdf)
 -   Earlier versions:
+    -   [1.13.0](/v1_13_0/)
     -   [1.12.0](/v1_12_0/)
     -   [1.11.0](/v1_11_0/)
     -   [1.10.0](/v1_10_0/)
