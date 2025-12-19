@@ -67,7 +67,7 @@
         </div>
         <div class="news-cell">
             <div class="well">
-                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.13.0, Apache NimBLE 1.8.0 </a> released November 25, 2024)
+                <h4>Latest News:</h4> <a href="/download">Apache Mynewt 1.14.0, Apache NimBLE 1.9.0 </a> released December 19, 2025)
             </div>
         </div>
     </div>
@@ -172,6 +172,9 @@
   </option>
   <option value="/master" selected="selected" >
     Version: master
+  </option>
+ <option value="/v1_14_0" >
+    Version: 1.14.0
   </option>
  <option value="/v1_13_0" >
     Version: 1.13.0
@@ -279,121 +282,35 @@
                     
   <section id="installing-newt-on-linux">
 <h1>Installing Newt on Linux<a class="headerlink" href="#installing-newt-on-linux" title="Link to this heading">¶</a></h1>
-<p>You can install the latest release (1.9.0) of the newt tool from a Debian binary package (amd64). You can also download
-and build the latest release version of newt from source.</p>
-<p>This page shows you how to:</p>
-<ol class="arabic">
-<li><p>Set up your computer to download Debian binary packages from the JuulLabs-OSS APT repository.</p>
-<p><strong>Note:</strong> The key for signing the repository has changed. If you set up your computer before release 1.1.0, you will
-need to download and import the public key again.</p>
-</li>
-<li><p>Install the latest release version of newt from a Debian binary package. You can use apt-get to install the package
-or manually download and install the Debian binary package.</p></li>
-<li><p>Download, build, and install the latest release version of newt from source.</p></li>
-</ol>
-<p>If you are installing on an amd64 platform, we recommend that you install from the binary package.</p>
-<p>See <a class="reference internal" href="prev_releases.html"><span class="doc">Installing Previous Releases of Newt</span></a> to install an earlier version of newt.</p>
-<p><strong>Note:</strong> We have tested the newt tool binary and apt-get install from the JuulLabs-OSS APT repository for Ubuntu version
-1704. Earlier Ubuntu versions (for example: Ubuntu 14) may have incompatibility with the repository. You can manually
-download and install the Debian binary package.</p>
-<p><strong>Note:</strong> See <a class="reference internal" href="../../misc/go_env.html"><span class="doc">Contributing to Newt or Newtmgr Tools</span></a> if you want to:</p>
-<ul class="simple">
-<li><p>Use the newt tool with the latest updates from the master branch. The master branch may be unstable and we recommend
-that you use the latest stable release version.</p></li>
-<li><p>Contribute to the newt tool.</p></li>
-</ul>
-<section id="setting-up-your-computer-to-use-apt-get-to-install-the-package">
-<h2>Setting Up Your Computer to use apt-get to Install the Package<a class="headerlink" href="#setting-up-your-computer-to-use-apt-get-to-install-the-package" title="Link to this heading">¶</a></h2>
-<p>The newt Debian packages are stored in a private APT repository on <strong>https://github.com/JuulLabs-OSS/debian-mynewt</strong>.
-To use apt-get, you must set up the following on your computer to retrieve packages from the repository:</p>
-<p><strong>Note</strong>: You only need to perform this setup once on your computer. However, if you previously downloaded and imported
-the public key for the JuulLabs-OSS APT repository, you will need to perform step 2 again as the key has changed.</p>
-<ol class="arabic simple">
-<li><p>Download the public key for the JuulLabs-OSS APT repository and import the key into the apt keychain.</p></li>
-<li><p>Add the repository for the binary and source packages to the apt source list.</p></li>
-</ol>
-<p>Download the public key for the JuulLabs-OSS apt repo (<strong>Note:</strong> There is a <code class="docutils literal notranslate"><span class="pre">-</span></code> after <code class="docutils literal notranslate"><span class="pre">apt-key</span> <span class="pre">add</span></code>):</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget<span class="w"> </span>-qO<span class="w"> </span>-<span class="w"> </span>https://raw.githubusercontent.com/JuulLabs-OSS/debian-mynewt/master/mynewt.gpg.key<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>apt-key<span class="w"> </span>add<span class="w"> </span>-
+<p>You can install the latest release of the newt tool from <a class="reference external" href="https://mynewt.apache.org/download">https://mynewt.apache.org/download</a> or download latest sources
+directly from GitHub <a class="reference external" href="https://github.com/apache/mynewt-newt">https://github.com/apache/mynewt-newt</a> and build your binary localy.</p>
+<blockquote>
+<div><div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/apache/mynewt-newt.git
 </pre></div>
 </div>
-<p>Add the repository for the binary and source packages to the <code class="docutils literal notranslate"><span class="pre">mynewt.list</span></code> apt source list file:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/apt/sources.list.d/mynewt.list<span class="w"> </span>&lt;&lt;EOF
-<span class="go">deb https://raw.githubusercontent.com/JuulLabs-OSS/debian-mynewt/master latest main</span>
-<span class="go">EOF</span>
-</pre></div>
-</div>
-<p><strong>Note:</strong> Previously the repository lived under <code class="docutils literal notranslate"><span class="pre">runtimeco/debian-mynewt</span></code>, and although
-updating should remain working, if it stops pulling in the latest releases, please try updating
-<code class="docutils literal notranslate"><span class="pre">/etc/apt/sources.list.d/mynewt.list</span></code> and substitute <code class="docutils literal notranslate"><span class="pre">runtimeco</span></code> by <code class="docutils literal notranslate"><span class="pre">JuulLabs-OSS</span></code>.</p>
-<p>Update the available packages:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
-</pre></div>
-</div>
-<p><strong>Note:</strong> If you are not using Ubuntu version 1704, you may see the following errors. We have provided instructions on
-how to manually download and install the binary package.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">W: Failed to fetch https://raw.githubusercontent.com/JuulLabs-OSS/debian-mynewt/master/dists/latest/main/source/Sources  HttpError404</span>
-</pre></div>
-</div>
-<section id="installing-the-latest-release-of-newt-from-a-binary-package">
-<h3>Installing the Latest Release of Newt from a Binary Package<a class="headerlink" href="#installing-the-latest-release-of-newt-from-a-binary-package" title="Link to this heading">¶</a></h3>
-<p>You can use either apt-get to install the package, or manually download and install the Debian binary package.</p>
-<section id="method-1-using-apt-get-to-upgrade-or-to-install">
-<h4>Method 1: Using apt-get to Upgrade or to Install<a class="headerlink" href="#method-1-using-apt-get-to-upgrade-or-to-install" title="Link to this heading">¶</a></h4>
-<p>Run the following commands to upgrade or install the latest version of newt:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
-<span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>newt
-</pre></div>
-</div>
-<p><strong>Note:</strong> If you encounter build errors (such as missing <code class="docutils literal notranslate"><span class="pre">sys/mman.h</span></code>), please make sure you have a 32-bit glibc:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>gcc-multilib
-</pre></div>
-</div>
-</section>
-<section id="method-2-downloading-and-installing-the-debian-package-manually">
-<h4>Method 2: Downloading and Installing the Debian Package Manually<a class="headerlink" href="#method-2-downloading-and-installing-the-debian-package-manually" title="Link to this heading">¶</a></h4>
-<p>Download and install the package manually.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget<span class="w"> </span>https://raw.githubusercontent.com/JuulLabs-OSS/binary-releases/master/mynewt-newt-tools_1.9.0/newt_1.9.0-1_amd64.deb
-<span class="gp">$ </span>sudo<span class="w"> </span>dpkg<span class="w"> </span>-i<span class="w"> </span>newt_1.9.0-1_amd64.deb
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="#checking-the-installed-version-of-newt">Checking the Installed Version of Newt</a> to verify that you are using the installed version of newt.</p>
-</section>
-</section>
-</section>
-<section id="installing-the-latest-release-of-newt-from-a-source-package">
-<h2>Installing the Latest Release of Newt from a Source Package<a class="headerlink" href="#installing-the-latest-release-of-newt-from-a-source-package" title="Link to this heading">¶</a></h2>
-<p>If you are running Linux on a different architecture, you can build and install the latest release version of newt from
-source.</p>
+</div></blockquote>
+<section id="installing-newt-from-sources">
+<h2>Installing Newt from Sources<a class="headerlink" href="#installing-newt-from-sources" title="Link to this heading">¶</a></h2>
 <p>The newt tool is written in Go (<a class="reference external" href="https://golang.org/">https://golang.org/</a>). In order to build Apache Mynewt, you must have Go 1.12 or later
 installed on your system. Please visit the Golang website for more information on installing Go (<a class="reference external" href="https://golang.org/">https://golang.org/</a>).</p>
 <ol class="arabic">
-<li><p>Download and unpack the newt source:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>wget<span class="w"> </span>-P<span class="w"> </span>/tmp<span class="w"> </span>https://github.com/apache/mynewt-newt/archive/mynewt_1_9_0_tag.tar.gz
-<span class="gp">$ </span>tar<span class="w"> </span>-xzf<span class="w"> </span>/tmp/mynewt_1_9_0_tag.tar.gz
-</pre></div>
-</div>
-</li>
 <li><p>Run the build.sh to build the newt tool.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>mynewt-newt-mynewt_1_9_0_tag
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>mynewt-newt
 <span class="gp">$ </span>./build.sh
-<span class="gp">$ </span>rm<span class="w"> </span>/tmp/mynewt_1_9_0_tag.tar.gz
 </pre></div>
 </div>
 </li>
-<li><p>You should see the <code class="docutils literal notranslate"><span class="pre">newt/newt</span></code> executable. Move the executable to a bin directory in your PATH:</p>
-<ul>
-<li><p>If you previously built newt from the master branch, you can move the binary to your $GOPATH/bin directory.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mv<span class="w"> </span>newt/newt<span class="w"> </span><span class="nv">$GOPATH</span>/bin
+<li><p>Add the path to the newt tool to your PATH.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mkdir<span class="w"> </span>~/bin
+<span class="gp">$ </span>mv<span class="w"> </span>./newt/newt<span class="w"> </span>~/bin/.
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:~/bin
 </pre></div>
 </div>
 </li>
-<li><p>If you are installing newt for the first time and do not have a Go workspace set up, you can move the binary to
-/usr/bin or a directory in your PATH:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mv<span class="w"> </span>newt/newt<span class="w"> </span>/usr/bin
+<li><p>To make newt visible in every new terminal add the export to ~/.bashrc</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;export PATH=$PATH:~/bin&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
 </pre></div>
 </div>
-</li>
-</ul>
 </li>
 </ol>
 </section>
@@ -404,7 +321,7 @@ installed on your system. Please visit the Golang website for more information o
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>which<span class="w"> </span>newt
 <span class="go">/usr/bin/newt</span>
 <span class="gp">$ </span>newt<span class="w"> </span>version
-<span class="go">Apache Newt version: 1.9.0</span>
+<span class="go">Apache Newt 1.13.0 / c6bf556 / 2024-11-15_06:58</span>
 </pre></div>
 </div>
 </li>
@@ -433,6 +350,7 @@ installed on your system. Please visit the Golang website for more information o
 <span class="go">  apropos      Search manual page names and descriptions</span>
 <span class="go">  build        Build one or more targets</span>
 <span class="go">  clean        Delete build artifacts for one or more targets</span>
+<span class="go">  completion   Generate the autocompletion script for the specified shell</span>
 <span class="go">  create-image Add image header to target binary</span>
 <span class="go">  debug        Open debugger session to target</span>
 <span class="go">  docs         Project documentation generation commands</span>
@@ -460,6 +378,7 @@ installed on your system. Please visit the Golang website for more information o
 <span class="go">  -l, --loglevel string   Log level (default &quot;WARN&quot;)</span>
 <span class="go">  -o, --outfile string    Filename to tee output to</span>
 <span class="go">  -q, --quiet             Be quiet; only display error output</span>
+<span class="go">      --shallow int       Use shallow clone for git repositories up to specified number of commits</span>
 <span class="go">  -s, --silent            Be silent; don&#39;t output anything</span>
 <span class="go">  -v, --verbose           Enable verbose output when executing commands</span>
 
