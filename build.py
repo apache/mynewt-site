@@ -61,22 +61,51 @@ def generate_supported_boards(filename, bsps):
 def find_BSPs():
     bsp_dir = path.join(cwd, '../mynewt-core', BSP_DIR)
     if not path.isdir(bsp_dir):
-        raise Exception("The directory %s does not exist".format(bsp_dir))
+        raise Exception("The directory {} does not exist".format(bsp_dir))
+
     bsps = []
     for bsp in listdir(bsp_dir):
-        with open(path.join(bsp_dir, bsp, "bsp.yml"), 'r') as f:
-            data = yaml.full_load(f)
-            if data.get('bsp.exclude_site') == 1:
-                print("{} has 'exclude_site' set, skipping".format(bsp))
-                continue
-            for k in ['bsp.name', 'bsp.url', 'bsp.maker', 'bsp.arch']:
-                if k not in data:
-                    print("{} is missing metadata".format(bsp))
-                    break
-            else:
-                bsp = BSP(name=data['bsp.name'], url=data['bsp.url'],
-                          maker=data['bsp.maker'], arch=data['bsp.arch'])
-                bsps.append(bsp)
+        bsp_path = path.join(bsp_dir, bsp)
+        yaml_path = path.join(bsp_path, "bsp.yml")
+
+        print("{} generating...".format(bsp))
+
+        # skip non-dirs (eg. pkg.yml)
+        if not path.isdir(bsp_path):
+            print("{} is not a directory, skipping".format(bsp))
+            continue
+
+        # no bsp.yml file, skip
+        if not path.isfile(yaml_path):
+            print("{} has no bsp.yml, skipping".format(bsp))
+            continue
+
+        try:
+            with open(yaml_path, 'r') as f:
+                data = yaml.full_load(f)
+
+                # skip if yaml is invalid
+                if not isinstance(data, dict):
+                    print("{} bsp.yml is not valid, skipping".format(bsp))
+                    continue
+
+                if data.get('bsp.exclude_site') == 1:
+                    print("{} has 'exclude_site' set, skipping".format(bsp))
+                    continue
+
+                for k in ['bsp.name', 'bsp.url', 'bsp.maker', 'bsp.arch']:
+                    if k not in data:
+                        print("{} is missing metadata".format(bsp))
+                        break
+                else:
+                    bsp_obj = BSP(name=data['bsp.name'], url=data['bsp.url'],
+                                  maker=data['bsp.maker'], arch=data['bsp.arch'])
+                    bsps.append(bsp_obj)
+
+        except Exception as e:
+            print("Skipping {} due to error: {}".format(bsp, e))
+            continue
+
     bsps_sorted = sorted(bsps, key=lambda bsp: bsp.name.lower())
     return bsps_sorted
 
